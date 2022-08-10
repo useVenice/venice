@@ -1,0 +1,15 @@
+diff --git a/node_modules/chrono-node/dist/index.js b/node_modules/chrono-node/dist/index.js
+index eedc39c..f05f046 100644
+--- a/node_modules/chrono-node/dist/index.js
++++ b/node_modules/chrono-node/dist/index.js
+@@ -39,8 +39,8 @@ const pt = __importStar(require("./locales/pt"));
+ exports.pt = pt;
+ const nl = __importStar(require("./locales/nl"));
+ exports.nl = nl;
+-const zh = __importStar(require("./locales/zh"));
+-exports.zh = zh;
++// const zh = __importStar(require("./locales/zh"));
++// exports.zh = zh;
+ exports.strict = en.strict;
+ exports.casual = en.casual;
+ function parse(text, ref, option) {

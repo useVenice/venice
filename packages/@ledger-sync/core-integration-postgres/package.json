@@ -1,0 +1,15 @@
+{
+  "name": "@ledger-sync/core-integration-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "@ledger-sync/core-sync": "*",
+    "kysely": "0.19.3",
+    "pg": "8.7.3"
+  },
+  "devDependencies": {
+    "@types/pg": "8.6.5"
+  }
+}

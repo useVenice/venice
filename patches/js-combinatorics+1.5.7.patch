@@ -1,0 +1,13 @@
+diff --git a/node_modules/js-combinatorics/package.json b/node_modules/js-combinatorics/package.json
+index 6a8b0a6..cc97503 100644
+--- a/node_modules/js-combinatorics/package.json
++++ b/node_modules/js-combinatorics/package.json
+@@ -2,7 +2,7 @@
+   "name": "js-combinatorics",
+   "version": "1.5.7",
+   "description": "Simple combinatorics like power set, combination, and permutation in JavaScript",
+-  "main": "combinatorics.js",
++  "main": "commonjs/combinatorics.js",
+   "module": "combinatorics.js",
+   "type": "module",
+   "exports": {

@@ -1,0 +1,16 @@
+{
+  "name": "@ledger-sync/integration-plaid",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/ledger-sync": "*",
+    "plaid": "10.7.0",
+    "react-plaid-link": "3.3.2"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}

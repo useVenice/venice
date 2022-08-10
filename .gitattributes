@@ -1,0 +1,2 @@
+**/__encrypted__/** filter=git-crypt diff=git-crypt
+*.encrypted filter=git-crypt diff=git-crypt

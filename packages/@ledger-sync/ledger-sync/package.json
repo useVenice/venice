@@ -1,0 +1,14 @@
+{
+  "name": "@ledger-sync/ledger-sync",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@ledger-sync/core-sync": "*",
+    "@alka/accounting": "*",
+    "@alka/standard": "*",
+    "@alka/util": "*"
+  },
+  "devDependencies": {
+  }
+}

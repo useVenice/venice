@@ -1,0 +1,74 @@
+diff --git a/node_modules/@trpc/server/dist/resolveHTTPResponse-02e61299.cjs.prod.js b/node_modules/@trpc/server/dist/resolveHTTPResponse-02e61299.cjs.prod.js
+index b8fba31..e0fbfec 100644
+--- a/node_modules/@trpc/server/dist/resolveHTTPResponse-02e61299.cjs.prod.js
++++ b/node_modules/@trpc/server/dist/resolveHTTPResponse-02e61299.cjs.prod.js
+@@ -5,9 +5,9 @@ var codes = require('./codes-aff770a3.cjs.prod.js');
+ 
+ /* istanbul ignore file */
+ function assertNotBrowser() {
+-  if (typeof window !== 'undefined' &&         "production" !== 'test' && process.env.JEST_WORKER_ID === undefined) {
+-    throw new Error('Imported server-only code in the browser');
+-  }
++  // if (typeof window !== 'undefined' &&         "production" !== 'test' && process.env.JEST_WORKER_ID === undefined) {
++  //   throw new Error('Imported server-only code in the browser');
++  // }
+ }
+ 
+ const TRPC_ERROR_CODES_BY_NUMBER = /*#__PURE__*/codes.invert(codes.TRPC_ERROR_CODES_BY_KEY);
+diff --git a/node_modules/@trpc/server/dist/resolveHTTPResponse-55b2c9bd.cjs.dev.js b/node_modules/@trpc/server/dist/resolveHTTPResponse-55b2c9bd.cjs.dev.js
+index 5da5209..f4d7da0 100644
+--- a/node_modules/@trpc/server/dist/resolveHTTPResponse-55b2c9bd.cjs.dev.js
++++ b/node_modules/@trpc/server/dist/resolveHTTPResponse-55b2c9bd.cjs.dev.js
+@@ -5,9 +5,9 @@ var codes = require('./codes-130e62df.cjs.dev.js');
+ 
+ /* istanbul ignore file */
+ function assertNotBrowser() {
+-  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test' && process.env.JEST_WORKER_ID === undefined) {
+-    throw new Error('Imported server-only code in the browser');
+-  }
++  // if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test' && process.env.JEST_WORKER_ID === undefined) {
++  //   throw new Error('Imported server-only code in the browser');
++  // }
+ }
+ 
+ const TRPC_ERROR_CODES_BY_NUMBER = /*#__PURE__*/codes.invert(codes.TRPC_ERROR_CODES_BY_KEY);
+diff --git a/node_modules/@trpc/server/dist/resolveHTTPResponse-ddb56677.esm.js b/node_modules/@trpc/server/dist/resolveHTTPResponse-ddb56677.esm.js
+index 378decf..c539961 100644
+--- a/node_modules/@trpc/server/dist/resolveHTTPResponse-ddb56677.esm.js
++++ b/node_modules/@trpc/server/dist/resolveHTTPResponse-ddb56677.esm.js
+@@ -3,9 +3,9 @@ import { i as invert, T as TRPC_ERROR_CODES_BY_KEY } from './codes-5678cc97.esm.
+ 
+ /* istanbul ignore file */
+ function assertNotBrowser() {
+-  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test' && process.env.JEST_WORKER_ID === undefined) {
+-    throw new Error('Imported server-only code in the browser');
+-  }
++  // if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test' && process.env.JEST_WORKER_ID === undefined) {
++  //   throw new Error('Imported server-only code in the browser');
++  // }
+ }
+ 
+ const TRPC_ERROR_CODES_BY_NUMBER = /*#__PURE__*/invert(TRPC_ERROR_CODES_BY_KEY);
+diff --git a/node_modules/@trpc/server/src/assertNotBrowser.ts b/node_modules/@trpc/server/src/assertNotBrowser.ts
+index 2d14f4c..0bcbbd9 100644
+--- a/node_modules/@trpc/server/src/assertNotBrowser.ts
++++ b/node_modules/@trpc/server/src/assertNotBrowser.ts
+@@ -1,11 +1,11 @@
+ /* istanbul ignore file */
+ 
+ export function assertNotBrowser() {
+-  if (
+-    typeof window !== 'undefined' &&
+-    process.env.NODE_ENV !== 'test' &&
+-    process.env.JEST_WORKER_ID === undefined
+-  ) {
+-    throw new Error('Imported server-only code in the browser');
+-  }
++  // if (
++  //   typeof window !== 'undefined' &&
++  //   process.env.NODE_ENV !== 'test' &&
++  //   process.env.JEST_WORKER_ID === undefined
++  // ) {
++  //   throw new Error('Imported server-only code in the browser');
++  // }
+ }

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": false,
+    "experimentalDecorators": true,
+    // Decorator metadata doesn't work well with esbuild & babal
+    // https://github.com/alkafinance/alka/commit/c6863bfa008c4f482e53bb563dd121a25d7a184d#commitcomment-61881964
+    // "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["es2021", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "../build",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "alwaysStrict": true, // Doesn't seem to be working with tsx... @see https://github.com/esbuild-kit/tsx/issues/64
+    "target": "es2018",
+    "types": ["jest", "react"],
+    "useUnknownInCatchVariables": true
+  }
+}

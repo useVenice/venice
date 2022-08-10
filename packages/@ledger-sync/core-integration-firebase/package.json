@@ -1,0 +1,14 @@
+{
+  "name": "@ledger-sync/core-integration-firebase",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "@ledger-sync/core-sync": "*",
+    "firebase-admin": "10.2.0",
+    "firebase": "9.8.1"
+  },
+  "devDependencies": {
+  }
+}

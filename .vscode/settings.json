@@ -1,0 +1,86 @@
+{
+  "[beancount]": {
+    "editor.defaultFormatter": "dongfg.vscode-beancount-formatter"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": null
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": null
+  },
+  "[ignore]": {
+    "editor.defaultFormatter": null
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+  },
+  "css.validate": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.insertSpaces": true,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+  "eslint.options": {
+    "overrideConfig": {
+      "rules": {
+        // "import/no-named-as-default": "off"
+        // "import/no-cycle": "off"
+      }
+    }
+  },
+  "files.associations": {
+    ".envrc.local": "shellscript",
+    "ledgerSync": "typescript"
+  },
+  "highlight.regexes": {
+    "(// ?(?:FIXME|HACK):?)(.*)": [
+      {
+        "backgroundColor": "#ff0000",
+        "color": "#1f1f1f",
+        "fontWeight": "bold",
+        "overviewRulerColor": "#ff0000"
+      },
+      {
+        "backgroundColor": "#d90000",
+        "color": "#1f1f1f"
+      }
+    ],
+    "(// ?TODO:?)(.*)": [
+      {
+        "backgroundColor": "#ffcc00",
+        "color": "#1f1f1f",
+        "fontWeight": "bold",
+        "overviewRulerColor": "#ffcc00"
+      },
+      {
+        "backgroundColor": "#ffcc00",
+        "color": "#1f1f1f"
+      }
+    ]
+  },
+  "javascript.format.enable": false,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "javascript.preferences.quoteStyle": "single",
+  "javascript.preferences.useAliasesForRenames": true,
+  "javascript.suggestionActions.enabled": false,
+  "json.format.enable": false,
+  "markJump.strictLimit": "disable",
+  "search.exclude": {
+    "/.yarn/": true,
+  },
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.format.enable": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.preferences.useAliasesForRenames": true,
+  "typescript.tsc.autoDetect": "off",
+  "typescript.tsdk": "./node_modules/typescript/lib"
+}

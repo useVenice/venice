@@ -1,0 +1,2 @@
+#!/usr/bin/env tsx
+require('@alka/cli/ledgerSync-cli').default.help().parse()

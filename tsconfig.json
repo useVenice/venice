@@ -1,0 +1,17 @@
+{
+  "extends": "./config/tsconfig.base.json",
+  "include": [
+    "@types/**/*",
+    "config/**/*",
+    "dev-packages/**/*",
+    "packages/**/*",
+    "./*.ts",
+    "./*.js"
+  ],
+  "exclude": [
+    "**/__encrypted__",
+    "**/node_modules",
+    "packages/@ledger-sync/demo/dist",
+    "packages/@ledger-sync/demo/dist-ssr"
+  ],
+}

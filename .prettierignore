@@ -1,0 +1,33 @@
+# Node.js
+**/node_modules/
+
+# Temporary files
+**/temp/
+
+# Generated files
+**/__generated__/
+
+# Jest snapshot files
+*.snap
+
+# Static files
+/packages/@web/webpack/public/
+
+# App builds
+/build-cloud/
+/packages/@tabs/expo/.expo/
+/packages/@tabs/expo/android/
+/packages/@tabs/expo/dist/
+/packages/@tabs/expo/ios/
+/packages/@tabs/expo/web-build/
+/packages/@ledger-sync/demo/.next
+/packages/@web/webpack/build-cosmos/
+/packages/@web/webpack/build-storybook/
+/packages/@web/webpack/build/
+
+# Docs, notes, etc.
+/.archive
+/thoughts
+/docs
+
+# vim: set filetype=ignore:

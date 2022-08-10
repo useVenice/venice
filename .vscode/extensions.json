@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "chrislajoie.vscode-modelines",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "fabiospampinato.vscode-highlight",
+    "maptz.regionfolder",
+    "mikestead.dotenv",
+    "msjsdiag.debugger-for-chrome",
+    "naumovs.color-highlight",
+    "orta.vscode-jest",
+    "spywhere.mark-jump",
+    "toba.vsfire",
+    "usernamehw.errorlens",
+    "graphql.vscode-graphql",
+    "forbeslindesay.vscode-sql-template-literal",
+    "adpyke.vscode-sql-formatter"
+  ]
+}

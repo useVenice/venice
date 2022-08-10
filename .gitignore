@@ -1,0 +1,60 @@
+# macOS
+**/.DS_Store
+
+# Node.js
+**/node_modules/
+**/.yarn-integrity
+
+# Python
+**/__pycache__/
+
+# Logs
+**/logs/
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Temporary files
+**/temp/
+
+# Private environment variables and keys
+**/.envrc.local
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+**/*.env
+**/*.pem
+
+# Firebase
+/.firebase/
+/service-account.json
+/service-account.*.json
+/_service-account.json
+/_service-account.*.json
+
+# ESLint
+/.eslintcache
+
+# App builds
+/build-cloud/
+/packages/@tabs/expo/.expo/
+/packages/@tabs/expo/android/
+/packages/@tabs/expo/dist/
+/packages/@tabs/expo/ios/
+/packages/@tabs/expo/web-build/
+/packages/@ledger-sync/demo/.next/
+/packages/@web/webpack/build-cosmos/
+/packages/@web/webpack/build-storybook/
+/packages/@web/webpack/build/
+
+# Misc
+/docs/.obsidian/
+/packages/@web/webpack/stats.html
+
+# Jetbrains
+.idea/
+
+# Symlinked for working with ledgerSyncFS
+/data

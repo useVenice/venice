@@ -1,0 +1,12 @@
+{
+  "name": "@alka/id",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": false,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "nanoid": "3.3.4"
+  },
+  "devDependencies": {}
+}

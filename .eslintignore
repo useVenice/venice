@@ -1,0 +1,19 @@
+# Unignore dotfiles
+!.*
+
+# Node.js
+**/node_modules/
+
+# Temporary files
+**/temp/
+
+# Generated files
+**/__generated__/
+
+# Jest snapshot files
+*.snap
+
+# App builds
+/packages/@ledger-sync/demo/.next
+
+# vim: set filetype=ignore:

@@ -1,0 +1,84 @@
+{
+  "name": "alka-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "git@github.com:alkafinance/alka.git",
+  "license": "UNLICENSED",
+  "main": "build-cloud/functions/index.js",
+  "workspaces": [
+    "dev-packages/*",
+    "packages/@ledger-sync/*",
+    "packages/@tabs/*",
+    "packages/@universal/*",
+    "packages/@web/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "eslint --ext .js,.ts,.tsx --cache .",
+    "ls-unhoisted-node-modules": "tsx taskfile ls-node-modules 'packages/**/!(cli)/node_modules'",
+    "postinstall": "{ patch-package || true; } && { yarn --cwd packages/@ledger-sync/integration-plaid patch-package || true; } && { CI=$GOOGLE_RUNTIME is-ci || husky install; }",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test::ci": "yarn run test --ci --forceExit --detectOpenHandles --runInBand",
+    "test::debug": "node --inspect-brk $(npm bin)/jest --runInBand --watch",
+    "test::watch": "yarn run test --watch",
+    "typecheck": "NODE_OPTIONS='--max-old-space-size=8192' tsc --project . --noEmit",
+    "validate": "run-s --silent typecheck lint test"
+  },
+  "prettier": "./config/prettier.config.js",
+  "eslintConfig": {
+    "extends": "@alka/eslint-config"
+  },
+  "jest": {
+    "preset": "./config/jest.config.js"
+  },
+  "resolutions": {
+    "@trivago/prettier-plugin-sort-imports/**/@babel/parser": "7.18.9",
+    "@types/node": "16.11.12",
+    "@types/react": "17.0.39",
+    "@types/react-dom": "17.0.13",
+    "axios": "0.21.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "stripe": "8.86.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "is-ci": "3.0.1",
+    "patch-package": "6.4.7",
+    "@alka/eslint-config": "*",
+    "@babel/core": "7.18.6",
+    "@babel/plugin-transform-modules-commonjs": "7.18.6",
+    "@babel/preset-env": "7.18.6",
+    "@babel/preset-react": "7.18.6",
+    "@babel/types": "7.18.7",
+    "@trivago/prettier-plugin-sort-imports": "3.2.0",
+    "@types/fs-extra": "9.0.13",
+    "@types/jest": "27.5.1",
+    "@types/listr": "0.14.4",
+    "@types/node": "16.11.12",
+    "@types/node-fetch": "2.6.1",
+    "@types/prettier": "2.6.3",
+    "cac": "6.7.12",
+    "dotenv": "16.0.1",
+    "esbuild": "0.14.42",
+    "esbuild-jest": "0.5.0",
+    "eslint": "8.16.0",
+    "execa": "6.1.0",
+    "fs-extra": "10.1.0",
+    "husky": "8.0.1",
+    "jest": "28.1.0",
+    "jest-date-mock": "1.0.8",
+    "jest-watch-typeahead": "1.1.0",
+    "lint-staged": "12.4.2",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.7.1",
+    "prettier-plugin-packagejson": "2.2.18",
+    "tsx": "3.4.3",
+    "typescript": "4.7.2"
+  },
+  "engines": {
+    "node": "16",
+    "npm": "7"
+  }
+}

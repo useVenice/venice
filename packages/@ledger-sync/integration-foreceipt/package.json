@@ -1,0 +1,18 @@
+{
+  "name": "@ledger-sync/integration-foreceipt",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/id": "*",
+    "@alka/util": "*",
+    "@ledger-sync/core-integration-firebase": "*",
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/ledger-sync": "*",
+    "firebase": "9.8.1"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": "*"
+  }
+}

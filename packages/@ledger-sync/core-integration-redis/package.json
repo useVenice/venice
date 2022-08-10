@@ -1,0 +1,14 @@
+{
+  "name": "@ledger-sync/core-integration-redis",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "@ledger-sync/core-sync": "*",
+    "handy-redis": "2.3.1",
+    "redis": "3.1.2"
+  },
+  "devDependencies": {
+  }
+}

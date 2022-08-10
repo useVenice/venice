@@ -1,0 +1,20 @@
+diff --git a/node_modules/timm/lib/timm.js b/node_modules/timm/lib/timm.js
+index 4b04c8e..fee6f9b 100755
+--- a/node_modules/timm/lib/timm.js
++++ b/node_modules/timm/lib/timm.js
+@@ -615,6 +615,15 @@ function doMerge(fAddDefaults, fDeep, first, ...rest) {
+   for (let idx = 0; idx < rest.length; idx++) {
+     const obj = rest[idx];
+     if (obj == null) continue;
++    // PATCHED: Do not naively merge array and objects together...
++    if (typeof out !== 'object' || Array.isArray(out)) {
++      out = obj
++      continue
++    }
++    if (typeof obj !== 'object' || Array.isArray(obj)) {
++      out = obj
++      continue
++    }
+     const keys = getKeysAndSymbols(obj);
+     if (!keys.length) continue;
+ 

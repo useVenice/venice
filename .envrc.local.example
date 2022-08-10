@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+export ENVKEY=kJkY3TDZ5XogkonLQGY1-29q8DLSfXCYz6BBu
+export FIREBASE_SERVICE_ACCOUNT=
+
+export PROXY_URL=
+export PROXY_CERT=
+export USE_PROXY_AGENT=true
+
+export FASTLANE_USER=
+export FASTLANE_PASSWORD=
+export BEAN_JSON_CMD=/Users/tony/Code/alkafinance/plain-text-accounting/bin/bean-json
+
+# mitmweb --mode upstream:http://$VGS_HOST:$VGS_PORT --upstream-auth $VGS_USER:$VGS_PASS --ssl-insecure
+export VGS_HOST=''
+export VGS_PORT=''
+export VGS_USER=''
+export VGS_PASS=''
+export VGS_PROXY_URL="http://$VGS_USER:$VGS_PASS@$VGS_HOST:$VGS_PORT"
+export VGS_PROXY_CERT='-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----'

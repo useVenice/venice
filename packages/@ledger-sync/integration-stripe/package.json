@@ -1,0 +1,15 @@
+{
+  "name": "@ledger-sync/integration-stripe",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@alka/util": "*",
+    "@ledger-sync/ledger-sync": "*",
+    "@ledger-sync/core-sync": "*",
+    "stripe": "8.86.0"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}
