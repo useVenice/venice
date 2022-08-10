@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, OAuth2Client, z, zFunction} from '@alka/util'
+import {createHTTPClient, memoize, OAuth2Client, z, zFunction} from '@ledger-sync/util'
 
 export const zRampConfig = z.object({
   clientId: z.string(),

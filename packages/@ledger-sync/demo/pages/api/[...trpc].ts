@@ -1,4 +1,4 @@
-import {identity} from '@alka/util'
+import {identity} from '@ledger-sync/util'
 import {
   inferProcedureInput,
   makeCoreSync,

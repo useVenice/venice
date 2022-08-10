@@ -6,7 +6,7 @@ import {
   z,
   zCast,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   AccountsGetRequest,
   Configuration,

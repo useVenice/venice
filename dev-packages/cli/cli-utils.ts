@@ -11,7 +11,7 @@ import {
   routerFromZFunctionMap,
   safeJSONParse,
   z,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import * as trpc from '@trpc/server'
 import cac from 'cac'
 import fs from 'fs'

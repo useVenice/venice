@@ -7,7 +7,7 @@ import {
   writeJson,
   z,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {zKVStore} from '@ledger-sync/core-sync'
 
 export const _pathFromId = (basePath: string, id: string) =>

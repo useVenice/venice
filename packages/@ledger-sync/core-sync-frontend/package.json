@@ -5,7 +5,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/core-sync": "*",
-    "@alka/util": "*",
+    "@ledger-sync/util": "*",
     "@trpc/react": "9.26.0",
     "@trpc/next": "9.26.0",
     "react": "17.0.2"

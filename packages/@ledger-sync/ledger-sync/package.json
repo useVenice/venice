@@ -5,9 +5,9 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/core-sync": "*",
-    "@alka/accounting": "*",
-    "@alka/standard": "*",
-    "@alka/util": "*"
+    "@ledger-sync/accounting": "*",
+    "@ledger-sync/standard": "*",
+    "@ledger-sync/util": "*"
   },
   "devDependencies": {
   }

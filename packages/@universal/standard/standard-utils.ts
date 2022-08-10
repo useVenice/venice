@@ -1,4 +1,4 @@
-import {objectFromArray, startCase, temp_makeId, z} from '@alka/util'
+import {objectFromArray, startCase, temp_makeId, z} from '@ledger-sync/util'
 
 export interface EnumOption<T extends string = string> {
   value: T

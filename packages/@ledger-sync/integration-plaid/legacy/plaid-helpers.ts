@@ -1,4 +1,4 @@
-import {A} from '@alka/util'
+import {A} from '@ledger-sync/util'
 
 // This should be consolidated except two different plaid versions are used
 // So we should copy for now until we are ready...

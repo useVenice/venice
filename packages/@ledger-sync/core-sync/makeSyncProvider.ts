@@ -1,4 +1,4 @@
-import {castIs, makePrefixedId, z} from '@alka/util'
+import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
 import {Destination, Source, SyncOperation} from './link-types'
 import type {ConnId} from './makeSyncHelpers'

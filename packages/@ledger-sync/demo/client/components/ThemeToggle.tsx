@@ -1,4 +1,4 @@
-import {objectKeys} from '@alka/util'
+import {objectKeys} from '@ledger-sync/util'
 import {Half2Icon, MoonIcon, SunIcon} from '@radix-ui/react-icons'
 import type {IconProps} from '@radix-ui/react-icons/dist/types'
 import {LayoutGroup, motion} from 'framer-motion'

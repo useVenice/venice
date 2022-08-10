@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, OAuth2Client, z, zFunction} from '@alka/util'
+import {createHTTPClient, memoize, OAuth2Client, z, zFunction} from '@ledger-sync/util'
 
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'live'])

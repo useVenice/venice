@@ -1,4 +1,4 @@
-import {A, Deferred, R, Rx, rxjs, z, zCast} from '@alka/util'
+import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import React from 'react'

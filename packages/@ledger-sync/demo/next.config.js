@@ -1,8 +1,8 @@
 const withTM = require('next-transpile-modules')([
-  '@alka/accounting',
-  '@alka/id',
-  '@alka/standard',
-  '@alka/util',
+  '@ledger-sync/accounting',
+  '@ledger-sync/id',
+  '@ledger-sync/standard',
+  '@ledger-sync/util',
   '@ledger-sync/core-sync',
   '@ledger-sync/core-sync-frontend',
   '@ledger-sync/core-integration-fs',

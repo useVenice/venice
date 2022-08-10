@@ -68,7 +68,7 @@ declare type DisplayOf<E extends string | number | symbol> = {[K in E]: string}
 declare type DistributiveOmit<
   T,
   K extends keyof T,
-> = import('@alka/util').DistributiveOmit<T, K>
+> = import('@ledger-sync/util').DistributiveOmit<T, K>
 
 /**
  * Rely on javascript natural order
@@ -79,6 +79,6 @@ declare type OrderedMap<T, TKey extends string = string> = Record<TKey, T>
 
 declare namespace jest {
   interface Matchers<R> {
-    toEqualBalances(expected: import('@alka/util').Balances): R
+    toEqualBalances(expected: import('@ledger-sync/util').Balances): R
   }
 }

@@ -1,4 +1,4 @@
-import {Rx, rxjs, UnionToIntersection, z} from '@alka/util'
+import {Rx, rxjs, UnionToIntersection, z} from '@ledger-sync/util'
 import {makeSyncProvider, SyncOperation} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase} from '@ledger-sync/ledger-sync'
 import {formatAppleCard} from './formats/format-apple-card'

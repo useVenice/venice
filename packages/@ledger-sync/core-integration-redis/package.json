@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/util": "*",
+    "@ledger-sync/util": "*",
     "@ledger-sync/core-sync": "*",
     "handy-redis": "2.3.1",
     "redis": "3.1.2"

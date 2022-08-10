@@ -7,7 +7,7 @@ import {
   iterateSubintervals,
   math,
   omit,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {computeAmortization} from './amoritze'
 
 const jsonStringifySnapshotSerializer: jest.SnapshotSerializerPlugin = {

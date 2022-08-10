@@ -6,5 +6,5 @@ export * from './utils'
 // codegen:end
 
 
-// TODO: Fold @alka/standard into here...
-export {makePostingsMap} from '@alka/standard'
+// TODO: Fold @ledger-sync/standard into here...
+export {makePostingsMap} from '@ledger-sync/standard'

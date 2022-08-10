@@ -1,4 +1,4 @@
-import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@alka/util'
+import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
 import {makeSyncProvider, SyncOperation} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import React from 'react'

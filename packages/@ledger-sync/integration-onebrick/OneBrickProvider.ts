@@ -7,7 +7,7 @@ import {
   Rx,
   rxjs,
   z,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   makeSyncProvider,
   SyncOperation,

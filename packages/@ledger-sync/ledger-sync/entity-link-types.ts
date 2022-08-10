@@ -1,4 +1,4 @@
-import {z, zCast} from '@alka/util'
+import {z, zCast} from '@ledger-sync/util'
 import {SyncOperation} from '@ledger-sync/core-sync'
 
 export type EntityPayload =

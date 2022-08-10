@@ -5,7 +5,7 @@ import {
   splitAccountType,
   stdTypeAndEntity,
   TRANSACTION_LABELS,
-} from '@alka/standard'
+} from '@ledger-sync/standard'
 import {
   $execCommand,
   A,
@@ -30,7 +30,7 @@ import {
   temp_makeId,
   uniq,
   upperCaseFirst,
-} from '@alka/util'
+} from '@ledger-sync/util'
 
 // @see https://beancount.github.io/docs/beancount_language_syntax.html
 // The general format of a Transaction directive is:

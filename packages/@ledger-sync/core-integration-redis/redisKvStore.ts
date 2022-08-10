@@ -1,4 +1,4 @@
-import {defineProxyFn, memoize, safeJSONParse, z, zFunction} from '@alka/util'
+import {defineProxyFn, memoize, safeJSONParse, z, zFunction} from '@ledger-sync/util'
 import {zKVStore} from '@ledger-sync/core-sync'
 import type {createNodeRedisClient} from 'handy-redis'
 

@@ -1,4 +1,4 @@
-import {makeUlid, md5Hash, stableStringify} from '@alka/util'
+import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
 
 export class RowIdMaker {
   readonly ids = new Set<string>()

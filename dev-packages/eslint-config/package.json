@@ -1,5 +1,5 @@
 {
-  "name": "@alka/eslint-config",
+  "name": "@ledger-sync/eslint-config",
   "version": "0.0.0",
   "private": true,
   "scripts": {

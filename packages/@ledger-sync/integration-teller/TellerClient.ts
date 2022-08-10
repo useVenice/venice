@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, z, zFunction} from '@alka/util'
+import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 
 // Will be used on production mode to use cert
 /*

@@ -1,4 +1,4 @@
-import {z} from '@alka/util'
+import {z} from '@ledger-sync/util'
 import {
   AnyProviderDef,
   AnySyncProvider,

@@ -5,7 +5,7 @@ import {
   objectEntries,
   stableStringify,
   z,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {makeSyncProvider} from '@ledger-sync/core-sync'
 import {
   cachingLink,

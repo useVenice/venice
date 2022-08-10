@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/util": "*",
+    "@ledger-sync/util": "*",
     "@ledger-sync/ledger-sync": "*",
     "@ledger-sync/core-sync": "*",
     "stripe": "8.86.0"

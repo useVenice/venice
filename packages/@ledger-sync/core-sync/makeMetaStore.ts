@@ -8,7 +8,7 @@ import {
   R,
   z,
   zCast,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {handlersLink} from './base-links'
 import {AnySyncProvider} from './makeSyncProvider'
 

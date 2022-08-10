@@ -1,4 +1,4 @@
-import {z, zFunction} from '@alka/util'
+import {z, zFunction} from '@ledger-sync/util'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {UserImpl} from '@firebase/auth/internal'
 import firebase from 'firebase/compat/app'

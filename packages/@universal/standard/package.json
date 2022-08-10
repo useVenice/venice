@@ -1,11 +1,11 @@
 {
-  "name": "@alka/standard",
+  "name": "@ledger-sync/standard",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/id": "*",
-    "@alka/util": "*"
+    "@ledger-sync/id": "*",
+    "@ledger-sync/util": "*"
   },
   "devDependencies": {}
 }

@@ -7,7 +7,7 @@ import {
   operateForEach,
   PathsOf,
   rxjs,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import type {
   AnyDocumentReference,
   AnyFieldPath,

@@ -6,7 +6,7 @@ import {
   rxjs,
   z,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import * as trpc from '@trpc/server'
 import {inferProcedureInput} from '@trpc/server'
 import {Link, LinkFactory, sync} from './link-types'

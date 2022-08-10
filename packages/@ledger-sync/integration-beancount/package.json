@@ -4,9 +4,9 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/id": "*",
-    "@alka/standard": "*",
-    "@alka/util": "*",
+    "@ledger-sync/id": "*",
+    "@ledger-sync/standard": "*",
+    "@ledger-sync/util": "*",
     "@ledger-sync/core-sync": "*",
     "@ledger-sync/ledger-sync": "*"
   },

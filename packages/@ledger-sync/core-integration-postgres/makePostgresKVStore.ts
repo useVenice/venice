@@ -6,7 +6,7 @@ import {
   z,
   zFunction,
   zJsonObject,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {zKVStore} from '@ledger-sync/core-sync'
 import {
   FileMigrationProvider,

@@ -1,4 +1,4 @@
-import {A} from '@alka/util'
+import {A} from '@ledger-sync/util'
 import {
   _convertAmount,
   _getConversionPath,

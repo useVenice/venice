@@ -4,8 +4,8 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/id": "*",
-    "@alka/util": "*",
+    "@ledger-sync/id": "*",
+    "@ledger-sync/util": "*",
     "@ledger-sync/core-integration-firebase": "*",
     "@ledger-sync/core-sync": "*",
     "@ledger-sync/ledger-sync": "*",

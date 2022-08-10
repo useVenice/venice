@@ -5,7 +5,7 @@ import {
   PossibleDate,
   resolveDependency,
   rxjs,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import type admin from 'firebase-admin'
 import {
   AnyDocumentReference,

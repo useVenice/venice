@@ -135,8 +135,8 @@ interface DeletedDoc {
 
 export type SnapshotData<TRaw> = {_TRaw?: TRaw} & ([TRaw] extends [Doc]
   ?
-      | import('@alka/util').Merge<TRaw, {id?: TRaw['id']}>
-      | import('@alka/util').Merge<
+      | import('@ledger-sync/util').Merge<TRaw, {id?: TRaw['id']}>
+      | import('@ledger-sync/util').Merge<
           {
             [K in keyof TRaw]?: never
           },

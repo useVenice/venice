@@ -1,4 +1,4 @@
-import {A, compact, Deferred, identity, md5Hash, Rx, rxjs, z} from '@alka/util'
+import {A, compact, Deferred, identity, md5Hash, Rx, rxjs, z} from '@ledger-sync/util'
 import {makeSyncProvider} from '@ledger-sync/core-sync'
 import {
   ledgerSyncProviderBase,

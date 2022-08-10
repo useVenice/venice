@@ -1,4 +1,4 @@
-import {identity, R, Rx, safeJSONParse} from '@alka/util'
+import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'

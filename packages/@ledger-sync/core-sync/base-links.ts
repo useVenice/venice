@@ -1,4 +1,4 @@
-import {compact, produce, R, Rx, rxjs, WritableDraft} from '@alka/util'
+import {compact, produce, R, Rx, rxjs, WritableDraft} from '@ledger-sync/util'
 import type {AnyEntityPayload, Link, SyncOperation} from './link-types'
 
 type Data = AnyEntityPayload

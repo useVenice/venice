@@ -1,4 +1,4 @@
-import {implementProxyFn} from '@alka/util'
+import {implementProxyFn} from '@ledger-sync/util'
 import {createNodeRedisClient} from 'handy-redis'
 import {$createNodeRedisClient} from './redisKvStore'
 

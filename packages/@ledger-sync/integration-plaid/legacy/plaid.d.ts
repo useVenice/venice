@@ -7,7 +7,7 @@ declare namespace Plaid {
     }
   }
   export type Item = import('plaid').Item
-  export type Account = import('@alka/util').OneOfTwo<
+  export type Account = import('@ledger-sync/util').OneOfTwo<
     import('plaid').Account,
     LinkMetadataAccount
   >
@@ -23,7 +23,7 @@ declare namespace Plaid {
   export type InvestmentTransactionsResponse =
     import('plaid').InvestmentTransactionsResponse
   export type Transaction = NonInvestmentTransaction | InvestmentTransaction
-  export type TransactionsResponse = import('@alka/util').OneOfTwo<
+  export type TransactionsResponse = import('@ledger-sync/util').OneOfTwo<
     InvestmentTransactionsResponse,
     NonInvestmentTransactionsResponse
   >

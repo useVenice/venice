@@ -1,4 +1,4 @@
-import {deepMerge, mapDeep, R, z, zGuard} from '@alka/util'
+import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
 import {
   Destination,
   LinkFactory,

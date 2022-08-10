@@ -1,4 +1,4 @@
-import {AM, NonNullableOnly} from '@alka/util'
+import {AM, NonNullableOnly} from '@ledger-sync/util'
 
 // TODO: Should we refactor the
 export function computeRemainders({

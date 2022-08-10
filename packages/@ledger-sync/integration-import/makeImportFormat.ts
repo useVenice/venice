@@ -1,4 +1,4 @@
-import {R, ValueOf, z} from '@alka/util'
+import {R, ValueOf, z} from '@ledger-sync/util'
 import type {EntityPayload} from '@ledger-sync/ledger-sync'
 
 /**

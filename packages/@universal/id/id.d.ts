@@ -127,7 +127,7 @@ declare namespace Id {
   type SimpleBrandMap = {
     [TRepoName in keyof Simple]: Simple[TRepoName]['__brand__']
   }
-  type SimpleBrandMapInverse = import('@alka/util').Invert<SimpleBrandMap>
+  type SimpleBrandMapInverse = import('@ledger-sync/util').Invert<SimpleBrandMap>
   type RepoNameForSimple<TId> = TId extends AnySimple
     ? SimpleBrandMapInverse[TId['__brand__']]
     : string
@@ -135,7 +135,7 @@ declare namespace Id {
   type CompoundBrandMap = {
     [TRepoName in keyof Compound]: Compound[TRepoName]['__brand__']
   }
-  type CompoundBrandMapInverse = import('@alka/util').Invert<CompoundBrandMap>
+  type CompoundBrandMapInverse = import('@ledger-sync/util').Invert<CompoundBrandMap>
   type RepoNameForCompound<TId> = TId extends AnyCompound
     ? CompoundBrandMapInverse[TId['__brand__']]
     : string
@@ -143,7 +143,7 @@ declare namespace Id {
   type GlobalBrandMap = {
     [TRepoName in keyof Global]: Global[TRepoName]['__brand__']
   }
-  type GlobalBrandMapInverse = import('@alka/util').Invert<GlobalBrandMap>
+  type GlobalBrandMapInverse = import('@ledger-sync/util').Invert<GlobalBrandMap>
   type RepoNameForGlobal<TId> = TId extends AnyGlobal
     ? GlobalBrandMapInverse[TId['__brand__']]
     : string
@@ -175,21 +175,21 @@ declare namespace Id {
   //
 
   type SimpleForCollectionName<
-    TRepoName extends import('@alka/firebase').CollectionName = import('@alka/firebase').CollectionName,
+    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
   > = TRepoName extends keyof Simple ? Simple[TRepoName] : never
 
   type SimpleForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =
     TRepoName extends keyof Simple ? Simple[TRepoName] : never
 
   type CompoundForCollectionName<
-    TRepoName extends import('@alka/firebase').CollectionName = import('@alka/firebase').CollectionName,
+    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
   > = TRepoName extends keyof Compound ? Compound[TRepoName] : never
 
   type CompoundForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =
     TRepoName extends keyof Compound ? Compound[TRepoName] : never
 
   type GlobalForCollectionName<
-    TRepoName extends import('@alka/firebase').CollectionName = import('@alka/firebase').CollectionName,
+    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
   > = TRepoName extends keyof Global ? Global[TRepoName] : never
 
   type GlobalForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =

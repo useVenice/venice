@@ -9,7 +9,7 @@
 //   rxjs,
 //   z,
 //   zCast,
-// } from '@alka/util'
+// } from '@ledger-sync/util'
 // import {
 //   // firebaseProvider,
 //   SerializedTimestamp,

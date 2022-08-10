@@ -4,9 +4,9 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/util": "*",
-    "@alka/id": "*",
-    "@alka/standard": "*",
+    "@ledger-sync/util": "*",
+    "@ledger-sync/id": "*",
+    "@ledger-sync/standard": "*",
     "@ledger-sync/core-sync": "*",
     "@ledger-sync/ledger-sync": "*",
     "papaparse": "5.3.2",

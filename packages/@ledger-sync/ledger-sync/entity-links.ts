@@ -1,4 +1,4 @@
-import {computeTrialBalance} from '@alka/accounting'
+import {computeTrialBalance} from '@ledger-sync/accounting'
 import {
   A,
   AM,
@@ -12,7 +12,7 @@ import {
   WritableDraft,
   z,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   AnyEntityPayload,
   handlersLink,

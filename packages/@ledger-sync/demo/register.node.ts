@@ -12,7 +12,7 @@ import {
   kProxyAgent,
   memoize,
   registerDependency,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
 import chokidar from 'chokidar'

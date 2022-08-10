@@ -6,7 +6,7 @@ import {
   z,
   zCast,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   authUpdateCurrentUserFromJSON,
   getQuerySnapshot$,
@@ -101,7 +101,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
       throw new Error('Unable to ensure login. Missing res.user')
     }
     // fb = initFirebase({
-      
+
     //   authUserJson: res.user.toJSON() as z.infer<typeof zFirebaseConfig>,
     //   publicConfig: fbaConfig,
     // })

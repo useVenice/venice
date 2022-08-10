@@ -6,7 +6,7 @@ import {
   setAt,
   sortedIndexBy,
   toMultiAmount,
-} from '@alka/util'
+} from '@ledger-sync/util'
 
 // MARK: buildPriceMap
 

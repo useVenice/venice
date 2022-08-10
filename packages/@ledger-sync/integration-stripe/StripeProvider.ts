@@ -1,4 +1,4 @@
-import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@alka/util'
+import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import {makeSyncProvider, } from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import React from 'react'
@@ -151,7 +151,7 @@ export const stripeProvider = makeSyncProvider({
         connectionId: ``,
         settings,
         source$: rxjs.concat(
-       
+
           source$,
         ),
       }

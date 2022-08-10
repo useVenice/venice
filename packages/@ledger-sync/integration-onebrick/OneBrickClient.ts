@@ -5,7 +5,7 @@ import {
   memoize,
   z,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 // eslint-disable-next-line import/no-cycle
 import {inferOneBrickEnvFromToken} from './onebrick-utils'
 

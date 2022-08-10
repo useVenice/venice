@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, z, zFunction} from '@alka/util'
+import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 
 export const zTogglConfig = z.object({
   email: z.string().nullish(),

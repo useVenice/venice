@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 // Cannot directly import from cloud otherwise it messes up with the `register` DIs
-import {compact, NonEmptyArray, parseUrl, R, z, zFunction} from '@alka/util'
+import {compact, NonEmptyArray, parseUrl, R, z, zFunction} from '@ledger-sync/util'
 import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
 import {
   DemoRouter,

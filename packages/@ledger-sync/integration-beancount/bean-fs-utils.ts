@@ -8,7 +8,7 @@ import {
   produce,
   R,
   stableStringify,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   convBeanFile,
   defaultOptions,

@@ -12,7 +12,7 @@ import {
   writeJson,
   z,
   zCast,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   AnyEntityPayload,
   handlersLink,

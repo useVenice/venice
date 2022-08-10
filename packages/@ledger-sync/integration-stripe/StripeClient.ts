@@ -1,4 +1,4 @@
-import {castIs, memoize, z, zFunction} from '@alka/util'
+import {castIs, memoize, z, zFunction} from '@ledger-sync/util'
 import Stripe from 'stripe'
 // eslint-disable-next-line import/no-cycle
 import {inferStripeModeFromToken} from './stripe-utils'

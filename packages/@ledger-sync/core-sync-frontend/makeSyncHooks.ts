@@ -1,4 +1,4 @@
-import {NonNullableOnly, R} from '@alka/util'
+import {NonNullableOnly, R} from '@ledger-sync/util'
 import {
   AnySyncProvider, IntegrationInput, LinkFactory, makeCoreSync,
   PreConnOptions,

@@ -1,4 +1,4 @@
-import {objectFromArray} from '@alka/util'
+import {objectFromArray} from '@ledger-sync/util'
 
 export const _parseAccounts = (
   connData: {_id: string},

@@ -1,4 +1,4 @@
-import {makePrefixedId, nonEmpty, objectKeys, R, z} from '@alka/util'
+import {makePrefixedId, nonEmpty, objectKeys, R, z} from '@ledger-sync/util'
 
 const STANDARD_NAME_TO_PREFIX = {
   account: 'acct',

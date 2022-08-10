@@ -1,11 +1,11 @@
 {
-  "name": "@alka/accounting",
+  "name": "@ledger-sync/accounting",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@alka/standard": "*",
-    "@alka/util": "*",
+    "@ledger-sync/standard": "*",
+    "@ledger-sync/util": "*",
     "financejs": "4.1.0",
     "js-combinatorics": "1.5.7"
   },

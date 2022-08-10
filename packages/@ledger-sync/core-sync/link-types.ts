@@ -9,7 +9,7 @@ import {
   rxjs,
   toCompletion,
   zCast
-} from '@alka/util'
+} from '@ledger-sync/util'
 
 /**
  * TODO: We should add a `change` type here, as `null` could also be a valid value

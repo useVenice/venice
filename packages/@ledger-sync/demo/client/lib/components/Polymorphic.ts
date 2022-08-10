@@ -1,4 +1,4 @@
-import {Merge} from '@alka/util'
+import {Merge} from '@ledger-sync/util'
 import React from 'react'
 
 export namespace Polymorphic {
