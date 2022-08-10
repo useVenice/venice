@@ -28,17 +28,22 @@ const connections: Record<string, DemoSyncInput['src']> = {
       ),
     },
   },
-  // foreceipt_tony: {
-  //   provider: 'foreceipt',
-  //   settings: {
-  //     credentials: {
-  //       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //       email: process.env['FORECEIPT_TONY_EMAIL']!,
-  //       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //       password: process.env['FORECEIPT_TONY_PASSWORD']!,
-  //     },
-  //   },
-  // },
+  foreceipt_tony: {
+    provider: 'foreceipt',
+    settings: {
+      credentials: {
+        
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        email: process.env['FORECEIPT_TONY_EMAIL']!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        password: process.env['FORECEIPT_TONY_PASSWORD']!,
+        
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // userJSON: JSON.parse(process.env['FORECEIPT_AUTH']!),
+      },
+      envName: 'production',
+    },
+  },
 
   onebrick: {
     provider: 'onebrick',

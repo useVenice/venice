@@ -27,7 +27,7 @@ import {
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('foreceipt'),
-  integrationConfig: zForeceiptConfig,
+  // integrationConfig: zForeceiptConfig,
   connectionSettings: z.object({
     credentials: zCast<Readonly<Foreceipt.Credentials>>(),
     options: zCast<ForeceiptClientOptions>(),

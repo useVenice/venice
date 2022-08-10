@@ -83,7 +83,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
       password: cfg.credentials.password,
       userJson: cfg.credentials.userJSON,
     },
-    firebaseConfig: fbaConfig,
+    firebaseConfig: {...fbaConfig, projectId: `foreceipt-${Math.random()}`},
   } as z.infer<typeof zSettings>
   let fb: ReturnType<typeof initFirebase>
   const initFB = () => {

@@ -13,7 +13,7 @@ import {stripeProvider} from '@ledger-sync/integration-stripe'
 import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
-// import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
+import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
 import {
   mapAccountNameAndTypeLink,
@@ -67,7 +67,7 @@ export const demoConfig = makeCoreSync.config({
     // rampProvider,
     wiseProvider,
     togglProvider,
-    // foreceiptProvider,
+    foreceiptProvider,
     yodleeProviderNext,
   ],
   linkMap: {renameAccount: renameAccountLink, log: logLink},
