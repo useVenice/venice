@@ -82,6 +82,22 @@ const connections: Record<string, DemoSyncInput['src']> = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     settings: {apiToken: process.env['TOGGL_API_TOKEN']!},
   },
+  yodlee_bayu: {
+    provider: 'yodlee',
+    settings: {
+      // loginName: 'tony@alka.app' // prod,
+      loginName: 'sbMem62f0ef80908cf2', // sanbox
+      envName: 'sandbox',
+      config: {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        clientId: process.env['YODLEE_BAYU_CLIENT_ID']!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
+      },
+      // _id: '10706352' // prod,
+      _id: '11309126', // sanbox
+    },
+  },
 }
 
 const options: Record<string, DemoSyncInput> = mapValues(

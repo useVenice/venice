@@ -14,6 +14,7 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 // import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
+import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
 import {
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
@@ -67,6 +68,7 @@ export const demoConfig = makeCoreSync.config({
     wiseProvider,
     togglProvider,
     // foreceiptProvider,
+    yodleeProviderNext,
   ],
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.

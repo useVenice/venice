@@ -8,13 +8,13 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import {
-  authUpdateCurrentUserFromJSON,
   getQuerySnapshot$,
   initFirebase,
-  // zAuthUserJson,
-  // zFirebaseConfig,
+  zFirebaseUserConfig,
+  zServiceAccount,
 } from '@ledger-sync/core-integration-firebase'
 import firebase from 'firebase/compat/app'
+import {_parseConnectionInfo} from './foreceipt-utils'
 
 class ForeceiptError extends Error {
   override name = 'ForeceiptError'
@@ -27,14 +27,19 @@ class ForeceiptError extends Error {
     Object.setPrototypeOf(this, ForeceiptError.prototype)
   }
 }
-interface ForeceiptClientOptions {
+export interface ForeceiptClientOptions {
   /** Should be received by caller */
   onRefreshCredentials?: (credentials: Foreceipt.Credentials) => void
 }
+const zSettings = z.discriminatedUnion('role', [
+  z.object({role: z.literal('admin'), serviceAccount: zServiceAccount}),
+  z.object({role: z.literal('user')}).merge(zFirebaseUserConfig),
+])
 export const zForeceiptConfig = z.object({
   credentials: zCast<Readonly<Foreceipt.Credentials>>(),
   options: zCast<ForeceiptClientOptions>(),
   _id: zCast<Id.external>(),
+  envName: z.enum(['staging', 'production']),
 })
 export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   const patchCredentials = (partial: Partial<Foreceipt.Credentials>) => {
@@ -69,43 +74,29 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     // So every time is unique. remember to clean up open connection
     `foreceipt-${Math.random()}`,
   )
-  const auth = fba.auth()
+
+  const fbSettings = {
+    role: 'user',
+    authData: {
+      method: cfg.credentials.userJSON ? 'userJson' : 'emailPassword',
+      email: cfg.credentials.email,
+      password: cfg.credentials.password,
+      userJson: cfg.credentials.userJSON,
+    },
+    firebaseConfig: fbaConfig,
+  } as z.infer<typeof zSettings>
+  let fb: ReturnType<typeof initFirebase>
+  const initFB = () => {
+    fb = initFirebase(fbSettings)
+    return fb
+  }
+  const auth = initFB().auth as firebase.auth.Auth
   const login = async () => {
-    const {userJSON: uJson} = cfg.credentials
-    if (uJson) {
-      await authUpdateCurrentUserFromJSON(auth, uJson)
-    } else {
-      const res = await auth.signInWithEmailAndPassword(
-        cfg.credentials.email,
-        cfg.credentials.password,
-      )
-      if (!res.user) {
-        throw new Error('Unable to ensure login. Missing res.user')
-      }
-
-      patchCredentials({userJSON: res.user.toJSON() as Record<string, unknown>})
-    }
-
+    await fb.connect()
     if (!auth.currentUser) {
       throw new Error('Unexpectedly missing auth.currentUser')
     }
     return auth.currentUser
-  }
-  let fb: ReturnType<typeof initFirebase>
-  const initFB = async () => {
-    const res = await auth.signInWithEmailAndPassword(
-      cfg.credentials.email,
-      cfg.credentials.password,
-    )
-    if (!res.user) {
-      throw new Error('Unable to ensure login. Missing res.user')
-    }
-    // fb = initFirebase({
-
-    //   authUserJson: res.user.toJSON() as z.infer<typeof zFirebaseConfig>,
-    //   publicConfig: fbaConfig,
-    // })
-    return fb
   }
 
   const ensureLogin = async () => {
@@ -209,7 +200,11 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
           query = query.orderBy('last_update_time').startAt(updatedSince)
         }
 
-        return rxjs.of(query)
+        const query2 = fb.fst
+          .collection<Foreceipt.UserSetting>('user_setting')
+          .where('owner_guid', '==', teamGuid || userGuid)
+
+        return rxjs.of({receiptQuery: query, userSetting: query2})
       }),
     )
 
@@ -237,6 +232,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   const EXPENSE_TYPE: Foreceipt.Receipt['content']['type'] = 1
   const INCOME_TYPE: Foreceipt.Receipt['content']['type'] = 2
   const TRANSFER_TYPE: Foreceipt.Receipt['content']['type'] = 3
+
   return {
     getReceipts: zFunction(z.date().optional(), async (updatedSince) => {
       const snap = await rxjs.firstValueFrom(getReceiptsSnapshot$(updatedSince))
@@ -269,6 +265,26 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     getReceiptsSnapshot$: zFunction(z.date().optional(), (updatedSince) =>
       getReceiptsSnapshot$(updatedSince),
     ),
+    getInfo: zFunction(async () => {
+      const userGuid = await getUserGuid()
+      const user = await getCurrentUser()
+      const [team, teamMembers] = await Promise.all([
+        user ? getTeam(user?.team_guid) : null,
+        user ? getTeamMembersInTeam(user?.team_guid) : [],
+      ])
+      const userAndTeam = {
+        userGuid,
+        teamGuid: user?.team_guid ?? null,
+        user,
+        team,
+        teamMembers,
+      }
+      const [settings] = await Promise.all([
+        rxjs.firstValueFrom(getUserSettings$()),
+      ])
+      const info = _parseConnectionInfo(userAndTeam, settings)
+      return info
+    }),
     getUserSettings$: zFunction(() => getUserSettings$()),
     initFb: zFunction(() => initFB()),
     EXPENSE_TYPE,
@@ -276,5 +292,6 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     TRANSFER_TYPE,
     getQuery$,
     fbaConfig,
+    fbSettings,
   }
 })
