@@ -2,6 +2,14 @@ import {orderBy} from 'lodash'
 
 // MARK: Deprecated. Use the sorted collections powered by rbt instead...
 
+type ComparableValue = string | number | boolean
+
+interface ComparableObject {
+  valueOf(): ComparableValue
+}
+
+type NaturallyOrderedValue = ComparableValue | ComparableObject
+
 export type SortIteratee<V, K extends string> = (
   v: V,
   k: K,
