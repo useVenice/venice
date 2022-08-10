@@ -1,0 +1,22 @@
+diff --git a/node_modules/@firebase/app/dist/esm/index.esm2017.js b/node_modules/@firebase/app/dist/esm/index.esm2017.js
+index f4f3a12..6fd982d 100644
+--- a/node_modules/@firebase/app/dist/esm/index.esm2017.js
++++ b/node_modules/@firebase/app/dist/esm/index.esm2017.js
+@@ -2,7 +2,7 @@ import { Component, ComponentContainer } from '@firebase/component';
+ import { Logger, setUserLogHandler, setLogLevel as setLogLevel$1 } from '@firebase/logger';
+ import { ErrorFactory, deepEqual, base64urlEncodeWithoutPadding, isIndexedDBAvailable, validateIndexedDBOpenable } from '@firebase/util';
+ export { FirebaseError } from '@firebase/util';
+-import { openDB } from 'idb';
++// import { openDB } from 'idb';
+ 
+ /**
+  * @license
+@@ -891,7 +891,7 @@ function countBytes(heartbeatsCache) {
+  */
+ function registerCoreComponents(variant) {
+     _registerComponent(new Component('platform-logger', container => new PlatformLoggerServiceImpl(container), "PRIVATE" /* PRIVATE */));
+-    _registerComponent(new Component('heartbeat', container => new HeartbeatServiceImpl(container), "PRIVATE" /* PRIVATE */));
++    // _registerComponent(new Component('heartbeat', container => new HeartbeatServiceImpl(container), "PRIVATE" /* PRIVATE */));
+     // Register `app` package.
+     registerVersion(name$o, version$1, variant);
+     // BUILD_TARGET will be replaced by values like esm5, esm2017, cjs5, etc during the compilation
