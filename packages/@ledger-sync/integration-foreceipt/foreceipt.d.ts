@@ -110,8 +110,8 @@ declare namespace Foreceipt {
       account?: string
     }
     team_guid: string
-    create_time: firebase.default.firestore.Timestamp
-    last_update_time: firebase.default.firestore.Timestamp
+    create_time: import('firebase/compat').default.firestore.Timestamp
+    last_update_time: import('firebase/compat').default.firestore.Timestamp
   }
 
   export interface UserSetting {

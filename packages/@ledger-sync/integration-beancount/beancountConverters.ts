@@ -1,3 +1,4 @@
+/// <reference path="./beancount.d.ts"/>
 import {
   formatAccountType,
   makePostingsMap,
@@ -31,6 +32,7 @@ import {
   uniq,
   upperCaseFirst,
 } from '@ledger-sync/util'
+
 
 // @see https://beancount.github.io/docs/beancount_language_syntax.html
 // The general format of a Transaction directive is:

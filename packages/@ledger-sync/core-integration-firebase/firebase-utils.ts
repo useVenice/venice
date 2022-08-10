@@ -25,6 +25,7 @@ import {
   SnapshotData,
   Timestamp,
 } from './firebase-types'
+import type firebase from 'firebase/compat'
 
 /** @deprecated. to be removed */
 export const kFieldPath = Symbol(
@@ -151,7 +152,7 @@ export async function getQueryData<T>(
 /** Rename to DocumentSnapshot */
 export function getDocumentSnapshot$<T, TStore extends AnyFirestore>(
   ref: AnyDocumentReference<T, TStore> & {firestore: TStore},
-  options: firebase.default.firestore.SnapshotListenOptions = {},
+  options: firebase.firestore.SnapshotListenOptions = {},
 ) {
   return new rxjs.Observable<AnyDocumentSnapshot<T, TStore>>((obs) =>
     'listCollections' in ref.firestore
@@ -159,7 +160,7 @@ export function getDocumentSnapshot$<T, TStore extends AnyFirestore>(
           (snap) => obs.next(snap as AnyDocumentSnapshot<T, TStore>),
           (err) => obs.error(err),
         )
-      : (ref as firebase.default.firestore.DocumentReference<T>).onSnapshot(
+      : (ref as firebase.firestore.DocumentReference<T>).onSnapshot(
           options,
           {
             next: (snap) => obs.next(snap as AnyDocumentSnapshot<T, TStore>),
@@ -171,7 +172,7 @@ export function getDocumentSnapshot$<T, TStore extends AnyFirestore>(
 
 export function getQuerySnapshot$<T, TStore extends AnyFirestore>(
   query: AnyQuery<T, TStore> & {firestore: TStore},
-  options: firebase.default.firestore.SnapshotListenOptions = {},
+  options: firebase.firestore.SnapshotListenOptions = {},
 ) {
   return new rxjs.Observable<AnyQuerySnapshot<T, TStore>>((obs) =>
     'listCollections' in query.firestore
@@ -179,7 +180,7 @@ export function getQuerySnapshot$<T, TStore extends AnyFirestore>(
           (snap) => obs.next(snap as AnyQuerySnapshot<T, TStore>),
           (err) => obs.error(err),
         )
-      : (query as firebase.default.firestore.Query<T>).onSnapshot(options, {
+      : (query as firebase.firestore.Query<T>).onSnapshot(options, {
           next: (snap) => obs.next(snap as AnyQuerySnapshot<T, TStore>),
           error: (err) => obs.error(err),
         }),

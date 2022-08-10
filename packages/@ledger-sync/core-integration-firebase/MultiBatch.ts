@@ -19,6 +19,7 @@ import type {
 } from './firebase-types'
 import {fieldPath} from './firebase-utils'
 import type {WrappedFirebase} from './FirebaseProvider'
+import type firebase from 'firebase/compat'
 
 type Instruction<TStore extends AnyFirestore = AnyFirestore> =
   | [
@@ -177,7 +178,7 @@ export class MultiBatch {
 
   updateField<T extends object, U>(
     ref: AnyDocumentReference<T>,
-    field: string | firebase.default.firestore.FieldPath,
+    field: string | firebase.firestore.FieldPath,
     data: U,
   ) {
     this.enqueue([
