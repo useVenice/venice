@@ -1,4 +1,4 @@
-import {A, z} from '@alka/util'
+import {A, DateTime, pick, z} from '@ledger-sync/util'
 
 const zYodleeAmount = z.object({
   amount: z.number(),
@@ -138,30 +138,6 @@ export const zYodleeAccount = z.object({
 export function getYodleeAccountType(
   acct: YodleeAccount,
 ): Standard.AccountType {
-  // switch (acct.CONTAINER) {
-  //   case 'creditCard':
-  //     return 'credit_card'
-  //   case 'otherAssets':
-  //   case 'otherLiabilities':
-  //     return startCase(
-  //       acct.accountType.toLowerCase(),
-  //     ) as Standard.LegacyAccountSubtype
-  //   // Is there a better way to explicity try to fall through again?
-  //   // @ts-ignore
-  //   case 'bank': {
-  //     switch (acct.accountType) {
-  //       case 'CHECKING':
-  //         return 'checking'
-  //       case 'SAVINGS':
-  //         return 'savings'
-  //     }
-  //   }
-  //   default:
-  //     return [acct.CONTAINER, acct.accountType]
-  //       .filter((t) => t)
-  //       .map((t) => startCase(t.toLowerCase()))
-  //       .join('/') as Standard.LegacyAccountSubtype
-  // }
   switch (acct.CONTAINER) {
     case 'bank':
       return 'asset/bank'
@@ -190,6 +166,7 @@ export function getYodleeAccountType(
 }
 
 export type YodleeAccount = z.infer<typeof zYodleeAccount> & {
+  _id: Id.external
   _balancesMap?: Record<
     ISODate,
     {
@@ -262,5 +239,29 @@ export const zGetTransactionParams = z.object({
   detailCategoryId: z.string().nullish(),
 })
 
-
 export type YodleeGetTransactionParams = z.infer<typeof zGetTransactionParams>
+
+export function parseAccountData(
+  a: YodleeAccount,
+  holdings: Yodlee.HoldingWithSecurity[],
+): YodleeAccount {
+  return {
+    ...a,
+    _id: `${a.id}` as Id.external,
+    _balancesMap: {
+      [DateTime.utc().toISODate()]: {
+        balances: pick(a, [
+          'balance',
+          'remainingBalance',
+          'currentBalance',
+          'availableCredit',
+          'annuityBalance',
+          'availableCash',
+          'availableBalance',
+          'cash',
+        ]),
+        holdings: holdings.filter((h) => h.accountId === a.id),
+      },
+    },
+  }
+}

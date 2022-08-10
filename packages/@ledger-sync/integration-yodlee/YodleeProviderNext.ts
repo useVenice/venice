@@ -1,18 +1,20 @@
 import {
   A,
+  DateTime,
   objectFromObject,
   parseDateTime,
   Rx,
   rxjs,
   z,
   zCast,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {makeSyncProvider} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
   getYodleeAccountType,
+  parseAccountData,
   YodleeAccount,
   YodleeTransaction,
 } from './yodlee-utils'
@@ -184,12 +186,20 @@ export const yodleeProviderNext = makeSyncProvider({
     }
   },
   sourceSync: ({settings}) => {
-    const client = makeYodleeClient({
-      ...settings,
-    })
-
     async function* iterateEntities() {
-      const [accounts, _holdings] = await Promise.all([
+      const accessToken = await await makeYodleeClient({
+        ...settings,
+      }).generateAccessToken({
+        ...settings,
+        envName: settings.envName,
+        loginName: settings.loginName,
+      })
+
+      const client = makeYodleeClient({
+        ...settings,
+        accessToken,
+      })
+      const [accounts, holdings] = await Promise.all([
         client.getAccounts({
           envName: settings.envName,
           providerAccountId: settings._id,
@@ -202,11 +212,49 @@ export const yodleeProviderNext = makeSyncProvider({
           : [],
       ])
 
-      yield [...accounts.map((a) => def._opData('account', `${a.id}`, a))]
+      yield [
+        ...accounts.map((a) =>
+          def._opData(
+            'account',
+            `${a.id}` as Id.external,
+            parseAccountData(a, holdings),
+          ),
+        ),
+      ]
+      const accountIds = accounts.map((a) => a.id)
 
-      // while(true) {
-      //   const transactions = await client.getTransactions({params})
-      // }
+      let offset = 0
+      let count = 100
+      const start = DateTime.fromMillis(0)
+      const end = DateTime.local().plus({days: 1})
+      while (true) {
+        let transactions = await client.getTransactions({
+          params: {
+            accountId: accountIds.join(','),
+            skip: offset,
+            top: count,
+            fromDate: start.toISODate(),
+            toDate: end.toISODate(),
+          },
+          envName: settings.envName,
+        })
+
+        if (transactions.length === 0) {
+          break
+        }
+        transactions = transactions.filter((t) => {
+          if (!SHOULD_SYNC_INVESTMENT_TRANSACTIONS) {
+            return t.CONTAINER !== 'investment'
+          }
+          return true
+        })
+        offset += transactions.length
+        count = 500
+
+        yield transactions.map((t) =>
+          def._opData('transaction', `${t.id}` as Id.external, t),
+        )
+      }
     }
 
     return rxjs
@@ -216,3 +264,4 @@ export const yodleeProviderNext = makeSyncProvider({
 })
 
 const SHOULD_SYNC_HOLDINGS = false
+const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false

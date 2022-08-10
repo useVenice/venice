@@ -5,7 +5,7 @@ import {
   stringifyQueryParams,
   z,
   zFunction,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   YodleeAccount,
   YodleeTransaction,
@@ -62,7 +62,7 @@ const zUser = z.object({
 const zAccessToken = z.object({
   accessToken: z.string(),
   issuedAt: z.string(),
-  expiresIn: z.string(), // seconds
+  expiresIn: z.number(), // seconds
 })
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 export const zYodleeConfig = z.object({
@@ -96,42 +96,50 @@ export const makeYodleeClient = zFunction(zYodleeConfig, (cfg) => {
         return 'https://production.api.yodlee.com/ysl'
     }
   }
-  const fromEnv = memoize((envName: EnvName | undefined) => {
-    if (!envName) {
-      throw new Error(`Unable to get client envName=${envName}`)
-    }
+  const fromEnv = memoize(
+    (envName: EnvName | undefined, accessToken?: string) => {
+      if (!envName) {
+        throw new Error(`Unable to get client envName=${envName}`)
+      }
 
-    return createHTTPClient({
-      baseURL: defaultUrl(envName),
-      headers: {
-        'cache-control': 'no-cache',
-        'Content-Type': 'application/json',
-        'Api-Version': '1.1',
-      },
+      return createHTTPClient({
+        baseURL: defaultUrl(envName),
+        headers: {
+          'cache-control': 'no-cache',
+          'Content-Type': 'application/json',
+          'Api-Version': '1.1',
+        },
 
-      requestTransformer: (req) => {
-        if (req.headers['Authorization'] != null) {
-          return req
-        }
-
-        if (cfg.accessToken) {
-          req.headers = {
-            ...req.headers,
-            Authorization: `Bearer ${cfg.accessToken.accessToken}`,
+        requestTransformer: (req) => {
+          if (req.headers['Authorization'] != null) {
+            return req
           }
-        }
-        return req
-      },
 
-      errorTransformer: (err) => {
-        if (err.response && err.response.data) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return new YodleeError(err.response.data as any, err)
-        }
-        return err
-      },
-    })
-  })
+          if (cfg.accessToken) {
+            req.headers = {
+              ...req.headers,
+              Authorization: `Bearer ${cfg.accessToken.accessToken}`,
+            }
+          }
+          if (accessToken) {
+            req.headers = {
+              ...req.headers,
+              Authorization: `Bearer ${accessToken}`,
+            }
+          }
+          return req
+        },
+
+        errorTransformer: (err) => {
+          if (err.response && err.response.data) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return new YodleeError(err.response.data as any, err)
+          }
+          return err
+        },
+      })
+    },
+  )
 
   async function getHoldings(
     params: Yodlee.GetHoldingsParams,
@@ -187,9 +195,10 @@ export const makeYodleeClient = zFunction(zYodleeConfig, (cfg) => {
       z.object({
         providerAccountId: z.union([z.number(), z.string()]),
         envName: zEnvName,
+        accessToken: z.string().optional(),
       }),
       (opts) =>
-        fromEnv(opts.envName)
+        fromEnv(opts.envName, opts.accessToken)
           .get<{account: [YodleeAccount]}>('/accounts', {
             params: {providerAccountId: opts.providerAccountId},
           })

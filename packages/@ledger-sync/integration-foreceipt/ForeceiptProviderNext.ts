@@ -8,7 +8,7 @@ import {
   rxjs,
   z,
   zCast,
-} from '@alka/util'
+} from '@ledger-sync/util'
 import {
   firebaseProvider,
   SerializedTimestamp,
@@ -183,6 +183,7 @@ export const foreceiptProvider = makeSyncProvider({
   //     source$,
   //   }
   // },
+  
   sourceSync: ({settings}) => {
     const client = makeForeceiptClient({...settings})
     const raw$ = rxjs.of(client.initFb()).pipe(
@@ -243,4 +244,6 @@ export const foreceiptProvider = makeSyncProvider({
 
     return raw$.pipe(Rx.mergeMap((op) => rxjs.of(op)))
   },
+
+  
 })
