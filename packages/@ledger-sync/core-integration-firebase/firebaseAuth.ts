@@ -2,6 +2,9 @@ import {z, zFunction} from '@ledger-sync/util'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {UserImpl} from '@firebase/auth/internal'
 import firebase from 'firebase/compat/app'
+// TODO: Migrate to tree-shakable version 9 of firebase once we confirm
+// compat is working
+import 'firebase/compat/auth'
 
 export const zFirebaseConfig = z.object({
   projectId: z.string(),
