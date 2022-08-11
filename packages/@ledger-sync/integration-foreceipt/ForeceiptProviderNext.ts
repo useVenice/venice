@@ -1,4 +1,11 @@
 import {
+  firebaseProvider,
+  SerializedTimestamp,
+  serializeTimestamp,
+} from '@ledger-sync/core-integration-firebase'
+import {makeSyncProvider} from '@ledger-sync/core-sync'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {
   A,
   compact,
   identity,
@@ -9,13 +16,6 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
-import {
-  firebaseProvider,
-  SerializedTimestamp,
-  serializeTimestamp,
-} from '@ledger-sync/core-integration-firebase'
-import {makeSyncProvider} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import {_parseAccounts, _parseConnectionInfo} from './foreceipt-utils'
 import {
   ForeceiptClientOptions,
@@ -23,7 +23,7 @@ import {
   zForeceiptConfig,
 } from './ForeceiptClientNext'
 
-// type ForeceiptSyncOperation = typeof def['_opType']
+type ForeceiptSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('foreceipt'),
@@ -183,9 +183,12 @@ export const foreceiptProvider = makeSyncProvider({
   //     source$,
   //   }
   // },
-  
+
   sourceSync: ({settings}) => {
     const client = makeForeceiptClient({...settings})
+    const getInfo = client.getInfo
+    let info: Awaited<ReturnType<typeof getInfo>> // Need this to handle only call one time promise
+
     const raw$ = rxjs.of(client.initFb()).pipe(
       Rx.mergeMap((fb) => {
         console.log(client.fbSettings, '===firebase init ===')
@@ -203,9 +206,10 @@ export const foreceiptProvider = makeSyncProvider({
             ),
           )
           .pipe(
-            Rx.mergeMap(async (op) => {
-              // TODO: Will be use once the foreceipt issue fixed
-              // const info = await client.getInfo()
+            Rx.mergeMap(async (op, i) => {
+              if (!info && i === 0) {
+                info = await getInfo()
+              }
               const r =
                 op.type === 'data' && op.data.entityName === 'Receipts'
                   ? (op.data.entity as Foreceipt.Receipt)
@@ -228,13 +232,13 @@ export const foreceiptProvider = makeSyncProvider({
                               ),
                             } as Foreceipt.Receipt,
                             entityName: 'transaction',
-                            // info,
+                            info,
                           }
                         : {
                             id: op.data.id,
                             entity: op.data.entity as Foreceipt.Account,
                             entityName: 'account',
-                            // info,
+                            info,
                           },
                   })
             }),
@@ -244,6 +248,4 @@ export const foreceiptProvider = makeSyncProvider({
 
     return raw$.pipe(Rx.mergeMap((op) => rxjs.of(op)))
   },
-
-  
 })

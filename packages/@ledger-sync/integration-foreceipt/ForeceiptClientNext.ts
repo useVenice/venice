@@ -83,8 +83,10 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
       password: cfg.credentials.password,
       userJson: cfg.credentials.userJSON,
     },
-    firebaseConfig: {...fbaConfig, projectId: `foreceipt-${Math.random()}`},
+    firebaseConfig: fbaConfig,
   } as z.infer<typeof zSettings>
+
+  // This is to initizialize firebase on foreceipt client that will be use to get the query
   let fb: ReturnType<typeof initFirebase>
   const initFB = () => {
     fb = initFirebase(fbSettings)
@@ -279,10 +281,13 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
         team,
         teamMembers,
       }
+
+      // TODO: Deep check why this settings not working
       const [settings] = await Promise.all([
         rxjs.firstValueFrom(getUserSettings$()),
       ])
       const info = _parseConnectionInfo(userAndTeam, settings)
+
       return info
     }),
     getUserSettings$: zFunction(() => getUserSettings$()),

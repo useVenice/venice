@@ -5,6 +5,7 @@ import firebase from 'firebase/compat/app'
 // TODO: Migrate to tree-shakable version 9 of firebase once we confirm
 // compat is working
 import 'firebase/compat/auth'
+import 'firebase/compat/firestore'
 
 export const zFirebaseConfig = z.object({
   projectId: z.string(),
