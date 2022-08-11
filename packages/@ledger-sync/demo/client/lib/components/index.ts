@@ -5,6 +5,7 @@ export * from './Dialog'
 export * from './Flex'
 export * from './Grid'
 export * from './IconButton'
+export * from './Polymorphic'
 export * from './Stack'
 export * from './Text'
 // codegen:end
