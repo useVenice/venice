@@ -1,5 +1,4 @@
 import {
-  AnyQuery,
   firebaseProvider,
   SerializedTimestamp,
   serializeTimestamp,
