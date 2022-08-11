@@ -1,4 +1,5 @@
 import {
+  AnyQuery,
   firebaseProvider,
   SerializedTimestamp,
   serializeTimestamp,
@@ -23,7 +24,7 @@ import {
   zForeceiptConfig,
 } from './ForeceiptClientNext'
 
-type ForeceiptSyncOperation = typeof def['_opType']
+// type ForeceiptSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('foreceipt'),
@@ -186,8 +187,6 @@ export const foreceiptProvider = makeSyncProvider({
 
   sourceSync: ({settings}) => {
     const client = makeForeceiptClient({...settings})
-    const getInfo = client.getInfo
-    let info: Awaited<ReturnType<typeof getInfo>> // Need this to handle only call one time promise
 
     const raw$ = rxjs.of(client.initFb()).pipe(
       Rx.mergeMap((fb) => {
@@ -206,10 +205,11 @@ export const foreceiptProvider = makeSyncProvider({
             ),
           )
           .pipe(
-            Rx.mergeMap(async (op, i) => {
-              if (!info && i === 0) {
-                info = await getInfo()
-              }
+            // Hack it with concatMap
+            // TODO: Need to get better understanding of rxjs by re-read references from @tony's, concatMap is very slow, but also cannot use the mergeMap. Need check another map
+            // Or we should cache the http request
+            Rx.concatMap(async (op) => {
+              const info = await client.getInfo()
               const r =
                 op.type === 'data' && op.data.entityName === 'Receipts'
                   ? (op.data.entity as Foreceipt.Receipt)

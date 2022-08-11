@@ -1,4 +1,10 @@
 import {
+  getQuerySnapshot$,
+  initFirebase,
+  zFirebaseUserConfig,
+  zServiceAccount,
+} from '@ledger-sync/core-integration-firebase'
+import {
   createHTTPClient,
   HTTPError,
   Rx,
@@ -7,12 +13,6 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-import {
-  getQuerySnapshot$,
-  initFirebase,
-  zFirebaseUserConfig,
-  zServiceAccount,
-} from '@ledger-sync/core-integration-firebase'
 import firebase from 'firebase/compat/app'
 import {_parseConnectionInfo} from './foreceipt-utils'
 
@@ -214,10 +214,11 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     rxjs.from(getUserAndTeamGuid()).pipe(
       Rx.mergeMap(({teamGuid, userGuid}) =>
         getQuerySnapshot$(
-          fba
-            .firestore()
+          fb.fst
             .collection<Foreceipt.UserSetting>('user_setting')
-            .where('owner_guid', '==', teamGuid || userGuid),
+            .where('owner_guid', '==', teamGuid || userGuid) as Parameters<
+            typeof getQuerySnapshot$
+          >,
         ),
       ),
       Rx.map((snap) =>
@@ -282,7 +283,6 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
         teamMembers,
       }
 
-      // TODO: Deep check why this settings not working
       const [settings] = await Promise.all([
         rxjs.firstValueFrom(getUserSettings$()),
       ])
