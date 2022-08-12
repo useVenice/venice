@@ -1,11 +1,16 @@
-import {NonNullableOnly, R} from '@ledger-sync/util'
 import {
-  AnySyncProvider, IntegrationInput, LinkFactory, makeCoreSync,
+  AnySyncProvider,
+  IntegrationInput,
+  LinkFactory,
+  makeCoreSync,
   PreConnOptions,
-  SyncCoreConfig
+  SyncCoreConfig,
 } from '@ledger-sync/core-sync'
+import {NonNullableOnly, R} from '@ledger-sync/util'
 import {withTRPC} from '@trpc/next'
 import {createReactQueryHooks} from '@trpc/react'
+import {init as initCommandBar} from 'commandbar'
+import React from 'react'
 
 /** TODO: Should this be useLedgerSync or useConnect or useSync? */
 export function makeSyncHooks<
@@ -38,7 +43,7 @@ export function makeSyncHooks<
       config: (info) => ({...options.config(info), url: routerUrl}),
     })
 
-  function useConnect() {
+  function useConnect(colorScheme?: 'light' | 'dark') {
     console.log('useConnect')
 
     const hooks = R.mapToObj(sc.providers, (p) => [
@@ -46,10 +51,10 @@ export function makeSyncHooks<
       p.useConnectHook?.(),
     ])
 
-    // Figure out how to memo this would be ideal...
-    return {
-      // Validate the provider name
-      async connect(
+    const commandBarOrgId = '6df4d085'
+
+    const connect = React.useCallback(
+      async function (
         int: NonNullableOnly<IntegrationInput<T[number]>, 'provider'>,
         {key, options}: PreConnOptions,
       ) {
@@ -62,7 +67,66 @@ export function makeSyncHooks<
         const res3 = await client.mutation('postConnect', [int, res2])
         console.log(`${key} res3`, res3)
       },
-    }
+      [hooks],
+    )
+
+    const showConnect = React.useCallback(
+      () => window.CommandBar.execute('connect'),
+      [],
+    )
+
+    React.useEffect(() => {
+      initCommandBar(commandBarOrgId)
+      // TODO: Figure out how to better set programmatic command availability
+    }, [])
+
+    React.useEffect(() => {
+      window.CommandBar.setTheme(colorScheme ?? 'light')
+    }, [colorScheme])
+
+    React.useEffect(() => {
+      window.CommandBar.addCommand({
+        text: 'Connect',
+        name: 'connect',
+        arguments: {
+          input: {
+            type: 'context',
+            value: 'preConnectInputs',
+            order_key: 0,
+            label: 'Select from the list below',
+          },
+        },
+        template: {
+          type: 'callback',
+          value: 'startConnect',
+          operation: 'blank',
+        },
+        hotkey_mac: 'c',
+        hotkey_win: 'c',
+      })
+      window.CommandBar.addCallback(
+        'startConnect',
+        ({input}: {input: typeof preConnectInputs[number]}) => {
+          console.log('startConnect', input)
+          connect(input.int, input)
+        },
+      )
+      window.CommandBar.addContext('preConnectInputs', preConnectInputs, {
+        quickFindOptions: {quickFind: true},
+        renderOptions: {labelKey: 'label'},
+      })
+
+      return () => {
+        window.CommandBar.removeCommand('connect')
+      }
+    }, [connect])
+
+    React.useEffect(() => {
+      window.CommandBar.boot('anonymous', {})
+    }, [])
+
+    // Figure out how to memo this would be ideal...
+    return {connect, showConnect}
   }
 
   const preConnectInputs = sc.providers.flatMap((p) =>
@@ -83,7 +147,7 @@ export function makeSyncHooks<
         provider: p.name as T[number]['name'],
         // id: `int_${p.name}_demo` as IntId<T[number]['name']>,
         config: undefined,
-      },
+      } as NonNullableOnly<IntegrationInput<T[number]>, 'provider'>,
     })),
   )
 

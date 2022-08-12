@@ -4009,6 +4009,14 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
+commandbar@1.6.13:
+  version "1.6.13"
+  resolved "https://registry.yarnpkg.com/commandbar/-/commandbar-1.6.13.tgz#403ce3a77c358bdcc21f0de129b7ba0c56799232"
+  integrity sha512-BaznMj5TZNhqTbBY7EjQJrZFZfcz6enNNBlnQi80c05s/rxMyzxsrov3vdTQDo6tNhFqhUpkjNbyKVNQiXtj2g==
+  dependencies:
+    fp-ts "2.10.5"
+    io-ts "2.2.13"
+
 commander@^8.0.0, commander@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
@@ -5800,6 +5808,11 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
+fp-ts@2.10.5:
+  version "2.10.5"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.10.5.tgz#7c77868fe8bd9b229743303c1bec505b959f631b"
+  integrity sha512-X2KfTIV0cxIk3d7/2Pvp/pxL/xr2MV1WooyEzKtTWYSc1+52VF4YzjBTXqeOlSiZsPCxIBpDGfT9Dyo7WEY0DQ==
+
 fp-ts@^1.14.3:
   version "1.19.5"
   resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.19.5.tgz#3da865e585dfa1fdfd51785417357ac50afc520a"
@@ -6429,6 +6442,11 @@ io-ts-extra@0.11.6:
   dependencies:
     fp-ts "^2.1.0"
     io-ts "^2.2.4"
+
+io-ts@2.2.13:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.13.tgz#e04016685e863dd5cffb2b5262c5c9c74432dfda"
+  integrity sha512-BYJgE/BanovJKDvCnAkrr7f3gTucSyk+Sr5VtpouBO1/YfBKUyIn2z1ODG8LEF+1D4sjKZ3Bd/A5/v8JrJe5UQ==
 
 io-ts@^2.2.4:
   version "2.2.16"

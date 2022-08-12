@@ -30,15 +30,11 @@ export default function Home() {
 
           <ThemeToggle />
         </HStack>
-        <VStack css={{alignItems: 'flex-start'}}>
-          {R.values(syncHooks.preConnectInputs).map((opts) => (
-            <Button
-              css={{marginBottom: '$2'}}
-              key={opts.key}
-              onClick={() => ls.connect(opts.int, opts)}>
-              Connect {opts.label}
-            </Button>
-          ))}
+
+        <VStack css={{alignItems: 'center'}}>
+          <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
+            Connect
+          </Button>
         </VStack>
       </VStack>
 
