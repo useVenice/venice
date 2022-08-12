@@ -7,7 +7,8 @@
     "dev": "run-p --silent --print-label dev:*",
     "dev:meilisearch": "docker-compose up",
     "dev:next": "next dev",
-    "dev:quirrel": "quirrel"
+    "dev:quirrel": "quirrel",
+    "postinstall": "yarn --cwd ../../../ postinstall"
   },
   "dependencies": {
     "@ledger-sync/util": "*",
