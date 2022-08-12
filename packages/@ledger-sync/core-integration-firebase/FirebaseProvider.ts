@@ -1,4 +1,12 @@
 import {
+  AnyEntityPayload,
+  handlersLink,
+  Link,
+  makeSyncProvider,
+  mergeReady,
+  SyncOperation,
+} from '@ledger-sync/core-sync'
+import {
   compact,
   defineProxyFn,
   fromCompletion,
@@ -12,14 +20,6 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-import {
-  AnyEntityPayload,
-  handlersLink,
-  Link,
-  makeSyncProvider,
-  mergeReady,
-  SyncOperation,
-} from '@ledger-sync/core-sync'
 import firebase from 'firebase/compat/app'
 import {AnyQuery} from './firebase-types'
 import {
@@ -201,6 +201,7 @@ export const initFirebase = zFunction(zSettings, (settings) => {
       if (!auth.currentUser && settings.authData) {
         await login(settings.authData)
       }
+      return auth.currentUser // Need to return currentUser to be use on the foreceipt client
     }
     const cleanup = () => {
       console.log(
@@ -208,7 +209,7 @@ export const initFirebase = zFunction(zSettings, (settings) => {
       )
       return fba.delete()
     }
-    return {settings, fst, connect, cleanup, firestore, auth: fba.auth()}  // Need this to be use on the foreceipt client
+    return {settings, fst, connect, cleanup, firestore}
   }
 })
 

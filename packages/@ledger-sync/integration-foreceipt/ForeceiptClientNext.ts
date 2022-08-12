@@ -92,28 +92,20 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     fb = initFirebase(fbSettings)
     return fb
   }
-  const auth = initFB().auth as firebase.auth.Auth
   const login = async () => {
-    await fb.connect()
-    if (!auth.currentUser) {
-      throw new Error('Unexpectedly missing auth.currentUser')
+    const currentUser = await fb.connect()
+    if (!currentUser) {
+      throw new Error('Unexpectedly missing fb currentUser')
     }
-    return auth.currentUser
+    return currentUser
   }
-
-  const ensureLogin = async () => {
-    if (!auth.currentUser) {
-      return await login()
-    }
-    return auth.currentUser
-  }
-
+  
   const ensureIdToken = async () => {
     if (cfg.credentials?.idTokenResult) {
       return cfg.credentials.idTokenResult
     }
 
-    const currentUser = await ensureLogin()
+    const currentUser = await login()
     const _idTokenResult = await currentUser.getIdTokenResult()
     const idTokenResult = JSON.parse(JSON.stringify(_idTokenResult))
     patchCredentials({idTokenResult})
