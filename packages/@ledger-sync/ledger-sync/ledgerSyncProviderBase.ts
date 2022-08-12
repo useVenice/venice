@@ -1,9 +1,10 @@
-import {z} from '@ledger-sync/util'
 import {
   AnyProviderDef,
   AnySyncProvider,
   makeSyncProvider,
+  Source,
 } from '@ledger-sync/core-sync'
+import {z} from '@ledger-sync/util'
 import {EntityPayload, zEntityPayload} from './entity-link-types'
 
 // NEXT: add institution, etc.
@@ -32,7 +33,12 @@ export const ledgerSyncProviderBase = <
   >,
 >(
   def: T,
-  extension: {sourceMapEntity: TSourceMapEntity},
+  extension: {
+    sourceMapEntity: TSourceMapEntity
+    getInstitutions?: (
+      config: T['_types']['integrationConfig'],
+    ) => Source<T['_types']['sourceOutputEntity']>
+  },
 ) => makeSyncProvider({...makeSyncProvider.defaults, def, extension})
 
 ledgerSyncProviderBase.def = makeSyncProvider.def({

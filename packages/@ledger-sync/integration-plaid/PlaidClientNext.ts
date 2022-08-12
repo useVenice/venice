@@ -11,6 +11,7 @@ import {
   AccountsGetRequest,
   Configuration,
   CountryCode,
+  InstitutionsGetRequest,
   ItemPublicTokenExchangeRequest,
   LinkTokenCreateRequest,
   PlaidApi,
@@ -81,6 +82,10 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
     ),
     transactionsSync: zFunction(zCast<TransactionsSyncRequest>(), (opts) =>
       fromToken(opts.access_token).transactionsSync(opts).then(getData),
+    ),
+    institutionsGet: zFunction(
+      [zEnvName, zCast<InstitutionsGetRequest>()],
+      (envName, opts) => fromEnv(envName).institutionsGet(opts).then(getData),
     ),
   }
 })

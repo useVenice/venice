@@ -41,6 +41,11 @@ export interface RawPipeline<
   }
 }
 
+export interface RawInstitution<T extends AnySyncProvider> {
+  standard?: {}
+  external: unknown
+}
+
 export const isIntegration = <T extends AnySyncProvider>(
   maybe: RawConnection<T> | RawIntegration<T>,
 ): maybe is RawIntegration<T> => 'config' in maybe

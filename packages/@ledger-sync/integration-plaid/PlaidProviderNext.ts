@@ -1,6 +1,7 @@
-import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+import * as plaid from 'plaid'
 import React from 'react'
 import {
   PlaidLinkOnSuccessMetadata,
@@ -13,7 +14,6 @@ import {
   getPlaidAccountType,
   plaidUnitForCurrency,
 } from './legacy/plaid-helpers'
-import * as plaid from 'plaid'
 import {
   makePlaidClient,
   zCountryCode,
@@ -79,6 +79,11 @@ const def = makeSyncProvider.def({
       entityName: z.literal('transaction'),
       entity: zCast<plaid.Transaction>(),
     }),
+    z.object({
+      id: z.string(),
+      entityName: z.literal('institution'),
+      entity: zCast<plaid.Institution>(),
+    }),
   ]),
   webhookInput: zWebhookInput,
 })
@@ -127,6 +132,30 @@ export const plaidProviderNext = makeSyncProvider({
           },
         }
       },
+    },
+    // How do we think about this relative to pre-connect input?
+    getInstitutions: (config) => {
+      const client = makePlaidClient(config)
+      async function* iterateInstitutions() {
+        let offset = 0
+        while (true) {
+          const institutions = await client.institutionsGet('sandbox', {
+            offset,
+            count: 500,
+            country_codes: ['US', 'CA', 'GB'],
+          })
+          if (institutions.institutions.length === 0) {
+            break
+          }
+          yield institutions.institutions.map((ins) =>
+            def._opData('institution', ins.institution_id, ins),
+          )
+          offset += institutions.institutions.length
+        }
+      }
+      return rxjs
+        .from(iterateInstitutions())
+        .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
     },
   }),
   getPreConnectInputs: (_) =>
