@@ -8,7 +8,7 @@ import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {importProvider} from '@ledger-sync/integration-import'
 import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
 import {plaidProviderNext} from '@ledger-sync/integration-plaid'
-// import {rampProvider} from '@ledger-sync/integration-ramp'
+import {rampProvider} from '@ledger-sync/integration-ramp'
 import {stripeProvider} from '@ledger-sync/integration-stripe'
 import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
@@ -64,7 +64,7 @@ export const demoConfig = makeCoreSync.config({
     oneBrickProvider,
     tellerProvider,
     stripeProvider,
-    // rampProvider,
+    rampProvider,
     wiseProvider,
     togglProvider,
     foreceiptProvider,

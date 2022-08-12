@@ -1,10 +1,19 @@
-import {A, compact, Deferred, identity, md5Hash, Rx, rxjs, z} from '@ledger-sync/util'
 import {makeSyncProvider} from '@ledger-sync/core-sync'
 import {
   ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
 } from '@ledger-sync/ledger-sync'
+import {
+  A,
+  compact,
+  Deferred,
+  identity,
+  md5Hash,
+  Rx,
+  rxjs,
+  z,
+} from '@ledger-sync/util'
 import React from 'react'
 import {
   businessResponseSchema,
@@ -21,9 +30,6 @@ const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('ramp'),
   connectionSettings: z.object({accessToken: z.string().nullish()}),
-  preConnectInput: z.object({
-    clientId: z.string(),
-  }),
   connectInput: z.object({
     accessToken: z.string().nullish(),
   }),
@@ -54,61 +60,46 @@ const def = makeSyncProvider.def({
 
 export const rampProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {
-    sourceMapEntity: (data) => {
-      if (data.entityName === 'account') {
-        const a = data.entity
-        return {
-          id: a.id,
-          entityName: 'account',
-          entity: {
-            name: `${a.business_name_on_card}`,
-            type: 'asset/bank',
-            institutionName: a.business_name_legal,
-          },
-        }
-      } else if (data.entityName === 'transaction') {
-        const t = data.entity
-
-        return {
-          id: t.id,
-          entityName: 'transaction',
-          entity: {
-            date: t.user_transaction_time,
-            description: t.merchant_descriptor ?? '',
-            payee: t.merchant_name,
-            externalCategory: t.sk_category_name ?? '',
-            postingsMap: makePostingsMap({
-              main: {
-                amount: A(-1 * t.amount, 'USD' as Unit),
-                memo:
-                  t.memo ??
-                  compact([
-                    `${t.card_holder.first_name} ${t.card_holder.last_name}`,
-                    t.merchant_category_code,
-                  ]).join('/'),
-                subAccountKey: t.state.toLowerCase() ?? undefined,
-              },
-            }),
-            custom: {
-              user: `${t.card_holder.first_name} ${t.card_holder.last_name}`,
+    sourceMapEntity: {
+      account: ({entity: a}) => ({
+        id: a.id,
+        entityName: 'account',
+        entity: {
+          name: `${a.business_name_on_card}`,
+          type: 'asset/bank',
+          institutionName: a.business_name_legal,
+        },
+      }),
+      transaction: ({entity: t}) => ({
+        id: t.id,
+        entityName: 'transaction',
+        entity: {
+          date: t.user_transaction_time,
+          description: t.merchant_descriptor ?? '',
+          payee: t.merchant_name,
+          externalCategory: t.sk_category_name ?? '',
+          postingsMap: makePostingsMap({
+            main: {
+              amount: A(-1 * t.amount, 'USD' as Unit),
+              memo:
+                t.memo ??
+                compact([
+                  `${t.card_holder.first_name} ${t.card_holder.last_name}`,
+                  t.merchant_category_code,
+                ]).join('/'),
+              subAccountKey: t.state.toLowerCase() ?? undefined,
             },
+          }),
+          custom: {
+            user: `${t.card_holder.first_name} ${t.card_holder.last_name}`,
           },
-        }
-      }
-      return null
+        },
+      }),
     },
   }),
-  preConnect: (_input, config) =>
-    makeRampClient(config)
-      .getAccessToken()
-      .then((token) => ({accessToken: token})),
 
   // TODO: Need to find a way to skip unnecessary pipe/connection
   useConnectHook: (_type) => {
-    // const [options, setOptions] = React.useState<z.infer<
-    //   typeof def['connectInput']
-    // > | null>(null)
-
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
       new Deferred<typeof def['_types']['connectOutput']>(),
@@ -151,7 +142,9 @@ export const rampProvider = makeSyncProvider({
     const settings = identity<z.infer<typeof def['connectionSettings']>>({
       ...input,
     })
-    const source$: rxjs.Observable<RampSyncOperation> = rampProvider.sourceSync({settings, options: {}})
+    const source$: rxjs.Observable<RampSyncOperation> = rampProvider.sourceSync(
+      {settings, options: {}},
+    )
     return {
       connectionId: `conn_ramp_${input.clientId}`,
       settings,
