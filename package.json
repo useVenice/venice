@@ -37,7 +37,8 @@
     "axios": "0.21.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "stripe": "8.86.0"
+    "stripe": "8.86.0",
+    "plaid": "10.7.0"
   },
   "dependencies": {
   },

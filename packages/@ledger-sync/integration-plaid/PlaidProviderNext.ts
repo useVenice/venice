@@ -13,7 +13,7 @@ import {
   getPlaidAccountType,
   plaidUnitForCurrency,
 } from './legacy/plaid-helpers'
-import * as plaid from './node_modules/plaid'
+import * as plaid from 'plaid'
 import {
   makePlaidClient,
   zCountryCode,

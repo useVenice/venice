@@ -8965,14 +8965,7 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-plaid@10.5.0:
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/plaid/-/plaid-10.5.0.tgz#b226156890a8db4c436f5267bcdf05a62035dd04"
-  integrity sha512-lOYOTC9l2JUkYpGFCXLOleSM6eDMbITPi6X9DStIujxUaj8flRk1k9rmnaGkjqfYhixjU3CWjlUoRNWS1eAFmQ==
-  dependencies:
-    axios "0.21.4"
-
-plaid@10.7.0:
+plaid@10.5.0, plaid@10.7.0:
   version "10.7.0"
   resolved "https://registry.yarnpkg.com/plaid/-/plaid-10.7.0.tgz#c2975829c1ca1728db6929cc860e858e22af2b4f"
   integrity sha512-8yTW44X+vVBzbCMeYpSwhqig8XyjiLnnPSgKwguxaojs7X7sjVwOscX+JmXYhMgrStekbwOXHhvuyUCmMuOSqw==

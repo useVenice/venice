@@ -18,7 +18,7 @@ import {
   Products,
   TransactionsGetRequest,
   TransactionsSyncRequest,
-} from './node_modules/plaid'
+} from 'plaid'
 import {inferPlaidEnvFromToken} from './plaid-utils'
 
 type EnvName = z.infer<typeof zEnvName>
