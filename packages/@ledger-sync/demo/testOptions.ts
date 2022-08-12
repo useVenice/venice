@@ -10,7 +10,7 @@ import {mapValues} from 'remeda'
 import type {DemoSyncInput} from './pages/api/[...trpc]'
 
 const connections: Record<string, DemoSyncInput['src']> = {
-  plaid: {
+  plaid_sandbox: {
     provider: 'plaid',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     settings: {accessToken: process.env['PLAID_ACCESS_TOKEN']!},
@@ -32,12 +32,11 @@ const connections: Record<string, DemoSyncInput['src']> = {
     provider: 'foreceipt',
     settings: {
       credentials: {
-        
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         email: process.env['FORECEIPT_TONY_EMAIL']!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         password: process.env['FORECEIPT_TONY_PASSWORD']!,
-        
+
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         // userJSON: JSON.parse(process.env['FORECEIPT_AUTH']!),
       },
@@ -87,18 +86,12 @@ const connections: Record<string, DemoSyncInput['src']> = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     settings: {apiToken: process.env['TOGGL_API_TOKEN']!},
   },
-  yodlee_bayu: {
+  yodlee_sandbox: {
     provider: 'yodlee',
     settings: {
       // loginName: 'tony@alka.app' // prod,
       loginName: 'sbMem62f0ef80908cf2', // sanbox
       envName: 'sandbox',
-      config: {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        clientId: process.env['YODLEE_BAYU_CLIENT_ID']!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
-      },
       // _id: '10706352' // prod,
       _id: '11309126', // sanbox
     },

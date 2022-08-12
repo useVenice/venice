@@ -249,7 +249,11 @@ export function makeSyncCoreHelpers<
     .refine((pipe) => {
       console.dir(
         mapDeep(pipe, (v, k) =>
-          k === 'provider' ? (v as AnySyncProvider).name : v,
+          k === 'provider'
+            ? (v as AnySyncProvider).name
+            : `${k}`.toLowerCase().includes('secret')
+            ? '[redacted]'
+            : v,
         ),
         {depth: null},
       )

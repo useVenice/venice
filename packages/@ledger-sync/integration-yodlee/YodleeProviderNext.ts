@@ -1,3 +1,5 @@
+import {makeSyncProvider} from '@ledger-sync/core-sync'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import {
   A,
   DateTime,
@@ -8,8 +10,6 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
-import {makeSyncProvider} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
@@ -18,21 +18,21 @@ import {
   YodleeAccount,
   YodleeTransaction,
 } from './yodlee-utils'
-import {makeYodleeClient, zYodleeConfig} from './YodleeClientNext'
+import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClientNext'
 
 type YodleeSyncOperation = typeof def['_opType']
 
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('yodlee'),
-  // integrationConfig: zYodleeConfig,
-  connectionSettings: zYodleeConfig.extend({
+  integrationConfig: zConfig,
+  connectionSettings: zYodleeSettings.omit({config: true}).extend({
     _id: z.string(),
   }),
-  connectInput: zYodleeConfig.extend({
+  connectInput: zYodleeSettings.omit({config: true}).extend({
     _id: z.string(),
   }),
-  connectOutput: zYodleeConfig.extend({
+  connectOutput: zYodleeSettings.omit({config: true}).extend({
     _id: z.string(),
   }),
   // preConnectInput: z.object({
@@ -172,23 +172,24 @@ export const yodleeProviderNext = makeSyncProvider({
   // useConnectHook: (_a: undefined) =>
   //   new Deferred<typeof def['_types']['connectOutput']>().promise,
 
-  postConnect: async (input) => {
+  postConnect: async (input, config) => {
     const settings = def._type('connectionSettings', {
       ...input,
     })
 
     const source$: rxjs.Observable<YodleeSyncOperation> =
-      yodleeProviderNext.sourceSync({settings, options: {}})
+      yodleeProviderNext.sourceSync({settings, config, options: {}})
     return {
       connectionId: `conn_yodlee_${input._id}`,
       settings,
       source$,
     }
   },
-  sourceSync: ({settings}) => {
+  sourceSync: ({settings, config}) => {
     async function* iterateEntities() {
       const accessToken = await await makeYodleeClient({
         ...settings,
+        config,
       }).generateAccessToken({
         ...settings,
         envName: settings.envName,
@@ -197,6 +198,7 @@ export const yodleeProviderNext = makeSyncProvider({
 
       const client = makeYodleeClient({
         ...settings,
+        config,
         accessToken,
       })
       const [accounts, holdings] = await Promise.all([

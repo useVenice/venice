@@ -41,7 +41,8 @@ export interface RawPipeline<
   }
 }
 
-export interface RawInstitution<T extends AnySyncProvider> {
+export interface RawInstitution {
+  // <T extends AnySyncProvider> {
   standard?: {}
   external: unknown
 }

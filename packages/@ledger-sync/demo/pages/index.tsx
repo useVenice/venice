@@ -1,4 +1,3 @@
-import {R} from '@ledger-sync/util'
 import Head from 'next/head'
 import {Toaster} from 'react-hot-toast'
 import {Button, HStack, Text, ThemeToggle, VStack} from '../client'

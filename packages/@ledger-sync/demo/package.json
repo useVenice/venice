@@ -8,7 +8,8 @@
     "dev:meilisearch": "docker-compose up",
     "dev:next": "next dev",
     "dev:quirrel": "quirrel",
-    "postinstall": "yarn --cwd ../../../ postinstall"
+    "postinstall": "yarn --cwd ../../../ postinstall",
+    "typecheck": "yarn --cwd ../../../ typecheck"
   },
   "dependencies": {
     "@ledger-sync/util": "*",

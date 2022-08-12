@@ -1,10 +1,10 @@
-import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {debugProvider, logLink, makeCoreSync} from '@ledger-sync/core-sync'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
+import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {importProvider} from '@ledger-sync/integration-import'
 import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
 import {plaidProviderNext} from '@ledger-sync/integration-plaid'
@@ -13,13 +13,13 @@ import {stripeProvider} from '@ledger-sync/integration-stripe'
 import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
-import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
 import {
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
   renameAccountLink,
 } from '@ledger-sync/ledger-sync'
+import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {z} from 'zod'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
@@ -82,6 +82,12 @@ export const demoConfig = makeCoreSync.config({
     },
     onebrick: safeJSONParse(process.env['ONEBRICK_CREDENTIALS']),
     teller: safeJSONParse(process.env['TELLER_CREDENTIALS']),
+    yodlee: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clientId: process.env['YODLEE_BAYU_CLIENT_ID']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
+    },
     // we could use multiple alka here...
     // alka: {
     //   baseDir: './data',

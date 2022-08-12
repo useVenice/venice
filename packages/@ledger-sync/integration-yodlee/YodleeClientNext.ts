@@ -12,7 +12,7 @@ import {
   zGetTransactionParams,
 } from './yodlee-utils'
 
-export const zProvider = z
+export const zYodleeProvider = z
   .object({
     id: z.number(),
     name: z.string(),
@@ -65,16 +65,17 @@ const zAccessToken = z.object({
   expiresIn: z.number(), // seconds
 })
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
-export const zYodleeConfig = z.object({
+export const zConfig = z.object({
+  adminLoginName: z.string().nullish(),
+  clientId: z.string(),
+  clientSecret: z.string(),
+})
+export const zYodleeSettings = z.object({
   envName: zEnvName,
   loginName: z.string(),
   providerAccount: zProviderAccount.nullish(),
-  provider: zProvider,
-  config: z.object({
-    adminLoginName: z.string().nullish(),
-    clientId: z.string(),
-    clientSecret: z.string(),
-  }),
+  provider: zYodleeProvider,
+  config: zConfig,
   user: zUser.nullish(),
   accessToken: zAccessToken.nullish(),
 })
@@ -85,7 +86,7 @@ const zRegisterUserInput = zUser.merge(z.object({envName: zEnvName}))
 function idToString(id: YodleeId) {
   return Array.isArray(id) ? id.join(',') : id.toString()
 }
-export const makeYodleeClient = zFunction(zYodleeConfig, (cfg) => {
+export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
   function defaultUrl(envName: EnvName) {
     switch (envName) {
       case 'sandbox':
