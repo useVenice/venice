@@ -186,60 +186,63 @@ export const foreceiptProvider = makeSyncProvider({
 
   sourceSync: ({settings}) => {
     const client = makeForeceiptClient({...settings})
-
+    const getInfo = client.getInfo
+    let info: Awaited<ReturnType<typeof getInfo>>
     const raw$ = rxjs.of(client.initFb()).pipe(
       Rx.mergeMap((fb) => {
         console.log(client.fbSettings, '===firebase init ===')
         return rxjs
           .from(client.getQuery$())
           .pipe(
-            Rx.mergeMap((q) =>
-              firebaseProvider.sourceSync({
+            Rx.mergeMap(([q, res]) => {
+              info = res
+              return firebaseProvider.sourceSync({
                 settings: client.fbSettings,
                 options: {
                   _fb: fb,
                   _queries: Object.values(q),
                 },
-              }),
-            ),
+              })
+            }),
           )
           .pipe(
             // Hack it with concatMap
             // TODO: Need to get better understanding of rxjs by re-read references from @tony's, concatMap is very slow, but also cannot use the mergeMap. Need check another map
             // Or we should cache the http request
-            Rx.concatMap(async (op) => {
-              const info = await client.getInfo()
+            Rx.mergeMap((op) => {
               const r =
                 op.type === 'data' && op.data.entityName === 'Receipts'
                   ? (op.data.entity as Foreceipt.Receipt)
                   : null
-              return op.type !== 'data'
-                ? def._op('commit')
-                : def._op('data', {
-                    data:
-                      op.data.entityName === 'Receipts'
-                        ? {
-                            id: r?.content.id ?? op.data.id,
-                            entity: {
-                              ...r,
-                              _docId: op.data.id,
-                              create_time: serializeTimestamp(
-                                r?.create_time as FirebaseFirestore.Timestamp,
-                              ),
-                              last_update_time: serializeTimestamp(
-                                r?.last_update_time as FirebaseFirestore.Timestamp,
-                              ),
-                            } as Foreceipt.Receipt,
-                            entityName: 'transaction',
-                            info,
-                          }
-                        : {
-                            id: op.data.id,
-                            entity: op.data.entity as Foreceipt.Account,
-                            entityName: 'account',
-                            info,
-                          },
-                  })
+              return rxjs.of(
+                op.type !== 'data'
+                  ? def._op('commit')
+                  : def._op('data', {
+                      data:
+                        op.data.entityName === 'Receipts'
+                          ? {
+                              id: r?.content.id ?? op.data.id,
+                              entity: {
+                                ...r,
+                                _docId: op.data.id,
+                                create_time: serializeTimestamp(
+                                  r?.create_time as FirebaseFirestore.Timestamp,
+                                ),
+                                last_update_time: serializeTimestamp(
+                                  r?.last_update_time as FirebaseFirestore.Timestamp,
+                                ),
+                              } as Foreceipt.Receipt,
+                              entityName: 'transaction',
+                              info,
+                            }
+                          : {
+                              id: op.data.id,
+                              entity: op.data.entity as Foreceipt.Account,
+                              entityName: 'account',
+                              info,
+                            },
+                    }),
+              )
             }),
           )
       }),

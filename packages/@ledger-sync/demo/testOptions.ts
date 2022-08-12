@@ -37,8 +37,10 @@ const connections: Record<string, DemoSyncInput['src']> = {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         password: process.env['FORECEIPT_TONY_PASSWORD']!,
 
+        /*
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        // userJSON: JSON.parse(process.env['FORECEIPT_AUTH']!),
+        userJSON: JSON.parse(process.env['FORECEIPT_AUTH']!),
+        */
       },
       envName: 'production',
     },
@@ -67,15 +69,16 @@ const connections: Record<string, DemoSyncInput['src']> = {
       accountId: process.env['STRIPE_ACCOUNT_ID']!,
     },
   },
-  // ramp: {
-  //   provider: 'ramp',
-  //   settings: {
-  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     clientId: process.env['RAMP_CLIENT_ID']!,
-  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     clientSecret: process.env['RAMP_CLIENT_SECRET']!,
-  //   },
-  // },
+  ramp: {
+    provider: 'ramp',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clientId: process.env['RAMP_CLIENT_ID']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clientSecret: process.env['RAMP_CLIENT_SECRET']!,
+    },
+    options: {}
+  },
   wise: {
     provider: 'wise',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

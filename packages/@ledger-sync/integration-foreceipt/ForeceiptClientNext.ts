@@ -99,7 +99,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     }
     return currentUser
   }
-  
+
   const ensureIdToken = async () => {
     if (cfg.credentials?.idTokenResult) {
       return cfg.credentials.idTokenResult
@@ -144,6 +144,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     createClient
       .post<Foreceipt.Team>('receipt/api/GetTeam', {TeamId: teamId})
       .then((r) => r.data)
+
   const getTeamMembersInTeam = async (teamId: string) =>
     createClient
       .post<string[]>('receipt/api/GetTeamMembersInTeam', {TeamId: teamId})
@@ -198,7 +199,10 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
           .collection<Foreceipt.UserSetting>('user_setting')
           .where('owner_guid', '==', teamGuid || userGuid)
 
-        return rxjs.of({receiptQuery: query, userSetting: query2})
+        return rxjs.forkJoin(
+          rxjs.of({receiptQuery: query, userSetting: query2}),
+          rxjs.from(getInfo()),
+        )
       }),
     )
 
@@ -227,7 +231,28 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   const EXPENSE_TYPE: Foreceipt.Receipt['content']['type'] = 1
   const INCOME_TYPE: Foreceipt.Receipt['content']['type'] = 2
   const TRANSFER_TYPE: Foreceipt.Receipt['content']['type'] = 3
+  const getInfo = zFunction(async () => {
+    const userGuid = await getUserGuid()
+    const user = await getCurrentUser()
+    const [team, teamMembers] = await Promise.all([
+      user ? getTeam(user?.team_guid) : null,
+      user ? getTeamMembersInTeam(user?.team_guid) : [],
+    ])
+    const userAndTeam = {
+      userGuid,
+      teamGuid: user?.team_guid ?? null,
+      user,
+      team,
+      teamMembers,
+    }
 
+    const [settings] = await Promise.all([
+      rxjs.firstValueFrom(getUserSettings$()),
+    ])
+    const info = _parseConnectionInfo(userAndTeam, settings)
+
+    return info
+  })
   return {
     getReceipts: zFunction(z.date().optional(), async (updatedSince) => {
       const snap = await rxjs.firstValueFrom(getReceiptsSnapshot$(updatedSince))
@@ -260,28 +285,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     getReceiptsSnapshot$: zFunction(z.date().optional(), (updatedSince) =>
       getReceiptsSnapshot$(updatedSince),
     ),
-    getInfo: zFunction(async () => {
-      const userGuid = await getUserGuid()
-      const user = await getCurrentUser()
-      const [team, teamMembers] = await Promise.all([
-        user ? getTeam(user?.team_guid) : null,
-        user ? getTeamMembersInTeam(user?.team_guid) : [],
-      ])
-      const userAndTeam = {
-        userGuid,
-        teamGuid: user?.team_guid ?? null,
-        user,
-        team,
-        teamMembers,
-      }
-
-      const [settings] = await Promise.all([
-        rxjs.firstValueFrom(getUserSettings$()),
-      ])
-      const info = _parseConnectionInfo(userAndTeam, settings)
-
-      return info
-    }),
+    getInfo: zFunction(async () => await getInfo()), // Still need this to get the info type
     getUserSettings$: zFunction(() => getUserSettings$()),
     initFb: zFunction(() => initFB()),
     EXPENSE_TYPE,

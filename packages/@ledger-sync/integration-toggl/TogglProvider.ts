@@ -6,7 +6,6 @@ import {
   itemProjectResponseSchema,
   itemTimeEntriesSchema,
   makeTogglClient,
-  zTogglConfig,
 } from './TogglCient'
 
 type TogglSyncOperation = typeof def['_opType']
@@ -14,7 +13,7 @@ type TogglSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('toggl'),
-  integrationConfig: zTogglConfig,
+  // integrationConfig: zTogglConfig,
   preConnectInput: z.object({
     apiToken: z.string(),
   }),
@@ -103,14 +102,14 @@ export const togglProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input, config) => {
+  postConnect: async (input) => {
     const settings = identity<z.infer<typeof def['connectionSettings']>>({
       apiToken: input.apiToken,
       email: input.email,
       password: input.password,
     })
     const source$: rxjs.Observable<TogglSyncOperation> =
-      togglProvider.sourceSync({settings, config, options: {}})
+      togglProvider.sourceSync({settings, options: {}})
 
     return {
       connectionId: `conn_toggl_${input.apiToken}`,

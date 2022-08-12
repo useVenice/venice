@@ -29,7 +29,12 @@ type RampSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('ramp'),
-  connectionSettings: z.object({accessToken: z.string().nullish()}),
+  connectionSettings: z.object({
+    accessToken: z.string().nullish(),
+    clientId: z.string().nullish(),
+    clientSecret: z.string().nullish(),
+    startAfterTransactionId: z.string().nullish(),
+  }),
   connectInput: z.object({
     accessToken: z.string().nullish(),
   }),
@@ -163,10 +168,10 @@ export const rampProvider = makeSyncProvider({
   //     rampProvider.sourceSync(conn)
   //   return rxjs.concat(sync$)
   // },
-  sourceSync: ({options}) => {
+  sourceSync: ({settings}) => {
     const client = makeRampClient({
-      clientId: options.clientId ?? '',
-      clientSecret: options.clientSecret ?? '',
+      clientId: settings.clientId ?? '',
+      clientSecret: settings.clientSecret ?? '',
     })
     async function* iterateEntities() {
       const accessToken = await client.getAccessToken()
@@ -183,7 +188,7 @@ export const rampProvider = makeSyncProvider({
         }),
       )
 
-      let starting_after = options.startAfterTransactionId ?? undefined
+      let starting_after = settings.startAfterTransactionId ?? undefined
       while (true) {
         const res2 = await client.getTransactions({
           accessToken,
@@ -196,7 +201,7 @@ export const rampProvider = makeSyncProvider({
         yield [
           ...res2.data.map((t) => opData('transaction', t.id, t)),
           // Use the hashed accessToken for now until we now what the id that can we use for meta data
-          opMeta(md5Hash(options.accessToken ?? ''), {
+          opMeta(md5Hash(settings.accessToken ?? ''), {
             startAfterTransactionId: starting_after,
           }),
         ]

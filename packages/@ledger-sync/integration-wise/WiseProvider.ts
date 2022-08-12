@@ -1,13 +1,12 @@
-import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
 import {makeSyncProvider} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
 import React from 'react'
 import {
   makeWiseClient,
   profileResponseItemSchema,
   transferResponseItemSchema,
   zEnvName,
-  zWiseConfig,
 } from './WiseClient'
 
 type WiseSyncOperation = typeof def['_opType']
@@ -15,7 +14,7 @@ type WiseSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('wise'),
-  integrationConfig: zWiseConfig,
+  // integrationConfig: zWiseConfig,
   connectionSettings: z.object({
     envName: zEnvName,
     apiToken: z.string().nullish(),
@@ -126,20 +125,22 @@ export const wiseProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input, config) => {
+  postConnect: async (input) => {
     const settings = identity<z.infer<typeof def['connectionSettings']>>({
       envName: input.envName ?? '',
       apiToken: input.apiToken,
     })
-    const source$: rxjs.Observable<WiseSyncOperation> = wiseProvider.sourceSync({settings, config, options: {}})
+    const source$: rxjs.Observable<WiseSyncOperation> = wiseProvider.sourceSync(
+      {settings, options: {}},
+    )
     return {
       connectionId: `conn_wise_${input.apiToken}`,
       settings,
       source$,
     }
   },
-  sourceSync: ({settings: conn, config}) => {
-    const client = makeWiseClient({...config})
+  sourceSync: ({settings: conn}) => {
+    const client = makeWiseClient({...conn})
     async function* iterateEntities() {
       const res = await client.getProfiles(conn.envName)
       yield res.map((a) =>
