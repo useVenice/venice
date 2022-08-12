@@ -1,5 +1,9 @@
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {
+  ledgerSyncProviderBase,
+  makePostingsMap,
+  makeStandardId,
+} from '@ledger-sync/ledger-sync'
 import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import * as plaid from 'plaid'
 import React from 'react'
@@ -124,7 +128,15 @@ export const plaidProviderNext = makeSyncProvider({
             description: t.name || '',
             payee: t.merchant_name ?? undefined,
             postingsMap: makePostingsMap({
-              main: {accountExternalId, amount: currencyAmount},
+              main: {
+                accountId: makeStandardId(
+                  'acct',
+                  def.name.value,
+                  accountExternalId,
+                ) as Id.acct,
+                accountExternalId,
+                amount: currencyAmount,
+              },
               // Are there any uncategorized at all for Plaid?
             }),
             externalCategory,

@@ -15,6 +15,7 @@ import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
 import {
+  addRemainderByDateLink,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
   renameAccountLink,
@@ -103,12 +104,14 @@ export const demoConfig = makeCoreSync.config({
     dest.provider.name === 'beancount'
       ? [
           ...links,
-          renameAccountLink({
-            Ramp: 'Ramp/Posted',
-            'Apple Card': 'Apple Card/Posted',
-          }),
+          mapStandardEntityLink(src),
+          addRemainderByDateLink, // What about just the addRemainder plugin?
+          // renameAccountLink({
+          //   Ramp: 'Ramp/Posted',
+          //   'Apple Card': 'Apple Card/Posted',
+          // }),
           mapAccountNameAndTypeLink(),
-          logLink({prefix: 'preDest'}),
+          logLink({prefix: 'preDest', verbose: true}),
         ]
       : dest.provider.name === 'alka'
       ? [

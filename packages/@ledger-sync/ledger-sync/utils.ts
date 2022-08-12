@@ -23,10 +23,9 @@ export const zStandardEntityPrefixFromName = zStandardEntityName.transform(
   (name) => STANDARD_NAME_TO_PREFIX[name],
 )
 
-export function makeStandardId<T extends string>(
-  prefix: StandardEntityPrefix,
-  providerName: T,
-  externalId: string,
-) {
+export function makeStandardId<
+  T extends string,
+  P extends StandardEntityPrefix,
+>(prefix: P, providerName: T, externalId: string) {
   return makePrefixedId(prefix, providerName, externalId)
 }

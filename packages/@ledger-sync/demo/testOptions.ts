@@ -3,13 +3,14 @@
  * tsx ./testOptions.ts plaid | ledgerSync sync
  * tsx ./testOptions.ts plaid | tsx ./prevLedgerSync-cli.ts sync
  */
+import {R} from '@ledger-sync/util'
 import fs from 'fs'
 import path from 'path'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {mapValues} from 'remeda'
 import type {DemoSyncInput} from './pages/api/[...trpc]'
 
-const connections: Record<string, DemoSyncInput['src']> = {
+const sources: Record<string, DemoSyncInput['src']> = {
   plaid_sandbox: {
     provider: 'plaid',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -101,18 +102,42 @@ const connections: Record<string, DemoSyncInput['src']> = {
   },
 }
 
-const options: Record<string, DemoSyncInput> = mapValues(
-  connections,
-  (src, key): DemoSyncInput => ({
-    id: `pipe_${src?.provider}_test`,
-    src,
-    dest: {
-      provider: 'fs',
-      settings: {
-        basePath: [__dirname, process.env['FS_BASE_PATH'], key].join('/'),
-      },
+const getDestinations = (
+  key: string,
+): Record<string, DemoSyncInput['dest']> => ({
+  fs: {
+    provider: 'fs',
+    settings: {
+      basePath: [__dirname, process.env['FS_BASE_PATH'], key].join('/'),
     },
-  }),
+  },
+  bean: {
+    provider: 'beancount',
+    options: {
+      outPath: [__dirname, process.env['FS_BASE_PATH'], `${key}.bean`].join(
+        '/',
+      ),
+    },
+  },
+})
+
+const options: Record<string, DemoSyncInput> = R.pipe(
+  sources,
+  R.toPairs,
+  R.flatMap(([srcKey, src]): DemoSyncInput[] =>
+    R.pipe(
+      getDestinations(srcKey),
+      R.toPairs,
+      R.map(
+        ([destKey, dest]): DemoSyncInput => ({
+          id: `pipe_${srcKey}_${destKey}`,
+          src,
+          dest,
+        }),
+      ),
+    ),
+  ),
+  R.mapToObj((input) => [input.id?.replace(/^pipe_/, '') ?? '', input]),
 )
 // @ts-ignore
 console.log(JSON.stringify(options[process.argv[2]], null, 2))
