@@ -208,7 +208,7 @@ export const initFirebase = zFunction(zSettings, (settings) => {
       )
       return fba.delete()
     }
-    return {settings, fst, connect, cleanup, firestore}
+    return {settings, fst, connect, cleanup, firestore, auth: fba.auth()}  // Need this to be use on the foreceipt client
   }
 })
 

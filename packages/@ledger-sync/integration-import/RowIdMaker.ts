@@ -1,4 +1,5 @@
 import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
+import {extractExternalId} from './import-format-utils'
 
 export class RowIdMaker {
   readonly ids = new Set<string>()
@@ -27,5 +28,24 @@ export class RowIdMaker {
       }
     }
     return makeUlid()
+  }
+  // Use this for Coin Keeper Format
+  static uniqueIdForAccount(
+    accountExternalId: Id.external,
+    name: string | null,
+  ) {
+    let id = extractExternalId(
+      accountExternalId as unknown as Id.AnySimple,
+      'csv',
+    )
+    if (id) {
+      console.warn(`Unexpected accountExternalId`, accountExternalId)
+    } else {
+      id = accountExternalId
+    }
+    if (name == null) {
+      return id as Id.external
+    }
+    return md5Hash(`${id}_${name}`) as Id.external
   }
 }

@@ -1,8 +1,21 @@
-import {Rx, rxjs, UnionToIntersection, z} from '@ledger-sync/util'
 import {makeSyncProvider, SyncOperation} from '@ledger-sync/core-sync'
 import {ledgerSyncProviderBase} from '@ledger-sync/ledger-sync'
-import {formatAppleCard} from './formats/format-apple-card'
-import {rampFormat} from './formats/format-ramp'
+import {Rx, rxjs, UnionToIntersection, z} from '@ledger-sync/util'
+import {
+  formatAlliantCreditUnion,
+  formatAppleCard,
+  formatBBVAMexico,
+  formatBrex,
+  formatBrexCash,
+  formatCapitalOne,
+  formatCapitalOneBank,
+  formatCoinBase,
+  formatCoinKeeper,
+  formatEtrade,
+  formatFirstRepublic,
+  formatWise,
+  rampFormat,
+} from './formats'
 import {makeImportFormatMap} from './makeImportFormat'
 
 // MARK: - Importing all supported formats
@@ -10,6 +23,17 @@ import {makeImportFormatMap} from './makeImportFormat'
 const {formats, zCSVEntity, zPreset} = makeImportFormatMap({
   ramp: rampFormat,
   'apple-card': formatAppleCard,
+  'alliant-credit-union': formatAlliantCreditUnion,
+  'bbva-mexico': formatBBVAMexico,
+  'brex-cash': formatBrexCash,
+  brex: formatBrex,
+  'capitalone-bank': formatCapitalOneBank,
+  capitalone: formatCapitalOne,
+  coinbase: formatCoinBase,
+  coinkeeper: formatCoinKeeper,
+  etrade: formatEtrade,
+  'first-republic': formatFirstRepublic,
+  wise: formatWise,
 })
 
 type ImportEntity = z.infer<typeof zCSVEntity>

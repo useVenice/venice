@@ -28,6 +28,7 @@
     "@ledger-sync/integration-toggl": "*",
     "@ledger-sync/integration-import": "*",
     "@ledger-sync/integration-foreceipt": "*",
+    "@ledger-sync/integration-yodlee": "*",
     "@fontsource/inter": "4.5.11",
     "@radix-ui/colors": "0.1.8",
     "@radix-ui/react-icons": "1.1.1",
