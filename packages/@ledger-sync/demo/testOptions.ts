@@ -6,8 +6,6 @@
 import {R} from '@ledger-sync/util'
 import fs from 'fs'
 import path from 'path'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {mapValues} from 'remeda'
 import type {DemoSyncInput} from './pages/api/[...trpc]'
 
 const sources: Record<string, DemoSyncInput['src']> = {
@@ -78,7 +76,7 @@ const sources: Record<string, DemoSyncInput['src']> = {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       clientSecret: process.env['RAMP_CLIENT_SECRET']!,
     },
-    options: {}
+    options: {},
   },
   wise: {
     provider: 'wise',
@@ -118,6 +116,10 @@ const getDestinations = (
         '/',
       ),
     },
+  },
+  mongo: {
+    provider: 'mongodb',
+    settings: {providerName: key},
   },
 })
 

@@ -1,0 +1,12 @@
+{
+  "name": "@ledger-sync/core-integration-mongodb",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/util": "*",
+    "mongodb": "^4.8.1"
+  },
+  "devDependencies": {}
+}

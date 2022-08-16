@@ -17,6 +17,7 @@
     "@ledger-sync/core-sync-frontend": "*",
     "@ledger-sync/core-integration-fs": "*",
     "@ledger-sync/core-integration-firebase": "*",
+    "@ledger-sync/core-integration-mongodb": "*",
     "@ledger-sync/core-integration-postgres": "*",
     "@ledger-sync/core-integration-redis": "*",
     "@ledger-sync/ledger-sync": "*",
