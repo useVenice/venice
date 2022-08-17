@@ -98,6 +98,13 @@ const sources: Record<string, DemoSyncInput['src']> = {
       _id: '11309126', // sanbox
     },
   },
+
+  splitwise_bayu: {
+    provider: 'splitwise',
+    settings: {
+      accessToken: '', // TODO: Either get the access token or secrets for testing
+    },
+  },
 }
 
 const getDestinations = (

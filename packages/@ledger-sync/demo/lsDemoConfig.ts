@@ -1,5 +1,6 @@
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
+import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {debugProvider, logLink, makeCoreSync} from '@ledger-sync/core-sync'
@@ -9,12 +10,12 @@ import {importProvider} from '@ledger-sync/integration-import'
 import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
 import {plaidProviderNext} from '@ledger-sync/integration-plaid'
 import {rampProvider} from '@ledger-sync/integration-ramp'
+import {splitwiseProvider} from '@ledger-sync/integration-splitwise'
 import {stripeProvider} from '@ledger-sync/integration-stripe'
 import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
-import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -71,7 +72,8 @@ export const demoConfig = makeCoreSync.config({
     togglProvider,
     foreceiptProvider,
     yodleeProviderNext,
-    mongodbProvider
+    mongodbProvider,
+    splitwiseProvider,
   ],
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.
