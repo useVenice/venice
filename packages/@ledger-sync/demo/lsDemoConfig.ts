@@ -2,8 +2,8 @@ import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
 import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {
+  corePostgresProvider,
   makePostgresKVStore,
-  postgresProvider,
 } from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {debugProvider, logLink, makeCoreSync} from '@ledger-sync/core-sync'
@@ -12,6 +12,7 @@ import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {importProvider} from '@ledger-sync/integration-import'
 import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
 import {plaidProviderNext} from '@ledger-sync/integration-plaid'
+import {postgresProvider} from '@ledger-sync/integration-postgres'
 import {rampProvider} from '@ledger-sync/integration-ramp'
 import {splitwiseProvider} from '@ledger-sync/integration-splitwise'
 import {stripeProvider} from '@ledger-sync/integration-stripe'
@@ -27,7 +28,9 @@ import {
 } from '@ledger-sync/ledger-sync'
 import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {z} from 'zod'
-import './register.node' // Temporary, remove me.
+import './register.node'
+
+// Temporary, remove me.
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
   return R.pipe(
@@ -62,9 +65,13 @@ export const demoConfig = makeCoreSync.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: [
+    // Core
     debugProvider,
     fsProvider,
     firebaseProvider,
+    mongodbProvider,
+    corePostgresProvider,
+    // Ledger
     plaidProviderNext,
     beancountProvider,
     importProvider,
@@ -76,7 +83,6 @@ export const demoConfig = makeCoreSync.config({
     togglProvider,
     foreceiptProvider,
     yodleeProviderNext,
-    mongodbProvider,
     splitwiseProvider,
     postgresProvider,
   ],
@@ -135,7 +141,7 @@ export const demoConfig = makeCoreSync.config({
           // logLink({prefix: 'preMapStandard', verbose: true}),
           mapStandardEntityLink(src),
           Rx.map((op) =>
-            op.type === 'data'
+            op.type === 'data' && dest.provider.name !== 'postgres'
               ? identity<typeof op>({
                   ...op,
                   data: {

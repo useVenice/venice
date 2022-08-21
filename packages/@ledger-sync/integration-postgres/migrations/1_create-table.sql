@@ -1,18 +1,9 @@
 -- TODO: Consider using https://salsita.github.io/node-pg-migrate/#/migrations
 -- to reduce the tons of duplication
-CREATE TABLE IF NOT EXISTS "public"."meta" (
-  "id" character varying NOT NULL,
-  "data" jsonb NOT NULL DEFAULT '{}',
-  "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  CONSTRAINT "pk_meta_id" PRIMARY KEY ("id")
-);
-CREATE INDEX IF NOT EXISTS meta_created_at ON meta (created_at);
-CREATE INDEX IF NOT EXISTS meta_updated_at ON meta (updated_at);
-
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL,
-  "data" jsonb NOT NULL DEFAULT '{}',
+  "standard" jsonb NOT NULL DEFAULT '{}',
+  "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_transaction_id" PRIMARY KEY ("id")
@@ -22,7 +13,8 @@ CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL,
-  "data" jsonb NOT NULL DEFAULT '{}',
+  "standard" jsonb NOT NULL DEFAULT '{}',
+  "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_account_id" PRIMARY KEY ("id")
@@ -32,7 +24,8 @@ CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL,
-  "data" jsonb NOT NULL DEFAULT '{}',
+  "standard" jsonb NOT NULL DEFAULT '{}',
+  "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_commodity_id" PRIMARY KEY ("id")

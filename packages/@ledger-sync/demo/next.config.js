@@ -22,7 +22,8 @@ const withTM = require('next-transpile-modules')([
   '@ledger-sync/integration-import',
   '@ledger-sync/integration-foreceipt',
   '@ledger-sync/integration-yodlee',
-  '@ledger-sync/integration-splitwise'
+  '@ledger-sync/integration-splitwise',
+  '@ledger-sync/integration-postgres',
 ])
 
 /**

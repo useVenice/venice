@@ -33,6 +33,7 @@
     "@ledger-sync/integration-foreceipt": "*",
     "@ledger-sync/integration-yodlee": "*",
     "@ledger-sync/integration-splitwise": "*",
+    "@ledger-sync/integration-postgres": "*",
     "@fontsource/inter": "4.5.11",
     "@radix-ui/colors": "0.1.8",
     "@radix-ui/react-icons": "1.1.1",
