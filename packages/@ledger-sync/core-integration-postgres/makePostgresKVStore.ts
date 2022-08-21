@@ -1,23 +1,16 @@
+import {zKVStore} from '@ledger-sync/core-sync'
 import {
-  $fs,
-  $path,
   defineProxyFn,
   JsonObject,
+  memoize,
   z,
   zFunction,
   zJsonObject,
 } from '@ledger-sync/util'
-import {zKVStore} from '@ledger-sync/core-sync'
-import {
-  FileMigrationProvider,
-  Kysely,
-  Migrator,
-  PostgresDialect,
-  sql,
-} from 'kysely'
-import type {Pool} from 'pg'
+import {createInterceptors} from 'slonik-interceptor-preset'
+// const {SlonikMigrator} = require('@slonik/migrator')
 
-export const $pgPool = defineProxyFn<() => typeof Pool>('pgPool')
+export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
 
 export const zConn = z.object({
   databaseUrl: z.string(),
@@ -40,64 +33,58 @@ export const makePostgresKVStore = zFunction(
   zConn,
   zKVStore,
   ({databaseUrl}) => {
-    const Pool = $pgPool()
-    // You'd create one of these when you start your app.
-    const db = new Kysely<Metabase>({
-      // Use MysqlDialect for MySQL and SqliteDialect for SQLite.
-      dialect: new PostgresDialect({
-        pool: new Pool({
-          connectionString: databaseUrl,
-          ssl: databaseUrl.includes('ssl=true'),
+    const {createPool, sql} = $slonik()
+    const getPool = memoize(
+      () =>
+        createPool(databaseUrl, {
+          interceptors: createInterceptors({
+            logQueries: true, // TODO: Use roar-cli to make things better
+            normaliseQueries: true,
+            transformFieldNames: false,
+            benchmarkQueries: false,
+          }),
+          statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
+          idleInTransactionSessionTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
+          maximumPoolSize: 10,
+          // Should lower this on cloud functions, which scales by processes. Though this
+          // is unlikely to be an issue as the only function using this for the moment is only handling
+          // one document at a time...
+          connectionTimeout: 60 * 1000, // Long timeout
         }),
-      }),
-      log: ['error'], // ['query', 'error'],
-    })
+      {isPromise: true},
+    )
 
-    const migrator = new Migrator({
-      db,
-      provider: new FileMigrationProvider({
-        fs: $fs(),
-        path: $path(),
-        migrationFolder: $path().join(__dirname, './migrations'),
-      }),
-    })
-    async function connect() {
-      const {error, results} = await migrator.migrateToLatest()
-      results?.forEach((it) => {
-        if (it.status === 'Success') {
-          console.log(
-            `migration "${it.migrationName}" was executed successfully`,
-          )
-        } else if (it.status === 'Error') {
-          console.error(`failed to execute migration "${it.migrationName}"`)
-        }
-      })
-      if (error) {
-        throw error
-      }
-    }
+    // $path().join(__dirname, './migrations'),
+    // async function connect() {
+    //   const {error, results} = await migrator.migrateToLatest()
+    //   results?.forEach((it) => {
+    //     if (it.status === 'Success') {
+    //       console.log(
+    //         `migration "${it.migrationName}" was executed successfully`,
+    //       )
+    //     } else if (it.status === 'Error') {
+    //       console.error(`failed to execute migration "${it.migrationName}"`)
+    //     }
+    //   })
+    //   if (error) {
+    //     throw error
+    //   }
+    // }
     // async function cleanup() {
     //   await db.destroy()
     // }
 
     async function readJson(id: string) {
-      await connect()
-      return await db
-        .selectFrom('meta')
-        .selectAll()
-        .where('id', '=', id)
-        .castTo<MetaRow>() // Not sure why this is not working, let's fix me
-        .executeTakeFirst()
-        .then((r) => r?.data)
+      const pool = await getPool()
+      return pool.maybeOneFirst(sql`
+        SELECT data FROM meta where id = ${id}
+      `)
     }
     async function listJson() {
-      await connect()
-      return await db
-        .selectFrom('meta')
-        .selectAll()
-        .castTo<MetaRow>() // Not sure why this is not working, let's fix me
-        .execute()
-        .then((res) => res.map((r) => [r.id, r?.data] as const))
+      const pool = await getPool()
+      return pool
+        .many(sql`SELECT id, data FROM meta`)
+        .then((rows) => rows.map((r) => [r['id'], r['data']]))
     }
     /**
      * https://blog.sequin.io/airtable-sync-process/
@@ -108,20 +95,17 @@ export const makePostgresKVStore = zFunction(
      * where (created_time, name, size, color) is distinct from (excluded.created_time, excluded.name, excluded.size, excluded.color)
      */
     async function writeJson(id: string, data: JsonObject) {
-      await connect()
-      await db
-        .insertInto('meta')
-        .values({id, data})
-        .onConflict((oc) =>
-          oc
-            .column('id')
-            .doUpdateSet({
-              data: (eb) => eb.ref('excluded.data'),
-            })
-            // TODO: Test if this actually works, especially with patch methods...
-            .where(sql`meta.data is distinct from excluded.data`),
-        )
-        .executeTakeFirstOrThrow()
+      const pool = await getPool()
+      // Next: Handle patching json
+      await pool.query(sql`
+        INSERT INTO meta (id, data, updated_at)
+        VALUES (${id}, ${sql.jsonb(data)}, now())
+        ON CONFLICT (id) DO UPDATE SET
+          data = excluded.data,
+          id = excluded.id,
+          updated_at = excluded.updated_at
+        WHERE meta.data IS DISTINCT FROM excluded.data
+      `)
     }
 
     // await migrator.migrateToLatest(pathToMigrationsFolder)
