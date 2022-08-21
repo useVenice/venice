@@ -3,7 +3,9 @@
  * tsx ./testOptions.ts plaid | ledgerSync sync
  * tsx ./testOptions.ts plaid | tsx ./prevLedgerSync-cli.ts sync
  */
-import {R} from '@ledger-sync/util'
+
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as R from 'remeda'
 import fs from 'fs'
 import path from 'path'
 import type {DemoSyncInput} from './pages/api/[...trpc]'
@@ -132,7 +134,7 @@ const getDestinations = (
     provider: 'postgres',
     settings: {
       // I Use this format for running locally postgres://<user-name>@localhost/<db-name>
-      databaseUrl: 'postgres://postgres@localhost/postgres', // for example
+      databaseUrl: 'postgres://@localhost/postgres', // for example
     },
   },
 })
