@@ -1,7 +1,6 @@
 /**
  * Use me like so...
- * tsx ./testOptions.ts plaid | ledgerSync sync
- * tsx ./testOptions.ts plaid | tsx ./prevLedgerSync-cli.ts sync
+ * tsx ./testOptions.ts teller_postgres | ROARR_LOG=true ledgerSync sync | yarn roarr pretty-print
  */
 import fs from 'fs'
 import path from 'path'

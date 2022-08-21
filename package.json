@@ -58,6 +58,7 @@
     "@types/node": "16.11.12",
     "@types/node-fetch": "2.6.1",
     "@types/prettier": "2.6.3",
+    "@roarr/cli": "5.4.0",
     "cac": "6.7.12",
     "dotenv": "16.0.1",
     "esbuild": "0.14.42",

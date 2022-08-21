@@ -4,29 +4,38 @@ import {
   makeSyncProvider,
 } from '@ledger-sync/core-sync'
 import {z, zCast} from '@ledger-sync/util'
-import {makePostgresKVStore} from './makePostgresKVStore'
-
-const zWatchPathsInput = z.object({
-  databaseUrl: z.string(),
-})
+import {makePostgresClient, zPostgresConn} from './makePostgresKVStore'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
-  connectionSettings: zWatchPathsInput,
+  connectionSettings: zPostgresConn,
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
 
 export const postgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
-  destinationSync: ({settings: {databaseUrl}}) =>
-    handlersLink({
-      data: ({data}) => {
-        makePostgresKVStore({databaseUrl}).set(
-          `${data.entityName}-${data.id}`, // TODO: Check why teller transaction cannot be imported as well as the other data from source providers
-          data as any,
-        )
+  destinationSync: ({settings: {databaseUrl}}) => {
+    const [getPool, sql] = makePostgresClient({databaseUrl})
+    return handlersLink({
+      data: async (op) => {
+        const {
+          data: {id, entityName, entity},
+        } = op
+        const pool = await getPool()
+        const table = sql.identifier([entityName])
+        await pool.query(sql`
+INSERT INTO ${table} (id, data, updated_at)
+VALUES (${id}, ${sql.jsonb(entity as any)}, now())
+ON CONFLICT (id) DO UPDATE SET
+  data = excluded.data,
+  id = excluded.id,
+  updated_at = excluded.updated_at
+WHERE ${table}.data IS DISTINCT FROM excluded.data
+`)
+        return op
       },
-    }),
+    })
+  },
 })
