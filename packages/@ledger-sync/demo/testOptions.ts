@@ -128,6 +128,13 @@ const getDestinations = (
     provider: 'mongodb',
     settings: {providerName: key},
   },
+  postgres: {
+    provider: 'postgres',
+    settings: {
+      // I Use this format for running locally postgres://<user-name>@localhost/<db-name>
+      databaseUrl: 'postgres://postgres@localhost/postgres', // for example
+    },
+  },
 })
 
 const options: Record<string, DemoSyncInput> = R.pipe(

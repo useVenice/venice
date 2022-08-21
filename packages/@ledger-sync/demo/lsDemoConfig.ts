@@ -1,7 +1,10 @@
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
 import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
-import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
+import {
+  makePostgresKVStore,
+  postgresProvider,
+} from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {debugProvider, logLink, makeCoreSync} from '@ledger-sync/core-sync'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
@@ -74,6 +77,7 @@ export const demoConfig = makeCoreSync.config({
     yodleeProviderNext,
     mongodbProvider,
     splitwiseProvider,
+    postgresProvider,
   ],
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.

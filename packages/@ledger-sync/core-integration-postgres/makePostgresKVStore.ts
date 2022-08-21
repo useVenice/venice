@@ -1,3 +1,4 @@
+import {zKVStore} from '@ledger-sync/core-sync'
 import {
   $fs,
   $path,
@@ -7,7 +8,6 @@ import {
   zFunction,
   zJsonObject,
 } from '@ledger-sync/util'
-import {zKVStore} from '@ledger-sync/core-sync'
 import {
   FileMigrationProvider,
   Kysely,
@@ -32,8 +32,13 @@ const zMetaRow = z.object({
 })
 
 type MetaRow = z.infer<typeof zMetaRow>
+
+type TableName = 'meta' | 'transaction' | 'account'
 interface Metabase {
   meta: MetaRow
+  // Use the same structure as meta
+  transaction: MetaRow
+  account: MetaRow
 }
 
 export const makePostgresKVStore = zFunction(
@@ -63,6 +68,21 @@ export const makePostgresKVStore = zFunction(
     })
     async function connect() {
       const {error, results} = await migrator.migrateToLatest()
+      results?.forEach((it) => {
+        if (it.status === 'Success') {
+          console.log(
+            `migration "${it.migrationName}" was executed successfully`,
+          )
+        } else if (it.status === 'Error') {
+          console.error(`failed to execute migration "${it.migrationName}"`)
+        }
+      })
+      if (error) {
+        throw error
+      }
+    }
+    async function connectWithoutMigrationLatest() {
+      const {error, results} = await migrator.migrateUp() // Need it instead of migration latest to make transaction entity works
       results?.forEach((it) => {
         if (it.status === 'Success') {
           console.log(
@@ -108,20 +128,31 @@ export const makePostgresKVStore = zFunction(
      * where (created_time, name, size, color) is distinct from (excluded.created_time, excluded.name, excluded.size, excluded.color)
      */
     async function writeJson(id: string, data: JsonObject) {
-      await connect()
-      await db
-        .insertInto('meta')
-        .values({id, data})
-        .onConflict((oc) =>
-          oc
-            .column('id')
-            .doUpdateSet({
-              data: (eb) => eb.ref('excluded.data'),
-            })
-            // TODO: Test if this actually works, especially with patch methods...
-            .where(sql`meta.data is distinct from excluded.data`),
-        )
-        .executeTakeFirstOrThrow()
+      const entityName = data?.['entityName'] as TableName
+
+      // TODO: Need to check it's correct to update this function or not, and why the transaction table is not being imported properly
+      if (entityName && entityName.length) {
+        await connectWithoutMigrationLatest()
+        await db
+          .insertInto(entityName)
+          .values({id, data: data?.['entity'] as any})
+          .executeTakeFirst()
+      } else {
+        await connect()
+        await db
+          .insertInto('meta')
+          .values({id, data})
+          .onConflict((oc) =>
+            oc
+              .column('id')
+              .doUpdateSet({
+                data: (eb) => eb.ref('excluded.data'),
+              })
+              // TODO: Test if this actually works, especially with patch methods...
+              .where(sql`meta.data is distinct from excluded.data`),
+          )
+          .executeTakeFirstOrThrow()
+      }
     }
 
     // await migrator.migrateToLatest(pathToMigrationsFolder)
