@@ -5,10 +5,9 @@ import {
   memoize,
   z,
   zFunction,
-  zJsonObject,
 } from '@ledger-sync/util'
+import {SlonikMigrator} from '@slonik/migrator'
 import {createInterceptors} from 'slonik-interceptor-preset'
-// const {SlonikMigrator} = require('@slonik/migrator')
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
 
@@ -16,27 +15,14 @@ export const zConn = z.object({
   databaseUrl: z.string(),
 })
 
-// TODO: Generate me from postgres schema...
-const zMetaRow = z.object({
-  id: z.string(),
-  data: zJsonObject,
-  updated_at: z.date().optional(), // Only optional for inserts...
-  created_at: z.date().optional(),
-})
-
-type MetaRow = z.infer<typeof zMetaRow>
-interface Metabase {
-  meta: MetaRow
-}
-
 export const makePostgresKVStore = zFunction(
   zConn,
   zKVStore,
   ({databaseUrl}) => {
     const {createPool, sql} = $slonik()
     const getPool = memoize(
-      () =>
-        createPool(databaseUrl, {
+      async () => {
+        const pool = await createPool(databaseUrl, {
           interceptors: createInterceptors({
             logQueries: true, // TODO: Use roar-cli to make things better
             normaliseQueries: true,
@@ -50,26 +36,19 @@ export const makePostgresKVStore = zFunction(
           // is unlikely to be an issue as the only function using this for the moment is only handling
           // one document at a time...
           connectionTimeout: 60 * 1000, // Long timeout
-        }),
+        })
+        const migrator = new SlonikMigrator({
+          migrationsPath: __dirname + '/migrations',
+          migrationTableName: 'migrations',
+          slonik: pool,
+          logger: console,
+        })
+        await migrator.up()
+        return pool
+      },
       {isPromise: true},
     )
 
-    // $path().join(__dirname, './migrations'),
-    // async function connect() {
-    //   const {error, results} = await migrator.migrateToLatest()
-    //   results?.forEach((it) => {
-    //     if (it.status === 'Success') {
-    //       console.log(
-    //         `migration "${it.migrationName}" was executed successfully`,
-    //       )
-    //     } else if (it.status === 'Error') {
-    //       console.error(`failed to execute migration "${it.migrationName}"`)
-    //     }
-    //   })
-    //   if (error) {
-    //     throw error
-    //   }
-    // }
     // async function cleanup() {
     //   await db.destroy()
     // }
