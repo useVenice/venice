@@ -1,56 +1,10 @@
 import {zKVStore} from '@ledger-sync/core-sync'
-import {
-  defineProxyFn,
-  JsonObject,
-  memoize,
-  z,
-  zFunction,
-} from '@ledger-sync/util'
-import {SlonikMigrator} from '@slonik/migrator'
-import {createInterceptors} from 'slonik-interceptor-preset'
-import {MetaRead} from './schema'
-
-export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
-
-export const zPostgresConn = z.object({
-  databaseUrl: z.string(),
-})
-
-export const makePostgresClient = zFunction(zPostgresConn, ({databaseUrl}) => {
-  const {createPool, sql} = $slonik()
-  const getPool = memoize(
-    async () => {
-      const pool = await createPool(databaseUrl, {
-        interceptors: createInterceptors({
-          logQueries: true, // TODO: Use roar-cli to make things better
-          normaliseQueries: true,
-          transformFieldNames: false,
-          benchmarkQueries: false,
-        }),
-        statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
-        idleInTransactionSessionTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
-        maximumPoolSize: 10,
-        // Should lower this on cloud functions, which scales by processes. Though this
-        // is unlikely to be an issue as the only function using this for the moment is only handling
-        // one document at a time...
-        connectionTimeout: 60 * 1000, // Long timeout
-      })
-      const migrator = new SlonikMigrator({
-        migrationsPath: __dirname + '/migrations',
-        migrationTableName: 'migrations',
-        slonik: pool,
-        logger: console,
-      })
-      await migrator.up()
-      return pool
-    },
-    {isPromise: true},
-  )
-  return [getPool, sql] as const
-})
+import {JsonObject, zFunction} from '@ledger-sync/util'
+import {makePostgresClient, zPgConfig} from './makePostgresClient'
+import {MetaRead} from './schemas'
 
 export const makePostgresKVStore = zFunction(
-  zPostgresConn,
+  zPgConfig,
   zKVStore,
   ({databaseUrl}) => {
     const [getPool, sql] = makePostgresClient({databaseUrl})

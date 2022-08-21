@@ -4,12 +4,12 @@ import {
   makeSyncProvider,
 } from '@ledger-sync/core-sync'
 import {z, zCast} from '@ledger-sync/util'
-import {makePostgresClient, zPostgresConn} from './makePostgresKVStore'
+import {makePostgresClient, zPgConfig} from './makePostgresClient'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
-  connectionSettings: zPostgresConn,
+  connectionSettings: zPgConfig,
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
 
