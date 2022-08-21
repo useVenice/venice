@@ -19,7 +19,6 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
-import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,

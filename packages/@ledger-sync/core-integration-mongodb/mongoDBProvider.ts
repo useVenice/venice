@@ -3,20 +3,19 @@ import {
   handlersLink,
   makeSyncProvider,
 } from '@ledger-sync/core-sync'
-import {z, zCast, zFunction} from '@ledger-sync/util'
+import {defineProxyFn, z, zCast, zFunction} from '@ledger-sync/util'
 import * as mongoDB from 'mongodb'
 
-const zWatchPathsInput = z.object({
-  providerName: z.string(),
-})
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('mongodb'),
-  connectionSettings: zWatchPathsInput,
+  connectionSettings: z.object({
+    providerName: z.string(),
+  }),
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
-
+export const $mongodb = defineProxyFn<() => typeof import('mongodb')>('$mongodb')
 export const mongodbProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
