@@ -3,11 +3,10 @@
  * tsx ./testOptions.ts plaid | ledgerSync sync
  * tsx ./testOptions.ts plaid | tsx ./prevLedgerSync-cli.ts sync
  */
-
-// eslint-disable-next-line import/no-extraneous-dependencies
-import * as R from 'remeda'
 import fs from 'fs'
 import path from 'path'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as R from 'remeda'
 import type {DemoSyncInput} from './pages/api/[...trpc]'
 
 const sources: Record<string, DemoSyncInput['src']> = {
@@ -112,6 +111,7 @@ const sources: Record<string, DemoSyncInput['src']> = {
 const getDestinations = (
   key: string,
 ): Record<string, DemoSyncInput['dest']> => ({
+  debug: {provider: 'debug'},
   fs: {
     provider: 'fs',
     settings: {
@@ -132,10 +132,7 @@ const getDestinations = (
   },
   postgres: {
     provider: 'postgres',
-    settings: {
-      // I Use this format for running locally postgres://<user-name>@localhost/<db-name>
-      databaseUrl: 'postgres://@localhost/postgres', // for example
-    },
+    settings: {databaseUrl: process.env['POSTGRES_URL']},
   },
 })
 

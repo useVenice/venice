@@ -27,6 +27,7 @@ import {
 } from '@ledger-sync/ledger-sync'
 import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {z} from 'zod'
+import './register.node' // Temporary, remove me.
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
   return R.pipe(
@@ -48,7 +49,7 @@ const getKvStore = () => {
       })
     case 'postgres':
       return makePostgresKVStore({
-        databaseUrl: getEnv('DATABASE_URL', {required: true}),
+        databaseUrl: getEnv('POSTGRES_URL', {required: true}),
       })
     case 'redis':
       return makeRedisKVStore({
