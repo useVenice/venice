@@ -21,7 +21,7 @@ export const postgresProvider = makeSyncProvider({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
     })
-    const [getPool, sql] = makePostgresClient({
+    const {getPool, sql, upsertById} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
       migrationTableName: 'ls_migrations',
@@ -29,23 +29,14 @@ export const postgresProvider = makeSyncProvider({
     return handlersLink({
       data: async (op) => {
         const {
-          data: {id, entityName, providerName, connectionId, ...data},
+          data: {id, entityName, providerName, connectionId = null, ...data},
         } = op
-        const pool = await getPool()
-        const table = sql.identifier([entityName])
-        const standard = sql.jsonb(data.entity as any)
-        const external = sql.jsonb(data.external as any)
-        await pool.query(sql`
-INSERT INTO ${table} (id, standard, external, updated_at)
-VALUES (${id}, ${standard}, ${external}, now())
-ON CONFLICT (id) DO UPDATE SET
-  standard = excluded.standard,
-  external = excluded.external,
-  id = excluded.id,
-  updated_at = excluded.updated_at
-WHERE ${table}.standard IS DISTINCT FROM excluded.standard
-  OR ${table}.external IS DISTINCT FROM excluded.external
-`)
+        await upsertById(entityName, id, {
+          standard: sql.jsonb(data.entity as any),
+          external: sql.jsonb(data.external as any),
+          provider_name: providerName,
+          connection_id: connectionId
+        })
         return op
       },
     })

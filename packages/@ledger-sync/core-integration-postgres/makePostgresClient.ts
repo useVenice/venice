@@ -1,4 +1,4 @@
-import {defineProxyFn, memoize, z, zFunction} from '@ledger-sync/util'
+import {defineProxyFn, memoize, R, z, zFunction} from '@ledger-sync/util'
 import {SlonikMigrator} from '@slonik/migrator'
 import {createInterceptors} from 'slonik-interceptor-preset'
 
@@ -43,6 +43,50 @@ export const makePostgresClient = zFunction(
       },
       {isPromise: true},
     )
-    return [getPool, sql] as const
+
+    async function upsertById(...args: Parameters<typeof upsertByIdQuery>) {
+      const pool = await getPool()
+      const query = upsertByIdQuery(...args)
+      await pool.query(query)
+    }
+    return {getPool, sql, upsertById}
   },
 )
+
+export function upsertByIdQuery(
+  tableName: string,
+  id: string,
+  valueMap: Record<string, unknown>,
+) {
+  const {sql} = $slonik()
+  const table = sql.identifier([tableName])
+  const [cols, vals] = R.pipe(
+    {...valueMap, updated_at: sql.literalValue('now()')},
+    R.toPairs,
+    R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
+    (pairs) => [pairs.map((p) => p.key), pairs.map((p) => p.value)] as const,
+  )
+  const comma = sql`, `
+  const equal = sql` = `
+  const distinct = sql` IS DISTINCT FROM `
+
+  const query = sql`
+    INSERT INTO ${table} (id, ${sql.join(cols, comma)})
+    VALUES (${id}, ${sql.join(vals, comma)})
+    ON CONFLICT (id) DO UPDATE SET
+      ${sql.join(
+        cols.map((c) => sql.join([c, sql`excluded.${c}`], equal)),
+        sql`, \n`,
+      )}
+    WHERE
+      ${sql.join(
+        cols
+          .filter((c) => !c.names.includes('updated_at'))
+          .map((c) =>
+            sql.join([sql`${table}.${c}`, sql`excluded.${c}`], distinct),
+          ),
+        sql` OR \n`,
+      )};
+  `
+  return query
+}

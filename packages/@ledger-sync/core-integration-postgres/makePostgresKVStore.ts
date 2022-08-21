@@ -7,7 +7,7 @@ export const makePostgresKVStore = zFunction(
   zPgConfig,
   zKVStore,
   ({databaseUrl}) => {
-    const [getPool, sql] = makePostgresClient({databaseUrl})
+    const {getPool, sql} = makePostgresClient({databaseUrl})
 
     // async function cleanup() {
     //   await db.destroy()

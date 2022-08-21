@@ -2,6 +2,8 @@
 -- to reduce the tons of duplication
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL,
+  "provider_name" character varying,
+  "connection_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -13,6 +15,8 @@ CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL,
+  "provider_name" character varying,
+  "connection_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -24,6 +28,8 @@ CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL,
+  "provider_name" character varying,
+  "connection_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

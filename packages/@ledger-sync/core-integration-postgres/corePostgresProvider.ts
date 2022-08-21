@@ -17,7 +17,7 @@ export const corePostgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
   destinationSync: ({settings: {databaseUrl}}) => {
-    const [getPool, sql] = makePostgresClient({databaseUrl})
+    const {getPool, sql} = makePostgresClient({databaseUrl})
     return handlersLink({
       data: async (op) => {
         const {
