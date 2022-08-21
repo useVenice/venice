@@ -8,6 +8,7 @@ import {
 } from '@ledger-sync/util'
 import {SlonikMigrator} from '@slonik/migrator'
 import {createInterceptors} from 'slonik-interceptor-preset'
+import {MetaRead} from './schema'
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
 
@@ -53,17 +54,21 @@ export const makePostgresKVStore = zFunction(
     //   await db.destroy()
     // }
 
+    const sqlMeta = sql.type(MetaRead)
+
     async function readJson(id: string) {
       const pool = await getPool()
-      return pool.maybeOneFirst(sql`
-        SELECT data FROM meta where id = ${id}
-      `)
+      return pool
+        .maybeOneFirst(sqlMeta`SELECT data FROM meta where id = ${id}`)
+        .then((r) => r as Record<string, unknown>)
     }
     async function listJson() {
       const pool = await getPool()
       return pool
-        .many(sql`SELECT id, data FROM meta`)
-        .then((rows) => rows.map((r) => [r['id'], r['data']]))
+        .many(sqlMeta`SELECT id, data FROM meta`)
+        .then((rows) =>
+          rows.map((r) => [r.id, r.data as Record<string, unknown>] as const),
+        )
     }
     /**
      * https://blog.sequin.io/airtable-sync-process/

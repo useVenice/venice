@@ -9,9 +9,11 @@
     "@slonik/migrator": "0.11.3",
     "pg": "8.7.3",
     "slonik": "30.3.1",
-    "slonik-interceptor-preset": "1.2.10"
+    "slonik-interceptor-preset": "1.2.10",
+    "zod": "3.17.3"
   },
   "devDependencies": {
-    "@types/pg": "8.6.5"
+    "@types/pg": "8.6.5",
+    "pgzod": "3.1.0"
   }
 }
