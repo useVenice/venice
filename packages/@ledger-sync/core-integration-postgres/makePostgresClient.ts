@@ -54,6 +54,8 @@ export const makePostgresClient = zFunction(
 )
 
 /**
+ * Expects an `id` and `updated_at` column to exist
+ *
  * https://blog.sequin.io/airtable-sync-process/
  * insert into public.products (id,created_time,name,size,color)
  * values $1, $2, $3, $4, $5
@@ -66,11 +68,10 @@ export function upsertByIdQuery(
   id: string,
   valueMap: Record<string, unknown>,
 ) {
-
   const {sql} = $slonik()
   const table = sql.identifier([tableName])
   const [cols, vals] = R.pipe(
-    {...valueMap, updated_at: sql.literalValue('now()')},
+    {...valueMap, id, updated_at: sql.literalValue('now()')},
     R.toPairs,
     R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
     (pairs) => [pairs.map((p) => p.key), pairs.map((p) => p.value)] as const,
@@ -80,16 +81,19 @@ export function upsertByIdQuery(
   // 2) Support batch insert many rows at once
 
   const query = sql`
-    INSERT INTO ${table} (id, ${sql.join(cols, sql`, `)})
-    VALUES (${id}, ${sql.join(vals, sql`, `)})
+    INSERT INTO ${table} (${sql.join(cols, sql`, `)})
+    VALUES (${sql.join(vals, sql`, `)})
     ON CONFLICT (id) DO UPDATE SET
       ${sql.join(
-        cols.map((c) => sql`${c} = excluded.${c}`),
+        cols
+          .filter((c) => !c.names.includes('id'))
+          .map((c) => sql`${c} = excluded.${c}`),
         sql`, \n`,
       )}
     WHERE
       ${sql.join(
         cols
+          .filter((c) => !c.names.includes('id'))
           .filter((c) => !c.names.includes('updated_at'))
           .map((c) => sql`${table}.${c} IS DISTINCT FROM excluded.${c}`),
         sql` OR \n`,
