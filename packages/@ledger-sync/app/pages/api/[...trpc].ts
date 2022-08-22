@@ -6,11 +6,11 @@ import {
 } from '@ledger-sync/core-sync'
 import * as trpcNext from '@trpc/server/adapters/next'
 import {NextApiHandler} from 'next'
-import {demoConfig} from '../../lsDemoConfig'
+import {lsTestConfig} from '../../lsTestConfig'
 import '../../register.node'
 
 export const [demoLedgerSync, demoRouter, demoMetaStore] =
-  makeCoreSync(demoConfig)
+  makeCoreSync(lsTestConfig)
 export type DemoRouter = typeof demoRouter
 export type DemoSyncInput = inferProcedureInput<
   DemoRouter['_def']['mutations']['sync']

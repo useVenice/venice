@@ -6,11 +6,11 @@ import {AppProps} from 'next/app'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import superjson from 'superjson'
 import {darkTheme} from '../client'
-import {demoConfig} from '../lsDemoConfig'
+import {lsTestConfig} from '../lsTestConfig'
 
 const reactQueryClient = new QueryClient()
 
-export const syncHooks = makeSyncHooks(demoConfig)
+export const syncHooks = makeSyncHooks(lsTestConfig)
 
 function App({Component, pageProps}: AppProps) {
   return (

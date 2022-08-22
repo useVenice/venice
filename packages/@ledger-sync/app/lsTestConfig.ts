@@ -28,9 +28,6 @@ import {
 } from '@ledger-sync/ledger-sync'
 import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {z} from 'zod'
-// import './register.node'
-
-// Temporary, remove me.
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
   return R.pipe(
@@ -61,7 +58,7 @@ const getKvStore = () => {
   }
 }
 
-export const demoConfig = makeCoreSync.config({
+export const lsTestConfig = makeCoreSync.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: [
