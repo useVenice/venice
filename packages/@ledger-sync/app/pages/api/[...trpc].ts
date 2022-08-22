@@ -1,3 +1,4 @@
+import '../../register.node'
 import {identity} from '@ledger-sync/util'
 import {
   inferProcedureInput,
@@ -7,7 +8,7 @@ import {
 import * as trpcNext from '@trpc/server/adapters/next'
 import {NextApiHandler} from 'next'
 import {lsTestConfig} from '../../lsTestConfig'
-import '../../register.node'
+
 
 export const [demoLedgerSync, demoRouter, demoMetaStore] =
   makeCoreSync(lsTestConfig)

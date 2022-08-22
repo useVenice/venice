@@ -1,3 +1,6 @@
+import '@ledger-sync/core-integration-mongodb/register.node'
+import '@ledger-sync/core-integration-postgres/register.node'
+import '@ledger-sync/core-integration-redis/register.node'
 import {
   $appendFile,
   $chokidar,
@@ -13,15 +16,19 @@ import {
   memoize,
   registerDependency,
 } from '@ledger-sync/util'
-import '@ledger-sync/core-integration-postgres/register.node'
-import '@ledger-sync/core-integration-redis/register.node'
-import '@ledger-sync/core-integration-mongodb/register.node'
 import chokidar from 'chokidar'
+import {load as envkeyLoad} from 'envkey/loader'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
 import {writeFile as _writeFile} from 'write-file-safe'
 import {makeProxyAgentNext} from './server/http-utils-next'
+
+if (process.env['ENVKEY']) {
+  // console.log('[envkey] before load', process.env)
+  envkeyLoad({})
+  // console.log('[envkey] after load', process.env)
+}
 
 registerDependency(
   kProxyAgent,
