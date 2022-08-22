@@ -128,7 +128,6 @@ const getDestinations = (
   mongo: {
     provider: 'mongodb',
     settings: {
-      providerName: key,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       databaseUrl: process.env['DB_CONN_STRING_MONGODB']!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
