@@ -4,12 +4,14 @@ import {
   makeSyncProvider,
 } from '@ledger-sync/core-sync'
 import {defineProxyFn, z, zCast, zFunction} from '@ledger-sync/util'
-import {Db, MongoClient} from 'mongodb'
+import type {Db} from 'mongodb'
+
+export const $mongodb =
+  defineProxyFn<() => typeof import('mongodb')>('$mongodb')
 
 export const zMongoConnection = z.object({
-  providerName: z.string(),
-  mongoDBConnString: z.string(),
-  DBName: z.string(),
+  databaseUrl: z.string(),
+  databaseName: z.string(),
 })
 
 const def = makeSyncProvider.def({
@@ -18,7 +20,7 @@ const def = makeSyncProvider.def({
   connectionSettings: zMongoConnection,
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
-export const $mongodb = defineProxyFn<() => typeof MongoClient>('$mongodb')
+
 export const mongodbProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
@@ -36,13 +38,13 @@ const zData = zCast<AnyEntityPayload>()
 
 export const mongoDBConnection = zFunction(
   zMongoConnection,
-  ({providerName, mongoDBConnString, DBName}) => {
+  ({databaseUrl, databaseName}) => {
+    const {MongoClient} = $mongodb()
     let db: Db
     const initMongoDB = async () => {
-      const client: MongoClient = new MongoClient(mongoDBConnString)
+      const client = new MongoClient(databaseUrl)
       await client.connect()
-
-      db = client.db(`${DBName}-${providerName}`) // Consider it to be separate DBs for each provider
+      db = client.db(databaseName)
 
       // For initialize collection of each entity and prevent duplicated document.
       // Consider to use create unique index instead using _id (mongodb's ObjectId) because
@@ -67,11 +69,7 @@ export const mongoDBConnection = zFunction(
           db
             .collection(data.entityName)
             .insertOne(data)
-            .then((_) =>
-              console.log(
-                `Successfully insert the data for ${data.entityName} - ${data.id} of ${providerName}`,
-              ),
-            )
+            .then((_) => console.log(`Insert ${data.entityName} - ${data.id}`))
             .catch((err) => console.log(`Error: ${err}`)), // Need this format instead of just log the error when catch it to get the specific error, not sure why
       ),
     }

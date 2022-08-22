@@ -1,5 +1,5 @@
 import {implementProxyFn} from '@ledger-sync/util'
-import {MongoClient} from 'mongodb'
+import * as mongodb from 'mongodb'
 import {$mongodb} from './mongoDBProvider'
 
-implementProxyFn($mongodb, () => MongoClient)
+implementProxyFn($mongodb, () => mongodb)
