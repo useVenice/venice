@@ -39,7 +39,14 @@ module.exports = withTM(
       esmExternals: false,
     },
     webpack: (config) => {
-      config.resolve.fallback = {fs: false, child_process: false} // Reference: https://stackoverflow.com/questions/54459442/module-not-found-error-cant-resolve-child-process-how-to-fix
+      config.resolve.fallback = {
+        fs: false,
+        child_process: false, // Reference: https://stackoverflow.com/questions/54459442/module-not-found-error-cant-resolve-child-process-how-to-fix
+        // For mongodb, Refs: https://stackoverflow.com/questions/54275069/module-not-found-error-cant-resolve-net-in-node-modules-stompjs-lib
+        tls: false,
+        net: false,
+        dns: false,
+      }
       return config
     },
     images: {

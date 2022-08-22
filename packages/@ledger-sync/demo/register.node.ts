@@ -15,6 +15,7 @@ import {
 } from '@ledger-sync/util'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
+import '@ledger-sync/core-integration-mongodb/register.node'
 import chokidar from 'chokidar'
 import * as fs from 'fs/promises'
 import * as path from 'path'
