@@ -19,7 +19,7 @@ test('sql generation', () => {
   const query = upsertByIdQuery(tableName, id, valueMap)
 
   expect(query.sql).toMatchInlineSnapshot(`
-    INSERT INTO "transaction" (id, "provider_name", "connection_id", "updated_at")
+    INSERT INTO "transaction" ("provider_name", "connection_id", "id", "updated_at")
     VALUES ($1, $2, $3, 'now()')
     ON CONFLICT (id) DO UPDATE SET
     "provider_name" = excluded."provider_name",
@@ -31,9 +31,9 @@ test('sql generation', () => {
   `)
   expect(query.values).toMatchInlineSnapshot(`
     Array [
-        txn_test,
         plaid,
         conn_test123,
+        txn_test,
     ]
   `)
 })
