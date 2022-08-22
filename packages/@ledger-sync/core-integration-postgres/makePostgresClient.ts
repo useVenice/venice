@@ -1,8 +1,9 @@
 import {defineProxyFn, memoize, R, z, zFunction} from '@ledger-sync/util'
-import {SlonikMigrator} from '@slonik/migrator'
 import {createInterceptors} from 'slonik-interceptor-preset'
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
+export const $slonikMigrator =
+  defineProxyFn<() => typeof import('@slonik/migrator')>('@slonik/migrator')
 
 export const zPgConfig = z.object({
   databaseUrl: z.string(),
@@ -14,6 +15,7 @@ export const makePostgresClient = zFunction(
   zPgConfig,
   ({databaseUrl, migrationsPath, migrationTableName}) => {
     const {createPool, sql} = $slonik()
+    const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
       async () => {
         const pool = await createPool(databaseUrl, {

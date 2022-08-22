@@ -28,7 +28,7 @@ import {
 } from '@ledger-sync/ledger-sync'
 import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
 import {z} from 'zod'
-import './register.node'
+// import './register.node'
 
 // Temporary, remove me.
 
