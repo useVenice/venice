@@ -1,5 +1,5 @@
 import {zKVStore} from '@ledger-sync/core-sync'
-import {JsonObject, zFunction} from '@ledger-sync/util'
+import {JsonObject, memoize, zFunction} from '@ledger-sync/util'
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 import {MetaRead} from './schemas'
 
@@ -7,21 +7,27 @@ export const makePostgresKVStore = zFunction(
   zPgConfig,
   zKVStore,
   ({databaseUrl}) => {
-    const {getPool, sql, upsertById} = makePostgresClient({databaseUrl})
+    // We are memoizing twice with getPool. Is is the right pattern?
+    const getDeps = memoize(() => {
+      const client = makePostgresClient({databaseUrl})
+      const sqlMeta = client.sql.type(MetaRead)
+      const ret = {...client, sqlMeta}
+      return ret
+    })
 
     // async function cleanup() {
     //   await db.destroy()
     // }
 
-    const sqlMeta = sql.type(MetaRead)
-
     async function readJson(id: string) {
+      const {getPool, sqlMeta} = getDeps()
       const pool = await getPool()
       return pool
         .maybeOneFirst(sqlMeta`SELECT data FROM meta where id = ${id}`)
         .then((r) => r as Record<string, unknown>)
     }
     async function listJson() {
+      const {getPool, sqlMeta} = getDeps()
       const pool = await getPool()
       return pool
         .many(sqlMeta`SELECT id, data FROM meta`)
@@ -31,6 +37,7 @@ export const makePostgresKVStore = zFunction(
     }
 
     async function writeJson(id: string, data: JsonObject) {
+      const {upsertById} = getDeps()
       // Next: Handle patching json
       await upsertById('meta', id, {data})
     }
