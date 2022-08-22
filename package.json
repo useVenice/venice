@@ -9,7 +9,8 @@
     "dev-packages/*",
     "packages/@ledger-sync/*",
     "packages/@universal/*",
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "lint": "eslint --ext .js,.ts,.tsx --cache .",

@@ -1,0 +1,16 @@
+{
+  "name": "next-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "postinstall": "yarn --cwd ../../../ postinstall",
+    "typecheck": "yarn --cwd ../../../ typecheck"
+  },
+  "dependencies": {
+    "next": "12.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {}
+}
