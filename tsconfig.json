@@ -11,7 +11,7 @@
   "exclude": [
     "**/__encrypted__",
     "**/node_modules",
-    "packages/@ledger-sync/demo/dist",
-    "packages/@ledger-sync/demo/dist-ssr"
+    "packages/@ledger-sync/app/dist",
+    "packages/@ledger-sync/app/dist-ssr"
   ],
 }

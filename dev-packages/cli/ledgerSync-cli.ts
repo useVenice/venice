@@ -6,7 +6,7 @@ import {
   DemoRouter,
   demoMetaStore as metaStore,
   demoRouter as router,
-} from '@ledger-sync/demo/pages/api/[...trpc]'
+} from '@ledger-sync/app/pages/api/[...trpc]'
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import http from 'http'
 import {json} from 'micro'

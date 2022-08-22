@@ -8,7 +8,7 @@ import {
   z,
   ZFunctionMap,
 } from '@ledger-sync/util'
-import {makeProxyAgentNext} from '@ledger-sync/demo/server/http-utils-next'
+import {makeProxyAgentNext} from '@ledger-sync/app/server/http-utils-next'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
