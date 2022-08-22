@@ -17,23 +17,12 @@ export const corePostgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
   destinationSync: ({settings: {databaseUrl}}) => {
-    const {getPool, sql} = makePostgresClient({databaseUrl})
+    const {upsertById} = makePostgresClient({databaseUrl})
     return handlersLink({
       data: async (op) => {
-        const {
-          data: {id, entityName, entity},
-        } = op
-        const pool = await getPool()
-        const table = sql.identifier([entityName])
-        await pool.query(sql`
-INSERT INTO ${table} (id, data, updated_at)
-VALUES (${id}, ${sql.jsonb(entity as any)}, now())
-ON CONFLICT (id) DO UPDATE SET
-  data = excluded.data,
-  id = excluded.id,
-  updated_at = excluded.updated_at
-WHERE ${table}.data IS DISTINCT FROM excluded.data
-`)
+        // prettier-ignore
+        const {data: {id, entityName, entity}} = op
+        await upsertById('meta', `${entityName}_${id}`, {data: entity})
         return op
       },
     })

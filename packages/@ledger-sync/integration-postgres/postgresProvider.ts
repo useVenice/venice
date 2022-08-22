@@ -21,7 +21,7 @@ export const postgresProvider = makeSyncProvider({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
     })
-    const {getPool, sql, upsertById} = makePostgresClient({
+    const {sql, upsertById} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
       migrationTableName: 'ls_migrations',
@@ -35,7 +35,7 @@ export const postgresProvider = makeSyncProvider({
           standard: sql.jsonb(data.entity as any),
           external: sql.jsonb(data.external as any),
           provider_name: providerName,
-          connection_id: connectionId
+          connection_id: connectionId,
         })
         return op
       },

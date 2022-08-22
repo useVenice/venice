@@ -53,11 +53,20 @@ export const makePostgresClient = zFunction(
   },
 )
 
+/**
+ * https://blog.sequin.io/airtable-sync-process/
+ * insert into public.products (id,created_time,name,size,color)
+ * values $1, $2, $3, $4, $5
+ * on conflict (id) do update set
+ * id=excluded.id, created_time=excluded.created_time, name=excluded.name, size=excluded.size, color=excluded.color
+ * where (created_time, name, size, color) is distinct from (excluded.created_time, excluded.name, excluded.size, excluded.color)
+ */
 export function upsertByIdQuery(
   tableName: string,
   id: string,
   valueMap: Record<string, unknown>,
 ) {
+
   const {sql} = $slonik()
   const table = sql.identifier([tableName])
   const [cols, vals] = R.pipe(
@@ -66,25 +75,23 @@ export function upsertByIdQuery(
     R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
     (pairs) => [pairs.map((p) => p.key), pairs.map((p) => p.value)] as const,
   )
-  const comma = sql`, `
-  const equal = sql` = `
-  const distinct = sql` IS DISTINCT FROM `
+
+  // TODOs: 1) Support JSON patching
+  // 2) Support batch insert many rows at once
 
   const query = sql`
-    INSERT INTO ${table} (id, ${sql.join(cols, comma)})
-    VALUES (${id}, ${sql.join(vals, comma)})
+    INSERT INTO ${table} (id, ${sql.join(cols, sql`, `)})
+    VALUES (${id}, ${sql.join(vals, sql`, `)})
     ON CONFLICT (id) DO UPDATE SET
       ${sql.join(
-        cols.map((c) => sql.join([c, sql`excluded.${c}`], equal)),
+        cols.map((c) => sql`${c} = excluded.${c}`),
         sql`, \n`,
       )}
     WHERE
       ${sql.join(
         cols
           .filter((c) => !c.names.includes('updated_at'))
-          .map((c) =>
-            sql.join([sql`${table}.${c}`, sql`excluded.${c}`], distinct),
-          ),
+          .map((c) => sql`${table}.${c} IS DISTINCT FROM excluded.${c}`),
         sql` OR \n`,
       )};
   `
