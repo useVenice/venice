@@ -31,7 +31,7 @@ const def = makeSyncProvider.def({
     z.object({
       id: z.string(),
       entityName: z.literal('transaction'),
-      entity: zExpense,
+      entity: zExpense.extend({group_name: z.string()}),
     }),
   ]),
 })
@@ -53,11 +53,12 @@ export const splitwiseProvider = makeSyncProvider({
         const cost = A(parseMoney(t.cost), t.currency_code)
         const partialTxn: Pick<
           Standard.Transaction,
-          'date' | 'removed' | 'notes'
+          'date' | 'removed' | 'notes' | 'payee'
         > = {
           notes: t.details,
           date: DateTime.fromISO(t.date).toISODate(),
           removed: t.deleted_at != null,
+          payee: t.group_name
         }
 
         if (t.payment) {
@@ -101,9 +102,20 @@ export const splitwiseProvider = makeSyncProvider({
           .map((u) => ({
             user: u.user,
             posting: {
-              accountType: 'income' as const,
-              accountName: `${formatUser(u.user)}/Contributions`,
+              accountType:
+                parseMoney(u.paid_share) < 0
+                  ? ('expense' as const)
+                  : ('income' as const),
+              accountName: `Uncategorized-${
+                parseMoney(u.paid_share) < 0 ? 'Expense' : 'Income'
+              }`,
+              // accountName: `${formatUser(u.user)}/Contributions`,
               amount: A(-1 * parseMoney(u.paid_share), cost.unit),
+            },
+            remainder: {
+              accountName: t.group_name,
+              accountType: 'liability',
+              amount: A(parseMoney(u.paid_share), cost.unit),
             },
           }))
         return {
@@ -114,14 +126,22 @@ export const splitwiseProvider = makeSyncProvider({
             description: t.description,
             externalCategory: t.category.name,
             postingsMap: makePostingsMap(
-              {main: contribs.length === 1 ? contribs[0]?.posting : undefined},
+              {
+                main: contribs.length === 1 ? contribs[0]?.posting : undefined,
+              },
               contribs.length > 1
                 ? objectFromArray(
                     contribs,
                     (c) => `contrib_${c.user.id}`,
                     (c) => c.posting,
                   )
-                : undefined,
+                : {
+                    // This is  for "Liabilities" in beancount, cannot set it as remainder because we Omit "amount"
+                    liabilities:
+                      contribs.length === 1
+                        ? (contribs[0]?.remainder as Standard.Posting)
+                        : undefined,
+                  },
             ),
           },
         }
@@ -137,16 +157,28 @@ export const splitwiseProvider = makeSyncProvider({
 
       yield groups.map((a) => def._opData('account', `${a.id}`, a))
 
-      // TODO: Make a map for transaction entity
       let offset = 0
       let limit = 100
 
       while (true) {
         const expenses = await splitwise.getExpenses({offset, limit})
-        if (expenses.length) {
+        if (expenses.length === 0) {
           break
         }
-        yield expenses.map((t) => def._opData('transaction', `${t.id}`, t))
+        yield expenses.map((t) => {
+          // For now it's easiest to get the group name
+          // TODO: Need to check for the better way to get the group name
+          const group_name =
+            groups.filter((a) =>
+              a.name
+                .toLowerCase()
+                .includes(formatUser(t.users[0]?.user).toLowerCase()),
+            )[0]?.name || formatUser(t.users[0]?.user)
+          return def._opData('transaction', `${t.id}`, {
+            ...t,
+            group_name,
+          })
+        })
         offset += expenses.length
         limit = 500
       }

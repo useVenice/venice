@@ -20,7 +20,6 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
-import {splitwiseProvider} from '@ledger-sync/integration-splitwise'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -82,7 +81,7 @@ export const lsTestConfig = makeCoreSync.config({
     foreceiptProvider,
     yodleeProviderNext,
     splitwiseProvider,
-    postgresProvider
+    postgresProvider,
   ],
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.

@@ -99,10 +99,17 @@ const sources: Record<string, DemoSyncInput['src']> = {
     },
   },
 
-  splitwise_bayu: {
+  splitwise_alka: {
     provider: 'splitwise',
     settings: {
-      accessToken: '', // TODO: Either get the access token or secrets for testing
+      accessToken: process.env['SPLITWISE_ALKA_API_KEY'], // TODO: Either get the access token or secrets for testing
+    },
+  },
+
+  splitwise_tony: {
+    provider: 'splitwise',
+    settings: {
+      accessToken: process.env['SPLITWISE_TONY_API_KEY'], // TODO: Either get the access token or secrets for testing
     },
   },
 }
@@ -128,7 +135,6 @@ const getDestinations = (
   mongo: {
     provider: 'mongodb',
     settings: {
-      providerName: key,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       databaseUrl: process.env['DB_CONN_STRING_MONGODB']!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
