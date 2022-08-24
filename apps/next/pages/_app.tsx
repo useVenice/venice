@@ -1,5 +1,5 @@
 import '@fontsource/inter/variable.css'
-import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/config'
+import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
 import 'modern-normalize/modern-normalize.css'
 import {ThemeProvider} from 'next-themes'
 import {AppProps} from 'next/app'

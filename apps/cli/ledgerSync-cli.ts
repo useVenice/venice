@@ -1,12 +1,12 @@
 #!/usr/bin/env tsx
-import '@ledger-sync/config/register.node'
+import '@ledger-sync/app-config/register.node'
 
 // Cannot directly import from cloud otherwise it messes up with the `register` DIs
 import {
   LedgerSyncRouter,
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
-} from '@ledger-sync/config'
+} from '@ledger-sync/app-config'
 import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
 import {
   compact,

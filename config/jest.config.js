@@ -7,7 +7,7 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/packages/@ledger-sync/config/.next/',
+    '/packages/@ledger-sync/app-config/.next/',
   ],
   watchPathIgnorePatterns: [
     '\\.gen\\.d\\.ts',

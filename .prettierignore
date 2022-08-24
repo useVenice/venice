@@ -20,7 +20,7 @@
 /packages/@tabs/expo/dist/
 /packages/@tabs/expo/ios/
 /packages/@tabs/expo/web-build/
-/packages/@ledger-sync/config/.next
+/packages/@ledger-sync/app-config/.next
 /packages/@web/webpack/build-cosmos/
 /packages/@web/webpack/build-storybook/
 /packages/@web/webpack/build/

@@ -5,7 +5,7 @@
 import fs from 'fs'
 import path from 'path'
 import * as R from 'remeda'
-import type {DemoSyncInput} from '@ledger-sync/config'
+import type {DemoSyncInput} from '@ledger-sync/app-config'
 
 const sources: Record<string, DemoSyncInput['src']> = {
   plaid_sandbox: {
