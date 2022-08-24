@@ -27,8 +27,7 @@ import {
   mapStandardEntityLink,
   renameAccountLink,
 } from '@ledger-sync/ledger-sync'
-import {identity, R, Rx, safeJSONParse} from '@ledger-sync/util'
-import {z} from 'zod'
+import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
   return R.pipe(

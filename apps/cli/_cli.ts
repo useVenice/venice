@@ -1,14 +1,5 @@
 // Not sure why ../node_modules import needed... was working before
-import {
-  asFunction,
-  kProxyAgent,
-  R,
-  registerDependency,
-  safeJSONParse,
-  z,
-  ZFunctionMap,
-} from '@ledger-sync/util'
-import {makeProxyAgentNext} from '@ledger-sync/app-config/server/http-utils-next'
+import {makeProxyAgentNext} from '@ledger-sync/app-config/utils.node'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
@@ -21,6 +12,15 @@ import {makeStripeClient} from '@ledger-sync/integration-stripe'
 import {makeTellerClient} from '@ledger-sync/integration-teller'
 import {makeTogglClient} from '@ledger-sync/integration-toggl'
 import {makeWiseClient} from '@ledger-sync/integration-wise'
+import {
+  asFunction,
+  kProxyAgent,
+  R,
+  registerDependency,
+  safeJSONParse,
+  z,
+  ZFunctionMap,
+} from '@ledger-sync/util'
 import {cliFromZFunctionMap, CliOpts} from './cli-utils'
 
 if (require.main === module) {
