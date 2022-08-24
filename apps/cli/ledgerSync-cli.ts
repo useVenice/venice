@@ -1,12 +1,19 @@
 #!/usr/bin/env tsx
 // Cannot directly import from cloud otherwise it messes up with the `register` DIs
-import {compact, NonEmptyArray, parseUrl, R, z, zFunction} from '@ledger-sync/util'
-import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
 import {
   DemoRouter,
   demoMetaStore as metaStore,
   demoRouter as router,
-} from '@ledger-sync/app/pages/api/[...trpc]'
+} from '@ledger-sync/app'
+import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
+import {
+  compact,
+  NonEmptyArray,
+  parseUrl,
+  R,
+  z,
+  zFunction,
+} from '@ledger-sync/util'
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import http from 'http'
 import {json} from 'micro'
