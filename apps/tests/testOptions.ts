@@ -2,12 +2,12 @@
  * Use me like so...
  * tsx ./testOptions.ts teller_postgres | ROARR_LOG=true ledgerSync sync | yarn roarr pretty-print
  */
+import type {LedgerSyncInput} from '@ledger-sync/app-config'
 import fs from 'fs'
 import path from 'path'
 import * as R from 'remeda'
-import type {DemoSyncInput} from '@ledger-sync/app-config'
 
-const sources: Record<string, DemoSyncInput['src']> = {
+const sources: Record<string, LedgerSyncInput['src']> = {
   plaid_sandbox: {
     provider: 'plaid',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

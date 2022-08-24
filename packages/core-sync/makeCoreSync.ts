@@ -263,7 +263,7 @@ parseWebhookRequest.isWebhook = (pathSegments: NonEmptyArray<string>) =>
   pathSegments[0] === 'webhook'
 
 // Make error message more understandable. But security risk... so turn me off unless debugging
-if (process.env.NODE_ENV === 'development') {
+if (process.env['NODE_ENV'] === 'development') {
   z.setErrorMap((_issue, ctx) => {
     // Need to get the `schema` as well.. otherwise very hard
     console.error(`[zod] Data did not pass validation`, ctx.data)
