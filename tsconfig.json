@@ -7,7 +7,7 @@
     "packages/**/*",
     "./*.ts",
     "./*.js"
-  ],
+, "apps/tests/testOptions.ts"  ],
   "exclude": [
     "**/__encrypted__",
     "**/node_modules",

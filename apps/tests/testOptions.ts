@@ -4,9 +4,8 @@
  */
 import fs from 'fs'
 import path from 'path'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as R from 'remeda'
-import type {DemoSyncInput} from '.'
+import type {DemoSyncInput} from '@ledger-sync/app'
 
 const sources: Record<string, DemoSyncInput['src']> = {
   plaid_sandbox: {

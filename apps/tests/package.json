@@ -1,0 +1,11 @@
+{
+  "name": "@ledger-sync/tests",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "remeda": "0.0.32"
+  },
+  "devDependencies": {
+    "tsx": "3.4.2"
+  }
+}

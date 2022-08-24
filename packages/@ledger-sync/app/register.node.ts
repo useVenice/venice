@@ -22,7 +22,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
 import {writeFile as _writeFile} from 'write-file-safe'
-import {makeProxyAgentNext} from './server/http-utils-next'
+import {makeProxyAgentNext} from './utils.node'
 
 if (process.env['ENVKEY']) {
   // console.log('[envkey] before load', process.env)

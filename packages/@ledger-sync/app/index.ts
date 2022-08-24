@@ -1,10 +1,10 @@
 import {inferProcedureInput, makeCoreSync} from '@ledger-sync/core-sync'
-import {lsTestConfig} from './lsTestConfig'
+import {lsTestConfig} from './ledgerSync.config'
 
-// export * from './testOptions'
-export * from './lsTestConfig'
 export * from '@ledger-sync/core-sync'
 export * from '@ledger-sync/core-sync-frontend'
+
+export * from './ledgerSync.config'
 
 export const [demoLedgerSync, demoRouter, demoMetaStore] =
   makeCoreSync(lsTestConfig)
