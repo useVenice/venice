@@ -4,6 +4,7 @@ import {ledgerSyncConfig} from './ledgerSync.config'
 export * from '@ledger-sync/core-sync'
 export * from '@ledger-sync/core-sync-frontend'
 export * from './ledgerSync.config'
+export * from './constants'
 
 export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
   makeCoreSync(ledgerSyncConfig)

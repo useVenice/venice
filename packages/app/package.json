@@ -4,8 +4,9 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
+    "@ledger-sync/app-config": "*",
     "@ledger-sync/integration-postgres": "*",
-    "@supabase/supabase-js": "2.0.0-rc.6"
+    "@supabase/supabase-js": "^1.35.6"
   },
   "devDependencies": {}
 }

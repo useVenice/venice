@@ -1,7 +1,7 @@
-import '@ledger-sync/app-ui/register.web'
-
+import {supabase} from '@ledger-sync/app'
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
-import {darkTheme, ThemeProvider} from '@ledger-sync/app-ui'
+import {Auth, darkTheme, ThemeProvider} from '@ledger-sync/app-ui'
+import '@ledger-sync/app-ui/register.web'
 import {AppProps} from 'next/app'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import superjson from 'superjson'
@@ -12,19 +12,21 @@ export const syncHooks = makeSyncHooks(ledgerSyncConfig)
 
 function App({Component, pageProps}: AppProps) {
   return (
-    <QueryClientProvider client={reactQueryClient}>
-      <syncHooks.Provider queryClient={reactQueryClient}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          value={{
-            light: 'light',
-            dark: darkTheme.className,
-          }}>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </syncHooks.Provider>
-    </QueryClientProvider>
+    <Auth.UserContextProvider supabaseClient={supabase}>
+      <QueryClientProvider client={reactQueryClient}>
+        <syncHooks.Provider queryClient={reactQueryClient}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            value={{
+              light: 'light',
+              dark: darkTheme.className,
+            }}>
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </syncHooks.Provider>
+      </QueryClientProvider>
+    </Auth.UserContextProvider>
   )
 }
 

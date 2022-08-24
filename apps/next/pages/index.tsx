@@ -1,10 +1,12 @@
+import {supabase} from '@ledger-sync/app'
 import {
+  Auth,
   Button,
   HStack,
   Text,
   ThemeToggle,
   Toaster,
-  VStack,
+  VStack
 } from '@ledger-sync/app-ui'
 import Head from 'next/head'
 import {syncHooks} from './_app'
@@ -40,6 +42,9 @@ export default function Home() {
           <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
             Connect
           </Button>
+        </VStack>
+        <VStack>
+          <Auth supabaseClient={supabase} />
         </VStack>
       </VStack>
 
