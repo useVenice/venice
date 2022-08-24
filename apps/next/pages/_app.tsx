@@ -1,11 +1,10 @@
-import '@fontsource/inter/variable.css'
+import '@ledger-sync/ui/register.web'
+
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
-import 'modern-normalize/modern-normalize.css'
-import {ThemeProvider} from 'next-themes'
+import {darkTheme, ThemeProvider} from '@ledger-sync/ui'
 import {AppProps} from 'next/app'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import superjson from 'superjson'
-import {darkTheme} from '../client'
 
 const reactQueryClient = new QueryClient()
 

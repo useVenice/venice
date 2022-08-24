@@ -1,6 +1,12 @@
+import {
+  Button,
+  HStack,
+  Text,
+  ThemeToggle,
+  Toaster,
+  VStack,
+} from '@ledger-sync/ui'
 import Head from 'next/head'
-import {Toaster} from 'react-hot-toast'
-import {Button, HStack, Text, ThemeToggle, VStack} from '../client'
 import {syncHooks} from './_app'
 
 export default function Home() {
