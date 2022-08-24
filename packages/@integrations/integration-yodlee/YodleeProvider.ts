@@ -18,7 +18,7 @@ import {
   YodleeAccount,
   YodleeTransaction,
 } from './yodlee-utils'
-import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClientNext'
+import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClient'
 
 type YodleeSyncOperation = typeof def['_opType']
 

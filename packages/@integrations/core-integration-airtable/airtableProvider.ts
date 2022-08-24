@@ -1,10 +1,7 @@
 import {handlersLink, makeSyncProvider} from '@ledger-sync/core-sync'
 import type {EntityPayloadWithExternal} from '@ledger-sync/ledger-sync'
 import {fromCompletion, z, zCast} from '@ledger-sync/util'
-import {
-  airtableConnection,
-  zAirtableConnectionSettings,
-} from './airtableConnection'
+import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
@@ -17,7 +14,7 @@ export const airtableProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
   destinationSync: ({settings}) => {
-    const airtable = airtableConnection(settings)
+    const airtable = makeAirtableClient(settings)
     airtable.initBase()
 
     return handlersLink({

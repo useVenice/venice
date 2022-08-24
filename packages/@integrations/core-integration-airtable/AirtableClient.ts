@@ -1,6 +1,9 @@
 import {defineProxyFn, z, zFunction} from '@ledger-sync/util'
 import type {Base, FieldSet, Records} from 'airtable'
 
+export const $airtable =
+  defineProxyFn<() => typeof import('airtable')>('$airtable')
+
 export const zAirtableConnectionSettings = z.object({
   apiKey: z.string(),
   airtableBase: z.string(),
@@ -19,9 +22,7 @@ export const zTransaction = zAccount.extend({
   Payee: z.string(),
 })
 
-export const $airtable =
-  defineProxyFn<() => typeof import('airtable')>('$airtable')
-export const airtableConnection = zFunction(
+export const makeAirtableClient = zFunction(
   zAirtableConnectionSettings,
   ({apiKey, airtableBase}) => {
     const Airtable = $airtable()
@@ -44,7 +45,10 @@ export const airtableConnection = zFunction(
         },
       ),
 
-      getEntity: (entityName: string, cb: (data: Records<FieldSet>) => void) => {
+      getEntity: (
+        entityName: string,
+        cb: (data: Records<FieldSet>) => void,
+      ) => {
         base(entityName)
           .select({
             // Selecting the first 3 records in Grid view:

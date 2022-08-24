@@ -24,7 +24,7 @@ import {
   zEnvName,
   zPlaidClientConfig,
   zProducts,
-} from './PlaidClientNext'
+} from './PlaidClient'
 
 type PlaidSyncOperation = typeof def['_opType']
 

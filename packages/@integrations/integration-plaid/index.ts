@@ -1,7 +1,7 @@
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,decorator,stories,web,native,ios,android}.{ts,tsx}"}
 export * from './plaid-utils'
-export * from './PlaidClientNext'
-export * from './PlaidProviderNext'
+export * from './PlaidClient'
+export * from './PlaidProvider'
 // codegen:end
 
 // Consider using "plaid" as peerDependency to reduce
