@@ -1,0 +1,12 @@
+{
+  "name": "@ledger-sync/core-integration-airtable",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/util": "*",
+    "airtable": "^0.11.4"
+  },
+  "devDependencies": {}
+}

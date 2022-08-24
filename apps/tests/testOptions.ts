@@ -53,6 +53,10 @@ const sources: Record<string, DemoSyncInput['src']> = {
     provider: 'onebrick',
     settings: {accessToken: process.env['GOPAY_AYU_ACCESS_TOKEN']},
   },
+  gopay_bayu: {
+    provider: 'onebrick',
+    settings: {accessToken: process.env['GOPAY_BAYU_ACCESS_TOKEN']},
+  },
   teller: {
     provider: 'teller',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -98,10 +102,17 @@ const sources: Record<string, DemoSyncInput['src']> = {
     },
   },
 
-  splitwise_bayu: {
+  splitwise_alka: {
     provider: 'splitwise',
     settings: {
-      accessToken: '', // TODO: Either get the access token or secrets for testing
+      accessToken: process.env['SPLITWISE_ALKA_API_KEY'], // TODO: Either get the access token or secrets for testing
+    },
+  },
+
+  splitwise_tony: {
+    provider: 'splitwise',
+    settings: {
+      accessToken: process.env['SPLITWISE_TONY_API_KEY'], // TODO: Either get the access token or secrets for testing
     },
   },
 }
@@ -136,6 +147,17 @@ const getDestinations = (
   postgres: {
     provider: 'postgres',
     settings: {databaseUrl: process.env['POSTGRES_URL']},
+  },
+
+  airtable: {
+    provider: 'airtable',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      apiKey: process.env['AIRTABLE_SECRET']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      airtableBase: process.env['AIRTABLE_BASE']!,
+    },
+    // Used the base "Ledgers" https://airtable.com/appeMkpoBURY3jzVt/tblJPBgH2dWnVRUgb/viwFTyw2WwPEBZizb?blocks=hide
   },
 })
 
