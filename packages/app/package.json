@@ -1,0 +1,11 @@
+{
+  "name": "@ledger-sync/app",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@ledger-sync/integration-postgres": "*",
+    "@supabase/supabase-js": "2.0.0-rc.6"
+  },
+  "devDependencies": {}
+}
