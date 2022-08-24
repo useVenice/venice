@@ -7,7 +7,7 @@
     "@ledger-sync/id": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
-    "@ledger-sync/app": "*",
+    "@ledger-sync/config": "*",
     "@ledger-sync/core-sync": "*",
     "@ledger-sync/integration-beancount": "*",
     "@ledger-sync/integration-plaid": "*",

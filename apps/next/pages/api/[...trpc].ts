@@ -1,6 +1,6 @@
-import '@ledger-sync/app/register.node'
+import '@ledger-sync/config/register.node'
 
-import {demoRouter, parseWebhookRequest} from '@ledger-sync/app'
+import {demoRouter, parseWebhookRequest} from '@ledger-sync/config'
 import {identity} from '@ledger-sync/util'
 import * as trpcNext from '@trpc/server/adapters/next'
 import {NextApiHandler} from 'next'

@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/app",
+  "name": "@ledger-sync/config",
   "version": "0.0.0",
   "private": true,
   "scripts": {
