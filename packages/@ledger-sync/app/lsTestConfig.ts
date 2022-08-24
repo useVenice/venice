@@ -1,3 +1,4 @@
+import {airtableProvider} from '@ledger-sync/core-integration-airtable'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
 import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
@@ -68,6 +69,7 @@ export const lsTestConfig = makeCoreSync.config({
     firebaseProvider,
     mongodbProvider,
     corePostgresProvider,
+    airtableProvider,
     // Ledger
     plaidProviderNext,
     beancountProvider,

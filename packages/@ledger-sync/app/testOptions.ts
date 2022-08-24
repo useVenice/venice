@@ -54,6 +54,10 @@ const sources: Record<string, DemoSyncInput['src']> = {
     provider: 'onebrick',
     settings: {accessToken: process.env['GOPAY_AYU_ACCESS_TOKEN']},
   },
+  gopay_bayu: {
+    provider: 'onebrick',
+    settings: {accessToken: process.env['GOPAY_BAYU_ACCESS_TOKEN']},
+  },
   teller: {
     provider: 'teller',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -144,6 +148,17 @@ const getDestinations = (
   postgres: {
     provider: 'postgres',
     settings: {databaseUrl: process.env['POSTGRES_URL']},
+  },
+
+  airtable: {
+    provider: 'airtable',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      apiKey: process.env['AIRTABLE_SECRET']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      airtableBase: process.env['AIRTABLE_BASE']!,
+    },
+    // Used the base "Ledgers" https://airtable.com/appeMkpoBURY3jzVt/tblJPBgH2dWnVRUgb/viwFTyw2WwPEBZizb?blocks=hide
   },
 })
 

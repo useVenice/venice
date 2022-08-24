@@ -10,6 +10,7 @@ const withTM = require('next-transpile-modules')([
   '@ledger-sync/core-integration-postgres',
   '@ledger-sync/core-integration-redis',
   '@ledger-sync/core-integration-mongodb',
+  '@ledger-sync/core-integration-airtable',
   '@ledger-sync/ledger-sync',
   '@ledger-sync/integration-plaid',
   '@ledger-sync/integration-beancount',

@@ -1,3 +1,4 @@
+import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
