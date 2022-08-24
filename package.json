@@ -6,9 +6,9 @@
   "license": "UNLICENSED",
   "main": "build-cloud/functions/index.js",
   "workspaces": [
-    "dev-packages/*",
-    "packages/@ledger-sync/*",
-    "packages/@universal/*",
+    "packages/@dev/*",
+    "packages/@integrations/*",
+    "packages/@utils/*",
     "packages/*",
     "apps/*"
   ],
