@@ -1,5 +1,5 @@
 import '@fontsource/inter/variable.css'
-import {lsTestConfig, makeSyncHooks} from '@ledger-sync/config'
+import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/config'
 import 'modern-normalize/modern-normalize.css'
 import {ThemeProvider} from 'next-themes'
 import {AppProps} from 'next/app'
@@ -9,7 +9,7 @@ import {darkTheme} from '../client'
 
 const reactQueryClient = new QueryClient()
 
-export const syncHooks = makeSyncHooks(lsTestConfig)
+export const syncHooks = makeSyncHooks(ledgerSyncConfig)
 
 function App({Component, pageProps}: AppProps) {
   return (

@@ -58,7 +58,7 @@ const getKvStore = () => {
   }
 }
 
-export const lsTestConfig = makeCoreSync.config({
+export const ledgerSyncConfig = makeCoreSync.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: [

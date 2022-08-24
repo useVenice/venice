@@ -3,9 +3,9 @@ import '@ledger-sync/config/register.node'
 
 // Cannot directly import from cloud otherwise it messes up with the `register` DIs
 import {
-  DemoRouter,
-  demoMetaStore as metaStore,
-  demoRouter as router,
+  LedgerSyncRouter,
+  ledgerSyncMetaStore as metaStore,
+  ledgerSyncRouter as router,
 } from '@ledger-sync/config'
 import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
 import {
@@ -26,7 +26,7 @@ if (!process.env['DEBUG']) {
   console.debug = () => {} // Disabling debug logs
 }
 
-export type LSRouter = DemoRouter
+export type LSRouter = LedgerSyncRouter
 export type SyncInput = inferProcedureInput<
   LSRouter['_def']['mutations']['sync']
 >[0]
