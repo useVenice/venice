@@ -1,4 +1,6 @@
 #!/usr/bin/env tsx
+import '@ledger-sync/app/register.node'
+
 // Cannot directly import from cloud otherwise it messes up with the `register` DIs
 import {
   DemoRouter,
