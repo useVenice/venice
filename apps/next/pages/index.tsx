@@ -1,18 +1,20 @@
 import {supabase} from '@ledger-sync/app'
 import {
-  Auth,
-  Button,
+  Auth, // Button,
   HStack,
   Text,
   ThemeToggle,
   Toaster,
-  VStack
+  VStack,
 } from '@ledger-sync/app-ui'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {Button} from '@supabase/ui'
 import Head from 'next/head'
 import {syncHooks} from './_app'
 
 export default function Home() {
   const ls = syncHooks.useConnect()
+  const {user} = Auth.useUser()
 
   return (
     <>
@@ -44,7 +46,16 @@ export default function Home() {
           </Button>
         </VStack>
         <VStack>
-          <Auth supabaseClient={supabase} />
+          {user ? (
+            <>
+              <Text>
+                Logged in as {user?.email} {user?.id}
+              </Text>
+              <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
+            </>
+          ) : (
+            <Auth supabaseClient={supabase} />
+          )}
         </VStack>
       </VStack>
 
