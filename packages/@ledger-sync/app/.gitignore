@@ -8,10 +8,6 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # production
 /build
 
@@ -30,8 +26,3 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-# data
-data.ms
-demo.sqlite
-data

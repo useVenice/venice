@@ -17,6 +17,7 @@ export function makeSyncHooks<
   T extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(config: SyncCoreConfig<T, TLinks>) {
+  console.log('makeSyncHooks', config)
   const [sc, router] = makeCoreSync(config)
   // Not sure why we cannot just do typeof router , oh well
   type Router = ReturnType<typeof makeCoreSync>[1]

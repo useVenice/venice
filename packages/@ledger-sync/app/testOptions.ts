@@ -6,7 +6,7 @@ import fs from 'fs'
 import path from 'path'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as R from 'remeda'
-import type {DemoSyncInput} from './pages/api/[...trpc]'
+import type {DemoSyncInput} from '.'
 
 const sources: Record<string, DemoSyncInput['src']> = {
   plaid_sandbox: {

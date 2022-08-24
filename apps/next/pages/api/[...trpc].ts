@@ -1,21 +1,9 @@
-import '../../register.node'
+import '@ledger-sync/app/register.node'
+
+import {demoRouter, parseWebhookRequest} from '@ledger-sync/app'
 import {identity} from '@ledger-sync/util'
-import {
-  inferProcedureInput,
-  makeCoreSync,
-  parseWebhookRequest
-} from '@ledger-sync/core-sync'
 import * as trpcNext from '@trpc/server/adapters/next'
 import {NextApiHandler} from 'next'
-import {lsTestConfig} from '../../lsTestConfig'
-
-
-export const [demoLedgerSync, demoRouter, demoMetaStore] =
-  makeCoreSync(lsTestConfig)
-export type DemoRouter = typeof demoRouter
-export type DemoSyncInput = inferProcedureInput<
-  DemoRouter['_def']['mutations']['sync']
->[0]
 
 const handler = trpcNext.createNextApiHandler({
   router: demoRouter,
