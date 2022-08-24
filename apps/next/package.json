@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@ledger-sync/app-config": "*",
-    "@ledger-sync/ui": "*",
+    "@ledger-sync/app-ui": "*",
     "@ledger-sync/util": "*",
     "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",

@@ -1,7 +1,7 @@
-import '@ledger-sync/ui/register.web'
+import '@ledger-sync/app-ui/register.web'
 
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
-import {darkTheme, ThemeProvider} from '@ledger-sync/ui'
+import {darkTheme, ThemeProvider} from '@ledger-sync/app-ui'
 import {AppProps} from 'next/app'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import superjson from 'superjson'

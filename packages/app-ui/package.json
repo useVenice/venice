@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/ui",
+  "name": "@ledger-sync/app-ui",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",

@@ -1,4 +1,4 @@
-import {getCssText} from '@ledger-sync/ui'
+import {getCssText} from '@ledger-sync/app-ui'
 import {Head, Html, Main, NextScript} from 'next/document'
 
 export default function Document() {

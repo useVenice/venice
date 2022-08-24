@@ -5,7 +5,7 @@ import {
   ThemeToggle,
   Toaster,
   VStack,
-} from '@ledger-sync/ui'
+} from '@ledger-sync/app-ui'
 import Head from 'next/head'
 import {syncHooks} from './_app'
 
