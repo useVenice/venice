@@ -8,3 +8,5 @@ export const supabase = createClient(
 ;(globalThis as any).supabase = supabase
 
 export {createClient} from '@supabase/supabase-js'
+
+export * as schema from './schema'

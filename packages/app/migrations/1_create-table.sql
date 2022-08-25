@@ -19,7 +19,7 @@ CREATE INDEX IF NOT EXISTS meta_updated_at ON meta (updated_at);
 
 -- Only used on local, noop on supabase
 CREATE SCHEMA IF NOT EXISTS auth;
-CREATE TABLE IF NOT EXISTS "auth"."user" (
+CREATE TABLE IF NOT EXISTS "auth"."users" (
   "id" uuid NOT NULL,
   PRIMARY KEY ("id")
 );
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS "public"."workspace_user" (
   CONSTRAINT "fk_workspace_id" FOREIGN KEY ("workspace_id")
     REFERENCES "public"."workspace"("id") ON DELETE CASCADE,
   CONSTRAINT "fk_user_id" FOREIGN KEY ("user_id")
-    REFERENCES "auth"."user"("id") ON DELETE CASCADE
+    REFERENCES "auth"."users"("id") ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS workspace_user_created_at ON workspace_user (created_at);
 CREATE INDEX IF NOT EXISTS workspace_user_updated_at ON workspace_user (updated_at);
