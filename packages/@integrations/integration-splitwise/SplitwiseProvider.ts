@@ -1,5 +1,9 @@
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
+import {
+  EntityPayloadWithExternal,
+  ledgerSyncProviderBase,
+  makePostingsMap,
+} from '@ledger-sync/ledger-sync'
 import {
   A,
   DateTime,
@@ -10,6 +14,7 @@ import {
   Rx,
   rxjs,
   z,
+  zCast,
 } from '@ledger-sync/util'
 import {zCurrentUser, zExpense, zGroup, zUser} from './splitwise-schema'
 import {makeSplitwiseClient} from './SplitwiseClientNext'
@@ -21,7 +26,7 @@ const def = makeSyncProvider.def({
     currentUser: zCurrentUser.nullish(),
     accessToken: z.string(),
   }),
-
+  destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -187,6 +192,58 @@ export const splitwiseProvider = makeSyncProvider({
     return rxjs
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+  },
+
+  destinationSync: ({settings}) => {
+    const client = makeSplitwiseClient(settings)
+    const currentUser = client.getCurrentUser()
+    const createdGroups: number[] = []
+    return handlersLink({
+      data: async (op) => {
+        const {
+          data: {id, entityName, providerName, connectionId = null, ...data},
+        } = op
+
+        const accountData = (
+          entityName === 'account' ? (data.entity as any)['standard'] : null
+        ) as Standard.Account
+        const t = (
+          entityName === 'transaction' ? (data.entity as any)['standard'] : null
+        ) as Standard.Transaction
+
+        if (entityName === 'account') {
+          const body = {
+            name: accountData.name,
+            group_type: 'other',
+            simplify_by_default: false,
+            users_0_id: (await currentUser).id,
+          }
+
+          const group = await client.createGroup(body)
+          createdGroups.push(group.id)
+        }
+
+        if (entityName === 'transaction') {
+          const qtyAmount = t.postingsMap?.main?.amount.quantity ?? 0
+          const amount = Math.abs(qtyAmount)
+          const partialTxn = {
+            details: t.notes || '',
+            currency_code: t.postingsMap?.main?.amount.unit,
+            date: DateTime.fromISO(t.date).toISO(),
+            cost: `${amount}`,
+            description: t.description,
+            users__0__user_id: (await currentUser).id,
+            users__0__owed_share: amount,
+            users__0__paid_share: amount,
+          }
+          createdGroups.forEach(async (groupId) => {
+            const body = {id, group_id: groupId, ...partialTxn}
+            await client.createExpense(body)
+          })
+        }
+        return op
+      },
+    })
   },
 })
 
