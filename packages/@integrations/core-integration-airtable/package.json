@@ -5,6 +5,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/core-sync": "*",
+    "@ledger-sync/ledger-sync": "*",
     "@ledger-sync/util": "*",
     "airtable": "^0.11.4"
   },

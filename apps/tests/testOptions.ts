@@ -115,6 +115,16 @@ const sources: Record<string, LedgerSyncInput['src']> = {
       accessToken: process.env['SPLITWISE_TONY_API_KEY'], // TODO: Either get the access token or secrets for testing
     },
   },
+
+  airtable_bayu: {
+    provider: 'airtable',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      apiKey: process.env['AIRTABLE_SECRET']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      airtableBase: process.env['AIRTABLE_BASE']!,
+    },
+  },
 }
 
 const getDestinations = (
@@ -153,11 +163,29 @@ const getDestinations = (
     provider: 'airtable',
     settings: {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      apiKey: process.env['AIRTABLE_SECRET']!,
+      apiKey: process.env['AIRTABLE_BAYU_SECRET']!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      airtableBase: process.env['AIRTABLE_BASE']!,
+      airtableBase: process.env['AIRTABLE_BAYU_BASE']!,
     },
     // Used the base "Ledgers" https://airtable.com/appeMkpoBURY3jzVt/tblJPBgH2dWnVRUgb/viwFTyw2WwPEBZizb?blocks=hide
+  },
+  airtable_ayu: {
+    provider: 'airtable',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      apiKey: process.env['AIRTABLE_AYU_SECRET']!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      airtableBase: process.env['AIRTABLE_AYU_BASE']!,
+    },
+    // Used the base "Gopay" https://airtable.com/appeMkpoBURY3jzVt/tblJPBgH2dWnVRUgb/viwFTyw2WwPEBZizb?blocks=hide
+  },
+
+  splitwise: {
+    provider: 'splitwise',
+    settings: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      accessToken: process.env['SPLITWISE_BAYU_API_KEY']!,
+    },
   },
 })
 

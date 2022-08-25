@@ -75,6 +75,21 @@ export const makeSplitwiseClient = zFunction(zSplitwiseConfig, (cfg) => {
         })
         .then((r) => r.data.expenses),
     ),
+
+    createGroup: zFunction(z.any(), (body) =>
+      createClient()
+        .post<{group: z.infer<typeof zGroup>}>('create_group', body)
+        .then((r) => r.data.group),
+    ),
+
+    createExpense: zFunction(z.any(), (body) =>
+      createClient()
+        .post<{expenses: Array<z.infer<typeof zExpense>>}>(
+          'create_expense',
+          body,
+        )
+        .then((r) => r.data.expenses),
+    ),
   }
 })
 

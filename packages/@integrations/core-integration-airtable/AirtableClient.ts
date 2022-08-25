@@ -38,6 +38,7 @@ export const makeAirtableClient = zFunction(
           try {
             // TODO: Need to find a way to prevent duplicate records
             // Refs:  https://community.airtable.com/t/solved-record-duplication-detection-deduping-and-duplicate-merging/340/5
+            // https://community.airtable.com/t/unique-values-in-a-column/735/11
             await base(titleCase(entityName)).create([data])
           } catch (error) {
             console.log(error)
@@ -51,8 +52,6 @@ export const makeAirtableClient = zFunction(
       ) => {
         base(entityName)
           .select({
-            // Selecting the first 3 records in Grid view:
-            maxRecords: 3,
             view: 'Grid view',
           })
           .eachPage(
@@ -63,7 +62,6 @@ export const makeAirtableClient = zFunction(
                 console.log('Retrieved', record.get('Id'))
               })
               cb(records)
-
               // To fetch the next page of records, call `fetchNextPage`.
               // If there are more records, `page` will get called again.
               // If there are no more records, `done` will get called.
@@ -77,6 +75,12 @@ export const makeAirtableClient = zFunction(
             },
           )
       },
+      getEntity2: (entityName: string) =>
+        base(entityName)
+          .select({
+            view: 'Grid view',
+          })
+          .all(),
     }
   },
 )
