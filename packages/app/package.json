@@ -6,7 +6,8 @@
   "dependencies": {
     "@ledger-sync/app-config": "*",
     "@ledger-sync/integration-postgres": "*",
-    "@supabase/supabase-js": "^1.35.6"
+    "@supabase/supabase-js": "^1.35.6",
+    "react-supabase": "0.2.0"
   },
   "devDependencies": {}
 }

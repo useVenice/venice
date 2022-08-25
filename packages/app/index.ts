@@ -10,3 +10,4 @@ export const supabase = createClient(
 export {createClient} from '@supabase/supabase-js'
 
 export * as schema from './schema'
+export {Provider as ReactSupabaseProvider, useRealtime} from 'react-supabase'

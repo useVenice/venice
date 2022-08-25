@@ -1,4 +1,4 @@
-import {schema, supabase} from '@ledger-sync/app'
+import {schema, supabase, useRealtime} from '@ledger-sync/app'
 import {
   Auth,
   HStack,
@@ -9,31 +9,37 @@ import {
   VStack,
 } from '@ledger-sync/app-ui'
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Button, Input} from '@supabase/ui'
+import {Button, IconDelete, Input} from '@supabase/ui'
 import Head from 'next/head'
 import React, {useState} from 'react'
 import {syncHooks} from './_app'
 
 export function WorkspaceList() {
-  const [workspaces, setWorkspaces] = useState<schema.WorkspaceReadT[]>([])
-
-  React.useEffect(() => {
-    // eslint-disable-next-line promise/catch-or-return
-    supabase
-      .from<schema.WorkspaceWriteT>('workspace')
-      .select('*, workspace_user (*)')
-      .then((res) => {
-        setWorkspaces(res.data as any)
-      })
-  }, [])
+  const [res, refetch] = useRealtime<schema.WorkspaceReadT>('workspace')
 
   return (
     <VStack>
-      {workspaces.map((w) => (
-        <Text key={w.id}>
-          {w.id} {w.name}
-        </Text>
+      {res.data?.map((w) => (
+        <HStack>
+          <Text key={w.id}>
+            {w.id} {w.name}
+          </Text>
+          <Button
+            icon={IconDelete}
+            onClick={() =>
+              supabase
+                .from('workspace')
+                .delete()
+                .match({id: w.id})
+                .then((deleteRes) => {
+                  console.log('deleted?', deleteRes)
+                })
+            }>
+            Delete
+          </Button>
+        </HStack>
       ))}
+      <Button onClick={() => refetch()}>Refetch</Button>
     </VStack>
   )
 }
@@ -74,7 +80,7 @@ export function CreateWorkspaceForm() {
 }
 
 export default function Home() {
-  const ls = syncHooks.useConnect()
+  // const ls = syncHooks.useConnect()
   const {user} = Auth.useUser()
 
   return (
@@ -101,11 +107,11 @@ export default function Home() {
           <ThemeToggle />
         </HStack>
 
-        <VStack css={{alignItems: 'center'}}>
+        {/* <VStack css={{alignItems: 'center'}}>
           <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
             Connect
           </Button>
-        </VStack>
+        </VStack> */}
 
         <VStack>
           {user ? (
