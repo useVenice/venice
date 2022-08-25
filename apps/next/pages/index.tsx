@@ -15,8 +15,7 @@ import React, {useState} from 'react'
 import {syncHooks} from './_app'
 
 export function WorkspaceList() {
-  const [res, refetch] = useRealtime<schema.WorkspaceReadT>('workspace')
-
+  const [res, refetch] = useRealtime<schema.WorkspaceReadT>('workspace', {})
   return (
     <VStack>
       {res.data?.map((w) => (
@@ -60,18 +59,26 @@ export function CreateWorkspaceForm() {
       <Button
         onClick={async () => {
           toast(`create workspace with name ${workspaceName}`)
-          const {data, error} = await supabase
-            .from<schema.WorkspaceWriteT>('workspace')
-            .insert({
-              name: workspaceName,
-            })
-          await supabase
-            .from<schema.WorkspaceUserWriteT>('workspace_user')
-            .insert({
-              role: 'owner',
-              workspace_id: data?.[0]?.id,
-              user_id: user.id,
-            })
+          const res = await supabase.rpc('create_workspace', {
+            name: workspaceName,
+          })
+          console.log('res', res)
+          // const {data, error} = await supabase
+          //   .from<schema.WorkspaceWriteT>('workspace')
+          //   .insert(
+          //     {
+          //       name: workspaceName,
+          //     },
+          //     {returning: 'minimal'},
+          //   )
+          // console.log('data inserted', data)
+          // await supabase
+          //   .from<schema.WorkspaceUserWriteT>('workspace_user')
+          //   .insert({
+          //     role: 'owner',
+          //     workspace_id: data?.[0]?.id,
+          //     user_id: user.id,
+          //   })
         }}>
         Create workspace
       </Button>
