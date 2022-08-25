@@ -1,16 +1,77 @@
-import {supabase} from '@ledger-sync/app'
+import {schema, supabase} from '@ledger-sync/app'
 import {
-  Auth, // Button,
+  Auth,
   HStack,
   Text,
   ThemeToggle,
+  toast,
   Toaster,
   VStack,
 } from '@ledger-sync/app-ui'
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Button} from '@supabase/ui'
+import {Button, Input} from '@supabase/ui'
 import Head from 'next/head'
+import React, {useState} from 'react'
 import {syncHooks} from './_app'
+
+export function WorkspaceList() {
+  const [workspaces, setWorkspaces] = useState<schema.WorkspaceReadT[]>([])
+
+  React.useEffect(() => {
+    // eslint-disable-next-line promise/catch-or-return
+    supabase
+      .from<schema.WorkspaceWriteT>('workspace')
+      .select('*, workspace_user (*)')
+      .then((res) => {
+        setWorkspaces(res.data as any)
+      })
+  }, [])
+
+  return (
+    <VStack>
+      {workspaces.map((w) => (
+        <Text key={w.id}>
+          {w.id} {w.name}
+        </Text>
+      ))}
+    </VStack>
+  )
+}
+
+export function CreateWorkspaceForm() {
+  const [workspaceName, setWorkspaceName] = useState('')
+  const {user} = Auth.useUser()
+  if (!user) {
+    return null
+  }
+
+  return (
+    <VStack>
+      <Input
+        label="Workspace name"
+        value={workspaceName}
+        onChange={(e) => setWorkspaceName(e.target.value)}></Input>
+      <Button
+        onClick={async () => {
+          toast(`create workspace with name ${workspaceName}`)
+          const {data, error} = await supabase
+            .from<schema.WorkspaceWriteT>('workspace')
+            .insert({
+              name: workspaceName,
+            })
+          await supabase
+            .from<schema.WorkspaceUserWriteT>('workspace_user')
+            .insert({
+              role: 'owner',
+              workspace_id: data?.[0]?.id,
+              user_id: user.id,
+            })
+        }}>
+        Create workspace
+      </Button>
+    </VStack>
+  )
+}
 
 export default function Home() {
   const ls = syncHooks.useConnect()
@@ -45,6 +106,7 @@ export default function Home() {
             Connect
           </Button>
         </VStack>
+
         <VStack>
           {user ? (
             <>
@@ -52,6 +114,8 @@ export default function Home() {
                 Logged in as {user?.email} {user?.id}
               </Text>
               <Button onClick={() => supabase.auth.signOut()}>Logout</Button>
+              <CreateWorkspaceForm />
+              <WorkspaceList />
             </>
           ) : (
             <Auth supabaseClient={supabase} />
