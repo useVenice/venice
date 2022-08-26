@@ -1,13 +1,11 @@
 import {
-  Auth,
+  Button,
   HStack,
-  Text,
   ThemeToggle,
   Toaster,
+  Typography,
   VStack,
 } from '@ledger-sync/app-ui'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Button} from '@supabase/ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {syncHooks} from '../_app'
@@ -17,16 +15,12 @@ export function LinkUI() {
 
   return (
     <VStack css={{alignItems: 'center'}}>
-      <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
-        Connect
-      </Button>
+      <Button onClick={ls.showConnect}>Connect</Button>
     </VStack>
   )
 }
 
 export default function Home() {
-  const {user} = Auth.useUser()
-
   const router = useRouter()
   const {ledgerId} = router.query
 
@@ -47,9 +41,7 @@ export default function Home() {
           marginX: 'auto',
         }}>
         <HStack justify="between" align="center" gap="md" css={{padding: '$4'}}>
-          <Text as={'h1' as any} size="3xl">
-            Viewing as {ledgerId}
-          </Text>
+          <Typography.Title level={3}>Viewing as {ledgerId}</Typography.Title>
           <ThemeToggle />
         </HStack>
 
