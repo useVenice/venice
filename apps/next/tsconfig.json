@@ -8,8 +8,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx",
-    "node_modules/plaid/dist/index.d.ts"
+    "**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }
