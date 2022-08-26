@@ -1,11 +1,11 @@
 import '@ledger-sync/app-ui/register.web'
-
 import {ReactSupabaseProvider, supabase} from '@ledger-sync/app'
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
 import {Auth, darkTheme, ThemeProvider} from '@ledger-sync/app-ui'
 import {AppProps} from 'next/app'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import superjson from 'superjson'
+import LayoutSidebar from './components/sidebar'
 
 const reactQueryClient = new QueryClient()
 
@@ -24,7 +24,9 @@ function App({Component, pageProps}: AppProps) {
                 light: 'light',
                 dark: darkTheme.className,
               }}>
-              <Component {...pageProps} />
+              <LayoutSidebar>
+                <Component {...pageProps} />
+              </LayoutSidebar>
             </ThemeProvider>
           </syncHooks.Provider>
         </QueryClientProvider>

@@ -11,6 +11,7 @@ import {
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Button, IconDelete, Input} from '@supabase/ui'
 import Head from 'next/head'
+import {useRouter} from 'next/router'
 import React, {useState} from 'react'
 import {syncHooks} from './_app'
 
@@ -90,6 +91,7 @@ export default function Home() {
   const ls = syncHooks.useConnect()
   const {user} = Auth.useUser()
 
+  const router = useRouter()
   return (
     <>
       <Head>
@@ -110,6 +112,14 @@ export default function Home() {
           <Text as={'h1' as any} size="3xl">
             LedgerSync Link
           </Text>
+          <Button
+            onClick={() => {
+              // Not sure how to navigate to 'workspaces' screen,
+              // for now use this for testing purposes
+              router.push('/workspaces')
+            }}>
+            See workspaces
+          </Button>
 
           <ThemeToggle />
         </HStack>

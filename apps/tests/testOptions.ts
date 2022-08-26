@@ -119,7 +119,7 @@ const sources: Record<string, LedgerSyncInput['src']> = {
 
 const getDestinations = (
   key: string,
-): Record<string, DemoSyncInput['dest']> => ({
+): Record<string, LedgerSyncInput['dest']> => ({
   debug: {provider: 'debug'},
   fs: {
     provider: 'fs',
@@ -161,15 +161,15 @@ const getDestinations = (
   },
 })
 
-const options: Record<string, DemoSyncInput> = R.pipe(
+const options: Record<string, LedgerSyncInput> = R.pipe(
   sources,
   R.toPairs,
-  R.flatMap(([srcKey, src]): DemoSyncInput[] =>
+  R.flatMap(([srcKey, src]): LedgerSyncInput[] =>
     R.pipe(
       getDestinations(srcKey),
       R.toPairs,
       R.map(
-        ([destKey, dest]): DemoSyncInput => ({
+        ([destKey, dest]): LedgerSyncInput => ({
           id: `pipe_${srcKey}_${destKey}`,
           src,
           dest,
