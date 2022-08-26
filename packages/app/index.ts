@@ -1,5 +1,3 @@
 export {Constants} from '@ledger-sync/app-config'
-export {createClient} from '@supabase/supabase-js'
-export {Provider as ReactSupabaseProvider, useRealtime} from 'react-supabase'
 export * from './AppProvider'
 export * as schema from './schema'
