@@ -4,7 +4,7 @@ import {
   ThemeToggle,
   Toaster,
   Typography,
-  VStack,
+  VStack
 } from '@ledger-sync/app-ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
@@ -20,7 +20,7 @@ export function LinkUI() {
   )
 }
 
-export default function Home() {
+export default function LedgerScreen() {
   const router = useRouter()
   const {ledgerId} = router.query
 

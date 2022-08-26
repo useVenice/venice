@@ -1,9 +1,8 @@
-import {VStack} from '@ledger-sync/app-ui'
-import {Button, Input} from '@supabase/ui'
+import {Button, Input, VStack} from '@ledger-sync/app-ui'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
 
-export default function Home() {
+export default function HomeScreen() {
   const router = useRouter()
   const [userId, setUserId] = useState('')
   return (

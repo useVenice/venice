@@ -16,15 +16,15 @@ function App({Component, pageProps}: AppProps) {
       <ReactSupabaseProvider value={supabase}>
         <QueryClientProvider client={reactQueryClient}>
           <syncHooks.Provider queryClient={reactQueryClient}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            value={{
-              light: 'light',
-              dark: darkTheme.className,
-            }}>
-            <Component {...pageProps} />
-          </ThemeProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              value={{
+                light: 'light',
+                dark: darkTheme.className,
+              }}>
+              <Component {...pageProps} />
+            </ThemeProvider>
           </syncHooks.Provider>
         </QueryClientProvider>
       </ReactSupabaseProvider>
@@ -32,16 +32,16 @@ function App({Component, pageProps}: AppProps) {
   )
 }
 
-// export const WrappedAppNotWorkingYet = syncHooks.withLedgerSync({
-//   config() {
-//     return {
-//       // Improve typing to omit options.config.url, it is a noop
-//       url: 'http://localhost:3000/api',
-//       transformer: superjson,
-//       queryClientConfig: {defaultOptions: {queries: {staleTime: 60}}},
-//     }
-//   },
-//   ssr: true,
-// })(App)
+export const WrappedAppNotWorkingYet = syncHooks.withLedgerSync({
+  config() {
+    return {
+      // Improve typing to omit options.config.url, it is a noop
+      url: 'http://localhost:3000/api',
+      transformer: superjson,
+      queryClientConfig: {defaultOptions: {queries: {staleTime: 60}}},
+    }
+  },
+  ssr: true,
+})(App)
 
 export default App
