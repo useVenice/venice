@@ -1,3 +1,5 @@
+import HotglueConfig from '@hotglue/widget'
+import {Connections, useHotglue} from '@hotglue/widget'
 import {schema, supabase, useRealtime} from '@ledger-sync/app'
 import {
   Auth,
@@ -87,8 +89,25 @@ export function CreateWorkspaceForm() {
   )
 }
 
-export default function Home() {
+export function LinkUI() {
   const ls = syncHooks.useConnect()
+  const {openWidget} = useHotglue()
+
+  return (
+    <VStack css={{alignItems: 'center'}}>
+      <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
+        Connect
+      </Button>
+
+      <Button css={{marginBottom: '$2'}} onClick={() => openWidget()}>
+        HotGlue Connect
+      </Button>
+      <Connections tenant="test-user" />
+    </VStack>
+  )
+}
+
+export default function Home() {
   const {user} = Auth.useUser()
 
   const router = useRouter()
@@ -123,12 +142,13 @@ export default function Home() {
 
           <ThemeToggle />
         </HStack>
-
-        <VStack css={{alignItems: 'center'}}>
-          <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
-            Connect
-          </Button>
-        </VStack>
+        <HotglueConfig
+          config={{
+            apiKey: 'fuy1XpXlbb1EEDg8uJBzUSW1eXSjQdY7AWuaLwN8',
+            envId: 'dev.nelp.hotglue.alka.app',
+          }}>
+          <LinkUI />
+        </HotglueConfig>
 
         <VStack>
           {user ? (

@@ -7,15 +7,15 @@
     "typecheck": "yarn --cwd ../../ typecheck"
   },
   "dependencies": {
+    "@ledger-sync/app": "*",
     "@ledger-sync/app-config": "*",
     "@ledger-sync/app-ui": "*",
-    "@ledger-sync/app": "*",
     "@ledger-sync/util": "*",
     "@supabase/ui": "*",
-    "next-themes": "*",
     "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",
     "next": "12.1.6",
+    "next-themes": "*",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-query": "3.39.1",
