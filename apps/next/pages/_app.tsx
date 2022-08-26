@@ -9,14 +9,14 @@ import LayoutSidebar from './components/sidebar'
 
 const reactQueryClient = new QueryClient()
 
-export const syncHooks = makeSyncHooks(ledgerSyncConfig)
+// export const syncHooks = makeSyncHooks(ledgerSyncConfig)
 
 function App({Component, pageProps}: AppProps) {
   return (
     <Auth.UserContextProvider supabaseClient={supabase}>
       <ReactSupabaseProvider value={supabase}>
         <QueryClientProvider client={reactQueryClient}>
-          <syncHooks.Provider queryClient={reactQueryClient}>
+          {/* <syncHooks.Provider queryClient={reactQueryClient}> */}
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -28,23 +28,23 @@ function App({Component, pageProps}: AppProps) {
                 <Component {...pageProps} />
               </LayoutSidebar>
             </ThemeProvider>
-          </syncHooks.Provider>
+          {/* </syncHooks.Provider> */}
         </QueryClientProvider>
       </ReactSupabaseProvider>
     </Auth.UserContextProvider>
   )
 }
 
-export const WrappedAppNotWorkingYet = syncHooks.withLedgerSync({
-  config() {
-    return {
-      // Improve typing to omit options.config.url, it is a noop
-      url: 'http://localhost:3000/api',
-      transformer: superjson,
-      queryClientConfig: {defaultOptions: {queries: {staleTime: 60}}},
-    }
-  },
-  ssr: true,
-})(App)
+// export const WrappedAppNotWorkingYet = syncHooks.withLedgerSync({
+//   config() {
+//     return {
+//       // Improve typing to omit options.config.url, it is a noop
+//       url: 'http://localhost:3000/api',
+//       transformer: superjson,
+//       queryClientConfig: {defaultOptions: {queries: {staleTime: 60}}},
+//     }
+//   },
+//   ssr: true,
+// })(App)
 
 export default App

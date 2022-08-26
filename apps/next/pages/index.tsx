@@ -1,4 +1,4 @@
-import HotglueConfig from '@hotglue/widget'
+// import HotglueConfig from '@hotglue/widget'
 import {Connections, useHotglue} from '@hotglue/widget'
 import {schema, supabase, useRealtime} from '@ledger-sync/app'
 import {
@@ -15,7 +15,12 @@ import {Button, IconDelete, Input} from '@supabase/ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import React, {useState} from 'react'
-import {syncHooks} from './_app'
+// import {syncHooks} from './_app'
+
+
+import dynamic from 'next/dynamic'
+const HotglueConfig = dynamic(() => import('@hotglue/widget'), { ssr: false })
+
 
 export function WorkspaceList() {
   const [res, refetch] = useRealtime<schema.WorkspaceReadT>('workspace', {})
@@ -90,14 +95,14 @@ export function CreateWorkspaceForm() {
 }
 
 export function LinkUI() {
-  const ls = syncHooks.useConnect()
+  // const ls = syncHooks.useConnect()
   const {openWidget} = useHotglue()
 
   return (
     <VStack css={{alignItems: 'center'}}>
-      <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
+      {/* <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
         Connect
-      </Button>
+      </Button> */}
 
       <Button css={{marginBottom: '$2'}} onClick={() => openWidget()}>
         HotGlue Connect
