@@ -26,12 +26,4 @@ export type { TransactionReadT } from './transactionRead';
 export { TransactionRead } from './transactionRead';
 export type { TransactionWriteT } from './transactionWrite';
 export { TransactionWrite } from './transactionWrite';
-export type { WorkspaceReadT } from './workspaceRead';
-export { WorkspaceRead } from './workspaceRead';
-export type { WorkspaceWriteT } from './workspaceWrite';
-export { WorkspaceWrite } from './workspaceWrite';
-export type { WorkspaceUserReadT } from './workspaceUserRead';
-export { WorkspaceUserRead } from './workspaceUserRead';
-export type { WorkspaceUserWriteT } from './workspaceUserWrite';
-export { WorkspaceUserWrite } from './workspaceUserWrite';
 

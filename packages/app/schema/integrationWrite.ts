@@ -9,7 +9,7 @@ const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
 
 export const IntegrationWrite = z.object({
   id: z.string().optional(),
-  workspace_id: z.string(),
+  ledger_id: z.string(),
   config: jsonSchema.optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
