@@ -87,7 +87,7 @@ export function CreateWorkspaceForm() {
 }
 
 export default function Home() {
-  // const ls = syncHooks.useConnect()
+  const ls = syncHooks.useConnect()
   const {user} = Auth.useUser()
 
   return (
@@ -114,11 +114,11 @@ export default function Home() {
           <ThemeToggle />
         </HStack>
 
-        {/* <VStack css={{alignItems: 'center'}}>
+        <VStack css={{alignItems: 'center'}}>
           <Button css={{marginBottom: '$2'}} onClick={ls.showConnect}>
             Connect
           </Button>
-        </VStack> */}
+        </VStack>
 
         <VStack>
           {user ? (

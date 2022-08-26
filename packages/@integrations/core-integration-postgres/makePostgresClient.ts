@@ -9,11 +9,12 @@ export const zPgConfig = z.object({
   databaseUrl: z.string(),
   migrationsPath: z.string().optional(),
   migrationTableName: z.string().optional(),
+  runMigration: z.boolean().optional(),
 })
 
 export const makePostgresClient = zFunction(
   zPgConfig,
-  ({databaseUrl, migrationsPath, migrationTableName}) => {
+  ({databaseUrl, migrationsPath, migrationTableName, runMigration}) => {
     const {createPool, sql} = $slonik()
     const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
@@ -33,14 +34,16 @@ export const makePostgresClient = zFunction(
           // one document at a time...
           connectionTimeout: 60 * 1000, // Long timeout
         })
-        console.log('Will migrate with', {migrationsPath})
-        const migrator = new SlonikMigrator({
-          migrationsPath: migrationsPath ?? __dirname + '/migrations',
-          migrationTableName: migrationTableName ?? 'migrations',
-          slonik: pool,
-          logger: console,
-        })
-        await migrator.up()
+        if (runMigration) {
+          console.log('Will migrate with', {migrationsPath})
+          const migrator = new SlonikMigrator({
+            migrationsPath: migrationsPath ?? __dirname + '/migrations',
+            migrationTableName: migrationTableName ?? 'migrations',
+            slonik: pool,
+            logger: console,
+          })
+          await migrator.up()
+        }
         return pool
       },
       {isPromise: true},
