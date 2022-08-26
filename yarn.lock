@@ -2373,7 +2373,7 @@
     "@supabase/realtime-js" "^1.7.4"
     "@supabase/storage-js" "^1.7.2"
 
-"@supabase/ui@*", "@supabase/ui@0.36.5":
+"@supabase/ui@0.36.5":
   version "0.36.5"
   resolved "https://registry.yarnpkg.com/@supabase/ui/-/ui-0.36.5.tgz#10ee6925bd6e529dbd5678bc457bff26ee71120a"
   integrity sha512-SdjUf20sCVw0Ap+x4YfGmjMunUz9ZEipc0bwGxj2f5pEWf12qrDQyhhMcoWCWgjWneITfrjFcejV0jA9zTuiEw==
@@ -7951,7 +7951,7 @@ nestie@1.0.2:
   resolved "https://registry.yarnpkg.com/nestie/-/nestie-1.0.2.tgz#a55860ac6d4e07ebcf55d7aeb2db28d32fc4baab"
   integrity sha512-UYn4gLUKrrPGZ8NKsM7TxP1qbWfdtEY587Uoje05YbO1rEJBS0wox+nCMKaBNe+h8Rp5PCxy70gmUlR2ns2nrQ==
 
-next-themes@*, next-themes@0.2.0:
+next-themes@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/next-themes/-/next-themes-0.2.0.tgz#fdc507f61e95b3ae513dee8d4783bcec8c02e3a3"
   integrity sha512-myhpDL4vadBD9YDSHiewqvzorGzB03N84e+3LxCwHRlM/hiBOaW+UsKsQojQAzC7fdcJA0l2ppveXcYaVV+hxQ==

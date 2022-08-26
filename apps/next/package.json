@@ -16,7 +16,6 @@
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "react-query": "3.39.1",
     "superjson": "1.9.1"
   },
   "devDependencies": {
