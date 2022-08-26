@@ -8,14 +8,14 @@ import superjson from 'superjson'
 
 const reactQueryClient = new QueryClient()
 
-// export const syncHooks = makeSyncHooks(ledgerSyncConfig)
+export const syncHooks = makeSyncHooks(ledgerSyncConfig)
 
 function App({Component, pageProps}: AppProps) {
   return (
     <Auth.UserContextProvider supabaseClient={supabase}>
       <ReactSupabaseProvider value={supabase}>
         <QueryClientProvider client={reactQueryClient}>
-          {/* <syncHooks.Provider queryClient={reactQueryClient}> */}
+          <syncHooks.Provider queryClient={reactQueryClient}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -25,7 +25,7 @@ function App({Component, pageProps}: AppProps) {
             }}>
             <Component {...pageProps} />
           </ThemeProvider>
-          {/* </syncHooks.Provider> */}
+          </syncHooks.Provider>
         </QueryClientProvider>
       </ReactSupabaseProvider>
     </Auth.UserContextProvider>
