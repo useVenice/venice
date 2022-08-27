@@ -15,7 +15,6 @@ import {
  *
  */
 
-
 /**
  * TODO: We should add a `change` type here, as `null` could also be a valid value
  * Actually, in the simplest form we should just have a [id, data] without even
@@ -38,7 +37,6 @@ export type SyncOperation<
   TSrcSyncOptions = JsonObject,
   TDestSyncOptions = JsonObject,
 > =
-  | {type: 'init'}
   // aka meta? Or should metaUpdate be `data` also?
   // Should we split `metaUpdate` into connectionUpdate vs `stateUpdate`?
   | {
@@ -55,9 +53,8 @@ export type SyncOperation<
       destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestSyncOptions>>
     }
   | {type: 'data'; data: NullableEntity<TData>}
-  | {type: 'commit'}
+  | {type: 'commit'} // Do we still need this if we have separate `STATE` message?
   | {type: 'ready'}
-  | {type: 'close'}
 
 export type AnySyncOperation = MergeUnion<SyncOperation>
 
