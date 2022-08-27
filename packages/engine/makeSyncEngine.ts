@@ -5,7 +5,6 @@ import {
   KVStore,
   Link,
   LinkFactory,
-  sync,
   WebhookInput,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
@@ -28,6 +27,7 @@ import {
   ParsedPipeline,
   PipelineInput,
 } from './makeSyncHelpers'
+import {sync} from './sync'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -63,7 +63,7 @@ export interface SyncCoreConfig<
       }
 }
 
-export const makeCoreSync = <
+export const makeSyncEngine = <
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
@@ -101,7 +101,7 @@ export const makeCoreSync = <
     }
   }
 
-  const coreSync = {
+  const syncEngine = {
     providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
@@ -164,7 +164,7 @@ export const makeCoreSync = <
       }
       await Promise.all(
         pipelines.map((pipe) =>
-          coreSync.sync.impl({
+          syncEngine.sync.impl({
             ...pipe,
             src: {...pipe.src, _source$: conn._source$},
             dest: {...pipe.dest, _destination$$: conn._destination$$},
@@ -186,7 +186,7 @@ export const makeCoreSync = <
         return 'Noop'
       }
       const cs = await p.postConnect(p.def.connectOutput?.parse(input), config)
-      await coreSync.syncConnection.impl(fromConnectedSource(int, cs))
+      await syncEngine.syncConnection.impl(fromConnectedSource(int, cs))
 
       console.log('didConnect finish', p.name, input)
       return 'Connection Success'
@@ -205,7 +205,7 @@ export const makeCoreSync = <
       )
       await Promise.all(
         css.map((cs) =>
-          coreSync.syncConnection.impl(fromConnectedSource(int, cs)),
+          syncEngine.syncConnection.impl(fromConnectedSource(int, cs)),
         ),
       )
     }),
@@ -215,22 +215,22 @@ export const makeCoreSync = <
 
   // This is a single function for now because we can't figure out how to type
   // makeLedgerSyncNextRouter separately
-  const router = routerFromZFunctionMap(makeRouter(), coreSync)
+  const router = routerFromZFunctionMap(makeRouter(), syncEngine)
     .query('debug', {input: z.string(), resolve: ({input}) => input})
     .merge('meta/', routerFromZFunctionMap(makeRouter(), metaStore))
   // router.createCaller().query('connectionsget')
-  return [coreSync, router, metaStore] as const
+  return [syncEngine, router, metaStore] as const
 }
 
 /** Only purpose of this is to support type inference */
-makeCoreSync.config = <
+makeSyncEngine.config = <
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(
   config: SyncCoreConfig<TProviders, TLinks>,
 ) => config
 
-type SyncRouter = ReturnType<typeof makeCoreSync>[1]
+type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
 type HandleWebhookInput = inferProcedureInput<
   SyncRouter['_def']['mutations']['handleWebhook']
 >

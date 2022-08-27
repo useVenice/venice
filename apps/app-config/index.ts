@@ -1,4 +1,4 @@
-import {inferProcedureInput, makeCoreSync} from '@ledger-sync/engine'
+import {inferProcedureInput, makeSyncEngine} from '@ledger-sync/engine'
 import {ledgerSyncConfig} from './ledgerSync.config'
 
 export * from '@ledger-sync/cdk-core'
@@ -7,7 +7,7 @@ export * from './ledgerSync.config'
 export * from './constants'
 
 export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
-  makeCoreSync(ledgerSyncConfig)
+  makeSyncEngine(ledgerSyncConfig)
 export type LedgerSyncRouter = typeof ledgerSyncRouter
 export type LedgerSyncInput = inferProcedureInput<
   LedgerSyncRouter['_def']['mutations']['sync']

@@ -8,7 +8,7 @@ import {
 } from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {debugProvider, logLink} from '@ledger-sync/cdk-core'
-import {makeCoreSync} from '@ledger-sync/engine'
+import {makeSyncEngine} from '@ledger-sync/engine'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {importProvider} from '@ledger-sync/integration-import'
@@ -59,7 +59,7 @@ const getKvStore = () => {
   }
 }
 
-export const ledgerSyncConfig = makeCoreSync.config({
+export const ledgerSyncConfig = makeSyncEngine.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: [

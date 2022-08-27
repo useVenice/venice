@@ -11,7 +11,7 @@ import {
   zSource,
 } from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
-import type {SyncCoreConfig} from './makeCoreSync'
+import type {SyncCoreConfig} from './makeSyncEngine'
 import {makeMetaStore} from './makeMetaStore'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never

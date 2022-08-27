@@ -5,7 +5,7 @@ import {
 } from '@ledger-sync/cdk-core'
 import {
   IntegrationInput,
-  makeCoreSync,
+  makeSyncEngine,
   SyncCoreConfig,
 } from '@ledger-sync/engine'
 import {NonNullableOnly, R} from '@ledger-sync/util'
@@ -20,9 +20,9 @@ export function makeSyncHooks<
   TLinks extends Record<string, LinkFactory>,
 >(config: SyncCoreConfig<T, TLinks>) {
   console.log('makeSyncHooks', config)
-  const [sc, router] = makeCoreSync(config)
+  const [sc, router] = makeSyncEngine(config)
   // Not sure why we cannot just do typeof router , oh well
-  type Router = ReturnType<typeof makeCoreSync>[1]
+  type Router = ReturnType<typeof makeSyncEngine>[1]
 
   // https://stackoverflow.com/questions/44342226/next-js-error-only-absolute-urls-are-supported
   // This relative url will not work in server-side-rendering.
