@@ -11,7 +11,6 @@ import {
 import {NonNullableOnly, R} from '@ledger-sync/util'
 import {withTRPC} from '@trpc/next'
 import {createReactQueryHooks} from '@trpc/react'
-import {init as initCommandBar} from 'commandbar'
 import React from 'react'
 
 /** TODO: Should this be useLedgerSync or useConnect or useSync? */
@@ -46,7 +45,7 @@ export function makeSyncHooks<
       config: (info) => ({...options.config(info), url: routerUrl}),
     })
 
-  function useConnect(colorScheme?: 'light' | 'dark') {
+  function useConnect() {
     console.log('useConnect')
 
     // This is rather annoying... needing to have two array wrappers. How do we fix it?
@@ -56,8 +55,6 @@ export function makeSyncHooks<
       p.name,
       p.useConnectHook?.(),
     ])
-
-    const commandBarOrgId = '6df4d085'
 
     const connect = React.useCallback(
       async function (
@@ -76,63 +73,8 @@ export function makeSyncHooks<
       [hooks],
     )
 
-    const showConnect = React.useCallback(
-      () => window.CommandBar.execute('connect'),
-      [],
-    )
-
-    React.useEffect(() => {
-      initCommandBar(commandBarOrgId)
-      // TODO: Figure out how to better set programmatic command availability
-    }, [])
-
-    React.useEffect(() => {
-      window.CommandBar.setTheme(colorScheme ?? 'light')
-    }, [colorScheme])
-
-    React.useEffect(() => {
-      window.CommandBar.addCommand({
-        text: 'Connect',
-        name: 'connect',
-        arguments: {
-          input: {
-            type: 'context',
-            value: 'preConnectInputs',
-            order_key: 0,
-            label: 'Select from the list below',
-          },
-        },
-        template: {
-          type: 'callback',
-          value: 'startConnect',
-          operation: 'blank',
-        },
-        hotkey_mac: 'c',
-        hotkey_win: 'c',
-      })
-      window.CommandBar.addCallback(
-        'startConnect',
-        ({input}: {input: typeof preConnectInputs[number]}) => {
-          console.log('startConnect', input)
-          connect(input.int, input)
-        },
-      )
-      window.CommandBar.addContext('preConnectInputs', preConnectInputs, {
-        quickFindOptions: {quickFind: true},
-        renderOptions: {labelKey: 'label'},
-      })
-
-      return () => {
-        window.CommandBar.removeCommand('connect')
-      }
-    }, [connect])
-
-    React.useEffect(() => {
-      window.CommandBar.boot('anonymous', {})
-    }, [])
-
     // Figure out how to memo this would be ideal...
-    return {connect, showConnect, listIntegrationsRes: res}
+    return {connect, listIntegrationsRes: res}
   }
 
   const preConnectInputs = sc.providers.flatMap((p) =>

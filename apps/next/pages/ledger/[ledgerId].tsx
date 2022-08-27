@@ -16,7 +16,6 @@ export function LinkUI() {
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
   return (
     <VStack css={{alignItems: 'center'}}>
-      <Button onClick={ls.showConnect}>Connect</Button>
       {ls.listIntegrationsRes.data?.map((opt) => (
         <Button
           key={opt.key}
