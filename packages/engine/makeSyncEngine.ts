@@ -112,7 +112,6 @@ export const makeSyncEngine = <
   }
 
   const syncEngine = {
-    providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
     listPreConnectOptions: zFunction(
@@ -142,6 +141,22 @@ export const makeSyncEngine = <
                 provider: int.provider.name,
               },
             })),
+          )
+      },
+    ),
+    listConnections: zFunction(
+      z.object({ledgerId: z.string().nullish()}).optional(),
+      async ({ledgerId} = {}) => {
+        // Add info about what it takes to `reconnect` here for connections which
+        // has disconnected
+        const stuff = await metaStore.list<[string, Record<string, unknown>]>()
+        return stuff
+          .map(([id, value]) => ({...value, id}))
+          .filter((item) => item.id.startsWith('conn'))
+          .filter(
+            (item) =>
+              !ledgerId ||
+              (item as Record<string, unknown>)['ledgerId'] === ledgerId,
           )
       },
     ),

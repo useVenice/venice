@@ -114,6 +114,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     postSourceLink,
     postDestinationLink,
     get,
+    list,
     getIntegration: async (id: string): Promise<RawIntegration<T> | null> => {
       const config = await get<RawIntegration<T>['config']>(id)
       return config ? {config} : null
@@ -132,10 +133,6 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
         (p) => p.src?.id === connectionId || p.dest?.id === connectionId,
       )
     },
-    listConnections: zFunction(async () => {
-      return await list()
-    }),
     kvStore,
-    // list: zFunction(() => kvStore.list()),
   }
 }
