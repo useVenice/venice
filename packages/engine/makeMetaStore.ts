@@ -1,5 +1,5 @@
 import {AnySyncProvider, handlersLink, KVStore} from '@ledger-sync/cdk-core'
-import {cast, deepMerge, R, z} from '@ledger-sync/util'
+import {cast, deepMerge, R, z, zFunction} from '@ledger-sync/util'
 
 type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
 
@@ -130,6 +130,9 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
         (p) => p.src?.id === connectionId || p.dest?.id === connectionId,
       )
     },
+    listConnections: zFunction(async () => {
+      return await list()
+    }),
     kvStore,
     // list: zFunction(() => kvStore.list()),
   }

@@ -103,8 +103,7 @@ export const makeSyncEngine = <
     providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
-    // TODO: Rename me from listIntegrations
-    listIntegrations: zFunction(
+    listPreConnectOptions: zFunction(
       zConnectContext.extend({
         type: z.enum(['source', 'destination']).nullish(),
       }),

@@ -30,7 +30,7 @@ export const makePostgresKVStore = zFunction(
       const {getPool, sqlMeta} = getDeps()
       const pool = await getPool()
       return pool
-        .many(sqlMeta`SELECT id, data FROM meta`)
+        .any(sqlMeta`SELECT id, data FROM meta`)
         .then((rows) =>
           rows.map((r) => [r.id, r.data as Record<string, unknown>] as const),
         )

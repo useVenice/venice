@@ -6,7 +6,7 @@ import {LSProvider} from './LSProvider'
 
 export function useLedgerSync(ctx: ConnectContext) {
   const {hooks, client, trpc} = LSProvider.useContext()
-  const res = trpc.useQuery(['listIntegrations', [ctx]])
+  const res = trpc.useQuery(['listPreConnectOptions', [ctx]])
 
   const connect = React.useCallback(
     async function (
