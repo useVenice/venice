@@ -1,6 +1,6 @@
-import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-import {makeSyncProvider, } from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import React from 'react'
 import Stripe from 'stripe'
 import {makeStripeClient, zModeName, zStripeConfig} from './StripeClient'
@@ -44,11 +44,11 @@ const def = makeSyncProvider.def({
     }),
   ]),
   sourceSyncOptions: ledgerSyncProviderBase.def.sourceSyncOptions
-  .removeDefault()
-  .extend({
-    transactionSyncCursor: z.string().nullish(),
-  })
-  .default({})
+    .removeDefault()
+    .extend({
+      transactionSyncCursor: z.string().nullish(),
+    })
+    .default({}),
 })
 
 export const stripeProvider = makeSyncProvider({
@@ -70,7 +70,7 @@ export const stripeProvider = makeSyncProvider({
           },
         },
       }),
-      transaction:({entity: t}) => ({
+      transaction: ({entity: t}) => ({
         id: t.id,
         entityName: 'transaction',
         entity: {
@@ -83,7 +83,7 @@ export const stripeProvider = makeSyncProvider({
             },
           }),
         },
-      })
+      }),
     },
   }),
   getPreConnectInputs: (_type) =>
@@ -101,7 +101,6 @@ export const stripeProvider = makeSyncProvider({
   //   }),
 
   useConnectHook: (_type) => {
-
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
       new Deferred<typeof def['_types']['connectOutput']>(),
@@ -122,20 +121,20 @@ export const stripeProvider = makeSyncProvider({
     }
   },
 
-  postConnect:  async (input, config) => {
+  postConnect: async (input, config) => {
     const settings = def._type('connectionSettings', {
       secretKey: input.secretKey ?? '',
       accountId: input.accountId ?? '',
     })
 
-    const source$: rxjs.Observable<StripeSyncOperation> = stripeProvider.sourceSync({settings, config, options: {}})
+    const source$: rxjs.Observable<StripeSyncOperation> =
+      stripeProvider.sourceSync({settings, config, options: {}})
 
     return {
-      connectionId: `conn_stripe_${input.secretKey}`,
+      externalId: input.secretKey ?? '',
       settings,
-      source$
+      source$,
     }
-
   },
   /*
   rxjs.of(input).pipe(
@@ -148,7 +147,7 @@ export const stripeProvider = makeSyncProvider({
         stripeProvider.sourceSync({settings, options: settings})
 
       return  {
-        connectionId: ``,
+        externalId: ``,
         settings,
         source$: rxjs.concat(
 
@@ -159,7 +158,7 @@ export const stripeProvider = makeSyncProvider({
     ),
     */
 
-  sourceSync: ({config:_config, settings,}) => {
+  sourceSync: ({config: _config, settings}) => {
     const secretKey = settings.secretKey ?? ''
     const accountId = settings.accountId ?? ''
     const client = makeStripeClient({secretKey, accountId})

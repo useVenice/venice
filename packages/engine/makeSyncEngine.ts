@@ -4,6 +4,7 @@ import {
   KVStore,
   Link,
   LinkFactory,
+  makeCoreId,
   zConnectContext,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
@@ -80,7 +81,7 @@ export const makeSyncEngine = <
       defaultPipeline,
     })
 
-  function fromConnectedSource(
+  function parsedConn(
     int: ParsedInt,
     cs: ConnectedSource<TProviders[number]['def']>,
   ): ParsedConn {
@@ -88,12 +89,16 @@ export const makeSyncEngine = <
       provider: int.provider,
       integrationId: int.id,
       config: int.config,
-      id: cs.connectionId,
+      id: makeCoreId(
+        'conn',
+        int.provider.name,
+        cs.externalId,
+      ) as ParsedConn['id'],
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
       _source$: cs.source$.pipe(
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
-        Rx.startWith(int.provider.def._opMeta(cs.connectionId, cs.settings)),
+        Rx.startWith(int.provider.def._opMeta(cs.externalId, cs.settings)),
       ),
       _destination$$: undefined,
     }
@@ -156,7 +161,10 @@ export const makeSyncEngine = <
 
       await sync({
         // Raw Source, may come from fs, firestore or postgres
-        source: source$.pipe(metaStore.postSourceLink(pipeline)),
+        source: source$.pipe(
+          // logLink({prefix: 'postSource', verbose: true}),
+          metaStore.postSourceLink(pipeline),
+        ),
         links: getLinksForPipeline?.(pipeline) ?? links,
         // WARNING: It is insanely unclear to me why moving `metaStore.link`
         // to after provider.destinationSync makes all the difference.
@@ -215,7 +223,7 @@ export const makeSyncEngine = <
         return 'Noop'
       }
       const cs = await p.postConnect(p.def.connectOutput?.parse(input), config)
-      await syncEngine.syncConnection.impl(fromConnectedSource(int, cs))
+      await syncEngine.syncConnection.impl(parsedConn(int, cs))
 
       console.log('didConnect finish', p.name, input)
       return 'Connection Success'
@@ -233,9 +241,7 @@ export const makeSyncEngine = <
         int.config,
       )
       await Promise.all(
-        css.map((cs) =>
-          syncEngine.syncConnection.impl(fromConnectedSource(int, cs)),
-        ),
+        css.map((cs) => syncEngine.syncConnection.impl(parsedConn(int, cs))),
       )
     }),
   }

@@ -134,7 +134,7 @@ export const wiseProvider = makeSyncProvider({
       {settings, options: {}},
     )
     return {
-      connectionId: `conn_wise_${input.apiToken}`,
+      externalId: input.apiToken ?? '',
       settings,
       source$,
     }

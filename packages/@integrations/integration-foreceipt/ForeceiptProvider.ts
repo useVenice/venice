@@ -178,7 +178,7 @@ export const foreceiptProvider = makeSyncProvider({
   //     foreceiptProvider.sourceSync({settings, config, options: {}})
 
   //   return {
-  //     connectionId: `conn_foreceipt_${input._id}`,
+  //     externalId: `${input._id}`,
   //     settings,
   //     source$,
   //   }

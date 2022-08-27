@@ -249,13 +249,12 @@ export const plaidProviderNext = makeSyncProvider({
       plaidProviderNext.sourceSync({config, settings, options: {}})
     // Emit itemId
     return {
-      connectionId: `conn_plaid_${res.item_id}`,
+      externalId: res.item_id,
       settings,
       source$: rxjs.concat(
-        rxjs.from([
-          def._opMeta(res.item_id, settings),
-          ...(meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),
-        ]),
+        rxjs.from(
+          (meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),
+        ),
         source$,
       ),
     }

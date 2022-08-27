@@ -47,7 +47,7 @@ export interface PreConnOptions<T = unknown> {
 
 export interface ConnectedSource<T extends AnyProviderDef> {
   // Should we instead use mapStandardConnection for this?
-  connectionId: ConnId<T['_types']['name']> // Add to _type
+  externalId: string
   settings: T['_types']['connectionSettings']
   source$: Source<T['_types']['sourceOutputEntity']>
 }
@@ -138,6 +138,7 @@ function makeSyncProviderDef<
       sourceSyncOptions?: OpMeta['sourceSyncOptions'],
       destinationSyncOptions?: OpMeta['destinationSyncOptions'],
     ): Op => ({
+      // We don't prefix in `_opData`, should we actually prefix here?
       id: makeCoreId('conn', schemas.name.value, id),
       settings,
       sourceSyncOptions,

@@ -151,7 +151,7 @@ export const rampProvider = makeSyncProvider({
       {settings, options: {}},
     )
     return {
-      connectionId: `conn_ramp_${input.clientId}`,
+      externalId: input.clientId ?? '',
       settings,
       source$,
     }

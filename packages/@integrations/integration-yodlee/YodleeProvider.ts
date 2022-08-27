@@ -180,7 +180,7 @@ export const yodleeProviderNext = makeSyncProvider({
     const source$: rxjs.Observable<YodleeSyncOperation> =
       yodleeProviderNext.sourceSync({settings, config, options: {}})
     return {
-      connectionId: `conn_yodlee_${input._id}`,
+      externalId: input._id,
       settings,
       source$,
     }

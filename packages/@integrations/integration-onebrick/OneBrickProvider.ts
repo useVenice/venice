@@ -173,7 +173,7 @@ export const oneBrickProvider = makeSyncProvider({
 
     return [
       {
-        connectionId: `conn_onebrick_${md5Hash(accessToken)}`,
+        externalId: md5Hash(accessToken),
         settings,
         source$: sync$,
       },
