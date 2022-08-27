@@ -10,7 +10,7 @@ import {
   zDestination,
   zSource,
 } from '@ledger-sync/cdk-core'
-import {deepMerge, mapDeep, R, z, zFunction, zGuard} from '@ledger-sync/util'
+import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
 import {makeMetaStore} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
 

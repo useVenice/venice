@@ -109,8 +109,7 @@ export const makeSyncEngine = <
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
-            id: int.id,
-            provider: int.provider.name,
+            ...int,
             isSource: !!int.provider.sourceSync,
             isDestination: !!int.provider.destinationSync,
           }))
@@ -119,6 +118,17 @@ export const makeSyncEngine = <
               !type ||
               (type === 'source' && int.isSource) ||
               (type === 'destination' && int.isDestination),
+          )
+          .flatMap((int) =>
+            (int.provider.getPreConnectInputs?.(undefined) ?? [{}]).map(
+              (option) => ({
+                ...option,
+                int: {
+                  id: int.id,
+                  provider: int.provider.name,
+                },
+              }),
+            ),
           )
       },
     ),

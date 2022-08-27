@@ -17,10 +17,14 @@ export function LinkUI() {
   return (
     <VStack css={{alignItems: 'center'}}>
       <Button onClick={ls.showConnect}>Connect</Button>
-      {ls.listIntegrationsRes.data?.map((int) => (
-        <Typography.Text key={int.id ?? int.provider}>
-          {int.id} {int.provider}
-        </Typography.Text>
+      {ls.listIntegrationsRes.data?.map((opt) => (
+        <Button
+          key={opt.key}
+          onClick={() => {
+            ls.connect(opt.int, opt)
+          }}>
+          {opt.int.id} {opt.int.provider} {opt.label}
+        </Button>
       ))}
     </VStack>
   )

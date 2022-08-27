@@ -4,14 +4,14 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
+    "@ledger-sync/app-ui": "*",
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/engine": "*",
     "@ledger-sync/util": "*",
-    "@trpc/react": "9.26.0",
     "@trpc/next": "9.26.0",
+    "@trpc/react": "9.26.0",
     "commandbar": "1.6.13",
     "react": "17.0.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
