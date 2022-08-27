@@ -37,10 +37,8 @@ export type SyncOperation<
   TSrcSyncOptions = JsonObject,
   TDestSyncOptions = JsonObject,
 > =
-  // aka meta? Or should metaUpdate be `data` also?
-  // Should we split `metaUpdate` into connectionUpdate vs `stateUpdate`?
   | {
-      type: 'metaUpdate'
+      type: 'connUpdate'
       /**
        * Should be specific that this is the `connectionId`
        * How do we persist settings / options updates if no ids are part of the input?
@@ -48,12 +46,16 @@ export type SyncOperation<
        */
       id: `conn_${string}`
       settings?: ObjectPartialDeep<NoInfer<TSettings>>
-      /** This may be either the sourceOptions or destinationOptions */
+    }
+  | {
+      type: 'stateUpdate'
+      // TODO: We should separate state from options, and perhaps make state
+      // less black box also, see airbyte protocol v2 for inspiration
       sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcSyncOptions>>
       destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestSyncOptions>>
     }
-  | {type: 'data'; data: NullableEntity<TData>}
-  | {type: 'commit'} // Do we still need this if we have separate `STATE` message?
+  | {type: 'data'; data: NullableEntity<TData>} // Rename entityName to `stream` and lift to top level?
+  | {type: 'commit'} // Do we still need this if we have separate `stateUpdate` message?
   | {type: 'ready'}
 
 export type AnySyncOperation = MergeUnion<SyncOperation>

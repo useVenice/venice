@@ -211,7 +211,7 @@ const opData = <K extends StripeEntity['entityName']>(
 // Will use it once we know how to handle meta data for stripe
 // const opMeta = (id: string, data: Partial<StripeConn>) =>
 //   ({
-//     type: 'metaUpdate',
+//     type: 'connUpdate',
 //     id: makeStandardId('conn', kStripe, id),
 //     data,
 //   } as StripeSyncOperation)

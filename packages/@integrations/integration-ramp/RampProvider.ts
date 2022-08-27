@@ -227,7 +227,7 @@ const opData = <K extends RampEntity['entityName']>(
 
 const opMeta = (id: string, sourceSyncOptions: Partial<RampSrcSyncOptions>) =>
   ({
-    type: 'metaUpdate',
+    type: 'connUpdate',
     id: makeStandardId('conn', kRamp, id),
     sourceSyncOptions,
   } as RampSyncOperation)

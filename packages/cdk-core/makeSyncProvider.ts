@@ -121,7 +121,8 @@ function makeSyncProviderDef<
     _types['destinationSyncOptions']
   >
   type OpData = Extract<Op, {type: 'data'}>
-  type OpMeta = Extract<Op, {type: 'metaUpdate'}>
+  type OpConn = Extract<Op, {type: 'connUpdate'}>
+  type OpState = Extract<Op, {type: 'stateUpdate'}>
   return {
     ...schemas,
     /** Helpers. Would be great if they could be extracted to separate namespace from schemas */
@@ -133,18 +134,19 @@ function makeSyncProviderDef<
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opMeta: (
-      id: string,
-      settings: OpMeta['settings'],
-      sourceSyncOptions?: OpMeta['sourceSyncOptions'],
-      destinationSyncOptions?: OpMeta['destinationSyncOptions'],
-    ): Op => ({
+    _opConn: (id: string, settings: OpConn['settings']): Op => ({
       // We don't prefix in `_opData`, should we actually prefix here?
       id: makeCoreId('conn', schemas.name.value, id),
       settings,
+      type: 'connUpdate',
+    }),
+    _opState: (
+      sourceSyncOptions?: OpState['sourceSyncOptions'],
+      destinationSyncOptions?: OpState['destinationSyncOptions'],
+    ): Op => ({
       sourceSyncOptions,
       destinationSyncOptions,
-      type: 'metaUpdate',
+      type: 'stateUpdate',
     }),
     _opData: <K extends OpData['data']['entityName']>(
       entityName: K,

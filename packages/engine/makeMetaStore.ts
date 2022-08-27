@@ -53,7 +53,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
   // for the future
   const postSourceLink = (_pipe: {id?: string | null}) =>
     handlersLink({
-      metaUpdate: async (op) => {
+      connUpdate: async (op) => {
         const {id, settings = {}} = op
         console.log(`[postSourceLink] patch`, id, R.keys(settings))
         await patch(id, settings)
@@ -64,28 +64,27 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
 
   const postDestinationLink = (pipe: {id?: string | null}) =>
     handlersLink({
-      metaUpdate: async (op) => {
-        const {
-          id,
-          settings = {},
-          sourceSyncOptions = {},
-          destinationSyncOptions = {},
-        } = op
-        console.log(`[postDestinationLink] patch`, pipe.id, {
+      connUpdate: async (op) => {
+        const {id, settings = {}} = op
+        console.log(`[postDestinationLink] connUpdate`, pipe.id, {
           connectionId: id,
           pipelineId: pipe.id,
           settings: R.keys(settings),
-          sourceSyncOptions: R.keys(sourceSyncOptions),
-          destinationSyncOptions: R.keys(destinationSyncOptions),
         })
-        await Promise.all([
-          patch(id, settings),
-          pipe.id &&
-            patch(pipe.id, {
-              src: {options: sourceSyncOptions},
-              dest: {options: destinationSyncOptions},
-            }),
-        ])
+        await patch(id, settings)
+        return op
+      },
+      stateUpdate: async (op) => {
+        if (pipe.id) {
+          console.log(`[postDestinationLink] stateUpdate`, pipe.id, {
+            sourceSyncOptions: R.keys(op.sourceSyncOptions ?? {}),
+            destinationSyncOptions: R.keys(op.destinationSyncOptions ?? {}),
+          })
+          await patch(pipe.id, {
+            src: {options: op.sourceSyncOptions},
+            dest: {options: op.destinationSyncOptions},
+          })
+        }
         return op
       },
     })

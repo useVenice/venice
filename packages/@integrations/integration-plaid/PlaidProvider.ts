@@ -268,7 +268,7 @@ export const plaidProviderNext = makeSyncProvider({
       const accountIds = options.accountIds?.length ? options.accountIds : null
       const {item, status} = await client.itemGet(accessToken)
       const {item_id: itemId} = item
-      yield [def._opMeta(itemId, {item, status, itemId, accessToken})]
+      yield [def._opConn(itemId, {item, status, itemId, accessToken})]
 
       // Sync accounts
       const {accounts} = await client.accountsGet({
@@ -297,12 +297,7 @@ export const plaidProviderNext = makeSyncProvider({
             R.compact,
             R.map((id) => def._opData('transaction', id, null)),
           ),
-          def._opMeta(
-            item.item_id,
-            {},
-            {transactionSyncCursor: cursor},
-            undefined,
-          ),
+          def._opState({transactionSyncCursor: cursor}),
         ]
         if (!res.has_more) {
           break

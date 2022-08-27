@@ -181,7 +181,7 @@ export const oneBrickProvider = makeSyncProvider({
 
     // return rxjs.concat(
     //   rxjs.of(
-    //     def._op('metaUpdate', {
+    //     def._op('connUpdate', {
     //       // TODO: Figure out if accessToken is actually the only unique thing about
     //       // onebrick connection, and whether they could be rotated...
     //       id: `conn_onebrick_${md5Hash(accessToken)}`,

@@ -98,7 +98,7 @@ export const makeSyncEngine = <
       _source$: cs.source$.pipe(
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
-        Rx.startWith(int.provider.def._opMeta(cs.externalId, cs.settings)),
+        Rx.startWith(int.provider.def._opConn(cs.externalId, cs.settings)),
       ),
       _destination$$: undefined,
     }
