@@ -1,6 +1,8 @@
+import {EnvName, zEnvName} from '@ledger-sync/app-config'
 import {
   Button,
   HStack,
+  Radio,
   ThemeToggle,
   Toaster,
   Typography,
@@ -8,29 +10,42 @@ import {
 } from '@ledger-sync/uikit'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
+import React from 'react'
 import {syncHooks} from '../_app'
 
 export function LinkUI() {
   const router = useRouter()
   const {ledgerId} = router.query
+  const [envName, setEnvName] = React.useState<EnvName>('sandbox')
   const ls = syncHooks.useConnect({
     ledgerId: ledgerId as string,
-    envName: 'sandbox',
+    envName,
   })
 
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
   return (
-    <VStack css={{alignItems: 'center'}}>
-      {ls.listIntegrationsRes.data?.map((opt) => (
-        <Button
-          key={opt.key}
-          onClick={() => {
-            ls.connect(opt.int, opt)
-          }}>
-          {opt.int.id} {opt.int.provider} {opt.label}
-        </Button>
-      ))}
-    </VStack>
+    <HStack>
+      <Radio.Group
+        name="grouped-radios"
+        label="Environment"
+        layout="horizontal" // does not work...
+        onChange={(e) => setEnvName(e.target.value as EnvName)}>
+        {zEnvName.options.map((o) => (
+          <Radio key={o} label={o} value={o} />
+        ))}
+      </Radio.Group>
+      <VStack gap="sm">
+        {ls.listIntegrationsRes.data?.map((opt) => (
+          <Button
+            key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
+            onClick={() => {
+              ls.connect(opt.int, opt)
+            }}>
+            {opt.int.id} {opt.int.provider} {opt.label}
+          </Button>
+        ))}
+      </VStack>
+    </HStack>
   )
 }
 
