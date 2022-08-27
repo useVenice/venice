@@ -68,4 +68,14 @@ export function isZodType(input: unknown): input is z.ZodTypeAny {
   return typeof obj === 'object' && typeof obj._def === 'object'
 }
 
-// MARK: - ZFunction
+/** Not secure because we could leak secrets to logs */
+export function zodInsecureDebug() {
+  z.setErrorMap((_issue, ctx) => {
+    // Need to get the `schema` as well.. otherwise very hard
+    console.error(`[zod] Data did not pass validation`, {
+      data: ctx.data,
+      issue: _issue,
+    })
+    return {message: ctx.defaultError}
+  })
+}

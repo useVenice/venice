@@ -1,10 +1,11 @@
 import {zKVStore} from '@ledger-sync/cdk-core'
 import {JsonObject, memoize, zFunction} from '@ledger-sync/util'
+import {z} from 'zod'
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 import {MetaRead} from './schemas'
 
 export const makePostgresKVStore = zFunction(
-  zPgConfig,
+  zPgConfig.pick({databaseUrl: true}),
   zKVStore,
   ({databaseUrl}) => {
     // We are memoizing twice with getPool. Is is the right pattern?
@@ -19,18 +20,19 @@ export const makePostgresKVStore = zFunction(
     //   await db.destroy()
     // }
 
-    async function readJson(id: string) {
+    const readJson = zFunction(z.string(), async function (id: string) {
       const {getPool, sqlMeta} = getDeps()
       const pool = await getPool()
       return pool
-        .maybeOneFirst(sqlMeta`SELECT data FROM meta where id = ${id}`)
+        .maybeOne(sqlMeta`SELECT * FROM meta where id = ${id}`)
         .then((r) => r as Record<string, unknown>)
-    }
+    })
+
     async function listJson() {
       const {getPool, sqlMeta} = getDeps()
       const pool = await getPool()
       return pool
-        .any(sqlMeta`SELECT id, data FROM meta`)
+        .any(sqlMeta`SELECT * FROM meta`)
         .then((rows) =>
           rows.map((r) => [r.id, r.data as Record<string, unknown>] as const),
         )

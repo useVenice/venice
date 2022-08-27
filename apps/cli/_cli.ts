@@ -1,5 +1,7 @@
 // Not sure why ../node_modules import needed... was working before
+import '@ledger-sync/app-config/register.node'
 import {makeProxyAgentNext} from '@ledger-sync/app-config/utils.node'
+import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
@@ -20,8 +22,13 @@ import {
   safeJSONParse,
   z,
   ZFunctionMap,
+  zodInsecureDebug,
 } from '@ledger-sync/util'
 import {cliFromZFunctionMap, CliOpts} from './cli-utils'
+
+if (process.env['DEBUG_ZOD']) {
+  zodInsecureDebug()
+}
 
 if (require.main === module) {
   registerDependency(
@@ -36,6 +43,10 @@ if (require.main === module) {
 
   type ClientMap = Record<string, () => [ZFunctionMap, CliOpts] | ZFunctionMap>
   const clients: ClientMap = {
+    pgKv: () =>
+      makePostgresKVStore({
+        databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
+      }) as unknown as ZFunctionMap,
     plaid: () =>
       makePlaidClient(safeJSONParse(process.env['PLAID_CREDENTIALS'])),
     onebrick: () =>

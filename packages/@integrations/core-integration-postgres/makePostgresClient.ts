@@ -22,7 +22,7 @@ export const zPgConfig = z.object({
 export const makePostgresClient = zFunction(
   zPgConfig,
   ({databaseUrl, migrationsPath, migrationTableName, runMigration}) => {
-    const {createPool, sql} = $slonik()
+    const {createPool, sql, createTypeParserPreset} = $slonik()
     const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
       async () => {
@@ -40,6 +40,18 @@ export const makePostgresClient = zFunction(
           // is unlikely to be an issue as the only function using this for the moment is only handling
           // one document at a time...
           connectionTimeout: 60 * 1000, // Long timeout
+          typeParsers: [
+            ...createTypeParserPreset(),
+            // Default slonik parsers aren't great.
+            // and parses timestamptz into a number
+            // https://share.cleanshot.com/5Dqx8C
+            // Until we update typegen we are gonna treat timestamp
+            // as string
+            {
+              name: 'timestamptz',
+              parse: (d) => new Date(d).toISOString(),
+            },
+          ],
         })
         if (runMigration) {
           console.log('Will migrate with', {migrationsPath})
