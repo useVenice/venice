@@ -49,6 +49,9 @@ export function makeSyncHooks<
   function useConnect(colorScheme?: 'light' | 'dark') {
     console.log('useConnect')
 
+    // This is rather annoying... needing to have two array wrappers. How do we fix it?
+    const res = trpc.useQuery(['listIntegrations', [{}]])
+
     const hooks = R.mapToObj(sc.providers, (p) => [
       p.name,
       p.useConnectHook?.(),
@@ -129,7 +132,7 @@ export function makeSyncHooks<
     }, [])
 
     // Figure out how to memo this would be ideal...
-    return {connect, showConnect}
+    return {connect, showConnect, listIntegrationsRes: res}
   }
 
   const preConnectInputs = sc.providers.flatMap((p) =>

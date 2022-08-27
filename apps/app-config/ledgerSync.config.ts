@@ -107,6 +107,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
       clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
     },
     beancount: undefined,
+
     // we could use multiple alka here...
     // alka: {
     //   baseDir: './data',

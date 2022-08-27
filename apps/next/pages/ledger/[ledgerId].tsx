@@ -4,7 +4,7 @@ import {
   ThemeToggle,
   Toaster,
   Typography,
-  VStack
+  VStack,
 } from '@ledger-sync/app-ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
@@ -13,9 +13,15 @@ import {syncHooks} from '../_app'
 export function LinkUI() {
   const ls = syncHooks.useConnect()
 
+  // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
   return (
     <VStack css={{alignItems: 'center'}}>
       <Button onClick={ls.showConnect}>Connect</Button>
+      {ls.listIntegrationsRes.data?.map((int) => (
+        <Typography.Text key={int.id ?? int.provider}>
+          {int.id} {int.provider}
+        </Typography.Text>
+      ))}
     </VStack>
   )
 }
