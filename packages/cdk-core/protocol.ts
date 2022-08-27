@@ -5,9 +5,16 @@ import {
   NoInfer,
   ObjectPartialDeep,
   rxjs,
+  z,
   zCast,
 } from '@ledger-sync/util'
-import {ConnId, EnvName, IntId} from './makeSyncProvider' // Fix me
+
+export type EnvName = z.infer<typeof zEnvName>
+export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+
+export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
+export type IntId<TName extends string = string> = `int_${TName}_${string}`
+export type PipeId = `pipe_${string}`
 
 /**
  * This will be standardized over time into either

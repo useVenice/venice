@@ -1,13 +1,6 @@
 import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
-import {Destination, Source, SyncOperation} from './protocol'
-
-export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
-export type IntId<TName extends string = string> = `int_${TName}_${string}`
-export type PipeId = `pipe_${string}`
-
-export type EnvName = z.infer<typeof zEnvName>
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+import {Destination, Source, SyncOperation, zEnvName} from './protocol'
 
 export type ConnectContext = z.infer<typeof zConnectContext>
 export const zConnectContext = z.object({
