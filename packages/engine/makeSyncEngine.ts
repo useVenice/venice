@@ -186,7 +186,8 @@ export const makeSyncEngine = <
             ...defaultPipeline,
             // Could the new connection be dest as well?
             // Should make defaultPipeline a function that accepts a connection
-            src: conn,
+            // TODO: This is really not typesafe, let's fix me...
+            src: {...conn, provider: conn.provider.name},
           }),
         )
       }

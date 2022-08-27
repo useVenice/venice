@@ -1,4 +1,11 @@
-import {defineProxyFn, memoize, R, z, zFunction} from '@ledger-sync/util'
+import {
+  defineProxyFn,
+  isPlainObject,
+  memoize,
+  R,
+  z,
+  zFunction,
+} from '@ledger-sync/util'
 import {createInterceptors} from 'slonik-interceptor-preset'
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
@@ -76,7 +83,8 @@ export function upsertByIdQuery(
   const {sql} = $slonik()
   const table = sql.identifier([tableName])
   const [cols, vals] = R.pipe(
-    {...valueMap, id, updated_at: sql.literalValue('now()')},
+    R.mapValues(valueMap, (v) => (isPlainObject(v) ? sql.jsonb(v as any) : v)),
+    (vmap) => ({...vmap, id, updated_at: sql.literalValue('now()')}),
     R.toPairs,
     R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
     (pairs) => [pairs.map((p) => p.key), pairs.map((p) => p.value)] as const,
