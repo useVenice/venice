@@ -1,6 +1,6 @@
 import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
-import {Destination, Source, SyncOperation} from './link-types'
+import {Destination, Source, SyncOperation} from './protocol'
 
 export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
 export type IntId<TName extends string = string> = `int_${TName}_${string}`

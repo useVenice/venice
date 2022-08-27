@@ -9,6 +9,14 @@ import {
 } from '@ledger-sync/util'
 
 /**
+ * This will be standardized over time into either
+ * [Airbyte protocol](https://docs.airbyte.com/understanding-airbyte/airbyte-protocol/)
+ * or the [Singer spec](https://hub.meltano.com/singer/spec) [Orig spec](https://github.com/singer-io/getting-started/blob/master/docs/SPEC.md#singer-specification)
+ *
+ */
+
+
+/**
  * TODO: We should add a `change` type here, as `null` could also be a valid value
  * Actually, in the simplest form we should just have a [id, data] without even
  * any entity name. This can get transformed to [id, entityName, changeType, entity] as needed.
@@ -19,9 +27,7 @@ export interface AnyEntityPayload {
   id: string
   entity: object | JsonLiteral | null // Record<string, unknown> doesn't work with normal ts interfaces...
 }
-
 type Data = AnyEntityPayload
-
 type NullableEntity<T> = T extends Data
   ? {[k in keyof T]: k extends 'entity' ? T[k] | null : T[k]}
   : T
