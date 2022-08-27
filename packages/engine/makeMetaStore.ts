@@ -66,9 +66,8 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     handlersLink({
       connUpdate: async (op) => {
         const {id, settings = {}, envName, integrationId, ledgerId} = op
-        console.log(`[postDestinationLink] connUpdate`, pipe.id, {
+        console.log(`[postDestinationLink] connUpdate`, {
           connectionId: id,
-          pipelineId: pipe.id,
           settings: R.keys(settings),
           envName,
           integrationId,
@@ -99,6 +98,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
         return
       }
       const data = await kvStore.get(id)
+      // console.log(`[patch] Will merge patch and data`, {_patch, data})
       await kvStore.set(id, deepMerge(data, _patch))
     })
 

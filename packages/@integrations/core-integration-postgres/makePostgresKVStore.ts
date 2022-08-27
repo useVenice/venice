@@ -25,7 +25,7 @@ export const makePostgresKVStore = zFunction(
       const pool = await getPool()
       return pool
         .maybeOne(sqlMeta`SELECT * FROM meta where id = ${id}`)
-        .then((r) => r as Record<string, unknown>)
+        .then((r) => r?.data as Record<string, unknown>)
     })
 
     async function listJson() {

@@ -167,7 +167,8 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     dest: {
       provider: 'postgres',
       settings: {
-        databaseUrl: getEnv('POSTGRES_URL', {required: true}),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        databaseUrl: process.env['POSTGRES_URL']!,
         // Add migration here later.
       },
       // provider: 'alka',
