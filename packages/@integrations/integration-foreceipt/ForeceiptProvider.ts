@@ -21,7 +21,7 @@ import {
   ForeceiptClientOptions,
   makeForeceiptClient,
   zForeceiptConfig,
-} from './ForeceiptClientNext'
+} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
