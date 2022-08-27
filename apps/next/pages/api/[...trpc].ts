@@ -17,6 +17,17 @@ const handler = trpcNext.createNextApiHandler({
 // - [ ] Remove RouterContext no longer needed
 // - [ ] Do the same logic for ledgerSyncCli httpServer that does not use next
 export default identity<NextApiHandler>((req, res) => {
+  // https://vercel.com/support/articles/how-to-enable-cors
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', '*')
+  res.setHeader('Access-Control-Allow-Headers', '*')
+  if (req.method === 'OPTIONS') {
+    console.log('Respond to OPTIONS request')
+    res.status(200).end()
+    return
+  }
+
   const segments = req.query['trpc'] as [string] | string
   if (Array.isArray(segments) && parseWebhookRequest.isWebhook(segments)) {
     const {procedure, ...ret} = parseWebhookRequest({

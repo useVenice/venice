@@ -118,7 +118,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     // },
   },
   kvStore: getKvStore(),
-  routerUrl: '/api',
+  routerUrl: 'http://localhost:3001/api', // apiUrl?
   getLinksForPipeline: ({src, links, dest}) =>
     dest.provider.name === 'beancount'
       ? [
