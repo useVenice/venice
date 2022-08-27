@@ -1,3 +1,10 @@
+import {debugProvider, logLink} from '@ledger-sync/cdk-core'
+import {
+  addRemainderByDateLink,
+  mapAccountNameAndTypeLink,
+  mapStandardEntityLink,
+  renameAccountLink,
+} from '@ledger-sync/cdk-ledger'
 import {airtableProvider} from '@ledger-sync/core-integration-airtable'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
@@ -7,7 +14,6 @@ import {
   makePostgresKVStore,
 } from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
-import {debugProvider, logLink} from '@ledger-sync/cdk-core'
 import {makeSyncEngine} from '@ledger-sync/engine'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
@@ -22,12 +28,6 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
-import {
-  addRemainderByDateLink,
-  mapAccountNameAndTypeLink,
-  mapStandardEntityLink,
-  renameAccountLink,
-} from '@ledger-sync/cdk-ledger'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
@@ -90,6 +90,9 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // In contrast, connection shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
+
+  // TODO: Validate these immediately upon launch?
+  // TODO: Do not expose any of this to the frontend
   defaultIntegrations: {
     plaid: {
       ...safeJSONParse(process.env['PLAID_CREDENTIALS']),
@@ -103,6 +106,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
     },
+    beancount: undefined,
     // we could use multiple alka here...
     // alka: {
     //   baseDir: './data',

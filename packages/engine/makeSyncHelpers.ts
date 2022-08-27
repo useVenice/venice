@@ -10,7 +10,7 @@ import {
   zDestination,
   zSource,
 } from '@ledger-sync/cdk-core'
-import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
+import {deepMerge, mapDeep, R, z, zFunction, zGuard} from '@ledger-sync/util'
 import {makeMetaStore} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
 
@@ -92,7 +92,7 @@ export function makeSyncHelpers<
 >) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
 
-  const defaultIntegrations = Array.isArray(_defaultIntegrations)
+  const defaultIntegrationInputs = Array.isArray(_defaultIntegrations)
     ? _defaultIntegrations
     : R.toPairs(_defaultIntegrations ?? {}).map(
         ([name, config]): IntegrationInput<AnySyncProvider> => ({
@@ -100,12 +100,15 @@ export function makeSyncHelpers<
           config: config as any,
         }),
       )
+  const getDefaultIntegrations = async () =>
+    Promise.all(defaultIntegrationInputs.map((input) => zInt.parseAsync(input)))
 
   const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
 
   const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
-    defaultIntegrations.find((i) => (id && i.id === id) || i.provider === name)
-      ?.config
+    defaultIntegrationInputs.find(
+      (i) => (id && i.id === id) || i.provider === name,
+    )?.config
 
   // TODO: Validate default integrations / destination at startup time
 
@@ -282,5 +285,6 @@ export function makeSyncHelpers<
       PipelineInput<TProviders[number], TProviders[number], TLinks>
     >,
     metaStore,
+    getDefaultIntegrations,
   }
 }

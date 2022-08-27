@@ -71,12 +71,13 @@ export const makeSyncEngine = <
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
-  const {zInt, zConn, zPipeline, metaStore} = makeSyncHelpers({
-    providers,
-    kvStore,
-    defaultIntegrations,
-    defaultPipeline,
-  })
+  const {zInt, zConn, zPipeline, metaStore, getDefaultIntegrations} =
+    makeSyncHelpers({
+      providers,
+      kvStore,
+      defaultIntegrations,
+      defaultPipeline,
+    })
 
   function fromConnectedSource(
     int: ParsedInt,
@@ -101,7 +102,26 @@ export const makeSyncEngine = <
     providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
-    listIntegrations: zFunction(async () => {}),
+    listIntegrations: zFunction(
+      z.object({type: z.enum(['source', 'destination']).nullish()}).optional(),
+      // z.promise(z.array(z.object({type: z.enum(['source'])}))),
+      async ({type} = {}) => {
+        const ints = await getDefaultIntegrations()
+        return ints
+          .map((int) => ({
+            id: int.id,
+            provider: int.provider.name,
+            isSource: !!int.provider.sourceSync,
+            isDestination: !!int.provider.destinationSync,
+          }))
+          .filter(
+            (int) =>
+              !type ||
+              (type === 'source' && int.isSource) ||
+              (type === 'destination' && int.isDestination),
+          )
+      },
+    ),
     sync: zFunction(zPipeline, async function syncPipeline(pipeline) {
       const {src, links, dest, watch} = pipeline
       const source$ =
