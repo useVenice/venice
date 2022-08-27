@@ -11,7 +11,12 @@ import {useRouter} from 'next/router'
 import {syncHooks} from '../_app'
 
 export function LinkUI() {
-  const ls = syncHooks.useConnect()
+  const router = useRouter()
+  const {ledgerId} = router.query
+  const ls = syncHooks.useConnect({
+    ledgerId: ledgerId as string,
+    envName: 'sandbox',
+  })
 
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
   return (

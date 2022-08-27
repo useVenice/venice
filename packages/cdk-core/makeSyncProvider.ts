@@ -6,6 +6,15 @@ export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
 export type IntId<TName extends string = string> = `int_${TName}_${string}`
 export type PipeId = `pipe_${string}`
 
+export type EnvName = z.infer<typeof zEnvName>
+export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+
+export type ConnectContext = z.infer<typeof zConnectContext>
+export const zConnectContext = z.object({
+  envName: zEnvName,
+  ledgerId: z.string(),
+})
+
 export const CORE_NAME_TO_PREFIX = {
   integration: 'int',
   connection: 'conn',
@@ -193,8 +202,9 @@ export function makeSyncProvider<
   >,
   // Connect
   TGetPreConnectInputs extends _opt<
-    // _type is useful for type inference inside inner functions
-    (_typeHack?: never) => Array<PreConnOptions<T['_types']['preConnectInput']>>
+    (
+      ctx: ConnectContext,
+    ) => Array<PreConnOptions<T['_types']['preConnectInput']>>
   >,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods
   // by introducing a separate `instance` method that accepts config
@@ -210,6 +220,7 @@ export function makeSyncProvider<
   >,
   TUseConnHook extends _opt<
     (
+      // Should this also accept ConntectContext?
       _typeHack?: never,
     ) => (
       connectInput: T['_types']['connectInput'],

@@ -4,6 +4,7 @@ import {
   KVStore,
   Link,
   LinkFactory,
+  zConnectContext,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
@@ -102,10 +103,13 @@ export const makeSyncEngine = <
     providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
+    // TODO: Rename me from listIntegrations
     listIntegrations: zFunction(
-      z.object({type: z.enum(['source', 'destination']).nullish()}).optional(),
+      zConnectContext.extend({
+        type: z.enum(['source', 'destination']).nullish(),
+      }),
       // z.promise(z.array(z.object({type: z.enum(['source'])}))),
-      async ({type} = {}) => {
+      async ({type, ...ctx}) => {
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
@@ -120,15 +124,13 @@ export const makeSyncEngine = <
               (type === 'destination' && int.isDestination),
           )
           .flatMap((int) =>
-            (int.provider.getPreConnectInputs?.(undefined) ?? [{}]).map(
-              (option) => ({
-                ...option,
-                int: {
-                  id: int.id,
-                  provider: int.provider.name,
-                },
-              }),
-            ),
+            (int.provider.getPreConnectInputs?.(ctx) ?? [{}]).map((option) => ({
+              ...option,
+              int: {
+                id: int.id,
+                provider: int.provider.name,
+              },
+            })),
           )
       },
     ),

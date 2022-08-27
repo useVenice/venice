@@ -1,5 +1,6 @@
 import {
   AnySyncProvider,
+  ConnectContext,
   LinkFactory,
   PreConnOptions,
 } from '@ledger-sync/cdk-core'
@@ -45,11 +46,11 @@ export function makeSyncHooks<
       config: (info) => ({...options.config(info), url: routerUrl}),
     })
 
-  function useConnect() {
+  function useConnect(ctx: ConnectContext) {
     console.log('useConnect')
 
     // This is rather annoying... needing to have two array wrappers. How do we fix it?
-    const res = trpc.useQuery(['listIntegrations', [{}]])
+    const res = trpc.useQuery(['listIntegrations', [ctx]])
 
     const hooks = R.mapToObj(sc.providers, (p) => [
       p.name,
@@ -77,34 +78,11 @@ export function makeSyncHooks<
     return {connect, listIntegrationsRes: res}
   }
 
-  const preConnectInputs = sc.providers.flatMap((p) =>
-    R.pipe(
-      p.getPreConnectInputs?.(),
-      (opts) => opts?.map((o) => ({...o, label: `${p.name} ${o.label}`})),
-      (opts): PreConnOptions[] =>
-        opts ?? [{key: p.name, label: p.name, options: undefined}],
-    ).map((opts) => ({
-      ...opts,
-      provider: p,
-      // TODO: Retrieve list of integrations from server
-      // Ideally only load the frontend code for the list of enabled integrations
-      // Dynamically rather than all integrations
-      // We will need to introduce a Provider component because hooks
-      // cannot be run conditionally
-      int: {
-        provider: p.name as T[number]['name'],
-        // id: `int_${p.name}_demo` as IntId<T[number]['name']>,
-        config: undefined,
-      } as NonNullableOnly<IntegrationInput<T[number]>, 'provider'>,
-    })),
-  )
-
   return {
     useConnect,
     ls: sc,
     router,
     Provider,
     withLedgerSync,
-    preConnectInputs,
   }
 }

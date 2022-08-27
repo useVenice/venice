@@ -170,24 +170,22 @@ export const plaidProviderNext = makeSyncProvider({
         .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
     },
   }),
-  getPreConnectInputs: (_) =>
-    zEnvName.options.map((envName) =>
-      def._preConnOption({
-        key: envName,
-        label: envName,
-        options: {
-          // TODO: Fix me there...
-          envName,
-          clientUserId: 'demo',
-          language: 'en',
-          products: ['transactions'],
-          countryCodes: ['US'],
-          redirectUri: 'http://localhost:3000/oauth',
-          webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
-        },
-      }),
-    ),
-
+  getPreConnectInputs: ({envName, ledgerId}) => [
+    def._preConnOption({
+      key: envName,
+      label: envName,
+      options: {
+        envName,
+        clientUserId: ledgerId,
+        language: 'en',
+        // TODO: Should these be in the integration config?
+        products: ['transactions'],
+        countryCodes: ['US'],
+        redirectUri: 'http://localhost:3000/oauth',
+        webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
+      },
+    }),
+  ],
   preConnect: ({envName, ...input}, config) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {

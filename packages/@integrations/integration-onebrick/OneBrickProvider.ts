@@ -1,19 +1,21 @@
 import {
-  A,
-  Deferred,
-  identity,
-  md5Hash,
-  parseMoney,
-  Rx,
-  rxjs,
-  z,
-} from '@ledger-sync/util'
-import {
   makeSyncProvider,
   SyncOperation,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {
+  A,
+  compact,
+  Deferred,
+  identity,
+  md5Hash,
+  parseMoney,
+  R,
+  Rx,
+  rxjs,
+  z,
+} from '@ledger-sync/util'
 import React from 'react'
 import {
   accountItemSchema,
@@ -112,14 +114,17 @@ export const oneBrickProvider = makeSyncProvider({
       return null
     },
   }),
-  getPreConnectInputs: (_type) =>
-    zEnvName.options.map((envName) =>
-      def._preConnOption({
-        key: envName,
-        label: envName,
-        options: {envName, publicToken: ''},
-      }),
-    ),
+  getPreConnectInputs: (ctx) => {
+    const envName = zEnvName.safeParse(ctx.envName).data
+    return compact([
+      envName &&
+        def._preConnOption({
+          key: envName,
+          label: envName,
+          options: {envName, publicToken: ''},
+        }),
+    ])
+  },
   preConnect: ({envName}, config) =>
     Promise.resolve({
       publicToken: config.secrets[envName],

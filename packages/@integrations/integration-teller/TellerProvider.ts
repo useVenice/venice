@@ -1,6 +1,6 @@
-import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
 import {makeSyncProvider, SyncOperation} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
 import React from 'react'
 import {HandleSuccessTellerEnrollment, useTellerAPI} from './teller-utils'
 import {
@@ -103,14 +103,13 @@ export const tellerProvider = makeSyncProvider({
       return null
     },
   }),
-  getPreConnectInputs: (_type) =>
-    zEnvName.options.map((envName) =>
-      def._preConnOption({
-        key: envName,
-        label: envName,
-        options: {envName, userToken: '', applicationId: ''},
-      }),
-    ),
+  getPreConnectInputs: ({envName, ledgerId}) => [
+    def._preConnOption({
+      key: envName,
+      label: envName,
+      options: {envName, userToken: ledgerId, applicationId: ''},
+    }),
+  ],
   preConnect: ({envName}, config) =>
     Promise.resolve({
       userToken: config.token,
