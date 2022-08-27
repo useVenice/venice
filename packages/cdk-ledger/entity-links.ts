@@ -31,7 +31,7 @@ import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 export const mapStandardEntityLink = ({
   provider,
   settings: initialSettings,
-  id: connId,
+  id: sourceId,
 }: {
   provider: AnySyncProvider
   settings: any
@@ -71,7 +71,7 @@ export const mapStandardEntityLink = ({
         external: op.data.entity,
         providerName: provider.name,
         externalId: op.data.id,
-        connectionId: connId,
+        sourceId: sourceId,
       },
     })
   })

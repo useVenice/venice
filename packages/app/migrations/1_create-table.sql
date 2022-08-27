@@ -46,16 +46,16 @@ CREATE INDEX IF NOT EXISTS connection_updated_at ON connection (updated_at);
 CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "ledger_id" character varying NOT NULL,
-  "src_connection_id" character varying,
-  "src_options" jsonb NOT NULL DEFAULT '{}',
-  "dest_connection_id" character varying,
-  "dest_options" jsonb NOT NULL DEFAULT '{}',
+  "source_id" character varying,
+  "source_options" jsonb NOT NULL DEFAULT '{}',
+  "destination_id" character varying,
+  "destination_options" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_pipeline" PRIMARY KEY ("id"),
-  CONSTRAINT "fk_src_connection_id" FOREIGN KEY ("src_connection_id")
+  CONSTRAINT "fk_source_id" FOREIGN KEY ("source_id")
     REFERENCES "public"."connection"("id") ON DELETE RESTRICT,
-  CONSTRAINT "fk_dest_connection_id" FOREIGN KEY ("dest_connection_id")
+  CONSTRAINT "fk_destination_id" FOREIGN KEY ("destination_id")
     REFERENCES "public"."connection"("id") ON DELETE RESTRICT
 );
 CREATE INDEX IF NOT EXISTS pipeline_created_at ON pipeline (created_at);
@@ -69,7 +69,7 @@ CREATE INDEX IF NOT EXISTS pipeline_updated_at ON pipeline (updated_at);
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "provider_name" character varying,
-  "connection_id" character varying,
+  "source_id" character varying, -- Intentionally no reference, may be stored in separate db
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -82,7 +82,7 @@ CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "provider_name" character varying,
-  "connection_id" character varying,
+  "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -95,7 +95,7 @@ CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "provider_name" character varying,
-  "connection_id" character varying,
+  "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

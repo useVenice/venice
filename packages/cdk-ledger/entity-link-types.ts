@@ -1,5 +1,5 @@
-import {z, zCast} from '@ledger-sync/util'
 import {SyncOperation} from '@ledger-sync/cdk-core'
+import {z, zCast} from '@ledger-sync/util'
 
 export type EntityPayload =
   | {entityName: 'account'; entity: Standard.Account | null; id: string}
@@ -16,6 +16,6 @@ export type EntityPayloadWithExternal = EntityPayload & {
   external: unknown
   externalId: string
   providerName: string
-  connectionId: string | undefined
+  sourceId: string | undefined
 }
 export const zEntityPayloadWithExternal = zCast<EntityPayloadWithExternal>()

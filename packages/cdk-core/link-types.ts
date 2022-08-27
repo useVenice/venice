@@ -34,6 +34,7 @@ export type SyncOperation<
 > =
   | {type: 'init'}
   // aka meta? Or should metaUpdate be `data` also?
+  // Should we split `metaUpdate` into connectionUpdate vs `stateUpdate`?
   | {
       type: 'metaUpdate'
       /**
@@ -41,7 +42,7 @@ export type SyncOperation<
        * How do we persist settings / options updates if no ids are part of the input?
        * Or should that just be not supported?
        */
-      id: string
+      id: `conn_${string}`
       settings?: ObjectPartialDeep<NoInfer<TSettings>>
       /** This may be either the sourceOptions or destinationOptions */
       sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcSyncOptions>>

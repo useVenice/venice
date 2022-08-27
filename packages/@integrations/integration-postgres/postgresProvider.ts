@@ -29,13 +29,14 @@ export const postgresProvider = makeSyncProvider({
     return handlersLink({
       data: async (op) => {
         const {
-          data: {id, entityName, providerName, connectionId = null, ...data},
+          data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
         await upsertById(entityName, id, {
           standard: data.entity,
           external: data.external,
+          source_id: sourceId,
+          // Do we still need provider_name in the presence of source_id?
           provider_name: providerName,
-          connection_id: connectionId,
         })
         return op
       },

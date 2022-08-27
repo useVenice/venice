@@ -20,10 +20,11 @@ export const CORE_NAME_TO_PREFIX = {
   connection: 'conn',
   pipeline: 'pipe',
 } as const
+type Prefix = typeof CORE_NAME_TO_PREFIX[keyof typeof CORE_NAME_TO_PREFIX]
 
-export function makeCoreId<T extends string>(
-  prefix: typeof CORE_NAME_TO_PREFIX[keyof typeof CORE_NAME_TO_PREFIX],
-  providerName: T,
+export function makeCoreId<TPrefix extends Prefix, TPName extends string>(
+  prefix: TPrefix,
+  providerName: TPName,
   externalId: string,
 ) {
   return makePrefixedId(prefix, providerName, externalId)

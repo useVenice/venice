@@ -20,7 +20,7 @@ export const airtableProvider = makeSyncProvider({
     return handlersLink({
       data: async (op) => {
         const {
-          data: {id, entityName, providerName, connectionId = null, ...data},
+          data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
 
         const transactionData = (
