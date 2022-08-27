@@ -18,6 +18,7 @@ import {
   getPlaidAccountType,
   plaidUnitForCurrency,
 } from './legacy/plaid-helpers'
+import {inferPlaidEnvFromToken} from './plaid-utils'
 import {
   makePlaidClient,
   zCountryCode,
@@ -238,12 +239,33 @@ export const plaidProviderNext = makeSyncProvider({
   },
 
   postConnect: async ({publicToken: public_token, meta}, config) => {
-    const res = await makePlaidClient(config).itemPublicTokenExchange({
-      public_token,
-    })
+    const client = makePlaidClient(config)
+    const envName = inferPlaidEnvFromToken(public_token)
+    const [res, insRes] = await Promise.all([
+      client.itemPublicTokenExchange({public_token}),
+      meta?.institution?.institution_id && envName
+        ? client.institutionsGetById(envName, {
+            institution_id: meta.institution.institution_id,
+            // Is this right? Get all country codes...
+            country_codes: [
+              'US',
+              'GB',
+              'ES',
+              'NL',
+              'FR',
+              'IE',
+              'CA',
+              'DE',
+              'IT',
+            ],
+            options: {include_optional_metadata: true},
+          })
+        : null,
+    ])
     const settings = def._type('connectionSettings', {
       itemId: res.item_id,
       accessToken: res.access_token,
+      institution: insRes?.institution,
     })
     const source$: rxjs.Observable<PlaidSyncOperation> =
       plaidProviderNext.sourceSync({config, settings, options: {}})

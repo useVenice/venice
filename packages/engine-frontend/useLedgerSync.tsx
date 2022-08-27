@@ -31,8 +31,10 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
 
       const res3 = await client.mutation('postConnect', [int, res2, ctx])
       console.log(`${key} res3`, res3)
+      // TODO: We should get the client and invalidate instead
+      await connectionsRes.refetch()
     },
-    [hooks, client, ctx],
+    [client, hooks, ctx, connectionsRes],
   )
   return {connect, preConnectOptionsRes, connectionsRes}
 }

@@ -12,7 +12,12 @@ export function ConnectionList(ctx: {ledgerId: string}) {
   return (
     <VStack gap="sm">
       {connectionsRes.data?.map((conn) => (
-        <Card title={conn.id}>
+        <Card title={(conn as any).settings.institution.name}>
+          <img
+            src={`data:image/png;base64,${
+              (conn as any).settings.institution.logo
+            }`}
+          />
           <pre>{JSON.stringify(conn, null, 2)}</pre>
         </Card>
       ))}
