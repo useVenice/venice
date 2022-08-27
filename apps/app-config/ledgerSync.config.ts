@@ -165,7 +165,11 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // user id for example. Will sort this later
   defaultPipeline: {
     dest: {
-      provider: 'debug',
+      provider: 'postgres',
+      settings: {
+        databaseUrl: getEnv('POSTGRES_URL', {required: true}),
+        // Add migration here later.
+      },
       // provider: 'alka',
       // data: {
       //   // authUserJson: safeJSONParse(process.env['FIREBASE_AUTH_USER_STAGING']),

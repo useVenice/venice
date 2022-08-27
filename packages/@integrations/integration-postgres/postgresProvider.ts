@@ -1,9 +1,9 @@
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
+import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
 import {
   makePostgresClient,
   zPgConfig,
 } from '@ledger-sync/core-integration-postgres'
-import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
-import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
 import {z, zCast} from '@ledger-sync/util'
 
 const def = makeSyncProvider.def({
@@ -21,7 +21,7 @@ export const postgresProvider = makeSyncProvider({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
     })
-    const {sql, upsertById} = makePostgresClient({
+    const {upsertById} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
       migrationTableName: 'ls_migrations',
@@ -32,8 +32,8 @@ export const postgresProvider = makeSyncProvider({
           data: {id, entityName, providerName, connectionId = null, ...data},
         } = op
         await upsertById(entityName, id, {
-          standard: sql.jsonb(data.entity as any),
-          external: sql.jsonb(data.external as any),
+          standard: data.entity,
+          external: data.external,
           provider_name: providerName,
           connection_id: connectionId,
         })
