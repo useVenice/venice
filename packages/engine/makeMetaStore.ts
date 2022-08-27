@@ -65,13 +65,16 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
   const postDestinationLink = (pipe: {id?: string | null}) =>
     handlersLink({
       connUpdate: async (op) => {
-        const {id, settings = {}} = op
+        const {id, settings = {}, envName, integrationId, ledgerId} = op
         console.log(`[postDestinationLink] connUpdate`, pipe.id, {
           connectionId: id,
           pipelineId: pipe.id,
           settings: R.keys(settings),
+          envName,
+          integrationId,
+          ledgerId,
         })
-        await patch(id, settings)
+        await patch(id, {settings, envName, integrationId, ledgerId})
         return op
       },
       stateUpdate: async (op) => {

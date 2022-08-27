@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS "public"."connection" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "ledger_id" character varying NOT NULL,
   "integration_id" character varying,
+  "env_name" character varying,
   "settings" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

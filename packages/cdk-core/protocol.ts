@@ -7,6 +7,7 @@ import {
   rxjs,
   zCast,
 } from '@ledger-sync/util'
+import {ConnId, EnvName, IntId} from './makeSyncProvider' // Fix me
 
 /**
  * This will be standardized over time into either
@@ -39,12 +40,10 @@ export type SyncOperation<
 > =
   | {
       type: 'connUpdate'
-      /**
-       * Should be specific that this is the `connectionId`
-       * How do we persist settings / options updates if no ids are part of the input?
-       * Or should that just be not supported?
-       */
-      id: `conn_${string}`
+      id: ConnId
+      integrationId?: IntId
+      ledgerId?: string // Should we prefix this too? It comes from the consuming application.
+      envName?: EnvName
       settings?: ObjectPartialDeep<NoInfer<TSettings>>
     }
   | {

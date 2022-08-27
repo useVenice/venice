@@ -98,7 +98,14 @@ export const makeSyncEngine = <
       _source$: cs.source$.pipe(
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
-        Rx.startWith(int.provider.def._opConn(cs.externalId, cs.settings)),
+        Rx.startWith(
+          int.provider.def._opConn(cs.externalId, {
+            integrationId: int.id,
+            settings: cs.settings,
+            ledgerId: cs.ledgerId,
+            envName: cs.envName,
+          }),
+        ),
       ),
       _destination$$: undefined,
     }
@@ -216,18 +223,26 @@ export const makeSyncEngine = <
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
     // flow a bit smoother with a guided cli flow
-    postConnect: zFunction([zInt, z.unknown()], async (int, input) => {
-      const {provider: p, config} = int
-      console.log('didConnect start', p.name, input)
-      if (!p.postConnect || !p.def.connectOutput) {
-        return 'Noop'
-      }
-      const cs = await p.postConnect(p.def.connectOutput?.parse(input), config)
-      await syncEngine.syncConnection.impl(parsedConn(int, cs))
 
-      console.log('didConnect finish', p.name, input)
-      return 'Connection Success'
-    }),
+    postConnect: zFunction(
+      [zInt, z.unknown(), zConnectContext],
+      // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
+      async (int, input, ctx) => {
+        const {provider: p, config} = int
+        console.log('didConnect start', p.name, input)
+        if (!p.postConnect || !p.def.connectOutput) {
+          return 'Noop'
+        }
+        const cs = await p.postConnect(
+          p.def.connectOutput?.parse(input),
+          config,
+        )
+        await syncEngine.syncConnection.impl(parsedConn(int, {...cs, ...ctx}))
+
+        console.log('didConnect finish', p.name, input)
+        return 'Connection Success'
+      },
+    ),
     revokeConnection: zFunction(zConn, async ({provider, settings, config}) =>
       provider.revokeConnection?.(settings, config),
     ),
@@ -236,12 +251,14 @@ export const makeSyncEngine = <
         console.warn(`${int.provider.name} does not handle webhooks`)
         return
       }
-      const css = await int.provider.handleWebhook(
+      const csArray = await int.provider.handleWebhook(
         int.provider.def.webhookInput.parse(input),
         int.config,
       )
       await Promise.all(
-        css.map((cs) => syncEngine.syncConnection.impl(parsedConn(int, cs))),
+        csArray.map((cs) =>
+          syncEngine.syncConnection.impl(parsedConn(int, cs)),
+        ),
       )
     }),
   }

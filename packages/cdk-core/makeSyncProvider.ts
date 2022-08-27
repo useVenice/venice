@@ -46,7 +46,9 @@ export interface PreConnOptions<T = unknown> {
   options: T
 }
 
-export interface ConnectedSource<T extends AnyProviderDef> {
+// type Optional<T> = {[P in keyof T]: T[P] | undefined}
+export interface ConnectedSource<T extends AnyProviderDef>
+  extends Partial<ConnectContext> {
   // Should we instead use mapStandardConnection for this?
   externalId: string
   settings: T['_types']['connectionSettings']
@@ -134,10 +136,10 @@ function makeSyncProviderDef<
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opConn: (id: string, settings: OpConn['settings']): Op => ({
+    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
       // We don't prefix in `_opData`, should we actually prefix here?
+      ...rest,
       id: makeCoreId('conn', schemas.name.value, id),
-      settings,
       type: 'connUpdate',
     }),
     _opState: (

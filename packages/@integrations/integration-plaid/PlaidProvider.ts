@@ -268,7 +268,9 @@ export const plaidProviderNext = makeSyncProvider({
       const accountIds = options.accountIds?.length ? options.accountIds : null
       const {item, status} = await client.itemGet(accessToken)
       const {item_id: itemId} = item
-      yield [def._opConn(itemId, {item, status, itemId, accessToken})]
+      yield [
+        def._opConn(itemId, {settings: {item, status, itemId, accessToken}}),
+      ]
 
       // Sync accounts
       const {accounts} = await client.accountsGet({

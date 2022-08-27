@@ -153,6 +153,38 @@ export const oneBrickProvider = makeSyncProvider({
     }
   },
 
+  sourceSync: ({settings, config}) => {
+    const client = makeOneBrickClient({
+      ...config,
+      accessToken: settings.accessToken,
+    })
+    async function* iterateEntities() {
+      const res = await client.getAccountList({
+        accessToken: settings.accessToken,
+      })
+      yield res.map((a) =>
+        _op({
+          type: 'data',
+          data: {id: a.accountId, entity: a, entityName: 'account'},
+        }),
+      )
+
+      const res2 = await client.getTransactions({
+        accessToken: settings.accessToken,
+      })
+      yield res2.map((t) =>
+        _op({
+          type: 'data',
+          data: {id: t.reference_id, entity: t, entityName: 'transaction'},
+        }),
+      )
+    }
+
+    return rxjs
+      .from(iterateEntities())
+      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, _op({type: 'commit'})])))
+  },
+
   handleWebhook: (input, config) => {
     const {accessToken} = zOneBrickWebhookBody.parse(input.body)
     // rxjs.of(input.body as any).pipe(
@@ -190,37 +222,6 @@ export const oneBrickProvider = makeSyncProvider({
     //   ),
     //   sync$,
     // )
-  },
-  sourceSync: ({settings, config}) => {
-    const client = makeOneBrickClient({
-      ...config,
-      accessToken: settings.accessToken,
-    })
-    async function* iterateEntities() {
-      const res = await client.getAccountList({
-        accessToken: settings.accessToken,
-      })
-      yield res.map((a) =>
-        _op({
-          type: 'data',
-          data: {id: a.accountId, entity: a, entityName: 'account'},
-        }),
-      )
-
-      const res2 = await client.getTransactions({
-        accessToken: settings.accessToken,
-      })
-      yield res2.map((t) =>
-        _op({
-          type: 'data',
-          data: {id: t.reference_id, entity: t, entityName: 'transaction'},
-        }),
-      )
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, _op({type: 'commit'})])))
   },
 })
 
