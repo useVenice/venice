@@ -18,7 +18,7 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
 // Would be nice to improve the typing of this... Make stuff non-optional
 /** https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types */
-export type IntegrationInput<T extends AnySyncProvider> =
+export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
     ? {
         id?: IntId<T['name']>
@@ -28,7 +28,7 @@ export type IntegrationInput<T extends AnySyncProvider> =
     : never
 
 // Is there a way to infer this? Or would that be too much?
-export type ConnectionInput<T extends AnySyncProvider> =
+export type ConnectionInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
     ? Omit<IntegrationInput<T>, 'id'> & {
         id?: ConnId<T['name']>
@@ -42,9 +42,9 @@ export type ConnectionInput<T extends AnySyncProvider> =
     : never
 
 export interface PipelineInput<
-  PSrc extends AnySyncProvider,
-  PDest extends AnySyncProvider,
-  TLinks extends Record<string, LinkFactory>,
+  PSrc extends AnySyncProvider = AnySyncProvider,
+  PDest extends AnySyncProvider = AnySyncProvider,
+  TLinks extends Record<string, LinkFactory> = {},
 > {
   id?: PipeId
   src?: PSrc extends AnySyncProvider

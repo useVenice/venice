@@ -1,15 +1,13 @@
-import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
+import {ledgerSyncConfig, LSProvider} from '@ledger-sync/app-config'
 import {darkTheme, ThemeProvider} from '@ledger-sync/uikit'
 import {QueryClient, QueryClientProvider} from 'react-query'
 
 const reactQueryClient = new QueryClient()
 
-export const syncHooks = makeSyncHooks(ledgerSyncConfig)
-
 export function AppProvider({children}: {children: React.ReactNode}) {
   return (
     <QueryClientProvider client={reactQueryClient}>
-      <syncHooks.Provider queryClient={reactQueryClient}>
+      <LSProvider queryClient={reactQueryClient} config={ledgerSyncConfig}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -19,7 +17,7 @@ export function AppProvider({children}: {children: React.ReactNode}) {
           }}>
           {children}
         </ThemeProvider>
-      </syncHooks.Provider>
+      </LSProvider>
     </QueryClientProvider>
   )
 }

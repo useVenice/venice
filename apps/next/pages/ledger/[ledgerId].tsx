@@ -1,4 +1,4 @@
-import {EnvName, zEnvName} from '@ledger-sync/app-config'
+import {EnvName, useLedgerSync, zEnvName} from '@ledger-sync/app-config'
 import {
   Button,
   HStack,
@@ -11,13 +11,12 @@ import {
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import React from 'react'
-import {syncHooks} from '../_app'
 
 export function LinkUI() {
   const router = useRouter()
   const {ledgerId} = router.query
   const [envName, setEnvName] = React.useState<EnvName>('sandbox')
-  const ls = syncHooks.useConnect({
+  const ls = useLedgerSync({
     ledgerId: ledgerId as string,
     envName,
   })
@@ -35,7 +34,7 @@ export function LinkUI() {
         ))}
       </Radio.Group>
       <VStack gap="sm">
-        {ls.listIntegrationsRes.data?.map((opt) => (
+        {ls.preConnectOptionsRes.data?.map((opt) => (
           <Button
             key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
             onClick={() => {
