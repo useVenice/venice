@@ -1,4 +1,4 @@
-import {inferProcedureInput, makeCoreSync} from '@ledger-sync/core-sync'
+import {inferProcedureInput, makeCoreSync} from '@ledger-sync/engine'
 import {ledgerSyncConfig} from './ledgerSync.config'
 
 export * from '@ledger-sync/core-sync'

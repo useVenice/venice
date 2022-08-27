@@ -1,5 +1,12 @@
 import {computeTrialBalance} from '@ledger-sync/accounting'
 import {
+  AnyEntityPayload,
+  AnySyncProvider,
+  handlersLink,
+  Link,
+  transformLink,
+} from '@ledger-sync/core-sync'
+import {
   A,
   AM,
   identity,
@@ -14,13 +21,6 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import {
-  AnyEntityPayload,
-  handlersLink,
-  Link,
-  ParsedConn,
-  transformLink,
-} from '@ledger-sync/core-sync'
-import {
   EntityPayload,
   EntityPayloadWithExternal,
   StdSyncOperation,
@@ -30,9 +30,13 @@ import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 
 export const mapStandardEntityLink = ({
   provider,
-  settings: initialConn,
+  settings: initialSettings,
   id: connId,
-}: ParsedConn): Link<AnyEntityPayload, EntityPayloadWithExternal> => {
+}: {
+  provider: AnySyncProvider
+  settings: any
+  id: string
+}): Link<AnyEntityPayload, EntityPayloadWithExternal> => {
   if (!isLedgerSyncProvider(provider)) {
     throw new Error('Expecting LedgerSyncProvider in mapStandardEntityLink')
   }
@@ -45,8 +49,8 @@ export const mapStandardEntityLink = ({
 
     const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>
       typeof map === 'function'
-        ? map?.(op.data, initialConn)
-        : map?.[op.data.entityName]?.(op.data, initialConn),
+        ? map?.(op.data, initialSettings)
+        : map?.[op.data.entityName]?.(op.data, initialSettings),
     )
 
     if (!payload) {

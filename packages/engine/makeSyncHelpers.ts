@@ -1,20 +1,20 @@
-import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
 import {
+  AnySyncProvider,
+  ConnId,
   Destination,
+  IntId,
   LinkFactory,
+  makeMemoryKVStore,
+  PipeId,
   Source,
   zDestination,
   zSource,
-} from './link-types'
+} from '@ledger-sync/core-sync'
+import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
 import type {SyncCoreConfig} from './makeCoreSync'
-import {makeMemoryKVStore, makeMetaStore} from './makeMetaStore'
-import {AnySyncProvider} from './makeSyncProvider'
+import {makeMetaStore} from './makeMetaStore'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
-
-export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
-export type IntId<TName extends string = string> = `int_${TName}_${string}`
-export type PipeId = `pipe_${string}`
 
 // Would be nice to improve the typing of this... Make stuff non-optional
 /** https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types */

@@ -1,11 +1,13 @@
 import {
   AnySyncProvider,
-  IntegrationInput,
   LinkFactory,
-  makeCoreSync,
   PreConnOptions,
-  SyncCoreConfig,
 } from '@ledger-sync/core-sync'
+import {
+  IntegrationInput,
+  makeCoreSync,
+  SyncCoreConfig,
+} from '@ledger-sync/engine'
 import {NonNullableOnly, R} from '@ledger-sync/util'
 import {withTRPC} from '@trpc/next'
 import {createReactQueryHooks} from '@trpc/react'

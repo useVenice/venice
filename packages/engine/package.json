@@ -1,0 +1,12 @@
+{
+  "name": "@ledger-sync/engine",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies": {
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/util": "*",
+    "@trpc/server": "9.26.0"
+  },
+  "devDependencies": {}
+}

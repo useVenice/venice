@@ -1,7 +1,10 @@
 import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
 import {Destination, Source, SyncOperation} from './link-types'
-import type {ConnId} from './makeSyncHelpers'
+
+export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
+export type IntId<TName extends string = string> = `int_${TName}_${string}`
+export type PipeId = `pipe_${string}`
 
 export const CORE_NAME_TO_PREFIX = {
   integration: 'int',
