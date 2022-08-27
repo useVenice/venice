@@ -1,4 +1,4 @@
-import {NewConnection} from '@ledger-sync/app-config'
+import {NewConnection} from '@ledger-sync/engine-frontend'
 import {
   HStack,
   ThemeToggle,

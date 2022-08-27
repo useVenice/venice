@@ -5,8 +5,9 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/app-config": "*",
-    "@ledger-sync/core-integration-firebase": "*",
     "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/core-integration-firebase": "*",
+    "@ledger-sync/engine": "*",
     "@ledger-sync/id": "*",
     "@ledger-sync/integration-beancount": "*",
     "@ledger-sync/integration-onebrick": "*",

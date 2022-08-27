@@ -11,7 +11,6 @@ import {
   identity,
   md5Hash,
   parseMoney,
-  R,
   Rx,
   rxjs,
   z,

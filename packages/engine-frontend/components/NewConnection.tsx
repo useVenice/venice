@@ -24,7 +24,7 @@ export function NewConnection(ctx: {ledgerId: string}) {
           <Button
             key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
             onClick={() => {
-              ls.connect(opt.int, opt)
+              ls.connect(opt.int, opt as any)
             }}>
             {opt.int.id} {opt.int.provider} {opt.label}
           </Button>

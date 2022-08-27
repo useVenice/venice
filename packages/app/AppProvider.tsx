@@ -1,4 +1,5 @@
-import {ledgerSyncConfig, LSProvider} from '@ledger-sync/app-config'
+import {ledgerSyncConfig} from '@ledger-sync/app-config'
+import {LSProvider} from '@ledger-sync/engine-frontend'
 import {darkTheme, ThemeProvider} from '@ledger-sync/uikit'
 import {QueryClient, QueryClientProvider} from 'react-query'
 

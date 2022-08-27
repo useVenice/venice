@@ -6,7 +6,6 @@ export {
   parseWebhookRequest,
   type inferProcedureInput,
 } from '@ledger-sync/engine'
-export * from '@ledger-sync/engine-frontend'
 export * from './constants'
 export * from './ledgerSync.config'
 

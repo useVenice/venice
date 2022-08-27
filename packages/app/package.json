@@ -5,6 +5,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/app-config": "*",
+    "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/uikit": "*",
     "@ledger-sync/integration-postgres": "*",
     "react-query": "3.39.1",
