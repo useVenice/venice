@@ -1,6 +1,6 @@
 import {AppProvider} from '@ledger-sync/app'
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
-import '@ledger-sync/app-ui/register.web'
+import '@ledger-sync/uikit/register.web'
 import {AppProps} from 'next/app'
 import superjson from 'superjson'
 

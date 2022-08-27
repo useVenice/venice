@@ -4,7 +4,7 @@ const withTM = require('next-transpile-modules')([
   '@ledger-sync/standard',
   '@ledger-sync/util',
   '@ledger-sync/app',
-  '@ledger-sync/app-ui',
+  '@ledger-sync/uikit',
   '@ledger-sync/app-config',
   '@ledger-sync/engine',
   '@ledger-sync/cdk-core',

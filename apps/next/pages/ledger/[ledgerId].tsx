@@ -5,7 +5,7 @@ import {
   Toaster,
   Typography,
   VStack,
-} from '@ledger-sync/app-ui'
+} from '@ledger-sync/uikit'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {syncHooks} from '../_app'

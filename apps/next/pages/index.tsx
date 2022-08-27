@@ -1,4 +1,4 @@
-import {Button, Input, VStack} from '@ledger-sync/app-ui'
+import {Button, Input, VStack} from '@ledger-sync/uikit'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
 

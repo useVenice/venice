@@ -1,5 +1,5 @@
 import {ledgerSyncConfig, makeSyncHooks} from '@ledger-sync/app-config'
-import {darkTheme, ThemeProvider} from '@ledger-sync/app-ui'
+import {darkTheme, ThemeProvider} from '@ledger-sync/uikit'
 import {QueryClient, QueryClientProvider} from 'react-query'
 
 const reactQueryClient = new QueryClient()

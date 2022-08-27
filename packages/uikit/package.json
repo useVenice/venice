@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/app-ui",
+  "name": "@ledger-sync/uikit",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",
