@@ -6,7 +6,7 @@ import {
 import {
   IntegrationInput,
   makeSyncEngine,
-  SyncCoreConfig,
+  SyncEngineConfig,
 } from '@ledger-sync/engine'
 import {NonNullableOnly, R} from '@ledger-sync/util'
 import {withTRPC} from '@trpc/next'
@@ -18,7 +18,7 @@ import React from 'react'
 export function makeSyncHooks<
   T extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->(config: SyncCoreConfig<T, TLinks>) {
+>(config: SyncEngineConfig<T, TLinks>) {
   console.log('makeSyncHooks', config)
   const [sc, router] = makeSyncEngine(config)
   // Not sure why we cannot just do typeof router , oh well

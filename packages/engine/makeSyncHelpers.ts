@@ -11,8 +11,8 @@ import {
   zSource,
 } from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
-import type {SyncCoreConfig} from './makeSyncEngine'
 import {makeMetaStore} from './makeMetaStore'
+import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
@@ -67,25 +67,23 @@ export interface PipelineInput<
   watch?: boolean
 }
 
-export type ParsedConn = z.infer<
-  ReturnType<typeof makeSyncCoreHelpers>['zConn']
->
-export type ParsedInt = z.infer<ReturnType<typeof makeSyncCoreHelpers>['zInt']>
+export type ParsedConn = z.infer<ReturnType<typeof makeSyncHelpers>['zConn']>
+export type ParsedInt = z.infer<ReturnType<typeof makeSyncHelpers>['zInt']>
 export type ParsedPipeline = z.infer<
-  ReturnType<typeof makeSyncCoreHelpers>['zPipeline']
+  ReturnType<typeof makeSyncHelpers>['zPipeline']
 >
 
-export function makeSyncCoreHelpers<
+export function makeSyncHelpers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
   kvStore,
   providers,
   linkMap,
-  defaultIntegrations,
+  defaultIntegrations: _defaultIntegrations,
   defaultPipeline,
 }: Pick<
-  SyncCoreConfig<TProviders, TLinks>,
+  SyncEngineConfig<TProviders, TLinks>,
   | 'providers'
   | 'linkMap'
   | 'kvStore'
@@ -94,14 +92,20 @@ export function makeSyncCoreHelpers<
 >) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
 
+  const defaultIntegrations = Array.isArray(_defaultIntegrations)
+    ? _defaultIntegrations
+    : R.toPairs(_defaultIntegrations ?? {}).map(
+        ([name, config]): IntegrationInput<AnySyncProvider> => ({
+          provider: name,
+          config: config as any,
+        }),
+      )
+
   const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
 
   const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
-    Array.isArray(defaultIntegrations)
-      ? defaultIntegrations.find(
-          (i) => (id && i.id === id) || i.provider === name,
-        )?.config
-      : defaultIntegrations?.[name]
+    defaultIntegrations.find((i) => (id && i.id === id) || i.provider === name)
+      ?.config
 
   // TODO: Validate default integrations / destination at startup time
 

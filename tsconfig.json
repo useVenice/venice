@@ -2,16 +2,16 @@
   "extends": "./config/tsconfig.base.json",
   "include": [
     "@types/**/*",
+    "apps/**/*",
     "config/**/*",
-    "dev-packages/**/*",
     "packages/**/*",
     "./*.ts",
     "./*.js"
-, "apps/tests/testOptions.ts"  ],
+  ],
   "exclude": [
     "**/__encrypted__",
     "**/node_modules",
     "packages/@ledger-sync/app-config/dist",
     "packages/@ledger-sync/app-config/dist-ssr"
-  ],
+  ]
 }

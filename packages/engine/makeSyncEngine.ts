@@ -1,15 +1,12 @@
 import {
   AnySyncProvider,
   ConnectedSource,
-  IntId,
   KVStore,
   Link,
   LinkFactory,
-  WebhookInput,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
-  NonEmptyArray,
   R,
   routerFromZFunctionMap,
   Rx,
@@ -18,10 +15,9 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import * as trpc from '@trpc/server'
-import {inferProcedureInput} from '@trpc/server'
 import {
   IntegrationInput,
-  makeSyncCoreHelpers as makeSyncHelpers,
+  makeSyncHelpers,
   ParsedConn,
   ParsedInt,
   ParsedPipeline,
@@ -33,7 +29,7 @@ export {type inferProcedureInput} from '@trpc/server'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
-export interface SyncCoreConfig<
+export interface SyncEngineConfig<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 > {
@@ -72,7 +68,7 @@ export const makeSyncEngine = <
   defaultPipeline,
   defaultIntegrations,
   getLinksForPipeline,
-}: SyncCoreConfig<TProviders, TLinks>) => {
+}: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
   const {zInt, zConn, zPipeline, metaStore} = makeSyncHelpers({
@@ -105,6 +101,7 @@ export const makeSyncEngine = <
     providers,
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
+    listIntegrations: zFunction(async () => {}),
     sync: zFunction(zPipeline, async function syncPipeline(pipeline) {
       const {src, links, dest, watch} = pipeline
       const source$ =
@@ -227,48 +224,5 @@ makeSyncEngine.config = <
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(
-  config: SyncCoreConfig<TProviders, TLinks>,
+  config: SyncEngineConfig<TProviders, TLinks>,
 ) => config
-
-type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
-type HandleWebhookInput = inferProcedureInput<
-  SyncRouter['_def']['mutations']['handleWebhook']
->
-
-export function parseWebhookRequest(
-  req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
-) {
-  const [procedure, provider, localId] = req.pathSegments
-  if (procedure !== 'webhook') {
-    return {...req, procedure}
-  }
-  const id = localId ? (`int_${provider}_${localId}` as IntId) : undefined
-  const input: HandleWebhookInput = [
-    // Consider naming it integrationId? not sure.
-    id ? {id} : {provider},
-    {
-      query: req.query,
-      headers: req.headers,
-      body: req.body,
-    },
-  ]
-  return {
-    ...req,
-    procedure: 'handleWebhook',
-    // Need to stringify because of getRawProcedureInputOrThrow
-    ...(req.method?.toUpperCase() === 'GET'
-      ? {query: {...req.query, input: JSON.stringify(input)}}
-      : {body: input}),
-  }
-}
-parseWebhookRequest.isWebhook = (pathSegments: NonEmptyArray<string>) =>
-  pathSegments[0] === 'webhook'
-
-// Make error message more understandable. But security risk... so turn me off unless debugging
-if (process.env['NODE_ENV'] === 'development') {
-  z.setErrorMap((_issue, ctx) => {
-    // Need to get the `schema` as well.. otherwise very hard
-    console.error(`[zod] Data did not pass validation`, ctx.data)
-    return {message: ctx.defaultError}
-  })
-}
