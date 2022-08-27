@@ -1,4 +1,4 @@
-import {NewConnection} from '@ledger-sync/engine-frontend'
+import {ConnectionList, NewConnection} from '@ledger-sync/engine-frontend'
 import {
   HStack,
   ThemeToggle,
@@ -34,9 +34,8 @@ export default function LedgerScreen() {
           <ThemeToggle />
         </HStack>
 
-        <VStack>
-          <NewConnection ledgerId={ledgerId as string} />
-        </VStack>
+        <NewConnection ledgerId={ledgerId as string} />
+        <ConnectionList ledgerId={ledgerId as string} />
       </VStack>
       <Toaster />
     </>

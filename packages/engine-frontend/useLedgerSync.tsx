@@ -12,7 +12,11 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
   )
 
   const {hooks, client, trpc} = LSProvider.useContext()
-  const res = trpc.useQuery(['listPreConnectOptions', [ctx]])
+  const preConnectOptionsRes = trpc.useQuery(['listPreConnectOptions', [ctx]])
+  const connectionsRes = trpc.useQuery([
+    'listConnections',
+    [{ledgerId: ctx.ledgerId}],
+  ])
 
   const connect = React.useCallback(
     async function (
@@ -30,5 +34,5 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
     },
     [hooks, client, ctx],
   )
-  return {connect, preConnectOptionsRes: res}
+  return {connect, preConnectOptionsRes, connectionsRes}
 }
