@@ -2,7 +2,7 @@ import {
   AnyEntityPayload,
   handlersLink,
   makeSyncProvider,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {defineProxyFn, z, zCast, zFunction} from '@ledger-sync/util'
 import type {Db} from 'mongodb'
 

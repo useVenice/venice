@@ -1,9 +1,9 @@
-import {makeSyncProvider} from '@ledger-sync/core-sync'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {
   A,
   compact,

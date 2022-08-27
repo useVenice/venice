@@ -8,7 +8,7 @@ import {
   sync,
   WebhookInput,
   zWebhookInput,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {
   NonEmptyArray,
   R,

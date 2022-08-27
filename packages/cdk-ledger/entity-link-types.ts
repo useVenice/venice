@@ -1,5 +1,5 @@
 import {z, zCast} from '@ledger-sync/util'
-import {SyncOperation} from '@ledger-sync/core-sync'
+import {SyncOperation} from '@ledger-sync/cdk-core'
 
 export type EntityPayload =
   | {entityName: 'account'; entity: Standard.Account | null; id: string}

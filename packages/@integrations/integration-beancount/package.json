@@ -7,8 +7,8 @@
     "@ledger-sync/id": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
-    "@ledger-sync/core-sync": "*",
-    "@ledger-sync/ledger-sync": "*"
+    "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/cdk-ledger": "*"
   },
   "devDependencies": {
   }

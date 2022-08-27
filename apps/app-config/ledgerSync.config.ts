@@ -7,7 +7,7 @@ import {
   makePostgresKVStore,
 } from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
-import {debugProvider, logLink} from '@ledger-sync/core-sync'
+import {debugProvider, logLink} from '@ledger-sync/cdk-core'
 import {makeCoreSync} from '@ledger-sync/engine'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
@@ -27,7 +27,7 @@ import {
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
   renameAccountLink,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {

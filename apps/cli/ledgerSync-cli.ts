@@ -7,7 +7,7 @@ import {
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
 } from '@ledger-sync/app-config'
-import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/core-sync'
+import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/cdk-core'
 import {
   compact,
   NonEmptyArray,

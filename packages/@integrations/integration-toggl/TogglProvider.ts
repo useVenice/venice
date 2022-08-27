@@ -1,6 +1,6 @@
 import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
-import {makeSyncProvider} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import React from 'react'
 import {
   itemProjectResponseSchema,

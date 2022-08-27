@@ -1,8 +1,8 @@
 import {inferProcedureInput, makeCoreSync} from '@ledger-sync/engine'
 import {ledgerSyncConfig} from './ledgerSync.config'
 
-export * from '@ledger-sync/core-sync'
-export * from '@ledger-sync/core-sync-frontend'
+export * from '@ledger-sync/cdk-core'
+export * from '@ledger-sync/engine-frontend'
 export * from './ledgerSync.config'
 export * from './constants'
 

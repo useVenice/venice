@@ -1,4 +1,4 @@
-import {AnySyncProvider, handlersLink, KVStore} from '@ledger-sync/core-sync'
+import {AnySyncProvider, handlersLink, KVStore} from '@ledger-sync/cdk-core'
 import {cast, deepMerge, R, z} from '@ledger-sync/util'
 
 type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never

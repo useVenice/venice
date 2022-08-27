@@ -5,7 +5,7 @@ import {
   handlersLink,
   Link,
   transformLink,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {
   A,
   AM,
@@ -134,7 +134,7 @@ export const cachingTransformLink = (
     ]),
   )
 
-// TODO: Move this entire file into @ledger-sync/ledger-sync package
+// TODO: Move this entire file into @ledger-sync/cdk-ledger package
 
 /**
  * Used to workaround beancount limitation https://groups.google.com/g/beancount/c/PmkPVgLNKgg

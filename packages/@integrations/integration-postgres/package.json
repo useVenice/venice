@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/util": "*",
     "@ledger-sync/core-integration-postgres": "*",
     "zod": "3.17.3"

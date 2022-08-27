@@ -1,9 +1,9 @@
-import {makeSyncProvider, zWebhookInput} from '@ledger-sync/core-sync'
+import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
 import {
   ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import * as plaid from 'plaid'
 import React from 'react'

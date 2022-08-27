@@ -2,8 +2,8 @@ import {
   makePostgresClient,
   zPgConfig,
 } from '@ledger-sync/core-integration-postgres'
-import {handlersLink, makeSyncProvider} from '@ledger-sync/core-sync'
-import type {EntityPayloadWithExternal} from '@ledger-sync/ledger-sync'
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
+import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
 import {z, zCast} from '@ledger-sync/util'
 
 const def = makeSyncProvider.def({

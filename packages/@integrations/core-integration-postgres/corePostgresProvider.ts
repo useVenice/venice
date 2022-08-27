@@ -2,7 +2,7 @@ import {
   AnyEntityPayload,
   handlersLink,
   makeSyncProvider,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {z, zCast} from '@ledger-sync/util'
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 

@@ -1,5 +1,5 @@
-import {makeSyncProvider, SyncOperation} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase} from '@ledger-sync/ledger-sync'
+import {makeSyncProvider, SyncOperation} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
 import {Rx, rxjs, UnionToIntersection, z} from '@ledger-sync/util'
 import {
   formatAlliantCreditUnion,

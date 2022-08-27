@@ -6,12 +6,12 @@ import {
   stableStringify,
   z,
 } from '@ledger-sync/util'
-import {makeSyncProvider} from '@ledger-sync/core-sync'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   cachingLink,
   ledgerSyncProviderBase,
   StdCache,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {beanJsonToDir} from './bean-fs-utils'
 import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'
 

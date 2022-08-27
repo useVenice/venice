@@ -5,8 +5,8 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/util": "*",
-    "@ledger-sync/core-sync": "*",
-    "@ledger-sync/ledger-sync": "*",
+    "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/cdk-ledger": "*",
     "plaid": "10.7.0",
     "react-plaid-link": "3.3.2"
   },

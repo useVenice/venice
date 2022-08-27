@@ -2,7 +2,7 @@ import {
   AnySyncProvider,
   LinkFactory,
   PreConnOptions,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {
   IntegrationInput,
   makeCoreSync,

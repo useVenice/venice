@@ -12,8 +12,8 @@ import {
   makeSyncProvider,
   SyncOperation,
   zWebhookInput,
-} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import React from 'react'
 import {
   accountItemSchema,

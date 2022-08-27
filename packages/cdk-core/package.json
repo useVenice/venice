@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/core-sync",
+  "name": "@ledger-sync/cdk-core",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",

@@ -5,8 +5,8 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/util": "*",
-    "@ledger-sync/ledger-sync": "*",
-    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/cdk-ledger": "*",
+    "@ledger-sync/cdk-core": "*",
     "stripe": "8.86.0"
   },
   "peerDependencies": {

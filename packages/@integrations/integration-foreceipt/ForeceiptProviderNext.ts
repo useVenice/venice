@@ -3,8 +3,8 @@ import {
   SerializedTimestamp,
   serializeTimestamp,
 } from '@ledger-sync/core-integration-firebase'
-import {makeSyncProvider} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   A,
   compact,

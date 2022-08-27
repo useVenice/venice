@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/util": "*",
     "@slonik/migrator": "0.11.3",
     "pg": "8.7.3",

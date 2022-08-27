@@ -1,6 +1,6 @@
 import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
-import {makeSyncProvider, SyncOperation} from '@ledger-sync/core-sync'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/ledger-sync'
+import {makeSyncProvider, SyncOperation} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import React from 'react'
 import {HandleSuccessTellerEnrollment, useTellerAPI} from './teller-utils'
 import {

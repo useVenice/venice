@@ -1,5 +1,5 @@
 import {defineProxyFn, memoize, safeJSONParse, z, zFunction} from '@ledger-sync/util'
-import {zKVStore} from '@ledger-sync/core-sync'
+import {zKVStore} from '@ledger-sync/cdk-core'
 import type {createNodeRedisClient} from 'handy-redis'
 
 export const $createNodeRedisClient = defineProxyFn<

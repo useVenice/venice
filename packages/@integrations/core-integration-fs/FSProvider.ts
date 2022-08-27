@@ -18,7 +18,7 @@ import {
   handlersLink,
   makeSyncProvider,
   SyncOperation,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {_pathFromId} from './makeFsKVStore'
 
 // MARK: - Source Sync

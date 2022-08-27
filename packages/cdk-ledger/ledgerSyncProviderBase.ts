@@ -3,7 +3,7 @@ import {
   AnySyncProvider,
   makeSyncProvider,
   Source,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {z} from '@ledger-sync/util'
 import {EntityPayload, zEntityPayload} from './entity-link-types'
 

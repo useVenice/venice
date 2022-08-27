@@ -1,5 +1,5 @@
 import {R, ValueOf, z} from '@ledger-sync/util'
-import type {EntityPayload} from '@ledger-sync/ledger-sync'
+import type {EntityPayload} from '@ledger-sync/cdk-ledger'
 
 /**
  * Can be reused by in places such as Google Sheets / Excel. CSV is a starting

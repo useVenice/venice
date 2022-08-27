@@ -1,4 +1,4 @@
-import {zKVStore} from '@ledger-sync/core-sync'
+import {zKVStore} from '@ledger-sync/cdk-core'
 import {JsonObject, memoize, zFunction} from '@ledger-sync/util'
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 import {MetaRead} from './schemas'

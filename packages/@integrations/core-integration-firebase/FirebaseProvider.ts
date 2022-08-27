@@ -5,7 +5,7 @@ import {
   makeSyncProvider,
   mergeReady,
   SyncOperation,
-} from '@ledger-sync/core-sync'
+} from '@ledger-sync/cdk-core'
 import {
   compact,
   defineProxyFn,
