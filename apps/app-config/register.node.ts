@@ -27,7 +27,11 @@ import {makeProxyAgentNext} from './utils.node'
 
 console.log('[Dep] app-config/register.node')
 
-dotenv.config()
+// Ok this is downright riducous... Expects at the project root directory
+// And probably very fragile. Can dotenv recursively look up from the current dir at least?
+// We should ideally not depend on file direct or the current dir. Anyway to define
+// the project root?
+dotenv.config({path: path.resolve(__dirname, '../../../../../../.env')})
 
 registerDependency(
   kProxyAgent,
