@@ -2566,6 +2566,11 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/find-config@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/find-config/-/find-config-1.0.1.tgz#b0e72f7b6375b6747e0884f7367a5cd64c796403"
+  integrity sha512-H4DFIQMwxCKRgVWMSqALg6aowTOgZi5D4pSPBBuOQFJLRwfNZaByhC9+s870CZgTRJoyVg5J+iesdF5uvnJ0mA==
+
 "@types/glob@^7.1.1":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.2.0.tgz#bc1b5bf3aa92f25bd5dd39f35c57361bdce5b2eb"
@@ -5395,6 +5400,13 @@ financejs@4.1.0:
   resolved "https://registry.yarnpkg.com/financejs/-/financejs-4.1.0.tgz#e69b7cf4f0b5dd0c8a3b041992439513a2b93c41"
   integrity sha512-IE/SpTfCRsdl4TZWCGLo6/NNeg0q0QjU9eOoIxy7BWPCAH2truL3uqK+Kwu3f3kLd1trJK5vRKO+KGRNwNIzfg==
 
+find-config@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/find-config/-/find-config-1.0.0.tgz#eafa2b9bc07fa9c90e9a0c3ef9cecf1cc800f530"
+  integrity sha512-Z+suHH+7LSE40WfUeZPIxSxypCWvrzdVc60xAjUShZeT5eMWM0/FQUduq3HjluyfAHWvC/aOBkT1pTZktyF/jg==
+  dependencies:
+    user-home "^2.0.0"
+
 find-up@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
@@ -8137,6 +8149,11 @@ ora@^6.1.0:
     strip-ansi "^7.0.1"
     wcwidth "^1.0.1"
 
+os-homedir@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
+  integrity sha512-B5JU3cabzk8c67mRRd3ECmROafjYMXbuzlwtqdM8IbS8ktlTix8aFGb2bAGKrSRIlnfKwovGUUr72JUPyOb6kQ==
+
 os-tmpdir@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
@@ -10642,6 +10659,13 @@ use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+
+user-home@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/user-home/-/user-home-2.0.0.tgz#9c70bfd8169bc1dcbf48604e0f04b8b49cde9e9f"
+  integrity sha512-KMWqdlOcjCYdtIJpicDSFBQ8nFwS2i9sslAd6f4+CBGcU4gist2REnr2fxj2YocvJFxSF3ZOHLYLVZnUxv4BZQ==
+  dependencies:
+    os-homedir "^1.0.0"
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"

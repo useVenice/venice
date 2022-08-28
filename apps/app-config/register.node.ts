@@ -19,6 +19,7 @@ import {
 } from '@ledger-sync/util'
 import chokidar from 'chokidar'
 import * as dotenv from 'dotenv'
+import findConfig from 'find-config'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
@@ -27,12 +28,8 @@ import {makeProxyAgentNext} from './utils.node'
 
 console.log('[Dep] app-config/register.node')
 
-// Ok this is downright riducous... Expects at the project root directory
-// And probably very fragile. Can dotenv recursively look up from the current dir at least?
-// We should ideally not depend on file direct or the current dir. Anyway to define
-// the project root?
 export const dotEnvOut = dotenv.config({
-  path: path.resolve(__dirname, '../../../../../../.env'),
+  path: findConfig('.env') ?? undefined,
 })
 // console.log('[DEBUG] parsed dotenv', dotEnvOut.parsed)
 

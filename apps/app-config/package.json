@@ -37,6 +37,7 @@
     "@trpc/server": "9.26.0",
     "chokidar": "3.5.3",
     "dotenv": "16.0.1",
+    "find-config": "1.0.0",
     "execa": "6.1.0",
     "read-file-safe": "1.0.10",
     "tunnel": "0.0.6",
@@ -44,6 +45,7 @@
     "zod": "3.17.3"
   },
   "devDependencies": {
-    "@types/tunnel": "0.0.3"
+    "@types/tunnel": "0.0.3",
+    "@types/find-config": "1.0.1"
   }
 }
