@@ -1,6 +1,6 @@
 // Should this actually be called `integration-export` or `integration-standard`? Similar to `integration-import`?
 // Previously this used to be called `integration-alka`, but given alka is no longer relevant, how do we want to define this?
 
-// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,decorator,stories,web,native,ios,android,node}.{ts,tsx}"}
+// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,node}.{ts,tsx}"}
 export * from './postgresProvider'
 // codegen:end
