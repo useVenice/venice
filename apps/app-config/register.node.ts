@@ -18,11 +18,16 @@ import {
   registerDependency,
 } from '@ledger-sync/util'
 import chokidar from 'chokidar'
+import * as dotenv from 'dotenv'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
 import {writeFile as _writeFile} from 'write-file-safe'
 import {makeProxyAgentNext} from './utils.node'
+
+console.log('[Dep] app-config/register.node')
+
+dotenv.config()
 
 registerDependency(
   kProxyAgent,

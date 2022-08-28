@@ -34,6 +34,7 @@
     "@trpc/react": "9.26.0",
     "@trpc/server": "9.26.0",
     "chokidar": "3.5.3",
+    "dotenv": "16.0.1",
     "execa": "6.1.0",
     "read-file-safe": "1.0.10",
     "tunnel": "0.0.6",
