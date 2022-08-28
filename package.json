@@ -12,6 +12,7 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "yarn --cwd apps/next dev",
     "lint": "eslint --ext .js,.ts,.tsx --cache .",
     "mitm": "mitmweb --listen-port 3010 --web-port 3011 --mode reverse:http://localhost:3000",
     "postinstall": "{ patch-package || true; } && { husky install || true; }",

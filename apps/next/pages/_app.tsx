@@ -1,12 +1,20 @@
 import {AppProvider} from '@ledger-sync/app'
-import '@ledger-sync/uikit/register.web'
+import withTwindApp from '@twind/next/app'
 import {AppProps} from 'next/app'
+import Head from 'next/head'
+import twindConfig from '../twind.config'
 
 function App({Component, pageProps}: AppProps) {
   return (
-    <AppProvider>
-      <Component {...pageProps} />
-    </AppProvider>
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+      </Head>
+
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
+    </>
   )
 }
 
@@ -22,4 +30,4 @@ function App({Component, pageProps}: AppProps) {
 //   ssr: true,
 // })(App)
 
-export default App
+export default withTwindApp(twindConfig, App)

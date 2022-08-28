@@ -7,7 +7,6 @@
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/engine": "*",
-    "@ledger-sync/uikit": "*",
     "@ledger-sync/util": "*",
     "@trpc/next": "9.26.0",
     "@trpc/react": "9.26.0",

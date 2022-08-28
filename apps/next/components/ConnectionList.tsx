@@ -1,5 +1,6 @@
-import {Card, VStack} from '@ledger-sync/uikit'
-import {useLedgerSync} from '../useLedgerSync'
+import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {Card} from '@supabase/ui'
+import {tw} from 'twind'
 
 // Hmm maybe have envName in both place
 export function ConnectionList(ctx: {ledgerId: string}) {
@@ -7,10 +8,9 @@ export function ConnectionList(ctx: {ledgerId: string}) {
     ledgerId: ctx.ledgerId,
     envName: 'sandbox', // Add control for me...
   })
-
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
   return (
-    <VStack gap="sm">
+    <div className={tw`flex flex-col space-y-4`}>
       {connectionsRes.data?.map((conn) => (
         <Card title={(conn as any).settings.institution.name}>
           <img
@@ -21,6 +21,6 @@ export function ConnectionList(ctx: {ledgerId: string}) {
           <pre>{JSON.stringify(conn, null, 2)}</pre>
         </Card>
       ))}
-    </VStack>
+    </div>
   )
 }

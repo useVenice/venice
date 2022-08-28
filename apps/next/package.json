@@ -2,19 +2,27 @@
   "name": "@ledger-sync/next",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start"
+  },
   "dependencies": {
     "@ledger-sync/app": "*",
     "@ledger-sync/app-config": "*",
+    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/engine": "*",
     "@ledger-sync/engine-frontend": "*",
-    "@ledger-sync/uikit": "*",
     "@ledger-sync/util": "*",
+    "@supabase/ui": "0.36.5",
     "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",
+    "@twind/next": "1.0.9",
     "next": "12.1.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "superjson": "1.9.1"
+    "superjson": "1.9.1",
+    "twind": "0.16.17"
   },
   "devDependencies": {
     "@types/react": "17.0.39",

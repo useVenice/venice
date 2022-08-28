@@ -1,12 +1,13 @@
-import {Button, Input, VStack} from '@ledger-sync/uikit'
+import {Button, Input} from '@supabase/ui'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
+import {tw} from 'twind'
 
 export default function HomeScreen() {
   const router = useRouter()
   const [userId, setUserId] = useState('')
   return (
-    <VStack align="center" justify="center" css={{height: '100vh'}}>
+    <div className={tw`flex flex-col items-center justify-center h-screen`}>
       <Input
         label="Ledger Id"
         value={userId}
@@ -15,6 +16,6 @@ export default function HomeScreen() {
           <Button onClick={() => router.push(`/ledger/${userId}`)}>Go</Button>,
         ]}
       />
-    </VStack>
+    </div>
   )
 }

@@ -8,9 +8,11 @@
     "@ledger-sync/app-config": "*",
     "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/integration-postgres": "*",
-    "@ledger-sync/uikit": "*",
+    "react": "17.0.2",
     "react-query": "3.39.1",
     "zod": "3.17.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/react": "17.0.39"
+  }
 }

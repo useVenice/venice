@@ -1,18 +1,12 @@
-import {ConnectionList, NewConnection} from '@ledger-sync/engine-frontend'
-import {
-  HStack,
-  ThemeToggle,
-  Toaster,
-  Typography,
-  VStack,
-} from '@ledger-sync/uikit'
+import {Typography} from '@supabase/ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
+import {tw} from 'twind'
+import {ConnectionList, NewConnection} from '../../components'
 
 export default function LedgerScreen() {
   const router = useRouter()
   const {ledgerId} = router.query
-
   return (
     <>
       <Head>
@@ -20,24 +14,16 @@ export default function LedgerScreen() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <VStack
-        gap="md"
-        css={{
-          width: '100%',
-          height: '100%',
-          maxWidth: '$bpsm',
-          maxHeight: '100vh',
-          marginX: 'auto',
-        }}>
-        <HStack justify="between" align="center" gap="md" css={{padding: '$4'}}>
+      <div
+        className={tw`flex flex-col space-y-4 w-full h-full max-h-screen mx-auto max-w-[640px] p-4`}>
+        <div
+          className={tw`flex flex-row justify-between items-center space-x-4`}>
           <Typography.Title level={3}>Viewing as {ledgerId}</Typography.Title>
-          <ThemeToggle />
-        </HStack>
+        </div>
 
         <NewConnection ledgerId={ledgerId as string} />
         <ConnectionList ledgerId={ledgerId as string} />
-      </VStack>
-      <Toaster />
+      </div>
     </>
   )
 }

@@ -1,7 +1,8 @@
 import {EnvName, zEnvName} from '@ledger-sync/cdk-core'
-import {Button, HStack, Radio, VStack} from '@ledger-sync/uikit'
+import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {Button, Radio} from '@supabase/ui'
 import React from 'react'
-import {useLedgerSync} from '../useLedgerSync'
+import {tw} from 'twind'
 
 export function NewConnection(ctx: {ledgerId: string}) {
   const [envName, setEnvName] = React.useState<EnvName>('sandbox')
@@ -10,8 +11,8 @@ export function NewConnection(ctx: {ledgerId: string}) {
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
 
   return (
-    <HStack>
-      <VStack>
+    <div className={tw`flex flex-row space-x-4`}>
+      <div className={tw`flex flex-col`}>
         <Radio.Group
           name="grouped-radios"
           label="Environment"
@@ -21,11 +22,11 @@ export function NewConnection(ctx: {ledgerId: string}) {
             <Radio key={o} label={o} value={o} />
           ))}
         </Radio.Group>
-      </VStack>
+      </div>
 
-      <VStack gap="sm">
+      <div className={tw`flex flex-col space-y-4`}>
         {ls.insRes.data?.map(({ins, int}) => (
-          <VStack key={`${ins.id}`}>
+          <div key={`${ins.id}`} className={tw`flex flex-col space-y-4`}>
             <img src={ins.logoUrl} />
             <Button
               onClick={() => {
@@ -43,10 +44,11 @@ export function NewConnection(ctx: {ledgerId: string}) {
               }}>
               {ins.name}
             </Button>
-          </VStack>
+          </div>
         ))}
-      </VStack>
-      <VStack gap="sm">
+      </div>
+
+      <div className={tw`flex flex-col space-y-4`}>
         {ls.preConnectOptionsRes.data?.map((opt) => (
           <Button
             key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
@@ -56,7 +58,7 @@ export function NewConnection(ctx: {ledgerId: string}) {
             {opt.int.id} {opt.int.provider} {opt.label}
           </Button>
         ))}
-      </VStack>
-    </HStack>
+      </div>
+    </div>
   )
 }

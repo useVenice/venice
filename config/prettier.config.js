@@ -5,12 +5,7 @@ module.exports = {
   arrowParens: 'always',
   bracketSameLine: true,
   bracketSpacing: false,
-  importOrder: [
-    '^[^./](.*)\\.fx$',
-    '^[./](.*)\\.fx$',
-    '<THIRD_PARTY_MODULES>',
-    '^[./]',
-  ],
+  importOrder: ['<THIRD_PARTY_MODULES>', '^[./]'],
   importOrderSortSpecifiers: true,
   importOrderCaseInsensitive: true,
   jsxSingleQuote: false,

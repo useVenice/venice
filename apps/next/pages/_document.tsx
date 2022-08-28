@@ -1,12 +1,11 @@
-import {getCssText} from '@ledger-sync/uikit'
+import withTwindDocument from '@twind/next/app'
 import {Head, Html, Main, NextScript} from 'next/document'
+import twindConfig from '../twind.config'
 
-export default function Document() {
+function Document() {
   return (
     <Html>
-      <Head>
-        <style id="stitches" dangerouslySetInnerHTML={{__html: getCssText()}} />
-      </Head>
+      <Head />
 
       <body>
         <Main />
@@ -15,3 +14,5 @@ export default function Document() {
     </Html>
   )
 }
+
+export default withTwindDocument(twindConfig, Document)
