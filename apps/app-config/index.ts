@@ -13,5 +13,5 @@ export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
   makeSyncEngine(ledgerSyncConfig)
 export type LedgerSyncRouter = typeof ledgerSyncRouter
 export type LedgerSyncInput = inferProcedureInput<
-  LedgerSyncRouter['_def']['mutations']['sync']
+  LedgerSyncRouter['_def']['mutations']['syncPipeline']
 >[0]

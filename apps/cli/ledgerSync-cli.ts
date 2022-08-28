@@ -29,7 +29,7 @@ if (!process.env['DEBUG']) {
 
 export type LSRouter = LedgerSyncRouter
 export type SyncInput = inferProcedureInput<
-  LSRouter['_def']['mutations']['sync']
+  LSRouter['_def']['mutations']['syncPipeline']
 >[0]
 
 export const cli = cliFromRouter(router, {cleanup: metaStore.kvStore.close})

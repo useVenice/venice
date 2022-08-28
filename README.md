@@ -23,6 +23,22 @@ yarn dev
 4. Visit `http://localhost:3000`
 
 
+Couple things you can try
+
+- Connect via first selecting institution vs. connecting via selecting provider
+- LedgerSync works fully as a CLI tool as well
+
+```bash
+# Sync a connection
+yarn ledgerSync syncConnection --id $connectionId
+
+# Sync pipeline
+yarn ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --dest.settings.basePath ./data
+
+# Sync pipeline by fully specifying all source & destination settings
+yarn ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
+```
+
 
 ## What are we working now and next?
 

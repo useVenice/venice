@@ -185,7 +185,7 @@ export const makeSyncEngine = <
           )
       },
     ),
-    sync: zFunction(zPipeline, async function syncPipeline(pipeline) {
+    syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
       const {src, links, dest, watch} = pipeline
       const source$ =
         src._source$ ??
@@ -248,7 +248,7 @@ export const makeSyncEngine = <
       }
       await Promise.all(
         pipelines.map((pipe) =>
-          syncEngine.sync.impl({
+          syncEngine.syncPipeline.impl({
             ...pipe,
             src: {...pipe.src, _source$: conn._source$},
             dest: {...pipe.dest, _destination$$: conn._destination$$},
