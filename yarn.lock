@@ -4277,11 +4277,6 @@ dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
-dotenv@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
-  integrity sha512-XcaMACOr3JMVcEv0Y/iUM2XaOsATRZ3U1In41/1jjK6vJZ2PZbQ1bzCG8uvaByfaBpl9gqc9QWJovpUGBXLLYQ==
-
 duplexify@^4.0.0, duplexify@^4.1.1:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-4.1.2.tgz#18b4f8d28289132fa0b9573c898d9f903f81c7b0"
@@ -4388,13 +4383,6 @@ entities@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
-
-envkey@^1.x:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/envkey/-/envkey-1.3.2.tgz#4c047e5b5be1649a375c73f52c73c9299101e347"
-  integrity sha512-rxVrR4CPhuRNEIYIJU/s4q54x9JmI/MuKrL/iAG6n5kY+JsVhkuNcxQ2fZW6SHProZnZ23SBnNG+rLM1/exsfg==
-  dependencies:
-    dotenv "^4.0.0"
 
 error-ex@^1.3.1:
   version "1.3.2"

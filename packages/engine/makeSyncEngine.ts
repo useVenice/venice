@@ -166,7 +166,6 @@ export const makeSyncEngine = <
               ) ?? rxjs.EMPTY,
         ),
       )
-      console.log('hmm, should get our stuff')
       const institutions = await rxjs.firstValueFrom(ins$.pipe(Rx.toArray()))
       return institutions
     }),

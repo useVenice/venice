@@ -18,18 +18,11 @@ import {
   registerDependency,
 } from '@ledger-sync/util'
 import chokidar from 'chokidar'
-import {load as envkeyLoad} from 'envkey/loader'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
 import {writeFile as _writeFile} from 'write-file-safe'
 import {makeProxyAgentNext} from './utils.node'
-
-if (process.env['ENVKEY']) {
-  // console.log('[envkey] before load', process.env)
-  envkeyLoad({})
-  // console.log('[envkey] after load', process.env)
-}
 
 registerDependency(
   kProxyAgent,
