@@ -15,7 +15,7 @@ const TAB_LABEL_BY_VALUE: {
   [T in Tab]: string
 } = {
   institution: 'By institution',
-  provider: 'By provider',
+  provider: 'By provider (Developer mode)',
 }
 
 export default function LedgerNewConnectionScreen() {

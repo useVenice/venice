@@ -1,5 +1,4 @@
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
-import {Card} from '@supabase/ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {tw} from 'twind'
@@ -12,6 +11,7 @@ export default function LedgerMyConnectionsScreen() {
     ledgerId,
     envName: 'sandbox', // Add control for me...
   })
+  console.log('connectionsRes', connectionsRes)
   return (
     <>
       <Head>
@@ -25,19 +25,26 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
         <div
-          className={tw`container flex flex-col items-center justify-center mx-auto flex-1`}>
-          <div className={tw`flex flex-col space-y-4`}>
-            {connectionsRes.data?.map((conn) => (
-              <Card title={(conn as any).settings.institution.name}>
-                <img
-                  src={`data:image/png;base64,${
-                    (conn as any).settings.institution.logo
-                  }`}
-                />
-                <pre>{JSON.stringify(conn, null, 2)}</pre>
-              </Card>
-            ))}
-          </div>
+          className={tw`flex flex-col space-y-4`}
+          style={{maxWidth: '1024px', maxHeight: '400px'}}>
+          {connectionsRes.data?.map((conn) => (
+            <div
+              className={tw`flex flex-row`}
+              style={{margin: 32, padding: 16, border: '1px solid #eeeeee'}}>
+              <img
+                style={{objectFit: 'contain'}}
+                src={`data:image/png;base64,${
+                  (conn as any).settings.institution.logo
+                }`}
+              />
+              <div>
+                <h2>{(conn as any).settings.institution.name}</h2>
+                <pre style={{maxHeight: 300, overflow: 'scroll'}}>
+                  {JSON.stringify(conn, null, 2)}
+                </pre>
+              </div>
+            </div>
+          ))}
         </div>
       </Layout>
     </>

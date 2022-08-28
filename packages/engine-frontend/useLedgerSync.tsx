@@ -5,6 +5,7 @@ import React from 'react'
 import {LSProvider} from './LSProvider'
 
 export function useLedgerSync({ledgerId, envName}: ConnectContext) {
+  console.log(`[useLedgerSync]`, {ledgerId, envName})
   // There has to be a shorthand for this...
   const ctx = React.useMemo<ConnectContext>(
     () => ({ledgerId, envName}),
@@ -12,11 +13,13 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
   )
 
   const {hooks, client, trpc} = LSProvider.useContext()
-  const preConnectOptionsRes = trpc.useQuery(['listPreConnectOptions', [ctx]])
-  const connectionsRes = trpc.useQuery([
-    'listConnections',
-    [{ledgerId: ctx.ledgerId}],
-  ])
+  const preConnectOptionsRes = trpc.useQuery(['listPreConnectOptions', [ctx]], {
+    enabled: !!ledgerId,
+  })
+  const connectionsRes = trpc.useQuery(
+    ['listConnections', [{ledgerId: ctx.ledgerId}]],
+    {enabled: !!ledgerId},
+  )
 
   const insRes = trpc.useQuery(['listInstitutions', []])
 

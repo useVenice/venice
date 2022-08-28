@@ -41,21 +41,29 @@ function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
 const getKvStore = () => {
   const variant = z
     .enum(['fs', 'postgres', 'redis'])
-    .default('fs')
+    .optional()
     .parse(process.env['KV_STORE'])
   switch (variant) {
     case 'fs':
+      console.log('[kvStore] fs')
       return makeFsKVStore({
         basePath: getEnv('FS_META_PATH') ?? `./data/meta`,
       })
     case 'postgres':
+      console.log('[kvStore] postgres')
       return makePostgresKVStore({
         databaseUrl: getEnv('POSTGRES_URL', {required: true}),
       })
     case 'redis':
+      console.log('[kvStore] redis')
       return makeRedisKVStore({
         redisUrl: getEnv('REDIS_URL'),
       })
+    default:
+      // This is on the frontend, we need to revise how config works
+      // for frontend vs backend so frontend does not import configs
+      // which are only intended for the backend.
+      return 'FIXME' as unknown as ReturnType<typeof makeRedisKVStore>
   }
 }
 
@@ -183,3 +191,6 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   //   data: {outPath: './data'},
   // },
 })
+
+// TODO: Add me back once we are less verbosed
+// console.log('Using config', ledgerSyncConfig)
