@@ -18,6 +18,8 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
     [{ledgerId: ctx.ledgerId}],
   ])
 
+  const insRes = trpc.useQuery(['listInstitutions', []])
+
   const connect = React.useCallback(
     async function (
       int: NonNullableOnly<IntegrationInput, 'provider'>,
@@ -36,5 +38,5 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
     },
     [client, hooks, ctx, connectionsRes],
   )
-  return {connect, preConnectOptionsRes, connectionsRes}
+  return {connect, preConnectOptionsRes, connectionsRes, insRes}
 }

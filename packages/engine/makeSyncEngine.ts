@@ -8,7 +8,7 @@ import {
   zConnectContext,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import type {LedgerSyncProvider} from '@ledger-sync/cdk-ledger'
+import {LedgerSyncProvider, zStandard} from '@ledger-sync/cdk-ledger'
 import {
   R,
   routerFromZFunctionMap,
@@ -158,8 +158,12 @@ export const makeSyncEngine = <
       console.log('hmm, should get our stuff')
       const institutions = await rxjs.firstValueFrom(
         ins$.pipe(
-          Rx.map((op) => (op.type === 'data' ? op.data.entity : null)),
-          Rx.filter((e) => !!e),
+          Rx.map((op) =>
+            op.type === 'data'
+              ? zStandard.institution.safeParse(op.data.entity).data
+              : null,
+          ),
+          Rx.filter((e): e is NonNullable<typeof e> => !!e),
           Rx.toArray(),
         ),
       )

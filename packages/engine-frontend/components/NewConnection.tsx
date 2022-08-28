@@ -8,17 +8,34 @@ export function NewConnection(ctx: {ledgerId: string}) {
   const ls = useLedgerSync({ledgerId: ctx.ledgerId, envName})
 
   // console.log('ls.listIntegrationsRes.data', ls.listIntegrationsRes.data)
+
   return (
     <HStack>
-      <Radio.Group
-        name="grouped-radios"
-        label="Environment"
-        layout="horizontal" // does not work...
-        onChange={(e) => setEnvName(e.target.value as EnvName)}>
-        {zEnvName.options.map((o) => (
-          <Radio key={o} label={o} value={o} />
+      <VStack>
+        <Radio.Group
+          name="grouped-radios"
+          label="Environment"
+          layout="horizontal" // does not work...
+          onChange={(e) => setEnvName(e.target.value as EnvName)}>
+          {zEnvName.options.map((o) => (
+            <Radio key={o} label={o} value={o} />
+          ))}
+        </Radio.Group>
+      </VStack>
+
+      <VStack gap="sm">
+        {ls.insRes.data?.map((ins) => (
+          <VStack key={`${ins.id}`}>
+            <img src={ins.logoUrl} />
+            <Button
+              onClick={() => {
+                // ls.connect(opt.int, opt as any)
+              }}>
+              {ins.name}
+            </Button>
+          </VStack>
         ))}
-      </Radio.Group>
+      </VStack>
       <VStack gap="sm">
         {ls.preConnectOptionsRes.data?.map((opt) => (
           <Button
