@@ -34,3 +34,9 @@ yarn-error.log*
 
 # eslint
 /.eslintcache
+
+# typescript
+/tsconfig.tsbuildinfo
+
+# git-crypt
+*.git-crypt-key
