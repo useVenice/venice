@@ -62,6 +62,7 @@ export interface HandleSuccessTellerEnrollment {
 interface TellerOption {
   environment?: 'sandbox' | 'development' | 'production'
   applicationId: string | null
+  institution?: string
   onInit(): void
   onSuccess(enrollment: HandleSuccessTellerEnrollment): void
   onExit(): void
@@ -73,6 +74,10 @@ export function useTellerAPI(setupArgs: TellerOption) {
   React.useEffect(() => {
     loadTellerConnect()
       .then((tellerApiRes: any) => {
+        if (!setupArgs.environment) {
+          return
+        }
+        console.log('setup teller api', setupArgs, tellerApiRes)
         setTellerApi(tellerApiRes.setup(setupArgs))
       })
       .catch(console.log)

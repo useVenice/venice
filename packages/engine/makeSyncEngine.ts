@@ -150,23 +150,24 @@ export const makeSyncEngine = <
       const ins$ = rxjs.merge(
         ...ints.map(
           (int) =>
-            (
-              int.provider.extension as LedgerSyncProvider['extension']
-            ).getInstitutions?.(int.config) ?? rxjs.EMPTY,
+            (int.provider.extension as LedgerSyncProvider['extension'])
+              .getInstitutions?.(int.config)
+              .pipe(
+                Rx.map((op) =>
+                  op.type === 'data'
+                    ? zStandard.institution.safeParse(op.data.entity).data
+                    : null,
+                ),
+                Rx.filter((e): e is NonNullable<typeof e> => !!e),
+                Rx.map((ins) => ({
+                  ins,
+                  int: {id: int.id, provider: int.provider.name},
+                })),
+              ) ?? rxjs.EMPTY,
         ),
       )
       console.log('hmm, should get our stuff')
-      const institutions = await rxjs.firstValueFrom(
-        ins$.pipe(
-          Rx.map((op) =>
-            op.type === 'data'
-              ? zStandard.institution.safeParse(op.data.entity).data
-              : null,
-          ),
-          Rx.filter((e): e is NonNullable<typeof e> => !!e),
-          Rx.toArray(),
-        ),
-      )
+      const institutions = await rxjs.firstValueFrom(ins$.pipe(Rx.toArray()))
       return institutions
     }),
     listConnections: zFunction(

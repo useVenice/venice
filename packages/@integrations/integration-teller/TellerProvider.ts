@@ -26,10 +26,12 @@ const def = makeSyncProvider.def({
     userToken: z.string(),
     envName: zEnvName,
     applicationId: z.string(),
+    institutionId: z.string().nullish(),
   }),
   connectInput: z.object({
     userToken: z.string().nullish(),
     applicationId: z.string().nullish(),
+    institutionId: z.string().nullish(),
     envName: zEnvName,
   }),
   connectOutput: z.object({
@@ -122,16 +124,18 @@ export const tellerProvider = makeSyncProvider({
       options: {envName, userToken: ledgerId, applicationId: ''},
     }),
   ],
-  preConnect: ({envName}, config) =>
+  preConnect: ({envName, institutionId}, config) =>
     Promise.resolve({
       userToken: config.token,
       applicationId: config.applicationId,
+      institutionId,
       envName,
     }),
   useConnectHook: (_type) => {
     const [options, setOptions] = React.useState<
       | (z.infer<typeof zTellerConfig> & {
           environment: z.infer<typeof zEnvName>
+          institutionId?: string | null
         })
       | null
     >(null)
@@ -141,6 +145,7 @@ export const tellerProvider = makeSyncProvider({
     const tellerConnect = useTellerAPI({
       environment: options?.environment,
       applicationId: null,
+      institution: options?.institutionId || undefined,
       ...options,
       onInit: () => {
         console.log('Teller Connect has initialized')
@@ -166,6 +171,7 @@ export const tellerProvider = makeSyncProvider({
       setOptions({
         applicationId: opts.applicationId,
         environment: opts.envName,
+        institutionId: opts.institutionId,
       })
       return deferred.promise
     }

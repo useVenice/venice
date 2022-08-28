@@ -24,12 +24,22 @@ export function NewConnection(ctx: {ledgerId: string}) {
       </VStack>
 
       <VStack gap="sm">
-        {ls.insRes.data?.map((ins) => (
+        {ls.insRes.data?.map(({ins, int}) => (
           <VStack key={`${ins.id}`}>
             <img src={ins.logoUrl} />
             <Button
               onClick={() => {
-                // ls.connect(opt.int, opt as any)
+                ls.connect(int, {
+                  key: ins.id,
+                  label: ins.name,
+                  // Temp haackkk...
+                  options: {
+                    envName: 'sandbox',
+                    institutionId: ins.id,
+                    userToken: '',
+                    applicationId: '',
+                  },
+                })
               }}>
               {ins.name}
             </Button>

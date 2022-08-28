@@ -1,10 +1,4 @@
-import {
-  base64url,
-  createHTTPClient,
-  memoize,
-  z,
-  zFunction,
-} from '@ledger-sync/util'
+import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 import institutionsWsResponse from './institutionWsResponse.json'
 
 // Will be used on production mode to use cert
