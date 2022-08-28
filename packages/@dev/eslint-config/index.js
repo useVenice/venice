@@ -644,7 +644,7 @@ module.exports = {
     'react/jsx-no-comment-textnodes': 'warn',
     'react/jsx-no-constructed-context-values': 'off', // TODO: Re-enable
     'react/jsx-no-duplicate-props': 'warn',
-    'react/jsx-no-leaked-render': ['error', {validStrategies: ['ternary']}],
+    'react/jsx-no-leaked-render': 'off',
     'react/jsx-no-literals': 'off',
     'react/jsx-no-script-url': 'off',
     'react/jsx-no-target-blank': 'warn',

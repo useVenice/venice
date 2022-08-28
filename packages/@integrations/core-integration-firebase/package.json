@@ -2,7 +2,9 @@
   "name": "@ledger-sync/core-integration-firebase",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": ["register.node.ts"],
+  "sideEffects": [
+    "register.node.ts"
+  ],
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",

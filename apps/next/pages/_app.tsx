@@ -1,7 +1,7 @@
-import {AppProvider} from '@ledger-sync/app'
 import withTwindApp from '@twind/next/app'
 import {AppProps} from 'next/app'
 import Head from 'next/head'
+import {AppProvider} from '../AppProvider'
 import twindConfig from '../twind.config'
 
 function App({Component, pageProps}: AppProps) {
@@ -9,6 +9,7 @@ function App({Component, pageProps}: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>LedgerSync</title>
       </Head>
 
       <AppProvider>

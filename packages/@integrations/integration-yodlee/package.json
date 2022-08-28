@@ -2,7 +2,9 @@
   "name": "@ledger-sync/integration-yodlee",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "register.node.ts"
+  ],
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",

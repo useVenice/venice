@@ -5,6 +5,7 @@
     "alwaysStrict": true, // Doesn't seem to be working with tsx... @see https://github.com/esbuild-kit/tsx/issues/64
     "downlevelIteration": true,
     "esModuleInterop": true,
+    "checkJs": true,
     "exactOptionalPropertyTypes": false,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,

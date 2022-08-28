@@ -5,7 +5,9 @@ import twindConfig from '../twind.config'
 function Document() {
   return (
     <Html>
-      <Head />
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
       <body>
         <Main />
