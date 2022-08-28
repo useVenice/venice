@@ -71,6 +71,12 @@ export const accountTellerSchema = z.object({
   balance: balancesTellerSchema.nullish(),
 })
 
+export const institutionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  logoUrl: z.string(),
+})
+
 const accountDetailTellerSchema = z.object({
   routing_numbers: z.object({ach: z.string()}),
   links: linksSchema,
@@ -87,6 +93,7 @@ export const zTellerConfig = z.object({
   token: z.string().nullish(),
   applicationId: z.string().nullish(),
 })
+
 type EnvName = z.infer<typeof zEnvName>
 // Reference: https://teller.io/docs/api/2020-10-12
 export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
@@ -164,14 +171,14 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
     ),
 
     /** Teller does not seem to have an institution endpoint. So we will do this for now */
-    getInstitutions: zFunction(() => {
+    getInstitutions: zFunction([], z.array(institutionSchema), () => {
       const list = institutionsWsResponse.response.diff[6][0][0]['d'] as Array<
         [string, string, string, string]
       >
       return list.map(([, id, svg, name]) => ({
         id,
-        svg: 'data:image/svg+xml;base64,' + base64url.encode(svg),
         name,
+        logoUrl: 'data:image/svg+xml;base64,' + base64url.encode(svg),
       }))
     }),
   }

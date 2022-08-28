@@ -55,7 +55,7 @@ ledgerSyncProviderBase.def = makeSyncProvider.def({
   destinationInputEntity: zEntityPayload,
 })
 
-type LedgerSyncProvider = ReturnType<typeof ledgerSyncProviderBase>
+export type LedgerSyncProvider = ReturnType<typeof ledgerSyncProviderBase>
 
 export function isLedgerSyncProvider(
   provider: AnySyncProvider,

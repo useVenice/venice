@@ -8,6 +8,7 @@ import {
   zConnectContext,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
+import type {LedgerSyncProvider} from '@ledger-sync/cdk-ledger'
 import {
   R,
   routerFromZFunctionMap,
@@ -144,6 +145,26 @@ export const makeSyncEngine = <
           )
       },
     ),
+    listInstitutions: zFunction(async () => {
+      const ints = await getDefaultIntegrations()
+      const ins$ = rxjs.merge(
+        ...ints.map(
+          (int) =>
+            (
+              int.provider.extension as LedgerSyncProvider['extension']
+            ).getInstitutions?.(int.config) ?? rxjs.EMPTY,
+        ),
+      )
+      console.log('hmm, should get our stuff')
+      const institutions = await rxjs.firstValueFrom(
+        ins$.pipe(
+          Rx.map((op) => (op.type === 'data' ? op.data.entity : null)),
+          Rx.filter((e) => !!e),
+          Rx.toArray(),
+        ),
+      )
+      return institutions
+    }),
     listConnections: zFunction(
       z.object({ledgerId: z.string().nullish()}).optional(),
       async ({ledgerId} = {}) => {

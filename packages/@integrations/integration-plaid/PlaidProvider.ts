@@ -148,6 +148,16 @@ export const plaidProviderNext = makeSyncProvider({
     },
     // How do we think about this relative to pre-connect input?
     getInstitutions: (config) => {
+      // eslint-disable-next-line no-constant-condition
+      if (1 + 1 === 2) {
+        // For now... While we are debugging...
+        // Consider implementing the institution search endpoint?
+        return rxjs.EMPTY
+      }
+      // Rate limit is easily exceeded, so we will have to introduce
+      // a management layer for that, which will be process-wide and
+      // eventually distributed rate limiter too
+      // @see https://share.cleanshot.com/w7xCNK
       const client = makePlaidClient(config)
       async function* iterateInstitutions() {
         let offset = 0

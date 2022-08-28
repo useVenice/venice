@@ -5,6 +5,7 @@ import React from 'react'
 import {HandleSuccessTellerEnrollment, useTellerAPI} from './teller-utils'
 import {
   accountTellerSchema,
+  institutionSchema,
   makeTellerClient,
   transactionItemSchema,
   zEnvName,
@@ -44,6 +45,11 @@ const def = makeSyncProvider.def({
       id: z.string(),
       entityName: z.literal('transaction'),
       entity: transactionItemSchema,
+    }),
+    z.object({
+      id: z.string(),
+      entityName: z.literal('institution'),
+      entity: institutionSchema,
     }),
   ]),
 })
@@ -102,6 +108,12 @@ export const tellerProvider = makeSyncProvider({
       // TODO: Map transactions
       return null
     },
+    getInstitutions: () =>
+      rxjs.from(
+        makeTellerClient({})
+          .getInstitutions()
+          .map((ins) => def._opData('institution', ins.id, ins)),
+      ),
   }),
   getPreConnectInputs: ({envName, ledgerId}) => [
     def._preConnOption({
