@@ -106,17 +106,15 @@ export const ledgerSyncConfig = makeSyncEngine.config({
       ...safeJSONParse(process.env['PLAID_CREDENTIALS']),
       clientName: 'Alka',
     },
-    onebrick: safeJSONParse(process.env['ONEBRICK_CREDENTIALS']),
     teller: safeJSONParse(process.env['TELLER_CREDENTIALS']),
-    yodlee: {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      clientId: process.env['YODLEE_BAYU_CLIENT_ID']!,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
-    },
+    // yodlee: {
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   clientId: process.env['YODLEE_BAYU_CLIENT_ID']!,
+    //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    //   clientSecret: process.env['YODLEE_BAYU_CLIENT_SECRET']!,
+    // },
     beancount: undefined,
-
-    // we could use multiple alka here...
+    // onebrick: safeJSONParse(process.env['ONEBRICK_CREDENTIALS']),
     // alka: {
     //   baseDir: './data',
     //   // serviceAccountJson: safeJSONParse(

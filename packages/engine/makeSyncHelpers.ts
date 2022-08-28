@@ -101,7 +101,16 @@ export function makeSyncHelpers<
         }),
       )
   const getDefaultIntegrations = async () =>
-    Promise.all(defaultIntegrationInputs.map((input) => zInt.parseAsync(input)))
+    Promise.all(
+      defaultIntegrationInputs.map((input) =>
+        zInt.parseAsync(input).catch((err) => {
+          console.error(`Error initialzing`, input, err)
+          throw new Error(
+            `Error initializing integration ${input.id} ${input.provider}`,
+          )
+        }),
+      ),
+    )
 
   const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
 

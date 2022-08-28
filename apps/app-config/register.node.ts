@@ -31,10 +31,10 @@ console.log('[Dep] app-config/register.node')
 // And probably very fragile. Can dotenv recursively look up from the current dir at least?
 // We should ideally not depend on file direct or the current dir. Anyway to define
 // the project root?
-dotenv.config({
+export const dotEnvOut = dotenv.config({
   path: path.resolve(__dirname, '../../../../../../.env'),
 })
-// console.log('[DEBUG] parsed dotenv', out)
+// console.log('[DEBUG] parsed dotenv', dotEnvOut.parsed)
 
 registerDependency(
   kProxyAgent,
