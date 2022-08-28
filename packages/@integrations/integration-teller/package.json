@@ -2,11 +2,12 @@
   "name": "@ledger-sync/integration-teller",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
+    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/cdk-core": "*"
+    "@ledger-sync/util": "*"
   },
   "peerDependencies": {
     "react": "*"

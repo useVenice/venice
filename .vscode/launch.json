@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Run File",
+      "name": "Run file",
       "runtimeArgs": ["--loader", "tsx"],
       "console": "integratedTerminal",
       "args": ["${file}"]

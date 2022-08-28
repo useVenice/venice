@@ -1,10 +1,10 @@
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   firebaseProvider,
   SerializedTimestamp,
   serializeTimestamp,
 } from '@ledger-sync/core-integration-firebase'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   A,
   compact,

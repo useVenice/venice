@@ -4,5 +4,5 @@ module.exports = {
     `eslint --ext .js,.ts,.tsx --cache --fix ${filenames.join(' ')}`,
     `prettier --write ${filenames.join(' ')}`,
   ],
-  '**/*.{json,yml,yaml}': ['prettier --write'],
+  '**/*.{json,md}': ['prettier --write'],
 }

@@ -8,6 +8,7 @@ import {
   PathsOf,
   rxjs,
 } from '@ledger-sync/util'
+import type firebase from 'firebase/compat'
 import type {
   AnyDocumentReference,
   AnyFieldPath,
@@ -19,7 +20,6 @@ import type {
 } from './firebase-types'
 import {fieldPath} from './firebase-utils'
 import type {WrappedFirebase} from './FirebaseProvider'
-import type firebase from 'firebase/compat'
 
 type Instruction<TStore extends AnyFirestore = AnyFirestore> =
   | [

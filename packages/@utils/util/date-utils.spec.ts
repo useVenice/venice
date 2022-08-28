@@ -1,6 +1,6 @@
+import {Settings} from 'luxon'
 import * as tzMock from 'timezone-mock'
 import {DateTime, maxDateTime, minDateTime} from './date-utils'
-import {Settings} from 'luxon'
 
 // Warning: How would this behave if timezone is involved? Gah :(
 
@@ -38,7 +38,5 @@ test.each([
 ])('DateTime.fromISO(%o, {setZone: true})', async (input, output) => {
   Settings.defaultZone = 'US/Pacific'
   tzMock.register('US/Pacific')
-  expect(DateTime.fromISO(input, {setZone: true}).toISO()).toEqual(
-    output,
-  )
+  expect(DateTime.fromISO(input, {setZone: true}).toISO()).toEqual(output)
 })

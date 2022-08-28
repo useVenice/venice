@@ -14,6 +14,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
@@ -28,16 +31,7 @@
   },
   "editor.rulers": [80],
   "editor.tabSize": 2,
-  "eslint.options": {
-    "overrideConfig": {
-      "rules": {
-        // "import/no-named-as-default": "off"
-        // "import/no-cycle": "off"
-      }
-    }
-  },
   "files.associations": {
-    ".envrc.local": "shellscript",
     "ledgerSync": "typescript"
   },
   "highlight.regexes": {
@@ -74,7 +68,7 @@
   "json.format.enable": false,
   "markJump.strictLimit": "disable",
   "search.exclude": {
-    "/.yarn/": true,
+    "/.yarn/": true
   },
   "typescript.disableAutomaticTypeAcquisition": true,
   "typescript.format.enable": false,

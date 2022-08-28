@@ -2,7 +2,6 @@
   "name": "@ledger-sync/cli",
   "version": "0.0.0",
   "private": true,
-  "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/app-config": "*",
     "@ledger-sync/cdk-core": "*",

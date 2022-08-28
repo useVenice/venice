@@ -1,4 +1,10 @@
-import {createHTTPClient, memoize, OAuth2Client, z, zFunction} from '@ledger-sync/util'
+import {
+  createHTTPClient,
+  memoize,
+  OAuth2Client,
+  z,
+  zFunction,
+} from '@ledger-sync/util'
 
 export const zRampConfig = z.object({
   clientId: z.string(),
@@ -34,7 +40,6 @@ const userResponseSchema = z.object({
     'USER_SUSPENDED',
   ]),
 })
-
 
 const getTokenInputSchema = z.object({
   code: z.string(),
@@ -147,7 +152,11 @@ export const makeRampClient = zFunction(zRampConfig, (cfg) => {
         scope: 'users:read transactions:read business:read',
       }),
     ),
-    getToken: zFunction(getTokenInputSchema, (opts) => oAuth2Client.getToken(opts.code, opts.redirectUri).then(r => r.access_token)),
+    getToken: zFunction(getTokenInputSchema, (opts) =>
+      oAuth2Client
+        .getToken(opts.code, opts.redirectUri)
+        .then((r) => r.access_token),
+    ),
     getUsers: zFunction(z.string(), (token) =>
       createClient(token)
         .get<{data: unknown[]}>('/users')

@@ -58,7 +58,7 @@ export const splitwiseProvider = makeSyncProvider({
           notes: t.details,
           date: DateTime.fromISO(t.date).toISODate(),
           removed: t.deleted_at != null,
-          payee: t.group_name
+          payee: t.group_name,
         }
 
         if (t.payment) {

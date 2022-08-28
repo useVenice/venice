@@ -4,9 +4,6 @@
 # Node.js
 **/node_modules/
 
-# Temporary files
-**/temp/
-
 # Generated files
 **/__generated__/
 

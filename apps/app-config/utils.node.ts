@@ -1,5 +1,3 @@
-
-
 import {z, zFunction} from '@ledger-sync/util'
 import tunnel from 'tunnel'
 import url from 'url'

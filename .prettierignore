@@ -10,24 +10,7 @@
 # Jest snapshot files
 *.snap
 
-# Static files
-/packages/@web/webpack/public/
-
 # App builds
-/build-cloud/
-/packages/@tabs/expo/.expo/
-/packages/@tabs/expo/android/
-/packages/@tabs/expo/dist/
-/packages/@tabs/expo/ios/
-/packages/@tabs/expo/web-build/
-/packages/@ledger-sync/app-config/.next
-/packages/@web/webpack/build-cosmos/
-/packages/@web/webpack/build-storybook/
-/packages/@web/webpack/build/
-
-# Docs, notes, etc.
-/.archive
-/thoughts
-/docs
+/apps/next/.next
 
 # vim: set filetype=ignore:

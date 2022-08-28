@@ -1,4 +1,10 @@
-import {A, formatDate, Interval, iterateSubintervals, math} from '@ledger-sync/util'
+import {
+  A,
+  formatDate,
+  Interval,
+  iterateSubintervals,
+  math,
+} from '@ledger-sync/util'
 
 // Should we support AmountMap?
 export function computeAmortization(

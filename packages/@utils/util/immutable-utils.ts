@@ -1,5 +1,6 @@
 // Auto-freeze is not cool...
 import {setAutoFreeze} from 'immer'
+
 // @see https://github.com/immerjs/immer/issues/959
 setAutoFreeze(false)
 

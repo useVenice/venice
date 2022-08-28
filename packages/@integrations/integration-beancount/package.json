@@ -2,14 +2,14 @@
   "name": "@ledger-sync/integration-beancount",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
+    "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/id": "*",
     "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*",
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*"
+    "@ledger-sync/util": "*"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

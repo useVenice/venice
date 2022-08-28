@@ -2,13 +2,14 @@
   "name": "@ledger-sync/integration-foreceipt",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/id": "*",
-    "@ledger-sync/util": "*",
-    "@ledger-sync/core-integration-firebase": "*",
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",
+    "@ledger-sync/core-integration-firebase": "*",
+    "@ledger-sync/id": "*",
+    "@ledger-sync/util": "*",
     "firebase": "9.8.1"
   },
   "devDependencies": {},

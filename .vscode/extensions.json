@@ -1,10 +1,13 @@
 {
   "recommendations": [
+    "adpyke.vscode-sql-formatter",
     "chrislajoie.vscode-modelines",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "fabiospampinato.vscode-highlight",
+    "forbeslindesay.vscode-sql-template-literal",
+    "graphql.vscode-graphql",
     "maptz.regionfolder",
     "mikestead.dotenv",
     "msjsdiag.debugger-for-chrome",
@@ -12,9 +15,6 @@
     "orta.vscode-jest",
     "spywhere.mark-jump",
     "toba.vsfire",
-    "usernamehw.errorlens",
-    "graphql.vscode-graphql",
-    "forbeslindesay.vscode-sql-template-literal",
-    "adpyke.vscode-sql-formatter"
+    "usernamehw.errorlens"
   ]
 }

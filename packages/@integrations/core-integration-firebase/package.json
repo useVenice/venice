@@ -2,13 +2,13 @@
   "name": "@ledger-sync/core-integration-firebase",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
     "@ledger-sync/cdk-core": "*",
-    "firebase-admin": "10.2.0",
-    "firebase": "9.8.1"
+    "@ledger-sync/util": "*",
+    "firebase": "9.8.1",
+    "firebase-admin": "10.2.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

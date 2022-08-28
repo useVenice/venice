@@ -71,7 +71,7 @@ export const mapStandardEntityLink = ({
         external: op.data.entity,
         providerName: provider.name,
         externalId: op.data.id,
-        sourceId: sourceId,
+        sourceId,
       },
     })
   })

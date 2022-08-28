@@ -9,7 +9,6 @@ const zImage = z.object({
   small: z.string().nullish(),
 })
 
-
 export const zUser = z.object({
   id: z.number(),
   first_name: z.string(),

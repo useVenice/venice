@@ -1,3 +1,4 @@
+import {zKVStore} from '@ledger-sync/cdk-core'
 import {
   $path,
   joinPath,
@@ -8,7 +9,6 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-import {zKVStore} from '@ledger-sync/cdk-core'
 
 export const _pathFromId = (basePath: string, id: string) =>
   joinPath(basePath, `${id}.json`)

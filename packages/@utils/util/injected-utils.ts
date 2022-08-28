@@ -1,6 +1,5 @@
 import {defineProxyFn} from './di-utils'
 
-
 /** @deprecated */
 export const $ensureDir =
   defineProxyFn<(path: string) => Promise<void>>('$ensureDir')

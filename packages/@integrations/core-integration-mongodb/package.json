@@ -2,11 +2,12 @@
   "name": "@ledger-sync/core-integration-mongodb",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/util": "*",
-    "mongodb": "^4.8.1"
+    "mongodb": "4.8.1"
   },
   "devDependencies": {}
 }

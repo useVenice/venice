@@ -2,11 +2,11 @@
   "name": "@ledger-sync/core-integration-fs",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
-    "@ledger-sync/cdk-core": "*"
+    "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/util": "*"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

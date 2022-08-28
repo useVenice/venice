@@ -2,6 +2,7 @@
   "name": "@ledger-sync/uikit",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@fontsource/inter": "4.5.11",
@@ -15,10 +16,10 @@
     "framer-motion": "6.3.11",
     "modern-normalize": "1.1.0",
     "next-themes": "0.2.0",
-    "react": "18.1.0",
+    "react": "17.0.2",
     "react-hot-toast": "2.2.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.12"
+    "@types/react": "17.0.39"
   }
 }

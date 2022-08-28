@@ -2,6 +2,7 @@
   "name": "@ledger-sync/accounting",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/standard": "*",
@@ -9,6 +10,5 @@
     "financejs": "4.1.0",
     "js-combinatorics": "1.5.7"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

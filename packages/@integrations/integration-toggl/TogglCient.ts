@@ -32,26 +32,34 @@ export const itemProjectResponseSchema = z.object({
   color: z.string().nullish(),
   created_at: z.string().nullish(),
   currency: z.string().nullish(),
-  current_period: z.object({
-    end_date: z.string().nullish(),
-    start_date: z.string().nullish()
-  }).nullish(),
+  current_period: z
+    .object({
+      end_date: z.string().nullish(),
+      start_date: z.string().nullish(),
+    })
+    .nullish(),
   estimated_hours: z.number().nullish(),
   fixed_fee: z.number().nullish(),
   foreign_id: z.string().nullish(),
   is_private: z.boolean().nullish(),
   name: z.string().nullish(),
   recurring: z.boolean().nullish(),
-  recurring_parameters: z.object({
-    items: z.array(z.object({
-      custom_period: z.number().nullish(),
-      estimated_seconds: z.number().nullish(),
-      parameter_end_date: z.string().nullish(),
-      parameter_start_date: z.string().nullish(),
-      period: z.string().nullish(),
-      project_start_date: z.string().nullish(),
-    })).nullish()
-  }).nullish(),
+  recurring_parameters: z
+    .object({
+      items: z
+        .array(
+          z.object({
+            custom_period: z.number().nullish(),
+            estimated_seconds: z.number().nullish(),
+            parameter_end_date: z.string().nullish(),
+            parameter_start_date: z.string().nullish(),
+            period: z.string().nullish(),
+            project_start_date: z.string().nullish(),
+          }),
+        )
+        .nullish(),
+    })
+    .nullish(),
 
   rate: z.number().nullish(),
   rate_last_updated: z.string().nullish(),

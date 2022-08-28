@@ -2,13 +2,13 @@
   "name": "@ledger-sync/cdk-ledger",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/accounting": "*",
+    "@ledger-sync/cdk-core": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

@@ -2,6 +2,7 @@
   "name": "@ledger-sync/cdk-core",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/util": "*",

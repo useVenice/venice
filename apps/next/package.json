@@ -2,10 +2,6 @@
   "name": "@ledger-sync/next",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "postinstall": "yarn --cwd ../../ postinstall",
-    "typecheck": "yarn --cwd ../../ typecheck"
-  },
   "dependencies": {
     "@ledger-sync/app": "*",
     "@ledger-sync/app-config": "*",
@@ -16,13 +12,13 @@
     "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",
     "next": "12.1.6",
-    "react": "18.1.0",
-    "react-dom": "18.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "superjson": "1.9.1"
   },
   "devDependencies": {
-    "@types/react": "18.0.12",
-    "@types/react-dom": "18.0.5",
+    "@types/react": "17.0.39",
+    "@types/react-dom": "17.0.13",
     "next-transpile-modules": "9.0.0"
   }
 }

@@ -15,18 +15,20 @@ const transactionAccountSchema = z.object({
   starting_after: z.string().nullish(),
 })
 export const zModeName = z.enum(['test', 'live'])
-export const zStripeConfig = z.object({
-  accountId: z.string().nullish(),
-  publishableKeys: z
-    .record(z.string())
-    .refine(castIs<Partial<{[K in ModeName]: string}>>())
-    .nullish(),
-  secretKeys: z
-    .record(z.string())
-    .refine(castIs<Partial<{[K in ModeName]: string}>>())
-    .nullish(),
-  secretKey: z.string().nullish(),
-}).nullish()
+export const zStripeConfig = z
+  .object({
+    accountId: z.string().nullish(),
+    publishableKeys: z
+      .record(z.string())
+      .refine(castIs<Partial<{[K in ModeName]: string}>>())
+      .nullish(),
+    secretKeys: z
+      .record(z.string())
+      .refine(castIs<Partial<{[K in ModeName]: string}>>())
+      .nullish(),
+    secretKey: z.string().nullish(),
+  })
+  .nullish()
 
 export const makeStripeClient = zFunction(zStripeConfig, (cfg) => {
   const fromMode = memoize((modeName: ModeName | undefined) => {

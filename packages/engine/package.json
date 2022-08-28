@@ -2,9 +2,11 @@
   "name": "@ledger-sync/engine",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0"
   },

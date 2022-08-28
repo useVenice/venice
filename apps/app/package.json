@@ -2,12 +2,13 @@
   "name": "@ledger-sync/app",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/app-config": "*",
     "@ledger-sync/engine-frontend": "*",
-    "@ledger-sync/uikit": "*",
     "@ledger-sync/integration-postgres": "*",
+    "@ledger-sync/uikit": "*",
     "react-query": "3.39.1",
     "zod": "3.17.3"
   },

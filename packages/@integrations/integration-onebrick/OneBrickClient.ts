@@ -161,7 +161,6 @@ export const otpSchema = z.object({
   deviceId: z.string().nullish(),
 })
 
-
 export const zOneBrickConfig = z.object({
   secrets: z
     .record(z.string())

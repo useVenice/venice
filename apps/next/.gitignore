@@ -27,11 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
-
-# data
-data.ms
-demo.sqlite
-data

@@ -7,6 +7,7 @@ import {
   rxjs,
 } from '@ledger-sync/util'
 import type admin from 'firebase-admin'
+import type firebase from 'firebase/compat'
 import {
   AnyDocumentReference,
   AnyDocumentSnapshot,
@@ -25,7 +26,6 @@ import {
   SnapshotData,
   Timestamp,
 } from './firebase-types'
-import type firebase from 'firebase/compat'
 
 /** @deprecated. to be removed */
 export const kFieldPath = Symbol(
@@ -160,13 +160,10 @@ export function getDocumentSnapshot$<T, TStore extends AnyFirestore>(
           (snap) => obs.next(snap as AnyDocumentSnapshot<T, TStore>),
           (err) => obs.error(err),
         )
-      : (ref as firebase.firestore.DocumentReference<T>).onSnapshot(
-          options,
-          {
-            next: (snap) => obs.next(snap as AnyDocumentSnapshot<T, TStore>),
-            error: (err) => obs.error(err),
-          },
-        ),
+      : (ref as firebase.firestore.DocumentReference<T>).onSnapshot(options, {
+          next: (snap) => obs.next(snap as AnyDocumentSnapshot<T, TStore>),
+          error: (err) => obs.error(err),
+        }),
   )
 }
 

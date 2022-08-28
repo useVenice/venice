@@ -1,4 +1,10 @@
 import {
+  AnyEntityPayload,
+  handlersLink,
+  makeSyncProvider,
+  SyncOperation,
+} from '@ledger-sync/cdk-core'
+import {
   $chokidar,
   $path,
   $readFile,
@@ -13,12 +19,6 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
-import {
-  AnyEntityPayload,
-  handlersLink,
-  makeSyncProvider,
-  SyncOperation,
-} from '@ledger-sync/cdk-core'
 import {_pathFromId} from './makeFsKVStore'
 
 // MARK: - Source Sync

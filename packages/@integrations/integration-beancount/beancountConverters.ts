@@ -33,7 +33,6 @@ import {
   upperCaseFirst,
 } from '@ledger-sync/util'
 
-
 // @see https://beancount.github.io/docs/beancount_language_syntax.html
 // The general format of a Transaction directive is:
 // YYYY-MM-DD [txn|Flag] [[Payee] Narration]
@@ -382,7 +381,7 @@ export const convTransaction = conv<
     // Rethink whether this should be Id.external in the case of beancount as a source
     id: beanTxn?.meta?.['id']
       ? (`${beanTxn?.meta?.['id']}` as Id.txn)
-      : temp_makeId('txn', beanTxn.hash) as Id.txn,
+      : (temp_makeId('txn', beanTxn.hash) as Id.txn),
     date: beanTxn.date, // Parse time component?
     description: beanTxn.narration,
     payee: beanTxn.payee,

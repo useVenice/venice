@@ -87,11 +87,10 @@ export {
   startCase,
   truncate,
   upperCase,
-  upperFirst as upperCaseFirst
+  upperFirst as upperCaseFirst,
 } from 'lodash'
 export {default as md5Hash} from 'md5-hex'
 export {parseFullName} from 'parse-full-name'
 export {default as pluralize} from 'pluralize'
 export {default as sdbmHash} from 'sdbm'
 export {sentenceCase} from 'sentence-case'
-

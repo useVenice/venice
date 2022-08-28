@@ -2,13 +2,13 @@
   "name": "@ledger-sync/core-integration-redis",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
     "@ledger-sync/cdk-core": "*",
+    "@ledger-sync/util": "*",
     "handy-redis": "2.3.1",
     "redis": "3.1.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
