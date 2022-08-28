@@ -178,7 +178,8 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
       return list.map(([, id, svg, name]) => ({
         id,
         name,
-        logoUrl: 'data:image/svg+xml;base64,' + base64url.encode(svg),
+        // Courtesy of https://css-tricks.com/probably-dont-base64-svg/
+        logoUrl: 'data:image/svg+xml;utf8,' + encodeURIComponent(svg),
       }))
     }),
   }
