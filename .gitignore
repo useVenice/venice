@@ -40,3 +40,5 @@ yarn-error.log*
 
 # git-crypt
 *.git-crypt-key
+# https://vercel.com/alka/ledger-sync
+.vercel
