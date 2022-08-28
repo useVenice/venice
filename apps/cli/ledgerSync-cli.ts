@@ -1,11 +1,13 @@
 #!/usr/bin/env tsx
-// Cannot directly import from cloud otherwise it messes up with the `register` DIs
+// Order of import is important and register.node has to come first, which is not great
+// How do we fix this?
+import '@ledger-sync/app-config/register.node'
+
 import {
   LedgerSyncRouter,
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
 } from '@ledger-sync/app-config'
-import '@ledger-sync/app-config/register.node'
 import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/engine'
 import {
   compact,

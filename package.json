@@ -21,7 +21,8 @@
     "test::watch": "yarn run test --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "typecheck": "tsc --project . --noEmit",
-    "validate": "run-s --silent typecheck lint test"
+    "validate": "run-s --silent typecheck lint test",
+    "ledgerSync": "tsx ./bin/ledgerSync"
   },
   "prettier": "./config/prettier.config.js",
   "eslintConfig": {
