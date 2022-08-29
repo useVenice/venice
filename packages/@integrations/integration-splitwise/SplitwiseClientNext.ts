@@ -8,8 +8,10 @@ import {
 import {
   zCurrentUser,
   zExpense,
+  zExpenseBody,
   zExpensesParams,
   zGroup,
+  zGroupBody,
 } from './splitwise-schema'
 
 const zSplitwiseConfig = z.object({
@@ -76,13 +78,13 @@ export const makeSplitwiseClient = zFunction(zSplitwiseConfig, (cfg) => {
         .then((r) => r.data.expenses),
     ),
 
-    createGroup: zFunction(z.any(), (body) =>
+    createGroup: zFunction(zGroupBody, (body) =>
       createClient()
         .post<{group: z.infer<typeof zGroup>}>('create_group', body)
         .then((r) => r.data.group),
     ),
 
-    createExpense: zFunction(z.any(), (body) =>
+    createExpense: zFunction(zExpenseBody, (body) =>
       createClient()
         .post<{expenses: Array<z.infer<typeof zExpense>>}>(
           'create_expense',

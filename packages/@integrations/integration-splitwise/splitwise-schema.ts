@@ -158,3 +158,23 @@ export const zExpense = z.object({
     }),
   ),
 })
+
+export const zExpenseBody = z.object({
+  id: z.string(),
+  cost: z.string(),
+  group_id: z.number(),
+  details: z.string(),
+  currency_code: z.string(),
+  date: z.string(),
+  description: z.string(),
+  users__0__user_id: z.number(),
+  users__0__owed_share: z.number(),
+  users__0__paid_share: z.number(),
+})
+
+export const zGroupBody = z.object({
+  name: z.string(),
+  group_type: z.string(),
+  simplify_by_default: z.boolean(),
+  users_0_id: z.number(),
+})
