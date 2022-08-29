@@ -228,7 +228,7 @@ export const splitwiseProvider = makeSyncProvider({
           const amount = Math.abs(qtyAmount)
           const partialTxn = {
             details: t.notes || '',
-            currency_code: t.postingsMap?.main?.amount.unit,
+            currency_code: t.postingsMap?.main?.amount.unit ?? '',
             date: DateTime.fromISO(t.date).toISO(),
             cost: `${amount}`,
             description: t.description,
