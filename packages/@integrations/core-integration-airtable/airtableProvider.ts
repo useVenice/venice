@@ -1,8 +1,8 @@
-import {handlersLink, makeSyncProvider} from '@ledger-sync/core-sync'
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   EntityPayloadWithExternal,
   ledgerSyncProviderBase,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {fromCompletion, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import {
   makeAirtableClient,

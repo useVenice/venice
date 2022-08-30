@@ -8,8 +8,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/core-sync": "*",
-    "@ledger-sync/ledger-sync": "*",
+    "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/util": "*",
     "airtable": "0.11.4"
   },

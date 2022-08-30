@@ -3,7 +3,7 @@ import {
   EntityPayloadWithExternal,
   ledgerSyncProviderBase,
   makePostingsMap,
-} from '@ledger-sync/ledger-sync'
+} from '@ledger-sync/cdk-ledger'
 import {
   A,
   DateTime,
@@ -201,7 +201,7 @@ export const splitwiseProvider = makeSyncProvider({
     return handlersLink({
       data: async (op) => {
         const {
-          data: {id, entityName, providerName, connectionId = null, ...data},
+          data: {id, entityName, ...data},
         } = op
 
         const accountData = (
