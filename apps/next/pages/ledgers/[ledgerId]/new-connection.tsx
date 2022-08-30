@@ -1,26 +1,26 @@
 import {EnvName, zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
-import {objectEntries, objectKeys} from '@ledger-sync/util'
-import * as TabsPrimitive from '@radix-ui/react-tabs'
-import {Button, Radio} from '@supabase/ui'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import React from 'react'
 import {tw} from 'twind'
+import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 import {Layout} from '../../../components/Layout'
+import {Radio, RadioGroup} from '../../../components/RadioGroup'
+import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
 
-type Tab = 'institution' | 'provider'
-
-const TAB_LABEL_BY_VALUE: {
-  [T in Tab]: string
-} = {
-  institution: 'By institution',
-  provider: 'By provider (Developer mode)',
-}
+type ConnectMode = 'institution' | 'provider'
 
 export default function LedgerNewConnectionScreen() {
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: string}
+  const [mode, setMode] = useQueryParam(
+    'mode',
+    withDefault(
+      createEnumParam<ConnectMode>(['institution', 'provider']),
+      'institution' as ConnectMode,
+    ),
+  )
   const [envName, setEnvName] = React.useState<EnvName>('sandbox')
   const ls = useLedgerSync({ledgerId, envName})
   return (
@@ -35,93 +35,74 @@ export default function LedgerNewConnectionScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
-        <TabsPrimitive.Root
-          defaultValue="institution"
-          className={tw`flex flex-col flex-1 overflow-y-hidden`}>
-          <TabsPrimitive.List className={tw`flex flex-row`}>
-            {objectEntries(TAB_LABEL_BY_VALUE).map(([value, label]) => (
-              <TabsPrimitive.Trigger
-                key={`tab-trigger-${value}`}
-                value={value}
-                className={tw`
-                  flex-1 px-3 py-2 text-gray-500 border-b-4 border-transparent
-                  radix-state-active:(text-primary border-primary)
-                `}>
-                <span className={tw`text-sm font-medium`}>{label}</span>
-              </TabsPrimitive.Trigger>
-            ))}
-          </TabsPrimitive.List>
+        <Tabs
+          value={mode}
+          onValueChange={(newMode) => setMode(newMode as ConnectMode)}>
+          <TabList className={tw`border-b border-gray-100`}>
+            <Tab value="institution">By institution</Tab>
+            <Tab value="provider">By provider (Developer mode)</Tab>
+          </TabList>
 
-          <div
-            className={tw`w-[30rem] flex flex-col mx-auto flex-1 py-8 overflow-y-auto`}>
-            {objectKeys(TAB_LABEL_BY_VALUE).map((value) => (
-              <TabsPrimitive.Content key={`tab-content-${value}`} value={value}>
-                {(() => {
-                  switch (value) {
-                    case 'institution':
-                      return (
-                        <div className={tw`flex flex-col space-y-4`}>
-                          {ls.insRes.data?.map(({ins, int}) => (
-                            <div
-                              key={`${ins.id}`}
-                              className={tw`flex flex-col space-y-4`}>
-                              <img src={ins.logoUrl} />
-                              <Button
-                                onClick={() => {
-                                  ls.connect(int, {
-                                    key: ins.id,
-                                    label: ins.name,
-                                    // Temp haackkk...
-                                    options: {
-                                      envName: 'sandbox',
-                                      institutionId: ins.id,
-                                      userToken: '',
-                                      applicationId: '',
-                                    },
-                                  })
-                                }}>
-                                {ins.name}
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )
-                    case 'provider':
-                      return (
-                        <div className={tw`flex flex-row space-x-4`}>
-                          <div className={tw`flex flex-col`}>
-                            <Radio.Group
-                              name="grouped-radios"
-                              label="Environment"
-                              layout="horizontal" // does not work...
-                              onChange={(e) =>
-                                setEnvName(e.target.value as EnvName)
-                              }>
-                              {zEnvName.options.map((o) => (
-                                <Radio key={o} label={o} value={o} />
-                              ))}
-                            </Radio.Group>
-                          </div>
+          <TabContent
+            value="institution"
+            className={tw`radix-state-active:(flex flex-col flex-1 p-8 mx-auto overflow-y-auto space-y-4)`}>
+            {ls.insRes.data?.map(({ins, int}) => (
+              <div key={`${ins.id}`} className={tw`flex flex-col space-y-4`}>
+                <img
+                  src={ins.logoUrl}
+                  alt={`"${ins.name}" logo`}
+                  className={tw`h-32 p-2 bg-gray-100 border-2 border-gray-200 rounded-lg object-contain`}
+                />
 
-                          <div className={tw`flex flex-col space-y-4`}>
-                            {ls.preConnectOptionsRes.data?.map((opt) => (
-                              <Button
-                                key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
-                                onClick={() => {
-                                  ls.connect(opt.int, opt as any)
-                                }}>
-                                {opt.int.id} {opt.int.provider} {opt.label}
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-                      )
-                  }
-                })()}
-              </TabsPrimitive.Content>
+                <button
+                  className={tw`h-12 px-5 text-white bg-primary rounded-lg`}
+                  onClick={() => {
+                    ls.connect(int, {
+                      key: ins.id,
+                      label: ins.name,
+                      // Temp haackkk...
+                      options: {
+                        envName: 'sandbox',
+                        institutionId: ins.id,
+                        userToken: '',
+                        applicationId: '',
+                      },
+                    })
+                  }}>
+                  {ins.name}
+                </button>
+              </div>
             ))}
-          </div>
-        </TabsPrimitive.Root>
+          </TabContent>
+
+          <TabContent
+            value="provider"
+            className={tw`radix-state-active:(flex flex-col flex-1 p-8 mx-auto max-w-screen-2xl overflow-y-auto space-y-8)`}>
+            <RadioGroup
+              name="grouped-radios"
+              label="Environment"
+              orientation="horizontal"
+              value={envName}
+              onValueChange={(newValue) => setEnvName(newValue as EnvName)}>
+              {zEnvName.options.map((o) => (
+                <Radio key={o} id={o} label={o} value={o} />
+              ))}
+            </RadioGroup>
+
+            <div className={tw`flex flex-col space-y-2`}>
+              {ls.preConnectOptionsRes.data?.map((opt) => (
+                <button
+                  key={`${opt.int.id}-${opt.int.provider}-${opt.key}`}
+                  className={tw`h-12 px-5 text-white bg-primary rounded-lg`}
+                  onClick={() => {
+                    ls.connect(opt.int, opt as any)
+                  }}>
+                  {opt.int.id} {opt.int.provider} {opt.label}
+                </button>
+              ))}
+            </div>
+          </TabContent>
+        </Tabs>
       </Layout>
     </>
   )

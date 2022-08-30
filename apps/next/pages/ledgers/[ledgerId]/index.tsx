@@ -25,21 +25,24 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
         <div
-          className={tw`flex flex-col space-y-4`}
-          style={{maxWidth: '1024px', maxHeight: '400px'}}>
+          className={tw`flex flex-col flex-1 p-8 mx-auto max-w-screen-2xl overflow-y-auto space-y-4`}>
           {connectionsRes.data?.map((conn) => (
             <div
-              className={tw`flex flex-row`}
-              style={{margin: 32, padding: 16, border: '1px solid #eeeeee'}}>
+              className={tw`flex flex-row p-2 bg-gray-100 border-2 border-gray-200 rounded-lg object-contain space-x-4`}>
               <img
-                style={{objectFit: 'contain'}}
                 src={`data:image/png;base64,${
                   (conn as any).settings.institution.logo
                 }`}
+                alt={`"${(conn as any).settings.institution.name}" logo`}
+                className={tw`w-32 h-32 object-contain`}
               />
-              <div>
-                <h2>{(conn as any).settings.institution.name}</h2>
-                <pre style={{maxHeight: 300, overflow: 'scroll'}}>
+
+              <div className={tw`flex flex-col space-y-2`}>
+                <span className={tw`text-xl font-medium`}>
+                  {(conn as any).settings.institution.name}
+                </span>
+
+                <pre className={tw`max-h-64 overflow-y-auto`}>
                   {JSON.stringify(conn, null, 2)}
                 </pre>
               </div>

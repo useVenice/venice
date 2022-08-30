@@ -9,7 +9,7 @@ export default function HomeScreen() {
   return (
     <Layout>
       <div
-        className={tw`container flex flex-col items-center justify-center mx-auto flex-1`}>
+        className={tw`container flex flex-col flex-1 items-center justify-center mx-auto max-w-screen-2xl`}>
         <form
           className={tw`flex flex-col space-y-2`}
           onSubmit={(event) => {

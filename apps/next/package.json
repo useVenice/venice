@@ -14,17 +14,19 @@
     "@ledger-sync/engine": "*",
     "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/util": "*",
+    "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
-    "@supabase/ui": "0.36.5",
     "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",
     "@twind/next": "1.0.9",
     "next": "12.1.6",
+    "next-query-params": "4.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-query": "3.39.1",
     "superjson": "1.9.1",
-    "twind": "0.16.17"
+    "twind": "0.16.17",
+    "use-query-params": "2.0.0"
   },
   "devDependencies": {
     "@types/react": "17.0.39",

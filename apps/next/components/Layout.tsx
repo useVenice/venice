@@ -35,10 +35,9 @@ export function Layout({
                   <ActiveLink
                     key={l.href}
                     href={l.href}
-                    activeClassName={tw`override:(text-primary border-current)`}>
+                    activeClassName={tw`override:(text-primary)`}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a
-                      className={tw`h-16 leading-[4rem] border-b-4 border-transparent hover:text-primary hover:border-current`}>
+                    <a className={tw`h-16 leading-[4rem] hover:text-primary`}>
                       {l.label}
                     </a>
                   </ActiveLink>

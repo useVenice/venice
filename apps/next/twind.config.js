@@ -46,5 +46,7 @@ export default {
   variants: {
     'radix-state-active': '&[data-state="active"]',
     'radix-state-inactive': '&[data-state="inactive"]',
+    'radix-state-checked': '&[data-state="checked"]',
+    'radix-state-unchecked': '&[data-state="unchecked"]',
   },
 }
