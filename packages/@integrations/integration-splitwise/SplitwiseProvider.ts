@@ -25,6 +25,8 @@ const def = makeSyncProvider.def({
   connectionSettings: z.object({
     currentUser: zCurrentUser.nullish(),
     accessToken: z.string(),
+    owedUserEmail: z.string().nullish(),
+    existingGroups: z.array(z.number()).nullish()
   }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -197,7 +199,7 @@ export const splitwiseProvider = makeSyncProvider({
   destinationSync: ({settings}) => {
     const client = makeSplitwiseClient(settings)
     const currentUser = client.getCurrentUser()
-    const createdGroups: number[] = []
+    const createdGroups: number[] = settings.existingGroups ?? []
     return handlersLink({
       data: async (op) => {
         const {
@@ -211,12 +213,13 @@ export const splitwiseProvider = makeSyncProvider({
           entityName === 'transaction' ? (data.entity as any)['standard'] : null
         ) as Standard.Transaction
 
-        if (entityName === 'account') {
+        if (entityName === 'account' && !settings.existingGroups) {
           const body = {
             name: accountData.name,
             group_type: 'other',
             simplify_by_default: false,
             users_0_id: (await currentUser).id,
+            users__1__email: settings.owedUserEmail
           }
 
           const group = await client.createGroup(body)
@@ -233,8 +236,9 @@ export const splitwiseProvider = makeSyncProvider({
             cost: `${amount}`,
             description: t.description,
             users__0__user_id: (await currentUser).id,
-            users__0__owed_share: amount,
-            users__0__paid_share: amount,
+            users__0__paid_share: `${amount}`,
+            users__1__owed_share: `${amount}`,
+            users__1__email: settings.owedUserEmail
           }
           createdGroups.forEach(async (groupId) => {
             const body = {id, group_id: groupId, ...partialTxn}

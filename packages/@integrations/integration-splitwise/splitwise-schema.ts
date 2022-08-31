@@ -168,8 +168,9 @@ export const zExpenseBody = z.object({
   date: z.string(),
   description: z.string(),
   users__0__user_id: z.number(),
-  users__0__owed_share: z.number(),
-  users__0__paid_share: z.number(),
+  users__0__paid_share: z.string(),
+  users__1__owed_share: z.string().nullish(),
+  users__1__email: z.string().nullish(),
 })
 
 export const zGroupBody = z.object({
@@ -177,4 +178,5 @@ export const zGroupBody = z.object({
   group_type: z.string(),
   simplify_by_default: z.boolean(),
   users_0_id: z.number(),
+  users__1__email: z.string().nullish(),
 })
