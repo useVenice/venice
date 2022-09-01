@@ -25,8 +25,8 @@ const def = makeSyncProvider.def({
   connectionSettings: z.object({
     currentUser: zCurrentUser.nullish(),
     accessToken: z.string(),
-    owedUserEmail: z.string().nullish(),
-    existingGroups: z.array(z.number()).nullish()
+    groupMemberEmail: z.string().nullish(),
+    existingGroups: z.array(z.number()).nullish(),
   }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -206,43 +206,43 @@ export const splitwiseProvider = makeSyncProvider({
           data: {id, entityName, ...data},
         } = op
 
-        const accountData = (
-          entityName === 'account' ? (data.entity as any)['standard'] : null
-        ) as Standard.Account
-        const t = (
-          entityName === 'transaction' ? (data.entity as any)['standard'] : null
-        ) as Standard.Transaction
+        const standard = (data.entity as any)['standard']
 
         if (entityName === 'account' && !settings.existingGroups) {
-          const body = {
-            name: accountData.name,
+          // In case we have specific groups for creating expense, create a new group it's not necessary
+          const account = standard as Standard.Account
+          const newGroup = {
+            name: account.name,
             group_type: 'other',
             simplify_by_default: false,
             users_0_id: (await currentUser).id,
-            users__1__email: settings.owedUserEmail
+            users__1__email: settings.groupMemberEmail,
           }
 
-          const group = await client.createGroup(body)
+          const group = await client.createGroup(newGroup)
           createdGroups.push(group.id)
         }
 
         if (entityName === 'transaction') {
-          const qtyAmount = t.postingsMap?.main?.amount.quantity ?? 0
-          const amount = Math.abs(qtyAmount)
-          const partialTxn = {
-            details: t.notes || '',
-            currency_code: t.postingsMap?.main?.amount.unit ?? '',
-            date: DateTime.fromISO(t.date).toISO(),
-            cost: `${amount}`,
-            description: t.description,
-            users__0__user_id: (await currentUser).id,
-            users__0__paid_share: `${amount}`,
-            users__1__owed_share: `${amount}`,
-            users__1__email: settings.owedUserEmail
-          }
+          const transaction = standard as Standard.Transaction
+          const qtyAmount = transaction.postingsMap?.main?.amount.quantity ?? 0
+          const amount = `${Math.abs(qtyAmount)}`
+
           createdGroups.forEach(async (groupId) => {
-            const body = {id, group_id: groupId, ...partialTxn}
-            await client.createExpense(body)
+            const newExpense = {
+              id,
+              group_id: groupId,
+              details: transaction.notes || '',
+              currency_code: transaction.postingsMap?.main?.amount.unit ?? '',
+              date: DateTime.fromISO(transaction.date).toISO(),
+              cost: amount,
+              description: transaction.description,
+              users__0__user_id: (await currentUser).id,
+              users__0__paid_share: amount, // Need to improve for different cases, this case only handle if another user is owed the bill
+              users__1__owed_share: amount,
+              users__1__email: settings.groupMemberEmail,
+            }
+            await client.createExpense(newExpense)
           })
         }
         return op
