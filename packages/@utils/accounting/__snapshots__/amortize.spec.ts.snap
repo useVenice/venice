@@ -129,7 +129,7 @@ exports[`subdivide interval '2020-01-01/2020-03-01' 'quarters' 1`] = `
 [
   {
     "interval": "2020-01-01/2020-03-01",
-    "duration": {"quarters": 0.6593406593406593},
+    "duration": {"quarters": 0.6596426935409986},
     "ratio": 1
   }
 ]

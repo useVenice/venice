@@ -1,3 +1,4 @@
+import {computeAmortization} from './amoritze'
 import {
   A,
   compactStringify,
@@ -7,8 +8,21 @@ import {
   iterateSubintervals,
   math,
   omit,
+  Settings,
 } from '@ledger-sync/util'
-import {computeAmortization} from './amoritze'
+import * as tzMock from 'timezone-mock'
+
+const DEFAULT_ZONE = Settings.defaultZone
+
+beforeAll(() => {
+  Settings.defaultZone = 'US/Pacific'
+  tzMock.register('US/Pacific')
+})
+
+afterAll(() => {
+  Settings.defaultZone = DEFAULT_ZONE
+  tzMock.unregister()
+})
 
 const jsonStringifySnapshotSerializer: jest.SnapshotSerializerPlugin = {
   serialize(val) {

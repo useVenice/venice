@@ -615,11 +615,14 @@ importers:
       '@ledger-sync/util': '*'
       financejs: 4.1.0
       js-combinatorics: 1.5.7
+      timezone-mock: 1.3.4
     dependencies:
       '@ledger-sync/standard': link:../standard
       '@ledger-sync/util': link:../util
       financejs: 4.1.0
       js-combinatorics: 1.5.7_fqihcm6lpeq35d73hsop2ef5vu
+    devDependencies:
+      timezone-mock: 1.3.4
 
   packages/@utils/id:
     specifiers:

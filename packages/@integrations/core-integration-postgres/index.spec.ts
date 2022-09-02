@@ -30,7 +30,7 @@ test('sql generation', () => {
     "transaction"."connection_id" IS DISTINCT FROM excluded."connection_id";
   `)
   expect(query.values).toMatchInlineSnapshot(`
-    Array [
+    [
         plaid,
         conn_test123,
         txn_test,
