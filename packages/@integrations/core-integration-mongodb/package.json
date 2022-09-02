@@ -9,7 +9,6 @@
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/util": "*",
-    "mongodb": "4.8.1"
-  },
-  "devDependencies": {}
+    "mongodb": "4.9.1"
+  }
 }

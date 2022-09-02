@@ -28,24 +28,24 @@
   "devDependencies": {
     "@ledger-sync/eslint-config": "*",
     "@ledger-sync/util": "*",
-    "@roarr/cli": "5.4.0",
-    "@trivago/prettier-plugin-sort-imports": "3.2.0",
-    "@types/jest": "27.5.1",
+    "@roarr/cli": "5.7.0",
+    "@trivago/prettier-plugin-sort-imports": "3.3.0",
+    "@types/jest": "29.0.0",
     "@types/node": "16.11.12",
-    "@types/prettier": "2.6.3",
-    "esbuild": "0.14.42",
+    "@types/prettier": "2.7.0",
+    "esbuild": "0.15.6",
     "esbuild-jest": "0.5.0",
-    "eslint": "8.16.0",
+    "eslint": "8.23.0",
     "husky": "8.0.1",
-    "jest": "28.1.0",
+    "jest": "29.0.1",
     "jest-date-mock": "1.0.8",
-    "jest-watch-typeahead": "1.1.0",
-    "lint-staged": "12.4.2",
+    "jest-watch-typeahead": "2.1.1",
+    "lint-staged": "13.0.3",
     "npm-run-all": "4.1.5",
     "prettier": "2.7.1",
     "prettier-plugin-packagejson": "2.2.18",
-    "tsx": "3.4.3",
-    "typescript": "4.7.2"
+    "tsx": "3.9.0",
+    "typescript": "4.8.2"
   },
   "engines": {
     "node": "16",
@@ -53,6 +53,7 @@
   },
   "pnpm": {
     "allowedDeprecatedVersions": {
+      "core-js": "3.6.5",
       "resolve-url": "0.2.1",
       "sane": "4.1.0",
       "shvl": "2.0.3",
@@ -78,7 +79,7 @@
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@0.0.32": "patches/remeda@0.0.32.patch",
       "timm@1.7.1": "patches/timm@1.7.1.patch",
-      "typescript@4.7.2": "patches/typescript@4.7.2.patch",
+      "typescript@4.8.2": "patches/typescript@4.8.2.patch",
       "zod@3.17.3": "patches/zod@3.17.3.patch"
     },
     "peerDependencyRules": {

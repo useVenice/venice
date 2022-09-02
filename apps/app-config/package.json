@@ -32,7 +32,7 @@
     "@ledger-sync/integration-yodlee": "*",
     "@ledger-sync/util": "*",
     "chokidar": "3.5.3",
-    "dotenv": "16.0.1",
+    "dotenv": "16.0.2",
     "execa": "6.1.0",
     "find-config": "1.0.0",
     "read-file-safe": "1.0.10",

@@ -1,14 +1,3 @@
-import {
-  deepOmitUndefined,
-  getAt,
-  makeChunks,
-  NoInfer,
-  ObjectPartialDeep,
-  operateForEach,
-  PathsOf,
-  rxjs,
-} from '@ledger-sync/util'
-import type firebase from 'firebase/compat'
 import type {
   AnyDocumentReference,
   AnyFieldPath,
@@ -20,6 +9,17 @@ import type {
 } from './firebase-types'
 import {fieldPath} from './firebase-utils'
 import type {WrappedFirebase} from './FirebaseProvider'
+import {
+  deepOmitUndefined,
+  getAt,
+  makeChunks,
+  NoInfer,
+  ObjectPartialDeep,
+  operateForEach,
+  PathsOf,
+  rxjs,
+} from '@ledger-sync/util'
+import type firebase from 'firebase/compat'
 
 type Instruction<TStore extends AnyFirestore = AnyFirestore> =
   | [
@@ -119,7 +119,7 @@ export class MultiBatch {
     const sanitizedOptions = options.mergeFields
       ? {
           ...options,
-          mergeFields: options.mergeFields
+          mergeFields: (options.mergeFields as string[][])
             .filter(
               (field) =>
                 // Whether or not field got pruned
@@ -148,7 +148,7 @@ export class MultiBatch {
         ref,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data as any,
-        {mergeFields: options.mergeFields},
+        {mergeFields: options.mergeFields as string[][]},
       )
     } else {
       this.set(

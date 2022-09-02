@@ -7,6 +7,5 @@
   "dependencies": {
     "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0"
-  },
-  "devDependencies": {}
+  }
 }

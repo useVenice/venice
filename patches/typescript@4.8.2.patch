@@ -1,8 +1,8 @@
 diff --git a/lib/tsserver.js b/lib/tsserver.js
-index 2cd2108..b885670 100644
+index 481cb5866634edf6d8c82fc9f0e272ce5268c4de..f2fa4dbe84349f5d05a56a6655d0f27b9b711786 100644
 --- a/lib/tsserver.js
 +++ b/lib/tsserver.js
-@@ -14080,7 +14080,7 @@ var ts;
+@@ -14335,7 +14335,7 @@ var ts;
  (function (ts) {
      ts.resolvingEmptyArray = [];
      ts.externalHelpersModuleNameText = "tslib";

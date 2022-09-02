@@ -6,6 +6,5 @@
   "module": "./index.ts",
   "dependencies": {
     "zod": "3.17.3"
-  },
-  "devDependencies": {}
+  }
 }

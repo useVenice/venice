@@ -94,6 +94,7 @@ module.exports = {
     '@typescript-eslint/no-restricted-imports': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'warn',
+    '@typescript-eslint/consistent-generic-constructors': 'warn',
     '@typescript-eslint/no-this-alias': 'off',
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/no-type-alias': 'off',

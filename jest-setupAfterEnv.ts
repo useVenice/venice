@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {Balances} from '@ledger-sync/util'
 
 /**

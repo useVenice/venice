@@ -18,19 +18,20 @@
     "@radix-ui/react-tabs": "1.0.0",
     "@trpc/server": "9.26.0",
     "@twind/next": "1.0.9",
-    "next": "12.1.6",
+    "next": "12.2.5",
     "next-query-params": "4.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-query": "3.39.1",
+    "react-query": "3.39.2",
     "superjson": "1.9.1",
     "twind": "0.16.17",
-    "use-query-params": "2.0.0"
+    "use-query-params": "2.1.0"
   },
   "devDependencies": {
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.13",
     "next-transpile-modules": "9.0.0",
-    "node-loader": "2.0.0"
+    "node-loader": "2.0.0",
+    "webpack": "*"
   }
 }
