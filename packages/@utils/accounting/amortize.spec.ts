@@ -35,14 +35,6 @@ const jsonStringifySnapshotSerializer: jest.SnapshotSerializerPlugin = {
 
 expect.addSnapshotSerializer(jsonStringifySnapshotSerializer)
 
-// TODO: The behavior of parseDateRagneExpression is really not well defined
-// Neither is timezone handling... Need to be a lot more consistent
-const tzSuffix = DateTime.local()
-  .toISO()
-  .slice('+08:00'.length * -1)
-
-const timeSuffix = `00:00:00.000${tzSuffix}`
-
 describe('sanity checks', () => {
   // https://github.com/moment/luxon/pull/778/files
   test("DateTime#diff can handle 'quarters' as a unit", () => {
@@ -52,12 +44,11 @@ describe('sanity checks', () => {
 
   test('interval to duration', () => {
     const interval = Interval.fromISO('2020-03-01/2020-03-01')
-
     expect(interval.toISODate()).toBe(`2020-03-01/2020-03-01`)
     expect(interval.toISO()).toBe(
-      `2020-03-01T${timeSuffix}/2020-03-01T${timeSuffix}`,
+      '2020-03-01T00:00:00.000-08:00/2020-03-01T00:00:00.000-08:00',
     )
-    expect(interval.toISOTime()).toBe(`${timeSuffix}/${timeSuffix}`)
+    expect(interval.toISOTime()).toBe('00:00:00.000-08:00/00:00:00.000-08:00')
     expect(interval.toDuration().toObject()).toEqual({milliseconds: 0})
   })
 
