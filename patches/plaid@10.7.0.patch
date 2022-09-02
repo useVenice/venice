@@ -1,0 +1,42 @@
+diff --git a/dist/api.d.ts b/dist/api.d.ts
+index 947b61b..4b417e5 100644
+--- a/dist/api.d.ts
++++ b/dist/api.d.ts
+@@ -3562,7 +3562,7 @@ export interface ConnectedApplication {
+  * @export
+  * @enum {string}
+  */
+-export declare enum CountryCode {
++export declare const CountryCode = {
+     Us = "US",
+     Gb = "GB",
+     Es = "ES",
+@@ -3572,7 +3572,8 @@ export declare enum CountryCode {
+     Ca = "CA",
+     De = "DE",
+     It = "IT"
+-}
++} as const
++export type CountryCode = (typeof CountryCode)[keyof typeof CountryCode]
+ /**
+  * Request input for creating an entity screening review
+  * @export
+@@ -18343,7 +18344,8 @@ export declare enum ProductStatusBreakdownRefreshIntervalEnum {
+  * @export
+  * @enum {string}
+  */
+-export declare enum Products {
++export type Products = (typeof Products)[keyof typeof Products]
++export declare const Products = {
+     Assets = "assets",
+     Auth = "auth",
+     Balance = "balance",
+@@ -18360,7 +18362,7 @@ export declare enum Products {
+     Transfer = "transfer",
+     Employment = "employment",
+     RecurringTransactions = "recurring_transactions"
+-}
++} as const
+ /**
+  * The valid name matching sensitivity configurations for a screening program. Note that while certain matching techniques may be more prevalent on less strict settings, all matching algorithms are enabled for every sensitivity.  `coarse` - See more potential matches. This sensitivity will see more broad phonetic matches across alphabets that make missing a potential hit very unlikely. This setting is noisier and will require more manual review.  `balanced` - A good default for most companies. This sensitivity is balanced to show high quality hits with reduced noise.  `strict` - Aggressive false positive reduction. This sensitivity will require names to be more similar than `coarse` and `balanced` settings, relying less on phonetics, while still accounting for character transpositions, missing tokens, and other common permutations.  `exact` - Matches must be nearly exact. This sensitivity will only show hits with exact or nearly exact name matches with only basic correction such as extraneous symbols and capitalization. This setting is generally not recommended unless you have a very specific use case.
+  * @export

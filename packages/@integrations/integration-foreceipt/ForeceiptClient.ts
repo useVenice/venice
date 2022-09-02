@@ -1,3 +1,4 @@
+import {_parseConnectionInfo} from './foreceipt-utils'
 import {
   getQuerySnapshot$,
   initFirebase,
@@ -14,7 +15,6 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import firebase from 'firebase/compat/app'
-import {_parseConnectionInfo} from './foreceipt-utils'
 
 class ForeceiptError extends Error {
   override name = 'ForeceiptError'

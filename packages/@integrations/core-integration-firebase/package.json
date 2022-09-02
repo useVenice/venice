@@ -7,6 +7,10 @@
   ],
   "module": "./index.ts",
   "dependencies": {
+    "@firebase/app": "0.x",
+    "@firebase/app-compat": "0.x",
+    "@firebase/app-types": "0.x",
+    "@firebase/auth": "*",
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/util": "*",
     "firebase": "9.8.1",

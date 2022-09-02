@@ -1,1 +1,4 @@
-./node_modules/.bin/lint-staged --config config/lint-staged.config.js
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx lint-staged

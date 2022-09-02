@@ -2,19 +2,28 @@
   "[beancount]": {
     "editor.defaultFormatter": "dongfg.vscode-beancount-formatter"
   },
-  "[dockerfile]": {
-    "editor.defaultFormatter": null
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[dotenv]": {
-    "editor.defaultFormatter": null
-  },
-  "[ignore]": {
-    "editor.defaultFormatter": null
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[markdown]": {
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[tailwindcss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[shellscript]": {
@@ -24,7 +33,6 @@
     "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
   },
   "css.validate": false,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.insertSpaces": true,
   "editor.quickSuggestions": {
     "strings": true
@@ -60,21 +68,8 @@
       }
     ]
   },
-  "javascript.format.enable": false,
-  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-  "javascript.preferences.quoteStyle": "single",
-  "javascript.preferences.useAliasesForRenames": true,
-  "javascript.suggestionActions.enabled": false,
-  "json.format.enable": false,
+  "js/ts.implicitProjectConfig.checkJs": true,
   "markJump.strictLimit": "disable",
-  "search.exclude": {
-    "/.yarn/": true
-  },
-  "typescript.disableAutomaticTypeAcquisition": true,
-  "typescript.format.enable": false,
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-  "typescript.preferences.quoteStyle": "single",
-  "typescript.preferences.useAliasesForRenames": true,
-  "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "./node_modules/typescript/lib"
 }

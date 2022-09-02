@@ -1,16 +1,20 @@
-# Node.js
+# dependencies
 **/node_modules/
 
-# Temporary files
+# temporary files
 **/temp/
 
-# Generated files
+# generated files
 **/__generated__/
 
-# Jest snapshot files
+# jest
 *.snap
 
-# App builds
-/apps/next/.next
+# next.js
+/apps/next/.next/
+/apps/next/out/
+
+# pnpm
+pnpm-lock.yaml
 
 # vim: set filetype=ignore:

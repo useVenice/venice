@@ -1,0 +1,6 @@
+packages:
+  - 'packages/@dev/*'
+  - 'packages/@integrations/*'
+  - 'packages/@utils/*'
+  - 'packages/*'
+  - 'apps/*'

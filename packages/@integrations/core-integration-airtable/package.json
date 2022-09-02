@@ -11,5 +11,7 @@
     "@ledger-sync/util": "*",
     "airtable": "0.11.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@ledger-sync/cdk-ledger": "*"
+  }
 }

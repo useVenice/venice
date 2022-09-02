@@ -12,6 +12,9 @@
     "@ledger-sync/util": "*",
     "stripe": "8.86.0"
   },
+  "devDependencies": {
+    "@types/react": "17.0.39"
+  },
   "peerDependencies": {
     "react": "*"
   }

@@ -7,7 +7,6 @@
 // This is dangerous as it hides accidentally undefined variables.
 // We blacklist the globals that we deem potentially confusing.
 // To use them, explicitly reference them, e.g. `window.name` or `window.status`.
-// @ts-expect-error: No typings
 const confusingBrowserGlobals = require('confusing-browser-globals')
 
 /**
@@ -39,7 +38,7 @@ module.exports = {
   },
   settings: {
     react: {
-      version: 'detect',
+      version: '17.0.2',
     },
   },
 
@@ -455,12 +454,9 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          '**/__{mocks,tests,fixtures,stories}__/**/*.{js,ts,tsx}',
-          '**/*.{spec,test,fixture,decorator,stories}.{js,ts,tsx}',
-          '**/.storybook/**',
+          '**/__{mocks,tests,fixtures}__/**/*.{js,ts,tsx}',
+          '**/*.{spec,test,fixture}.{js,ts,tsx}',
           '**/*.config.{js,ts}',
-          '**/config/**/*.{js,ts}',
-          '**/taskfile.ts',
         ],
       },
     ],

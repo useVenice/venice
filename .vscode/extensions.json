@@ -7,7 +7,6 @@
     "esbenp.prettier-vscode",
     "fabiospampinato.vscode-highlight",
     "forbeslindesay.vscode-sql-template-literal",
-    "graphql.vscode-graphql",
     "maptz.regionfolder",
     "mikestead.dotenv",
     "msjsdiag.debugger-for-chrome",
@@ -15,7 +14,6 @@
     "orta.vscode-jest",
     "sastan.twind-intellisense",
     "spywhere.mark-jump",
-    "toba.vsfire",
     "usernamehw.errorlens"
   ]
 }

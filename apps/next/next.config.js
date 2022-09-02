@@ -1,33 +1,35 @@
+const path = require('path')
+// prettier-ignore
 const withTM = require('next-transpile-modules')([
-  '@ledger-sync/accounting',
-  '@ledger-sync/app-config',
-  '@ledger-sync/app',
-  '@ledger-sync/cdk-core',
-  '@ledger-sync/cdk-ledger',
-  '@ledger-sync/core-integration-airtable',
-  '@ledger-sync/core-integration-firebase',
-  '@ledger-sync/core-integration-fs',
-  '@ledger-sync/core-integration-mongodb',
-  '@ledger-sync/core-integration-postgres',
-  '@ledger-sync/core-integration-redis',
-  '@ledger-sync/engine-frontend',
-  '@ledger-sync/engine',
-  '@ledger-sync/id',
-  '@ledger-sync/integration-beancount',
-  '@ledger-sync/integration-foreceipt',
-  '@ledger-sync/integration-import',
-  '@ledger-sync/integration-onebrick',
-  '@ledger-sync/integration-plaid',
-  '@ledger-sync/integration-postgres',
-  '@ledger-sync/integration-ramp',
-  '@ledger-sync/integration-splitwise',
-  '@ledger-sync/integration-stripe',
-  '@ledger-sync/integration-teller',
-  '@ledger-sync/integration-toggl',
-  '@ledger-sync/integration-wise',
-  '@ledger-sync/integration-yodlee',
-  '@ledger-sync/standard',
-  '@ledger-sync/util',
+  path.resolve(__dirname, '../app-config'),
+  path.resolve(__dirname, '../app'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-airtable'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-firebase'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-fs'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-mongodb'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-postgres'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-redis'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-beancount'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-foreceipt'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-import'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-onebrick'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-plaid'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-postgres'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-ramp'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-splitwise'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-stripe'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-teller'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-toggl'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-wise'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-yodlee'),
+  path.resolve(__dirname, '../../packages/@utils/accounting'),
+  path.resolve(__dirname, '../../packages/@utils/id'),
+  path.resolve(__dirname, '../../packages/@utils/standard'),
+  path.resolve(__dirname, '../../packages/@utils/util'),
+  path.resolve(__dirname, '../../packages/cdk-core'),
+  path.resolve(__dirname, '../../packages/cdk-ledger'),
+  path.resolve(__dirname, '../../packages/engine-frontend'),
+  path.resolve(__dirname, '../../packages/engine'),
 ])
 
 /**
@@ -36,6 +38,7 @@ const withTM = require('next-transpile-modules')([
 module.exports = withTM(
   /** @type {import('next').NextConfig} */ ({
     reactStrictMode: true,
+    swcMinify: true,
     typescript: {
       ignoreBuildErrors: true,
     },
@@ -43,6 +46,11 @@ module.exports = withTM(
       esmExternals: false,
     },
     webpack: (config) => {
+      config.module.exprContextCritical = false
+      config.module.rules.push({
+        test: /\.node$/,
+        use: [{loader: 'node-loader'}],
+      })
       config.resolve.fallback = {
         fs: false,
         child_process: false, // Reference: https://stackoverflow.com/questions/54459442/module-not-found-error-cant-resolve-child-process-how-to-fix

@@ -11,6 +11,9 @@
     "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/util": "*"
   },
+  "devDependencies": {
+    "@types/react": "17.0.39"
+  },
   "peerDependencies": {
     "react": "*"
   }

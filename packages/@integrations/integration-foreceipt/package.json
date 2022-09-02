@@ -14,7 +14,9 @@
     "@ledger-sync/util": "*",
     "firebase": "9.8.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/react": "17.0.39"
+  },
   "peerDependencies": {
     "react": "*"
   }

@@ -12,5 +12,7 @@
     "@ledger-sync/util": "*",
     "zod": "3.17.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@ledger-sync/cdk-ledger": "*"
+  }
 }

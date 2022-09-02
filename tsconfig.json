@@ -1,5 +1,5 @@
 {
-  "extends": "./config/tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "include": ["/apps/next/next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["**/__encrypted__", "**/node_modules"]
+  "exclude": ["**/node_modules"]
 }

@@ -16,7 +16,6 @@
     "@ledger-sync/util": "*",
     "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
-    "@trpc/next": "9.26.0",
     "@trpc/server": "9.26.0",
     "@twind/next": "1.0.9",
     "next": "12.1.6",
@@ -31,6 +30,7 @@
   "devDependencies": {
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.13",
-    "next-transpile-modules": "9.0.0"
+    "next-transpile-modules": "9.0.0",
+    "node-loader": "2.0.0"
   }
 }

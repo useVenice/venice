@@ -1,3 +1,12 @@
+import {AnyQuery} from './firebase-types'
+import {
+  getPathForQuery,
+  getQueryDocumentSnapshot$,
+  getQuerySnapshot$,
+  isTimestamp,
+} from './firebase-utils'
+import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
+import {MultiBatch} from './MultiBatch'
 import {
   AnyEntityPayload,
   handlersLink,
@@ -21,15 +30,6 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import firebase from 'firebase/compat/app'
-import {AnyQuery} from './firebase-types'
-import {
-  getPathForQuery,
-  getQueryDocumentSnapshot$,
-  getQuerySnapshot$,
-  isTimestamp,
-} from './firebase-utils'
-import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
-import {MultiBatch} from './MultiBatch'
 
 export const $admin =
   defineProxyFn<() => typeof import('firebase-admin')>('firebase-admin')
