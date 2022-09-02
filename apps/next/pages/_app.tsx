@@ -1,10 +1,10 @@
+import {AppProvider} from '../AppProvider'
+import twindConfig from '../twind.config'
 import withTwindApp from '@twind/next/app'
 import {AppProps} from 'next/app'
 import Head from 'next/head'
-import {AppProvider} from '../AppProvider'
-import twindConfig from '../twind.config'
 
-function App({Component, pageProps}: AppProps) {
+function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
       <Head>
@@ -31,4 +31,4 @@ function App({Component, pageProps}: AppProps) {
 //   ssr: true,
 // })(App)
 
-export default withTwindApp(twindConfig, App)
+export default withTwindApp(twindConfig, MyApp)

@@ -1,20 +1,33 @@
-import withTwindDocument from '@twind/next/app'
-import {Head, Html, Main, NextScript} from 'next/document'
 import twindConfig from '../twind.config'
+import withTwindDocument from '@twind/next/document'
+import Document, {
+  DocumentContext,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from 'next/document'
 
-function Document() {
-  return (
-    <Html>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+class MyDocument extends Document {
+  static override async getInitialProps(ctx: DocumentContext) {
+    const initialProps = await Document.getInitialProps(ctx)
+    return {...initialProps}
+  }
 
-      <body>
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  )
+  override render() {
+    return (
+      <Html>
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    )
+  }
 }
 
-export default withTwindDocument(twindConfig, Document)
+export default withTwindDocument(twindConfig, MyDocument)
