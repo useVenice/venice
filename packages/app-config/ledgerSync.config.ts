@@ -28,6 +28,7 @@ import {
   renameAccountLink,
 } from '@ledger-sync/ledger-sync'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
+import {alkaProvider} from '../@integrations/integration-alka/AlkaProvider'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
   return R.pipe(
@@ -70,6 +71,7 @@ export const ledgerSyncConfig = makeCoreSync.config({
     corePostgresProvider,
     airtableProvider,
     // Ledger
+    alkaProvider,
     plaidProviderNext,
     beancountProvider,
     importProvider,

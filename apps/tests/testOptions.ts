@@ -109,10 +109,10 @@ const sources: Record<string, LedgerSyncInput['src']> = {
     },
   },
 
-  splitwise_tony: {
+  splitwise_bayu: {
     provider: 'splitwise',
     settings: {
-      accessToken: process.env['SPLITWISE_TONY_API_KEY'], // TODO: Either get the access token or secrets for testing
+      accessToken: process.env['SPLITWISE_BAYU_API_KEY'], // TODO: Either get the access token or secrets for testing
     },
   },
 
@@ -187,6 +187,22 @@ const getDestinations = (
       accessToken: process.env['SPLITWISE_BAYU_API_KEY']!,
     },
   },
+  alka: {
+    provider: 'alka',
+    settings: {
+      type: 'firebase-user',
+      envName: 'production',
+      authData: {
+        method: 'userJson',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userJson: JSON.parse(process.env['ALKA_BAYU_TEST']!)
+      },
+      
+    },
+    options: {
+      ledgerId: 'ldgr_xx5SCmsBRQS8eAix' as Id.ldgr
+    }
+  }
 })
 
 const options: Record<string, LedgerSyncInput> = R.pipe(

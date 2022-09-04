@@ -1,0 +1,16 @@
+{
+  "name": "@ledger-sync/integration-alka",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "dependencies":{
+    "@ledger-sync/id": "*",
+    "@ledger-sync/core-integration-fs": "*",
+    "@ledger-sync/standard": "*",
+    "@ledger-sync/util": "*",
+    "@ledger-sync/core-sync": "*",
+    "@ledger-sync/ledger-sync": "*",
+    "@ledger-sync/core-integration-firebase": "*"
+  },
+  "devDependencies": {}
+}

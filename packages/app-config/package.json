@@ -22,6 +22,7 @@
     "@ledger-sync/core-integration-redis": "*",
     "@ledger-sync/core-integration-airtable": "*",
     "@ledger-sync/ledger-sync": "*",
+    "@ledger-sync/integration-alka": "*",
     "@ledger-sync/integration-plaid": "*",
     "@ledger-sync/integration-beancount": "*",
     "@ledger-sync/integration-onebrick": "*",
