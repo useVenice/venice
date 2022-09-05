@@ -1,17 +1,3 @@
-import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
-import {
-  ledgerSyncProviderBase,
-  makePostingsMap,
-  makeStandardId,
-} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-import * as plaid from 'plaid'
-import React from 'react'
-import {
-  PlaidLinkOnSuccessMetadata,
-  PlaidLinkOptions,
-  usePlaidLink,
-} from 'react-plaid-link'
 import {
   getPlaidAccountBalance,
   getPlaidAccountFullName,
@@ -26,6 +12,20 @@ import {
   zPlaidClientConfig,
   zProducts,
 } from './PlaidClient'
+import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
+import {
+  ledgerSyncProviderBase,
+  makePostingsMap,
+  makeStandardId,
+} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+import type * as plaid from 'plaid'
+import React from 'react'
+import type {
+  PlaidLinkOnSuccessMetadata,
+  PlaidLinkOptions,
+} from 'react-plaid-link'
+import {usePlaidLink} from 'react-plaid-link'
 
 type PlaidSyncOperation = typeof def['_opType']
 
@@ -100,17 +100,17 @@ export const plaidProviderNext = makeSyncProvider({
         id: 'account_id' in a ? a.account_id : a.id,
         entityName: 'account',
         entity: {
-          name: getPlaidAccountFullName(a, extConn?.institution),
+          name: getPlaidAccountFullName(a, extConn.institution),
           lastFour: a.mask,
           // TODO: Map Plaid account type properly
           type: getPlaidAccountType(a),
-          institutionName: extConn?.institution?.name,
+          institutionName: extConn.institution?.name,
           informationalBalances: {
             current: getPlaidAccountBalance(a, 'current'),
             available: getPlaidAccountBalance(a, 'available'),
             limit: getPlaidAccountBalance(a, 'limit'),
           },
-          defaultUnit: (('balances' in a && a.balances?.iso_currency_code) ??
+          defaultUnit: (('balances' in a && a.balances.iso_currency_code) ??
             undefined) as Unit | undefined,
         },
       }),

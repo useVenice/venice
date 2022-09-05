@@ -2,7 +2,6 @@ import type firestoreAdmin from '@google-cloud/firestore'
 import type firebaseAdmin from 'firebase-admin'
 import type firebase from 'firebase/compat'
 
-// eslint-disable-next-line unicorn/prefer-export-from
 export {firebase, firebaseAdmin, firestoreAdmin}
 
 export type FirebaseApp = firebase.app.App

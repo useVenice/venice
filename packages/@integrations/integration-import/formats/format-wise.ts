@@ -1,8 +1,8 @@
+import {makeImportFormat} from '../makeImportFormat'
+import {RowIdMaker} from '../RowIdMaker'
 import {makePostingsMap} from '@ledger-sync/standard'
 import {A, compact, DateTime, parseMoney, zCast} from '@ledger-sync/util'
 import Papa from 'papaparse'
-import {makeImportFormat} from '../makeImportFormat'
-import {RowIdMaker} from '../RowIdMaker'
 
 export interface WiseTransactionRow {
   /**
@@ -38,7 +38,7 @@ export const formatWise = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<WiseTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['Date'].trim()),
+    }).data.filter((r) => r.Date.trim()),
 
   mapEntity: (row, accountExternalId) => {
     /** e.g. -233 (USD) */
@@ -68,11 +68,11 @@ export const formatWise = makeImportFormat({
       id: RowIdMaker.idForRow(row),
       entityName: 'transaction',
       entity: {
-        date: DateTime.fromFormat(row['Date'], 'dd-MM-yy').toISODate(),
+        date: DateTime.fromFormat(row.Date, 'dd-MM-yy').toISODate(),
         description: compact([
           // feeQuantity > 0 && '[Reversal]',
           row['Payment Reference'],
-          row['Description'],
+          row.Description,
         ]).join(' '),
         payee: [
           row['Payee Name'] ?? row['Payer Name'],

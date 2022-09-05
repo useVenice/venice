@@ -1,27 +1,19 @@
 #!/usr/bin/env tsx
-// Order of import is important and register.node has to come first, which is not great
-// How do we fix this?
 import '@ledger-sync/app-config/register.node'
-
+import {cliFromRouter} from './cli-utils'
+import type {LedgerSyncRouter} from '@ledger-sync/app-config'
 import {
-  LedgerSyncRouter,
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
 } from '@ledger-sync/app-config'
-import {inferProcedureInput, parseWebhookRequest} from '@ledger-sync/engine'
-import {
-  compact,
-  NonEmptyArray,
-  parseUrl,
-  R,
-  z,
-  zFunction,
-} from '@ledger-sync/util'
+import type {inferProcedureInput} from '@ledger-sync/engine'
+import {parseWebhookRequest} from '@ledger-sync/engine'
+import type {NonEmptyArray} from '@ledger-sync/util'
+import {compact, parseUrl, R, z, zFunction} from '@ledger-sync/util'
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import http from 'http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
-import {cliFromRouter} from './cli-utils'
 
 if (!process.env['DEBUG']) {
   console.debug = () => {} // Disabling debug logs

@@ -1,5 +1,5 @@
-import type {JsonValue, Primitive, UnionToIntersection} from 'type-fest'
 import type {rxjs} from './observable-utils'
+import type {JsonValue, Primitive, UnionToIntersection} from 'type-fest'
 
 export type AnyArray<T> = T[] | readonly T[]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -9,14 +9,12 @@ import type {
 } from './firebase-types'
 import {fieldPath} from './firebase-utils'
 import type {WrappedFirebase} from './FirebaseProvider'
+import type {NoInfer, ObjectPartialDeep, PathsOf} from '@ledger-sync/util'
 import {
   deepOmitUndefined,
   getAt,
   makeChunks,
-  NoInfer,
-  ObjectPartialDeep,
   operateForEach,
-  PathsOf,
   rxjs,
 } from '@ledger-sync/util'
 import type firebase from 'firebase/compat'

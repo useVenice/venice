@@ -1,14 +1,8 @@
-import * as chrono from 'chrono-node'
-import {
-  DateTime,
-  DateTimeJSOptions,
-  DateTimeOptions,
-  FixedOffsetZone,
-  Interval,
-  Settings,
-} from 'luxon'
-import {Mutable} from 'type-fest'
 import {SCHelpers} from './schrono-utils'
+import type * as chrono from 'chrono-node'
+import type {DateTimeJSOptions, DateTimeOptions} from 'luxon'
+import {DateTime, FixedOffsetZone, Interval, Settings} from 'luxon'
+import type {Mutable} from 'type-fest'
 
 /**
  * TODO:

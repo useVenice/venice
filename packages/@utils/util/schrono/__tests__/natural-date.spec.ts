@@ -1,7 +1,7 @@
+import {MPDate} from '../MPDate'
 import * as jestDateMock from 'jest-date-mock'
 import {DateTime, Settings} from 'luxon'
 import * as tzMock from 'timezone-mock'
-import {MPDate} from '../MPDate'
 
 const DEFAULT_ZONE = Settings.defaultZone
 // Sunday 3/14 was daylight savings...
@@ -60,6 +60,6 @@ test.each([
   // ['today at 2pm Eastern', '2021-03-15T11:00:00.000-07:00'],
   // ['today at 2pm US/Eastern', '2021-03-15T11:00:00.000-07:00'],
   // ['today at 2pm NYC', '2021-03-15T11:00:00.000-07:00'],
-])("MPDate.parse('%s') -> %s", (text, iso) => {
+])('MPDate.parse(\'%s\') -> %s', (text, iso) => {
   expect(MPDate.parse(text)?.toISOMPDate()).toEqual(iso)
 })

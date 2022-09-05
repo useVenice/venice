@@ -1,6 +1,4 @@
-import {advanceTo, clear} from 'jest-date-mock'
-import {DateTime} from 'luxon'
-import {RRule} from 'rrule'
+import type {RRuleOptions} from './date-nlp-utils'
 import {
   boundRRuleSetInInterval,
   formatScheduleExpression,
@@ -8,9 +6,11 @@ import {
   parseDateRangeExpression,
   parseScheduleExpression,
   reformatScheduleExpression,
-  RRuleOptions,
 } from './date-nlp-utils'
 import {formatDate, parseOptionalISODate} from './date-utils'
+import {advanceTo, clear} from 'jest-date-mock'
+import {DateTime} from 'luxon'
+import {RRule} from 'rrule'
 
 const now = DateTime.fromISO('2020-04-13', {zone: 'utc'})
 
@@ -190,7 +190,8 @@ describe('Schedule expressions', () => {
     ])
   })
 
-  test('parse from/since and to/until ', () => {
+  // eslint-disable-next-line jest/no-identical-title
+  test('parse from/since and to/until', () => {
     const rrule = parseScheduleExpression(
       'every day from jan 1 2020 until jan 15 2020',
     )

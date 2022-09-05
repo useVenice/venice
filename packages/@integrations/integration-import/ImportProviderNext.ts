@@ -1,6 +1,3 @@
-import {makeSyncProvider, SyncOperation} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
-import {Rx, rxjs, UnionToIntersection, z} from '@ledger-sync/util'
 import {
   formatAlliantCreditUnion,
   formatAppleCard,
@@ -17,6 +14,11 @@ import {
   rampFormat,
 } from './formats'
 import {makeImportFormatMap} from './makeImportFormat'
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
+import type {UnionToIntersection} from '@ledger-sync/util'
+import {Rx, rxjs, z} from '@ledger-sync/util'
 
 // MARK: - Importing all supported formats
 

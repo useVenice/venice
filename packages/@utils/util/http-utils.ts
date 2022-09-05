@@ -1,13 +1,15 @@
-import _Axios, {
+import type {InjectionToken} from './di-utils'
+import {resolveDependencyIfRegistered} from './di-utils'
+import type {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
   AxiosError as IAxiosError,
   Method,
 } from 'axios'
-import http from 'http'
-import https from 'https'
-import {InjectionToken, resolveDependencyIfRegistered} from './di-utils'
+import _Axios from 'axios'
+import type http from 'http'
+import type https from 'https'
 
 export type HTTPRequestConfig = AxiosRequestConfig
 
@@ -147,7 +149,7 @@ export function createHTTPClient({
     req: AxiosRequestConfig,
   ) => AxiosRequestConfig | Promise<AxiosRequestConfig>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  responseTransformer?: (res: AxiosResponse<any>) => AxiosResponse<any>
+  responseTransformer?: (res: AxiosResponse) => AxiosResponse
   errorTransformer?: (err: HTTPError) => Error
   /**
    * If provided, will retry. To skip refreshing, return undefined
@@ -203,7 +205,6 @@ export function createHTTPClient({
       if (error.code === 401 && refreshAuth && !refreshing) {
         refreshing = refreshAuth.refresh(error)
         if (refreshing) {
-          // eslint-disable-next-line promise/no-promise-in-callback
           return refreshing
             .finally(() => (refreshing = undefined))
             .then(() => axios.request(err.response?.config || {}))

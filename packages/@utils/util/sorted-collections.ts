@@ -1,4 +1,5 @@
-import {RBTree as BTree, Comparator} from 'bintrees'
+import type {Comparator} from 'bintrees'
+import {RBTree as BTree} from 'bintrees'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const DEFAULT_ENTRY_COMPARATOR: Comparator<[string | number, any]> = (

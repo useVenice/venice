@@ -1,4 +1,4 @@
-import {AnyQuery} from './firebase-types'
+import type {AnyQuery} from './firebase-types'
 import {
   getPathForQuery,
   getQueryDocumentSnapshot$,
@@ -7,14 +7,8 @@ import {
 } from './firebase-utils'
 import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
 import {MultiBatch} from './MultiBatch'
-import {
-  AnyEntityPayload,
-  handlersLink,
-  Link,
-  makeSyncProvider,
-  mergeReady,
-  SyncOperation,
-} from '@ledger-sync/cdk-core'
+import type {AnyEntityPayload, Link, SyncOperation} from '@ledger-sync/cdk-core'
+import {handlersLink, makeSyncProvider, mergeReady} from '@ledger-sync/cdk-core'
 import {
   compact,
   defineProxyFn,
@@ -132,11 +126,11 @@ export const firebaseProvider = makeSyncProvider({
   destinationSync: ({settings: conn}) => {
     const {fst, cleanup, connect} = initFirebase(conn)
     const batch = new MultiBatch(fst)
-    console.log(`[Firestore] destSync`, conn)
+    console.log('[Firestore] destSync', conn)
     return rxjs.pipe(
       handlersLink({
         data: ({data}) => {
-          console.log(`[Firestore] Did get data`, data.entityName, data.id)
+          console.log('[Firestore] Did get data', data.entityName, data.id)
           const doc = fst.collection<object>(data.entityName).doc(data.id)
           if (data.entity == null) {
             batch.delete(doc)
@@ -148,7 +142,7 @@ export const firebaseProvider = makeSyncProvider({
         },
         commit: () =>
           fromCompletion(async () => {
-            console.log(`[Firestore] Will commit`)
+            console.log('[Firestore] Will commit')
             await connect()
             await batch.commit()
           }),

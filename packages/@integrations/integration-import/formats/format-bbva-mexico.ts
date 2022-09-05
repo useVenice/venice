@@ -1,7 +1,7 @@
-import {A, DateTime, zCast} from '@ledger-sync/util'
-import Papa from 'papaparse'
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'
+import {A, DateTime, zCast} from '@ledger-sync/util'
+import Papa from 'papaparse'
 
 export interface BBVAMexicoTransactionRow {
   /** 28/01/2020 */
@@ -24,7 +24,7 @@ export const formatBBVAMexico = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<BBVAMexicoTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['FECHA'].trim()),
+    }).data.filter((r) => r.FECHA.trim()),
   mapEntity: (row, accountExternalId) => ({
     id: RowIdMaker.idForRow(row),
     entityName: 'transaction',

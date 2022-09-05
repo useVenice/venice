@@ -1,3 +1,5 @@
+import {makeImportFormat} from '../makeImportFormat'
+import {RowIdMaker} from '../RowIdMaker'
 import {makePostingsMap} from '@ledger-sync/standard'
 import {
   A,
@@ -7,8 +9,6 @@ import {
   zCast,
 } from '@ledger-sync/util'
 import Papa from 'papaparse'
-import {makeImportFormat} from '../makeImportFormat'
-import {RowIdMaker} from '../RowIdMaker'
 
 export interface ETradeTransactionRow {
   /** 05/26/20 */
@@ -46,7 +46,7 @@ export const formatEtrade = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<ETradeTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['TransactionDate'].trim()),
+    }).data.filter((r) => r.TransactionDate.trim()),
   mapEntity: (row, accountExternalId) => {
     const sign = row.TransactionType === 'Bought' ? 1 : -1
     return {
@@ -58,7 +58,7 @@ export const formatEtrade = makeImportFormat({
         postingsMap: makePostingsMap({
           main: {
             accountExternalId,
-            amount: A(sign * parseMoney(row['Quantity']), row.Symbol),
+            amount: A(sign * parseMoney(row.Quantity), row.Symbol),
           },
         }),
         notes: arrayFromObject(

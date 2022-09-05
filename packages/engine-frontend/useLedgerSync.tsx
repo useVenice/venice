@@ -1,11 +1,11 @@
-import {ConnectContext, PreConnOptions} from '@ledger-sync/cdk-core'
-import {IntegrationInput} from '@ledger-sync/engine'
-import {NonNullableOnly} from '@ledger-sync/util'
-import React from 'react'
 import {LSProvider} from './LSProvider'
+import type {ConnectContext, PreConnOptions} from '@ledger-sync/cdk-core'
+import type {IntegrationInput} from '@ledger-sync/engine'
+import type {NonNullableOnly} from '@ledger-sync/util'
+import React from 'react'
 
 export function useLedgerSync({ledgerId, envName}: ConnectContext) {
-  console.log(`[useLedgerSync]`, {ledgerId, envName})
+  console.log('[useLedgerSync]', {ledgerId, envName})
   // There has to be a shorthand for this...
   const ctx = React.useMemo<ConnectContext>(
     () => ({ledgerId, envName}),

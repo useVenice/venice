@@ -1,5 +1,5 @@
 // Adapted from https://github.com/wanasit/chrono/blob/v2.3.0/src/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser.ts
-import {ParsingContext} from 'chrono-node/dist/chrono'
+import type {ParsingContext} from 'chrono-node/dist/chrono'
 import {
   ParsingComponents,
   ReferenceWithTimezone,

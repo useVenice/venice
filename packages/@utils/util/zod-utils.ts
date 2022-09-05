@@ -1,6 +1,5 @@
 import * as z from 'zod'
 
-// eslint-disable-next-line unicorn/prefer-export-from
 export {z}
 
 export function parseIf<T>(value: unknown, typeguard: (v: unknown) => v is T) {
@@ -72,7 +71,7 @@ export function isZodType(input: unknown): input is z.ZodTypeAny {
 export function zodInsecureDebug() {
   z.setErrorMap((_issue, ctx) => {
     // Need to get the `schema` as well.. otherwise very hard
-    console.error(`[zod] Data did not pass validation`, {
+    console.error('[zod] Data did not pass validation', {
       data: ctx.data,
       issue: _issue,
     })

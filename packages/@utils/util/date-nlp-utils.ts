@@ -1,6 +1,8 @@
-import {DateTime, Interval} from 'luxon'
-import {Options as _RRuleOptions, RRule, RRuleSet} from 'rrule'
 import {MPDate, MPInterval} from './schrono'
+import type {Interval} from 'luxon'
+import {DateTime} from 'luxon'
+import type {Options as _RRuleOptions} from 'rrule'
+import {RRule, RRuleSet} from 'rrule'
 
 /**
  * @deprecated. Please use schrono
@@ -69,8 +71,8 @@ export function boundRRuleSetInInterval(
   interval: Interval,
 ) {
   const rruleSet = makeRRuleSet()
-  const fixedDate = origRRuleSet?.rdates()[0]
-  const rrule = origRRuleSet?.rrules()[0]
+  const fixedDate = origRRuleSet.rdates()[0]
+  const rrule = origRRuleSet.rrules()[0]
   if (fixedDate) {
     if (interval.contains(DateTime.fromJSDate(fixedDate))) {
       rruleSet.rdate(fixedDate)
@@ -106,7 +108,7 @@ export function parseScheduleExpression(text?: string | null): RRuleSet | null {
   try {
     rrule = parseRRule(text)
   } catch (err) {
-    if (err instanceof Error && !/expected every/.test(err.message)) {
+    if (err instanceof Error && !err.message.includes('expected every')) {
       console.warn('Failed to parse RRule', text, err)
     }
     rrule = null
@@ -129,7 +131,7 @@ export function parseScheduleExpression(text?: string | null): RRuleSet | null {
 
 export function formatScheduleExpression(rruleSet?: RRuleSet | null) {
   if ((rruleSet?.rrules().length ?? 0) > 1) {
-    console.warn(`RRuleSet has more than one rule, only first one will be used`)
+    console.warn('RRuleSet has more than one rule, only first one will be used')
   }
   const rrule = rruleSet?.rrules()?.[0]
   if (rrule) {
@@ -165,7 +167,7 @@ function formatRRule(rrule?: RRule | null) {
   } = rrule.options
   const hackRule = new RRule(options)
   if (!hackRule.isFullyConvertibleToText()) {
-    console.warn(`RRule is not fully convertible to text`, hackRule.options)
+    console.warn('RRule is not fully convertible to text', hackRule.options)
   }
 
   let text = hackRule.toText()

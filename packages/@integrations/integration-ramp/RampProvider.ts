@@ -1,3 +1,8 @@
+import {
+  businessResponseSchema,
+  makeRampClient,
+  transactionResponseItemSchema,
+} from './RampClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   ledgerSyncProviderBase,
@@ -15,11 +20,6 @@ import {
   z,
 } from '@ledger-sync/util'
 import React from 'react'
-import {
-  businessResponseSchema,
-  makeRampClient,
-  transactionResponseItemSchema,
-} from './RampClient'
 
 const kRamp = 'ramp' as const
 type RampEntity = z.infer<typeof def['sourceOutputEntity']>
@@ -197,7 +197,7 @@ export const rampProvider = makeSyncProvider({
               ? starting_after
               : undefined,
         })
-        starting_after = res2.data?.[res2.data.length - 1]?.id ?? ''
+        starting_after = res2.data[res2.data.length - 1]?.id ?? ''
         yield [
           ...res2.data.map((t) => opData('transaction', t.id, t)),
           // Use the hashed accessToken for now until we now what the id that can we use for meta data

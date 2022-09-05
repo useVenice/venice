@@ -1,9 +1,8 @@
+import {beanJsonToDir} from './bean-fs-utils'
+import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {
-  cachingLink,
-  ledgerSyncProviderBase,
-  StdCache,
-} from '@ledger-sync/cdk-ledger'
+import type {StdCache} from '@ledger-sync/cdk-ledger'
+import {cachingLink, ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
 import {
   $writeFile,
   fromCompletion,
@@ -12,8 +11,6 @@ import {
   stableStringify,
   z,
 } from '@ledger-sync/util'
-import {beanJsonToDir} from './bean-fs-utils'
-import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'
 
 export type BeancountDestOptions = z.infer<typeof zBeancountDestOptions>
 export const zBeancountDestOptions = z.object({
@@ -41,7 +38,7 @@ export async function outputBeanFiles(
   cache: StdCache,
   options: BeancountDestOptions,
 ) {
-  console.log(`[BeancountDestination] Will commit`)
+  console.log('[BeancountDestination] Will commit')
   if (options.saveStdJson) {
     const jsonOutPath = options.outPath.replace(/\.bean$/, '.json')
     console.log(`Will export standard json to ${jsonOutPath}`)

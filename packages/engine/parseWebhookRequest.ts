@@ -1,7 +1,7 @@
-import {IntId, WebhookInput} from '@ledger-sync/cdk-core'
-import {NonEmptyArray} from '@ledger-sync/util'
-import {inferProcedureInput} from '@trpc/server'
 import type {makeSyncEngine} from './makeSyncEngine'
+import type {IntId, WebhookInput} from '@ledger-sync/cdk-core'
+import type {NonEmptyArray} from '@ledger-sync/util'
+import type {inferProcedureInput} from '@trpc/server'
 
 type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
 type HandleWebhookInput = inferProcedureInput<

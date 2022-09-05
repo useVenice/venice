@@ -1,4 +1,5 @@
-import _slugify, {Options as SlugifyOptions} from '@sindresorhus/slugify'
+import type {Options as SlugifyOptions} from '@sindresorhus/slugify'
+import _slugify from '@sindresorhus/slugify'
 import {startCase} from 'lodash'
 
 export function slugify(str: string, opts?: SlugifyOptions): string
@@ -41,7 +42,7 @@ export function makeUniqueLabel(
       return suffixedLabel
     }
   }
-  throw new Error(`Illegal state: Expected to return from loop`)
+  throw new Error('Illegal state: Expected to return from loop')
 }
 
 export function* iterateSuffixedLabels(

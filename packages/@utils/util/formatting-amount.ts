@@ -3,18 +3,16 @@
 // This should probably exist in the format-decimal layer and get used over here
 // Should be supported in both intlFormat and customFormat layer
 // MARK: Built in commodities
+import type {AnyAmount} from './amount-utils'
+import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
+import type {StrictIntlNumberFormatOptions} from './formatting-number'
+import {formatDecimal, getIntlNumberFormat} from './formatting-number'
+import {DBL_EPSILON} from './math-utils'
 import {
   currencies as ISO_CURRENCIES,
   map as ISO_CURRENCY_SYMBOL_TO_INFO,
 } from '@blossomfinance/iso-4217-currencies'
 import pluralize from 'pluralize'
-import {A, AnyAmount, toAmountOrMultiAmount, toAmounts} from './amount-utils'
-import {
-  formatDecimal,
-  getIntlNumberFormat,
-  StrictIntlNumberFormatOptions,
-} from './formatting-number'
-import {DBL_EPSILON} from './math-utils'
 
 /** Will format into an unambiguous format */
 export function legacy_parsableFormatAmount(
@@ -216,7 +214,6 @@ export function _customFormatAmount(
 // TODO: Support top crypto currencies as well in addition to physical currencies
 export const STANDARD_CURRENCY_SYMBOL_TO_INFO = ISO_CURRENCY_SYMBOL_TO_INFO
 
-// eslint-disable-next-line unicorn/prefer-export-from
 export const STANDARD_CURRENCIES = ISO_CURRENCIES
 
 export function getCurrencyInfo(symbol: string) {

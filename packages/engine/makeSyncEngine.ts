@@ -1,14 +1,22 @@
-import {
+import type {
+  IntegrationInput,
+  ParsedConn,
+  ParsedInt,
+  ParsedPipeline,
+  PipelineInput,
+} from './makeSyncHelpers'
+import {makeSyncHelpers} from './makeSyncHelpers'
+import {sync} from './sync'
+import type {
   AnySyncProvider,
   ConnectedSource,
   KVStore,
   Link,
   LinkFactory,
-  makeCoreId,
-  zConnectContext,
-  zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import {LedgerSyncProvider, zStandard} from '@ledger-sync/cdk-ledger'
+import {makeCoreId, zConnectContext, zWebhookInput} from '@ledger-sync/cdk-core'
+import type {LedgerSyncProvider} from '@ledger-sync/cdk-ledger'
+import {zStandard} from '@ledger-sync/cdk-ledger'
 import {
   R,
   routerFromZFunctionMap,
@@ -18,15 +26,6 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 import * as trpc from '@trpc/server'
-import {
-  IntegrationInput,
-  makeSyncHelpers,
-  ParsedConn,
-  ParsedInt,
-  ParsedPipeline,
-  PipelineInput,
-} from './makeSyncHelpers'
-import {sync} from './sync'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -273,10 +272,7 @@ export const makeSyncEngine = <
         if (!p.postConnect || !p.def.connectOutput) {
           return 'Noop'
         }
-        const cs = await p.postConnect(
-          p.def.connectOutput?.parse(input),
-          config,
-        )
+        const cs = await p.postConnect(p.def.connectOutput.parse(input), config)
         await syncEngine.syncConnection.impl(parsedConn(int, {...cs, ...ctx}))
 
         console.log('didConnect finish', p.name, input)

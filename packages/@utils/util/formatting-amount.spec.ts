@@ -1,14 +1,17 @@
-import {A, AnyAmount} from './amount-utils'
+import type {AnyAmount} from './amount-utils'
+import {A} from './amount-utils'
+import type {
+  _CustomFormatAmountOptions,
+  FormatAmountOptions,
+} from './formatting-amount'
 import {
   _customFormatAmount,
-  _CustomFormatAmountOptions,
   _formatSingleAmount,
   formatAmount,
-  FormatAmountOptions,
   legacy_formatAmount,
   legacy_parsableFormatAmount,
 } from './formatting-amount'
-import {StrictIntlNumberFormatOptions} from './formatting-number'
+import type {StrictIntlNumberFormatOptions} from './formatting-number'
 
 test.each([
   [{Session: 323, USD: 3232}, '323.00 Session; 3232.00 USD'],

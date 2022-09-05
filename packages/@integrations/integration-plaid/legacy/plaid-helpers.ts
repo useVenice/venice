@@ -33,7 +33,6 @@ export function getPlaidAccountType(
       return 'liability/personal_loan'
     case 'credit':
       return 'liability'
-    // eslint-disable-next-line unicorn/no-useless-switch-case
     case 'other':
     default:
       return 'asset'
@@ -121,7 +120,6 @@ export function plaidMapHolding(
       case 'etf':
       case 'equity':
         return A(h.quantity, plaidUnitForSecurity(h.security))
-      // eslint-disable-next-line unicorn/no-useless-switch-case
       case 'cash':
       default:
         return A(h.quantity, plaidUnitForCurrency(h.security))

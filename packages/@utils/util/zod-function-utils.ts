@@ -1,5 +1,5 @@
-import {z} from 'zod'
 import {isZodType} from './zod-utils'
+import {z} from 'zod'
 
 /** Use fn.implementation to access the raw fn without validation */
 export type AnyZFunction = ReturnType<typeof zFunction>

@@ -1,8 +1,12 @@
 import {
-  makeSyncProvider,
-  SyncOperation,
-  zWebhookInput,
-} from '@ledger-sync/cdk-core'
+  accountItemSchema,
+  makeOneBrickClient,
+  transactionBrickSchema,
+  zEnvName,
+  zOneBrickConfig,
+} from './OneBrickClient'
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   A,
@@ -16,13 +20,6 @@ import {
   z,
 } from '@ledger-sync/util'
 import React from 'react'
-import {
-  accountItemSchema,
-  makeOneBrickClient,
-  transactionBrickSchema,
-  zEnvName,
-  zOneBrickConfig,
-} from './OneBrickClient'
 
 const connectInputSchema = z.object({
   publicToken: z.string().nullish(),
@@ -80,7 +77,7 @@ export const oneBrickProvider = makeSyncProvider({
             institutionName: a.type,
             informationalBalances: {
               current: A(
-                parseMoney((a.balances?.current ?? 0).toString()),
+                parseMoney((a.balances.current ?? 0).toString()),
                 a.currency.toUpperCase(),
               ),
             },

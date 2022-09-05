@@ -1,4 +1,4 @@
-import {AnyFunction, Promisable} from './type-utils'
+import type {AnyFunction, Promisable} from './type-utils'
 
 export async function withTimer<T>(
   nameOrFn: string | AnyFunction<unknown>,

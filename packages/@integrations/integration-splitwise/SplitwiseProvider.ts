@@ -1,3 +1,6 @@
+import type {zUser} from './splitwise-schema'
+import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
+import {makeSplitwiseClient} from './SplitwiseClientNext'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
@@ -11,8 +14,6 @@ import {
   rxjs,
   z,
 } from '@ledger-sync/util'
-import {zCurrentUser, zExpense, zGroup, zUser} from './splitwise-schema'
-import {makeSplitwiseClient} from './SplitwiseClientNext'
 
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
@@ -194,5 +195,5 @@ export const splitwiseProvider = makeSyncProvider({
 function formatUser(user?: z.infer<typeof zUser>) {
   return user
     ? `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim()
-    : `Unnamed user`
+    : 'Unnamed user'
 }

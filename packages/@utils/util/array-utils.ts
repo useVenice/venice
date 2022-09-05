@@ -1,12 +1,11 @@
+import type {MaybeArray} from './type-utils'
 import {sameValueZeroEqual} from 'fast-equals'
+import type {Comparator2, ValueIteratee} from 'lodash'
 import {
   difference as _difference,
   differenceBy as _differenceBy,
   differenceWith as _differenceWith,
-  Comparator2,
-  ValueIteratee,
 } from 'lodash'
-import {MaybeArray} from './type-utils'
 
 export function nonEmpty<T>(arr: T[]) {
   if (arr.length === 0) {
@@ -54,7 +53,6 @@ export function arrayEquals<T>(
   if (a.length !== b.length) {
     return false
   }
-  // eslint-disable-next-line unicorn/no-for-loop
   for (let i = 0; i < a.length; ++i) {
     if (!isEqual(a[i], b[i])) {
       return false

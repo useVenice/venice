@@ -1,13 +1,12 @@
-import {
+import type {
   JsonLiteral,
   JsonObject,
   MergeUnion,
   NoInfer,
   ObjectPartialDeep,
   rxjs,
-  z,
-  zCast,
 } from '@ledger-sync/util'
+import {z, zCast} from '@ledger-sync/util'
 
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])

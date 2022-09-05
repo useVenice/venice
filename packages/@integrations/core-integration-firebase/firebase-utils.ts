@@ -1,14 +1,4 @@
-import {
-  InjectionToken,
-  objectKeys,
-  parseOptionalDateTime,
-  PossibleDate,
-  resolveDependency,
-  rxjs,
-} from '@ledger-sync/util'
-import type admin from 'firebase-admin'
-import type firebase from 'firebase/compat'
-import {
+import type {
   AnyDocumentReference,
   AnyDocumentSnapshot,
   AnyFieldPathClass,
@@ -26,6 +16,15 @@ import {
   SnapshotData,
   Timestamp,
 } from './firebase-types'
+import type {InjectionToken, PossibleDate} from '@ledger-sync/util'
+import {
+  objectKeys,
+  parseOptionalDateTime,
+  resolveDependency,
+  rxjs,
+} from '@ledger-sync/util'
+import type admin from 'firebase-admin'
+import type firebase from 'firebase/compat'
 
 /** @deprecated. to be removed */
 export const kFieldPath = Symbol(
@@ -144,7 +143,7 @@ export async function getQueryData<T>(
       .map((snap) => unwrapDocumentSnapshot(snap))
       .filter((data): data is NonNullable<typeof data> => !!data)
   } catch (err) {
-    console.error(`Failed to get query data`, query, err)
+    console.error('Failed to get query data', query, err)
     throw err
   }
 }
@@ -226,7 +225,7 @@ export function unwrapDocumentSnapshot<T>(snap: AnyDocumentSnapshot<T>) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function idsForRef(ref: AnyDocumentReference<any>) {
+export function idsForRef(ref: AnyDocumentReference) {
   // .parent = `/ledgers/<Id.ldgr>/<collectionName>` or `/users/<Id.usr>/<collectionName>`
   // .parent.parent = `/ledgers/<Id.ldgr>` or `/users/<Id.usr>`
   // .parent.parent.parent = `/ledgers` or `/users`

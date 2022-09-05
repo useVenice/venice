@@ -2,6 +2,7 @@ import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
+import {makeProxyAgentNext} from './utils.node'
 import {
   $appendFile,
   $chokidar,
@@ -24,7 +25,6 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
 import {writeFile as _writeFile} from 'write-file-safe'
-import {makeProxyAgentNext} from './utils.node'
 
 console.log('[Dep] app-config/register.node')
 

@@ -1,27 +1,25 @@
+import type {_parseConnectionInfo} from './foreceipt-utils'
+import {_parseAccounts} from './foreceipt-utils'
+import type {ForeceiptClientOptions} from './ForeceiptClient'
+import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import type {SerializedTimestamp} from '@ledger-sync/core-integration-firebase'
 import {
   firebaseProvider,
-  SerializedTimestamp,
   serializeTimestamp,
 } from '@ledger-sync/core-integration-firebase'
+import type {Merge} from '@ledger-sync/util'
 import {
   A,
   compact,
   identity,
-  Merge,
   objectFromArray,
   Rx,
   rxjs,
   z,
   zCast,
 } from '@ledger-sync/util'
-import {_parseAccounts, _parseConnectionInfo} from './foreceipt-utils'
-import {
-  ForeceiptClientOptions,
-  makeForeceiptClient,
-  zForeceiptConfig,
-} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({
@@ -94,7 +92,7 @@ export const foreceiptProvider = makeSyncProvider({
         const t = entity.content
         const c = info
         const meta = entity
-        const creator = c?.memberByGuid?.[meta.user_guid]
+        const creator = c?.memberByGuid[meta.user_guid]
         return {
           id,
           entityName: 'transaction',
@@ -126,7 +124,6 @@ export const foreceiptProvider = makeSyncProvider({
                       return 'expense'
                     case makeForeceiptClient(_extConn).INCOME_TYPE:
                       return 'income'
-                    // eslint-disable-next-line unicorn/no-useless-switch-case
                     case makeForeceiptClient(_extConn).TRANSFER_TYPE:
                     default:
                       return 'equity/clearing'

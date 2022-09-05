@@ -1,6 +1,7 @@
-import {pickBy} from 'lodash'
-import {createHTTPClient, HTTPClient, HTTPError} from './http-utils'
+import type {HTTPClient, HTTPError} from './http-utils'
+import {createHTTPClient} from './http-utils'
 import {stringifyQueryParams} from './url-utils'
+import {pickBy} from 'lodash'
 
 export interface OAuth2ClientConfig<TError = unknown> {
   clientId: string
@@ -30,7 +31,7 @@ export class OAuth2Client<
         if (err.response && err.response.data) {
           const error = err.response.data as TError
           return new OAuth2Error<TError>(
-            config?.errorToString?.(error) ?? JSON.stringify(error),
+            config.errorToString?.(error) ?? JSON.stringify(error),
             error,
             err,
           )

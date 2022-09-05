@@ -1,5 +1,7 @@
-import {AnySyncProvider, handlersLink, KVStore} from '@ledger-sync/cdk-core'
-import {cast, deepMerge, R, z} from '@ledger-sync/util'
+import type {AnySyncProvider, KVStore} from '@ledger-sync/cdk-core'
+import {handlersLink} from '@ledger-sync/cdk-core'
+import type {z} from '@ledger-sync/util'
+import {cast, deepMerge, R} from '@ledger-sync/util'
 
 type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
 
@@ -55,7 +57,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     handlersLink({
       connUpdate: async (op) => {
         const {id, settings = {}} = op
-        console.log(`[postSourceLink] patch`, id, R.keys(settings))
+        console.log('[postSourceLink] patch', id, R.keys(settings))
         await patch(id, settings)
         // console.log(`[meta] Did update connection`, id, op.data)
         return op
@@ -66,7 +68,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     handlersLink({
       connUpdate: async (op) => {
         const {id, settings = {}, envName, integrationId, ledgerId} = op
-        console.log(`[postDestinationLink] connUpdate`, {
+        console.log('[postDestinationLink] connUpdate', {
           connectionId: id,
           settings: R.keys(settings),
           envName,
@@ -78,7 +80,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
       },
       stateUpdate: async (op) => {
         if (pipe.id) {
-          console.log(`[postDestinationLink] stateUpdate`, pipe.id, {
+          console.log('[postDestinationLink] stateUpdate', pipe.id, {
             sourceSyncOptions: R.keys(op.sourceSyncOptions ?? {}),
             destinationSyncOptions: R.keys(op.destinationSyncOptions ?? {}),
           })
@@ -130,7 +132,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     getPipelinesForConnection: async (connectionId: string) => {
       const pipelines = await list<RawPipeline<T, T>>()
       return pipelines.filter(
-        (p) => p.src?.id === connectionId || p.dest?.id === connectionId,
+        (p) => p.src.id === connectionId || p.dest.id === connectionId,
       )
     },
     kvStore,

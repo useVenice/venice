@@ -1,8 +1,5 @@
-import {
-  AnyEntityPayload,
-  handlersLink,
-  makeSyncProvider,
-} from '@ledger-sync/cdk-core'
+import type {AnyEntityPayload} from '@ledger-sync/cdk-core'
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import {defineProxyFn, z, zCast, zFunction} from '@ledger-sync/util'
 import type {Db} from 'mongodb'
 

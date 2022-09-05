@@ -1,5 +1,5 @@
-import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
 import {extractExternalId} from './import-format-utils'
+import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
 
 export class RowIdMaker {
   readonly ids = new Set<string>()
@@ -39,7 +39,7 @@ export class RowIdMaker {
       'csv',
     )
     if (id) {
-      console.warn(`Unexpected accountExternalId`, accountExternalId)
+      console.warn('Unexpected accountExternalId', accountExternalId)
     } else {
       id = accountExternalId
     }

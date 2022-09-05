@@ -1,12 +1,12 @@
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
-import React from 'react'
 import {
   itemProjectResponseSchema,
   itemTimeEntriesSchema,
   makeTogglClient,
 } from './TogglCient'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
+import React from 'react'
 
 type TogglSyncOperation = typeof def['_opType']
 

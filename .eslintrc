@@ -1,0 +1,67 @@
+{
+  "root": true,
+  "settings": {
+    "next": {
+      "rootDir": "apps/next/"
+    },
+    "react": {
+      "version": "17.0.2"
+    },
+    "tailwindcss": {
+      "callees": ["twMerge"],
+      "config": "apps/next/tailwind.config.js"
+    }
+  },
+  "plugins": ["codegen", "tailwindcss", "eslint-comments"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:eslint-comments/recommended",
+    "plugin:tailwindcss/recommended"
+  ],
+  "rules": {
+    "arrow-body-style": "warn",
+    "object-shorthand": "warn",
+    "prefer-const": "warn",
+    "quotes": ["warn", "single"],
+    "codegen/codegen": "warn",
+    "import/no-unresolved": "error",
+    "react/jsx-curly-brace-presence": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "parserOptions": {
+        "project": "tsconfig.json"
+      },
+      "plugins": ["@typescript-eslint"],
+      "extends": ["plugin:@typescript-eslint/strict"],
+      "rules": {
+        "@typescript-eslint/array-type": ["warn", {"default": "array-simple"}],
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/consistent-type-assertions": "warn",
+        "@typescript-eslint/consistent-type-imports": [
+          "warn",
+          {"disallowTypeAnnotations": false}
+        ],
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-extra-semi": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": [
+        "**/__{mocks,tests}__/**/*.{js,ts,tsx}",
+        "**/*.{spec,test}.{js,ts,tsx}"
+      ],
+      "plugins": ["jest", "jest-formatting"],
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest-formatting/recommended"
+      ]
+    }
+  ]
+}

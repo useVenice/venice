@@ -1,4 +1,5 @@
-import {AM, NonNullableOnly} from '@ledger-sync/util'
+import type {NonNullableOnly} from '@ledger-sync/util'
+import {AM} from '@ledger-sync/util'
 
 // TODO: Should we refactor the
 export function computeRemainders({

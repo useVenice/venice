@@ -1,8 +1,9 @@
-import {zKVStore} from '@ledger-sync/cdk-core'
-import {JsonObject, memoize, zFunction} from '@ledger-sync/util'
-import {z} from 'zod'
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 import {MetaRead} from './schemas'
+import {zKVStore} from '@ledger-sync/cdk-core'
+import type {JsonObject} from '@ledger-sync/util'
+import {memoize, zFunction} from '@ledger-sync/util'
+import {z} from 'zod'
 
 export const makePostgresKVStore = zFunction(
   zPgConfig.pick({databaseUrl: true}),

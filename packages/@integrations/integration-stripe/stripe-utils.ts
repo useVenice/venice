@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-cycle
-import {ModeName} from './StripeClient'
+import type {ModeName} from './StripeClient'
 
 export function inferStripeModeFromToken(
   publicOrAccessToken: string,

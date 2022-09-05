@@ -1,7 +1,7 @@
-import {A, DateTime, parseMoney, zCast} from '@ledger-sync/util'
-import Papa from 'papaparse'
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'
+import {A, DateTime, parseMoney, zCast} from '@ledger-sync/util'
+import Papa from 'papaparse'
 
 export interface FirstRepublicTransactionRow {
   /* 2/20/19 */
@@ -22,7 +22,7 @@ export const formatFirstRepublic = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<FirstRepublicTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['Date'].trim()),
+    }).data.filter((r) => r.Date.trim()),
   mapEntity: (row, accountExternalId) => ({
     id: RowIdMaker.idForRow(row),
     entityName: 'transaction',

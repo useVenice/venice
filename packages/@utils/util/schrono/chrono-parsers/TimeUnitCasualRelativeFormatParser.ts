@@ -1,13 +1,14 @@
 // Adapted from https://github.com/wanasit/chrono/blob/v2.3.0/src/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser.ts
-import {ParsingContext} from 'chrono-node/dist/chrono'
-import {parseTimeUnits} from 'chrono-node/dist/locales/en/constants'
-import _BaseTimeUnitCasualRelativeFormatParser from 'chrono-node/dist/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser'
-import {ParsingResult} from 'chrono-node/dist/results'
-import {reverseTimeUnits, TimeUnits} from 'chrono-node/dist/utils/timeunits'
 import {
   checkWordBoundary,
   makeRelativeParsingComponents,
 } from './chrono-parser-utils'
+import type {ParsingContext} from 'chrono-node/dist/chrono'
+import {parseTimeUnits} from 'chrono-node/dist/locales/en/constants'
+import _BaseTimeUnitCasualRelativeFormatParser from 'chrono-node/dist/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser'
+import type {ParsingResult} from 'chrono-node/dist/results'
+import type {TimeUnits} from 'chrono-node/dist/utils/timeunits'
+import {reverseTimeUnits} from 'chrono-node/dist/utils/timeunits'
 
 // Parser for expressions like "next 2 weeks", "last 3 months", "past 4 years"
 export class TimeUnitCasualRelativeFormatParser extends _BaseTimeUnitCasualRelativeFormatParser {

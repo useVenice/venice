@@ -1,18 +1,16 @@
-import {
+import {makeMetaStore} from './makeMetaStore'
+import type {SyncEngineConfig} from './makeSyncEngine'
+import type {
   AnySyncProvider,
   ConnId,
   Destination,
   IntId,
   LinkFactory,
-  makeMemoryKVStore,
   PipeId,
   Source,
-  zDestination,
-  zSource,
 } from '@ledger-sync/cdk-core'
+import {makeMemoryKVStore, zDestination, zSource} from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
-import {makeMetaStore} from './makeMetaStore'
-import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
@@ -95,7 +93,7 @@ export function makeSyncHelpers<
   const defaultIntegrationInputs = Array.isArray(_defaultIntegrations)
     ? _defaultIntegrations
     : R.toPairs(_defaultIntegrations ?? {}).map(
-        ([name, config]): IntegrationInput<AnySyncProvider> => ({
+        ([name, config]): IntegrationInput => ({
           provider: name,
           config: config as any,
         }),
@@ -104,7 +102,7 @@ export function makeSyncHelpers<
     Promise.all(
       defaultIntegrationInputs.map((input) =>
         zInt.parseAsync(input).catch((err) => {
-          console.error(`Error initialzing`, input, err)
+          console.error('Error initialzing', input, err)
           throw new Error(
             `Error initializing integration ${input.id} ${input.provider}`,
           )
@@ -128,7 +126,7 @@ export function makeSyncHelpers<
         : arg,
     z
       .enum(Object.keys(providerMap) as [TProviders[number]['name']])
-      .transform((name) => providerMap[name] as AnySyncProvider),
+      .transform((name) => providerMap[name]!),
   )
 
   const zInt = z
@@ -151,7 +149,7 @@ export function makeSyncHelpers<
         const config = provider.def.integrationConfig?.parse(_config, {
           path: ['config'],
         })
-        return {...int, id: id as IntId<string>, provider, config}
+        return {...int, id: id as IntId, provider, config}
       }),
     )
 
@@ -184,7 +182,7 @@ export function makeSyncHelpers<
         )
         return {
           ...conn,
-          id: id as ConnId<string>,
+          id: id as ConnId,
           provider,
           integrationId,
           config: int.config,
@@ -247,14 +245,14 @@ export function makeSyncHelpers<
           const src = {
             ...srcConn,
             options: srcConn.provider.def.sourceSyncOptions?.parse(
-              deepMerge(pipeline?.src?.options, srcOptions),
+              deepMerge(pipeline?.src.options, srcOptions),
               {path: ['src', 'options']},
             ),
           }
           const dest = {
             ...destConn,
             options: destConn.provider.def.destinationSyncOptions?.parse(
-              deepMerge(pipeline?.dest?.options, destOptions),
+              deepMerge(pipeline?.dest.options, destOptions),
               {path: ['dest', 'options']},
             ),
           }

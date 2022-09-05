@@ -1,8 +1,5 @@
-import {makeSyncProvider, SyncOperation} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
-import React from 'react'
-import {HandleSuccessTellerEnrollment, useTellerAPI} from './teller-utils'
+import type {HandleSuccessTellerEnrollment} from './teller-utils'
+import {useTellerAPI} from './teller-utils'
 import {
   accountTellerSchema,
   institutionSchema,
@@ -11,6 +8,11 @@ import {
   zEnvName,
   zTellerConfig,
 } from './TellerClient'
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
+import React from 'react'
 
 type TellerEntity = z.infer<typeof def['sourceOutputEntity']>
 type TellerSyncOperation = SyncOperation<TellerEntity>

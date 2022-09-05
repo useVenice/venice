@@ -1,9 +1,5 @@
-import {
-  arrayFromReverse,
-  ArrayLike,
-  commonPrefix,
-  getPageFromArray,
-} from './array-utils'
+import type {ArrayLike} from './array-utils'
+import {arrayFromReverse, commonPrefix, getPageFromArray} from './array-utils'
 
 test.each([
   [[0, 1, 2, 3], undefined, undefined, []],

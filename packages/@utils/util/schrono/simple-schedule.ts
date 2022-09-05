@@ -1,7 +1,8 @@
-import {invert} from 'lodash'
-import {DateTimeUnit, Interval} from 'luxon'
 import {startCase} from '../string-utils'
 import {MPDate} from './MPDate'
+import {invert} from 'lodash'
+import type {DateTimeUnit} from 'luxon'
+import {Interval} from 'luxon'
 
 export const FREQUENCIES: EnumOf<Standard.Frequency> = {
   days: 'days',

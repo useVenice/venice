@@ -1,9 +1,9 @@
+import {makeStripeClient, zModeName, zStripeConfig} from './StripeClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import React from 'react'
-import Stripe from 'stripe'
-import {makeStripeClient, zModeName, zStripeConfig} from './StripeClient'
+import type Stripe from 'stripe'
 
 // const kStripe = 'stripe' as const
 type StripeEntity = z.infer<typeof def['sourceOutputEntity']>
@@ -64,7 +64,7 @@ export const stripeProvider = makeSyncProvider({
           defaultUnit: a.default_currency.toUpperCase() as Unit,
           informationalBalances: {
             available: A(
-              a.balance?.available?.[0]?.amount ?? 0,
+              a.balance?.available[0]?.amount ?? 0,
               a.default_currency.toUpperCase() as Unit,
             ),
           },
@@ -185,7 +185,7 @@ export const stripeProvider = makeSyncProvider({
               ? starting_after
               : undefined,
         })
-        starting_after = res2.data?.[res2.data.length - 1]?.id ?? ''
+        starting_after = res2.data[res2.data.length - 1]?.id ?? ''
         yield [...res2.data.map((t) => opData('transaction', t.id, t))]
         // TODO: Need to check what can we use for retrieving meta data
         if (!res2.has_more) {

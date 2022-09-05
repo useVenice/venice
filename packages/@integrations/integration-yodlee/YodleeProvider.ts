@@ -1,3 +1,11 @@
+import type {YodleeAccount, YodleeTransaction} from './yodlee-utils'
+import {
+  getYodleeAccountBalance,
+  getYodleeAccountName,
+  getYodleeAccountType,
+  parseAccountData,
+} from './yodlee-utils'
+import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
@@ -10,15 +18,6 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
-import {
-  getYodleeAccountBalance,
-  getYodleeAccountName,
-  getYodleeAccountType,
-  parseAccountData,
-  YodleeAccount,
-  YodleeTransaction,
-} from './yodlee-utils'
-import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClient'
 
 type YodleeSyncOperation = typeof def['_opType']
 

@@ -1,4 +1,4 @@
-import {
+import type {
   AnyEntityPayload,
   Destination,
   Link,
@@ -43,5 +43,5 @@ export async function sync<T extends Data = Data>(input: {
       }
     },
   )
-  console.log(`Sync complete, should exit unless we have open handles`)
+  console.log('Sync complete, should exit unless we have open handles')
 }

@@ -1,11 +1,10 @@
-import {
+import type {
   Json,
   MaybePromise,
   NoInfer,
   ObjectPartialDeep,
-  R,
-  zCast,
 } from '@ledger-sync/util'
+import {R, zCast} from '@ledger-sync/util'
 
 export interface KVStore<T = Json> {
   get(id: string): MaybePromise<T | null | undefined>

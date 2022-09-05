@@ -1,11 +1,12 @@
-import {
+import type {EntityPayload} from './entity-link-types'
+import {zEntityPayload} from './entity-link-types'
+import type {
   AnyProviderDef,
   AnySyncProvider,
-  makeSyncProvider,
   Source,
 } from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {z} from '@ledger-sync/util'
-import {EntityPayload, zEntityPayload} from './entity-link-types'
 
 // NEXT: add institution, etc.
 

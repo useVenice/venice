@@ -52,7 +52,6 @@ export function orderedMapEquals<T extends OrderedMap<unknown>>(a: T, b: T) {
     return false
   }
 
-  // eslint-disable-next-line unicorn/no-for-loop
   for (let i = 0; i < aEntries.length; i++) {
     if (
       aEntries[i]?.[0] !== bEntries[i]?.[0] ||

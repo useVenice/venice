@@ -25,7 +25,9 @@ export default function LedgerMyConnectionsScreen() {
         ]}>
         <div className="mx-auto flex max-w-screen-2xl flex-1 flex-col space-y-4 overflow-y-auto p-8">
           {connectionsRes.data?.map((conn) => (
-            <div className="flex flex-row space-x-4 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2">
+            <div
+              key={conn.id}
+              className="flex flex-row space-x-4 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2">
               <img
                 src={`data:image/png;base64,${
                   (conn as any).settings.institution.logo

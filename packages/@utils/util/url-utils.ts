@@ -1,10 +1,8 @@
+import type {ParsedUrl, ParseOptions, StringifyOptions} from 'query-string'
 import {
   parse as _parseQueryParams,
   parseUrl as _parseUrl,
   stringify as _stringifyQueryParams,
-  ParsedUrl,
-  ParseOptions,
-  StringifyOptions,
 } from 'query-string'
 
 export function appendPathComponent(href: string, pathComponent: string) {

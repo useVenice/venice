@@ -1,6 +1,6 @@
 import {R} from './data-utils'
 import {math} from './math-utils'
-import {AnyRecord, ObjectPartialDeep} from './type-utils'
+import type {AnyRecord, ObjectPartialDeep} from './type-utils'
 import {createCustomEqual, deepEqual, shallowEqual} from 'fast-equals'
 import {
   isEmpty as _isEmpty,
@@ -57,7 +57,6 @@ export function deepPartialDeepEqual<
     if (obj.length !== matching.length) {
       return false
     }
-    // eslint-disable-next-line unicorn/no-for-loop
     for (let i = 0; i < matching.length; i++) {
       if (
         !deepPartialDeepEqual(

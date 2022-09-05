@@ -1,6 +1,7 @@
-import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
-import {Destination, Source, SyncOperation, zEnvName} from './protocol'
+import type {Destination, Source, SyncOperation} from './protocol'
+import {zEnvName} from './protocol'
+import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 
 export type ConnectContext = z.infer<typeof zConnectContext>
 export const zConnectContext = z.object({

@@ -1,10 +1,9 @@
 import '@ledger-sync/app-config/register.node'
-
 import {ledgerSyncRouter} from '@ledger-sync/app-config'
 import {parseWebhookRequest} from '@ledger-sync/engine'
 import {identity} from '@ledger-sync/util'
 import * as trpcNext from '@trpc/server/adapters/next'
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 
 const handler = trpcNext.createNextApiHandler({
   router: ledgerSyncRouter,

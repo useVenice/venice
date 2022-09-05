@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./beancount.d.ts"/>
 import {
   formatAccountType,
@@ -7,6 +8,7 @@ import {
   stdTypeAndEntity,
   TRANSACTION_LABELS,
 } from '@ledger-sync/standard'
+import type {NonEmptyArray} from '@ledger-sync/util'
 import {
   $execCommand,
   A,
@@ -21,7 +23,6 @@ import {
   inPlaceSort,
   mapValues,
   math,
-  NonEmptyArray,
   objectFromArray,
   objectFromObject,
   omit,
@@ -75,7 +76,7 @@ function metaFromStandard(
         (att) => att.url,
       ),
       (_, index) => (index === 0 ? 'attachment' : `attachment_${index + 1}`),
-      (att) => att?.url,
+      (att) => att.url,
     ),
     id: partial.id,
   })
@@ -91,7 +92,7 @@ function cleanKey(label: string, opts?: {allowSlash: boolean}) {
     .split(' ')
     .filter((s) => !!s)
     .join('_')
-  if (/^[a-z]/.test(out) !== true) {
+  if (!/^[a-z]/.test(out)) {
     out = `z_${out}`
   }
   return out
@@ -143,13 +144,11 @@ export function cleanBeancountAccountName(name: string) {
     name
       // Beancount account names are fairly restrictive.
       // Does not accept underscores even also must start witih capital case
-      // eslint-disable-next-line unicorn/better-regex
       .replace(/[^A-Za-z0-9/]+/g, ' ')
       .trim()
       .replace(/ /g, '-')
       .replace(/\//g, ':')
       .split(':')
-      // eslint-disable-next-line unicorn/better-regex
       .map((n) => n.replace(/^[^A-Za-z0-9/]/, '')) // Leading `-` is not allowed
       .map(upperCaseFirst)
       .join(':')
@@ -203,8 +202,8 @@ const convCost = conv<Beancount.Posting['cost'], Standard.Posting['cost']>({
   reverse: (cost) =>
     cost && {
       ...convAmount.reverse(cost.amount),
-      date: cost?.date,
-      label: cost?.label,
+      date: cost.date,
+      label: cost.label,
     },
 })
 
@@ -379,8 +378,8 @@ export const convTransaction = conv<
 >({
   forward: ([beanTxn]) => ({
     // Rethink whether this should be Id.external in the case of beancount as a source
-    id: beanTxn?.meta?.['id']
-      ? (`${beanTxn?.meta?.['id']}` as Id.txn)
+    id: beanTxn.meta?.['id']
+      ? (`${beanTxn.meta['id']}` as Id.txn)
       : (temp_makeId('txn', beanTxn.hash) as Id.txn),
     date: beanTxn.date, // Parse time component?
     description: beanTxn.narration,
@@ -477,14 +476,14 @@ const convWrappedEntry = conv<
           ...convAccountFullName(w.entry.account),
           openDate: w.entry.date,
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta?.['id']}` as Id.acct)
+            ? (`${w.entry.meta['id']}` as Id.acct)
             : undefined,
         })
       case 'Commodity':
         return stdTypeAndEntity('commodity', {
           unit: convCurrency(w.entry.currency),
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta?.['id']}` as Id.comm)
+            ? (`${w.entry.meta['id']}` as Id.comm)
             : undefined,
         })
       case 'Price': {
@@ -615,10 +614,10 @@ const convWrappedEntry = conv<
                   // Dedupe with logic for balance..
                   meta: {
                     ...metaFromStandard(price),
-                    ...(price?.date &&
+                    ...(price.date &&
                       hasTime(price.date) && {date: price.date}),
                     ...R.pipe(
-                      cleanValue(price?.description),
+                      cleanValue(price.description),
                       (d) => d && {description: d},
                     ),
                   },
@@ -639,7 +638,7 @@ export const convBeanJsonToStdJson = conv<
 >({
   forward: (input) => {
     const nErrs = input.errors.length
-    if (process.env['NODE_ENV'] !== 'production' && nErrs > 0) {
+    if (process.env.NODE_ENV !== 'production' && nErrs > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const err = input.errors[0]!
       throw new Error(
@@ -730,8 +729,8 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
       if (ret && ret.variant !== 'beancount') {
         throw new Error(`Expected variant beancount, got ${ret.variant}`)
       }
-      if (ret.errors?.length) {
-        console.warn(`Error parsing bean string`, ret.errors)
+      if (ret.errors.length) {
+        console.warn('Error parsing bean string', ret.errors)
       }
       return ret
     } catch (err) {

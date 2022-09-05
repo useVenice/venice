@@ -1,4 +1,5 @@
 // Not sure why ../node_modules import needed... was working before
+import {inferPlaidEnvFromToken} from './plaid-utils'
 import {
   castIs,
   getDefaultProxyAgent,
@@ -7,21 +8,22 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-import {
+import type {
   AccountsGetRequest,
-  Configuration,
-  CountryCode,
   InstitutionsGetByIdRequest,
   InstitutionsGetRequest,
   ItemPublicTokenExchangeRequest,
   LinkTokenCreateRequest,
-  PlaidApi,
-  PlaidEnvironments,
-  Products,
   TransactionsGetRequest,
   TransactionsSyncRequest,
 } from 'plaid'
-import {inferPlaidEnvFromToken} from './plaid-utils'
+import {
+  Configuration,
+  CountryCode,
+  PlaidApi,
+  PlaidEnvironments,
+  Products,
+} from 'plaid'
 
 type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])

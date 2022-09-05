@@ -1,5 +1,5 @@
-import {AnySyncProvider, LinkFactory} from '@ledger-sync/cdk-core'
-import {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
+import type {AnySyncProvider, LinkFactory} from '@ledger-sync/cdk-core'
+import type {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
 import {R} from '@ledger-sync/util'
 import {createReactQueryHooks} from '@trpc/react'
 import React from 'react'

@@ -1,5 +1,6 @@
-import {compact, produce, R, Rx, rxjs, WritableDraft} from '@ledger-sync/util'
 import type {AnyEntityPayload, Link, SyncOperation} from './protocol'
+import type {WritableDraft} from '@ledger-sync/util'
+import {compact, produce, R, Rx, rxjs} from '@ledger-sync/util'
 
 type Data = AnyEntityPayload
 type OperationType = SyncOperation['type']

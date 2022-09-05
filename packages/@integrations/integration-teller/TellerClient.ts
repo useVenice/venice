@@ -1,5 +1,5 @@
-import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 import institutionsWsResponse from './institutionWsResponse.json'
+import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 
 // Will be used on production mode to use cert
 /*
@@ -166,7 +166,7 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
 
     /** Teller does not seem to have an institution endpoint. So we will do this for now */
     getInstitutions: zFunction([], z.array(institutionSchema), () => {
-      const list = institutionsWsResponse.response.diff[6][0][0]['d'] as Array<
+      const list = institutionsWsResponse.response.diff[6][0][0].d as Array<
         [string, string, string, string]
       >
       return list.map(([, id, svg, name]) => ({

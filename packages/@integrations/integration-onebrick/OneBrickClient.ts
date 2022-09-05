@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-cycle
+import {inferOneBrickEnvFromToken} from './onebrick-utils'
 import {
   castIs,
   createHTTPClient,
@@ -6,8 +8,6 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-// eslint-disable-next-line import/no-cycle
-import {inferOneBrickEnvFromToken} from './onebrick-utils'
 
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'production'])

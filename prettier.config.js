@@ -9,7 +9,7 @@ module.exports = {
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [
-    require.resolve('@trivago/prettier-plugin-sort-imports'),
+    require.resolve('@ianvs/prettier-plugin-sort-imports'),
     require.resolve('prettier-plugin-packagejson'),
   ],
   printWidth: 80,

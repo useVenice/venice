@@ -1,8 +1,8 @@
+import {makeImportFormat} from '../makeImportFormat'
+import {RowIdMaker} from '../RowIdMaker'
 import {makePostingsMap} from '@ledger-sync/standard'
 import {A, DateTime, parseMoney, zCast} from '@ledger-sync/util'
 import Papa from 'papaparse'
-import {makeImportFormat} from '../makeImportFormat'
-import {RowIdMaker} from '../RowIdMaker'
 
 export interface CoinbaseTransactionRow {
   /** 2013-05-19T20:21:04Z */
@@ -33,7 +33,7 @@ export const formatCoinBase = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<CoinbaseTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['Timestamp'].trim()),
+    }).data.filter((r) => r.Timestamp.trim()),
   mapEntity: (row, accountExternalId) => {
     const sign =
       row['Transaction Type'] === 'Buy' || row['Transaction Type'] === 'Receive'
@@ -67,7 +67,7 @@ export const formatCoinBase = makeImportFormat({
         ),
         notes: `
       Transaction Type: ${row['Transaction Type']}
-      Timestamp: ${row['Timestamp']}
+      Timestamp: ${row.Timestamp}
       USD Spot Price at Transaction: ${row['USD Spot Price at Transaction']}
       USD Subtotal: ${row['USD Subtotal']}
       USD Total: ${row['USD Total (inclusive of fees)']}

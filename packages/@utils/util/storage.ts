@@ -1,4 +1,4 @@
-import {Promisable} from './type-utils'
+import type {Promisable} from './type-utils'
 
 export interface Storage {
   getItem(key: string): Promisable<string | null>

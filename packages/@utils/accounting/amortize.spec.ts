@@ -37,14 +37,14 @@ expect.addSnapshotSerializer(jsonStringifySnapshotSerializer)
 
 describe('sanity checks', () => {
   // https://github.com/moment/luxon/pull/778/files
-  test("DateTime#diff can handle 'quarters' as a unit", () => {
+  test('DateTime#diff can handle \'quarters\' as a unit', () => {
     const t = () => DateTime.local().diff(DateTime.fromMillis(0), 'quarters')
     expect(t).not.toThrow()
   })
 
   test('interval to duration', () => {
     const interval = Interval.fromISO('2020-03-01/2020-03-01')
-    expect(interval.toISODate()).toBe(`2020-03-01/2020-03-01`)
+    expect(interval.toISODate()).toBe('2020-03-01/2020-03-01')
     expect(interval.toISO()).toBe(
       '2020-03-01T00:00:00.000-08:00/2020-03-01T00:00:00.000-08:00',
     )

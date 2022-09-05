@@ -1,7 +1,7 @@
-import type {Dirent} from 'fs'
 import {memoize} from './function-utils'
 import {$fs, $path, $readFile, $writeFile} from './injected-utils'
 import {safeJSONParse, stableStringify} from './json-utils'
+import type {Dirent} from 'fs'
 
 export async function readJson(absPath: string) {
   try {

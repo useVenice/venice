@@ -1,11 +1,18 @@
+import type {
+  EntityPayload,
+  EntityPayloadWithExternal,
+  StdSyncOperation,
+} from './entity-link-types'
+import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
+import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 import {computeTrialBalance} from '@ledger-sync/accounting'
-import {
+import type {
   AnyEntityPayload,
   AnySyncProvider,
-  handlersLink,
   Link,
-  transformLink,
 } from '@ledger-sync/cdk-core'
+import {handlersLink, transformLink} from '@ledger-sync/cdk-core'
+import type {WritableDraft} from '@ledger-sync/util'
 import {
   A,
   AM,
@@ -16,17 +23,9 @@ import {
   Rx,
   rxjs,
   setDefault,
-  WritableDraft,
   z,
   zFunction,
 } from '@ledger-sync/util'
-import {
-  EntityPayload,
-  EntityPayloadWithExternal,
-  StdSyncOperation,
-} from './entity-link-types'
-import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
-import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 
 export const mapStandardEntityLink = ({
   provider,
@@ -49,7 +48,7 @@ export const mapStandardEntityLink = ({
 
     const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>
       typeof map === 'function'
-        ? map?.(op.data, initialSettings)
+        ? map(op.data, initialSettings)
         : map?.[op.data.entityName]?.(op.data, initialSettings),
     )
 
@@ -117,7 +116,7 @@ export const cachingLink = (
       if (numChanges === 0) {
         return
       }
-      console.log(`[makeCachingLink] commit`, {numChanges})
+      console.log('[makeCachingLink] commit', {numChanges})
       numChanges = 0
       return onCommit(cache)
     },
@@ -262,13 +261,16 @@ export function _makeMergedTransactions(
           custom: {...post.custom, transaction_id: t.id},
         })),
       )
-      const balByAccount = postings.reduce((acc, p) => {
-        acc[p.accountId] = AM.add(
-          acc[p.accountId] ?? {},
-          p.amount ? {[p.amount.unit]: p.amount.quantity} : {},
-        )
-        return acc
-      }, {} as Record<string, AmountMap>)
+      const balByAccount = postings.reduce<Record<string, AmountMap>>(
+        (acc, p) => {
+          acc[p.accountId] = AM.add(
+            acc[p.accountId] ?? {},
+            p.amount ? {[p.amount.unit]: p.amount.quantity} : {},
+          )
+          return acc
+        },
+        {},
+      )
 
       // Not technically correct, but for heck for now.
       // We are ignoring impact of dates and not merging metadata for instance...

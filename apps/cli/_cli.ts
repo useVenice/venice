@@ -1,5 +1,6 @@
-// Not sure why ../node_modules import needed... was working before
 import '@ledger-sync/app-config/register.node'
+import type {CliOpts} from './cli-utils'
+import {cliFromZFunctionMap} from './cli-utils'
 import {makeProxyAgentNext} from '@ledger-sync/app-config/utils.node'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
@@ -14,6 +15,7 @@ import {makeStripeClient} from '@ledger-sync/integration-stripe'
 import {makeTellerClient} from '@ledger-sync/integration-teller'
 import {makeTogglClient} from '@ledger-sync/integration-toggl'
 import {makeWiseClient} from '@ledger-sync/integration-wise'
+import type {ZFunctionMap} from '@ledger-sync/util'
 import {
   asFunction,
   kProxyAgent,
@@ -21,10 +23,8 @@ import {
   registerDependency,
   safeJSONParse,
   z,
-  ZFunctionMap,
   zodInsecureDebug,
 } from '@ledger-sync/util'
-import {cliFromZFunctionMap, CliOpts} from './cli-utils'
 
 if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
@@ -63,7 +63,7 @@ if (require.main === module) {
 
   const clientFactory = z
     .enum(Object.keys(clients) as [keyof typeof clients], {
-      errorMap: () => ({message: `Invalid process.env.CLIENT`}),
+      errorMap: () => ({message: 'Invalid process.env.CLIENT'}),
     })
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .transform((key) => clients[key]!)

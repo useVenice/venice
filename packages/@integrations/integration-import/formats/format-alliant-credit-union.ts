@@ -1,7 +1,7 @@
-import {A, DateTime, zCast} from '@ledger-sync/util'
-import Papa from 'papaparse'
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'
+import {A, DateTime, zCast} from '@ledger-sync/util'
+import Papa from 'papaparse'
 
 export interface AlliantCreditUnionTransactionRow {
   /* 02/24/2020 */
@@ -22,7 +22,7 @@ export const formatAlliantCreditUnion = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<AlliantCreditUnionTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['Date'].trim()),
+    }).data.filter((r) => r.Date.trim()),
   mapEntity: (row, accountExternalId) => ({
     id: RowIdMaker.idForRow(row),
     entityName: 'transaction',

@@ -29,7 +29,7 @@ export function buildPriceMap(inputPrices: Standard.Price[]): PriceMap {
   /** baseUnit.quoteUnit.date: Standard.Price */
   const rawPriceMap: RawPriceMap = {}
   for (const price of inputPrices) {
-    if (!price.baseUnit || !price.quote?.unit || !price.date) {
+    if (!price.baseUnit || !price.quote.unit || !price.date) {
       continue
     }
 

@@ -1,5 +1,5 @@
+import type {AnyZFunction, z} from '@ledger-sync/util'
 import {
-  AnyZFunction,
   compact,
   deepMerge,
   isAsyncIterable,
@@ -10,7 +10,6 @@ import {
   R,
   routerFromZFunctionMap,
   safeJSONParse,
-  z,
 } from '@ledger-sync/util'
 import * as trpc from '@trpc/server'
 import cac from 'cac'
@@ -20,11 +19,11 @@ import path from 'path'
 export async function printResult(res: unknown, opts?: {json: boolean}) {
   if (isAsyncIterable(res) || isIterable(res)) {
     for await (const r of res) {
-      console.log(`[printResult]`, opts?.json ? JSON.stringify(r) : r)
+      console.log('[printResult]', opts?.json ? JSON.stringify(r) : r)
     }
   } else {
     console.log(
-      `[printResult]`,
+      '[printResult]',
       opts?.json ? JSON.stringify(await res) : await res,
     )
   }
@@ -52,7 +51,7 @@ export function readFileContent(filename: string, dirname?: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyProcedure = trpc.ProcedureRecord<any, any, any, any, any, any>[string]
+type AnyProcedure = trpc.ProcedureRecord[string]
 
 // TODO Take router._defs and add options based on it so that docs can be shown
 // on the command line.

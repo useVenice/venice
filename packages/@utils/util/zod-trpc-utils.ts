@@ -1,3 +1,7 @@
+import {R} from './data-utils'
+import type {PickRequiredKeys} from './type-utils'
+import type {AnyZFunction, ZFunction} from './zod-function-utils'
+import {isZFunction} from './zod-function-utils'
 import type {
   CreateProcedureWithInputOutputParser,
   inferProcedureFromOptions,
@@ -9,9 +13,6 @@ import type {
 import type {TRPCErrorShape} from '@trpc/server/dist/declarations/src/rpc'
 import type {Subscription} from '@trpc/server/dist/declarations/src/subscription'
 import {z} from 'zod'
-import {R} from './data-utils'
-import type {PickRequiredKeys} from './type-utils'
-import {AnyZFunction, isZFunction, ZFunction} from './zod-function-utils'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type _AnyZFunction = ZFunction<any, any>
@@ -39,7 +40,7 @@ type ProcedureRecordFromZMap<
 }>
 
 type AnyProcedureRecord<TInputContext, TContext, TParsedInput> =
-  ProcedureRecord<TInputContext, TContext, any, any, TParsedInput, any, any>
+  ProcedureRecord<TInputContext, TContext, any, any, TParsedInput>
 
 export function routerFromZFunctionMap<
   TInputContext,
@@ -50,7 +51,7 @@ export function routerFromZFunctionMap<
   TSubscriptions extends AnyProcedureRecord<
     TInputContext,
     TContext,
-    Subscription<unknown>
+    Subscription
   >,
   TErrorShape extends TRPCErrorShape<number>,
   TMap extends ZFunctionMap,

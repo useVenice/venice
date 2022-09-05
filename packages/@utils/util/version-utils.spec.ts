@@ -1,4 +1,5 @@
-import {BundleInfo, getDisplayVersion, getMajorAndMinor} from './version-utils'
+import type {BundleInfo} from './version-utils'
+import {getDisplayVersion, getMajorAndMinor} from './version-utils'
 
 test.each<[native: BundleInfo, js: BundleInfo, output: string]>([
   [

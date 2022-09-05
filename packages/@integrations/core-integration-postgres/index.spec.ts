@@ -1,5 +1,5 @@
-import {upsertByIdQuery} from './makePostgresClient'
 import './register.node'
+import {upsertByIdQuery} from './makePostgresClient'
 
 // String snapshot serializer
 expect.addSnapshotSerializer({

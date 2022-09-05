@@ -1,5 +1,3 @@
-import accounting from 'accounting'
-import invariant from 'tiny-invariant'
 import {sort, zip} from './array-utils'
 import {math} from './math-utils'
 import {
@@ -8,6 +6,8 @@ import {
   objectFromObject,
 } from './object-utils'
 import {slugify} from './string-utils'
+import accounting from 'accounting'
+import invariant from 'tiny-invariant'
 
 // MARK: Multi-unit AmountMap
 

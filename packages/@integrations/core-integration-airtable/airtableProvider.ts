@@ -1,7 +1,7 @@
+import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
 import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
 import {fromCompletion, z, zCast} from '@ledger-sync/util'
-import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
@@ -24,14 +24,14 @@ export const airtableProvider = makeSyncProvider({
         } = op
 
         const transactionData = (
-          entityName === 'transaction' ? (data.entity as any)['standard'] : null
+          entityName === 'transaction' ? (data.entity as any).standard : null
         ) as Standard.Transaction
         const partialTxn =
           entityName === 'transaction'
             ? {
-                Date: transactionData?.date,
-                Category: transactionData?.description,
-                Amount: `${transactionData?.postingsMap?.main?.amount.unit} ${transactionData?.postingsMap?.main?.amount.quantity}`,
+                Date: transactionData.date,
+                Category: transactionData.description,
+                Amount: `${transactionData.postingsMap?.main?.amount.unit} ${transactionData.postingsMap?.main?.amount.quantity}`,
                 Payee: '', // TODO: Find way to get this data or use the same as 'Description'
               }
             : {}

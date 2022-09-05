@@ -1,7 +1,7 @@
 import {circularDeepEqual, deepMerge} from './object-utils'
 import {Rx, rxjs} from './observable-utils'
-import {Storage} from './storage'
-import {PatchStateAction, Serializable, SetStateAction} from './type-utils'
+import type {Storage} from './storage'
+import type {PatchStateAction, Serializable, SetStateAction} from './type-utils'
 
 // MARK: ObservableState
 

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Balances} from '@ledger-sync/util'
+import type {Balances} from '@ledger-sync/util'
 
 /**
  * Workaround for jest limitations of lack of custom matcher

@@ -1,9 +1,8 @@
-import * as rxjs from 'rxjs'
-import * as Rx from 'rxjs/operators'
 import {Deferred, withConcurrency} from './promise-utils'
 import type {NonVoid} from './type-utils'
+import * as rxjs from 'rxjs'
+import * as Rx from 'rxjs/operators'
 
-// eslint-disable-next-line unicorn/prefer-export-from
 export {rxjs, Rx}
 
 /** Observable version of async-limiter / async-sema RateLimit */
@@ -93,7 +92,7 @@ export const toCompletion = <T>(
   const sub = obs.subscribe({next, complete: def.resolve, error: def.reject})
   const promise = def.promise as unknown as CancellablePromise<T>
   promise.cancel = () => {
-    console.log(`[toCompletion] Cancelled`)
+    console.log('[toCompletion] Cancelled')
     sub.unsubscribe()
     def.resolve()
     return promise

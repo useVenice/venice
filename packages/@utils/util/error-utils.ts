@@ -1,6 +1,6 @@
-import {BaseError as _BaseError} from 'make-error'
 import {javascriptStringify} from './json-utils'
 import {isPlainObject} from './object-utils'
+import {BaseError as _BaseError} from 'make-error'
 
 export default class RichError extends _BaseError {
   info?: Record<string, unknown>

@@ -47,7 +47,7 @@ const getKvStore = () => {
     case 'fs':
       console.log('[kvStore] fs')
       return makeFsKVStore({
-        basePath: getEnv('FS_META_PATH') ?? `./data/meta`,
+        basePath: getEnv('FS_META_PATH') ?? './data/meta',
       })
     case 'postgres':
       console.log('[kvStore] postgres')

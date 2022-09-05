@@ -5,9 +5,9 @@ import {
   zFirebaseUserConfig,
   zServiceAccount,
 } from '@ledger-sync/core-integration-firebase'
+import type {HTTPError} from '@ledger-sync/util'
 import {
   createHTTPClient,
-  HTTPError,
   Rx,
   rxjs,
   z,
@@ -27,27 +27,30 @@ class ForeceiptError extends Error {
     Object.setPrototypeOf(this, ForeceiptError.prototype)
   }
 }
+
 export interface ForeceiptClientOptions {
   /** Should be received by caller */
   onRefreshCredentials?: (credentials: Foreceipt.Credentials) => void
 }
+
 const zSettings = z.discriminatedUnion('role', [
   z.object({role: z.literal('admin'), serviceAccount: zServiceAccount}),
   z.object({role: z.literal('user')}).merge(zFirebaseUserConfig),
 ])
+
 export const zForeceiptConfig = z.object({
   credentials: zCast<Readonly<Foreceipt.Credentials>>(),
   options: zCast<ForeceiptClientOptions>(),
   _id: zCast<Id.external>(),
   envName: z.enum(['staging', 'production']),
 })
+
 export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   const patchCredentials = (partial: Partial<Foreceipt.Credentials>) => {
     cfg.credentials = {...cfg.credentials, ...partial}
     // cfg.options.onRefreshCredentials?.(cfg.credentials)
   }
   const fbaConfig = {
-    // @ts-ignore
     apiUrl: 'https://api.foreceipt.io/v1/receipt',
     apiKey: 'AIzaSyCWLdIMQO_A_WGhP_gh8IzSEv2_HbOvdAs',
     authDomain: 'app.foreceipt.com',
@@ -61,7 +64,6 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   // TODO: Remove this when sync is complete
   const fba = firebase.initializeApp(
     {
-      // @ts-ignore
       apiUrl: 'https://api.foreceipt.io/v1/receipt',
       apiKey: 'AIzaSyCWLdIMQO_A_WGhP_gh8IzSEv2_HbOvdAs',
       authDomain: 'app.foreceipt.com',
@@ -101,7 +103,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   }
 
   const ensureIdToken = async () => {
-    if (cfg.credentials?.idTokenResult) {
+    if (cfg.credentials.idTokenResult) {
       return cfg.credentials.idTokenResult
     }
 
@@ -129,7 +131,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   })
   const getUserGuid = async () => {
     const idTokenRes = await ensureIdToken()
-    return idTokenRes.claims['foreceipt_user_id'] as string
+    return idTokenRes.claims.foreceipt_user_id as string
   }
 
   const getCurrentUser = async () =>
@@ -235,8 +237,8 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     const userGuid = await getUserGuid()
     const user = await getCurrentUser()
     const [team, teamMembers] = await Promise.all([
-      user ? getTeam(user?.team_guid) : null,
-      user ? getTeamMembersInTeam(user?.team_guid) : [],
+      user ? getTeam(user.team_guid) : null,
+      user ? getTeamMembersInTeam(user.team_guid) : [],
     ])
     const userAndTeam = {
       userGuid,
@@ -265,8 +267,8 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
       const userGuid = await getUserGuid()
       const user = await getCurrentUser()
       const [team, teamMembers] = await Promise.all([
-        user ? getTeam(user?.team_guid) : null,
-        user ? getTeamMembersInTeam(user?.team_guid) : [],
+        user ? getTeam(user.team_guid) : null,
+        user ? getTeamMembersInTeam(user.team_guid) : [],
       ])
       return {
         userGuid,

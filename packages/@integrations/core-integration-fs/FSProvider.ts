@@ -1,9 +1,6 @@
-import {
-  AnyEntityPayload,
-  handlersLink,
-  makeSyncProvider,
-  SyncOperation,
-} from '@ledger-sync/cdk-core'
+import {_pathFromId} from './makeFsKVStore'
+import type {AnyEntityPayload, SyncOperation} from '@ledger-sync/cdk-core'
+import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   $chokidar,
   $path,
@@ -19,7 +16,6 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
-import {_pathFromId} from './makeFsKVStore'
 
 // MARK: - Source Sync
 
@@ -65,11 +61,11 @@ type FSPathEvent = SyncOperation<
   | {entity: 'unlink'; entityName: string; id: string; path: string}
 >
 
-type FSDataEvent = SyncOperation<AnyEntityPayload>
+type FSDataEvent = SyncOperation
 
 function _fsWatchPaths$({basePath, paths}: z.infer<typeof zWatchPathsInput>) {
   return new rxjs.Observable<FSPathEvent>((sub) => {
-    console.log(`[fsWatchLedger] Start watching`, paths)
+    console.log('[fsWatchLedger] Start watching', paths)
     const watcher = $chokidar()
       .watch(paths?.map((p) => $path().join(basePath, p)) ?? basePath, {
         awaitWriteFinish: {stabilityThreshold: 1000},
@@ -105,7 +101,7 @@ function _fsWatchPaths$({basePath, paths}: z.infer<typeof zWatchPathsInput>) {
         sub.next({type: 'ready'})
       })
     return () => {
-      console.log(`[fsWatchLedger] Stopped watching`, paths)
+      console.log('[fsWatchLedger] Stopped watching', paths)
       watcher.close()
     }
   }).pipe(Rx.share())

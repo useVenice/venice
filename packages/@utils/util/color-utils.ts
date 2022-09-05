@@ -1,6 +1,6 @@
-import _chroma from 'chroma-js'
 import {catchAsNull} from './function-utils'
 import {sdbmHash} from './string-utils'
+import _chroma from 'chroma-js'
 
 /** Courtesy of Notion.app */
 export const PastelColors = {

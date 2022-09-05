@@ -1,16 +1,13 @@
+import type {YodleeAccount, YodleeTransaction} from './yodlee-utils'
+import {zGetTransactionParams} from './yodlee-utils'
+import type {HTTPError} from '@ledger-sync/util'
 import {
   createHTTPClient,
-  HTTPError,
   memoize,
   stringifyQueryParams,
   z,
   zFunction,
 } from '@ledger-sync/util'
-import {
-  YodleeAccount,
-  YodleeTransaction,
-  zGetTransactionParams,
-} from './yodlee-utils'
 
 export const zYodleeProvider = z
   .object({
@@ -112,7 +109,7 @@ export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
         },
 
         requestTransformer: (req) => {
-          if (req.headers['Authorization'] != null) {
+          if (req.headers.Authorization != null) {
             return req
           }
 
@@ -151,7 +148,7 @@ export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
     //   params.include = 'assetClassification'
     // }
     return fromEnv(envName)
-      .get<{holding?: Yodlee.Holding[]}>(`/holdings`, {params})
+      .get<{holding?: Yodlee.Holding[]}>('/holdings', {params})
       .then((r) => r.data.holding || [])
   }
 
@@ -161,7 +158,7 @@ export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
   ) {
     params.holdingId = idToString(params.holdingId)
     return fromEnv(envName)
-      .get<{holding?: Yodlee.HoldingSecurity[]}>(`/holdings/securities`, {
+      .get<{holding?: Yodlee.HoldingSecurity[]}>('/holdings/securities', {
         params,
       })
       .then((r) => r.data.holding || [])
@@ -240,7 +237,7 @@ export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
       }),
       (opts) =>
         fromEnv(opts.envName)
-          .get<{transaction: YodleeTransaction[]}>(`/transactions`, {
+          .get<{transaction: YodleeTransaction[]}>('/transactions', {
             params: opts.params,
           })
           .then((r) => r.data.transaction || []),
