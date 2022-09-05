@@ -1,8 +1,7 @@
+import {Layout} from '../../../components/Layout'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
-import {tw} from 'twind'
-import {Layout} from '../../../components/Layout'
 
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
@@ -24,25 +23,23 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
-        <div
-          className={tw`flex flex-col flex-1 p-8 mx-auto max-w-screen-2xl overflow-y-auto space-y-4`}>
+        <div className="mx-auto flex max-w-screen-2xl flex-1 flex-col space-y-4 overflow-y-auto p-8">
           {connectionsRes.data?.map((conn) => (
-            <div
-              className={tw`flex flex-row p-2 bg-gray-100 border-2 border-gray-200 rounded-lg object-contain space-x-4`}>
+            <div className="flex flex-row space-x-4 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2">
               <img
                 src={`data:image/png;base64,${
                   (conn as any).settings.institution.logo
                 }`}
                 alt={`"${(conn as any).settings.institution.name}" logo`}
-                className={tw`w-32 h-32 object-contain`}
+                className="h-32 w-32 object-contain"
               />
 
-              <div className={tw`flex flex-col space-y-2`}>
-                <span className={tw`text-xl font-medium`}>
+              <div className="flex flex-col space-y-2">
+                <span className="text-xl font-medium">
                   {(conn as any).settings.institution.name}
                 </span>
 
-                <pre className={tw`max-h-64 overflow-y-auto`}>
+                <pre className="max-h-64 overflow-y-auto">
                   {JSON.stringify(conn, null, 2)}
                 </pre>
               </div>

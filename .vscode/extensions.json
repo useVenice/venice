@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "adpyke.vscode-sql-formatter",
+    "bradlc.vscode-tailwindcss",
     "chrislajoie.vscode-modelines",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
@@ -12,7 +13,6 @@
     "msjsdiag.debugger-for-chrome",
     "naumovs.color-highlight",
     "orta.vscode-jest",
-    "sastan.twind-intellisense",
     "spywhere.mark-jump",
     "usernamehw.errorlens"
   ]

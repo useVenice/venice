@@ -1,30 +1,28 @@
+import {Layout} from '../components/Layout'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
-import {tw} from 'twind'
-import {Layout} from '../components/Layout'
 
 export default function HomeScreen() {
   const router = useRouter()
   const [ledgerId, setLedgerId] = useState('')
   return (
     <Layout>
-      <div
-        className={tw`container flex flex-col flex-1 items-center justify-center mx-auto max-w-screen-2xl`}>
+      <div className="container mx-auto flex max-w-screen-2xl flex-1 flex-col items-center justify-center">
         <form
-          className={tw`flex flex-col space-y-2`}
+          className="flex flex-col space-y-2"
           onSubmit={(event) => {
             event.preventDefault()
             router.push(`/ledgers/${ledgerId}`)
           }}>
           <label
-            className={tw`block text-sm font-medium text-gray-500`}
+            className="block text-sm font-medium text-gray-500"
             htmlFor="ledgerId">
             Ledger ID
           </label>
 
-          <div className={tw`flex flex-row space-x-2 items-center`}>
+          <div className="flex flex-row items-center space-x-2">
             <input
-              className={tw`h-12 px-3 border-2 border-gray-200 rounded-lg`}
+              className="h-12 rounded-lg border-2 border-gray-200 px-3"
               type="text"
               required
               minLength={1}
@@ -34,7 +32,7 @@ export default function HomeScreen() {
             />
 
             <button
-              className={tw`h-12 px-5 text-white bg-primary rounded-lg`}
+              className="h-12 rounded-lg bg-primary px-5 text-white"
               type="submit">
               Go
             </button>

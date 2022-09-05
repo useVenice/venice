@@ -2,7 +2,7 @@ import type {LinkProps} from 'next/link'
 import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
-import {tw} from 'twind'
+import {twMerge} from 'tailwind-merge'
 
 export interface ActiveLinkProps extends LinkProps {
   children: React.ReactElement
@@ -35,7 +35,7 @@ export function ActiveLink({
 
       const newClassName =
         linkPathname === activePathname
-          ? tw(childClassName, activeClassName)
+          ? twMerge(childClassName, activeClassName)
           : childClassName
 
       if (newClassName !== className) {

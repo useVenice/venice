@@ -26,11 +26,12 @@ module.exports = {
     'codegen',
     'eslint-comments',
     'import',
-    'promise',
-    'unicorn',
-    'react',
-    'react-hooks',
     'jsx-a11y',
+    'promise',
+    'react-hooks',
+    'react',
+    'tailwindcss',
+    'unicorn',
   ],
   env: {
     browser: true,
@@ -39,6 +40,9 @@ module.exports = {
   settings: {
     react: {
       version: '17.0.2',
+    },
+    tailwindcss: {
+      config: 'apps/next/tailwind.config.js',
     },
   },
 
@@ -58,6 +62,7 @@ module.exports = {
     },
   ],
 
+  extends: ['plugin:tailwindcss/recommended'],
   rules: {
     // The rules below are listed in the order they appear on the eslint
     // rules page. All rules are listed to make it easier to keep in sync

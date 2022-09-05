@@ -1,10 +1,9 @@
+import '../__generated__/tailwind.css'
 import {AppProvider} from '../AppProvider'
-import twindConfig from '../twind.config'
-import withTwindApp from '@twind/next/app'
 import {AppProps} from 'next/app'
 import Head from 'next/head'
 
-function MyApp({Component, pageProps}: AppProps) {
+export default function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
       <Head>
@@ -30,5 +29,3 @@ function MyApp({Component, pageProps}: AppProps) {
 //   },
 //   ssr: true,
 // })(App)
-
-export default withTwindApp(twindConfig, MyApp)

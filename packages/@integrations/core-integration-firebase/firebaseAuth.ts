@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {UserImpl} from '@firebase/auth/internal'
 import {z, zFunction} from '@ledger-sync/util'
 import firebase from 'firebase/compat/app'

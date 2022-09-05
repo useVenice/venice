@@ -1,6 +1,6 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import React from 'react'
-import {tw} from 'twind'
+import {twMerge} from 'tailwind-merge'
 
 export interface RadioGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
@@ -16,13 +16,13 @@ export function RadioGroup({
   ...restProps
 }: RadioGroupProps) {
   return (
-    <div className={tw`flex flex-col space-y-2`}>
-      <legend className={tw`text-sm font-medium leading-4 text-gray-500`}>
+    <div className="flex flex-col space-y-2">
+      <legend className="text-sm font-medium leading-4 text-gray-500">
         {label}
       </legend>
 
       <RadioGroupPrimitive.Root
-        className={tw(
+        className={twMerge(
           'flex',
           {
             vertical: 'flex-col space-y-3',
@@ -45,23 +45,22 @@ export interface RadioProps
 
 export function Radio({id, label, className, ...restProps}: RadioProps) {
   return (
-    <div className={tw`flex flex-row items-center space-x-2`}>
+    <div className="flex flex-row items-center space-x-2">
       <RadioGroupPrimitive.Item
         {...restProps}
         id={id}
-        className={tw(
+        className={twMerge(
           'relative w-4 h-4 rounded-full border border-transparent text-white',
           'radix-state-checked:bg-primary radix-state-unchecked:bg-gray-100',
           'focus:(outline-none ring-0 ring-offset-0) focus-visible:(ring ring-purple-500 ring-opacity-75 ring-offset-2)',
           className,
         )}>
-        <RadioGroupPrimitive.Indicator
-          className={tw`absolute inset-0 flex items-center justify-center leading-none`}>
-          <div className={tw`w-1.5 h-1.5 rounded-full bg-white`} />
+        <RadioGroupPrimitive.Indicator className="absolute inset-0 flex items-center justify-center leading-none">
+          <div className="h-1.5 w-1.5 rounded-full bg-white" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
 
-      <label htmlFor={id} className={tw`text-sm text-gray-500`}>
+      <label htmlFor={id} className="text-sm text-gray-500">
         {label}
       </label>
     </div>
