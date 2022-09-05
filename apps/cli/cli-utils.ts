@@ -141,5 +141,6 @@ export function cliFromZFunctionMap(
   map: Record<string, AnyZFunction | unknown>,
   cliOpts?: CliOpts,
 ) {
+  // TODO: Add a fallback that invokes regular functions, even those without zFunction signatures
   return cliFromRouter(routerFromZFunctionMap(trpc.router(), map), cliOpts)
 }
