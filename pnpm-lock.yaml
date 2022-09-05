@@ -201,6 +201,7 @@ importers:
       '@ledger-sync/integration-teller': '*'
       '@ledger-sync/integration-toggl': '*'
       '@ledger-sync/integration-wise': '*'
+      '@ledger-sync/integration-yodlee': '*'
       '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
@@ -224,6 +225,7 @@ importers:
       '@ledger-sync/integration-teller': link:../../packages/@integrations/integration-teller
       '@ledger-sync/integration-toggl': link:../../packages/@integrations/integration-toggl
       '@ledger-sync/integration-wise': link:../../packages/@integrations/integration-wise
+      '@ledger-sync/integration-yodlee': link:../../packages/@integrations/integration-yodlee
       '@ledger-sync/standard': link:../../packages/@utils/standard
       '@ledger-sync/util': link:../../packages/@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
@@ -413,6 +415,7 @@ importers:
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
       firebase: 9.8.1
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
@@ -422,6 +425,7 @@ importers:
       firebase: 9.8.1_aomntd2rr2pjqb3xckma554tlm
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-import:
     specifiers:
@@ -450,12 +454,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-plaid:
     specifiers:
@@ -499,12 +505,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-splitwise:
     specifiers:
@@ -512,12 +520,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-stripe:
     specifiers:
@@ -525,6 +535,7 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
       stripe: 8.86.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -533,6 +544,7 @@ importers:
       stripe: 8.86.0
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-teller:
     specifiers:
@@ -540,12 +552,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-toggl:
     specifiers:
@@ -553,12 +567,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-wise:
     specifiers:
@@ -566,12 +582,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@integrations/integration-yodlee:
     specifiers:
@@ -579,12 +597,14 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': 17.0.39
+      react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
+      react: 17.0.2
 
   packages/@utils/accounting:
     specifiers:
@@ -9673,7 +9693,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: false
 
   /read-cache/1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}

@@ -1,6 +1,6 @@
+// Not sure why ../node_modules import needed... was working before
+import {cliFromZFunctionMap, CliOpts} from './cli-utils'
 import '@ledger-sync/app-config/register.node'
-import type {CliOpts} from './cli-utils'
-import {cliFromZFunctionMap} from './cli-utils'
 import {makeProxyAgentNext} from '@ledger-sync/app-config/utils.node'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
@@ -15,7 +15,7 @@ import {makeStripeClient} from '@ledger-sync/integration-stripe'
 import {makeTellerClient} from '@ledger-sync/integration-teller'
 import {makeTogglClient} from '@ledger-sync/integration-toggl'
 import {makeWiseClient} from '@ledger-sync/integration-wise'
-import type {ZFunctionMap} from '@ledger-sync/util'
+import {makeYodleeClient} from '@ledger-sync/integration-yodlee'
 import {
   asFunction,
   kProxyAgent,
@@ -23,6 +23,7 @@ import {
   registerDependency,
   safeJSONParse,
   z,
+  ZFunctionMap,
   zodInsecureDebug,
 } from '@ledger-sync/util'
 
@@ -59,11 +60,21 @@ if (require.main === module) {
     wise: () => makeWiseClient(safeJSONParse(process.env['WISE_CREDENTIALS'])),
     toggl: () =>
       makeTogglClient(safeJSONParse(process.env['TOGGL_CREDENTIALS'])),
+    yodlee: () =>
+      R.pipe(safeJSONParse(process.env['YODLEE_SETTINGS']), (settings) =>
+        makeYodleeClient(
+          {
+            ...safeJSONParse(process.env['YODLEE_CONFIG'])[settings.envName],
+            envName: settings.envName,
+          },
+          settings,
+        ),
+      ),
   }
 
   const clientFactory = z
     .enum(Object.keys(clients) as [keyof typeof clients], {
-      errorMap: () => ({message: 'Invalid process.env.CLIENT'}),
+      errorMap: () => ({message: `Invalid process.env.CLIENT`}),
     })
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .transform((key) => clients[key]!)

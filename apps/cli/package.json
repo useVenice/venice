@@ -18,6 +18,7 @@
     "@ledger-sync/integration-teller": "*",
     "@ledger-sync/integration-toggl": "*",
     "@ledger-sync/integration-wise": "*",
+    "@ledger-sync/integration-yodlee": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
