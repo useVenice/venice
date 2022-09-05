@@ -57,6 +57,8 @@ type AnyProcedure = trpc.ProcedureRecord[string]
 // on the command line.
 
 export interface CliOpts {
+  /** Validated methods only... */
+  safeMode?: boolean
   prepare?: () => void
   cleanup?: () => void
 }
@@ -129,7 +131,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       })
   })
   // This becomes the default command if user enters nothing at all
-  cli.command('').action(() => cli.outputHelp())
+  cli.command('', 'No args to output help').action(() => cli.outputHelp())
 
   // @ts-expect-error
   cli._router = router
@@ -141,6 +143,28 @@ export function cliFromZFunctionMap(
   map: Record<string, AnyZFunction | unknown>,
   cliOpts?: CliOpts,
 ) {
-  // TODO: Add a fallback that invokes regular functions, even those without zFunction signatures
-  return cliFromRouter(routerFromZFunctionMap(trpc.router(), map), cliOpts)
+  const cli = cliFromRouter(routerFromZFunctionMap(trpc.router(), map), cliOpts)
+  // Expose methods that do not have runtime type defintions also for convenience
+  if (!cliOpts?.safeMode) {
+    const commandKeys = cli.commands.map((c) => c.name.split(' ')[0])
+    for (const name of Object.keys(map).filter(
+      (k) => !commandKeys.includes(k),
+    )) {
+      cli
+        .command(`${name} [...maybeArgs]`)
+        .allowUnknownOptions()
+        .action(async (args: string[], {'--': _, ...options}) => {
+          console.log(`[cli] ${name} args options`, args, options)
+          console.log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
+          const start = Date.now()
+          await cliOpts?.prepare?.()
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const res = (map as any)[name](...args, options)
+          await printResult(res)
+          await cliOpts?.cleanup?.()
+          console.log(`[cli] ${name} done in ${Date.now() - start}ms`)
+        })
+    }
+  }
+  return cli
 }
