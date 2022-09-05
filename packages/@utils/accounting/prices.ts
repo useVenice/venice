@@ -8,7 +8,7 @@ import {
   toMultiAmount,
 } from '@ledger-sync/util'
 
-// MARK: buildPriceMap
+// MARK: - buildPriceMap
 
 /** baseUnit.quoteUnit.date: Standard.Price */
 export type RawPriceMap = Record<
@@ -81,7 +81,7 @@ export function invertPrice(price: Standard.Price): Standard.Price {
   }
 }
 
-// MARK: P
+// MARK: - P
 
 export function P(
   date: ISODate,
@@ -96,7 +96,7 @@ export function P(
   }
 }
 
-// MARK: getPrice
+// MARK: - getPrice
 
 export function getPrice(
   priceMap: PriceMap,
@@ -206,7 +206,7 @@ export function derivePrice(
   }
 }
 
-// MARK: convertAmountMap
+// MARK: - convertAmountMap
 
 /**
  * TODO: Combine this with convertAmount?

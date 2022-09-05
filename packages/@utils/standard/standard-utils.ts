@@ -106,7 +106,7 @@ export const zAccountType = z.enum([
   'expense/uncategorized',
 ])
 
-// MARK: Deprecated helpers
+// MARK: - Deprecated helpers
 
 export const CONNECTION_STATUSES = zConnectionStatus.Enum
 export const REVIEW_STATUSES = zReviewStatus.enum
@@ -325,7 +325,7 @@ export const STD_AMOUNT_KEYS: EnumOf<keyof Amount> = {
   meta: 'meta',
 }
 
-// MARK: Utils
+// MARK: - Utils
 
 // TODO: Create a single ACCOUNT_TYPES map that contains name
 // and description and everything else

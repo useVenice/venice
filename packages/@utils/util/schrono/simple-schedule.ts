@@ -38,7 +38,7 @@ const FREQUENCY_FROM_DISPLAY = invert(FREQUENCY_DISPLAY) as Record<
  * TODO: Create a MPSchedule class and make logic object-oriented
  */
 
-// MARK: Range expressions
+// MARK: - Range expressions
 
 // `-` is a wordbreak character so we cannot use `\b`
 // Workaround is to use `\s`

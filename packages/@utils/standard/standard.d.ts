@@ -4,7 +4,7 @@
  * @simon This will be very useful for hledger users
  */
 declare namespace Standard {
-  // MARK: Connection
+  // MARK: - Connection
 
   type ConnectionStatus = import('./standard-utils').ConnectionStatus
   /**
@@ -34,7 +34,7 @@ declare namespace Standard {
     attachmentsMap?: AttachmentsMap | null
   }
 
-  // MARK: Account
+  // MARK: - Account
 
   type AccountSupertype = _Split1<AccountType>
   // Could also be user set...
@@ -80,7 +80,7 @@ declare namespace Standard {
     custom?: Record<string, unknown>
   }
 
-  // MARK: Transaction
+  // MARK: - Transaction
 
   interface Transaction<TPosting extends Posting = Posting> {
     /** May not have prefix in practice... */
@@ -137,7 +137,7 @@ declare namespace Standard {
     removed?: boolean
   }
 
-  // MARK: Commodity
+  // MARK: - Commodity
 
   /** For inspiration, see Plaid.SecurityType */
   type CommodityType =
@@ -173,7 +173,7 @@ declare namespace Standard {
 
   // MARK: - Embedded entities
 
-  // MARK: Posting
+  // MARK: - Posting
 
   interface SpecialPostingsMap<TPosting extends Posting | null = Posting> {
     main?: TPosting | null
@@ -285,7 +285,7 @@ declare namespace Standard {
     label?: string
   }
 
-  // MARK: Balance
+  // MARK: - Balance
 
   /**
    * Holding is really nothing but a posting and we may not actually need it at all
@@ -344,7 +344,7 @@ declare namespace Standard {
     }
   }
 
-  // MARK: Price
+  // MARK: - Price
 
   /**
    * USD:CAD = 1.32
@@ -398,7 +398,7 @@ declare namespace Standard {
 
   type AttachmentsMap = Record<string /* url */, Attachment | null>
 
-  // MARK: JSONExport
+  // MARK: - JSONExport
 
   interface JSONExport {
     variant: 'standard'

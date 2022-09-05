@@ -3,7 +3,7 @@ import {Rx, rxjs} from './observable-utils'
 import type {Storage} from './storage'
 import type {PatchStateAction, Serializable, SetStateAction} from './type-utils'
 
-// MARK: ObservableState
+// MARK: - ObservableState
 
 export class ObservableState<
   T extends Serializable,
@@ -37,7 +37,7 @@ export class ObservableState<
   }
 }
 
-// MARK: PersistedObservableState
+// MARK: - PersistedObservableState
 
 export class PersistedObservableState<
   T extends Serializable,

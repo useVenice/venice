@@ -1,6 +1,6 @@
 import {Duration} from 'luxon'
 
-// MARK: Duration expressions
+// MARK: - Duration expressions
 
 const DURATION_REGEX = /([\d.]+)\s*(day|week|month|quarter|year)?s?/i
 export function parseDurationExpression(

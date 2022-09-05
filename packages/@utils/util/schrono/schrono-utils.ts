@@ -1,5 +1,3 @@
-import * as chrono from 'chrono-node'
-import {DateTime} from 'luxon'
 import {
   BaseRelativeDateFormatParser,
   RelativeDateFormatParser,
@@ -9,6 +7,8 @@ import {
   TimeUnitCasualRelativeFormatParser,
 } from './chrono-parsers/TimeUnitCasualRelativeFormatParser'
 import type {DateTimePrecision, ISOMPDate} from './MPDate'
+import * as chrono from 'chrono-node'
+import {DateTime} from 'luxon'
 
 export function fastEnsurePrecision(
   dt: DateTime | ISOMPDate,
@@ -51,7 +51,7 @@ export function stripTimezoneOffset(iso: ISOMPDate): ISOMPDate {
   return DateTime.fromISO(iso).toISO({includeOffset: false})
 }
 
-// MARK: Helpers
+// MARK: - Helpers
 
 const ISO_YEAR_LEN = '2000'.length
 const ISO_MONTH_LEN = '2000-01'.length

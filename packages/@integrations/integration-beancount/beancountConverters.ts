@@ -98,7 +98,7 @@ function cleanKey(label: string, opts?: {allowSlash: boolean}) {
   return out
 }
 
-// MARK: Converters
+// MARK: - Converters
 
 const convAccountType = conv<string, Standard.AccountType | null | undefined>({
   forward: (type) => {

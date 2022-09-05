@@ -9,7 +9,7 @@ import {slugify} from './string-utils'
 import accounting from 'accounting'
 import invariant from 'tiny-invariant'
 
-// MARK: Multi-unit AmountMap
+// MARK: - Multi-unit AmountMap
 
 export const AM = (am: Record<string, number>): AmountMap => am
 
@@ -96,7 +96,7 @@ AM.sum = (...amounts: Amount[]) => {
   return am
 }
 
-// MARK: Single-unit Amount
+// MARK: - Single-unit Amount
 
 export const A = (
   quantity: number,
@@ -172,7 +172,7 @@ A.omitZeros = (amount: MultiAmount): MultiAmount => ({
   amounts: amount.amounts.filter((a) => !math.isZero(a.quantity)),
 })
 
-// MARK: Helpers
+// MARK: - Helpers
 
 export type AnyAmount = Amount | AmountMap | MultiAmount | Amount[]
 

@@ -15,7 +15,7 @@ function _formatDate(input: DateTime | Date) {
       : MPDate.create(input, 'day', undefined)
   return dt.toDisplay()
 }
-// MARK: Range expressions
+// MARK: - Range expressions
 
 export function parseDateRangeExpression(input?: string | null) {
   if (!input) {
@@ -42,7 +42,7 @@ export function reformatDateRangeExpression(input?: string | null) {
   return formatDateRangeExpression(parseDateRangeExpression(input))
 }
 
-// MARK: Schedule expressions
+// MARK: - Schedule expressions
 
 /**
  * Inspired by https://hledger.org/hledger.html#period-expressions

@@ -162,7 +162,7 @@ export function fuzzyTest(query: string, source: string) {
   return queryPos === normalizedQuery.length
 }
 
-// MARK: Helpers
+// MARK: - Helpers
 
 interface ScoreContext {
   score: number

@@ -258,7 +258,7 @@ export function makeSyncProvider<
   TExtension,
 >(impl: {
   def: T
-  // MARK: Connection management
+  // MARK: - Connection management
   // Consider combining these into a single function with union input to make the
   // provider interface less verbose. e.g. phase: 'will' | 'did' | 'revoke'
 
@@ -290,7 +290,7 @@ export function makeSyncProvider<
 
   handleWebhook: THandleWebhook
 
-  // MARK: Synchronization
+  // MARK: - Synchronization
 
   /**
    * Can be either provider initiated or ledgerSync initiated

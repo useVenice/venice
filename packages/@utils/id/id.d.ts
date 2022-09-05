@@ -41,7 +41,7 @@ declare namespace Id {
   type ldgr_acct_bal = BrandedString<'ldgr_acct_bal'>
   type ldgr_comm_prce = BrandedString<'ldgr_comm_prce'>
 
-  // MARK: Helpers
+  // MARK: - Helpers
 
   interface Simple {
     connections: conn

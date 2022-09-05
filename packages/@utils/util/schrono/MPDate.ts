@@ -81,7 +81,7 @@ export const MPDate = {
     return mpd
   },
 
-  // MARK: Static method equivalents
+  // MARK: - Static method equivalents
 
   /** Will test ISO first, then after */
   parse(input: string) {

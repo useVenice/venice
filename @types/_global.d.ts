@@ -1,4 +1,4 @@
-// MARK: Hint types
+// MARK: - Hint types
 
 // TODO: Switch all impl below to BrandedString
 declare type ISODate = string
@@ -13,7 +13,7 @@ declare type MathExpression = BrandedString<'MathExpression'>
 declare type MixedPrecisionDateExpression =
   BrandedString<'MixedPrecisionDateExpression'>
 
-// MARK: Amount types
+// MARK: - Amount types
 
 declare interface AmountMeta {
   color?: string
@@ -34,7 +34,7 @@ declare interface MultiAmount {
  */
 type AmountMap = Record<string, number> // Should we add a __brand__ to this?
 
-// MARK: Utility types
+// MARK: - Utility types
 
 // TODO: Revise once https://github.com/microsoft/TypeScript/pull/33290 lands
 declare interface Brand<B> {

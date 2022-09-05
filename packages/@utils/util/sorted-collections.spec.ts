@@ -8,7 +8,7 @@ import {
 import {NodeManagerJsNumber, Tree} from '@subspace/red-black-tree'
 import {RBTree} from 'bintrees'
 
-// MARK: Correctness
+// MARK: - Correctness
 
 test('RBTree: Does not allow dupe key', () => {
   const tree = new RBTree<number>((a, b) => a - b)
@@ -111,7 +111,7 @@ test('SortedArray: Stable order', () => {
   ])
 })
 
-// MARK: Performance
+// MARK: - Performance
 
 const iterations = 100_000
 

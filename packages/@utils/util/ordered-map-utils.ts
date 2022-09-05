@@ -1,6 +1,6 @@
 import {orderBy} from 'lodash'
 
-// MARK: Deprecated. Use the sorted collections powered by rbt instead...
+// MARK: - Deprecated. Use the sorted collections powered by rbt instead...
 
 type ComparableValue = string | number | boolean
 

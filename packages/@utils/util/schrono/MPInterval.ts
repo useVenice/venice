@@ -31,7 +31,7 @@ export const MPInterval = {
     return interval
   },
 
-  // MARK: Static methods
+  // MARK: - Static methods
 
   parse(input: string) {
     const mpd = MPDate.fromISO(input)

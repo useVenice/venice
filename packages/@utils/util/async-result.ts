@@ -23,7 +23,7 @@ export type AsyncResult<E, D> =
       error?: never
     }
 
-// MARK: Constructors
+// MARK: - Constructors
 
 export const initial: AsyncResult<never, never> = {status: 'initial'}
 

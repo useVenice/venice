@@ -7,7 +7,7 @@
  * https://stackoverflow.com/questions/37124006/iterator-and-a-generator-in-javascript
  */
 
-// MARK: Async
+// MARK: - Async
 
 export async function* asyncYieldNever() {}
 
@@ -53,7 +53,7 @@ export function isAsyncIterable<T>(input: unknown): input is AsyncIterable<T> {
   )
 }
 
-// MARK: Sync
+// MARK: - Sync
 
 export function* yieldNever() {}
 
@@ -93,7 +93,7 @@ export function isIterable<T>(input: unknown): input is Iterable<T> {
   )
 }
 
-// MARK: Generator utils
+// MARK: - Generator utils
 
 export function flattenGenerator<T>(fn: () => Iterable<T[]>): T[] {
   return [...fn()].flat()

@@ -3,7 +3,7 @@ declare namespace Foreceipt {
     email: string
     password: string
 
-    // MARK: -- Cached values but related to credentails
+    // MARK: - Cached values but related to credentails
 
     userJSON?: Record<string, unknown>
     /**
