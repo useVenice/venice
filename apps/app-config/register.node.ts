@@ -2,21 +2,18 @@ import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
-import {makeProxyAgentNext} from './utils.node'
 import {
   $appendFile,
   $chokidar,
   $ensureDir,
   $execCommand,
   $fs,
+  $makeProxyAgent,
   $path,
   $readFile,
   $writeFile,
-  asFunction,
   implementProxyFn,
-  kProxyAgent,
   memoize,
-  registerDependency,
 } from '@ledger-sync/util'
 import chokidar from 'chokidar'
 import * as dotenv from 'dotenv'
@@ -24,6 +21,8 @@ import findConfig from 'find-config'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
+import tunnel from 'tunnel'
+import url from 'url'
 import {writeFile as _writeFile} from 'write-file-safe'
 
 console.log('[Dep] app-config/register.node')
@@ -33,15 +32,25 @@ export const dotEnvOut = dotenv.config({
 })
 // console.log('[DEBUG] parsed dotenv', dotEnvOut.parsed)
 
-registerDependency(
-  kProxyAgent,
-  asFunction(() =>
-    makeProxyAgentNext({
-      url: process.env['PROXY_URL'] ?? '',
-      cert: process.env['PROXY_CERT'] ?? '',
-    }),
-  ).singleton(),
-)
+implementProxyFn($makeProxyAgent, (input) => {
+  // Seems that the default value get overwritten by explicit undefined
+  // value from envkey. Here we try to account for that
+  // Would be nice if such hack is not required.
+  const {hostname, port, auth} = url.parse(input.url)
+  if (!hostname || !port) {
+    return undefined
+  }
+
+  return tunnel.httpsOverHttp({
+    ca: input.cert ? [Buffer.from(input.cert)] : [],
+    proxy: {
+      host: hostname,
+      port: Number.parseInt(port, 10),
+      proxyAuth: auth ?? undefined,
+      headers: {},
+    },
+  })
+})
 
 implementProxyFn(
   $execCommand,

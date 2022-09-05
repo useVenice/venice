@@ -1,7 +1,7 @@
 // Not sure why ../node_modules import needed... was working before
-import {cliFromZFunctionMap, CliOpts} from './cli-utils'
 import '@ledger-sync/app-config/register.node'
-import {makeProxyAgentNext} from '@ledger-sync/app-config/utils.node'
+import type {CliOpts} from './cli-utils'
+import {cliFromZFunctionMap} from './cli-utils'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
@@ -16,32 +16,14 @@ import {makeTellerClient} from '@ledger-sync/integration-teller'
 import {makeTogglClient} from '@ledger-sync/integration-toggl'
 import {makeWiseClient} from '@ledger-sync/integration-wise'
 import {makeYodleeClient} from '@ledger-sync/integration-yodlee'
-import {
-  asFunction,
-  kProxyAgent,
-  R,
-  registerDependency,
-  safeJSONParse,
-  z,
-  ZFunctionMap,
-  zodInsecureDebug,
-} from '@ledger-sync/util'
+import type {ZFunctionMap} from '@ledger-sync/util'
+import {R, safeJSONParse, z, zodInsecureDebug} from '@ledger-sync/util'
 
 if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
 if (require.main === module) {
-  registerDependency(
-    kProxyAgent,
-    asFunction(() =>
-      makeProxyAgentNext({
-        url: process.env['PROXY_URL'] ?? '',
-        cert: process.env['PROXY_CERT'] ?? '',
-      }),
-    ).singleton(),
-  )
-
   type ClientMap = Record<string, () => [ZFunctionMap, CliOpts] | ZFunctionMap>
   const clients: ClientMap = {
     pgKv: () =>
@@ -74,7 +56,7 @@ if (require.main === module) {
 
   const clientFactory = z
     .enum(Object.keys(clients) as [keyof typeof clients], {
-      errorMap: () => ({message: `Invalid process.env.CLIENT`}),
+      errorMap: () => ({message: 'Invalid process.env.CLIENT'}),
     })
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .transform((key) => clients[key]!)

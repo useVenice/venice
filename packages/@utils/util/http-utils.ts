@@ -1,5 +1,4 @@
-import type {InjectionToken} from './di-utils'
-import {resolveDependencyIfRegistered} from './di-utils'
+import {defineProxyFn, isDependencyRegistered} from './di-utils'
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -13,13 +12,18 @@ import type https from 'https'
 
 export type HTTPRequestConfig = AxiosRequestConfig
 
-export const kProxyAgent = Symbol('proxyAgent') as InjectionToken<
-  http.Agent | https.Agent | undefined
->
+export const $makeProxyAgent =
+  defineProxyFn<
+    (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
+  >('$makeProxyAgent')
 
 export function getDefaultProxyAgent() {
-  return process.env['USE_PROXY_AGENT']
-    ? resolveDependencyIfRegistered(kProxyAgent)
+  return process.env['USE_PROXY_AGENT'] &&
+    isDependencyRegistered($makeProxyAgent.token)
+    ? $makeProxyAgent({
+        url: process.env['PROXY_URL'] ?? '',
+        cert: process.env['PROXY_CERT'] ?? '',
+      })
     : undefined
 }
 
@@ -52,8 +56,7 @@ export class HTTPError<
     >
     let requestData = err.config.data
     if (
-      requestHeaders['content-type'] &&
-      requestHeaders['content-type'].startsWith('application/json') &&
+      requestHeaders['content-type']?.startsWith('application/json') &&
       typeof requestData === 'string'
     ) {
       try {
@@ -92,7 +95,7 @@ export class HTTPError<
   override name = 'HTTPError'
 
   get code() {
-    return this.response && this.response.status
+    return this.response?.status
   }
 
   constructor(
@@ -183,6 +186,7 @@ export function createHTTPClient({
         ? refreshing
             .catch((err) => {
               console.warn('[http] Failed to refresh auth', err)
+              // eslint-disable-next-line @typescript-eslint/no-throw-literal
               throw new _Axios.Cancel('Failed to refresh auth')
             })
             .then(() => req)
@@ -207,7 +211,7 @@ export function createHTTPClient({
         if (refreshing) {
           return refreshing
             .finally(() => (refreshing = undefined))
-            .then(() => axios.request(err.response?.config || {}))
+            .then(() => axios.request(err.response?.config ?? {}))
         }
       }
       throw errorTransformer ? errorTransformer(error) : error
