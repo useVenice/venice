@@ -1,4 +1,3 @@
-// Not sure why ../node_modules import needed... was working before
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import {
   castIs,

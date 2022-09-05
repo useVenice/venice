@@ -12,7 +12,6 @@ export default function LedgerMyConnectionsScreen() {
     envName: 'sandbox', // Add control for me...
   })
   const connections = connectionsRes.data
-  console.log('connections', connections)
   return (
     <>
       <Head>
@@ -25,7 +24,7 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
-        <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto p-8">
+        <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {connections?.map((conn) => (
               <div

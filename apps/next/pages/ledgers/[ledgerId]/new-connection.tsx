@@ -47,7 +47,7 @@ export default function LedgerNewConnectionScreen() {
 
           <TabContent
             value="institution"
-            className="mx-auto hidden w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto p-8 radix-state-active:flex">
+            className="mx-auto hidden w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {institutions?.map(({ins, int}) => (
                 <div
@@ -97,7 +97,7 @@ export default function LedgerNewConnectionScreen() {
 
           <TabContent
             value="provider"
-            className="mx-auto hidden w-full max-w-screen-md flex-1 flex-col space-y-8 overflow-y-auto p-8 radix-state-active:flex">
+            className="mx-auto hidden w-full max-w-screen-md flex-1 flex-col space-y-8 overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
             <RadioGroup
               name="grouped-radios"
               label="Environment"
