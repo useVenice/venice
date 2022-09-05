@@ -11,24 +11,19 @@ import {
   zUser,
   zYodleeProvider,
 } from './yodlee.types'
-import {zYodleeEnvName} from './YodleeClient'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {makeYodleeClient, zCfg, zCreds, zYodleeEnvName} from './YodleeClient'
+import {YodleeFastLink} from './YodleeFastLink'
+import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@ledger-sync/util'
 
-export const zEnvConfig = z.object({
-  adminLoginName: z.string().nullish(),
-  clientId: z.string(),
-  clientSecret: z.string(),
-})
-export const zYodleeConfig = z.record(zYodleeEnvName, zEnvConfig)
+export const zYodleeConfig = z.record(
+  zYodleeEnvName,
+  zCfg.omit({envName: true}),
+)
 
-export const zUserCreds = z.object({
+const zSettings = zCreds.extend({
   envName: zYodleeEnvName,
-  loginName: z.string(),
-})
-
-const zSettings = zUserCreds.extend({
   /** Used to be _id */
   providerAccountId: z.string(),
   // Cache
@@ -43,11 +38,14 @@ const def = makeSyncProvider.def({
   name: z.literal('yodlee'),
   integrationConfig: zYodleeConfig,
   connectionSettings: zSettings,
-  connectInput: zSettings.pick({envName: true, loginName: true}),
-  connectOutput: zSettings,
-  // preConnectInput: z.object({
-  //   envName: z.string(),
-  // }),
+  // Will be addressed again for reconnection
+  preConnectInput: zSettings.pick({envName: true, loginName: true}),
+  connectInput: zSettings.pick({accessToken: true}),
+  connectOutput: zSettings.pick({
+    envName: true, // How do make these not needed?
+    loginName: true, // How do make these not needed?
+    providerAccountId: true,
+  }),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -168,16 +166,32 @@ export const yodleeProviderNext = makeSyncProvider({
       },
     },
   }),
-  // getPreConnectInputs: (_) =>
-  //   zEnvName.options.map((envName) =>
-  //     def._preConnOption({
-  //       key: envName,
-  //       label: envName,
-  //       options: {
-  //         envName,
-  //       },
-  //     }),
-  //   ),
+  getPreConnectInputs: ({envName, ledgerId}) => [
+    def._preConnOption({
+      key: envName,
+      label: envName,
+      options: {envName, loginName: ledgerId},
+    }),
+  ],
+
+  preConnect: async ({envName, loginName}, config) => {
+    const accessToken = await makeYodleeClient(
+      {...config[envName]!, envName},
+      {loginName},
+    ).generateAccessToken(loginName)
+    return {accessToken}
+  },
+  useConnectHook: (_type) => {
+    const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
+    return async () => {
+      // TO something useful here...
+      await loaded
+      const Comp = YodleeFastLink({envName: 'sandbox', fastlinkToken: ''})
+      console.log('Comp', Comp)
+      throw new Error('Need to show dialog here of YodleeFastLink')
+      // return {envName}
+    }
+  },
 
   // useConnectHook: (_a: undefined) =>
   //   new Deferred<typeof def['_types']['connectOutput']>().promise,
