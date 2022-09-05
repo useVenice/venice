@@ -55,7 +55,6 @@ module.exports = {
           '--animation-btn': '0.25s',
           '--animation-input': '0.2s',
           '--btn-text-case': 'none',
-          '--btn-focus-scale': '1',
           '--tab-radius': '0.25rem',
         },
       },

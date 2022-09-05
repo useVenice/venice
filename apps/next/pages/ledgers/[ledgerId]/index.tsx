@@ -28,6 +28,7 @@ export default function LedgerMyConnectionsScreen() {
             <div
               key={conn.id}
               className="flex flex-row space-x-4 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`data:image/png;base64,${
                   (conn as any).settings.institution.logo

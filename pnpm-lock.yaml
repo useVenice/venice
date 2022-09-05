@@ -251,6 +251,7 @@ importers:
       next-query-params: 4.0.0
       next-transpile-modules: 9.0.0
       node-loader: 2.0.0
+      phosphor-react: 1.4.1
       postcss: 8.4.14
       react: 17.0.2
       react-dom: 17.0.2
@@ -273,6 +274,7 @@ importers:
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       next: 12.2.5_sfoxds7t5ydpegc3knd667wn6m
       next-query-params: 4.0.0_mwonnkvrsrya76yyxubadwexmy
+      phosphor-react: 1.4.1_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
@@ -9160,6 +9162,15 @@ packages:
     transitivePeerDependencies:
       - pg-native
     dev: true
+
+  /phosphor-react/1.4.1_react@17.0.2:
+    resolution: {integrity: sha512-gO5j7U0xZrdglTAYDYPACU4xDOFBTJmptrrB/GeR+tHhCZF3nUMyGmV/0hnloKjuTrOmpSFlbfOY78H39rgjUQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      react: 17.0.2
+    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}

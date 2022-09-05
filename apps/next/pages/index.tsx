@@ -7,7 +7,7 @@ export default function HomeScreen() {
   const [ledgerId, setLedgerId] = useState('')
   return (
     <Layout>
-      <div className="container mx-auto flex max-w-screen-2xl flex-1 flex-col items-center justify-center">
+      <div className="mx-auto flex max-w-screen-2xl flex-1 flex-col items-center justify-center">
         <form
           onSubmit={(event) => {
             event.preventDefault()

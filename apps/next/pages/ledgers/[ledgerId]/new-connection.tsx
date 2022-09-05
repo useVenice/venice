@@ -6,6 +6,7 @@ import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
+import {Plus} from 'phosphor-react'
 import React from 'react'
 import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 
@@ -23,6 +24,7 @@ export default function LedgerNewConnectionScreen() {
   )
   const [envName, setEnvName] = React.useState<EnvName>('sandbox')
   const ls = useLedgerSync({ledgerId, envName})
+  const institutions = ls.insRes.data
   return (
     <>
       <Head>
@@ -45,39 +47,57 @@ export default function LedgerNewConnectionScreen() {
 
           <TabContent
             value="institution"
-            className="mx-auto flex-1 flex-col overflow-y-auto p-8 radix-state-active:flex radix-state-active:space-y-4">
-            {ls.insRes.data?.map(({ins, int}) => (
-              <div key={`${ins.id}`} className="flex flex-col space-y-4">
-                <img
-                  src={ins.logoUrl}
-                  alt={`"${ins.name}" logo`}
-                  className="h-32 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2"
-                />
+            className="mx-auto hidden max-w-screen-2xl flex-1 flex-col overflow-y-auto p-8 radix-state-active:flex">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+              {institutions?.map(({ins, int}) => (
+                <div
+                  key={`${ins.id}`}
+                  className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+                  <div className="card-body space-y-4">
+                    <div className="flex space-x-4">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={ins.logoUrl}
+                        alt={`"${ins.name}" logo`}
+                        className="h-12 w-12 object-contain"
+                      />
 
-                <button
-                  className="h-12 rounded-lg bg-primary px-5 text-white"
-                  onClick={() => {
-                    ls.connect(int, {
-                      key: ins.id,
-                      label: ins.name,
-                      // Temp haackkk...
-                      options: {
-                        envName: 'sandbox',
-                        institutionId: ins.id,
-                        userToken: '',
-                        applicationId: '',
-                      },
-                    })
-                  }}>
-                  {ins.name}
-                </button>
-              </div>
-            ))}
+                      <div className="flex flex-col space-y-1">
+                        <span className="card-title text-black">
+                          {ins.name}
+                        </span>
+                        <span className="text-sm">[tld]</span>
+                      </div>
+
+                      <div className="flex flex-1 justify-end">
+                        <button
+                          className="btn-outline btn btn-sm btn-circle border-base-content/25"
+                          onClick={() => {
+                            ls.connect(int, {
+                              key: ins.id,
+                              label: ins.name,
+                              // Temp haackkk...
+                              options: {
+                                envName: 'sandbox',
+                                institutionId: ins.id,
+                                userToken: '',
+                                applicationId: '',
+                              },
+                            })
+                          }}>
+                          <Plus />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </TabContent>
 
           <TabContent
             value="provider"
-            className="mx-auto max-w-screen-2xl flex-1 flex-col overflow-y-auto p-8 radix-state-active:flex radix-state-active:space-y-8">
+            className="mx-auto hidden max-w-screen-2xl flex-1 flex-col space-y-8 overflow-y-auto p-8 radix-state-active:flex">
             <RadioGroup
               name="grouped-radios"
               label="Environment"
