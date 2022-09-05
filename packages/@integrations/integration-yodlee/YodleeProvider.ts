@@ -1,39 +1,50 @@
-import type {YodleeAccount, YodleeTransaction} from './yodlee-utils'
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
   getYodleeAccountType,
-  parseAccountData,
 } from './yodlee-utils'
-import {makeYodleeClient, zConfig, zYodleeSettings} from './YodleeClient'
+import {
+  type YodleeAccount,
+  type YodleeTransaction,
+  zAccessToken,
+  zProviderAccount,
+  zUser,
+  zYodleeProvider,
+} from './yodlee.types'
+import {zYodleeEnvName} from './YodleeClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {
-  A,
-  DateTime,
-  objectFromObject,
-  parseDateTime,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-} from '@ledger-sync/util'
+import {A, objectFromObject, parseDateTime, z, zCast} from '@ledger-sync/util'
 
-type YodleeSyncOperation = typeof def['_opType']
+export const zEnvConfig = z.object({
+  adminLoginName: z.string().nullish(),
+  clientId: z.string(),
+  clientSecret: z.string(),
+})
+export const zYodleeConfig = z.record(zYodleeEnvName, zEnvConfig)
+
+export const zUserCreds = z.object({
+  envName: zYodleeEnvName,
+  loginName: z.string(),
+})
+
+const zSettings = zUserCreds.extend({
+  /** Used to be _id */
+  providerAccountId: z.string(),
+  // Cache
+  accessToken: zAccessToken.nullish(),
+  user: zUser.nullish(),
+  provider: zYodleeProvider.nullish(),
+  providerAccount: zProviderAccount.nullish(),
+})
 
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('yodlee'),
-  integrationConfig: zConfig,
-  connectionSettings: zYodleeSettings.omit({config: true}).extend({
-    _id: z.string(),
-  }),
-  connectInput: zYodleeSettings.omit({config: true}).extend({
-    _id: z.string(),
-  }),
-  connectOutput: zYodleeSettings.omit({config: true}).extend({
-    _id: z.string(),
-  }),
+  integrationConfig: zYodleeConfig,
+  connectionSettings: zSettings,
+  connectInput: zSettings.pick({envName: true, loginName: true}),
+  connectOutput: zSettings,
   // preConnectInput: z.object({
   //   envName: z.string(),
   // }),
@@ -171,98 +182,98 @@ export const yodleeProviderNext = makeSyncProvider({
   // useConnectHook: (_a: undefined) =>
   //   new Deferred<typeof def['_types']['connectOutput']>().promise,
 
-  postConnect: async (input, config) => {
-    const settings = def._type('connectionSettings', {
-      ...input,
-    })
+  // postConnect: async (input, config) => {
+  //   const settings = def._type('connectionSettings', {
+  //     ...input,
+  //   })
 
-    const source$: rxjs.Observable<YodleeSyncOperation> =
-      yodleeProviderNext.sourceSync({settings, config, options: {}})
-    return {
-      externalId: input._id,
-      settings,
-      source$,
-    }
-  },
-  sourceSync: ({settings, config}) => {
-    async function* iterateEntities() {
-      const accessToken = await await makeYodleeClient({
-        ...settings,
-        config,
-      }).generateAccessToken({
-        ...settings,
-        envName: settings.envName,
-        loginName: settings.loginName,
-      })
+  //   const source$: rxjs.Observable<YodleeSyncOperation> =
+  //     yodleeProviderNext.sourceSync({settings, config, options: {}})
+  //   return {
+  //     externalId: input.providerAccountId,
+  //     settings,
+  //     source$,
+  //   }
+  // },
+  // sourceSync: ({config, settings}) => {
+  //   async function* iterateEntities() {
+  //     const accessToken = await makeYodleeClient({
+  //       ...settings,
+  //       config,
+  //     }).generateAccessToken({
+  //       ...settings,
+  //       envName: settings.envName,
+  //       loginName: settings.loginName,
+  //     })
 
-      const client = makeYodleeClient({
-        ...settings,
-        config,
-        accessToken,
-      })
-      const [accounts, holdings] = await Promise.all([
-        client.getAccounts({
-          envName: settings.envName,
-          providerAccountId: settings._id,
-        }),
-        SHOULD_SYNC_HOLDINGS
-          ? client.getHoldingsWithSecurity({
-              envName: settings.envName,
-              params: {providerAccountId: settings._id},
-            })
-          : [],
-      ])
+  //     const client = makeYodleeClient({
+  //       ...settings,
+  //       config,
+  //       accessToken,
+  //     })
+  //     const [accounts, holdings] = await Promise.all([
+  //       client.getAccounts({
+  //         envName: settings.envName,
+  //         providerAccountId: settings._id,
+  //       }),
+  //       SHOULD_SYNC_HOLDINGS
+  //         ? client.getHoldingsWithSecurity({
+  //             envName: settings.envName,
+  //             params: {providerAccountId: settings._id},
+  //           })
+  //         : [],
+  //     ])
 
-      yield [
-        ...accounts.map((a) =>
-          def._opData(
-            'account',
-            `${a.id}` as Id.external,
-            parseAccountData(a, holdings),
-          ),
-        ),
-      ]
-      const accountIds = accounts.map((a) => a.id)
+  //     yield [
+  //       ...accounts.map((a) =>
+  //         def._opData(
+  //           'account',
+  //           `${a.id}` as Id.external,
+  //           parseAccountData(a, holdings),
+  //         ),
+  //       ),
+  //     ]
+  //     const accountIds = accounts.map((a) => a.id)
 
-      let offset = 0
-      let count = 100
-      const start = DateTime.fromMillis(0)
-      const end = DateTime.local().plus({days: 1})
-      while (true) {
-        let transactions = await client.getTransactions({
-          params: {
-            accountId: accountIds.join(','),
-            skip: offset,
-            top: count,
-            fromDate: start.toISODate(),
-            toDate: end.toISODate(),
-          },
-          envName: settings.envName,
-        })
+  //     let offset = 0
+  //     let count = 100
+  //     const start = DateTime.fromMillis(0)
+  //     const end = DateTime.local().plus({days: 1})
+  //     while (true) {
+  //       let transactions = await client.getTransactions({
+  //         params: {
+  //           accountId: accountIds.join(','),
+  //           skip: offset,
+  //           top: count,
+  //           fromDate: start.toISODate(),
+  //           toDate: end.toISODate(),
+  //         },
+  //         envName: settings.envName,
+  //       })
 
-        if (transactions.length === 0) {
-          break
-        }
-        transactions = transactions.filter((t) => {
-          if (!SHOULD_SYNC_INVESTMENT_TRANSACTIONS) {
-            return t.CONTAINER !== 'investment'
-          }
-          return true
-        })
-        offset += transactions.length
-        count = 500
+  //       if (transactions.length === 0) {
+  //         break
+  //       }
+  //       transactions = transactions.filter((t) => {
+  //         if (!SHOULD_SYNC_INVESTMENT_TRANSACTIONS) {
+  //           return t.CONTAINER !== 'investment'
+  //         }
+  //         return true
+  //       })
+  //       offset += transactions.length
+  //       count = 500
 
-        yield transactions.map((t) =>
-          def._opData('transaction', `${t.id}` as Id.external, t),
-        )
-      }
-    }
+  //       yield transactions.map((t) =>
+  //         def._opData('transaction', `${t.id}` as Id.external, t),
+  //       )
+  //     }
+  //   }
 
-    return rxjs
-      .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
-  },
+  //   return rxjs
+  //     .from(iterateEntities())
+  //     .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+  // },
 })
 
-const SHOULD_SYNC_HOLDINGS = false
-const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false
+// const SHOULD_SYNC_HOLDINGS = false
+// const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false

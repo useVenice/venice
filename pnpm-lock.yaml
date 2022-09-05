@@ -297,9 +297,11 @@ importers:
 
   apps/tests:
     specifiers:
+      '@ledger-sync/app-config': '*'
       remeda: 0.0.32
       tsx: 3.4.2
     dependencies:
+      '@ledger-sync/app-config': link:../app-config
       remeda: 0.0.32_h54ufjkapm5h3lgo7ynxsqpg3u
     devDependencies:
       tsx: 3.4.2

@@ -1,7 +1,7 @@
 import {
   createHTTPClient,
   DateTime,
-  HTTPError,
+  type HTTPError,
   parseOptionalDateTime,
   stringifyQueryParams,
   uniq,
@@ -11,7 +11,7 @@ import {
 
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
 
-type Cfg = z.infer<typeof zCfg>
+// type Cfg = z.infer<typeof zCfg>
 export const zCfg = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
@@ -26,7 +26,7 @@ export const zAccessToken = z.object({
   expiresIn: z.number(), // seconds
 })
 
-type Creds = z.infer<typeof zCreds>
+// type Creds = z.infer<typeof zCreds>
 export const zCreds = z.object({
   loginName: z.string(),
   accessToken: zAccessToken.nullish(),
@@ -64,7 +64,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       'Api-Version': '1.1',
     },
     requestTransformer: (req) => {
-      if (req.headers['Authorization'] != null) {
+      if (req.headers.Authorization != null) {
         return req
       }
       if (accessToken) {
@@ -84,7 +84,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
     },
     refreshAuth: {
       shouldProactiveRefresh: (req) => {
-        if (req.headers['Authorization'] != null) {
+        if (req.headers.Authorization != null) {
           return false
         }
         if (accessToken) {
@@ -169,7 +169,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async updateUser(user: {email?: string; loginName?: string}) {
       return http
-        .put<{user: Yodlee.User}>(`/user`, {user})
+        .put<{user: Yodlee.User}>('/user', {user})
         .then((r) => r.data.user)
     },
 
@@ -191,7 +191,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       async (opts) => {
         const pas = await http
           .get<{providerAccount: Yodlee.ProviderAccount[]}>(
-            `/providerAccounts`,
+            '/providerAccounts',
             {
               params: {include: 'preferences'},
             },
@@ -234,7 +234,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
     }) {
       return http
         .put<{providerAccount: Yodlee.ProviderAccount[]}>(
-          `/providerAccounts`,
+          '/providerAccounts',
           data,
           {params: {providerAccountIds: providerAccountIds.join(',')}},
         )
@@ -294,21 +294,21 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       //   params.include = 'assetClassification'
       // }
       return http
-        .get<{holding?: Yodlee.Holding[]}>(`/holdings`, {params})
+        .get<{holding?: Yodlee.Holding[]}>('/holdings', {params})
         .then((r) => r.data.holding || [])
     },
 
     async getHoldingSecurities(params: {holdingId: YodleeIds}) {
       params.holdingId = idToString(params.holdingId)
       return http
-        .get<{holding?: Yodlee.HoldingSecurity[]}>(`/holdings/securities`, {
+        .get<{holding?: Yodlee.HoldingSecurity[]}>('/holdings/securities', {
           params,
         })
         .then((r) => r.data.holding || [])
     },
 
     async getHoldingTypeList() {
-      return http.get<{}>(`/holdings/holdingTypeList`).then((r) => r.data)
+      return http.get<{}>('/holdings/holdingTypeList').then((r) => r.data)
     },
 
     async getAccountHistoricalBalances(params: {accountId: number | string}) {
@@ -334,7 +334,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       toDate: ISODateTime
     }) {
       return http
-        .get<{event: Yodlee.Event}>(`dataExtracts/events`, {params})
+        .get<{event: Yodlee.Event}>('dataExtracts/events', {params})
         .then((r) => r.data.event)
     },
 
@@ -347,7 +347,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       toDate: ISODateTime
     }) {
       return http
-        .get<{userData: Yodlee.UserData[]}>(`dataExtracts/userData`, {params})
+        .get<{userData: Yodlee.UserData[]}>('dataExtracts/userData', {params})
         .then((r) => r.data.userData || [])
     },
 
@@ -387,7 +387,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async getStatements(params: Yodlee.GetStatementParams) {
       return http
-        .get<{statement: Yodlee.Statement[]}>(`/statements`, {
+        .get<{statement: Yodlee.Statement[]}>('/statements', {
           params,
         })
         .then((r) => r.data.statement || [])
@@ -395,7 +395,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async getTransactions(params: Yodlee.GetTransactionParams) {
       return http
-        .get<{transaction: Yodlee.Transaction[]}>(`/transactions`, {
+        .get<{transaction: Yodlee.Transaction[]}>('/transactions', {
           params,
         })
         .then((r) => r.data.transaction || [])
@@ -405,7 +405,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       const end = DateTime.local().plus({days: 1})
       const start = DateTime.fromMillis(0)
       return http
-        .get<{transaction: {TOTAL: {count: number}}}>(`/transactions/count`, {
+        .get<{transaction: {TOTAL: {count: number}}}>('/transactions/count', {
           params: {
             fromDate: start.toISODate(),
             toDate: end.toISODate(),
@@ -469,7 +469,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async getSubscribedEvents() {
       return http
-        .get<{event: Yodlee.SubscribedEvent[]}>(`/configs/notifications/events`)
+        .get<{event: Yodlee.SubscribedEvent[]}>('/configs/notifications/events')
         .then((r) => r.data.event || [])
     },
 
