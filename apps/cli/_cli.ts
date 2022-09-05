@@ -1,4 +1,3 @@
-// Not sure why ../node_modules import needed... was working before
 import '@ledger-sync/app-config/register.node'
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
@@ -29,7 +28,7 @@ if (require.main === module) {
   const clients: ClientMap = {
     env: () =>
       R.mapValues(dotEnvOut.parsed ?? {}, (v, k) => () => {
-        const json = safeJSONParse(v) ?? safeJSONParse(v.split('\n').join(''))
+        const json = JSON.parse(v)
         console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
         return json ?? v
       }),
@@ -53,9 +52,7 @@ if (require.main === module) {
       R.pipe(safeJSONParse(process.env['YODLEE_SETTINGS']), (settings) =>
         makeYodleeClient(
           {
-            ...safeJSONParse(
-              process.env['YODLEE_CONFIG']?.split('\n').join(''),
-            )[settings.envName],
+            ...safeJSONParse(process.env['YODLEE_CONFIG'])[settings.envName],
             envName: settings.envName,
           },
           settings,
