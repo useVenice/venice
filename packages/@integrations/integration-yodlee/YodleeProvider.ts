@@ -6,13 +6,18 @@ import {
 import {
   type YodleeAccount,
   type YodleeTransaction,
-  zAccessToken,
   zProviderAccount,
   zUser,
   zYodleeProvider,
 } from './yodlee.types'
-import {makeYodleeClient, zCfg, zCreds, zYodleeEnvName} from './YodleeClient'
-import {YodleeFastLink} from './YodleeFastLink'
+import {
+  makeYodleeClient,
+  zAccessToken,
+  zCfg,
+  zCreds,
+  zYodleeEnvName,
+} from './YodleeClient'
+// import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@ledger-sync/util'
@@ -186,8 +191,8 @@ export const yodleeProviderNext = makeSyncProvider({
     return async () => {
       // TO something useful here...
       await loaded
-      const Comp = YodleeFastLink({envName: 'sandbox', fastlinkToken: ''})
-      console.log('Comp', Comp)
+      // const Comp = YodleeFastLink({envName: 'sandbox', fastlinkToken: ''})
+      // console.log('Comp', Comp)
       throw new Error('Need to show dialog here of YodleeFastLink')
       // return {envName}
     }

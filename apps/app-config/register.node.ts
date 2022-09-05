@@ -32,25 +32,29 @@ export const dotEnvOut = dotenv.config({
 })
 // console.log('[DEBUG] parsed dotenv', dotEnvOut.parsed)
 
-implementProxyFn($makeProxyAgent, (input) => {
-  // Seems that the default value get overwritten by explicit undefined
-  // value from envkey. Here we try to account for that
-  // Would be nice if such hack is not required.
-  const {hostname, port, auth} = url.parse(input.url)
-  if (!hostname || !port) {
-    return undefined
-  }
+implementProxyFn(
+  $makeProxyAgent,
+  (input) => {
+    // Seems that the default value get overwritten by explicit undefined
+    // value from envkey. Here we try to account for that
+    // Would be nice if such hack is not required.
+    const {hostname, port, auth} = url.parse(input.url)
+    if (!hostname || !port) {
+      return undefined
+    }
 
-  return tunnel.httpsOverHttp({
-    ca: input.cert ? [Buffer.from(input.cert)] : [],
-    proxy: {
-      host: hostname,
-      port: Number.parseInt(port, 10),
-      proxyAuth: auth ?? undefined,
-      headers: {},
-    },
-  })
-})
+    return tunnel.httpsOverHttp({
+      ca: input.cert ? [Buffer.from(input.cert)] : [],
+      proxy: {
+        host: hostname,
+        port: Number.parseInt(port, 10),
+        proxyAuth: auth ?? undefined,
+        headers: {},
+      },
+    })
+  },
+  {replaceExisting: true},
+)
 
 implementProxyFn(
   $execCommand,

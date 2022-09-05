@@ -201,12 +201,6 @@ export const zUser = z.object({
   email: z.string(),
 })
 
-export const zAccessToken = z.object({
-  accessToken: z.string(),
-  issuedAt: z.string(),
-  expiresIn: z.number(), // seconds
-})
-
 // Params
 
 export const zGetTransactionParams = z.object({

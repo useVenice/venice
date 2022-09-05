@@ -2,6 +2,7 @@
 import '@ledger-sync/app-config/register.node'
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
+import {dotEnvOut} from '@ledger-sync/app-config/register.node'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
@@ -26,6 +27,12 @@ if (process.env['DEBUG_ZOD']) {
 if (require.main === module) {
   type ClientMap = Record<string, () => [ZFunctionMap, CliOpts] | ZFunctionMap>
   const clients: ClientMap = {
+    env: () =>
+      R.mapValues(dotEnvOut.parsed ?? {}, (v, k) => () => {
+        const json = safeJSONParse(v) ?? safeJSONParse(v.split('\n').join(''))
+        console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
+        return json ?? v
+      }),
     pgKv: () =>
       makePostgresKVStore({
         databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
@@ -46,7 +53,9 @@ if (require.main === module) {
       R.pipe(safeJSONParse(process.env['YODLEE_SETTINGS']), (settings) =>
         makeYodleeClient(
           {
-            ...safeJSONParse(process.env['YODLEE_CONFIG'])[settings.envName],
+            ...safeJSONParse(
+              process.env['YODLEE_CONFIG']?.split('\n').join(''),
+            )[settings.envName],
             envName: settings.envName,
           },
           settings,

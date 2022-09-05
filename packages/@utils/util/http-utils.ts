@@ -1,4 +1,4 @@
-import {defineProxyFn, isDependencyRegistered} from './di-utils'
+import {defineProxyFn} from './di-utils'
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -12,14 +12,12 @@ import type https from 'https'
 
 export type HTTPRequestConfig = AxiosRequestConfig
 
-export const $makeProxyAgent =
-  defineProxyFn<
-    (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
-  >('$makeProxyAgent')
+export const $makeProxyAgent = defineProxyFn<
+  (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
+>('$makeProxyAgent', () => undefined)
 
 export function getDefaultProxyAgent() {
-  return process.env['USE_PROXY_AGENT'] &&
-    isDependencyRegistered($makeProxyAgent.token)
+  return process.env['USE_PROXY_AGENT']
     ? $makeProxyAgent({
         url: process.env['PROXY_URL'] ?? '',
         cert: process.env['PROXY_CERT'] ?? '',
@@ -147,7 +145,11 @@ export function createHTTPClient({
   refreshAuth,
   httpsAgent,
   ...config
-}: Omit<AxiosRequestConfig, 'transformRequest' | 'transformResponse'> & {
+}: Omit<
+  AxiosRequestConfig,
+  // httpAgent doesn't work and is thus confusing..
+  'transformRequest' | 'transformResponse' | 'httpAgent'
+> & {
   requestTransformer?: (
     req: AxiosRequestConfig,
   ) => AxiosRequestConfig | Promise<AxiosRequestConfig>

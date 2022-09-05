@@ -1,4 +1,5 @@
 import {
+  $makeProxyAgent,
   createHTTPClient,
   DateTime,
   type HTTPError,
@@ -17,6 +18,11 @@ export const zCfg = z.object({
   clientSecret: z.string(),
   adminLoginName: z.string(),
   envName: zYodleeEnvName,
+  /**
+   * Yodlee production environment requires IP address whitelisting.
+   * Run a proxy with a static IP address that you whitelisted to get it working
+   */
+  proxy: z.object({url: z.string(), cert: z.string()}).nullish(),
 })
 
 type YodleeAccessToken = z.infer<typeof zAccessToken>
@@ -56,6 +62,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   let accessToken: YodleeAccessToken | null = creds.accessToken ?? null
 
   const http = createHTTPClient({
+    httpsAgent: config.proxy && $makeProxyAgent(config.proxy),
     baseURL: baseUrlFromEnvName(config.envName),
 
     headers: {
@@ -76,7 +83,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       return req
     },
     errorTransformer: (err) => {
-      if (err.response && err.response.data) {
+      if (err.response?.data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new YodleeError(err.response.data as any, err)
       }
@@ -107,6 +114,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
     createHTTPClient({
+      httpsAgent: config.proxy && $makeProxyAgent(config.proxy),
       baseURL: baseUrlFromEnvName(config.envName),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
