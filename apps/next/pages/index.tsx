@@ -9,33 +9,30 @@ export default function HomeScreen() {
     <Layout>
       <div className="container mx-auto flex max-w-screen-2xl flex-1 flex-col items-center justify-center">
         <form
-          className="flex flex-col space-y-2"
           onSubmit={(event) => {
             event.preventDefault()
             router.push(`/ledgers/${ledgerId}`)
           }}>
-          <label
-            className="block text-sm font-medium text-gray-500"
-            htmlFor="ledgerId">
-            Ledger ID
-          </label>
+          <div className="form-control">
+            <label htmlFor="ledgerId" className="label">
+              <span className="label-text">Ledger ID</span>
+            </label>
 
-          <div className="flex flex-row items-center space-x-2">
-            <input
-              className="h-12 rounded-lg border-2 border-gray-200 px-3"
-              type="text"
-              required
-              minLength={1}
-              id="ledgerId"
-              value={ledgerId}
-              onChange={(e) => setLedgerId(e.target.value)}
-            />
+            <div className="flex flex-row items-center space-x-2">
+              <input
+                type="text"
+                required
+                minLength={1}
+                id="ledgerId"
+                value={ledgerId}
+                onChange={(e) => setLedgerId(e.target.value)}
+                className="input-bordered input"
+              />
 
-            <button
-              className="h-12 rounded-lg bg-primary px-5 text-white"
-              type="submit">
-              Go
-            </button>
+              <button className="btn btn-primary text-lg" type="submit">
+                Go
+              </button>
+            </div>
           </div>
         </form>
       </div>

@@ -16,9 +16,9 @@ export function RadioGroup({
   ...restProps
 }: RadioGroupProps) {
   return (
-    <div className="flex flex-col space-y-2">
-      <legend className="text-sm font-medium leading-4 text-gray-500">
-        {label}
+    <div className="form-control">
+      <legend className="label">
+        <span className="label-text">{label}</span>
       </legend>
 
       <RadioGroupPrimitive.Root
@@ -50,9 +50,9 @@ export function Radio({id, label, className, ...restProps}: RadioProps) {
         {...restProps}
         id={id}
         className={twMerge(
-          'relative w-4 h-4 rounded-full border border-transparent text-white',
+          'relative h-4 w-4 rounded-full border border-transparent text-white',
           'radix-state-checked:bg-primary radix-state-unchecked:bg-gray-100',
-          'focus:(outline-none ring-0 ring-offset-0) focus-visible:(ring ring-purple-500 ring-opacity-75 ring-offset-2)',
+          'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
           className,
         )}>
         <RadioGroupPrimitive.Indicator className="absolute inset-0 flex items-center justify-center leading-none">
@@ -60,7 +60,7 @@ export function Radio({id, label, className, ...restProps}: RadioProps) {
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
 
-      <label htmlFor={id} className="text-sm text-gray-500">
+      <label htmlFor={id} className="text-sm">
         {label}
       </label>
     </div>

@@ -9,7 +9,7 @@ export function Tabs({className, children, ...restProps}: TabsProps) {
   return (
     <TabsPrimitive.Root
       {...restProps}
-      className={twMerge('flex flex-col flex-1 overflow-y-hidden', className)}>
+      className={twMerge('flex flex-1 flex-col overflow-y-hidden', className)}>
       {children}
     </TabsPrimitive.Root>
   )
@@ -36,8 +36,8 @@ export function Tab({className, children, ...restProps}: TabProps) {
     <TabsPrimitive.Trigger
       {...restProps}
       className={twMerge(
-        'flex-1 px-3 py-2 text-gray-500 border-b-4 border-transparent',
-        'radix-state-active:(text-primary border-primary)',
+        'flex-1 border-b-4 border-transparent px-3 py-2',
+        'radix-state-active:border-primary radix-state-active:text-primary',
         className,
       )}>
       <span className="text-sm font-medium">{children}</span>
