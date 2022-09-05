@@ -62,11 +62,11 @@ if (require.main === module) {
 
   const clientFactory = z
     .enum(Object.keys(clients) as [keyof typeof clients], {
-      errorMap: () => ({message: 'Invalid process.env.CLIENT'}),
+      errorMap: () => ({message: 'Invalid process.env.CLI'}),
     })
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .transform((key) => clients[key]!)
-    .parse(process.env['CLIENT'])
+    .parse(process.env['CLI'])
 
   const [client, opts] = R.pipe(clientFactory(), (r) =>
     Array.isArray(r) ? r : [r],
