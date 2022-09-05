@@ -1,279 +1,512 @@
-import type {YodleeAccount, YodleeTransaction} from './yodlee-utils'
-import {zGetTransactionParams} from './yodlee-utils'
-import type {HTTPError} from '@ledger-sync/util'
 import {
   createHTTPClient,
-  memoize,
+  DateTime,
+  HTTPError,
+  parseOptionalDateTime,
   stringifyQueryParams,
+  uniq,
   z,
   zFunction,
 } from '@ledger-sync/util'
 
-export const zYodleeProvider = z
-  .object({
-    id: z.number(),
-    name: z.string(),
-    loginUrl: z.string(),
-    baseUrl: z.string(),
-    favicon: z.string(),
-    /** Should be a url already */
-    logo: z.string(),
-    status: z.string(),
-    isAutoRefreshEnabled: z.boolean(),
-    authType: z.string(),
-    lastModified: z.string(),
-    languageISOCode: z.string(),
-    primaryLanguageISOCode: z.string(),
-    countryISOCode: z.string(),
-  })
-  .nullish()
-const zProviderAccount = z.object({
-  aggregationSource: z.string(),
-  createdDate: z.string(),
-  dataset: z.array(z.any()), // TODO: Change it with Yodlee.Dataset
-  id: z.number(),
-  isManual: z.boolean(),
-  providerId: z.number(),
-  status: z.enum([
-    'LOGIN_IN_PROGRESS',
-    'USER_INPUT_REQUIRED',
-    'IN_PROGRESS',
-    'PARTIAL_SUCCESS',
-    'SUCCESS',
-    'FAILED',
-  ]),
-  isDeleted: z.boolean().nullish(),
+export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
+
+type Cfg = z.infer<typeof zCfg>
+export const zCfg = z.object({
+  clientId: z.string(),
+  clientSecret: z.string(),
+  adminLoginName: z.string(),
+  envName: zYodleeEnvName,
 })
 
-const zUser = z.object({
-  id: z.number(),
-  loginName: z.string(),
-  roleType: z.string(),
-  preferences: z.object({
-    /** 'USD' */ currency: z.string(),
-    /** 'PST' */ timeZone: z.string(),
-    /** 'MM/dd/yyyy' */ dateFormat: z.string(),
-  }),
-  email: z.string(),
-})
-const zAccessToken = z.object({
+type YodleeAccessToken = z.infer<typeof zAccessToken>
+export const zAccessToken = z.object({
   accessToken: z.string(),
   issuedAt: z.string(),
   expiresIn: z.number(), // seconds
 })
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
-export const zConfig = z.object({
-  adminLoginName: z.string().nullish(),
-  clientId: z.string(),
-  clientSecret: z.string(),
-})
-export const zYodleeSettings = z.object({
-  envName: zEnvName,
+
+type Creds = z.infer<typeof zCreds>
+export const zCreds = z.object({
   loginName: z.string(),
-  providerAccount: zProviderAccount.nullish(),
-  provider: zYodleeProvider,
-  config: zConfig,
-  user: zUser.nullish(),
   accessToken: zAccessToken.nullish(),
 })
-type YodleeId = number | string | Array<number | string>
-type EnvName = z.infer<typeof zEnvName>
-const zRegisterUserInput = zUser.merge(z.object({envName: zEnvName}))
 
-function idToString(id: YodleeId) {
+/** Yodlee comma-delimited ids */
+type YodleeIds = z.infer<typeof zIds>
+const zId = z.union([z.number(), z.string()])
+const zIds = z.union([zId, z.array(zId)])
+
+function idToString(id: YodleeIds) {
   return Array.isArray(id) ? id.join(',') : id.toString()
 }
-export const makeYodleeClient = zFunction(zYodleeSettings, (cfg) => {
-  function defaultUrl(envName: EnvName) {
-    switch (envName) {
-      case 'sandbox':
-        return 'https://sandbox.api.yodlee.com/ysl'
-      case 'development':
-        return 'https://development.api.yodlee.com/ysl'
-      case 'production':
-        return 'https://production.api.yodlee.com/ysl'
-    }
+
+function baseUrlFromEnvName(envName: Yodlee.EnvName) {
+  switch (envName) {
+    case 'sandbox':
+      return 'https://sandbox.api.yodlee.com/ysl'
+    case 'development':
+      return 'https://development.api.yodlee.com/ysl'
+    case 'production':
+      return 'https://production.api.yodlee.com/ysl'
   }
-  const fromEnv = memoize(
-    (envName: EnvName | undefined, accessToken?: string) => {
-      if (!envName) {
-        throw new Error(`Unable to get client envName=${envName}`)
-      }
+}
 
-      return createHTTPClient({
-        baseURL: defaultUrl(envName),
-        headers: {
-          'cache-control': 'no-cache',
-          'Content-Type': 'application/json',
-          'Api-Version': '1.1',
-        },
+export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
+  let accessToken: YodleeAccessToken | null = creds.accessToken ?? null
 
-        requestTransformer: (req) => {
-          if (req.headers.Authorization != null) {
-            return req
-          }
+  const http = createHTTPClient({
+    baseURL: baseUrlFromEnvName(config.envName),
 
-          if (cfg.accessToken) {
-            req.headers = {
-              ...req.headers,
-              Authorization: `Bearer ${cfg.accessToken.accessToken}`,
-            }
-          }
-          if (accessToken) {
-            req.headers = {
-              ...req.headers,
-              Authorization: `Bearer ${accessToken}`,
-            }
-          }
-          return req
-        },
-
-        errorTransformer: (err) => {
-          if (err.response && err.response.data) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return new YodleeError(err.response.data as any, err)
-          }
-          return err
-        },
-      })
+    headers: {
+      'cache-control': 'no-cache',
+      'Content-Type': 'application/json',
+      'Api-Version': '1.1',
     },
+    requestTransformer: (req) => {
+      if (req.headers['Authorization'] != null) {
+        return req
+      }
+      if (accessToken) {
+        req.headers = {
+          ...req.headers,
+          Authorization: `Bearer ${accessToken.accessToken}`,
+        }
+      }
+      return req
+    },
+    errorTransformer: (err) => {
+      if (err.response && err.response.data) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new YodleeError(err.response.data as any, err)
+      }
+      return err
+    },
+    refreshAuth: {
+      shouldProactiveRefresh: (req) => {
+        if (req.headers['Authorization'] != null) {
+          return false
+        }
+        if (accessToken) {
+          const expiresAt = DateTime.fromISO(accessToken.issuedAt).plus({
+            seconds: accessToken.expiresIn,
+          })
+          const now = DateTime.utc()
+          return expiresAt >= now
+        }
+        return true
+      },
+      refresh: async () => {
+        // TODO: Add a callback upon access token being generated
+        accessToken = await generateAccessToken(
+          creds.loginName ?? config.adminLoginName,
+        )
+      },
+    },
+  })
+
+  const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
+    createHTTPClient({
+      baseURL: baseUrlFromEnvName(config.envName),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Api-Version': '1.1',
+        loginName,
+      },
+    })
+      .post<{token: YodleeAccessToken}>(
+        '/auth/token',
+        stringifyQueryParams({
+          clientId: config.clientId,
+          secret: config.clientSecret,
+        }),
+      )
+      .then((r) => r.data.token),
   )
 
-  async function getHoldings(
-    params: Yodlee.GetHoldingsParams,
-    envName: EnvName,
-  ) {
-    // Adding include=assetClassification causes crash https://share.getcloudapp.com/geuz4Ndg
-    // if (params.include === undefined) {
-    //   params.include = 'assetClassification'
-    // }
-    return fromEnv(envName)
-      .get<{holding?: Yodlee.Holding[]}>('/holdings', {params})
-      .then((r) => r.data.holding || [])
-  }
-
-  async function getHoldingSecurities(
-    params: {holdingId: YodleeId},
-    envName: EnvName,
-  ) {
-    params.holdingId = idToString(params.holdingId)
-    return fromEnv(envName)
-      .get<{holding?: Yodlee.HoldingSecurity[]}>('/holdings/securities', {
-        params,
-      })
-      .then((r) => r.data.holding || [])
-  }
-
-  return {
-    generateAccessToken: zFunction(
-      z.object({
-        loginName: z.string(),
-        envName: zEnvName,
-      }),
-      async ({envName, loginName}) =>
-        createHTTPClient({
-          baseURL: defaultUrl(envName),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Api-Version': '1.1',
-            loginName,
-          },
-        })
-          .post<{token: z.infer<typeof zAccessToken>}>(
-            '/auth/token',
-            stringifyQueryParams({
-              clientId: cfg.config.clientId,
-              secret: cfg.config.clientSecret,
-            }),
-          )
-          .then((r) => r.data.token),
-    ),
-
-    getAccounts: zFunction(
-      z.object({
-        providerAccountId: z.union([z.number(), z.string()]),
-        envName: zEnvName,
-        accessToken: z.string().optional(),
-      }),
-      (opts) =>
-        fromEnv(opts.envName, opts.accessToken)
-          .get<{account: [YodleeAccount]}>('/accounts', {
-            params: {providerAccountId: opts.providerAccountId},
+  const getProvider = zFunction(zId, async (providerId) =>
+    http
+      .get<{provider: [Yodlee.Provider]}>(`/providers/${providerId}`)
+      .then((providers) => {
+        if (!providers.data.provider) {
+          throw new YodleeNotFoundError({
+            entityName: 'Provider',
+            entityId: `${providerId}`,
           })
-          .then((r) => r.data.account || []),
-    ),
-    getHoldingsWithSecurity: zFunction(
-      z.object({
-        envName: zEnvName,
-        params: z.object({
-          accountId: z.string().nullish(),
-          providerAccountId: z.string().nullish(),
-          include: z.literal('assetClassification').nullish(),
-        }),
+        }
+        return providers.data.provider[0]
       }),
-      async (opts) => {
-        const holdings = await getHoldings(
-          opts.params as Yodlee.GetHoldingsParams,
-          opts.envName,
-        )
-        const holdingSecurities =
-          holdings.length === 0
-            ? await getHoldingSecurities(
-                {holdingId: holdings.map((h) => h.id)},
-                opts.envName,
-              )
-            : []
+  )
 
-        return holdings.map((h: Yodlee.HoldingWithSecurity) => ({
-          ...h,
-          security: holdingSecurities.find((hs) => hs.id === hs.id)?.security,
-        }))
-      },
-    ),
-    getTransactions: zFunction(
-      z.object({
-        params: zGetTransactionParams,
-        envName: zEnvName,
-      }),
-      (opts) =>
-        fromEnv(opts.envName)
-          .get<{transaction: YodleeTransaction[]}>('/transactions', {
-            params: opts.params,
-          })
-          .then((r) => r.data.transaction || []),
-    ),
-    registerUser: zFunction(zRegisterUserInput, async ({envName, ...user}) => {
-      const token = (await makeYodleeClient(cfg).generateAccessToken({
-        envName: cfg.envName,
-        loginName: cfg.config.adminLoginName ?? cfg.loginName,
-      })) as z.infer<typeof zAccessToken>
-      return fromEnv(envName)
-        .post<{user: z.infer<typeof zUser>}>(
+  const client = {
+    generateAccessToken,
+    getProvider,
+    async registerUser(user: {loginName: string; email: string}) {
+      const token = await generateAccessToken(config.adminLoginName)
+      return http
+        .post<{user: Yodlee.User}>(
           '/user/register',
           {user},
           {headers: {Authorization: `Bearer ${token.accessToken}`}},
         )
         .then((r) => r.data.user)
-    }),
+    },
 
-    getUser: zFunction(zEnvName, (envName) =>
-      fromEnv(envName)
-        .get<{user: z.infer<typeof zUser>}>('/user')
+    getUser: zFunction(async () =>
+      http
+        .get<{user: Yodlee.User}>('/user')
         .then((r) => r.data.user)
         .catch((err) => {
           if (err instanceof YodleeError && err.data.errorCode === 'Y008') {
             throw new YodleeNotFoundError({
               entityName: 'User',
-              entityId: cfg.loginName ?? '',
+              entityId: creds.loginName ?? '',
             })
           }
           throw err
         }),
     ),
+
+    async updateUser(user: {email?: string; loginName?: string}) {
+      return http
+        .put<{user: Yodlee.User}>(`/user`, {user})
+        .then((r) => r.data.user)
+    },
+
+    async unregisterUser() {
+      return http.delete('/user/unregister')
+    },
+
+    async getProviderAccount(providerAccountId: number | string) {
+      return http
+        .get<{providerAccount: Yodlee.ProviderAccount[]}>(
+          `/providerAccounts/${providerAccountId}`,
+          {params: {include: 'preferences'}},
+        )
+        .then((r) => r.data.providerAccount[0])
+    },
+
+    getProviderAccounts: zFunction(
+      z.object({getProviders: z.boolean().optional()}).optional(),
+      async (opts) => {
+        const pas = await http
+          .get<{providerAccount: Yodlee.ProviderAccount[]}>(
+            `/providerAccounts`,
+            {
+              params: {include: 'preferences'},
+            },
+          )
+          .then((r) => r.data.providerAccount || [])
+        if (!opts?.getProviders) {
+          return pas
+        }
+        const providers = await Promise.all(
+          uniq(pas.map((pa) => pa.providerId)).map((id) =>
+            getProvider(id).catch((err) => {
+              // Can happen if provider is removed from yodlee
+              console.warn(`Error getting provider id=${id}`, err)
+              return null
+            }),
+          ),
+        )
+        return pas.map((pa) => ({
+          ...pa,
+          provider: providers.find((p) => p?.id === pa.providerId),
+        }))
+      },
+    ),
+
+    // TODO: Figure out how to do this right via Yodlee
+    async forceRefreshProviderAccount(providerAccountId: string | number) {
+      return client.updateProviderAccounts({
+        providerAccountIds: [providerAccountId],
+        datasetName: ['BASIC_AGG_DATA'],
+      })
+    },
+
+    /** Use params {"datasetName": ["BASIC_AGG_DATA"]} to refresh transactions */
+    async updateProviderAccounts({
+      providerAccountIds,
+      ...data
+    }: {
+      providerAccountIds: Array<string | number>
+      datasetName: string[]
+    }) {
+      return http
+        .put<{providerAccount: Yodlee.ProviderAccount[]}>(
+          `/providerAccounts`,
+          data,
+          {params: {providerAccountIds: providerAccountIds.join(',')}},
+        )
+        .then((r) => r.data.providerAccount)
+    },
+
+    async deleteProviderAccount(providerAccountId: number | string) {
+      return http.delete(`/providerAccounts/${providerAccountId}`)
+    },
+
+    async getAccounts(params: {providerAccountId?: number | string} = {}) {
+      return http
+        .get<{account: [Yodlee.Account]}>('/accounts', {params})
+        .then((r) => r.data.account || [])
+    },
+
+    async getAccount({
+      accountId,
+      ...params
+    }: {
+      accountId: string
+      container: string
+    }) {
+      return http
+        .get<{account: [Yodlee.Account]}>(`/accounts/${accountId}`, {params})
+        .then((r) => {
+          if (!r.data.account) {
+            throw new YodleeNotFoundError({
+              entityName: 'Account',
+              entityId: accountId,
+            })
+          }
+          return r.data.account[0]
+        })
+    },
+
+    async getHoldingsWithSecurity(params: Yodlee.GetHoldingsParams) {
+      const holdings = await client.getHoldings(params)
+      const holdingSecurities =
+        holdings.length === 0
+          ? await client.getHoldingSecurities({
+              holdingId: holdings.map((h) => h.id),
+            })
+          : []
+      return holdings.map(
+        (h): Yodlee.HoldingWithSecurity => ({
+          ...h,
+          security: holdingSecurities.find((hs) => hs.id === h.id)?.security,
+        }),
+      )
+    },
+
+    /** Will set `include=assetClassification` by default */
+    async getHoldings(params: Yodlee.GetHoldingsParams) {
+      // Adding include=assetClassification causes crash https://share.getcloudapp.com/geuz4Ndg
+      // if (params.include === undefined) {
+      //   params.include = 'assetClassification'
+      // }
+      return http
+        .get<{holding?: Yodlee.Holding[]}>(`/holdings`, {params})
+        .then((r) => r.data.holding || [])
+    },
+
+    async getHoldingSecurities(params: {holdingId: YodleeIds}) {
+      params.holdingId = idToString(params.holdingId)
+      return http
+        .get<{holding?: Yodlee.HoldingSecurity[]}>(`/holdings/securities`, {
+          params,
+        })
+        .then((r) => r.data.holding || [])
+    },
+
+    async getHoldingTypeList() {
+      return http.get<{}>(`/holdings/holdingTypeList`).then((r) => r.data)
+    },
+
+    async getAccountHistoricalBalances(params: {accountId: number | string}) {
+      return http
+        .get<{
+          account: [
+            {id: number; historicalBalances: Yodlee.HistoricalBalance[]},
+          ]
+        }>('/accounts/historicalBalances', {params})
+        .then((r) => r.data.account[0].historicalBalances)
+    },
+
+    /**
+     * https://developer.yodlee.com/api-reference#!/dataExtracts/getPollingData
+     * The get extracts events service is used to learn about occurrences of data extract related events. This service currently supports only the DATA_UPDATES event.
+     * Passing the event name as DATA_UPDATES provides information about users for whom data has been modified in the system for the specified time range. To learn more, please refer to the dataExtracts page.
+     * You can retrieve data in increments of no more than 60 minutes over the period of the last 7 days from today's date.
+     * This service is only invoked with either admin access token or a cobrand session.
+     */
+    async getEvents(params: {
+      eventName: Yodlee.EventName
+      fromDate: ISODateTime
+      toDate: ISODateTime
+    }) {
+      return http
+        .get<{event: Yodlee.Event}>(`dataExtracts/events`, {params})
+        .then((r) => r.data.event)
+    },
+
+    /**
+     * https://developer.yodlee.com/api-reference#!/dataExtracts/getUserData
+     */
+    async getUserData(params: {
+      loginName: string
+      fromDate: ISODateTime
+      toDate: ISODateTime
+    }) {
+      return http
+        .get<{userData: Yodlee.UserData[]}>(`dataExtracts/userData`, {params})
+        .then((r) => r.data.userData || [])
+    },
+
+    async *iterateEvents(eventName: Yodlee.EventName) {
+      // 7 day max range
+      let end = DateTime.utc().startOf('second')
+      const earliest = end.minus({days: 7})
+
+      while (true) {
+        const start = end.minus({hours: 1})
+        if (start < earliest) {
+          break
+        }
+        // in fact singular
+        const events = await client.getEvents({
+          eventName,
+          fromDate: start.toISO({suppressMilliseconds: true}),
+          toDate: end.toISO({suppressMilliseconds: true}),
+        })
+
+        yield events
+        end = start
+      }
+    },
+
+    async *iterateUserDataFromLinks(links: Yodlee.Link[]) {
+      for (const link of links) {
+        const token = await generateAccessToken(config.adminLoginName)
+        const userData = await http
+          .get<{userData: Yodlee.UserData[]}>(link.href, {
+            headers: {Authorization: `Bearer ${token.accessToken}`},
+          })
+          .then((r) => r.data.userData || [])
+        yield userData
+      }
+    },
+
+    async getStatements(params: Yodlee.GetStatementParams) {
+      return http
+        .get<{statement: Yodlee.Statement[]}>(`/statements`, {
+          params,
+        })
+        .then((r) => r.data.statement || [])
+    },
+
+    async getTransactions(params: Yodlee.GetTransactionParams) {
+      return http
+        .get<{transaction: Yodlee.Transaction[]}>(`/transactions`, {
+          params,
+        })
+        .then((r) => r.data.transaction || [])
+    },
+
+    async getTransactionsCount(params: Yodlee.GetTransactionParams) {
+      const end = DateTime.local().plus({days: 1})
+      const start = DateTime.fromMillis(0)
+      return http
+        .get<{transaction: {TOTAL: {count: number}}}>(`/transactions/count`, {
+          params: {
+            fromDate: start.toISODate(),
+            toDate: end.toISODate(),
+            ...params,
+          },
+        })
+        .then((r) => r.data.transaction.TOTAL.count)
+    },
+
+    /**
+     * @param options accountId is an optional field, and may be a comma-separated array
+     */
+    async *iterateAllTransactions(
+      options: {
+        skipInvestmentTransactions?: boolean
+        accountId?: string
+        start?: ISODate
+        end?: ISODate
+      } = {},
+    ) {
+      // Eliminate any effect of timezones by just adding a day
+      const end =
+        parseOptionalDateTime(options.end) ?? DateTime.local().plus({days: 1})
+      // Should be nothing since before epoch zero.
+      // This turns out to be 1969-12-31 but who cares
+      const start =
+        parseOptionalDateTime(options.start) ?? DateTime.fromMillis(0)
+
+      let offset = 0
+      // Fetch 100 transactions only on the first request to optimize for incremental
+      // sync scenarios
+      let count = 100
+
+      // Yodlee count is wrong / not to be relied upon
+      // https://app.asana.com/0/1161030597644209/1161031415900757
+      // const total = await getTransactionsCount(params)
+      while (true) {
+        const transactions = await client.getTransactions({
+          accountId: options.accountId,
+          skip: offset,
+          top: count,
+          fromDate: start.toISODate(),
+          toDate: end.toISODate(),
+        })
+        if (transactions.length === 0) {
+          break
+        }
+        yield transactions.filter((t) => {
+          if (options.skipInvestmentTransactions) {
+            return t.CONTAINER !== 'investment'
+          }
+          return true
+        })
+        offset += transactions.length
+        count = 500
+        // if (offset >= total) {
+        //   break
+        // }
+      }
+    },
+
+    async getSubscribedEvents() {
+      return http
+        .get<{event: Yodlee.SubscribedEvent[]}>(`/configs/notifications/events`)
+        .then((r) => r.data.event || [])
+    },
+
+    async subscribeEvent(
+      eventName: Yodlee.EventName,
+      params: {event: {callbackUrl: string}},
+    ) {
+      // 204 no content
+      await http.post(`/configs/notifications/events/${eventName}`, params)
+    },
+
+    async updateSubscription(
+      eventName: Yodlee.EventName,
+      params: {event: {callbackUrl: string}},
+    ) {
+      // 204 no content
+      await http.put(`/configs/notifications/events/${eventName}`, params)
+    },
+
+    async deleteSubscription(eventName: Yodlee.EventName) {
+      await http.delete(`/configs/notifications/events/${eventName}`)
+    },
+
+    async getInstitutions() {
+      return http
+        .get<{institution: Yodlee.Institution[]}>('/institutions')
+        .then((r) => r.data)
+    },
   }
+
+  return client
 })
 
-class YodleeError extends Error {
+/**
+ * @see https://developer.yodlee.com/Yodlee_API/docs/v1_1/API_Error_Codes
+ */
+export class YodleeError extends Error {
   override name = 'YodleeError'
 
   constructor(
@@ -288,7 +521,9 @@ class YodleeError extends Error {
     Object.setPrototypeOf(this, YodleeError.prototype)
   }
 }
-class YodleeNotFoundError extends Error {
+
+// TODO: Merge with YodleeError somehow... Otherwise isIntance fails :(
+export class YodleeNotFoundError extends Error {
   override name = 'YodleeNotFoundError'
 
   constructor(
