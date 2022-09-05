@@ -2,6 +2,7 @@ import {Layout} from '../../../components/Layout'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
+import {Circle} from 'phosphor-react'
 
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
@@ -10,7 +11,8 @@ export default function LedgerMyConnectionsScreen() {
     ledgerId,
     envName: 'sandbox', // Add control for me...
   })
-  console.log('connectionsRes', connectionsRes)
+  const connections = connectionsRes.data
+  console.log('connections', connections)
   return (
     <>
       <Head>
@@ -23,31 +25,44 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
         ]}>
-        <div className="mx-auto flex max-w-screen-2xl flex-1 flex-col space-y-4 overflow-y-auto p-8">
-          {connectionsRes.data?.map((conn) => (
-            <div
-              key={conn.id}
-              className="flex flex-row space-x-4 rounded-lg border-2 border-gray-200 bg-gray-100 object-contain p-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`data:image/png;base64,${
-                  (conn as any).settings.institution.logo
-                }`}
-                alt={`"${(conn as any).settings.institution.name}" logo`}
-                className="h-32 w-32 object-contain"
-              />
+        <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto p-8">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {connections?.map((conn) => (
+              <div
+                key={conn.id}
+                className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+                <div className="card-body space-y-4">
+                  <div className="flex space-x-4">
+                    <div className="flex flex-col space-y-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`data:image/png;base64,${
+                          (conn as any).institution.logo
+                        }`}
+                        alt={`"${(conn as any).institution.name}" logo`}
+                        className="h-12 w-12 overflow-hidden object-contain"
+                      />
 
-              <div className="flex flex-col space-y-2">
-                <span className="text-xl font-medium">
-                  {(conn as any).settings.institution.name}
-                </span>
+                      <span className="badge-outline badge uppercase">
+                        {(conn as any).envName}
+                      </span>
+                    </div>
+                  </div>
 
-                <pre className="max-h-64 overflow-y-auto">
-                  {JSON.stringify(conn, null, 2)}
-                </pre>
+                  <div className="flex justify-between space-x-4">
+                    <span className="text-xl font-medium">
+                      {(conn as any).institution.name}
+                    </span>
+
+                    <div className="flex items-center space-x-2 text-sm text-green-600">
+                      <Circle weight="fill" />
+                      <span>Active</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </Layout>
     </>

@@ -21,7 +21,7 @@ export function Layout({
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">
-        <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between sm:px-6 lg:px-8">
           <Link href="/">
             <a className="rounded-lg bg-gray-100 p-2 text-primary">
               <span className="text-lg font-bold sm:text-xl">{title}</span>
