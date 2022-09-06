@@ -1,5 +1,6 @@
 import {LSProvider} from './LSProvider'
 import type {ConnectContext, PreConnOptions} from '@ledger-sync/cdk-core'
+import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
 import type {IntegrationInput} from '@ledger-sync/engine'
 import type {NonNullableOnly} from '@ledger-sync/util'
 import React from 'react'
@@ -28,16 +29,24 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
       int: NonNullableOnly<IntegrationInput, 'provider'>,
       {key, options}: PreConnOptions,
     ) {
-      const preConnRes = await client.mutation('preConnect', [int, options])
-      console.log(`${key} preConnnectRes`, preConnRes)
+      try {
+        const preConnRes = await client.mutation('preConnect', [int, options])
+        console.log(`${key} preConnnectRes`, preConnRes)
 
-      const res = await hooks[int.provider]?.(preConnRes)
-      console.log(`${key} innerConnectRes`, res)
+        const res = await hooks[int.provider]?.(preConnRes)
+        console.log(`${key} innerConnectRes`, res)
 
-      const postConRes = await client.mutation('postConnect', [int, res, ctx])
-      console.log(`${key} postConnectRes`, postConRes)
-      // TODO: We should get the client and invalidate instead
-      await connectionsRes.refetch()
+        const postConRes = await client.mutation('postConnect', [int, res, ctx])
+        console.log(`${key} postConnectRes`, postConRes)
+        // TODO: We should get the client and invalidate instead
+        await connectionsRes.refetch()
+      } catch (err) {
+        if (err === CANCELLATION_TOKEN) {
+          console.log(`${key} Cancelled`)
+        } else {
+          console.error(`${key} Connection failed`, err)
+        }
+      }
     },
     [client, hooks, ctx, connectionsRes],
   )

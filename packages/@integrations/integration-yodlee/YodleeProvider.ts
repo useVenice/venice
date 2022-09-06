@@ -18,7 +18,11 @@ import {
   zYodleeEnvName,
 } from './YodleeClient'
 import {YodleeFastLink} from './YodleeFastLink'
-import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
+import {
+  CANCELLATION_TOKEN,
+  makeSyncProvider,
+  useScript,
+} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import type {MergeUnion} from '@ledger-sync/util'
@@ -247,8 +251,7 @@ export const yodleeProvider = makeSyncProvider({
           onClose: (data) => {
             console.debug('[yodlee] Did close', data)
             hide()
-            // FIXME
-            // defered.resolve({status: 'cancelled'})
+            deferred.reject(CANCELLATION_TOKEN)
           },
         }),
       )

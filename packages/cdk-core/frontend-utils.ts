@@ -38,3 +38,5 @@ export function useScript(src: string) {
 
   return deferred.current.promise
 }
+
+export const CANCELLATION_TOKEN = 'CANCELLED'
