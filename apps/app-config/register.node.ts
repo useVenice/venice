@@ -40,7 +40,7 @@ export const dotEnvOut = dotenv.config({
 // to fix it. Shouldn't be a problem during actual deploys though
 for (const [k, v] of Object.entries(dotEnvOut.parsed ?? {})) {
   if (safeJSONParse(v) === undefined) {
-    const jsonStr = v.split('\n').join('')
+    const jsonStr = v.split('\n').join('\\n')
     if (safeJSONParse(jsonStr) !== undefined) {
       console.log('Hacking json support for key =', k)
       if (dotEnvOut.parsed) {
@@ -65,6 +65,23 @@ implementProxyFn(
     if (!hostname || !port) {
       return undefined
     }
+    // Alternative workaround for https://github.com/motdotla/dotenv/issues/664
+    // Workaround for when newline in certs gets lost... due to the same dotenv issue...
+    // Maybe we should really hack dotenv instead
+    // let cert = input.cert
+    // if (cert && !cert.includes('\n')) {
+    //   cert = [
+    //     '-----BEGIN CERTIFICATE-----',
+    //     ...R.chunk(
+    //       cert
+    //         .replace(/^-----BEGIN CERTIFICATE-----/, '')
+    //         .replace(/-----END CERTIFICATE-----$/, '')
+    //         .split(''),
+    //       64,
+    //     ).map((l) => l.join('')),
+    //     '-----END CERTIFICATE-----',
+    //   ].join('\n')
+    // }
 
     return tunnel.httpsOverHttp({
       ca: input.cert ? [Buffer.from(input.cert)] : [],
