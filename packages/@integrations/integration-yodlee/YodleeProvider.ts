@@ -3,12 +3,12 @@ import {
   getYodleeAccountName,
   getYodleeAccountType,
 } from './yodlee-utils'
+import type {ProviderDetail} from './yodlee.generated'
 import {
   type YodleeAccount,
   type YodleeTransaction,
   zProviderAccount,
   zUser,
-  zYodleeProvider,
 } from './yodlee.types'
 import {
   makeYodleeClient,
@@ -49,7 +49,7 @@ const zSettings = zCreds.extend({
   // Cache
   accessToken: zAccessToken.nullish(),
   user: zUser.nullish(),
-  provider: zYodleeProvider.nullish(),
+  provider: zCast<ProviderDetail>().nullish(),
   providerAccount: zProviderAccount.nullish(),
 })
 

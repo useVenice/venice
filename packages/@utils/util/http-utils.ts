@@ -10,7 +10,6 @@ import type {
 import _Axios from 'axios'
 import type http from 'http'
 import type https from 'https'
-import {compact} from 'lodash'
 
 // MARK: - Proxy Agent
 
@@ -276,6 +275,22 @@ type OpenAPIConfig = {
   HEADERS?: Headers | Resolver<Headers>
   ENCODE_PATH?: (path: string) => string
 }
+
+const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
+  const encoder = config.ENCODE_PATH || encodeURI
+
+  const path = options.url
+    .replace('{api-version}', config.VERSION)
+    .replace(/{(.*?)}/g, (substring: string, group: string) => {
+      if (options.path?.hasOwnProperty(group)) {
+        return encoder(String(options.path[group]))
+      }
+      return substring
+    })
+
+  return `${config.BASE}${path}`
+}
+
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 /**
@@ -305,8 +320,8 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
       return new CancelablePromise((resolve, reject, onCancel) => {
         // Get the request URL. Depending on your needs, this might need additional processing,
         // @see ./src/templates/core/functions/getUrl.hbs
-        const url = compact([this.config.BASE, opts.url]).join('') //`${}${opts.path || ''}`
-        console.log('Will request url', url, opts)
+        const url = getUrl(this.config, opts)
+        // console.log('Will request url', url, opts)
 
         // Optional: Get and link the cancelation token, so the request can be aborted.
         const source = _Axios.CancelToken.source()
@@ -322,9 +337,10 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
         http
           .request({
             url,
-            withCredentials: this.config.WITH_CREDENTIALS,
-            data: formData ?? opts.body,
             method: opts.method,
+            withCredentials: this.config.WITH_CREDENTIALS,
+            params: opts.query,
+            data: formData ?? opts.body,
             headers: {
               ...opts.headers,
               ...(formData && {
