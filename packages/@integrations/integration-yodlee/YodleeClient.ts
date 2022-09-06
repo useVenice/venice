@@ -2,6 +2,7 @@ import {
   $makeProxyAgent,
   createHTTPClient,
   DateTime,
+  getDefaultProxyAgent,
   type HTTPError,
   parseOptionalDateTime,
   stringifyQueryParams,
@@ -61,9 +62,12 @@ function baseUrlFromEnvName(envName: Yodlee.EnvName) {
 export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   let accessToken: YodleeAccessToken | null = creds.accessToken ?? null
 
+  const httpsAgent =
+    getDefaultProxyAgent() ?? (config.proxy && $makeProxyAgent(config.proxy))
+
   const http = createHTTPClient({
-    httpsAgent: config.proxy && $makeProxyAgent(config.proxy),
     baseURL: baseUrlFromEnvName(config.envName),
+    httpsAgent,
 
     headers: {
       'cache-control': 'no-cache',
@@ -114,7 +118,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
     createHTTPClient({
-      httpsAgent: config.proxy && $makeProxyAgent(config.proxy),
+      httpsAgent,
       baseURL: baseUrlFromEnvName(config.envName),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
