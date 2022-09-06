@@ -1,4 +1,9 @@
-import {BaseHttpRequest, CancelablePromise, YodleeAPI} from './yodlee.generated'
+import {
+  AuthService,
+  BaseHttpRequest,
+  CancelablePromise,
+  YodleeAPI,
+} from './yodlee.generated'
 import type {ApiRequestOptions} from './yodlee.generated/core/ApiRequestOptions'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
@@ -90,6 +95,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
           Authorization: `Bearer ${accessToken.accessToken}`,
         }
       }
+
       return req
     },
     errorTransformer: (err) => {
@@ -101,7 +107,8 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
     },
     refreshAuth: {
       shouldProactiveRefresh: (req) => {
-        if (req.headers.Authorization != null) {
+        // eslint-disable-next-line @typescript-eslint/dot-notation
+        if (req.headers.Authorization != null || req.headers['loginName']) {
           return false
         }
         if (accessToken) {
@@ -134,10 +141,15 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         // Get the request URL. Depending on your needs, this might need additional processing,
         // @see ./src/templates/core/functions/getUrl.hbs
         const url = compact([this.config.BASE, opts.url]).join('') //`${}${opts.path || ''}`
+        console.log('Will request url', url, opts)
 
         // Optional: Get and link the cancelation token, so the request can be aborted.
         const source = Axios.CancelToken.source()
         onCancel(() => source.cancel('The user aborted a request.'))
+
+        const formData = opts.formData
+          ? stringifyQueryParams(opts.formData)
+          : null
 
         // Execute the request. This is a minimal example, in real world scenarios
         // you will need to add headers, process form data, etc.
@@ -145,8 +157,14 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         http
           .request({
             url,
-            data: opts.body,
+            data: formData ?? opts.body,
             method: opts.method,
+            headers: {
+              ...opts.headers,
+              ...(formData && {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              }),
+            },
             cancelToken: source.token,
           })
           .then((res) => resolve(res.data))
@@ -195,6 +213,17 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   )
 
   const client = {
+    generateAccessToken2: (loginName: string) =>
+      new AuthService({
+        config: api.request.config,
+        request: (opts) =>
+          api.request.request({...opts, headers: {...opts.headers, loginName}}),
+      })
+        .generateAccessToken({
+          clientId: config.clientId,
+          secret: config.clientSecret,
+        })
+        .then((r) => r.token),
     generateAccessToken,
     getProvider,
     async registerUser(user: {loginName: string; email: string}) {
