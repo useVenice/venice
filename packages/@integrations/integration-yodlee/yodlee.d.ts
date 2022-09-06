@@ -47,8 +47,8 @@ declare namespace Yodlee {
   export interface GetHoldingsParams {
     // there are more here: https://developer.yodlee.com/api-reference#!/holdings/getHoldings
     /** Comma separated accountIds	query	String */
-    accountId?: string
-    providerAccountId?: string
+    accountId?: string | number
+    providerAccountId?: string | number
     include?: 'assetClassification'
   }
 

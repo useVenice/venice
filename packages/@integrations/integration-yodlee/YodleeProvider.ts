@@ -10,7 +10,13 @@ import {
   zUser,
   zYodleeProvider,
 } from './yodlee.types'
-import {zAccessToken, zCfg, zCreds, zYodleeEnvName} from './YodleeClient'
+import {
+  makeYodleeClient,
+  zAccessToken,
+  zCfg,
+  zCreds,
+  zYodleeEnvName,
+} from './YodleeClient'
 import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
