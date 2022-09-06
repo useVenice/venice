@@ -92,7 +92,7 @@ const def = makeSyncProvider.def({
   webhookInput: zWebhookInput,
 })
 
-export const plaidProviderNext = makeSyncProvider({
+export const plaidProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({
@@ -277,7 +277,7 @@ export const plaidProviderNext = makeSyncProvider({
       institution: insRes?.institution,
     })
     const source$: rxjs.Observable<PlaidSyncOperation> =
-      plaidProviderNext.sourceSync({config, settings, options: {}})
+      plaidProvider.sourceSync({config, settings, options: {}})
     // Emit itemId
     return {
       externalId: res.item_id,

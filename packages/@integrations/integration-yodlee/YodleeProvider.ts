@@ -21,8 +21,7 @@ import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
-import type {
-  MergeUnion} from '@ledger-sync/util';
+import type {MergeUnion} from '@ledger-sync/util'
 import {
   A,
   Deferred,
@@ -30,7 +29,6 @@ import {
   parseDateTime,
   Rx,
   rxjs,
-  UnionToIntersection,
   z,
   zCast,
 } from '@ledger-sync/util'
@@ -89,9 +87,11 @@ const def = makeSyncProvider.def({
       entity: zCast<Yodlee.HoldingWithSecurity>(),
     }),
   ]),
+
+  // Should the mappers be in here instead? Or a separate function?
 })
 
-export const yodleeProviderNext = makeSyncProvider({
+export const yodleeProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({
@@ -196,6 +196,12 @@ export const yodleeProviderNext = makeSyncProvider({
         }
       },
     },
+  }),
+  // is the `id` actually externalId?
+  mapStandardConnection: (settings) => ({
+    id: `${settings.providerAccountId}`,
+    displayName:
+      settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
   }),
   getPreConnectInputs: ({envName, ledgerId}) => [
     def._preConnOption({

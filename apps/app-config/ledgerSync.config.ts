@@ -19,7 +19,7 @@ import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
 import {importProvider} from '@ledger-sync/integration-import'
 import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
-import {plaidProviderNext} from '@ledger-sync/integration-plaid'
+import {plaidProvider} from '@ledger-sync/integration-plaid'
 import {postgresProvider} from '@ledger-sync/integration-postgres'
 import {rampProvider} from '@ledger-sync/integration-ramp'
 import {splitwiseProvider} from '@ledger-sync/integration-splitwise'
@@ -27,7 +27,7 @@ import {stripeProvider} from '@ledger-sync/integration-stripe'
 import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
-import {yodleeProviderNext} from '@ledger-sync/integration-yodlee'
+import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
 function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
@@ -79,7 +79,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     corePostgresProvider,
     airtableProvider,
     // Ledger
-    plaidProviderNext,
+    plaidProvider,
     beancountProvider,
     importProvider,
     oneBrickProvider,
@@ -89,7 +89,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     wiseProvider,
     togglProvider,
     foreceiptProvider,
-    yodleeProviderNext,
+    yodleeProvider,
     splitwiseProvider,
     postgresProvider,
   ],

@@ -35,10 +35,11 @@ export default function LedgerMyConnectionsScreen() {
                     <div className="flex flex-col space-y-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={`data:image/png;base64,${
-                          (conn as any).institution.logo
-                        }`}
-                        alt={`"${(conn as any).institution.name}" logo`}
+                        src={
+                          (conn as any).institution?.logo ||
+                          (conn as any).provider?.logo
+                        }
+                        alt={`"${(conn as any).institution?.name}" logo`}
                         className="h-12 w-12 overflow-hidden object-contain"
                       />
 
@@ -50,7 +51,8 @@ export default function LedgerMyConnectionsScreen() {
 
                   <div className="flex justify-between space-x-4">
                     <span className="text-xl font-medium">
-                      {(conn as any).institution.name}
+                      {(conn as any).institution?.name ||
+                        (conn as any).provider?.name}
                     </span>
 
                     <div className="flex items-center space-x-2 text-sm text-green-600">
