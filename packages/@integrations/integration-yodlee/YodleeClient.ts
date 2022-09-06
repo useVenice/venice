@@ -8,7 +8,6 @@ import {
   getDefaultProxyAgent,
   type HTTPError,
   parseOptionalDateTime,
-  stringifyQueryParams,
   uniq,
   z,
   zFunction,
@@ -44,8 +43,10 @@ export const zCreds = z.object({
 })
 
 /** Yodlee comma-delimited ids */
-type YodleeIds = z.infer<typeof zIds>
-const zId = z.union([z.number(), z.string()])
+type YodleeIds = z.input<typeof zIds>
+const zId = z
+  .union([z.number(), z.string()])
+  .transform((id) => (typeof id === 'string' ? Number.parseInt(id) : id))
 const zIds = z.union([zId, z.array(zId)])
 
 function idToString(id: YodleeIds) {
@@ -113,6 +114,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         }
         return true
       },
+      shouldSkipRefresh: (req) => !!req.url?.endsWith('auth/token'),
       refresh: async () => {
         // TODO: Add a callback upon access token being generated
         accessToken = await generateAccessToken(
@@ -128,36 +130,29 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   )
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
-    createHTTPClient({
-      httpsAgent,
-      baseURL: baseUrlFromEnvName(config.envName),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Api-Version': '1.1',
-        loginName,
-      },
+    new AuthService({
+      config: api.request.config,
+      request: (opts) =>
+        api.request.request({...opts, headers: {...opts.headers, loginName}}),
     })
-      .post<{token: YodleeAccessToken}>(
-        '/auth/token',
-        stringifyQueryParams({
-          clientId: config.clientId,
-          secret: config.clientSecret,
-        }),
-      )
-      .then((r) => r.data.token),
+      .generateAccessToken({
+        clientId: config.clientId,
+        secret: config.clientSecret,
+      })
+      .then((r) => zAccessToken.parse(r.token)),
   )
 
   const getProvider = zFunction(zId, async (providerId) =>
-    http
-      .get<{provider: [Yodlee.Provider]}>(`/providers/${providerId}`)
-      .then((providers) => {
-        if (!providers.data.provider) {
+    api.providers
+      .getProvider({providerId: zId.parse(providerId)})
+      .then((res) => {
+        if (!res.provider) {
           throw new YodleeNotFoundError({
             entityName: 'Provider',
             entityId: `${providerId}`,
           })
         }
-        return providers.data.provider[0]
+        return res.provider[0]
       }),
   )
 

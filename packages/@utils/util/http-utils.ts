@@ -172,9 +172,11 @@ export function createHTTPClient({
     refresh: (err?: HTTPError) => Promise<void> | undefined
     /** For situations where we know a token has likely expired */
     shouldProactiveRefresh?: (req: AxiosRequestConfig) => boolean
+    /** Should return true for the refresh request itself... */
+    shouldSkipRefresh?: (req: AxiosRequestConfig) => boolean
   }
 }): HTTPClient {
-  let refreshing: Promise<void> | undefined
+  let refreshPromise: Promise<void> | undefined
 
   const axios = _Axios.create({
     // How do we use per request container here?
@@ -187,11 +189,15 @@ export function createHTTPClient({
   // https://github.com/axios/axios/issues/1663 Applied in reverse
   if (refreshAuth) {
     axios.interceptors.request.use((req) => {
-      if (!refreshing && refreshAuth.shouldProactiveRefresh?.(req)) {
-        refreshing = refreshAuth.refresh()
+      if (refreshAuth.shouldSkipRefresh?.(req)) {
+        return req
       }
-      return refreshing
-        ? refreshing
+      if (!refreshPromise && refreshAuth.shouldProactiveRefresh?.(req)) {
+        refreshPromise = refreshAuth.refresh()
+      }
+      return refreshPromise
+        ? refreshPromise
+            .finally(() => (refreshPromise = undefined))
             .catch((err) => {
               console.warn('[http] Failed to refresh auth', err)
               // eslint-disable-next-line @typescript-eslint/no-throw-literal
@@ -214,11 +220,11 @@ export function createHTTPClient({
         throw err
       }
       const error = HTTPError.create(err)
-      if (error.code === 401 && refreshAuth && !refreshing) {
-        refreshing = refreshAuth.refresh(error)
-        if (refreshing) {
-          return refreshing
-            .finally(() => (refreshing = undefined))
+      if (error.code === 401 && refreshAuth && !refreshPromise) {
+        refreshPromise = refreshAuth.refresh(error)
+        if (refreshPromise) {
+          return refreshPromise
+            .finally(() => (refreshPromise = undefined))
             .then(() => axios.request(err.response?.config ?? {}))
         }
       }
