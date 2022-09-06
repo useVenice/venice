@@ -48,9 +48,9 @@ export function YodleeFastLink({
                 providerAccountId,
               }
             : {
-                flow: 'add',
+                // flow: 'add',
                 configName: 'Aggregation',
-                providerId,
+                // providerId,
               },
           onSuccess,
           onError,
@@ -86,13 +86,15 @@ export function YodleeFastLink({
   }, [controls, rect?.height])
 
   return (
-    <div className="h-[30rem] w-[min(100vw,30rem)] overflow-y-auto p-4">
-      <motion.div animate={controls}>
+    <div
+      id={YODLEE_CONTAINER_ID}
+      className="h-[30rem] w-[min(100vw,30rem)] overflow-y-auto p-4">
+      {/* <motion.div animate={controls}>
         <div
           ref={fastlinkRef as React.RefObject<HTMLDivElement>}
           id={YODLEE_CONTAINER_ID}
         />
-      </motion.div>
+      </motion.div> */}
     </div>
   )
 }
