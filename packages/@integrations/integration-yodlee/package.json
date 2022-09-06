@@ -6,6 +6,9 @@
     "register.node.ts"
   ],
   "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi-generator generate -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -g typescript-axios -o ./yodlee.generated"
+  },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",

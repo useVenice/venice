@@ -6,6 +6,9 @@
     "register.node.ts"
   ],
   "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi-generator generate -i https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml -g typescript-axios -o ./plaid.generated"
+  },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",

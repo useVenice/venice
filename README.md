@@ -46,3 +46,8 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 ## Contribute & Support
 
 If you aren't in Slack already, hit us up and we'll add you.
+
+For integration development, we found the following tools really helpful for generating
+type as well as api clients
+- https://api.openapi-generator.tech/index.html
+- https://transform.tools/
