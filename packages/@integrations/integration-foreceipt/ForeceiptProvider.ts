@@ -164,7 +164,7 @@ export const foreceiptProvider = makeSyncProvider({
       },
     },
   }),
-  // useConnectHook: (_type) => (_opts) =>
+  // useConnectHook: (_) => (_opts) =>
   //   new Deferred<typeof def['_types']['connectOutput']>().promise,
 
   // TODO: Need to check and fix the issue

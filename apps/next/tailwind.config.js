@@ -24,7 +24,10 @@ const palette = {
  * @type {import('tailwindcss').Config}
  */
 module.exports = {
-  content: ['./{components,pages}/**/*.{ts,tsx}'],
+  content: [
+    './{components,pages}/**/*.{ts,tsx}',
+    '../../packages/{@integrations/*,engine-frontend}/**/*.tsx',
+  ],
   theme: {
     extend: {
       colors: palette,

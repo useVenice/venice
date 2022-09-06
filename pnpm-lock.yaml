@@ -830,23 +830,31 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/engine': '*'
       '@ledger-sync/util': '*'
+      '@react-hookz/web': 15.1.0
       '@trpc/client': 9.26.0
       '@trpc/react': 9.26.0
       '@trpc/server': 9.26.0
       '@types/react': '*'
+      ariakit: 2.0.0-next.41
+      phosphor-react: 1.4.1
       react: '*'
       react-dom: '*'
       react-query: 3.39.2
+      tailwind-merge: '*'
     dependencies:
       '@ledger-sync/cdk-core': link:../cdk-core
       '@ledger-sync/engine': link:../engine
       '@ledger-sync/util': link:../@utils/util
+      '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@trpc/client': 9.26.0_@trpc+server@9.26.0
       '@trpc/react': 9.26.0_irv66ybkadcialtmo3uz32bymi
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      ariakit: 2.0.0-next.41_sfoxds7t5ydpegc3knd667wn6m
+      phosphor-react: 1.4.1_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
+      tailwind-merge: 1.6.0
     devDependencies:
       '@types/react': 17.0.39
 
@@ -1845,6 +1853,16 @@ packages:
 
   /@firebase/webchannel-wrapper/0.6.1:
     resolution: {integrity: sha512-9FqhNjKQWpQ3fGnSOCovHOm+yhhiorKEqYLAfd525jWavunDJcx8rOW6i6ozAh+FbwcYMkL7b+3j4UR/30MpoQ==}
+    dev: false
+
+  /@floating-ui/core/1.0.1:
+    resolution: {integrity: sha512-bO37brCPfteXQfFY0DyNDGB3+IMe4j150KFQcgJ5aBP295p9nBGeHEs/p0czrRbtlHq4Px/yoPXO/+dOCcF4uA==}
+    dev: false
+
+  /@floating-ui/dom/1.0.1:
+    resolution: {integrity: sha512-wBDiLUKWU8QNPNOTAFHiIAkBv1KlHauG2AhqjSeh2H+wR8PX+AArXfz8NkRexH5PgMJMmSOS70YS89AbWYh5dA==}
+    dependencies:
+      '@floating-ui/core': 1.0.1
     dev: false
 
   /@github/mini-throttle/2.1.0:
@@ -3702,6 +3720,26 @@ packages:
       '@babel/runtime': 7.18.9
       '@babel/runtime-corejs3': 7.18.9
     dev: true
+
+  /ariakit-utils/0.17.0-next.26_react@17.0.2:
+    resolution: {integrity: sha512-Su1MA0nWcMKI/lPS++jgkXek6Z+Az4SGOTIjGz2mn7kN6pSRO3Xm4gW/6gLpbu0kmVd+MYNSpmEvFnJUf/udhA==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 17.0.2
+    dev: false
+
+  /ariakit/2.0.0-next.41_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-79ACgnIofsC7ULirjz/dqjNCwUW9TmX7ULdCqHHrpJP1H+lw9vtpWv4eeuRAII2lsyfNtXmLnY6qZ1ZV3ucxmA==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    dependencies:
+      '@floating-ui/dom': 1.0.1
+      ariakit-utils: 0.17.0-next.26_react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /arr-diff/4.0.0:
     resolution: {integrity: sha512-YVIQ82gZPGBebQV/a8dar4AitzCQs0jjXwMPZllpXMaGjXPYVUawSxQrRsjhjupyVxEvbHgUmIhKVlND+j02kA==}

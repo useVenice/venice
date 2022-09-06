@@ -21,7 +21,15 @@ import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
-import {A, objectFromObject, parseDateTime, z, zCast} from '@ledger-sync/util'
+import {
+  A,
+  Deferred,
+  objectFromObject,
+  parseDateTime,
+  z,
+  zCast,
+} from '@ledger-sync/util'
+import React from 'react'
 
 export const zYodleeConfig = z.record(
   zYodleeEnvName,
@@ -179,28 +187,48 @@ export const yodleeProviderNext = makeSyncProvider({
       options: {envName, loginName: ledgerId},
     }),
   ],
-
-  preConnect: async ({envName, loginName}, config) => {
-    const accessToken = await makeYodleeClient(
-      {...config[envName]!, envName},
-      {loginName},
-    ).generateAccessToken(loginName)
-    return {accessToken}
-  },
-  useConnectHook: (_type) => {
+  // FIXME
+  preConnect: async () => ({accessToken: {} as any}),
+  // preConnect: async ({envName, loginName}, config) => {
+  //   const accessToken = await makeYodleeClient(
+  //     {...config[envName]!, envName},
+  //     {loginName},
+  //   ).generateAccessToken(loginName)
+  //   return {accessToken}
+  // },
+  useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    return async () => {
-      // TO something useful here...
+    return async (_input) => {
       await loaded
-      const Comp = YodleeFastLink({envName: 'sandbox', fastlinkToken: ''})
-      console.log('Comp', Comp)
-      throw new Error('Need to show dialog here of YodleeFastLink')
-      // return {envName}
+      const deferred = new Deferred<typeof def['_types']['connectOutput']>()
+      scope.openDialog(({hide}) =>
+        YodleeFastLink({
+          envName: 'sandbox',
+          fastlinkToken: '',
+          providerId: '',
+          providerAccountId: '',
+          onSuccess: (data) => {
+            console.debug('[yodlee] Did receive successful response', data)
+            hide()
+            // FIXME
+            // deferred.resolve({})
+          },
+          onError: (data) => {
+            console.warn('[yodlee] Did receive an error', data)
+            hide()
+            deferred.reject(new Error(data.reason))
+          },
+          onClose: (data) => {
+            console.debug('[yodlee] Did close', data)
+            hide()
+            // FIXME
+            // defered.resolve({status: 'cancelled'})
+          },
+        }),
+      )
+      return deferred.promise
     }
   },
-
-  // useConnectHook: (_a: undefined) =>
-  //   new Deferred<typeof def['_types']['connectOutput']>().promise,
 
   // postConnect: async (input, config) => {
   //   const settings = def._type('connectionSettings', {

@@ -79,7 +79,7 @@ export const togglProvider = makeSyncProvider({
     },
   }),
 
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [isShowPromt, setIsShowPromt] = React.useState(false)
 
     const [deferred] = React.useState(

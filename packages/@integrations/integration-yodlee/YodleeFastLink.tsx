@@ -84,14 +84,7 @@ export function YodleeFastLink({
   }, [controls, rect?.height])
 
   return (
-    <div
-      style={{
-        // TODO: Move to tailwind css
-        width: 'min(100vw, 30rem)',
-        height: '30rem',
-        overflowY: 'auto',
-        padding: '$4',
-      }}>
+    <div className="h-[30rem] w-[min(100vw,30rem)] overflow-y-auto p-4">
       <motion.div animate={controls}>
         <div
           ref={fastlinkRef as React.RefObject<HTMLDivElement>}

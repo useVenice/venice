@@ -104,7 +104,7 @@ export const rampProvider = makeSyncProvider({
   }),
 
   // TODO: Need to find a way to skip unnecessary pipe/connection
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
       new Deferred<typeof def['_types']['connectOutput']>(),

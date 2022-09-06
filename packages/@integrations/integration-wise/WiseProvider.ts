@@ -96,7 +96,7 @@ export const wiseProvider = makeSyncProvider({
   //     ...input
   //   }),
 
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [options, setOptions] = React.useState<z.infer<
       typeof def['connectInput']
     > | null>(null)

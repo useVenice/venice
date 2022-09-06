@@ -1,3 +1,5 @@
+import type {DialogInstance} from './components/Dialog'
+import {Dialog} from './components/Dialog'
 import type {AnySyncProvider, LinkFactory} from '@ledger-sync/cdk-core'
 import type {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
 import {R} from '@ledger-sync/util'
@@ -28,15 +30,37 @@ export function LSProvider<
   const routerUrl = config.routerUrl ?? '/api/ledger-sync'
   const client = trpc.createClient({url: routerUrl})
 
+  const dialogRef = React.useRef<DialogInstance>(null)
+  const [DialogComponent, setDialogComponent] =
+    React.useState<React.ComponentType<{hide: () => void}> | null>(null)
+
   const hooks = R.mapToObj(config.providers, (p) => [
     p.name,
-    p.useConnectHook?.(),
+    p.useConnectHook?.({
+      openDialog: (render) => {
+        // Using closure, otherwise setter will execute component as thunk
+        setDialogComponent(() => render)
+      },
+    }),
   ])
 
   return (
     <trpc.Provider client={client} queryClient={queryClient}>
       <LSContext.Provider value={{trpc, hooks, client}}>
         {children}
+
+        {DialogComponent ? (
+          <Dialog
+            ref={dialogRef}
+            defaultOpen
+            onOpenChange={(newOpen) => {
+              if (!newOpen) {
+                setDialogComponent(null)
+              }
+            }}>
+            <DialogComponent hide={() => dialogRef.current?.hide()} />
+          </Dialog>
+        ) : null}
       </LSContext.Provider>
     </trpc.Provider>
   )

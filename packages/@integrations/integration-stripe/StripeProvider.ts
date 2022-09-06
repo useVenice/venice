@@ -100,7 +100,7 @@ export const stripeProvider = makeSyncProvider({
   //     accountId: config.accountId,
   //   }),
 
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
       new Deferred<typeof def['_types']['connectOutput']>(),

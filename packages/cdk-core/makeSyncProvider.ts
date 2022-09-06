@@ -9,6 +9,10 @@ export const zConnectContext = z.object({
   ledgerId: z.string(),
 })
 
+export interface UseConnectScope {
+  openDialog: (render: (ctx: {hide: () => void}) => JSX.Element) => void
+}
+
 export const CORE_NAME_TO_PREFIX = {
   integration: 'int',
   connection: 'conn',
@@ -220,8 +224,7 @@ export function makeSyncProvider<
   >,
   TUseConnHook extends _opt<
     (
-      // Should this also accept ConntectContext?
-      _typeHack?: never,
+      scope: UseConnectScope,
     ) => (
       connectInput: T['_types']['connectInput'],
     ) => Promise<T['_types']['connectOutput']>

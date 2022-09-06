@@ -126,7 +126,7 @@ export const oneBrickProvider = makeSyncProvider({
       publicToken: config.secrets[envName],
       redirect_url: config.redirectUrl,
     }),
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [options, setOptions] = React.useState<
       z.infer<typeof connectInputSchema>
     >({publicToken: undefined, redirect_url: undefined})

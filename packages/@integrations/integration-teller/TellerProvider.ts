@@ -133,7 +133,7 @@ export const tellerProvider = makeSyncProvider({
       institutionId,
       envName,
     }),
-  useConnectHook: (_type) => {
+  useConnectHook: (_) => {
     const [options, setOptions] = React.useState<
       | (z.infer<typeof zTellerConfig> & {
           environment: z.infer<typeof zEnvName>
