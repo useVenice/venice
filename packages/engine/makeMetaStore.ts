@@ -130,9 +130,10 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
       return data // What about the `id`?
     },
     getPipelinesForConnection: async (connectionId: string) => {
-      const pipelines = await list<RawPipeline<T, T>>()
+      // TODO: Distinguish objects of diff types.
+      const pipelines = await list<Partial<RawPipeline<T, T>>>()
       return pipelines.filter(
-        (p) => p.src.id === connectionId || p.dest.id === connectionId,
+        (p) => p.src?.id === connectionId || p.dest?.id === connectionId,
       )
     },
     kvStore,

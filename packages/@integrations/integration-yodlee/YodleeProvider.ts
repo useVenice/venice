@@ -21,6 +21,8 @@ import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
+import type {
+  MergeUnion} from '@ledger-sync/util';
 import {
   A,
   Deferred,
@@ -28,6 +30,7 @@ import {
   parseDateTime,
   Rx,
   rxjs,
+  UnionToIntersection,
   z,
   zCast,
 } from '@ledger-sync/util'
@@ -55,12 +58,20 @@ const def = makeSyncProvider.def({
   connectionSettings: zSettings,
   // Will be addressed again for reconnection
   preConnectInput: zSettings.pick({envName: true, loginName: true}),
-  connectInput: z.object({accessToken: zAccessToken}),
-  connectOutput: zSettings.pick({
-    envName: true, // How do make these not needed?
-    loginName: true, // How do make these not needed?
-    providerAccountId: true,
-  }),
+  // Should the concept of `ledger` be a thing?
+  // Should accessToken be cached based on provider / ledgerId?
+  connectInput: zSettings
+    .pick({envName: true, loginName: true})
+    .extend({accessToken: zAccessToken}),
+  /** Should this be named postConnectInput? */
+  connectOutput: zSettings
+    .pick({
+      envName: true, // How do make these not needed?
+      loginName: true, // How do make these not needed?
+      providerAccountId: true,
+      // user / providerId are optional...
+    })
+    .extend({providerId: z.number()}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -198,29 +209,34 @@ export const yodleeProviderNext = makeSyncProvider({
       {...config[envName]!, envName},
       {loginName},
     ).generateAccessToken(loginName)
-    return {accessToken}
+    return {accessToken, envName, loginName}
   },
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    return async ({accessToken}) => {
+    return async ({accessToken, envName, loginName}) => {
       await loaded
       const deferred = new Deferred<typeof def['_types']['connectOutput']>()
       scope.openDialog(({hide}) =>
         YodleeFastLink({
-          envName: 'sandbox',
+          envName,
           fastlinkToken: `Bearer ${accessToken.accessToken}`,
           // providerId: '',
           // providerAccountId: '',
           onSuccess: (data) => {
             console.debug('[yodlee] Did receive successful response', data)
             hide()
-            // FIXME
-            // deferred.resolve({})
+            deferred.resolve({
+              envName,
+              loginName,
+              providerAccountId: data.providerAccountId,
+              providerId: data.providerId,
+            })
           },
-          onError: (data) => {
+          onError: (_data) => {
+            const data = _data as MergeUnion<typeof _data>
             console.warn('[yodlee] Did receive an error', data)
             hide()
-            deferred.reject(new Error(data.reason))
+            deferred.reject(new Error(data.reason ?? data.message))
           },
           onClose: (data) => {
             console.debug('[yodlee] Did close', data)
@@ -234,19 +250,33 @@ export const yodleeProviderNext = makeSyncProvider({
     }
   },
 
-  // postConnect: async (input, config) => {
-  //   const settings = def._type('connectionSettings', {
-  //     ...input,
-  //   })
+  postConnect: async (
+    {envName, loginName, providerAccountId, providerId},
+    config,
+  ) => {
+    const yodlee = makeYodleeClient({...config[envName]!, envName}, {loginName})
+    const [providerAccount, provider, user] = await Promise.all([
+      yodlee.getProviderAccount(providerAccountId),
+      yodlee.getProvider(providerId),
+      yodlee.getUser(),
+    ])
 
-  //   const source$: rxjs.Observable<YodleeSyncOperation> =
-  //     yodleeProviderNext.sourceSync({settings, config, options: {}})
-  //   return {
-  //     externalId: input.providerAccountId,
-  //     settings,
-  //     source$,
-  //   }
-  // },
+    const settings = def._type('connectionSettings', {
+      envName,
+      loginName,
+      providerAccountId,
+      provider,
+      providerAccount,
+      user,
+      accessToken: undefined, // TODO: Cache accessToken
+    })
+
+    return {
+      externalId: `${providerAccountId}`,
+      settings,
+      source$: rxjs.EMPTY,
+    }
+  },
 
   sourceSync: ({config, settings: {envName, loginName, providerAccountId}}) => {
     const yodlee = makeYodleeClient({...config[envName]!, envName}, {loginName})

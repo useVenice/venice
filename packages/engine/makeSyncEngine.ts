@@ -95,6 +95,7 @@ export const makeSyncEngine = <
         cs.externalId,
       ) as ParsedConn['id'],
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
+      // ConnectionUpdates should be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
@@ -264,6 +265,8 @@ export const makeSyncEngine = <
     // flow a bit smoother with a guided cli flow
 
     postConnect: zFunction(
+      // Questionable why `zConnectContext` should be there. Examine whether this is actually
+      // needed
       [zInt, z.unknown(), zConnectContext],
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
       async (int, input, ctx) => {
@@ -273,6 +276,7 @@ export const makeSyncEngine = <
           return 'Noop'
         }
         const cs = await p.postConnect(p.def.connectOutput.parse(input), config)
+
         await syncEngine.syncConnection.impl(parsedConn(int, {...cs, ...ctx}))
 
         console.log('didConnect finish', p.name, input)

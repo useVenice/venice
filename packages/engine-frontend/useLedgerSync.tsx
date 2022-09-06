@@ -28,14 +28,14 @@ export function useLedgerSync({ledgerId, envName}: ConnectContext) {
       int: NonNullableOnly<IntegrationInput, 'provider'>,
       {key, options}: PreConnOptions,
     ) {
-      const res1 = await client.mutation('preConnect', [int, options])
-      console.log(`${key} res1`, res1)
+      const preConnRes = await client.mutation('preConnect', [int, options])
+      console.log(`${key} preConnnectRes`, preConnRes)
 
-      const res2 = await hooks[int.provider]?.(res1)
-      console.log(`${key} res2`, res2)
+      const res = await hooks[int.provider]?.(preConnRes)
+      console.log(`${key} innerConnectRes`, res)
 
-      const res3 = await client.mutation('postConnect', [int, res2, ctx])
-      console.log(`${key} res3`, res3)
+      const postConRes = await client.mutation('postConnect', [int, res, ctx])
+      console.log(`${key} postConnectRes`, postConRes)
       // TODO: We should get the client and invalidate instead
       await connectionsRes.refetch()
     },
