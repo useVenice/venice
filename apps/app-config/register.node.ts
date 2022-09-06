@@ -2,6 +2,7 @@ import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
+import {loadDotEnv} from './utils'
 import {
   $appendFile,
   $chokidar,
@@ -14,11 +15,8 @@ import {
   $writeFile,
   implementProxyFn,
   memoize,
-  safeJSONParse,
 } from '@ledger-sync/util'
 import chokidar from 'chokidar'
-import * as dotenv from 'dotenv'
-import findConfig from 'find-config'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import {readFile} from 'read-file-safe'
@@ -28,32 +26,8 @@ import {writeFile as _writeFile} from 'write-file-safe'
 
 console.log('[Dep] app-config/register.node')
 
-export const dotEnvOut = dotenv.config({
-  path: findConfig('.env') ?? undefined,
-})
-
-// Workaround for https://github.com/motdotla/dotenv/issues/664
-// This is in particular useful for YODLEE_CONFIG.production.proxy.cert attribute
-// WARNING: YODLEE_CONFIG must be in the compact JSON format for this to work
-// In multi-line mode the line break inside string gets confused with line break
-// inside JSON values... We would need to either extend dotenv or extend vercel env pull
-// to fix it. Shouldn't be a problem during actual deploys though
-for (const [k, v] of Object.entries(dotEnvOut.parsed ?? {})) {
-  if (safeJSONParse(v) === undefined) {
-    const jsonStr = v.split('\n').join('\\n')
-    if (safeJSONParse(jsonStr) !== undefined) {
-      console.log('Hacking json support for key =', k)
-      if (dotEnvOut.parsed) {
-        dotEnvOut.parsed[k] = jsonStr
-      }
-      if (v === process.env[k]) {
-        // Do not overwrite
-        process.env[k] = jsonStr
-      }
-    }
-  }
-}
-// console.log('[DEBUG] parsed dotenv', dotEnvOut.parsed)
+/** Side effect here */
+export const dotEnvOut = loadDotEnv()
 
 implementProxyFn(
   $makeProxyAgent,
