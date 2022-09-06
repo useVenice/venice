@@ -9,6 +9,7 @@ import {
   firebaseProvider,
   serializeTimestamp,
 } from '@ledger-sync/core-integration-firebase'
+import type {Standard} from '@ledger-sync/standard'
 import type {Merge} from '@ledger-sync/util'
 import {
   A,

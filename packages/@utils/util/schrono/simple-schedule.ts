@@ -1,10 +1,13 @@
 import {startCase} from '../string-utils'
+import type {DisplayOf, EnumOf} from '../type-utils'
 import {MPDate} from './MPDate'
 import {invert} from 'lodash'
 import type {DateTimeUnit} from 'luxon'
 import {Interval} from 'luxon'
 
-export const FREQUENCIES: EnumOf<Standard.Frequency> = {
+export type Frequency = 'days' | 'weeks' | 'months' | 'quarters' | 'years'
+
+export const FREQUENCIES: EnumOf<Frequency> = {
   days: 'days',
   weeks: 'weeks',
   months: 'months',
@@ -12,16 +15,15 @@ export const FREQUENCIES: EnumOf<Standard.Frequency> = {
   years: 'years',
 }
 
-export const FREQUENCY_TO_TIME_UNIT: Record<Standard.Frequency, DateTimeUnit> =
-  {
-    days: 'day',
-    weeks: 'week',
-    months: 'month',
-    quarters: 'quarter',
-    years: 'year',
-  }
+export const FREQUENCY_TO_TIME_UNIT: Record<Frequency, DateTimeUnit> = {
+  days: 'day',
+  weeks: 'week',
+  months: 'month',
+  quarters: 'quarter',
+  years: 'year',
+}
 
-const FREQUENCY_DISPLAY: DisplayOf<Standard.Frequency> = {
+const FREQUENCY_DISPLAY: DisplayOf<Frequency> = {
   days: 'daily',
   weeks: 'weekly',
   months: 'monthly',
@@ -31,7 +33,7 @@ const FREQUENCY_DISPLAY: DisplayOf<Standard.Frequency> = {
 
 const FREQUENCY_FROM_DISPLAY = invert(FREQUENCY_DISPLAY) as Record<
   string,
-  Standard.Frequency
+  Frequency
 >
 
 /**
@@ -39,6 +41,13 @@ const FREQUENCY_FROM_DISPLAY = invert(FREQUENCY_DISPLAY) as Record<
  */
 
 // MARK: - Range expressions
+
+export type Accrual =
+  | {date: ISODateTime | ISODate}
+  | {
+      frequency: Frequency
+      interval: ISOInterval
+    }
 
 // `-` is a wordbreak character so we cannot use `\b`
 // Workaround is to use `\s`
@@ -52,7 +61,7 @@ export const SIMPLE_SCHEDULE_REGEX =
  */
 export function parseSimpleScheduleExpression(
   input?: string | null,
-): Standard.PostingAccrual | null {
+): Accrual | null {
   return _parseFrequencyAndIntervalExp(input) || _parseDateExp(input)
 }
 
@@ -87,9 +96,7 @@ export function _parseFrequencyAndIntervalExp(input?: string | null) {
   return {interval: interval.toISODate(), frequency}
 }
 
-export function formatSimpleScheduleExpression(
-  se?: Standard.PostingAccrual | null,
-) {
+export function formatSimpleScheduleExpression(se?: Accrual | null) {
   if (!se) {
     return null
   }
@@ -112,7 +119,7 @@ export function formatSimpleScheduleExpression(
 
 export function* iterateSubintervals(
   totalInterval: Interval,
-  frequency: Standard.Frequency,
+  frequency: Frequency,
 ) {
   if (!FREQUENCIES[frequency]) {
     throw new Error(`Invalid frequency: ${frequency}`)

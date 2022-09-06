@@ -1,3 +1,5 @@
+import type {EnumOf} from '@ledger-sync/util'
+
 // Use this for Coin Keeper CSV Format
 export function extractExternalId(id: Id.AnySimple, providerName: string) {
   const regex = new RegExp(

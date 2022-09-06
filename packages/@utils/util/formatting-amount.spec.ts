@@ -1,4 +1,4 @@
-import type {AnyAmount} from './amount-utils'
+import type {Amount, AnyAmount} from './amount-utils'
 import {A} from './amount-utils'
 import type {
   _CustomFormatAmountOptions,

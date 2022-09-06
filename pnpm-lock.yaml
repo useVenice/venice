@@ -247,14 +247,14 @@ importers:
       '@trpc/server': 9.26.0
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.13
-      autoprefixer: 10.4.8
+      autoprefixer: '*'
       daisyui: 2.24.2
       next: 12.2.5
       next-query-params: 4.0.0
       next-transpile-modules: 9.0.0
       node-loader: 2.0.0
       phosphor-react: 1.4.1
-      postcss: 8.4.14
+      postcss: '*'
       react: 17.0.2
       react-dom: 17.0.2
       react-query: 3.39.2
@@ -310,10 +310,12 @@ importers:
     specifiers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
       airtable: 0.11.4
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
       airtable: 0.11.4
     devDependencies:
@@ -414,8 +416,9 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/core-integration-firebase': '*'
       '@ledger-sync/id': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       firebase: 9.8.1
       react: 17.0.2
     dependencies:
@@ -423,6 +426,7 @@ importers:
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/core-integration-firebase': link:../core-integration-firebase
       '@ledger-sync/id': link:../../@utils/id
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
       firebase: 9.8.1_aomntd2rr2pjqb3xckma554tlm
     devDependencies:
@@ -455,7 +459,7 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -469,15 +473,17 @@ importers:
     specifiers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       plaid: 10.7.0
-      react: 17.0.2
-      react-dom: 17.0.2
+      react: '*'
+      react-dom: '*'
       react-plaid-link: 3.3.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
       plaid: 10.7.0_dlxtnpp6e63xoartngub3qbkta
       react: 17.0.2
@@ -506,7 +512,7 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -520,12 +526,14 @@ importers:
     specifiers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
@@ -536,7 +544,7 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
       stripe: 8.86.0
     dependencies:
@@ -553,7 +561,7 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -567,12 +575,14 @@ importers:
     specifiers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
     devDependencies:
       '@types/react': 17.0.39
@@ -583,7 +593,7 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -597,20 +607,20 @@ importers:
     specifiers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
+      '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
-      '@react-hook/size': 2.1.2
       '@react-hookz/web': 15.1.0
-      '@types/react': 17.0.39
-      csstype: 3.1.0
+      '@types/react': '*'
+      csstype: '*'
       framer-motion: 6.3.11
-      react: 17.0.2
-      react-dom: 17.0.2
+      react: '*'
+      react-dom: '*'
       react-hot-toast: 2.3.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
-      '@react-hook/size': 2.1.2_react@17.0.2
       '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       csstype: 3.1.0
       framer-motion: 6.3.11_sfoxds7t5ydpegc3knd667wn6m
@@ -782,7 +792,7 @@ importers:
     specifiers:
       '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
-      '@types/react': 17.0.39
+      '@types/react': '*'
       react: 17.0.2
     dependencies:
       '@ledger-sync/util': link:../@utils/util
@@ -823,9 +833,9 @@ importers:
       '@trpc/client': 9.26.0
       '@trpc/react': 9.26.0
       '@trpc/server': 9.26.0
-      '@types/react': 17.0.39
-      react: 17.0.2
-      react-dom: 17.0.2
+      '@types/react': '*'
+      react: '*'
+      react-dom: '*'
       react-query: 3.39.2
     dependencies:
       '@ledger-sync/cdk-core': link:../cdk-core
@@ -2334,10 +2344,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@juggle/resize-observer/3.4.0:
-    resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
-    dev: false
-
   /@next/env/12.2.5:
     resolution: {integrity: sha512-vLPLV3cpPGjUPT3PjgRj7e3nio9t6USkuew3JE/jMeon/9Mvp1WyR18v3iwnCuX7eUAm1HmAbJHHLAbcu/EJcw==}
     dev: false
@@ -2744,43 +2750,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.18.9
       '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      react: 17.0.2
-    dev: false
-
-  /@react-hook/latest/1.0.3_react@17.0.2:
-    resolution: {integrity: sha512-dy6duzl+JnAZcDbNTfmaP3xHiKtbXYOaz3G51MGVljh548Y8MWzTr+PHLOfvpypEVW9zwvl+VyKjbWKEVbV1Rg==}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      react: 17.0.2
-    dev: false
-
-  /@react-hook/passive-layout-effect/1.2.1_react@17.0.2:
-    resolution: {integrity: sha512-IwEphTD75liO8g+6taS+4oqz+nnroocNfWVHWz7j+N+ZO2vYrc6PV1q7GQhuahL0IOR7JccFTsFKQ/mb6iZWAg==}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      react: 17.0.2
-    dev: false
-
-  /@react-hook/resize-observer/1.2.6_react@17.0.2:
-    resolution: {integrity: sha512-DlBXtLSW0DqYYTW3Ft1/GQFZlTdKY5VAFIC4+km6IK5NiPPDFchGbEJm1j6pSgMqPRHbUQgHJX7RaR76ic1LWA==}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@juggle/resize-observer': 3.4.0
-      '@react-hook/latest': 1.0.3_react@17.0.2
-      '@react-hook/passive-layout-effect': 1.2.1_react@17.0.2
-      react: 17.0.2
-    dev: false
-
-  /@react-hook/size/2.1.2_react@17.0.2:
-    resolution: {integrity: sha512-BmE5asyRDxSuQ9p14FUKJ0iBRgV9cROjqNG9jT/EjCM+xHha1HVqbPoT+14FQg1K7xIydabClCibUY4+1tw/iw==}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@react-hook/passive-layout-effect': 1.2.1_react@17.0.2
-      '@react-hook/resize-observer': 1.2.6_react@17.0.2
       react: 17.0.2
     dev: false
 

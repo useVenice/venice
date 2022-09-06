@@ -1,4 +1,5 @@
 import type {SyncOperation} from '@ledger-sync/cdk-core'
+import type {Standard} from '@ledger-sync/standard'
 import {z, zCast} from '@ledger-sync/util'
 
 export type EntityPayload =

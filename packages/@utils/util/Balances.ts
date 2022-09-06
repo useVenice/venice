@@ -1,4 +1,4 @@
-import type {AnyAmount} from './amount-utils'
+import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
 import {A, isAmountMap, isMultiAmount} from './amount-utils'
 import {legacy_formatAmount} from './formatting-amount'
 import {math} from './math-utils'

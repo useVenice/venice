@@ -11,11 +11,11 @@
     "@trpc/client": "9.26.0",
     "@trpc/react": "9.26.0",
     "@trpc/server": "9.26.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "react": "*",
+    "react-dom": "*",
     "react-query": "3.39.2"
   },
   "devDependencies": {
-    "@types/react": "17.0.39"
+    "@types/react": "*"
   }
 }

@@ -1,4 +1,7 @@
+import type {Standard} from '@ledger-sync/standard'
 import {A} from '@ledger-sync/util'
+import type plaid from 'plaid'
+import type {PlaidAccount as PlaidLinkAccount} from 'react-plaid-link'
 
 // This should be consolidated except two different plaid versions are used
 // So we should copy for now until we are ready...
@@ -7,11 +10,13 @@ type Nullish<T> = {
   [P in keyof T]?: T[P] | null
 }
 
+export type PlaidEnvName = 'sandbox' | 'development' | 'production'
+
 // TODO: Make me even better
 export function getPlaidAccountType(
-  a: Nullish<Pick<Plaid.Account, 'subtype' | 'type'>>,
+  a: Nullish<Pick<plaid.AccountBase | PlaidLinkAccount, 'subtype' | 'type'>>,
 ): Standard.AccountType {
-  switch (a.subtype as Plaid.AccountTypes[keyof Plaid.AccountTypes]) {
+  switch (a.subtype as plaid.AccountSubtype | null | undefined) {
     case 'credit card':
       return 'liability/credit_card'
     case 'checking':
@@ -24,7 +29,7 @@ export function getPlaidAccountType(
     case 'hsa':
       return 'asset/insurance'
   }
-  switch (a.type as keyof Plaid.AccountTypes) {
+  switch (a.type as plaid.AccountType | null | undefined) {
     case 'depository':
       return 'asset/bank'
     case 'investment':
@@ -40,8 +45,10 @@ export function getPlaidAccountType(
 }
 
 export function getPlaidAccountShortName(
-  a: Partial<Pick<Plaid.Account, 'name' | 'official_name'>>,
-  institution?: Pick<Plaid.Institution, 'institution_id'>,
+  a: Nullish<Pick<plaid.AccountBase | PlaidLinkAccount, 'name'>> & {
+    official_name?: string | null
+  },
+  institution?: Pick<plaid.Institution, 'institution_id'>,
 ) {
   // #special Special case Chase CCs, `name` equals `CREDIT CARD`, while official_name is actually
   // kind of meaningful
@@ -67,8 +74,12 @@ export function getPlaidAccountShortName(
 }
 
 export function getPlaidAccountFullName(
-  account: Partial<Pick<Plaid.Account, 'name' | 'official_name' | 'mask'>>,
-  institution?: Pick<Plaid.Institution, 'institution_id'>,
+  account: Nullish<
+    Pick<plaid.AccountBase | PlaidLinkAccount, 'name' | 'mask'>
+  > & {
+    official_name?: string | null
+  },
+  institution?: Pick<plaid.Institution, 'institution_id'>,
 ) {
   const shortName = getPlaidAccountShortName(account, institution)
   return account.mask && !shortName.includes(account.mask)
@@ -77,8 +88,8 @@ export function getPlaidAccountFullName(
 }
 
 export function getPlaidAccountBalance(
-  account: Nullish<Pick<Plaid.Account, 'type'>> & {
-    balances?: Nullish<Plaid.Account['balances']>
+  account: Nullish<Pick<plaid.AccountBase | PlaidLinkAccount, 'type'>> & {
+    balances?: Nullish<plaid.AccountBase['balances']>
   },
   type: 'available' | 'current' | 'limit',
 ) {
@@ -91,7 +102,7 @@ export function getPlaidAccountBalance(
     : null
 }
 
-export function plaidUnitForSecurity(s: Plaid.Security) {
+export function plaidUnitForSecurity(s: plaid.Security) {
   return (s.ticker_symbol?.split(':').pop() ??
     s.institution_security_id ??
     '') as Unit
@@ -107,14 +118,14 @@ export function plaidUnitForCurrency(input: {
 }
 
 export function plaidMapHolding(
-  h: Plaid.Holding & {security?: Plaid.Security},
+  h: plaid.Holding & {security?: plaid.Security},
 ): Standard.Holding | null {
   if (h.quantity == null || !h.security) {
     return null
   }
   const curr = h.iso_currency_code || h.unofficial_currency_code || ''
   const amount = (() => {
-    switch (h.security.type as Plaid.SecurityType) {
+    switch (h.security.type) {
       case 'fixed income':
       case 'mutual fund':
       case 'etf':
@@ -137,31 +148,31 @@ export interface PlaidClientCredentials {
   client_id: string
   /** No longer used by the api */
   public_key: string
-  secrets: Partial<{[K in Plaid.EnvName]: string}>
-  urls: Partial<{[K in Plaid.EnvName]: string}>
+  secrets: Partial<{[K in PlaidEnvName]: string}>
+  urls: Partial<{[K in PlaidEnvName]: string}>
 }
 
 export function inferPlaidEnvFromToken(
   publicOrAccessToken: string,
-): Plaid.EnvName | null {
+): PlaidEnvName | null {
   const regex = /^(access|public)-(sandbox|development|production)-/
   const match = regex.exec(publicOrAccessToken)
 
   if (match) {
-    return match[2] as Plaid.EnvName
+    return match[2] as PlaidEnvName
   }
 
   return null
 }
 
 export function plaidIsInvestmentTransaction(
-  txn: Plaid.Transaction,
-): txn is Plaid.InvestmentTransaction {
+  txn: plaid.Transaction | plaid.InvestmentTransaction,
+): txn is plaid.InvestmentTransaction {
   return 'investment_transaction_id' in txn
 }
 
 export function plaidCatchInvestmentNotSupported(error: unknown) {
-  const err = error as Plaid.ErrorShape
+  const err = error as plaid.PlaidError
   if (
     // Probably an error like this, which will occur until we have investment enabled
     // on production

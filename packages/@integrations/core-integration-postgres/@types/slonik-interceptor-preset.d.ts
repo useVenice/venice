@@ -1,5 +1,6 @@
 declare module 'slonik-interceptor-preset' {
-  import type {InterceptorType} from 'slonik'
+  import type {Interceptor} from 'slonik'
+
   /**
    * @property benchmarkQueries Dictates whether to enable the [query benchmarking interceptor](https://github.com/gajus/slonik-interceptor-query-benchmarking). (Default: false)
    * @property logQueries Dictates whether to enable the [query logging interceptor](https://github.com/gajus/slonik-interceptor-query-logging). (Default: true)
@@ -15,5 +16,5 @@ declare module 'slonik-interceptor-preset' {
 
   export function createInterceptors(
     config?: UserConfigurationType,
-  ): InterceptorType[]
+  ): Interceptor[]
 }

@@ -23,9 +23,9 @@ declare namespace Id {
   type prce = BrandedString<'prce'>
 
   // Compound IDs
-  type txn_post = BrandedString<'txn_post'> // Just added
-  type acct_bal = BrandedString<'acct_bal'> // Just added
-  type comm_prce = BrandedString<'comm_prce'> // Just added
+  type txn_post = BrandedString<'txn_post'>
+  type acct_bal = BrandedString<'acct_bal'>
+  type comm_prce = BrandedString<'comm_prce'>
   type usr_ntf = BrandedString<'usr_ntf'>
   type ldgr_acct = BrandedString<'ldgr_acct'>
   type ldgr_comm = BrandedString<'ldgr_comm'>
@@ -174,27 +174,4 @@ declare namespace Id {
       ? Compound[SimpleBrandMapInverse[TId['__brand__']]]
       : TId
     : TId
-
-  //
-
-  type SimpleForCollectionName<
-    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
-  > = TRepoName extends keyof Simple ? Simple[TRepoName] : never
-
-  type SimpleForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =
-    TRepoName extends keyof Simple ? Simple[TRepoName] : never
-
-  type CompoundForCollectionName<
-    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
-  > = TRepoName extends keyof Compound ? Compound[TRepoName] : never
-
-  type CompoundForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =
-    TRepoName extends keyof Compound ? Compound[TRepoName] : never
-
-  type GlobalForCollectionName<
-    TRepoName extends import('@ledger-sync/firebase').CollectionName = import('@ledger-sync/firebase').CollectionName,
-  > = TRepoName extends keyof Global ? Global[TRepoName] : never
-
-  type GlobalForRepoName<TRepoName extends Raw.RepoName = Raw.RepoName> =
-    TRepoName extends keyof Global ? Global[TRepoName] : never
 }

@@ -22,6 +22,7 @@ import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 import type * as plaid from 'plaid'
 import React from 'react'
 import type {
+  PlaidAccount as PlaidLinkAccount,
   PlaidLinkOnSuccessMetadata,
   PlaidLinkOptions,
 } from 'react-plaid-link'
@@ -75,9 +76,7 @@ const def = makeSyncProvider.def({
     z.object({
       id: z.string(),
       entityName: z.literal('account'),
-      entity: zCast<
-        plaid.AccountBase | PlaidLinkOnSuccessMetadata['accounts'][number]
-      >(),
+      entity: zCast<plaid.AccountBase | PlaidLinkAccount>(),
     }),
     z.object({
       id: z.string(),

@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./beancount.d.ts"/>
+import type {Standard} from '@ledger-sync/standard'
 import {
   formatAccountType,
   makePostingsMap,
@@ -8,7 +9,7 @@ import {
   stdTypeAndEntity,
   TRANSACTION_LABELS,
 } from '@ledger-sync/standard'
-import type {NonEmptyArray} from '@ledger-sync/util'
+import type {Amount, NonEmptyArray} from '@ledger-sync/util'
 import {
   $execCommand,
   A,

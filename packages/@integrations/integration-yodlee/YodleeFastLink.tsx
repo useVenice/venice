@@ -1,5 +1,4 @@
-import useSize from '@react-hook/size'
-import {useUpdateEffect} from '@react-hookz/web'
+import {useMeasure, useUpdateEffect} from '@react-hookz/web'
 import {motion, useAnimation} from 'framer-motion'
 import React from 'react'
 import {toast} from 'react-hot-toast'
@@ -69,13 +68,12 @@ export function YodleeFastLink({
     [],
   )
 
-  const fastlinkRef = React.useRef<HTMLDivElement>(null)
-  const [, height] = useSize(fastlinkRef)
+  const [rect, fastlinkRef] = useMeasure()
   const controls = useAnimation()
 
   useUpdateEffect(() => {
     controls.start({
-      height,
+      height: rect?.height,
       transition: {
         type: 'spring',
         stiffness: 550,
@@ -83,7 +81,7 @@ export function YodleeFastLink({
         restSpeed: 10,
       },
     })
-  }, [controls, height])
+  }, [controls, rect?.height])
 
   return (
     <div
@@ -95,7 +93,10 @@ export function YodleeFastLink({
         padding: '$4',
       }}>
       <motion.div animate={controls}>
-        <div ref={fastlinkRef} id={YODLEE_CONTAINER_ID} />
+        <div
+          ref={fastlinkRef as React.RefObject<HTMLDivElement>}
+          id={YODLEE_CONTAINER_ID}
+        />
       </motion.div>
     </div>
   )

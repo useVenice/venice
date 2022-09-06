@@ -3,6 +3,7 @@ import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
 import {makeSplitwiseClient} from './SplitwiseClientNext'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import type {Standard} from '@ledger-sync/standard'
 import {
   A,
   DateTime,

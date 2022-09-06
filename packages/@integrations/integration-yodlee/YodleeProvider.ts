@@ -20,6 +20,7 @@ import {
 import {YodleeFastLink} from './YodleeFastLink'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import type {Standard} from '@ledger-sync/standard'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@ledger-sync/util'
 
 export const zYodleeConfig = z.record(

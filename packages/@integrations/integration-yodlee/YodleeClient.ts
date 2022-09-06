@@ -27,6 +27,7 @@ export const zCfg = z.object({
 })
 
 type YodleeAccessToken = z.infer<typeof zAccessToken>
+
 export const zAccessToken = z.object({
   accessToken: z.string(),
   issuedAt: z.string(),

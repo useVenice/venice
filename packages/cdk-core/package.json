@@ -9,7 +9,7 @@
     "@trpc/server": "9.26.0"
   },
   "devDependencies": {
-    "@types/react": "17.0.39",
+    "@types/react": "*",
     "react": "17.0.2"
   },
   "peerDependencies": {

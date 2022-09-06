@@ -9,7 +9,7 @@ declare namespace Foreceipt {
     /**
      * Contains accessToken `.token` and userGuid `.claims.foreceipt_user_id`
      */
-    idTokenResult?: firebase.auth.IdTokenResult
+    idTokenResult?: firebase.default.auth.IdTokenResult
     teamGuid?: string | null
   }
 

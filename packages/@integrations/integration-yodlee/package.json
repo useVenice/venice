@@ -9,17 +9,17 @@
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",
+    "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
-    "@react-hook/size": "2.1.2",
     "@react-hookz/web": "15.1.0",
-    "csstype": "3.1.0",
+    "csstype": "*",
     "framer-motion": "6.3.11",
-    "react-dom": "17.0.2",
+    "react-dom": "*",
     "react-hot-toast": "2.3.0"
   },
   "devDependencies": {
-    "@types/react": "17.0.39",
-    "react": "17.0.2"
+    "@types/react": "*",
+    "react": "*"
   },
   "peerDependencies": {
     "react": "*"

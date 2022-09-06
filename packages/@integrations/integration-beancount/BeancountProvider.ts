@@ -3,6 +3,7 @@ import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import type {StdCache} from '@ledger-sync/cdk-ledger'
 import {cachingLink, ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
+import type {Standard} from '@ledger-sync/standard'
 import {
   $writeFile,
   fromCompletion,

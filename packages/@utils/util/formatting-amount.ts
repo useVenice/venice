@@ -2,8 +2,7 @@
 // This would be especially useful in tight spaces like charts and reports
 // This should probably exist in the format-decimal layer and get used over here
 // Should be supported in both intlFormat and customFormat layer
-// MARK: - Built in commodities
-import type {AnyAmount} from './amount-utils'
+import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
 import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
 import type {StrictIntlNumberFormatOptions} from './formatting-number'
 import {formatDecimal, getIntlNumberFormat} from './formatting-number'

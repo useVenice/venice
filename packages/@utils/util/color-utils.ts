@@ -30,6 +30,7 @@ export function transparentizeOverWhite(rawColor: string) {
   const color = _chroma(rawColor).rgb()
   const [r, g, b] = color
   const a = Math.min(r, Math.min(g, b)) / 255
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string
   return _chroma
     .rgb(255 + (r - 255) / a, 255 + (g - 255) / a, 255 + (b - 255) / a)
     .alpha(a)

@@ -1,20 +1,11 @@
+import type * as Standard from './standard-types'
+import type {
+  Amount,
+  DisplayOf,
+  DistributiveOmit,
+  EnumOf,
+} from '@ledger-sync/util'
 import {objectFromArray, startCase, temp_makeId, z} from '@ledger-sync/util'
-
-export interface EnumOption<T extends string = string> {
-  value: T
-  /**
-   * Generally, should not be used.
-   * Useful for defining multiple options that resolve to the same value
-   */
-  _key?: string
-  unfilterable?: boolean
-  label?: string
-  groupId?: string
-  pretext?: string
-  subtext?: string
-  shortcut?: string
-  color?: string
-}
 
 export function stdTypeAndEntity<T extends Standard.TypeAndEntity[0]>(
   entityName: T,
@@ -23,21 +14,8 @@ export function stdTypeAndEntity<T extends Standard.TypeAndEntity[0]>(
   return [entityName, entity]
 }
 
-/** LS.EntityName */
-export type StandardEntityName = z.infer<typeof zStandardEntityName>
-export const zStandardEntityName = z.enum([
-  'account',
-  'transaction',
-  'commodity',
-])
-
-export type ConnectionStatus = z.infer<typeof zConnectionStatus>
 export const zConnectionStatus = z.enum(['connected', 'disconnected', 'error'])
-
-export type ReviewStatus = z.infer<typeof zReviewStatus>
 export const zReviewStatus = z.enum(['unreviewed', 'reviewed', 'flagged'])
-
-export type AccountType = z.infer<typeof zAccountType>
 export const zAccountType = z.enum([
   'asset',
   'asset/contra_asset',
@@ -325,8 +303,6 @@ export const STD_AMOUNT_KEYS: EnumOf<keyof Amount> = {
   meta: 'meta',
 }
 
-// MARK: - Utils
-
 // TODO: Create a single ACCOUNT_TYPES map that contains name
 // and description and everything else
 export function defaultAccountNotesForType(type: Standard.AccountType) {
@@ -339,18 +315,6 @@ export function defaultAccountNotesForType(type: Standard.AccountType) {
   }
   return undefined
 }
-
-export const ACCOUNT_TYPE_OPTIONS = Object.values(ACCOUNT_TYPES)
-  .map(
-    (type): EnumOption => ({
-      value: type,
-      label: formatAccountType(type),
-    }),
-  )
-  .map((o): EnumOption => {
-    const [supertype] = o.value.split('/')
-    return {groupId: supertype, ...o}
-  })
 
 /**
  * Can be used as default `Account.name`
@@ -435,19 +399,4 @@ export function makePostingsMapNext<T extends Standard.PostingsMap>(
 
 export function makePriceKey(quoteUnit: Unit, date: ISODate) {
   return temp_makeId('prce', `${quoteUnit}_${date}`)
-}
-
-/** Expect input to be constructed from `EnumOf` or `DisplayOf` */
-export function optionsFromEnumLike<K extends string>(
-  enumLike: Record<K, string>,
-  formatter?: (key: K, override?: string) => string,
-) {
-  return Object.entries(enumLike).map(
-    ([key, value]): {value: K; label: string} => ({
-      value: key as K,
-      label: formatter
-        ? formatter(key as K, value as string)
-        : (value as string),
-    }),
-  ) as Array<{value: K; label: string}>
 }

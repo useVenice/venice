@@ -14,6 +14,16 @@ export type Builtin = Primitive | AnyFunction | Date | Error | RegExp
 export type Serializable = JsonValue | (object & NonFunction)
 
 /**
+ * Make a runtime mapping type for a literal union
+ */
+export type EnumOf<E extends string | number | symbol> = {[K in E]: K}
+
+/**
+ * Same as EnumOf, but values are for display rather than key
+ */
+export type DisplayOf<E extends string | number | symbol> = {[K in E]: string}
+
+/**
  * Check whether a type is a tuple type
  */
 export type IsTuple<T extends {length: number}> = number extends T['length']
@@ -424,13 +434,13 @@ type PickTypeOf<T, K extends string | number | symbol> = K extends AllKeys<T>
 export type {
   Class,
   Merge,
-  Opaque,
   Primitive,
   Promisable,
   PromiseValue,
   SetOptional,
   SetRequired,
   Simplify,
+  Split,
   UnionToIntersection,
   ValueOf,
 } from 'type-fest'

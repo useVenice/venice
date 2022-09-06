@@ -9,6 +9,29 @@ import {slugify} from './string-utils'
 import accounting from 'accounting'
 import invariant from 'tiny-invariant'
 
+export type AnyAmount = Amount | AmountMap | MultiAmount | Amount[]
+
+export interface Amount {
+  unit: Unit
+  quantity: number
+  meta?: AmountMeta
+}
+
+export interface AmountMeta {
+  color?: string
+}
+
+/**
+ * Map from unit -> quantity
+ * TODO: Turn me into the new MultiAmount?
+ * TODO: Should this be ReadOnly to reduce mistake?
+ */
+export type AmountMap = Record<string, number>
+
+export interface MultiAmount {
+  amounts: Amount[]
+}
+
 // MARK: - Multi-unit AmountMap
 
 export const AM = (am: Record<string, number>): AmountMap => am
@@ -173,8 +196,6 @@ A.omitZeros = (amount: MultiAmount): MultiAmount => ({
 })
 
 // MARK: - Helpers
-
-export type AnyAmount = Amount | AmountMap | MultiAmount | Amount[]
 
 export function isAmountOrMultiAmount(
   value: unknown,
