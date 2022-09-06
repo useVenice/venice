@@ -1,4 +1,5 @@
 import {defineProxyFn} from './di-utils'
+import {stringifyQueryParams} from './url-utils'
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -9,8 +10,9 @@ import type {
 import _Axios from 'axios'
 import type http from 'http'
 import type https from 'https'
+import {compact} from 'lodash'
 
-export type HTTPRequestConfig = AxiosRequestConfig
+// MARK: - Proxy Agent
 
 export const $makeProxyAgent = defineProxyFn<
   (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
@@ -39,6 +41,10 @@ function lowercaseHeaders(headers: Record<string, unknown>) {
 }
 
 const logger = console
+
+// MARK: - HTTPClient
+
+export type HTTPRequestConfig = AxiosRequestConfig
 
 export class HTTPError<
   TRequestData = unknown,
@@ -223,3 +229,102 @@ export function createHTTPClient({
 }
 
 export {default as Axios} from 'axios'
+
+// MARK: - OpenAPI codegen
+
+// Copied over from various generated files...
+
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+export type ApiRequestOptions = {
+  readonly method:
+    | 'GET'
+    | 'PUT'
+    | 'POST'
+    | 'DELETE'
+    | 'OPTIONS'
+    | 'HEAD'
+    | 'PATCH'
+  readonly url: string
+  readonly path?: Record<string, any>
+  readonly cookies?: Record<string, any>
+  readonly headers?: Record<string, any>
+  readonly query?: Record<string, any>
+  readonly formData?: Record<string, any>
+  readonly body?: any
+  readonly mediaType?: string
+  readonly responseHeader?: string
+  readonly errors?: Record<number, string>
+}
+
+type Resolver<T> = (options: ApiRequestOptions) => Promise<T>
+type Headers = Record<string, string>
+
+type OpenAPIConfig = {
+  BASE: string
+  VERSION: string
+  WITH_CREDENTIALS: boolean
+  CREDENTIALS: 'include' | 'omit' | 'same-origin'
+  TOKEN?: string | Resolver<string>
+  USERNAME?: string | Resolver<string>
+  PASSWORD?: string | Resolver<string>
+  HEADERS?: Headers | Resolver<Headers>
+  ENCODE_PATH?: (path: string) => string
+}
+/* eslint-enable @typescript-eslint/consistent-type-definitions */
+
+/** To be used together with https://github.com/ferdikoomen/openapi-typescript-codegen */
+export const createOpenApiRequestFactory = <U extends Promise<any>>(
+  http: HTTPClient,
+  CancelablePromise: new (
+    fn: (
+      resolve: (value: any | PromiseLike<any>) => void,
+      reject: (reason?: any) => void,
+      onCancel: (handleCancel: () => void) => void,
+    ) => void,
+  ) => U,
+) =>
+  class OpenApiRequestFactory {
+    constructor(public readonly config: OpenAPIConfig) {}
+
+    /**
+     * Request method
+     * @param opts The request options from the service
+     * @returns CancelablePromise<T>
+     * @throws ApiError
+     */
+    request(opts: ApiRequestOptions) {
+      return new CancelablePromise((resolve, reject, onCancel) => {
+        // Get the request URL. Depending on your needs, this might need additional processing,
+        // @see ./src/templates/core/functions/getUrl.hbs
+        const url = compact([this.config.BASE, opts.url]).join('') //`${}${opts.path || ''}`
+        console.log('Will request url', url, opts)
+
+        // Optional: Get and link the cancelation token, so the request can be aborted.
+        const source = _Axios.CancelToken.source()
+        onCancel(() => source.cancel('The user aborted a request.'))
+
+        const formData = opts.formData
+          ? stringifyQueryParams(opts.formData)
+          : null
+
+        // Execute the request. This is a minimal example, in real world scenarios
+        // you will need to add headers, process form data, etc.
+        // @see ./src/templates/core/axios/request.hbs
+        http
+          .request({
+            url,
+            data: formData ?? opts.body,
+            method: opts.method,
+            headers: {
+              ...opts.headers,
+              ...(formData && {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              }),
+            },
+            cancelToken: source.token,
+          })
+          .then((res) => resolve(res.data))
+          .catch((error) => reject(error))
+      })
+    }
+  }

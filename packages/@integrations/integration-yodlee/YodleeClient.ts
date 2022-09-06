@@ -1,16 +1,9 @@
-import {
-  AuthService,
-  BaseHttpRequest,
-  CancelablePromise,
-  YodleeAPI,
-} from './yodlee.generated'
-import type {ApiRequestOptions} from './yodlee.generated/core/ApiRequestOptions'
+import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
   $makeProxyAgent,
-  Axios,
-  compact,
   createHTTPClient,
+  createOpenApiRequestFactory,
   DateTime,
   getDefaultProxyAgent,
   type HTTPError,
@@ -129,53 +122,9 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
     },
   })
 
-  class CustomAxiosHttpRequest extends BaseHttpRequest {
-    /**
-     * Request method
-     * @param opts The request options from the service
-     * @returns CancelablePromise<T>
-     * @throws ApiError
-     */
-    public override request<T>(opts: ApiRequestOptions): CancelablePromise<T> {
-      return new CancelablePromise((resolve, reject, onCancel) => {
-        // Get the request URL. Depending on your needs, this might need additional processing,
-        // @see ./src/templates/core/functions/getUrl.hbs
-        const url = compact([this.config.BASE, opts.url]).join('') //`${}${opts.path || ''}`
-        console.log('Will request url', url, opts)
-
-        // Optional: Get and link the cancelation token, so the request can be aborted.
-        const source = Axios.CancelToken.source()
-        onCancel(() => source.cancel('The user aborted a request.'))
-
-        const formData = opts.formData
-          ? stringifyQueryParams(opts.formData)
-          : null
-
-        // Execute the request. This is a minimal example, in real world scenarios
-        // you will need to add headers, process form data, etc.
-        // @see ./src/templates/core/axios/request.hbs
-        http
-          .request({
-            url,
-            data: formData ?? opts.body,
-            method: opts.method,
-            headers: {
-              ...opts.headers,
-              ...(formData && {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              }),
-            },
-            cancelToken: source.token,
-          })
-          .then((res) => resolve(res.data))
-          .catch((error) => reject(error))
-      })
-    }
-  }
-
   const api = new YodleeAPI(
     {BASE: baseUrlFromEnvName(config.envName)},
-    CustomAxiosHttpRequest,
+    createOpenApiRequestFactory(http, CancelablePromise),
   )
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
