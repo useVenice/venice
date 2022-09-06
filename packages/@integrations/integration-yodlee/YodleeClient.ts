@@ -1,3 +1,4 @@
+import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
   $makeProxyAgent,
   createHTTPClient,
@@ -260,7 +261,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async getAccounts(params: {providerAccountId?: number | string} = {}) {
       return http
-        .get<{account: [Yodlee.Account]}>('/accounts', {params})
+        .get<{account: [YodleeAccount]}>('/accounts', {params})
         .then((r) => r.data.account || [])
     },
 
@@ -272,7 +273,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       container: string
     }) {
       return http
-        .get<{account: [Yodlee.Account]}>(`/accounts/${accountId}`, {params})
+        .get<{account: [YodleeAccount]}>(`/accounts/${accountId}`, {params})
         .then((r) => {
           if (!r.data.account) {
             throw new YodleeNotFoundError({
@@ -408,7 +409,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
 
     async getTransactions(params: Yodlee.GetTransactionParams) {
       return http
-        .get<{transaction: Yodlee.Transaction[]}>('/transactions', {
+        .get<{transaction: YodleeTransaction[]}>('/transactions', {
           params,
         })
         .then((r) => r.data.transaction || [])

@@ -26,10 +26,11 @@ import {
   Deferred,
   objectFromObject,
   parseDateTime,
+  Rx,
+  rxjs,
   z,
   zCast,
 } from '@ledger-sync/util'
-import React from 'react'
 
 export const zYodleeConfig = z.record(
   zYodleeEnvName,
@@ -39,7 +40,7 @@ export const zYodleeConfig = z.record(
 const zSettings = zCreds.extend({
   envName: zYodleeEnvName,
   /** Used to be _id */
-  providerAccountId: z.string(),
+  providerAccountId: z.number(),
   // Cache
   accessToken: zAccessToken.nullish(),
   user: zUser.nullish(),
@@ -70,6 +71,11 @@ const def = makeSyncProvider.def({
       id: z.string(),
       entityName: z.literal('transaction'),
       entity: zCast<YodleeTransaction>(),
+    }),
+    z.object({
+      id: z.string(),
+      entityName: z.literal('commodity'),
+      entity: zCast<Yodlee.HoldingWithSecurity>(),
     }),
   ]),
 })
@@ -243,85 +249,38 @@ export const yodleeProviderNext = makeSyncProvider({
   //     source$,
   //   }
   // },
-  // sourceSync: ({config, settings}) => {
-  //   async function* iterateEntities() {
-  //     const accessToken = await makeYodleeClient({
-  //       ...settings,
-  //       config,
-  //     }).generateAccessToken({
-  //       ...settings,
-  //       envName: settings.envName,
-  //       loginName: settings.loginName,
-  //     })
 
-  //     const client = makeYodleeClient({
-  //       ...settings,
-  //       config,
-  //       accessToken,
-  //     })
-  //     const [accounts, holdings] = await Promise.all([
-  //       client.getAccounts({
-  //         envName: settings.envName,
-  //         providerAccountId: settings._id,
-  //       }),
-  //       SHOULD_SYNC_HOLDINGS
-  //         ? client.getHoldingsWithSecurity({
-  //             envName: settings.envName,
-  //             params: {providerAccountId: settings._id},
-  //           })
-  //         : [],
-  //     ])
+  sourceSync: ({config, settings: {envName, loginName, providerAccountId}}) => {
+    const yodlee = makeYodleeClient({...config[envName]!, envName}, {loginName})
+    async function* iterateEntities() {
+      const [accounts, holdings] = await Promise.all([
+        yodlee.getAccounts({providerAccountId}),
+        SHOULD_SYNC_HOLDINGS
+          ? yodlee.getHoldingsWithSecurity({providerAccountId})
+          : Promise.resolve([]),
+      ])
 
-  //     yield [
-  //       ...accounts.map((a) =>
-  //         def._opData(
-  //           'account',
-  //           `${a.id}` as Id.external,
-  //           parseAccountData(a, holdings),
-  //         ),
-  //       ),
-  //     ]
-  //     const accountIds = accounts.map((a) => a.id)
-
-  //     let offset = 0
-  //     let count = 100
-  //     const start = DateTime.fromMillis(0)
-  //     const end = DateTime.local().plus({days: 1})
-  //     while (true) {
-  //       let transactions = await client.getTransactions({
-  //         params: {
-  //           accountId: accountIds.join(','),
-  //           skip: offset,
-  //           top: count,
-  //           fromDate: start.toISODate(),
-  //           toDate: end.toISODate(),
-  //         },
-  //         envName: settings.envName,
-  //       })
-
-  //       if (transactions.length === 0) {
-  //         break
-  //       }
-  //       transactions = transactions.filter((t) => {
-  //         if (!SHOULD_SYNC_INVESTMENT_TRANSACTIONS) {
-  //           return t.CONTAINER !== 'investment'
-  //         }
-  //         return true
-  //       })
-  //       offset += transactions.length
-  //       count = 500
-
-  //       yield transactions.map((t) =>
-  //         def._opData('transaction', `${t.id}` as Id.external, t),
-  //       )
-  //     }
-  //   }
-
-  //   return rxjs
-  //     .from(iterateEntities())
-  //     .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
-  // },
+      yield [
+        ...accounts.map((a) => def._opData('account', `${a.id}`, a)),
+        ...holdings.map(
+          // Need to check on if to use h.id or h.security.id
+          (h) => def._opData('commodity', `${h.id}`, h),
+        ),
+      ]
+      // TODO(P2): How does yodlee handle pending transactions
+      // TODO: Implement incremental sync
+      for await (const transactions of yodlee.iterateAllTransactions({
+        skipInvestmentTransactions: !SHOULD_SYNC_INVESTMENT_TRANSACTIONS,
+        accountId: accounts.map((a) => a.id).join(','),
+      })) {
+        yield transactions.map((t) => def._opData('transaction', `${t.id}`, t))
+      }
+    }
+    return rxjs
+      .from(iterateEntities())
+      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+  },
 })
 
-// const SHOULD_SYNC_HOLDINGS = false
-// const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false
+const SHOULD_SYNC_HOLDINGS = false
+const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false
