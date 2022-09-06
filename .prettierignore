@@ -6,6 +6,7 @@
 
 # generated files
 **/__generated__/
+**/*.generated/
 
 # jest
 *.snap

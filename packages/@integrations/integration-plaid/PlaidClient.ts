@@ -37,6 +37,12 @@ export const zPlaidClientConfig = z.object({
     .refine(castIs<Partial<{[K in EnvName]: string}>>()),
 })
 
+/**
+ * Consider using open API version to give us more control over things like enum type generation
+ * https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml
+ *
+ * After all, Plaid generates the api clients from OpenApi definitions anyways...
+ */
 export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
   const fromEnv = memoize((envName: EnvName | undefined) => {
     const secret = envName && cfg.secrets[envName]

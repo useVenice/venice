@@ -1,6 +1,10 @@
+import {BaseHttpRequest, CancelablePromise, YodleeAPI} from './yodlee.generated'
+import type {ApiRequestOptions} from './yodlee.generated/core/ApiRequestOptions'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
   $makeProxyAgent,
+  Axios,
+  compact,
   createHTTPClient,
   DateTime,
   getDefaultProxyAgent,
@@ -118,6 +122,44 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
     },
   })
 
+  class CustomAxiosHttpRequest extends BaseHttpRequest {
+    /**
+     * Request method
+     * @param opts The request options from the service
+     * @returns CancelablePromise<T>
+     * @throws ApiError
+     */
+    public override request<T>(opts: ApiRequestOptions): CancelablePromise<T> {
+      return new CancelablePromise((resolve, reject, onCancel) => {
+        // Get the request URL. Depending on your needs, this might need additional processing,
+        // @see ./src/templates/core/functions/getUrl.hbs
+        const url = compact([this.config.BASE, opts.url]).join('') //`${}${opts.path || ''}`
+
+        // Optional: Get and link the cancelation token, so the request can be aborted.
+        const source = Axios.CancelToken.source()
+        onCancel(() => source.cancel('The user aborted a request.'))
+
+        // Execute the request. This is a minimal example, in real world scenarios
+        // you will need to add headers, process form data, etc.
+        // @see ./src/templates/core/axios/request.hbs
+        http
+          .request({
+            url,
+            data: opts.body,
+            method: opts.method,
+            cancelToken: source.token,
+          })
+          .then((res) => resolve(res.data))
+          .catch((error) => reject(error))
+      })
+    }
+  }
+
+  const api = new YodleeAPI(
+    {BASE: baseUrlFromEnvName(config.envName)},
+    CustomAxiosHttpRequest,
+  )
+
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
     createHTTPClient({
       httpsAgent,
@@ -165,6 +207,20 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         )
         .then((r) => r.data.user)
     },
+
+    getUser2: () =>
+      api.user
+        .getUser()
+        .then((r) => r.user)
+        .catch((err) => {
+          if (err instanceof YodleeError && err.data.errorCode === 'Y008') {
+            throw new YodleeNotFoundError({
+              entityName: 'User',
+              entityId: creds.loginName ?? '',
+            })
+          }
+          throw err
+        }),
 
     getUser: zFunction(async () =>
       http
@@ -406,6 +462,10 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         })
         .then((r) => r.data.statement || [])
     },
+
+    getTransactions2: (
+      params: Parameters<typeof api.transactions.getTransactions>[0],
+    ) => api.transactions.getTransactions(params).then((r) => r.transaction),
 
     async getTransactions(params: Yodlee.GetTransactionParams) {
       return http
