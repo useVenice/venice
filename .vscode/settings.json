@@ -72,5 +72,8 @@
   "markJump.strictLimit": "disable",
   "tailwindCSS.experimental.configFile": "apps/next/tailwind.config.js",
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-  "typescript.tsdk": "./node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "search.exclude": {
+    "**/*.generated": true
+  }
 }
