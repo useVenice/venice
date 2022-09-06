@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.base.json",
-  // Technically this is only needed in the `cli` package, but when we run
-  // from projectRoot it picks up here instead.
-  // apps/next inherts separately from tsconfig.base and will have jsx set to preserve
-  "compilerOptions": {"jsx": "react"},
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
   "include": ["/apps/next/next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules"]
 }

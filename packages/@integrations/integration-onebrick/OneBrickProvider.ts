@@ -131,7 +131,7 @@ export const oneBrickProvider = makeSyncProvider({
       z.infer<typeof connectInputSchema>
     >({publicToken: undefined, redirect_url: undefined})
     const [deferred] = React.useState(
-      new Deferred<NonNullable<typeof _type>['connOutput']>(),
+      new Deferred<typeof def['_types']['connectOutput']>(),
     )
     React.useEffect(() => {
       if (options.publicToken && options.redirect_url) {
