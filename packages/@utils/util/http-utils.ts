@@ -117,7 +117,7 @@ export class HTTPError<
           data: TResponseData
         }
       | undefined,
-    originalMessage: string,
+    public readonly originalMessage: string,
   ) {
     super(
       `${request.method.toUpperCase()} ${request.url} failed with ${
@@ -272,7 +272,10 @@ type OpenAPIConfig = {
 }
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
 
-/** To be used together with https://github.com/ferdikoomen/openapi-typescript-codegen */
+/**
+ * To be used together with https://github.com/ferdikoomen/openapi-typescript-codegen
+ * Adapted from https://gist.github.com/tonyxiao/9df2d9ce50096a1adf96c5437a084d06
+ */
 export const createOpenApiRequestFactory = <U extends Promise<any>>(
   http: HTTPClient,
   CancelablePromise: new (
@@ -313,6 +316,7 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
         http
           .request({
             url,
+            withCredentials: this.config.WITH_CREDENTIALS,
             data: formData ?? opts.body,
             method: opts.method,
             headers: {
@@ -324,7 +328,20 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
             cancelToken: source.token,
           })
           .then((res) => resolve(res.data))
-          .catch((error) => reject(error))
+          .catch((_err) => {
+            let error = _err
+            if (_err instanceof HTTPError && _err.response) {
+              const statusText = opts.errors?.[_err.response.status]
+              if (statusText) {
+                error = new HTTPError(
+                  _err.request,
+                  {..._err.response, statusText},
+                  _err.originalMessage,
+                )
+              }
+            }
+            reject(error)
+          })
       })
     }
   }
