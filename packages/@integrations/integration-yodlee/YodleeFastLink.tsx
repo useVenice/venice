@@ -1,5 +1,5 @@
 import {useMeasure, useUpdateEffect} from '@react-hookz/web'
-import {motion, useAnimation} from 'framer-motion'
+import {useAnimation} from 'framer-motion'
 import React from 'react'
 import {toast} from 'react-hot-toast'
 
@@ -17,7 +17,7 @@ export interface YodleeFastLinkProps {
 export function YodleeFastLink({
   envName,
   fastlinkToken,
-  providerId,
+  // providerId,
   providerAccountId,
   onSuccess,
   onError,
@@ -70,7 +70,7 @@ export function YodleeFastLink({
     [],
   )
 
-  const [rect, fastlinkRef] = useMeasure()
+  const [rect, _fastlinkRef] = useMeasure()
   const controls = useAnimation()
 
   useUpdateEffect(() => {
