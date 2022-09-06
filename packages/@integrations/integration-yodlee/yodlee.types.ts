@@ -235,3 +235,34 @@ export const zGetTransactionParams = z.object({
 })
 
 export type YodleeGetTransactionParams = z.infer<typeof zGetTransactionParams>
+
+/**
+ * Yodlee sandbox keys
+ * https://share.getcloudapp.com/YEupD0rP
+ * https://developer.yodlee.com/assets/images/OTP_Documents/Yodlee%20Dummy%20Account%20Generator%20User%20Guide%20v12.0.pdf
+Site	Sum Info	Nickname	Username	Password
+Dagbank	11195	DAG101	DAG101.bank1	bankl
+Dagbank	11195	DAG101	DAG101.bank2	bank2
+DagMiles	11196	DAG101	DAG101.Miles2	Miles2
+DagMiles	11196	DAG101	DAG101.Miles1	Miles2
+Daglnsurance	11197	DAG101	DAG101.Insurance1	Insurance1
+Daglnsurance	11197	DAG101	DAG101.Insurance2	Insurance2
+DagcreditCard	11198	DAG101	DAG101.creditCard1	creditCard2
+DagcreditCard	11198	DAG101	DAG101.creditCard2	creditCard1
+DagLoans	11199	DAG101	DAG101.Loans1	Loans2
+DagLoans	11199	DAG101	DAG101.Loans2	Loans1
+DagBills	11200	DAG101	DAG101.Bills1	Bills1
+DagBills	11200	DAG101	DAG101.Bills2	Bills2
+DagInvestment	11201	DAG101	DAG101.Investment1	Investment1
+DagInvestment	11201	DAG101	DAG101.Investment2	Investment2
+DagSecurityQA	14748	DAG101	DAG101.SecurityQA2	SecurityQA2
+DagSecurityQA	14748	DAG101	DAG101.SecurityQA1	SecurityQA1
+DagBankTokenFMPA	15680	DAG101	DAG101.BankTokenFMPA2	BankTokenFMPA2
+DagBankTokenFMPA	15680	DAG101	DAG101.BankTokenFMPA1	BankTokenFMPA1
+DagMultilevel	15682	DAG101	DAG101.Multilevel1	Multilevel1
+DagMultilevel	15682	DAG101	DAG101.Multileve12	Multileve12
+DagTax	17260	DAG101	DAG101.Tax1	Tax1
+DagTax	17260	DAG101	DAG101.Tax2	Tax2
+DagCreditCardTokenPMPA	19976	DAG101	DAG101.CreditCardTokenPMPA2	CreditCardTokenPMPA2
+DagCreditCardTokenPMPA	19976	DAG101	DAG101.CreditCardTokenPMPA1	CreditCardTokenPMPA1
+ */

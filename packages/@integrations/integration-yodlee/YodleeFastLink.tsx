@@ -24,40 +24,42 @@ export function YodleeFastLink({
   onClose,
   onEvent,
 }: YodleeFastLinkProps) {
+  // console.log('[YodleeFastLink] render')
   React.useLayoutEffect(
     () => {
+      // console.log('[YodleeFastLink] start layout effect')
       setTimeout(() => {
+        // console.log('[YodleeFastLink] setTimeout runs')
+        const options: FastLinkOpenOptions = {
+          fastLinkURL: {
+            sandbox:
+              'https://fl4.sandbox.yodlee.com/authenticate/restserver/fastlink',
+            development:
+              'https://fl4.preprod.yodlee.com/authenticate/development-75/fastlink/?channelAppName=tieredpreprod',
+            production:
+              'https://fl4.prod.yodlee.com/authenticate/production-148/fastlink/?channelAppName=tieredprod',
+          }[envName],
+          accessToken: fastlinkToken,
+          forceIframe: true,
+          params: providerAccountId
+            ? {
+                flow: 'edit',
+                configName: 'Aggregation',
+                providerAccountId,
+              }
+            : {
+                flow: 'add',
+                configName: 'Aggregation',
+                providerId,
+              },
+          onSuccess,
+          onError,
+          onClose,
+          onEvent,
+        }
         try {
-          window.fastlink?.open(
-            {
-              fastLinkURL: {
-                sandbox:
-                  'https://fl4.sandbox.yodlee.com/authenticate/restserver/fastlink',
-                development:
-                  'https://fl4.preprod.yodlee.com/authenticate/development-75/fastlink/?channelAppName=tieredpreprod',
-                production:
-                  'https://fl4.prod.yodlee.com/authenticate/production-148/fastlink/?channelAppName=tieredprod',
-              }[envName],
-              accessToken: fastlinkToken,
-              forceIframe: true,
-              params: providerAccountId
-                ? {
-                    flow: 'edit',
-                    configName: 'Aggregation',
-                    providerAccountId,
-                  }
-                : {
-                    flow: 'add',
-                    configName: 'Aggregation',
-                    providerId,
-                  },
-              onSuccess,
-              onError,
-              onClose,
-              onEvent,
-            },
-            YODLEE_CONTAINER_ID,
-          )
+          console.log('[YodleeFastLink] Will open with options', options)
+          window.fastlink?.open(options, YODLEE_CONTAINER_ID)
         } catch (err) {
           console.error('[YodleeFastLink] Failed to open FastLink', err)
           toast.error('Something went wrong (ERR_YODLEE_OPEN_FAIL)')

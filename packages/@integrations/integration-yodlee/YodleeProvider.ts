@@ -49,7 +49,7 @@ const def = makeSyncProvider.def({
   connectionSettings: zSettings,
   // Will be addressed again for reconnection
   preConnectInput: zSettings.pick({envName: true, loginName: true}),
-  connectInput: zSettings.pick({accessToken: true}),
+  connectInput: z.object({accessToken: zAccessToken}),
   connectOutput: zSettings.pick({
     envName: true, // How do make these not needed?
     loginName: true, // How do make these not needed?
@@ -187,26 +187,24 @@ export const yodleeProviderNext = makeSyncProvider({
       options: {envName, loginName: ledgerId},
     }),
   ],
-  // FIXME
-  preConnect: async () => ({accessToken: {} as any}),
-  // preConnect: async ({envName, loginName}, config) => {
-  //   const accessToken = await makeYodleeClient(
-  //     {...config[envName]!, envName},
-  //     {loginName},
-  //   ).generateAccessToken(loginName)
-  //   return {accessToken}
-  // },
+  preConnect: async ({envName, loginName}, config) => {
+    const accessToken = await makeYodleeClient(
+      {...config[envName]!, envName},
+      {loginName},
+    ).generateAccessToken(loginName)
+    return {accessToken}
+  },
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    return async (_input) => {
+    return async ({accessToken}) => {
       await loaded
       const deferred = new Deferred<typeof def['_types']['connectOutput']>()
       scope.openDialog(({hide}) =>
         YodleeFastLink({
           envName: 'sandbox',
-          fastlinkToken: '',
-          providerId: '',
-          providerAccountId: '',
+          fastlinkToken: `Bearer ${accessToken.accessToken}`,
+          // providerId: '',
+          // providerAccountId: '',
           onSuccess: (data) => {
             console.debug('[yodlee] Did receive successful response', data)
             hide()
