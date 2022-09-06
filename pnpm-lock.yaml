@@ -478,6 +478,7 @@ importers:
       '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
       '@types/react': '*'
+      openapi-typescript-codegen: 0.23.0
       plaid: 10.7.0
       react: '*'
       react-dom: '*'
@@ -493,6 +494,7 @@ importers:
       react-plaid-link: 3.3.2_sfoxds7t5ydpegc3knd667wn6m
     devDependencies:
       '@types/react': 17.0.39
+      openapi-typescript-codegen: 0.23.0
 
   packages/@integrations/integration-postgres:
     specifiers:

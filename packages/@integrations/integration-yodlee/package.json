@@ -7,7 +7,7 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "codegen": "openapi -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -o ./yodlee.generated -c axios --useOptions --useUnionTypes --request ./request.noop.ts --name YodleeAPI --exportCore true --exportSchemas false --indent 2"
+    "codegen": "openapi --name YodleeAPI -o ./yodlee.generated -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas false --indent 2"
   },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",

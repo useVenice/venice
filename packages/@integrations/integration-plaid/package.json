@@ -6,6 +6,9 @@
     "register.node.ts"
   ],
   "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi --name PlaidAPI -o ./plaid.generated -i https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas false --indent 2"
+  },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",
@@ -17,6 +20,7 @@
     "react-plaid-link": "3.3.2"
   },
   "devDependencies": {
-    "@types/react": "*"
+    "@types/react": "*",
+    "openapi-typescript-codegen": "0.23.0"
   }
 }
