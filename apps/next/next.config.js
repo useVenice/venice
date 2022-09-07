@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 // prettier-ignore
 const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../app-config'),
@@ -47,6 +48,7 @@ module.exports = withTM(
     },
     webpack: (config) => {
       config.module.exprContextCritical = false
+      config.module.unknownContextCritical = false
       config.module.rules.push({
         test: /\.node$/,
         use: [{loader: 'node-loader'}],
@@ -59,6 +61,12 @@ module.exports = withTM(
         net: false,
         dns: false,
       }
+      config.plugins.push(
+        new webpack.IgnorePlugin({
+          resourceRegExp:
+            /^(encoding|bson-ext|kerberos|@mongodb-js\/zstd|snappy|snappy\/package\.json|aws4|mongodb-client-encryption)$/,
+        }),
+      )
       return config
     },
     images: {
