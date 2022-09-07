@@ -1,12 +1,5 @@
-import type {
-  IntegrationInput,
-  ParsedConn,
-  ParsedInt,
-  ParsedPipeline,
-  PipelineInput,
-} from './makeSyncHelpers'
-import {makeSyncHelpers} from './makeSyncHelpers'
-import {sync} from './sync'
+import * as trpc from '@trpc/server'
+
 import type {
   AnySyncProvider,
   ConnectedSource,
@@ -30,7 +23,16 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-import * as trpc from '@trpc/server'
+
+import type {
+  IntegrationInput,
+  ParsedConn,
+  ParsedInt,
+  ParsedPipeline,
+  PipelineInput,
+} from './makeSyncHelpers'
+import {makeSyncHelpers} from './makeSyncHelpers'
+import {sync} from './sync'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -190,33 +192,44 @@ export const makeSyncEngine = <
           )
       },
     ),
-    syncMetadata: zFunction(zInt, async (int) => {
-      if (!int.provider.metaSync) {
-        return 'Provider does not support metaSync'
-      }
-      // Allow syncing all at once
+
+    // TODO: Test out the `describe` function in zod...
+
+    getIntegration: zFunction(zInt, async (int) => ({
+      config: int.config,
+      provider: int.provider.name,
+      id: int.id,
+    })),
+
+    syncMetadata: zFunction(zInt.optional(), async (int) => {
+      const ints = int ? [int] : await getDefaultIntegrations()
       const stats = await sync({
-        source: int.provider.metaSync({config: int.config}).pipe(
-          handlersLink({
-            data: (op) =>
-              rxjs.of({
-                ...op,
-                data: {
-                  ...op.data,
-                  entity: {
-                    external: op.data.entity,
-                    standard: int.provider.standardMappers?.institution?.(
-                      op.data.entity,
-                      int.config,
-                    ),
-                  },
-                },
-              }),
-          }),
+        source: rxjs.merge(
+          ...ints.map(
+            (int) =>
+              int.provider.metaSync?.({config: int.config}).pipe(
+                handlersLink({
+                  data: (op) =>
+                    rxjs.of({
+                      ...op,
+                      data: {
+                        ...op.data,
+                        entity: {
+                          external: op.data.entity,
+                          standard: int.provider.standardMappers?.institution?.(
+                            op.data.entity,
+                            int.config,
+                          ),
+                        },
+                      },
+                    }),
+                }),
+              ) ?? rxjs.EMPTY,
+          ),
         ),
         destination: metaStore.institutionDestLink(),
       })
-      return `Synced ${stats} insitutions from ${int.provider.name}`
+      return `Synced ${stats} institutions from ${ints.length} providers`
     }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
       const {src, links, dest, watch} = pipeline
@@ -296,7 +309,6 @@ export const makeSyncEngine = <
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
     // flow a bit smoother with a guided cli flow
-
     postConnect: zFunction(
       // Questionable why `zConnectContext` should be there. Examine whether this is actually
       // needed
