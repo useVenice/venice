@@ -157,17 +157,6 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   )
 
   const client = {
-    generateAccessToken2: (loginName: string) =>
-      new AuthService({
-        config: api.request.config,
-        request: (opts) =>
-          api.request.request({...opts, headers: {...opts.headers, loginName}}),
-      })
-        .generateAccessToken({
-          clientId: config.clientId,
-          secret: config.clientSecret,
-        })
-        .then((r) => r.token),
     generateAccessToken,
     getProvider,
     async registerUser(user: {loginName: string; email: string}) {
@@ -181,7 +170,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
         .then((r) => r.data.user)
     },
 
-    getUser2: () =>
+    getUser: () =>
       api.user
         .getUser()
         .then((r) => r.user)
@@ -194,21 +183,6 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
           }
           throw err
         }),
-
-    getUser: zFunction(async () =>
-      http
-        .get<{user: Yodlee.User}>('/user')
-        .then((r) => r.data.user)
-        .catch((err) => {
-          if (err instanceof YodleeError && err.data.errorCode === 'Y008') {
-            throw new YodleeNotFoundError({
-              entityName: 'User',
-              entityId: creds.loginName ?? '',
-            })
-          }
-          throw err
-        }),
-    ),
 
     async updateUser(user: {email?: string; loginName?: string}) {
       return http

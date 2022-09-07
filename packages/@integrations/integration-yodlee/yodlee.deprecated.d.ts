@@ -1,3 +1,4 @@
+/** @deprecated, please use yodlee.types */
 declare namespace Yodlee {
   export type EnvName = 'sandbox' | 'development' | 'production'
 

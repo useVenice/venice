@@ -1,8 +1,11 @@
-import type {ProviderDetail} from './yodlee.generated'
+import type { ProviderDetail, UserDetail} from './yodlee.generated';
+import {$UserDetail} from './yodlee.generated'
 import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
 import type {Schema} from '@cfworker/json-schema'
 import {Validator} from '@cfworker/json-schema'
 import {z, zCast} from '@ledger-sync/util'
+
+// TODO: Deprecate most of me and use the types generated from openAPI
 
 export type YodleeBalances = Partial<
   Pick<
@@ -177,6 +180,30 @@ export const zYodleeProvider = zCast<ProviderDetail>().superRefine(
   },
 )
 
+/**
+ * e.g.
+ * currency: 'USD'
+ * timeZone: 'PST'
+ * dateFormat: 'MM/dd/yyyy'
+ */
+export const zUser = zCast<UserDetail>().superRefine((input, ctx) => {
+  const validator = new Validator({
+    ...$UserDetail,
+    type: 'object',
+  } as unknown as Schema)
+  const res = validator.validate(input)
+  for (const {error, ...data} of res.errors) {
+    ctx.addIssue({
+      code: 'custom',
+      path: [], // TODO: Check what the error shape looks like...
+      message: error,
+      params: data,
+      fatal: true,
+    })
+  }
+  return res.valid
+})
+
 export const zProviderAccount = z.object({
   aggregationSource: z.string(),
   createdDate: z.string(),
@@ -193,18 +220,6 @@ export const zProviderAccount = z.object({
     'FAILED',
   ]),
   isDeleted: z.boolean().nullish(),
-})
-
-export const zUser = z.object({
-  id: z.number(),
-  loginName: z.string(),
-  roleType: z.string(),
-  preferences: z.object({
-    /** 'USD' */ currency: z.string(),
-    /** 'PST' */ timeZone: z.string(),
-    /** 'MM/dd/yyyy' */ dateFormat: z.string(),
-  }),
-  email: z.string(),
 })
 
 // Params
