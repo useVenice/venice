@@ -1,3 +1,4 @@
+// @deprecated import to yodlee.generated, switch to yodlee.gen once switch to openapi-typescript from openapi-typescript-codegen
 import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
