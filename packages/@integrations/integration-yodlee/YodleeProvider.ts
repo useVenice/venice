@@ -323,7 +323,7 @@ export const yodleeProvider = makeSyncProvider({
   },
 
   metaSync: ({config}) => {
-    console.log('[yodlee.metaSync]', config)
+    // console.log('[yodlee.metaSync]', config)
     // TODO: Should environment name be part of the yodlee institution id?
     const envName: YodleeEnvName = 'sandbox'
     const yodlee = makeYodleeClient(config, {role: 'admin', envName})

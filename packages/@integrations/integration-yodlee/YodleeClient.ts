@@ -106,7 +106,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     },
     errorTransformer: (err) => {
       if (err.response?.data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         return new YodleeError(err.response.data as any, err)
       }
       return err
@@ -546,11 +546,13 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         // console.log('Will request institution', {skip})
         const res = await api.institutions.getInstitutions({skip, top: limit})
         // console.log('got ins response', res)
-        if (!res.institution?.length || res.institution.length < limit) {
+        if (res.institution?.length) {
+          yield res.institution
+          skip += res.institution.length
+        }
+        if ((res.institution?.length ?? 0) < limit) {
           break
         }
-        skip += res.institution.length
-        yield res.institution
       }
     },
   }
