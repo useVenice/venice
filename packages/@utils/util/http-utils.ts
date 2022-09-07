@@ -185,7 +185,9 @@ export function createHTTPClient({
   if (requestTransformer) {
     axios.interceptors.request.use(requestTransformer)
   }
-  // https://github.com/axios/axios/issues/1663 Applied in reverse
+  // WARNING: https://github.com/axios/axios/issues/1663 Axios interceptors
+  // are applied in reverse. Uuslaly we may need to refreshAuth before transforming
+  // requests (such as Authorization header...)
   if (refreshAuth) {
     axios.interceptors.request.use((req) => {
       if (refreshAuth.shouldSkipRefresh?.(req)) {

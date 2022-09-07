@@ -36,15 +36,18 @@ export const zAccessToken = z.object({
   expiresIn: z.number(), // seconds
 })
 
-export const zUserCreds = z.object({
+const zCommonCreds = z.object({
   envName: zYodleeEnvName,
-  loginName: z.string(),
   // Cache
   accessToken: zAccessToken.nullish(),
 })
 
+export const zUserCreds = zCommonCreds.extend({
+  loginName: z.string(),
+})
+
 export const zCreds = z.discriminatedUnion('role', [
-  z.object({role: z.literal('admin'), envName: zYodleeEnvName}),
+  zCommonCreds.extend({role: z.literal('admin')}),
   zUserCreds.extend({role: z.literal('user')}),
 ])
 
@@ -75,7 +78,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
   if (!config) {
     throw new Error(`[YodleeClient] Missing config for env ${creds.envName}`)
   }
-  let accessToken = creds.role === 'user' ? creds.accessToken : undefined
+  let accessToken = creds.accessToken
   const httpsAgent =
     getDefaultProxyAgent() ?? (config.proxy && $makeProxyAgent(config.proxy))
 
@@ -116,11 +119,12 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         }
         if (accessToken) {
           const expiresAt = DateTime.fromISO(accessToken.issuedAt).plus({
-            seconds: accessToken.expiresIn,
+            seconds: accessToken.expiresIn - 30, // 30 seconds buffer
           })
           const now = DateTime.utc()
-          return expiresAt >= now
+          return expiresAt <= now
         }
+
         return true
       },
       shouldSkipRefresh: (req) => !!req.url?.endsWith('auth/token'),
