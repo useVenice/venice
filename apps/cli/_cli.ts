@@ -1,6 +1,5 @@
 import '@ledger-sync/app-config/register.node'
-import type {CliOpts} from './cli-utils'
-import {cliFromZFunctionMap} from './cli-utils'
+
 import {dotEnvOut} from '@ledger-sync/app-config/register.node'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
@@ -18,6 +17,9 @@ import {makeWiseClient} from '@ledger-sync/integration-wise'
 import {makeYodleeClient} from '@ledger-sync/integration-yodlee'
 import type {ZFunctionMap} from '@ledger-sync/util'
 import {R, safeJSONParse, z, zodInsecureDebug} from '@ledger-sync/util'
+
+import type {CliOpts} from './cli-utils'
+import {cliFromZFunctionMap} from './cli-utils'
 
 if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()

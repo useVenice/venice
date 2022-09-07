@@ -1,11 +1,18 @@
 #!/usr/bin/env tsx
+// This import line gets frequently moved by vscode organize imports
+// and thus causing runtime failure... Therefore we moved it to the ledgerSync bin
+import '@ledger-sync/app-config/register.node'
+
+import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
+import http from 'http'
+import {json} from 'micro'
+import ngrok from 'ngrok'
+
 import type {LedgerSyncRouter} from '@ledger-sync/app-config'
 import {
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
 } from '@ledger-sync/app-config'
-import '@ledger-sync/app-config/register.node'
-import {cliFromRouter} from './cli-utils'
 import type {inferProcedureInput} from '@ledger-sync/engine'
 import {parseWebhookRequest} from '@ledger-sync/engine'
 import type {NonEmptyArray} from '@ledger-sync/util'
@@ -17,10 +24,8 @@ import {
   zFunction,
   zodInsecureDebug,
 } from '@ledger-sync/util'
-import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
-import http from 'http'
-import {json} from 'micro'
-import ngrok from 'ngrok'
+
+import {cliFromRouter} from './cli-utils'
 
 if (!process.env['DEBUG']) {
   console.debug = () => {} // Disabling debug logs
