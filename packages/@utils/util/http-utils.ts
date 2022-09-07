@@ -167,15 +167,15 @@ export function createHTTPClient({
    * https://github.com/Flyrell/axios-auth-refresh
    * */
   refreshAuth?: {
-    /** `err` is undefined if we are proactively refreshing */
-    refresh: (err?: HTTPError) => Promise<void> | undefined
+    /** `err` is undefined if we are proactively refreshing. Return false */
+    refresh: (err?: HTTPError) => Promise<boolean | undefined> | undefined
     /** For situations where we know a token has likely expired */
     shouldProactiveRefresh?: (req: AxiosRequestConfig) => boolean
     /** Should return true for the refresh request itself... */
     shouldSkipRefresh?: (req: AxiosRequestConfig) => boolean
   }
 }): HTTPClient {
-  let refreshPromise: Promise<void> | undefined
+  let refreshPromise: Promise<boolean | undefined> | undefined
 
   const axios = _Axios.create({
     // How do we use per request container here?
@@ -226,7 +226,12 @@ export function createHTTPClient({
         if (refreshPromise) {
           return refreshPromise
             .finally(() => (refreshPromise = undefined))
-            .then(() => axios.request(err.response?.config ?? {}))
+            .then((res) => {
+              if (res === false) {
+                throw errorTransformer ? errorTransformer(error) : error
+              }
+              return axios.request(err.response?.config ?? {})
+            })
         }
       }
       throw errorTransformer ? errorTransformer(error) : error
