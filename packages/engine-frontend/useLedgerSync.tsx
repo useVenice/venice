@@ -18,10 +18,7 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
   // There has to be a shorthand for this...
 
   const {hooks, client, trpc} = LSProvider.useContext()
-  const preConnectOptionsRes = trpc.useQuery(
-    ['listPreConnectOptions', [{envName, ledgerId}]],
-    {enabled: !!ledgerId},
-  )
+  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
   const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
     enabled: !!ledgerId,
   })
@@ -56,5 +53,10 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
     },
     [envName, ledgerId, client, hooks, connectionsRes],
   )
-  return {connect, preConnectOptionsRes, connectionsRes, insRes}
+  return {
+    connect,
+    integrationsRes,
+    connectionsRes,
+    insRes,
+  }
 }
