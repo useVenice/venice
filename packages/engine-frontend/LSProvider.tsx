@@ -1,10 +1,12 @@
-import type {DialogInstance} from './components/Dialog'
-import {Dialog} from './components/Dialog'
+import {createReactQueryHooks} from '@trpc/react'
+import React from 'react'
+
 import type {AnySyncProvider, LinkFactory} from '@ledger-sync/cdk-core'
 import type {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
 import {R} from '@ledger-sync/util'
-import {createReactQueryHooks} from '@trpc/react'
-import React from 'react'
+
+import type {DialogInstance} from './components/Dialog'
+import {Dialog} from './components/Dialog'
 
 type Router = ReturnType<typeof makeSyncEngine>[1]
 const trpc = createReactQueryHooks<Router>()
@@ -12,7 +14,8 @@ const trpc = createReactQueryHooks<Router>()
 export const LSContext = React.createContext<{
   trpc: typeof trpc
   client: ReturnType<typeof trpc.createClient>
-  hooks: Record<string, ((connectInput: any) => Promise<any>) | undefined>
+  // TODO: get the proper types from cdk-core
+  hooks: Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
 } | null>(null)
 
 export function LSProvider<

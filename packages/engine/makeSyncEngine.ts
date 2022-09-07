@@ -3,21 +3,20 @@ import * as trpc from '@trpc/server'
 import type {
   AnySyncProvider,
   ConnectedSource,
+  InsId,
   KVStore,
   Link,
   LinkFactory} from '@ledger-sync/cdk-core';
 import {
-  zStandardConnection,
-  zStandardInstitution,
+  zConnectContext,
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
   makeCoreId,
-  zConnectContext,
+  zStandardInstitution,
+  zUseLedgerSyncOptions,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import type {LedgerSyncProvider} from '@ledger-sync/cdk-ledger'
-import {zStandard} from '@ledger-sync/cdk-ledger'
 import {
   R,
   routerFromZFunctionMap,
@@ -128,7 +127,7 @@ export const makeSyncEngine = <
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
     listPreConnectOptions: zFunction(
-      zConnectContext.extend({
+      zUseLedgerSyncOptions.extend({
         type: z.enum(['source', 'destination']).nullish(),
       }),
       // z.promise(z.array(z.object({type: z.enum(['source'])}))),
@@ -173,9 +172,9 @@ export const makeSyncEngine = <
             console.error('Invalid institution found', item, res.error)
             return []
           }
-          const [, providerName] = splitPrefixedId(item.id)
+          const [, providerName, externalId] = splitPrefixedId(item.id)
           return (intsByProviderName[providerName] ?? []).map((int) => ({
-            ins: {...res.data, id: item.id},
+            ins: {...res.data, id: item.id as InsId, externalId},
             int: {id: int.id, provider: int.provider.name},
           }))
         })
@@ -307,8 +306,11 @@ export const makeSyncEngine = <
       )
     }),
     // getPreConnectInputs happens client side only
-    preConnect: zFunction([zInt, z.unknown()], ({provider: p, config}, input) =>
-      p.preConnect?.(p.def.preConnectInput?.parse(input), config),
+
+    // SessionID would be awfully handy here...
+    preConnect: zFunction(
+      [zInt, zConnectContext],
+      ({provider: p, config}, ctx) => p.preConnect?.({}, config, ctx),
     ),
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
@@ -316,15 +318,19 @@ export const makeSyncEngine = <
     postConnect: zFunction(
       // Questionable why `zConnectContext` should be there. Examine whether this is actually
       // needed
-      [zInt, z.unknown(), zConnectContext],
+      [zInt, zConnectContext, z.unknown()],
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
-      async (int, input, ctx) => {
+      async (int, ctx, input) => {
         const {provider: p, config} = int
         console.log('didConnect start', p.name, input)
         if (!p.postConnect || !p.def.connectOutput) {
           return 'Noop'
         }
-        const cs = await p.postConnect(p.def.connectOutput.parse(input), config)
+        const cs = await p.postConnect(
+          p.def.connectOutput.parse(input),
+          config,
+          ctx,
+        )
 
         await syncEngine.syncConnection.impl(parsedConn(int, {...cs, ...ctx}))
 

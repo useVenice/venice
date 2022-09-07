@@ -5,7 +5,8 @@ import {
 } from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
-import type {MergeUnion} from '@ledger-sync/util'
+import type {MergeUnion} from '@ledger-sync/util';
+import { splitPrefixedId} from '@ledger-sync/util'
 import {
   A,
   Deferred,
@@ -30,7 +31,8 @@ import {
   zYodleeInstitution,
   zYodleeProvider,
 } from './yodlee.types'
-import type {YodleeEnvName} from './YodleeClient'
+import type {YodleeEnvName} from './YodleeClient';
+import { zYodleeId} from './YodleeClient'
 import {
   makeYodleeClient,
   zAccessToken,
@@ -218,7 +220,8 @@ export const yodleeProvider = makeSyncProvider({
       options: {envName, loginName: ledgerId},
     }),
   ],
-  preConnect: async ({envName, loginName}, config) => {
+  preConnect: async (_, config, {envName, ledgerId}) => {
+    const loginName = ledgerId
     const accessToken = await makeYodleeClient(config, {
       role: 'admin',
       envName,
@@ -227,14 +230,21 @@ export const yodleeProvider = makeSyncProvider({
   },
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    return async ({accessToken, envName, loginName}) => {
+    return async ({accessToken, envName, loginName}, ctx) => {
+      console.log('[Yodlee.connect] ctx', ctx)
       await loaded
+
       const deferred = new Deferred<typeof def['_types']['connectOutput']>()
       scope.openDialog(({hide}) =>
         YodleeFastLink({
           envName,
           fastlinkToken: `Bearer ${accessToken.accessToken}`,
-          // providerId: '',
+          providerId: zYodleeId
+            .optional()
+            .parse<'typed'>(
+              (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
+                undefined,
+            ),
           // providerAccountId: '',
           onSuccess: (data) => {
             console.debug('[yodlee] Did receive successful response', data)

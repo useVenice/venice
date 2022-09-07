@@ -3,7 +3,16 @@ import React from 'react'
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
+import {
+  A,
+  Deferred,
+  identity,
+  parseMoney,
+  Rx,
+  rxjs,
+  splitPrefixedId,
+  z,
+} from '@ledger-sync/util'
 
 import type {HandleSuccessTellerEnrollment} from './teller-utils'
 import {useTellerAPI} from './teller-utils'
@@ -181,11 +190,13 @@ export const tellerProvider = makeSyncProvider({
       }
     }, [options?.applicationId, tellerConnect])
 
-    return (opts) => {
+    return (opts, ctx) => {
       setOptions({
         applicationId: opts.applicationId,
         environment: opts.envName,
-        institutionId: opts.institutionId,
+        institutionId:
+          (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
+          undefined,
       })
       return deferred.promise
     }

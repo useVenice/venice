@@ -1,18 +1,8 @@
 import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
-import type {Destination, Source, SyncOperation} from './protocol'
+import type {Destination, EnvName, Source, SyncOperation} from './protocol'
 import {zEnvName} from './protocol'
-
-export type ConnectContext = z.infer<typeof zConnectContext>
-export const zConnectContext = z.object({
-  envName: zEnvName,
-  ledgerId: z.string(),
-})
-
-export interface UseConnectScope {
-  openDialog: (render: (ctx: {hide: () => void}) => JSX.Element) => void
-}
 
 export const CORE_NAME_TO_PREFIX = {
   integration: 'int',
@@ -22,6 +12,8 @@ export const CORE_NAME_TO_PREFIX = {
 } as const
 type Prefix = typeof CORE_NAME_TO_PREFIX[keyof typeof CORE_NAME_TO_PREFIX]
 
+// Move to protocol?
+
 export function makeCoreId<TPrefix extends Prefix, TPName extends string>(
   prefix: TPrefix,
   providerName: TPName,
@@ -30,16 +22,54 @@ export function makeCoreId<TPrefix extends Prefix, TPName extends string>(
   return makePrefixedId(prefix, providerName, externalId)
 }
 
-type _opt<T> = T | undefined
-type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
+export function zId<TPrefix extends Prefix>(prefix: TPrefix) {
+  return z
+    .string()
+    .refine(
+      (s): s is `${TPrefix}_${string}` => s.startsWith(`${prefix}_`),
+      `Not a valid ${prefix} id`,
+    )
+}
 
-/** Surprisingly tricky, see. https://www.zhenghao.io/posts/ts-never */
-type NeverKeys<T> = Exclude<
-  {[K in keyof T]: [T[K]] extends [never] ? K : never}[keyof T],
-  undefined
->
+// MARK: - Types
 
-type OmitNever<T> = Omit<T, NeverKeys<T>> // & {[k in NeverKeys<T>]?: undefined}
+/** TODO: Move me to client side... */
+export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
+export const zUseLedgerSyncOptions = z.object({
+  envName: zEnvName,
+  ledgerId: z.string(),
+})
+
+/** TODO: Move me to client side... */
+export interface UseConnectScope {
+  openDialog: (render: (ctx: {hide: () => void}) => JSX.Element) => void
+}
+
+export type ConnectContextInput = z.input<typeof zConnectContext>
+export const zConnectContext = z.object({
+  envName: zEnvName,
+  ledgerId: z.string(),
+  /** Noop if `connectionId` is specified */
+  institutionId: zId('ins').nullish(),
+  connectionId: zId('conn').nullish(),
+})
+
+export type ConnectContext<
+  T extends AnyProviderDef,
+  TVariant extends 'frontend' | 'backend',
+> = {
+  ledgerId: string
+  envName: EnvName
+} & (
+  | {mode: 'connect-discover'} // Defaults to discover
+  | {mode: 'connect-institution'; institution: {externalId: string}}
+  | {
+      mode: 'reconnect'
+      connection: {externalId: string} & (TVariant extends 'backend'
+        ? {settings: T['_types']['connectionSettings']}
+        : never)
+    }
+)
 export interface PreConnOptions<T = unknown> {
   key: string
   label: string
@@ -48,7 +78,7 @@ export interface PreConnOptions<T = unknown> {
 
 // type Optional<T> = {[P in keyof T]: T[P] | undefined}
 export interface ConnectedSource<T extends AnyProviderDef>
-  extends Partial<ConnectContext> {
+  extends Partial<UseLedgerSyncOptions> {
   // Should we instead use mapStandardConnection for this?
   externalId: string
   settings: T['_types']['connectionSettings']
@@ -85,6 +115,17 @@ export const zWebhookInput = z.object({
 })
 
 // MARK: - Provider def
+
+type _opt<T> = T | undefined
+type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
+
+/** Surprisingly tricky, see. https://www.zhenghao.io/posts/ts-never */
+type NeverKeys<T> = Exclude<
+  {[K in keyof T]: [T[K]] extends [never] ? K : never}[keyof T],
+  undefined
+>
+
+type OmitNever<T> = Omit<T, NeverKeys<T>> // & {[k in NeverKeys<T>]?: undefined}
 
 export type AnyProviderDef = Omit<
   ReturnType<typeof makeSyncProviderDef>,
@@ -265,7 +306,7 @@ export function makeSyncProvider<
   }>,
   TGetPreConnectInputs extends _opt<
     (
-      ctx: ConnectContext,
+      ctx: UseLedgerSyncOptions,
     ) => Array<PreConnOptions<T['_types']['preConnectInput']>>
   >,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods
@@ -278,19 +319,21 @@ export function makeSyncProvider<
     (
       preConnectInput: T['_types']['preConnectInput'],
       config: T['_types']['integrationConfig'],
+      // Change the order later...
+      context: ConnectContextInput, // ConnectContext<T, 'backend'>,
     ) => Promise<T['_types']['connectInput']>
   >,
   TUseConnHook extends _opt<
-    (
-      scope: UseConnectScope,
-    ) => (
+    (scope: UseConnectScope) => (
       connectInput: T['_types']['connectInput'],
+      context: ConnectContextInput, // ConnectContext<T, 'frontend'>,
     ) => Promise<T['_types']['connectOutput']>
   >,
   TPostConn extends _opt<
     (
       connectOutput: T['_types']['connectOutput'],
       config: T['_types']['integrationConfig'],
+      context: ConnectContextInput, // ConnectContext<T, 'backend'>,
     ) => Promise<ConnectedSource<T>>
   >,
   // This probably need to also return an observable

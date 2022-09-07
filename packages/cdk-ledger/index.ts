@@ -2,7 +2,6 @@
 export * from './entity-link-types'
 export * from './entity-links'
 export * from './ledgerSyncProviderBase'
-export * from './models'
 export * from './utils'
 // codegen:end
 

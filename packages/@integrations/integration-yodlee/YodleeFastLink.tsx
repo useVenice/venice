@@ -15,7 +15,7 @@ export interface YodleeFastLinkProps {
 export function YodleeFastLink({
   envName,
   fastlinkToken,
-  // providerId,
+  providerId,
   providerAccountId,
   onSuccess,
   onError,
@@ -39,17 +39,14 @@ export function YodleeFastLink({
           }[envName],
           accessToken: fastlinkToken,
           forceIframe: true,
-          params: providerAccountId
-            ? {
-                flow: 'edit',
-                configName: 'Aggregation',
-                providerAccountId,
-              }
-            : {
-                // flow: 'add',
-                configName: 'Aggregation',
-                // providerId,
-              },
+          params: {
+            configName: 'Aggregation',
+            ...(providerAccountId
+              ? {flow: 'edit', providerAccountId}
+              : providerId
+              ? {flow: 'add', providerId}
+              : undefined),
+          },
           onSuccess,
           onError,
           onClose,

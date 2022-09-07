@@ -13,6 +13,7 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
 export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
 export type IntId<TName extends string = string> = `int_${TName}_${string}`
+export type InsId<TName extends string = string> = `ins_${TName}_${string}`
 export type PipeId = `pipe_${string}`
 
 /**

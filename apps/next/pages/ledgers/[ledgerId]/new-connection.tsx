@@ -78,17 +78,7 @@ export default function LedgerNewConnectionScreen() {
                         <button
                           className="btn-outline btn btn-sm btn-circle border-base-content/25"
                           onClick={() => {
-                            ls.connect(int, {
-                              key: ins.id,
-                              label: ins.name,
-                              // Temp haackkk...
-                              options: {
-                                envName: 'sandbox',
-                                institutionId: ins.id,
-                                userToken: '',
-                                applicationId: '',
-                              },
-                            })
+                            ls.connect(int, {institutionId: ins.id})
                           }}>
                           <Plus />
                         </button>

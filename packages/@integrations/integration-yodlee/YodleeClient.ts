@@ -1,6 +1,4 @@
 // @deprecated import to yodlee.generated, switch to yodlee.gen once switch to openapi-typescript from openapi-typescript-codegen
-import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
-import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 import {
   $makeProxyAgent,
   createHTTPClient,
@@ -13,6 +11,9 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
+
+import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
+import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 
 export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
@@ -52,11 +53,11 @@ export const zCreds = z.discriminatedUnion('role', [
 ])
 
 /** Yodlee comma-delimited ids */
-type YodleeIds = z.input<typeof zIds>
-const zId = z
+type YodleeIds = z.input<typeof zYodleeIds>
+export const zYodleeId = z
   .union([z.number(), z.string()])
   .transform((id) => (typeof id === 'string' ? Number.parseInt(id) : id))
-const zIds = z.union([zId, z.array(zId)])
+const zYodleeIds = z.union([zYodleeId, z.array(zYodleeId)])
 
 function idToString(id: YodleeIds) {
   return Array.isArray(id) ? id.join(',') : id.toString()
@@ -106,7 +107,6 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     },
     errorTransformer: (err) => {
       if (err.response?.data) {
-         
         return new YodleeError(err.response.data as any, err)
       }
       return err
@@ -155,9 +155,9 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       .then((r) => zAccessToken.parse(r.token)),
   )
 
-  const getProvider = zFunction(zId, async (providerId) =>
+  const getProvider = zFunction(zYodleeId, async (providerId) =>
     api.providers
-      .getProvider({providerId: zId.parse(providerId)})
+      .getProvider({providerId: zYodleeId.parse(providerId)})
       .then((res) => {
         if (!res.provider) {
           throw new YodleeNotFoundError({
