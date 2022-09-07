@@ -161,7 +161,7 @@ export const zYodleeAccount = z.object({
 })
 
 export const zYodleeInstitution = zCast<
-  Institution & {envName: YodleeEnvName}
+  Institution & {_envName: YodleeEnvName}
 >()
 
 /** TODO: Extract me into zod-utils - zod from JSONSchema */

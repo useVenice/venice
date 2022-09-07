@@ -11,8 +11,7 @@ import {
   zYodleeInstitution,
   zYodleeProvider,
 } from './yodlee.types'
-import type {
-  YodleeEnvName} from './YodleeClient';
+import type {YodleeEnvName} from './YodleeClient'
 import {
   makeYodleeClient,
   zAccessToken,
@@ -204,7 +203,7 @@ export const yodleeProvider = makeSyncProvider({
       logoUrl: ins.logo!,
       loginUrl: ins.loginUrl,
       name: ins.name!,
-      envName: undefined,
+      envName: ins._envName,
     }),
     connection: (settings) => ({
       id: `${settings.providerAccountId}`,
@@ -330,7 +329,7 @@ export const yodleeProvider = makeSyncProvider({
     const yodlee = makeYodleeClient(config, {role: 'admin', envName})
     return rxjs.from(yodlee.iterateInstutitions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
-      Rx.map((ins) => def._insOpData(`${ins.id}`, {...ins, envName})),
+      Rx.map((ins) => def._insOpData(`${ins.id}`, {...ins, _envName: envName})),
     )
   },
 })
