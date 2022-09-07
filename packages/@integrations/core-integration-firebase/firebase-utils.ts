@@ -224,7 +224,6 @@ export function unwrapDocumentSnapshot<T>(snap: AnyDocumentSnapshot<T>) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function idsForRef(ref: AnyDocumentReference) {
   // .parent = `/ledgers/<Id.ldgr>/<collectionName>` or `/users/<Id.usr>/<collectionName>`
   // .parent.parent = `/ledgers/<Id.ldgr>` or `/users/<Id.usr>`

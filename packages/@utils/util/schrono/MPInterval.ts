@@ -18,7 +18,6 @@ export interface MPInterval extends Interval {
   unparse(opt?: {abs?: boolean}): string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MPInterval = {
   create(_int: Interval, exp: MPIntervalExpression | undefined): MPInterval {
     const interval = _int as Mutable<MPInterval>

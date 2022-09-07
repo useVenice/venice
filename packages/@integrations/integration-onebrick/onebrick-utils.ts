@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import type {EnvName} from './OneBrickClient'
 
 export function inferOneBrickEnvFromToken(

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./beancount.d.ts"/>
 import type {Standard} from '@ledger-sync/standard'
 import {

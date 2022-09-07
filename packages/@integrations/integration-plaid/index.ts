@@ -2,6 +2,7 @@
 export * from './plaid-utils'
 export * from './PlaidClient'
 export * from './PlaidProvider'
+export * from './request.noop'
 // codegen:end
 
 // Consider using "plaid" as peerDependency to reduce

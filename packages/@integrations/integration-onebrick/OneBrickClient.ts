@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import {inferOneBrickEnvFromToken} from './onebrick-utils'
 import {
   castIs,

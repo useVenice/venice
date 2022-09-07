@@ -50,7 +50,6 @@ export function readFileContent(filename: string, dirname?: string) {
   return fs.readFileSync(filePath, 'utf8')
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyProcedure = trpc.ProcedureRecord[string]
 
 // TODO Take router._defs and add options based on it so that docs can be shown

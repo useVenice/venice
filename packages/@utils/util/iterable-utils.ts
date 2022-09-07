@@ -15,7 +15,6 @@ export async function* asyncYieldInput<T>(input: T) {
   yield input
 }
 
-// eslint-disable-next-line require-yield
 export async function* asyncYieldThrow(err: unknown) {
   throw err
 }
@@ -61,7 +60,6 @@ export function* yieldInput<T>(input: T) {
   yield input
 }
 
-// eslint-disable-next-line require-yield
 export function* yieldThrow(err: unknown) {
   throw err
 }

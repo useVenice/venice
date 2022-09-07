@@ -144,12 +144,7 @@ export function formatAmount(
 
 export function _formatSingleAmount(
   amount: Amount,
-  {
-    formatCommodity,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    pluralize,
-    ...intlOpts
-  }: _CustomFormatAmountOptions = {},
+  {formatCommodity, pluralize, ...intlOpts}: _CustomFormatAmountOptions = {},
 ) {
   try {
     return _intlFormatAmount(amount, intlOpts)

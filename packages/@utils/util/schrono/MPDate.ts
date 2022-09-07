@@ -33,7 +33,6 @@ export interface MPDate extends DateTime {
   toInterval(): Interval
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MPDate = {
   create(
     dateTime: DateTime,

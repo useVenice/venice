@@ -158,7 +158,6 @@ export function createHTTPClient({
   requestTransformer?: (
     req: AxiosRequestConfig,
   ) => AxiosRequestConfig | Promise<AxiosRequestConfig>
-   
   responseTransformer?: (res: AxiosResponse) => AxiosResponse
   errorTransformer?: (err: HTTPError) => Error
   /**
