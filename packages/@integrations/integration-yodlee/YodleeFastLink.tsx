@@ -153,15 +153,29 @@ interface OnSuccessData {
  *   "providerAccountId": 11350520
  * }
  */
-interface OnErrorData {
-  providerId: number
-  providerName: string
-  requestId: string
-  reason: string
-  status: string
-  additionalStatus: string
-  providerAccountId: number
-}
+type OnErrorData =
+  | {
+      providerId: number
+      providerName: string
+      requestId: string
+      reason: string
+      status: string
+      additionalStatus: string
+      providerAccountId: number
+    }
+  | {
+      code: string // 'NXXX'
+      title: string // '{error_title_NXX}'
+      message: string // '{error_description_NXX}'
+      fnToCall: string // 'errorHandler'
+      redirectUrl: string // '{sso_redirect_url}'
+    }
+  | {
+      code: string // 'E701'
+      title: string // 'INVALID_PARAMETER_OR_VALUE'
+      message: string // 'Invalid value for providerId'
+      fnToCall: string // 'errorHandler'
+    }
 
 /**
  * {

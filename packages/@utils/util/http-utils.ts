@@ -158,7 +158,7 @@ export function createHTTPClient({
   requestTransformer?: (
     req: AxiosRequestConfig,
   ) => AxiosRequestConfig | Promise<AxiosRequestConfig>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   responseTransformer?: (res: AxiosResponse) => AxiosResponse
   errorTransformer?: (err: HTTPError) => Error
   /**
@@ -168,14 +168,14 @@ export function createHTTPClient({
    * */
   refreshAuth?: {
     /** `err` is undefined if we are proactively refreshing. Return false */
-    refresh: (err?: HTTPError) => Promise<boolean | undefined> | undefined
+    refresh: (err?: HTTPError) => Promise<boolean | void> | undefined
     /** For situations where we know a token has likely expired */
     shouldProactiveRefresh?: (req: AxiosRequestConfig) => boolean
     /** Should return true for the refresh request itself... */
     shouldSkipRefresh?: (req: AxiosRequestConfig) => boolean
   }
 }): HTTPClient {
-  let refreshPromise: Promise<boolean | undefined> | undefined
+  let refreshPromise: Promise<boolean | void> | undefined
 
   const axios = _Axios.create({
     // How do we use per request container here?
