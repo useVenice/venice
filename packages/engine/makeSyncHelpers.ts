@@ -95,7 +95,12 @@ export function makeSyncHelpers<
     : R.toPairs(_defaultIntegrations ?? {}).map(
         ([name, config]): IntegrationInput => ({
           provider: name,
-          config: config as any,
+          config:
+            providerMap[name]?.def.integrationConfig?.parse(config, {
+              errorMap: () => ({
+                message: `[${name}] Error parsing provider config`,
+              }),
+            }) ?? config,
         }),
       )
   const getDefaultIntegrations = async () =>

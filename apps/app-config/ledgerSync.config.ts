@@ -30,14 +30,19 @@ import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
-function getEnv(key: string, opts?: {json?: boolean; required?: boolean}) {
+function getEnv(key: string, opts?: {json?: boolean; optional?: boolean}) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!process) {
+    return undefined
+  }
   return R.pipe(
     z.string({required_error: `process.env[${key}] is required`}),
-    (zt) => (!opts?.required ? zt.optional() : zt),
-    (zt) => (opts?.json ? zt.transform((arg) => safeJSONParse(arg)) : zt),
+    (zt) => (opts?.optional ? zt.optional() : zt),
+    (zt) => zt.transform((arg) => safeJSONParse(arg) ?? arg), // What about null?
     (zt) => zt.parse(process.env[key]),
   )
 }
+
 const getKvStore = () => {
   const variant = z
     .enum(['fs', 'postgres', 'redis'])
@@ -52,7 +57,7 @@ const getKvStore = () => {
     case 'postgres':
       console.log('[kvStore] postgres')
       return makePostgresKVStore({
-        databaseUrl: getEnv('POSTGRES_URL', {required: true}),
+        databaseUrl: getEnv('POSTGRES_URL'),
       })
     case 'redis':
       console.log('[kvStore] redis')
@@ -67,6 +72,11 @@ const getKvStore = () => {
   }
 }
 
+/**
+ * This requires the env vars to exist...
+ * TODO: Separate it so that the entire config isn't constructed client side
+ * and only the minimal needed methods are...
+ */
 export const ledgerSyncConfig = makeSyncEngine.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
@@ -103,13 +113,13 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // TODO: Do not expose any of this to the frontend
   defaultIntegrations: {
     plaid: {
-      ...safeJSONParse(process.env['PLAID_CREDENTIALS']),
+      ...getEnv('PLAID_CREDENTIALS'),
       clientName: 'Alka',
     },
-    teller: safeJSONParse(process.env['TELLER_CREDENTIALS']),
-    yodlee: safeJSONParse(process.env['YODLEE_CONFIG']),
+    teller: getEnv('TELLER_CREDENTIALS'),
+    yodlee: getEnv('YODLEE_CONFIG'),
     beancount: undefined,
-    // onebrick: safeJSONParse(process.env['ONEBRICK_CREDENTIALS']),
+    // onebrick: getEnv('ONEBRICK_CREDENTIALS'),
     // alka: {
     //   baseDir: './data',
     //   // serviceAccountJson: safeJSONParse(
@@ -175,7 +185,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
       },
       // provider: 'alka',
       // data: {
-      //   // authUserJson: safeJSONParse(process.env['FIREBASE_AUTH_USER_STAGING']),
+      //   // authUserJson: getEnv('FIREBASE_AUTH_USER_STAGING'),
       //   ledgerIds: ['ldgr_default' as Id.ldgr],
       // },
     },
