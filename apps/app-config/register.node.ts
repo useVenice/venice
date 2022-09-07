@@ -2,7 +2,15 @@ import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
-import {loadDotEnv} from './utils'
+
+import * as fs from 'fs/promises'
+import * as path from 'path'
+import chokidar from 'chokidar'
+import {readFile} from 'read-file-safe'
+import tunnel from 'tunnel'
+import url from 'url'
+import {writeFile as _writeFile} from 'write-file-safe'
+
 import {
   $appendFile,
   $chokidar,
@@ -16,18 +24,13 @@ import {
   implementProxyFn,
   memoize,
 } from '@ledger-sync/util'
-import chokidar from 'chokidar'
-import * as fs from 'fs/promises'
-import * as path from 'path'
-import {readFile} from 'read-file-safe'
-import tunnel from 'tunnel'
-import url from 'url'
-import {writeFile as _writeFile} from 'write-file-safe'
+
+import {loadEnv} from './utils'
 
 console.log('[Dep] app-config/register.node')
 
 /** Side effect here */
-export const dotEnvOut = loadDotEnv()
+export const loadedEnv = loadEnv()
 
 implementProxyFn(
   $makeProxyAgent,

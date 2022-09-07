@@ -1,5 +1,3 @@
-import {makeMetaStore} from './makeMetaStore'
-import type {SyncEngineConfig} from './makeSyncEngine'
 import type {
   AnySyncProvider,
   ConnId,
@@ -11,6 +9,9 @@ import type {
 } from '@ledger-sync/cdk-core'
 import {makeMemoryKVStore, zDestination, zSource} from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
+
+import {makeMetaStore} from './makeMetaStore'
+import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 

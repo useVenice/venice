@@ -1,7 +1,9 @@
 import '../__generated__/tailwind.css'
-import {AppProvider} from '../AppProvider'
+
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
+
+import {AppProvider} from '../AppProvider'
 
 export default function MyApp({Component, pageProps}: AppProps) {
   return (

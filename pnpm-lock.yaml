@@ -139,10 +139,10 @@ importers:
       '@ledger-sync/integration-wise': '*'
       '@ledger-sync/integration-yodlee': '*'
       '@ledger-sync/util': '*'
+      '@next/env': 12.2.5
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
       chokidar: 3.5.3
-      dotenv: 16.0.2
       execa: 6.1.0
       find-config: 1.0.0
       read-file-safe: 1.0.10
@@ -174,8 +174,8 @@ importers:
       '@ledger-sync/integration-wise': link:../../packages/@integrations/integration-wise
       '@ledger-sync/integration-yodlee': link:../../packages/@integrations/integration-yodlee
       '@ledger-sync/util': link:../../packages/@utils/util
+      '@next/env': 12.2.5
       chokidar: 3.5.3
-      dotenv: 16.0.2
       execa: 6.1.0
       find-config: 1.0.0
       read-file-safe: 1.0.10
@@ -5095,11 +5095,6 @@ packages:
       is-obj: 2.0.0
     dev: false
     optional: true
-
-  /dotenv/16.0.2:
-    resolution: {integrity: sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==}
-    engines: {node: '>=12'}
-    dev: false
 
   /duplexify/4.1.2:
     resolution: {integrity: sha512-fz3OjcNCHmRP12MJoZMPglx8m4rrFP8rovnk4vT8Fs+aonZoCwGg10dSsQsfP/E62eZcPTMSMP6686fu9Qlqtw==}

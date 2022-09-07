@@ -1,6 +1,6 @@
 import '@ledger-sync/app-config/register.node'
 
-import {dotEnvOut} from '@ledger-sync/app-config/register.node'
+import {loadedEnv} from '@ledger-sync/app-config/register.node'
 import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
@@ -29,7 +29,7 @@ if (require.main === module) {
   type ClientMap = Record<string, () => [ZFunctionMap, CliOpts] | ZFunctionMap>
   const clients: ClientMap = {
     env: () =>
-      R.mapValues(dotEnvOut.parsed ?? {}, (v, k) => () => {
+      R.mapValues(loadedEnv ?? {}, (v, k) => () => {
         const json = JSON.parse(v)
         console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
         return json ?? v
