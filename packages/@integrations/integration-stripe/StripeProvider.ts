@@ -1,9 +1,11 @@
-import {makeStripeClient, zModeName, zStripeConfig} from './StripeClient'
+import React from 'react'
+import type Stripe from 'stripe'
+
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-import React from 'react'
-import type Stripe from 'stripe'
+
+import {makeStripeClient, zStripeConfig} from './StripeClient'
 
 // const kStripe = 'stripe' as const
 type StripeEntity = z.infer<typeof def['sourceOutputEntity']>
@@ -17,11 +19,6 @@ const def = makeSyncProvider.def({
     secretKey: z.string(),
     accountId: z.string().nullish(),
     transactionSyncCursor: z.string().nullish(),
-  }),
-  preConnectInput: z.object({
-    modeName: zModeName,
-    secretKey: z.string().nullish(),
-    accountId: z.string().nullish(),
   }),
   connectInput: z.object({
     secretKey: z.string().nullish(),
@@ -86,14 +83,7 @@ export const stripeProvider = makeSyncProvider({
       }),
     },
   }),
-  getPreConnectInputs: (_type) =>
-    zModeName.options.map((modeName) =>
-      def._preConnOption({
-        key: modeName,
-        label: modeName,
-        options: {modeName},
-      }),
-    ),
+
   // preConnect: ({modeName}, config) =>
   //   Promise.resolve({
   //     secretKey: config.secretKeys[modeName],

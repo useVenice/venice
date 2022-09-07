@@ -162,7 +162,6 @@ function makeSyncProviderDef<
   institutionData: ZInsData
   webhookInput: ZWebhookInput
 
-  preConnectInput: ZPreConnInput
   connectInput: ZConnInput
   connectOutput: ZConnOutput
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
@@ -237,7 +236,6 @@ function makeSyncProviderDef<
         entity: insitutionData,
       },
     }),
-    _preConnOption: (opt: PreConnOptions<_types['preConnectInput']>) => opt,
   }
 }
 
@@ -247,7 +245,6 @@ makeSyncProviderDef.defaults = makeSyncProviderDef({
   connectionSettings: undefined,
   institutionData: undefined,
   webhookInput: undefined,
-  preConnectInput: undefined,
   connectInput: undefined,
   connectOutput: undefined,
   sourceOutputEntity: undefined,
@@ -304,11 +301,6 @@ export function makeSyncProvider<
       config: T['_types']['integrationConfig'],
     ) => StandardConnection
   }>,
-  TGetPreConnectInputs extends _opt<
-    (
-      ctx: UseLedgerSyncOptions,
-    ) => Array<PreConnOptions<T['_types']['preConnectInput']>>
-  >,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods
   // by introducing a separate `instance` method that accepts config
   // and returns functions that already have access to config via the scope
@@ -317,9 +309,7 @@ export function makeSyncProvider<
   // be instance methods.
   TPreConn extends _opt<
     (
-      preConnectInput: T['_types']['preConnectInput'],
       config: T['_types']['integrationConfig'],
-      // Change the order later...
       context: ConnectContextInput, // ConnectContext<T, 'backend'>,
     ) => Promise<T['_types']['connectInput']>
   >,
@@ -362,15 +352,7 @@ export function makeSyncProvider<
   // Consider combining these into a single function with union input to make the
   // provider interface less verbose. e.g. phase: 'will' | 'did' | 'revoke'
 
-  /**
-   * e.g. Choose environment we could connect to (US, UK, sandbox, prod, etc.)
-   * Also responsible for displaying "update mode" if credential has expired for example
-   * It's arguable whether this is the right abstraction or only for debugging.
-   * Among other things perhaps it should be combined with the indexing of institutions?
-   */
-  getPreConnectInputs: TGetPreConnectInputs
-  /** aka `preConnect` e.g. Generating public token to use for connection */
-
+  /** e.g. Generating public token to use for connection */
   preConnect: TPreConn
 
   /**
@@ -424,7 +406,6 @@ makeSyncProvider.def = makeSyncProviderDef
 makeSyncProvider.defaults = makeSyncProvider({
   def: makeSyncProvider.def.defaults,
   standardMappers: undefined,
-  getPreConnectInputs: undefined,
   preConnect: undefined,
   useConnectHook: undefined,
   postConnect: undefined,

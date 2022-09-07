@@ -39,7 +39,7 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
         const res = await hooks[int.provider]?.(preConnRes, ctx)
         console.log(`${int.provider} innerConnectRes`, res)
 
-        const postConRes = await client.mutation('postConnect', [int, ctx, res])
+        const postConRes = await client.mutation('postConnect', [res, int, ctx])
         console.log(`${int.provider} postConnectRes`, postConRes)
         // TODO: We should get the client and invalidate instead
         await connectionsRes.refetch()

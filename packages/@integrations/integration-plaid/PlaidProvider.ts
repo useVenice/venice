@@ -22,13 +22,7 @@ import {
   plaidUnitForCurrency,
 } from './legacy/plaid-helpers'
 import {inferPlaidEnvFromToken} from './plaid-utils'
-import {
-  makePlaidClient,
-  zCountryCode,
-  zEnvName,
-  zPlaidClientConfig,
-  zProducts,
-} from './PlaidClient'
+import {makePlaidClient, zPlaidClientConfig} from './PlaidClient'
 
 type PlaidSyncOperation = typeof def['_opType']
 
@@ -48,21 +42,7 @@ const def = makeSyncProvider.def({
     item: zCast<plaid.Item | undefined>(),
     status: zCast<plaid.ItemGetResponse['status'] | undefined>(),
   }),
-  preConnectInput: z.object({
-    envName: zEnvName,
-    clientUserId: z.string(),
-    language: z.string(),
-    // TODO: Omit me during update mode
-    products: z.array(zProducts).nonempty(),
-    countryCodes: z.array(zCountryCode).nonempty(),
-    /** Need to be tested */
-    redirectUri: z.string().optional(),
-    // Generally specified server side
-    webhook: z.string().optional(),
-  }),
-  connectInput: z.object({
-    link_token: z.string(),
-  }),
+  connectInput: z.object({link_token: z.string()}),
   connectOutput: z.object({
     publicToken: z.string(),
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
@@ -176,33 +156,18 @@ export const plaidProvider = makeSyncProvider({
         .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
     },
   }),
-  getPreConnectInputs: ({envName, ledgerId}) => [
-    def._preConnOption({
-      key: envName,
-      label: envName,
-      options: {
-        envName,
-        clientUserId: ledgerId,
-        language: 'en',
-        // TODO: Should these be in the integration config?
-        products: ['transactions'],
-        countryCodes: ['US'],
-        redirectUri: 'http://localhost:3000/oauth',
-        webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
-      },
-    }),
-  ],
-  preConnect: ({envName, ...input}, config) =>
+  preConnect: (config, {envName, ledgerId}) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
-        user: {client_user_id: input.clientUserId},
+        user: {client_user_id: ledgerId},
         client_name: config.clientName,
-        language: input.language,
-        products: input.products,
-        country_codes: input.countryCodes,
+        // TODO: Move these into config instead...
+        language: 'en',
+        products: ['transactions'],
+        country_codes: ['US'],
         // Webhook and redirect_uri would be part of the `connection` already.
-        webhook: input.webhook,
-        redirect_uri: input.redirectUri,
+        redirect_uri: 'http://localhost:3000/oauth',
+        webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
       })
       .then((res) => {
         console.log('willConnect response', res)

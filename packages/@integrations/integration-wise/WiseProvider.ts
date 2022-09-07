@@ -1,13 +1,15 @@
+import React from 'react'
+
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
+
 import {
   makeWiseClient,
   profileResponseItemSchema,
   transferResponseItemSchema,
   zEnvName,
 } from './WiseClient'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
-import React from 'react'
 
 type WiseSyncOperation = typeof def['_opType']
 
@@ -18,9 +20,6 @@ const def = makeSyncProvider.def({
   connectionSettings: z.object({
     envName: zEnvName,
     apiToken: z.string().nullish(),
-  }),
-  preConnectInput: z.object({
-    envName: zEnvName,
   }),
   connectInput: z.object({
     redirectUri: z.string(),
@@ -82,14 +81,6 @@ export const wiseProvider = makeSyncProvider({
       return null
     },
   }),
-  getPreConnectInputs: (_type) =>
-    zEnvName.options.map((envName) =>
-      def._preConnOption({
-        key: envName,
-        label: envName,
-        options: {envName},
-      }),
-    ),
   // preConnect: ({envName, ...input}) =>
   //   Promise.resolve({
   //     envName,

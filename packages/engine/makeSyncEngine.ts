@@ -299,7 +299,7 @@ export const makeSyncEngine = <
     // SessionID would be awfully handy here...
     preConnect: zFunction(
       [zInt, zConnectContext],
-      ({provider: p, config}, ctx) => p.preConnect?.({}, config, ctx),
+      ({provider: p, config}, ctx) => p.preConnect?.(config, ctx),
     ),
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
@@ -307,9 +307,9 @@ export const makeSyncEngine = <
     postConnect: zFunction(
       // Questionable why `zConnectContext` should be there. Examine whether this is actually
       // needed
-      [zInt, zConnectContext, z.unknown()],
+      [z.unknown(), zInt, zConnectContext],
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
-      async (int, ctx, input) => {
+      async (input, int, ctx) => {
         const {provider: p, config} = int
         console.log('didConnect start', p.name, input)
         if (!p.postConnect || !p.def.connectOutput) {

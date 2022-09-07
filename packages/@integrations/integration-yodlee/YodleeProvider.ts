@@ -5,8 +5,7 @@ import {
 } from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
-import type {MergeUnion} from '@ledger-sync/util';
-import { splitPrefixedId} from '@ledger-sync/util'
+import type {MergeUnion} from '@ledger-sync/util'
 import {
   A,
   Deferred,
@@ -14,6 +13,7 @@ import {
   parseDateTime,
   Rx,
   rxjs,
+  splitPrefixedId,
   z,
   zCast,
 } from '@ledger-sync/util'
@@ -31,13 +31,13 @@ import {
   zYodleeInstitution,
   zYodleeProvider,
 } from './yodlee.types'
-import type {YodleeEnvName} from './YodleeClient';
-import { zYodleeId} from './YodleeClient'
+import type {YodleeEnvName} from './YodleeClient'
 import {
   makeYodleeClient,
   zAccessToken,
   zConfig,
   zUserCreds,
+  zYodleeId,
 } from './YodleeClient'
 import {YodleeFastLink} from './YodleeFastLink'
 
@@ -56,9 +56,6 @@ const def = makeSyncProvider.def({
   integrationConfig: zConfig,
   connectionSettings: zSettings,
   institutionData: zYodleeInstitution,
-  // Will be addressed again for reconnection
-  preConnectInput: zSettings.pick({envName: true, loginName: true}),
-  // Should the concept of `ledger` be a thing?
   // Should accessToken be cached based on provider / ledgerId?
   connectInput: zSettings
     .pick({envName: true, loginName: true})
@@ -213,14 +210,7 @@ export const yodleeProvider = makeSyncProvider({
         settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
     }),
   },
-  getPreConnectInputs: ({envName, ledgerId}) => [
-    def._preConnOption({
-      key: envName,
-      label: envName,
-      options: {envName, loginName: ledgerId},
-    }),
-  ],
-  preConnect: async (_, config, {envName, ledgerId}) => {
+  preConnect: async (config, {envName, ledgerId}) => {
     const loginName = ledgerId
     const accessToken = await makeYodleeClient(config, {
       role: 'admin',

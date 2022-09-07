@@ -1,16 +1,10 @@
-import {
-  accountItemSchema,
-  makeOneBrickClient,
-  transactionBrickSchema,
-  zEnvName,
-  zOneBrickConfig,
-} from './OneBrickClient'
+import React from 'react'
+
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   A,
-  compact,
   Deferred,
   identity,
   md5Hash,
@@ -19,7 +13,13 @@ import {
   rxjs,
   z,
 } from '@ledger-sync/util'
-import React from 'react'
+
+import {
+  accountItemSchema,
+  makeOneBrickClient,
+  transactionBrickSchema,
+  zOneBrickConfig,
+} from './OneBrickClient'
 
 const connectInputSchema = z.object({
   publicToken: z.string().nullish(),
@@ -40,10 +40,6 @@ const def = makeSyncProvider.def({
   name: z.literal('onebrick'),
   integrationConfig: zOneBrickConfig,
   connectionSettings: z.object({accessToken: z.string()}),
-  preConnectInput: z.object({
-    envName: zEnvName,
-    publicToken: z.string().nullish(),
-  }),
   connectInput: connectInputSchema,
   connectOutput: z.object({
     publicToken: z.string(),
@@ -110,20 +106,9 @@ export const oneBrickProvider = makeSyncProvider({
       return null
     },
   }),
-  getPreConnectInputs: (ctx) => {
-    const envName = zEnvName.safeParse(ctx.envName).data
-    return compact([
-      envName &&
-        def._preConnOption({
-          key: envName,
-          label: envName,
-          options: {envName, publicToken: ''},
-        }),
-    ])
-  },
-  preConnect: ({envName}, config) =>
+  preConnect: (config, {envName}) =>
     Promise.resolve({
-      publicToken: config.secrets[envName],
+      publicToken: config.secrets[envName as 'production' | 'sandbox'],
       redirect_url: config.redirectUrl,
     }),
   useConnectHook: (_) => {

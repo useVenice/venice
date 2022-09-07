@@ -85,8 +85,8 @@ const inputAccountSchema = z.object({
 })
 
 export const zTellerConfig = z.object({
+  applicationId: z.string(),
   token: z.string().nullish(),
-  applicationId: z.string().nullish(),
 })
 
 type EnvName = z.infer<typeof zEnvName>

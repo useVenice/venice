@@ -1,13 +1,15 @@
+import React from 'react'
+
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import type {Standard} from '@ledger-sync/standard'
+import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
+
 import {
   itemProjectResponseSchema,
   itemTimeEntriesSchema,
   makeTogglClient,
 } from './TogglCient'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
-import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
-import React from 'react'
 
 type TogglSyncOperation = typeof def['_opType']
 
@@ -15,9 +17,6 @@ const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('toggl'),
   // integrationConfig: zTogglConfig,
-  preConnectInput: z.object({
-    apiToken: z.string(),
-  }),
   connectInput: z.object({
     apiToken: z.string(),
   }),

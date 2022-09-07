@@ -16,11 +16,11 @@ import {
 
 import type {HandleSuccessTellerEnrollment} from './teller-utils'
 import {useTellerAPI} from './teller-utils'
+import type {zEnvName} from './TellerClient'
 import {
   accountTellerSchema,
   makeTellerClient,
   transactionItemSchema,
-  zEnvName,
   zInstitution,
   zTellerConfig,
 } from './TellerClient'
@@ -36,17 +36,9 @@ const def = makeSyncProvider.def({
     token: z.string(),
   }),
   institutionData: zInstitution,
-  preConnectInput: z.object({
-    userToken: z.string(),
-    envName: zEnvName,
-    applicationId: z.string(),
-    institutionId: z.string().nullish(),
-  }),
   connectInput: z.object({
+    applicationId: z.string(),
     userToken: z.string().nullish(),
-    applicationId: z.string().nullish(),
-    institutionId: z.string().nullish(),
-    envName: zEnvName,
   }),
   connectOutput: z.object({
     token: z.string(),
@@ -124,12 +116,6 @@ export const tellerProvider = makeSyncProvider({
       // TODO: Map transactions
       return null
     },
-    getInstitutions: () =>
-      rxjs.from(
-        makeTellerClient({})
-          .getInstitutions()
-          .map((ins) => def._opData('institution', ins.id, ins)),
-      ),
   }),
   standardMappers: {
     connection: (settings) => ({displayName: 'TODO' + settings.token}),
@@ -140,20 +126,11 @@ export const tellerProvider = makeSyncProvider({
       loginUrl: undefined,
     }),
   },
-  getPreConnectInputs: ({envName, ledgerId}) => [
-    def._preConnOption({
-      key: envName,
-      label: envName,
-      options: {envName, userToken: ledgerId, applicationId: ''},
-    }),
-  ],
-  preConnect: ({envName, institutionId}, config) =>
-    Promise.resolve({
-      userToken: config.token,
-      applicationId: config.applicationId,
-      institutionId,
-      envName,
-    }),
+
+  preConnect: async (config) => ({
+    userToken: '',
+    applicationId: config.applicationId,
+  }),
   useConnectHook: (_) => {
     const [options, setOptions] = React.useState<
       | (z.infer<typeof zTellerConfig> & {
@@ -193,7 +170,7 @@ export const tellerProvider = makeSyncProvider({
     return (opts, ctx) => {
       setOptions({
         applicationId: opts.applicationId,
-        environment: opts.envName,
+        environment: ctx.envName,
         institutionId:
           (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
           undefined,
