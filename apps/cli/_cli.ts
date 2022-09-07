@@ -49,14 +49,9 @@ if (require.main === module) {
     toggl: () =>
       makeTogglClient(safeJSONParse(process.env['TOGGL_CREDENTIALS'])),
     yodlee: () =>
-      R.pipe(safeJSONParse(process.env['YODLEE_SETTINGS']), (settings) =>
-        makeYodleeClient(
-          {
-            ...safeJSONParse(process.env['YODLEE_CONFIG'])[settings.envName],
-            envName: settings.envName,
-          },
-          settings,
-        ),
+      makeYodleeClient(
+        safeJSONParse(process.env['YODLEE_CONFIG']),
+        safeJSONParse(process.env['YODLEE_CREDS']),
       ),
   }
 
