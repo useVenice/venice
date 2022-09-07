@@ -70,7 +70,8 @@ export function isZodType(input: unknown): input is z.ZodTypeAny {
 /** Not secure because we could leak secrets to logs */
 export function zodInsecureDebug() {
   z.setErrorMap((_issue, ctx) => {
-    // Need to get the `schema` as well.. otherwise very hard
+    // Need to get the `schema` as well.. otherwise very hard to debug
+    // which part is failing because we use Zod for almost everything...
     console.error('[zod] Data did not pass validation', {
       data: ctx.data,
       issue: _issue,

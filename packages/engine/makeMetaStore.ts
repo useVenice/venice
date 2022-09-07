@@ -53,6 +53,20 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
   // metaStore and syncHelpers appear to be a bit circular relationship...
   // So we cannot use the ParsedPipeline type. Consider improving this
   // for the future
+
+  // Should the mapping of the StandardInstitution happen inside here?
+  const institutionDestLink = () =>
+    handlersLink({
+      data: async (op) => {
+        // prettier-ignore
+        const {data: {entity, id}} = op
+        console.log('[institutionDestLink] patch', id, entity)
+        await patch(id, entity as Record<string, unknown>)
+        // console.log(`[meta] Did update connection`, id, op.data)
+        return op
+      },
+    })
+
   const postSourceLink = (_pipe: {id?: string | null}) =>
     handlersLink({
       connUpdate: async (op) => {
@@ -113,6 +127,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
     // TODO: Separate into pre-destination link and post-destination link
     // Connection update should be handled in pre-destination link
     // while pipeline updates should be handled in post-destination link
+    institutionDestLink,
     postSourceLink,
     postDestinationLink,
     get,

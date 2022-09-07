@@ -1,15 +1,22 @@
 #!/usr/bin/env tsx
-import '@ledger-sync/app-config/register.node'
-import {cliFromRouter} from './cli-utils'
 import type {LedgerSyncRouter} from '@ledger-sync/app-config'
 import {
   ledgerSyncMetaStore as metaStore,
   ledgerSyncRouter as router,
 } from '@ledger-sync/app-config'
+import '@ledger-sync/app-config/register.node'
+import {cliFromRouter} from './cli-utils'
 import type {inferProcedureInput} from '@ledger-sync/engine'
 import {parseWebhookRequest} from '@ledger-sync/engine'
 import type {NonEmptyArray} from '@ledger-sync/util'
-import {compact, parseUrl, R, z, zFunction} from '@ledger-sync/util'
+import {
+  compact,
+  parseUrl,
+  R,
+  z,
+  zFunction,
+  zodInsecureDebug,
+} from '@ledger-sync/util'
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import http from 'http'
 import {json} from 'micro'
@@ -17,6 +24,9 @@ import ngrok from 'ngrok'
 
 if (!process.env['DEBUG']) {
   console.debug = () => {} // Disabling debug logs
+}
+if (process.env['DEBUG_ZOD']) {
+  zodInsecureDebug()
 }
 
 export type LSRouter = LedgerSyncRouter

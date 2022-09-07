@@ -1,6 +1,7 @@
 import type {Institution, ProviderDetail, UserDetail} from './yodlee.generated'
 import {$UserDetail} from './yodlee.generated'
 import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
+import type {YodleeEnvName} from './YodleeClient'
 import type {Schema} from '@cfworker/json-schema'
 import {Validator} from '@cfworker/json-schema'
 import {z, zCast} from '@ledger-sync/util'
@@ -159,7 +160,9 @@ export const zYodleeAccount = z.object({
   isDeleted: z.boolean().nullish(),
 })
 
-export const zYodleeInstitution = zCast<Institution>()
+export const zYodleeInstitution = zCast<
+  Institution & {envName: YodleeEnvName}
+>()
 
 /** TODO: Extract me into zod-utils - zod from JSONSchema */
 export const zYodleeProvider = zCast<ProviderDetail>().superRefine(

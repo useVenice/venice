@@ -13,6 +13,7 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 
+export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
 
 export const zEnvConfig = z.object({
@@ -123,10 +124,10 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       },
       shouldSkipRefresh: (req) => !!req.url?.endsWith('auth/token'),
       refresh: async () => {
-        if (creds.role === 'user') {
-          accessToken = await generateAccessToken(creds.loginName)
-          // TODO: Add a callback upon access token being generated
-        }
+        accessToken = await generateAccessToken(
+          creds.role === 'user' ? creds.loginName : config.adminLoginName,
+        )
+        // TODO: Add a callback upon access token being generated
       },
     },
   })

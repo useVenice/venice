@@ -11,6 +11,8 @@ import {
   zYodleeInstitution,
   zYodleeProvider,
 } from './yodlee.types'
+import type {
+  YodleeEnvName} from './YodleeClient';
 import {
   makeYodleeClient,
   zAccessToken,
@@ -322,10 +324,13 @@ export const yodleeProvider = makeSyncProvider({
   },
 
   metaSync: ({config}) => {
-    const yodlee = makeYodleeClient(config, {role: 'admin', envName: 'sandbox'})
+    console.log('[yodlee.metaSync]', config)
+    // TODO: Should environment name be part of the yodlee institution id?
+    const envName: YodleeEnvName = 'sandbox'
+    const yodlee = makeYodleeClient(config, {role: 'admin', envName})
     return rxjs.from(yodlee.iterateInstutitions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
-      Rx.map((ins) => def._insOpData(`${ins.id}`, ins)),
+      Rx.map((ins) => def._insOpData(`${ins.id}`, {...ins, envName})),
     )
   },
 })

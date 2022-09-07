@@ -10,9 +10,9 @@ type Data = AnyEntityPayload
 
 export async function sync<T extends Data = Data>(input: {
   source: Source<T>
-  links: Array<Link<T, T>> | undefined
   destination: Destination<T>
-  watch: boolean | undefined
+  links?: Array<Link<T, T>>
+  watch?: boolean
 }) {
   const start = Date.now()
   let count = 0
@@ -44,4 +44,5 @@ export async function sync<T extends Data = Data>(input: {
     },
   )
   console.log('Sync complete, should exit unless we have open handles')
+  return count
 }

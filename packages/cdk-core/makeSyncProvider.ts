@@ -188,7 +188,12 @@ function makeSyncProviderDef<
       insitutionData: _types['institutionData'],
     ): InsOpData => ({
       type: 'data',
-      data: {id, entityName: 'institution', entity: insitutionData},
+      data: {
+        // We don't prefix in `_opData`, should we actually prefix here?
+        id: makeCoreId('ins', schemas.name.value, id),
+        entityName: 'institution',
+        entity: insitutionData,
+      },
     }),
     _preConnOption: (opt: PreConnOptions<_types['preConnectInput']>) => opt,
   }

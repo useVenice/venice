@@ -14,7 +14,12 @@ import type {
   Link,
   LinkFactory,
 } from '@ledger-sync/cdk-core'
-import {makeCoreId, zConnectContext, zWebhookInput} from '@ledger-sync/cdk-core'
+import {
+  handlersLink,
+  makeCoreId,
+  zConnectContext,
+  zWebhookInput,
+} from '@ledger-sync/cdk-core'
 import type {LedgerSyncProvider} from '@ledger-sync/cdk-ledger'
 import {zStandard} from '@ledger-sync/cdk-ledger'
 import {
@@ -185,6 +190,34 @@ export const makeSyncEngine = <
           )
       },
     ),
+    syncMetadata: zFunction(zInt, async (int) => {
+      if (!int.provider.metaSync) {
+        return 'Provider does not support metaSync'
+      }
+      // Allow syncing all at once
+      const stats = await sync({
+        source: int.provider.metaSync({config: int.config}).pipe(
+          handlersLink({
+            data: (op) =>
+              rxjs.of({
+                ...op,
+                data: {
+                  ...op.data,
+                  entity: {
+                    external: op.data.entity,
+                    standard: int.provider.standardMappers?.institution?.(
+                      op.data.entity,
+                      int.config,
+                    ),
+                  },
+                },
+              }),
+          }),
+        ),
+        destination: metaStore.institutionDestLink(),
+      })
+      return `Synced ${stats} insitutions from ${int.provider.name}`
+    }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
       const {src, links, dest, watch} = pipeline
       const source$ =
