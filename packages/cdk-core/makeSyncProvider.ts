@@ -17,6 +17,7 @@ export const CORE_NAME_TO_PREFIX = {
   integration: 'int',
   connection: 'conn',
   pipeline: 'pipe',
+  institution: 'ins',
 } as const
 type Prefix = typeof CORE_NAME_TO_PREFIX[keyof typeof CORE_NAME_TO_PREFIX]
 
@@ -53,10 +54,24 @@ export interface ConnectedSource<T extends AnyProviderDef>
   source$: Source<T['_types']['sourceOutputEntity']>
 }
 
+/**
+ * Should this be renamed to `UpstreamProvider` instead?
+ */
+export type StandardInstitution = z.infer<typeof zStandardInstitution>
+export const zStandardInstitution = z.object({
+  id: z.string(),
+  name: z.string(),
+  logoUrl: z.string().url(),
+  loginUrl: z.string().url().optional(),
+  /** Environment specific providers */
+  envName: zEnvName.optional(),
+})
+
 export type StandardConnection = z.infer<typeof zStandardConn>
 export const zStandardConn = z.object({
   id: z.string().nullish(),
   displayName: z.string().nullish(),
+  institution: zStandardInstitution.optional(),
 })
 
 export type WebhookInput = z.infer<typeof zWebhookInput>
@@ -74,12 +89,13 @@ export type AnyProviderDef = Omit<
   ReturnType<typeof makeSyncProviderDef>,
   // Including these three introduces type issues... Not entirely
   // sure how to fix them for now. Other keys seems fine somehow...
-  '_type' | '_op' | '_preConnOption'
+  '_type' | '_op' | '_preConnOption' | '_insOpData'
 >
 function makeSyncProviderDef<
   TName extends string,
   ZIntConfig extends _opt<z.ZodTypeAny>,
   ZConnSettings extends _opt<z.ZodTypeAny>,
+  ZInsData extends _opt<z.ZodTypeAny>,
   // How do we enforce that the input type of ZWebhookInput must be a subset
   // of the input type of typeof zWebhookInput?
   // Right now things like zWebhookInput.extend({whatev: z.string()}) is allowed https://share.cleanshot.com/9PImJE
@@ -101,6 +117,7 @@ function makeSyncProviderDef<
   name: z.ZodLiteral<TName>
   integrationConfig: ZIntConfig
   connectionSettings: ZConnSettings
+  institutionData: ZInsData
   webhookInput: ZWebhookInput
 
   preConnectInput: ZPreConnInput
@@ -114,6 +131,14 @@ function makeSyncProviderDef<
 }) {
   type Schemas = typeof schemas
   type _types = {[k in keyof Schemas]: _infer<Schemas[k]>}
+  type InsOpData = Extract<
+    SyncOperation<{
+      id: string
+      entityName: 'institution'
+      entity: _types['institutionData']
+    }>,
+    {type: 'data'}
+  >
   type Op = SyncOperation<
     _types['sourceOutputEntity'],
     _types['connectionSettings'],
@@ -128,6 +153,7 @@ function makeSyncProviderDef<
     /** Helpers. Would be great if they could be extracted to separate namespace from schemas */
     _types: {} as _types,
     _opType: {} as Op,
+    _insOpType: {} as InsOpData,
     _type: <K extends keyof _types>(_k: K, v: _types[K]) => v,
     _op: <K extends Op['type']>(
       ...args: {} extends Omit<Extract<Op, {type: K}>, 'type'>
@@ -157,6 +183,13 @@ function makeSyncProviderDef<
       data: {entityName, id, entity} as unknown as OpData['data'],
       type: 'data',
     }),
+    _insOpData: (
+      id: string,
+      insitutionData: _types['institutionData'],
+    ): InsOpData => ({
+      type: 'data',
+      data: {id, entityName: 'institution', entity: insitutionData},
+    }),
     _preConnOption: (opt: PreConnOptions<_types['preConnectInput']>) => opt,
   }
 }
@@ -165,6 +198,7 @@ makeSyncProviderDef.defaults = makeSyncProviderDef({
   name: z.literal('noop'),
   integrationConfig: undefined,
   connectionSettings: undefined,
+  institutionData: undefined,
   webhookInput: undefined,
   preConnectInput: undefined,
   connectInput: undefined,
@@ -204,7 +238,25 @@ export function makeSyncProvider<
       }>,
     ) => Destination<T['_types']['destinationInputEntity']>
   >,
+  TMetaSync extends _opt<
+    (
+      input: OmitNever<{
+        config: T['_types']['integrationConfig']
+        // options: T['_types']['sourceSyncOptions']
+      }>,
+    ) => Source<T['_insOpType']['data']>
+  >,
   // Connect
+  TMappers extends _opt<{
+    institution?: (
+      data: T['_types']['institutionData'],
+      config: T['_types']['integrationConfig'],
+    ) => StandardInstitution
+    connection: (
+      settings: T['_types']['connectionSettings'],
+      config: T['_types']['integrationConfig'],
+    ) => StandardConnection
+  }>,
   TGetPreConnectInputs extends _opt<
     (
       ctx: ConnectContext,
@@ -242,12 +294,6 @@ export function makeSyncProvider<
       config: T['_types']['integrationConfig'],
     ) => Promise<unknown>
   >,
-  TMapConn extends _opt<
-    (
-      settings: T['_types']['connectionSettings'],
-      config: T['_types']['integrationConfig'],
-    ) => StandardConnection
-  >,
   // MARK - Webhook
   // Need to add a input schema for each provider to verify the shape of the received
   // webhook requests...
@@ -261,6 +307,8 @@ export function makeSyncProvider<
   TExtension,
 >(impl: {
   def: T
+  standardMappers: TMappers
+
   // MARK: - Connection management
   // Consider combining these into a single function with union input to make the
   // provider interface less verbose. e.g. phase: 'will' | 'did' | 'revoke'
@@ -286,8 +334,6 @@ export function makeSyncProvider<
   /** aka `postConnect` e.g. Exchange public token for access token and persist connection */
   postConnect: TPostConn
 
-  mapStandardConnection: TMapConn
-
   /** Well, what it says... */
   revokeConnection: TRevokeConn
 
@@ -312,6 +358,8 @@ export function makeSyncProvider<
    */
   destinationSync: TDestSync
 
+  metaSync: TMetaSync
+
   /** Allow core sync to be extended, for exampke, by ledger sync */
   extension: TExtension
 }) {
@@ -326,15 +374,16 @@ makeSyncProvider.def = makeSyncProviderDef
  */
 makeSyncProvider.defaults = makeSyncProvider({
   def: makeSyncProvider.def.defaults,
+  standardMappers: undefined,
   getPreConnectInputs: undefined,
   preConnect: undefined,
   useConnectHook: undefined,
   postConnect: undefined,
-  mapStandardConnection: undefined,
   revokeConnection: undefined,
   handleWebhook: undefined,
   sourceSync: undefined,
   destinationSync: undefined,
+  metaSync: undefined,
   extension: undefined,
 })
 

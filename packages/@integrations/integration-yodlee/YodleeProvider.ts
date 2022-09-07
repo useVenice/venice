@@ -8,6 +8,7 @@ import {
   type YodleeTransaction,
   zProviderAccount,
   zUser,
+  zYodleeInstitution,
   zYodleeProvider,
 } from './yodlee.types'
 import {
@@ -50,6 +51,7 @@ const def = makeSyncProvider.def({
   name: z.literal('yodlee'),
   integrationConfig: zConfig,
   connectionSettings: zSettings,
+  institutionData: zYodleeInstitution,
   // Will be addressed again for reconnection
   preConnectInput: zSettings.pick({envName: true, loginName: true}),
   // Should the concept of `ledger` be a thing?
@@ -194,11 +196,20 @@ export const yodleeProvider = makeSyncProvider({
     },
   }),
   // is the `id` actually externalId?
-  mapStandardConnection: (settings) => ({
-    id: `${settings.providerAccountId}`,
-    displayName:
-      settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
-  }),
+  standardMappers: {
+    institution: (ins) => ({
+      id: `${ins.id}`,
+      logoUrl: ins.logo!,
+      loginUrl: ins.loginUrl,
+      name: ins.name!,
+      envName: undefined,
+    }),
+    connection: (settings) => ({
+      id: `${settings.providerAccountId}`,
+      displayName:
+        settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
+    }),
+  },
   getPreConnectInputs: ({envName, ledgerId}) => [
     def._preConnOption({
       key: envName,
@@ -308,6 +319,14 @@ export const yodleeProvider = makeSyncProvider({
     return rxjs
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+  },
+
+  metaSync: ({config}) => {
+    const yodlee = makeYodleeClient(config, {role: 'admin', envName: 'sandbox'})
+    return rxjs.from(yodlee.iterateInstutitions()).pipe(
+      Rx.mergeMap((institutions) => rxjs.from(institutions)),
+      Rx.map((ins) => def._insOpData(`${ins.id}`, ins)),
+    )
   },
 })
 

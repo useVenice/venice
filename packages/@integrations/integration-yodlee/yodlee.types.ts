@@ -1,4 +1,4 @@
-import type { ProviderDetail, UserDetail} from './yodlee.generated';
+import type {Institution, ProviderDetail, UserDetail} from './yodlee.generated'
 import {$UserDetail} from './yodlee.generated'
 import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
 import type {Schema} from '@cfworker/json-schema'
@@ -158,6 +158,8 @@ export const zYodleeAccount = z.object({
   userClassification: z.enum(['PERSONAL', 'BUSINESS']),
   isDeleted: z.boolean().nullish(),
 })
+
+export const zYodleeInstitution = zCast<Institution>()
 
 /** TODO: Extract me into zod-utils - zod from JSONSchema */
 export const zYodleeProvider = zCast<ProviderDetail>().superRefine(

@@ -529,6 +529,18 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         .get<{institution: Yodlee.Institution[]}>('/institutions')
         .then((r) => r.data)
     },
+
+    async *iterateInstutitions() {
+      let skip = 0
+      while (true) {
+        const res = await api.institutions.getInstitutions({skip, top: 500})
+        if (!res.institution?.length) {
+          break
+        }
+        skip += res.institution.length
+        yield res.institution
+      }
+    },
   }
 
   return client
