@@ -32,3 +32,9 @@ export function temp_makeId<P extends string>(
 ) {
   return `${prefix}_${externalId ?? makeUlid()}` as const
 }
+
+export function splitPrefixedId(id: string) {
+  const [prefix, providerName, ...rest] = id.split('_')
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return [prefix!, providerName!, rest.join('_')] as const
+}

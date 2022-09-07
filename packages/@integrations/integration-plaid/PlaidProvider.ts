@@ -1,3 +1,20 @@
+import type * as plaid from 'plaid'
+import React from 'react'
+import type {
+  PlaidAccount as PlaidLinkAccount,
+  PlaidLinkOnSuccessMetadata,
+  PlaidLinkOptions,
+} from 'react-plaid-link'
+import {usePlaidLink} from 'react-plaid-link'
+
+import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
+import {
+  ledgerSyncProviderBase,
+  makePostingsMap,
+  makeStandardId,
+} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+
 import {
   getPlaidAccountBalance,
   getPlaidAccountFullName,
@@ -12,21 +29,6 @@ import {
   zPlaidClientConfig,
   zProducts,
 } from './PlaidClient'
-import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
-import {
-  ledgerSyncProviderBase,
-  makePostingsMap,
-  makeStandardId,
-} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-import type * as plaid from 'plaid'
-import React from 'react'
-import type {
-  PlaidAccount as PlaidLinkAccount,
-  PlaidLinkOnSuccessMetadata,
-  PlaidLinkOptions,
-} from 'react-plaid-link'
-import {usePlaidLink} from 'react-plaid-link'
 
 type PlaidSyncOperation = typeof def['_opType']
 
@@ -147,11 +149,6 @@ export const plaidProvider = makeSyncProvider({
     },
     // How do we think about this relative to pre-connect input?
     getInstitutions: (config) => {
-      if (1 + 1 === 2) {
-        // For now... While we are debugging...
-        // Consider implementing the institution search endpoint?
-        return rxjs.EMPTY
-      }
       // Rate limit is easily exceeded, so we will have to introduce
       // a management layer for that, which will be process-wide and
       // eventually distributed rate limiter too

@@ -1,5 +1,6 @@
-import institutionsWsResponse from './institutionWsResponse.json'
 import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
+
+import institutionsWsResponse from './institutionWsResponse.json'
 
 // Will be used on production mode to use cert
 /*
@@ -65,7 +66,7 @@ export const accountTellerSchema = z.object({
   balance: balancesTellerSchema.nullish(),
 })
 
-export const institutionSchema = z.object({
+export const zInstitution = z.object({
   id: z.string(),
   name: z.string(),
   logoUrl: z.string(),
@@ -165,12 +166,12 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
     ),
 
     /** Teller does not seem to have an institution endpoint. So we will do this for now */
-    getInstitutions: zFunction([], z.array(institutionSchema), () => {
+    getInstitutions: zFunction([], z.array(zInstitution), () => {
       const list = institutionsWsResponse.response.diff[6][0][0].d as Array<
         [string, string, string, string]
       >
       return list.map(([, id, svg, name]) =>
-        institutionSchema.parse<'typed'>({
+        zInstitution.parse<'typed'>({
           id,
           name,
           // Courtesy of https://css-tricks.com/probably-dont-base64-svg/

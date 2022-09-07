@@ -1,14 +1,17 @@
-import {Layout} from '../../../components/Layout'
-import {Radio, RadioGroup} from '../../../components/RadioGroup'
-import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
-import type {EnvName} from '@ledger-sync/cdk-core'
-import {zEnvName} from '@ledger-sync/cdk-core'
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Plus} from 'phosphor-react'
 import React from 'react'
 import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
+
+import type {EnvName} from '@ledger-sync/cdk-core'
+import {zEnvName} from '@ledger-sync/cdk-core'
+import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {compact} from '@ledger-sync/util'
+
+import {Layout} from '../../../components/Layout'
+import {Radio, RadioGroup} from '../../../components/RadioGroup'
+import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
 
 type ConnectMode = 'institution' | 'provider'
 
@@ -66,7 +69,9 @@ export default function LedgerNewConnectionScreen() {
                         <span className="card-title text-black">
                           {ins.name}
                         </span>
-                        <span className="text-sm">[tld]</span>
+                        <span className="text-sm">
+                          {compact([ins.id, int.id, ins.envName]).join(':')}
+                        </span>
                       </div>
 
                       <div className="flex flex-1 justify-end">

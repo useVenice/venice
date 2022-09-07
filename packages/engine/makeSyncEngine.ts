@@ -5,7 +5,10 @@ import type {
   ConnectedSource,
   KVStore,
   Link,
-  LinkFactory,
+  LinkFactory} from '@ledger-sync/cdk-core';
+import {
+  zStandardConnection,
+  zStandardInstitution,
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
@@ -20,6 +23,7 @@ import {
   routerFromZFunctionMap,
   Rx,
   rxjs,
+  splitPrefixedId,
   z,
   zFunction,
 } from '@ledger-sync/util'
@@ -80,6 +84,7 @@ export const makeSyncEngine = <
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
+  /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
   const {zInt, zConn, zPipeline, metaStore, getDefaultIntegrations} =
     makeSyncHelpers({
       providers,
@@ -153,28 +158,27 @@ export const makeSyncEngine = <
       },
     ),
     listInstitutions: zFunction(async () => {
+      const records = await metaStore.list<[string, Record<string, unknown>]>()
       const ints = await getDefaultIntegrations()
-      const ins$ = rxjs.merge(
-        ...ints.map(
-          (int) =>
-            (int.provider.extension as LedgerSyncProvider['extension'])
-              .getInstitutions?.(int.config)
-              .pipe(
-                Rx.map((op) =>
-                  op.type === 'data'
-                    ? zStandard.institution.safeParse(op.data.entity).data
-                    : null,
-                ),
-                Rx.filter((e): e is NonNullable<typeof e> => !!e),
-                Rx.map((ins) => ({
-                  ins,
-                  int: {id: int.id, provider: int.provider.name},
-                })),
-              ) ?? rxjs.EMPTY,
-        ),
-      )
-      const institutions = await rxjs.firstValueFrom(ins$.pipe(Rx.toArray()))
-      return institutions
+      const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
+
+      return records
+        .map(([id, value]) => ({...value, id}))
+        .filter((item) => item.id.startsWith('ins_'))
+        .flatMap((item) => {
+          const res = zStandardInstitution
+            .omit({id: true})
+            .safeParse((item as any).standard)
+          if (!res.success) {
+            console.error('Invalid institution found', item, res.error)
+            return []
+          }
+          const [, providerName] = splitPrefixedId(item.id)
+          return (intsByProviderName[providerName] ?? []).map((int) => ({
+            ins: {...res.data, id: item.id},
+            int: {id: int.id, provider: int.provider.name},
+          }))
+        })
     }),
     listConnections: zFunction(
       z.object({ledgerId: z.string().nullish()}).optional(),

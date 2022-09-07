@@ -1,4 +1,23 @@
 import {
+  CANCELLATION_TOKEN,
+  makeSyncProvider,
+  useScript,
+} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import type {Standard} from '@ledger-sync/standard'
+import type {MergeUnion} from '@ledger-sync/util'
+import {
+  A,
+  Deferred,
+  objectFromObject,
+  parseDateTime,
+  Rx,
+  rxjs,
+  z,
+  zCast,
+} from '@ledger-sync/util'
+
+import {
   getYodleeAccountBalance,
   getYodleeAccountName,
   getYodleeAccountType,
@@ -19,24 +38,6 @@ import {
   zUserCreds,
 } from './YodleeClient'
 import {YodleeFastLink} from './YodleeFastLink'
-import {
-  CANCELLATION_TOKEN,
-  makeSyncProvider,
-  useScript,
-} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
-import type {MergeUnion} from '@ledger-sync/util'
-import {
-  A,
-  Deferred,
-  objectFromObject,
-  parseDateTime,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-} from '@ledger-sync/util'
 
 const zSettings = zUserCreds.extend({
   /** Used to be _id */
@@ -199,7 +200,6 @@ export const yodleeProvider = makeSyncProvider({
   // is the `id` actually externalId?
   standardMappers: {
     institution: (ins) => ({
-      id: `${ins.id}`,
       logoUrl: ins.logo!,
       loginUrl: ins.loginUrl,
       name: ins.name!,

@@ -1,7 +1,8 @@
+import {castIs, makePrefixedId, z} from '@ledger-sync/util'
+
 import {logLink} from './base-links'
 import type {Destination, Source, SyncOperation} from './protocol'
 import {zEnvName} from './protocol'
-import {castIs, makePrefixedId, z} from '@ledger-sync/util'
 
 export type ConnectContext = z.infer<typeof zConnectContext>
 export const zConnectContext = z.object({
@@ -67,8 +68,8 @@ export const zStandardInstitution = z.object({
   envName: zEnvName.optional(),
 })
 
-export type StandardConnection = z.infer<typeof zStandardConn>
-export const zStandardConn = z.object({
+export type StandardConnection = z.infer<typeof zStandardConnection>
+export const zStandardConnection = z.object({
   id: z.string().nullish(),
   displayName: z.string().nullish(),
   institution: zStandardInstitution.optional(),
@@ -256,7 +257,7 @@ export function makeSyncProvider<
     institution?: (
       data: T['_types']['institutionData'],
       config: T['_types']['integrationConfig'],
-    ) => StandardInstitution
+    ) => Omit<StandardInstitution, 'id'>
     connection: (
       settings: T['_types']['connectionSettings'],
       config: T['_types']['integrationConfig'],

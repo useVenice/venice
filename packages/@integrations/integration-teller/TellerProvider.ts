@@ -1,27 +1,20 @@
+import React from 'react'
+
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
+
 import type {HandleSuccessTellerEnrollment} from './teller-utils'
 import {useTellerAPI} from './teller-utils'
 import {
   accountTellerSchema,
-  institutionSchema,
   makeTellerClient,
   transactionItemSchema,
   zEnvName,
+  zInstitution,
   zTellerConfig,
 } from './TellerClient'
-import type {SyncOperation} from '@ledger-sync/cdk-core'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {
-  A,
-  Deferred,
-  identity,
-  parseMoney,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-} from '@ledger-sync/util'
-import React from 'react'
 
 type TellerEntity = z.infer<typeof def['sourceOutputEntity']>
 type TellerSyncOperation = SyncOperation<TellerEntity>
@@ -33,7 +26,7 @@ const def = makeSyncProvider.def({
   connectionSettings: z.object({
     token: z.string(),
   }),
-  institutionData: zCast(),
+  institutionData: zInstitution,
   preConnectInput: z.object({
     userToken: z.string(),
     envName: zEnvName,
@@ -63,7 +56,7 @@ const def = makeSyncProvider.def({
     z.object({
       id: z.string(),
       entityName: z.literal('institution'),
-      entity: institutionSchema,
+      entity: zInstitution,
     }),
   ]),
 })
@@ -129,6 +122,15 @@ export const tellerProvider = makeSyncProvider({
           .map((ins) => def._opData('institution', ins.id, ins)),
       ),
   }),
+  standardMappers: {
+    connection: (settings) => ({displayName: 'TODO' + settings.token}),
+    institution: (data) => ({
+      name: data.name,
+      logoUrl: data.logoUrl,
+      envName: undefined,
+      loginUrl: undefined,
+    }),
+  },
   getPreConnectInputs: ({envName, ledgerId}) => [
     def._preConnOption({
       key: envName,
@@ -171,7 +173,7 @@ export const tellerProvider = makeSyncProvider({
         console.log('User closed Teller Connect')
       },
     })
-     
+
     ;(global as any).TellerConnect = tellerConnect
     React.useEffect(() => {
       if (options?.applicationId) {
