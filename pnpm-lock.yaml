@@ -609,6 +609,7 @@ importers:
 
   packages/@integrations/integration-yodlee:
     specifiers:
+      '@cfworker/json-schema': 1.12.4
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/standard': '*'
@@ -632,6 +633,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-hot-toast: 2.3.0_a3rolb2r43cxt5j5fxvpwhxlai
     devDependencies:
+      '@cfworker/json-schema': 1.12.4
       '@types/react': 17.0.39
       openapi-typescript-codegen: 0.23.0
       react: 17.0.2
@@ -1254,6 +1256,10 @@ packages:
   /@blossomfinance/iso-4217-currencies/0.2.5:
     resolution: {integrity: sha512-UPdNaQ03GSqwGemFP4F5T4SgehjvZqpdcq9Byu2UUL+eMLyfiCZgvW3Jb4w9+ivjAA4M50xMQrj1dv6IYOf9NQ==}
     dev: false
+
+  /@cfworker/json-schema/1.12.4:
+    resolution: {integrity: sha512-Uixq/lBfvw9Gwj68OP/breqzpWOPgxE+38z/LJB01exvaGhi9hlPoSSNWddClYFg7jTVwrDzCXCefyDFOexMZw==}
+    dev: true
 
   /@cnakazawa/watch/1.0.4:
     resolution: {integrity: sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ==}

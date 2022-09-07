@@ -1,4 +1,8 @@
-import {z} from '@ledger-sync/util'
+import type {ProviderDetail} from './yodlee.generated'
+import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
+import type {Schema} from '@cfworker/json-schema'
+import {Validator} from '@cfworker/json-schema'
+import {z, zCast} from '@ledger-sync/util'
 
 export type YodleeBalances = Partial<
   Pick<
@@ -152,24 +156,26 @@ export const zYodleeAccount = z.object({
   isDeleted: z.boolean().nullish(),
 })
 
-export const zYodleeProvider = z
-  .object({
-    id: z.number(),
-    name: z.string(),
-    loginUrl: z.string(),
-    baseUrl: z.string(),
-    favicon: z.string(),
-    /** Should be a url already */
-    logo: z.string(),
-    status: z.string(),
-    isAutoRefreshEnabled: z.boolean(),
-    authType: z.string(),
-    lastModified: z.string(),
-    languageISOCode: z.string(),
-    primaryLanguageISOCode: z.string(),
-    countryISOCode: z.string(),
-  })
-  .nullish()
+/** TODO: Extract me into zod-utils - zod from JSONSchema */
+export const zYodleeProvider = zCast<ProviderDetail>().superRefine(
+  (input, ctx) => {
+    const validator = new Validator({
+      ...$ProviderDetail,
+      type: 'object',
+    } as unknown as Schema)
+    const res = validator.validate(input)
+    for (const {error, ...data} of res.errors) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [], // TODO: Check what the error shape looks like...
+        message: error,
+        params: data,
+        fatal: true,
+      })
+    }
+    return res.valid
+  },
+)
 
 export const zProviderAccount = z.object({
   aggregationSource: z.string(),

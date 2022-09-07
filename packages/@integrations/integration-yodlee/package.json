@@ -7,7 +7,7 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "codegen": "openapi --name YodleeAPI -o ./yodlee.generated -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas false --indent 2"
+    "codegen": "openapi --name YodleeAPI -o ./yodlee.generated -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas true --indent 2"
   },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
@@ -21,6 +21,7 @@
     "react-hot-toast": "2.3.0"
   },
   "devDependencies": {
+    "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
     "openapi-typescript-codegen": "0.23.0",
     "react": "*"

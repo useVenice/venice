@@ -1,0 +1,14 @@
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+export const $CobrandNotificationResponse = {
+  properties: {
+    event: {
+      type: 'array',
+      contains: {
+        type: 'CobrandNotificationEvent',
+      },
+      isReadOnly: true,
+    },
+  },
+} as const;
