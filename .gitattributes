@@ -1,0 +1,3 @@
+**/__generated__/ linguist-generated=true
+**/*.generated.* linguist-generated=true
+**/*.gen.* linguist-generated=true
