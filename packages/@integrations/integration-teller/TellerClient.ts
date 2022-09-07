@@ -2,19 +2,55 @@ import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
 
 import institutionsWsResponse from './institutionWsResponse.json'
 
+export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+
+// TODO: Move to teller types
+
+// MARK: - Frontend types
+interface TellerOption {
+  environment?: 'sandbox' | 'development' | 'production'
+  applicationId: string
+  institution?: string
+  enrollmentId?: string
+  userId?: string
+  connectToken?: string
+  nonce?: string
+  selectAccount?: 'disabled' | 'single' | 'multiple'
+  onInit?(): void
+  onSuccess(enrollment: {
+    accessToken: string
+    user?: {id?: string}
+    enrollment?: {id?: string; institution?: {name?: string}}
+    signatures?: string[]
+  }): void
+  onFailure?(failure: {
+    type: 'payee' | 'payment'
+    code: 'timeout' | 'error'
+    message: string
+  }): void
+  onExit?(): void
+}
+
+interface TellerInstance {
+  open: () => void
+}
+
+declare global {
+  interface Window {
+    TellerConnect: {
+      setup: (options: TellerOption) => TellerInstance
+    }
+  }
+}
+
+// MARK: - Backend types
+
 // Will be used on production mode to use cert
 /*
 import fs from 'fs'
 import https from 'https'
 import path from 'path'
 */
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
-
-declare global {
-  interface Window {
-    TellerConnect: string
-  }
-}
 
 // Todo: Move all of schema to separate file or keep it stay
 const linksSchema = z.object({

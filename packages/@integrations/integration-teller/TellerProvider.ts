@@ -1,6 +1,7 @@
 import React from 'react'
 
-import type {SyncOperation} from '@ledger-sync/cdk-core'
+import type {SyncOperation} from '@ledger-sync/cdk-core';
+import { useScript} from '@ledger-sync/cdk-core'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
@@ -132,50 +133,34 @@ export const tellerProvider = makeSyncProvider({
     applicationId: config.applicationId,
   }),
   useConnectHook: (_) => {
-    const [options, setOptions] = React.useState<
-      | (z.infer<typeof zTellerConfig> & {
-          environment: z.infer<typeof zEnvName>
-          institutionId?: string | null
+    const loaded = useScript('//cdn.teller.io/connect/connect.js')
+    return async (opts, ctx) => {
+      await loaded
+      const institution =
+        (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
+        undefined
+      return new Promise((resolve, reject) => {
+        const tellerConnect = window.TellerConnect.setup({
+          applicationId: opts.applicationId,
+          ...(institution && {institution}),
+          onInit() {
+            console.log('Teller Connect has initialized')
+          },
+          // Part 3. Handle a successful enrollment's accessToken
+          onSuccess(enrollment) {
+            console.log('User enrolled successfully', enrollment)
+            resolve({token: enrollment.accessToken})
+          },
+          onFailure(failure) {
+            console.error('User enrolled failed', failure)
+            reject(new Error(failure.message))
+          },
+          onExit() {
+            console.log('User closed Teller Connect')
+          },
         })
-      | null
-    >(null)
-    const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
-    )
-    const tellerConnect = useTellerAPI({
-      environment: options?.environment,
-      applicationId: null,
-      institution: options?.institutionId || undefined,
-      ...options,
-      onInit: () => {
-        console.log('Teller Connect has initialized')
-      },
-      // Part 3. Handle a successful enrollment's accessToken
-      onSuccess: (enrollment: HandleSuccessTellerEnrollment) => {
-        console.log('User enrolled successfully', enrollment.accessToken)
-        deferred.resolve({token: enrollment.accessToken ?? ''})
-      },
-      onExit: () => {
-        console.log('User closed Teller Connect')
-      },
-    })
-
-    ;(global as any).TellerConnect = tellerConnect
-    React.useEffect(() => {
-      if (options?.applicationId) {
-        tellerConnect?.open()
-      }
-    }, [options?.applicationId, tellerConnect])
-
-    return (opts, ctx) => {
-      setOptions({
-        applicationId: opts.applicationId,
-        environment: ctx.envName,
-        institutionId:
-          (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
-          undefined,
+        tellerConnect.open()
       })
-      return deferred.promise
     }
   },
 
