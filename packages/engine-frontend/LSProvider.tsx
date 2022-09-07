@@ -49,18 +49,18 @@ export function LSProvider<
       <LSContext.Provider value={{trpc, hooks, client}}>
         {children}
 
-        {DialogComponent ? (
+        {DialogComponent && (
           <Dialog
             ref={dialogRef}
-            defaultOpen
+            open
             onOpenChange={(newOpen) => {
               if (!newOpen) {
                 setDialogComponent(null)
               }
             }}>
-            <DialogComponent hide={() => dialogRef.current?.hide()} />
+            <DialogComponent hide={() => dialogRef.current?.close()} />
           </Dialog>
-        ) : null}
+        )}
       </LSContext.Provider>
     </trpc.Provider>
   )

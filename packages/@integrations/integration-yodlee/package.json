@@ -15,9 +15,8 @@
     "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
-    "@react-hookz/web": "15.1.0",
     "csstype": "*",
-    "framer-motion": "6.3.11",
+    "react": "*",
     "react-dom": "*",
     "react-hot-toast": "2.3.0"
   },
@@ -25,10 +24,6 @@
     "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
     "openapi-typescript": "5.4.1",
-    "openapi-typescript-codegen": "0.23.0",
-    "react": "*"
-  },
-  "peerDependencies": {
-    "react": "*"
+    "openapi-typescript-codegen": "0.23.0"
   }
 }

@@ -1,5 +1,3 @@
-import {useMeasure, useUpdateEffect} from '@react-hookz/web'
-import {useAnimation} from 'framer-motion'
 import React from 'react'
 import {toast} from 'react-hot-toast'
 
@@ -69,34 +67,7 @@ export function YodleeFastLink({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
-
-  const [rect, _fastlinkRef] = useMeasure()
-  const controls = useAnimation()
-
-  useUpdateEffect(() => {
-    controls.start({
-      height: rect?.height,
-      transition: {
-        type: 'spring',
-        stiffness: 550,
-        damping: 40,
-        restSpeed: 10,
-      },
-    })
-  }, [controls, rect?.height])
-
-  return (
-    <div
-      id={YODLEE_CONTAINER_ID}
-      className="h-[30rem] w-[min(100vw,30rem)] overflow-y-auto p-4">
-      {/* <motion.div animate={controls}>
-        <div
-          ref={fastlinkRef as React.RefObject<HTMLDivElement>}
-          id={YODLEE_CONTAINER_ID}
-        />
-      </motion.div> */}
-    </div>
-  )
+  return <div id={YODLEE_CONTAINER_ID} />
 }
 
 const YODLEE_CONTAINER_ID = 'yodlee-container'
@@ -182,29 +153,15 @@ interface OnSuccessData {
  *   "providerAccountId": 11350520
  * }
  */
-type OnErrorData =
-  | {
-      providerId: number
-      providerName: string
-      requestId: string
-      reason: string
-      status: string
-      additionalStatus: string
-      providerAccountId: number
-    }
-  | {
-      code: string // 'NXXX'
-      title: string // '{error_title_NXX}'
-      message: string // '{error_description_NXX}'
-      fnToCall: string // 'errorHandler'
-      redirectUrl: string // '{sso_redirect_url}'
-    }
-  | {
-      code: string // 'E701'
-      title: string // 'INVALID_PARAMETER_OR_VALUE'
-      message: string // 'Invalid value for providerId'
-      fnToCall: string // 'errorHandler'
-    }
+interface OnErrorData {
+  providerId: number
+  providerName: string
+  requestId: string
+  reason: string
+  status: string
+  additionalStatus: string
+  providerAccountId: number
+}
 
 /**
  * {

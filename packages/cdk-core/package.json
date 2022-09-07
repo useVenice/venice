@@ -6,13 +6,10 @@
   "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/util": "*",
-    "@trpc/server": "9.26.0"
+    "@trpc/server": "9.26.0",
+    "react": "*"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "react": "17.0.2"
-  },
-  "peerDependencies": {
-    "react": "*"
+    "@types/react": "*"
   }
 }
