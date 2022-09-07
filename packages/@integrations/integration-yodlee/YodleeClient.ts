@@ -15,12 +15,10 @@ import {
 
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
 
-// type Cfg = z.infer<typeof zCfg>
-export const zCfg = z.object({
+export const zEnvConfig = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
   adminLoginName: z.string(),
-  envName: zYodleeEnvName,
   /**
    * Yodlee production environment requires IP address whitelisting.
    * Run a proxy with a static IP address that you whitelisted to get it working
@@ -28,7 +26,7 @@ export const zCfg = z.object({
   proxy: z.object({url: z.string(), cert: z.string()}).nullish(),
 })
 
-type YodleeAccessToken = z.infer<typeof zAccessToken>
+export const zConfig = z.record(zYodleeEnvName, zEnvConfig)
 
 export const zAccessToken = z.object({
   accessToken: z.string(),
@@ -36,11 +34,17 @@ export const zAccessToken = z.object({
   expiresIn: z.number(), // seconds
 })
 
-// type Creds = z.infer<typeof zCreds>
-export const zCreds = z.object({
+export const zUserCreds = z.object({
+  envName: zYodleeEnvName,
   loginName: z.string(),
+  // Cache
   accessToken: zAccessToken.nullish(),
 })
+
+export const zCreds = z.discriminatedUnion('role', [
+  z.object({role: z.literal('admin'), envName: zYodleeEnvName}),
+  zUserCreds.extend({role: z.literal('user')}),
+])
 
 /** Yodlee comma-delimited ids */
 type YodleeIds = z.input<typeof zIds>
@@ -64,14 +68,17 @@ function baseUrlFromEnvName(envName: Yodlee.EnvName) {
   }
 }
 
-export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
-  let accessToken: YodleeAccessToken | null = creds.accessToken ?? null
-
+export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
+  const config = _cfg[creds.envName]
+  if (!config) {
+    throw new Error(`[YodleeClient] Missing config for env ${creds.envName}`)
+  }
+  let accessToken = creds.role === 'user' ? creds.accessToken : undefined
   const httpsAgent =
     getDefaultProxyAgent() ?? (config.proxy && $makeProxyAgent(config.proxy))
 
   const http = createHTTPClient({
-    baseURL: baseUrlFromEnvName(config.envName),
+    baseURL: baseUrlFromEnvName(creds.envName),
     httpsAgent,
 
     headers: {
@@ -116,16 +123,16 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
       },
       shouldSkipRefresh: (req) => !!req.url?.endsWith('auth/token'),
       refresh: async () => {
-        // TODO: Add a callback upon access token being generated
-        accessToken = await generateAccessToken(
-          creds.loginName ?? config.adminLoginName,
-        )
+        if (creds.role === 'user') {
+          accessToken = await generateAccessToken(creds.loginName)
+          // TODO: Add a callback upon access token being generated
+        }
       },
     },
   })
 
   const api = new YodleeAPI(
-    {BASE: baseUrlFromEnvName(config.envName)},
+    {BASE: http.defaults.baseURL},
     createOpenApiRequestFactory(http, CancelablePromise),
   )
 
@@ -157,6 +164,9 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
   )
 
   const client = {
+    get accessToken() {
+      return accessToken
+    },
     generateAccessToken,
     getProvider,
     async registerUser(user: {loginName: string; email: string}) {
@@ -178,7 +188,7 @@ export const makeYodleeClient = zFunction([zCfg, zCreds], (config, creds) => {
           if (err instanceof YodleeError && err.data.errorCode === 'Y008') {
             throw new YodleeNotFoundError({
               entityName: 'User',
-              entityId: creds.loginName ?? '',
+              entityId: creds.role === 'user' ? creds.loginName : '',
             })
           }
           throw err

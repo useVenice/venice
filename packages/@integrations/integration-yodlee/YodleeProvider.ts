@@ -13,9 +13,8 @@ import {
 import {
   makeYodleeClient,
   zAccessToken,
-  zCfg,
-  zCreds,
-  zYodleeEnvName,
+  zConfig,
+  zUserCreds,
 } from './YodleeClient'
 import {YodleeFastLink} from './YodleeFastLink'
 import {
@@ -37,17 +36,10 @@ import {
   zCast,
 } from '@ledger-sync/util'
 
-export const zYodleeConfig = z.record(
-  zYodleeEnvName,
-  zCfg.omit({envName: true}),
-)
-
-const zSettings = zCreds.extend({
-  envName: zYodleeEnvName,
+const zSettings = zUserCreds.extend({
   /** Used to be _id */
   providerAccountId: z.number(),
   // Cache
-  accessToken: zAccessToken.nullish(),
   user: zUser.nullish(),
   provider: zYodleeProvider.nullish(),
   providerAccount: zProviderAccount.nullish(),
@@ -56,7 +48,7 @@ const zSettings = zCreds.extend({
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('yodlee'),
-  integrationConfig: zYodleeConfig,
+  integrationConfig: zConfig,
   connectionSettings: zSettings,
   // Will be addressed again for reconnection
   preConnectInput: zSettings.pick({envName: true, loginName: true}),
@@ -215,10 +207,10 @@ export const yodleeProvider = makeSyncProvider({
     }),
   ],
   preConnect: async ({envName, loginName}, config) => {
-    const accessToken = await makeYodleeClient(
-      {...config[envName]!, envName},
-      {loginName},
-    ).generateAccessToken(loginName)
+    const accessToken = await makeYodleeClient(config, {
+      role: 'admin',
+      envName,
+    }).generateAccessToken(loginName)
     return {accessToken, envName, loginName}
   },
   useConnectHook: (scope) => {
@@ -263,7 +255,7 @@ export const yodleeProvider = makeSyncProvider({
     {envName, loginName, providerAccountId, providerId},
     config,
   ) => {
-    const yodlee = makeYodleeClient({...config[envName]!, envName}, {loginName})
+    const yodlee = makeYodleeClient(config, {role: 'user', envName, loginName})
     const [providerAccount, provider, user] = await Promise.all([
       yodlee.getProviderAccount(providerAccountId),
       yodlee.getProvider(providerId),
@@ -277,7 +269,7 @@ export const yodleeProvider = makeSyncProvider({
       provider,
       providerAccount,
       user,
-      accessToken: undefined, // TODO: Cache accessToken
+      accessToken: yodlee.accessToken,
     })
 
     return {
@@ -287,8 +279,8 @@ export const yodleeProvider = makeSyncProvider({
     }
   },
 
-  sourceSync: ({config, settings: {envName, loginName, providerAccountId}}) => {
-    const yodlee = makeYodleeClient({...config[envName]!, envName}, {loginName})
+  sourceSync: ({config, settings: {providerAccountId, ...settings}}) => {
+    const yodlee = makeYodleeClient(config, {role: 'user', ...settings})
     async function* iterateEntities() {
       const [accounts, holdings] = await Promise.all([
         yodlee.getAccounts({providerAccountId}),
