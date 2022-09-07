@@ -96,12 +96,15 @@ export function makeSyncHelpers<
     : R.toPairs(_defaultIntegrations ?? {}).map(
         ([name, config]): IntegrationInput => ({
           provider: name,
-          config:
-            providerMap[name]?.def.integrationConfig?.parse(config, {
-              errorMap: () => ({
-                message: `[${name}] Error parsing provider config`,
-              }),
-            }) ?? config,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          config: config as any,
+          // TODO: Re-enable me when providers are no longer being constructed client side...
+          // config:
+          //   providerMap[name]?.def.integrationConfig?.parse(config, {
+          //     errorMap: () => ({
+          //       message: `[${name}] Error parsing provider config`,
+          //     }),
+          //   }) ?? config,
         }),
       )
   const getDefaultIntegrations = async () =>

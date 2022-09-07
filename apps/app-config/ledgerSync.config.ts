@@ -31,8 +31,9 @@ import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
 function getEnv(key: string, opts?: {json?: boolean; optional?: boolean}) {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!process) {
+  // Modify me to work on clientSide also...
+  // Using perhaps localStorage, with param for clientOnly
+  if (typeof window !== 'undefined') {
     return undefined
   }
   return R.pipe(
