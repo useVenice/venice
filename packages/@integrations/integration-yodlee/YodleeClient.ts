@@ -536,11 +536,17 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         .then((r) => r.data)
     },
 
-    async *iterateInstutitions() {
+    async *iterateInstitutions() {
       let skip = 0
+      const limit = 500
+      // TODO: Consider making use of the getProviderCount endpoint
+      // so we can parallel request institutions for performance, might need to
+      // take into account rate limiter though...
       while (true) {
-        const res = await api.institutions.getInstitutions({skip, top: 500})
-        if (!res.institution?.length) {
+        // console.log('Will request institution', {skip})
+        const res = await api.institutions.getInstitutions({skip, top: limit})
+        // console.log('got ins response', res)
+        if (!res.institution?.length || res.institution.length < limit) {
           break
         }
         skip += res.institution.length

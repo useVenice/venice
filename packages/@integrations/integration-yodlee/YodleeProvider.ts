@@ -327,7 +327,7 @@ export const yodleeProvider = makeSyncProvider({
     // TODO: Should environment name be part of the yodlee institution id?
     const envName: YodleeEnvName = 'sandbox'
     const yodlee = makeYodleeClient(config, {role: 'admin', envName})
-    return rxjs.from(yodlee.iterateInstutitions()).pipe(
+    return rxjs.from(yodlee.iterateInstitutions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
       Rx.map((ins) => def._insOpData(`${ins.id}`, {...ins, _envName: envName})),
     )
