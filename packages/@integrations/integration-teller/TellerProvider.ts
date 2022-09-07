@@ -11,7 +11,16 @@ import {
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
+import {
+  A,
+  Deferred,
+  identity,
+  parseMoney,
+  Rx,
+  rxjs,
+  z,
+  zCast,
+} from '@ledger-sync/util'
 import React from 'react'
 
 type TellerEntity = z.infer<typeof def['sourceOutputEntity']>
@@ -24,6 +33,7 @@ const def = makeSyncProvider.def({
   connectionSettings: z.object({
     token: z.string(),
   }),
+  institutionData: zCast(),
   preConnectInput: z.object({
     userToken: z.string(),
     envName: zEnvName,
@@ -161,7 +171,7 @@ export const tellerProvider = makeSyncProvider({
         console.log('User closed Teller Connect')
       },
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     ;(global as any).TellerConnect = tellerConnect
     React.useEffect(() => {
       if (options?.applicationId) {
@@ -225,6 +235,13 @@ export const tellerProvider = makeSyncProvider({
     return rxjs
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, _op({type: 'commit'})])))
+  },
+
+  metaSync: ({config}) => {
+    console.log('metaZSync teller', config)
+    return rxjs
+      .from(makeTellerClient(config).getInstitutions())
+      .pipe(Rx.map((ins) => def._insOpData(ins.id, ins)))
   },
 })
 

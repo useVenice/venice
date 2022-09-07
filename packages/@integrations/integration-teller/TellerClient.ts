@@ -169,12 +169,14 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
       const list = institutionsWsResponse.response.diff[6][0][0].d as Array<
         [string, string, string, string]
       >
-      return list.map(([, id, svg, name]) => ({
-        id,
-        name,
-        // Courtesy of https://css-tricks.com/probably-dont-base64-svg/
-        logoUrl: 'data:image/svg+xml;utf8,' + encodeURIComponent(svg),
-      }))
+      return list.map(([, id, svg, name]) =>
+        institutionSchema.parse<'typed'>({
+          id,
+          name,
+          // Courtesy of https://css-tricks.com/probably-dont-base64-svg/
+          logoUrl: 'data:image/svg+xml;utf8,' + encodeURIComponent(svg),
+        }),
+      )
     }),
   }
 })
