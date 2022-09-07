@@ -10,7 +10,7 @@
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/core-integration-postgres": "*",
     "@ledger-sync/util": "*",
-    "zod": "3.17.3"
+    "zod": "3.19.0"
   },
   "devDependencies": {
     "@ledger-sync/cdk-ledger": "*"

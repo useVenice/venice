@@ -51,7 +51,7 @@
     "tiny-invariant": "1.2.0",
     "type-fest": "2.19.0",
     "ulidx": "0.3.0",
-    "zod": "3.17.3"
+    "zod": "3.19.0"
   },
   "devDependencies": {
     "@subspace/red-black-tree": "0.1.3",

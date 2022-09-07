@@ -1,0 +1,30 @@
+diff --git a/lib/types.d.ts b/lib/types.d.ts
+index f720b798487a2c5a0761160180455934ebb3e38a..e021539cdf6cf22da7f64cf0b1c124565b754550 100644
+--- a/lib/types.d.ts
++++ b/lib/types.d.ts
+@@ -35,6 +35,7 @@ export declare type SafeParseSuccess<Output> = {
+ export declare type SafeParseError<Input> = {
+     success: false;
+     error: ZodError<Input>;
++    data: undefined; // For convenience of access
+ };
+ export declare type SafeParseReturnType<Input, Output> = SafeParseSuccess<Output> | SafeParseError<Input>;
+ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = ZodTypeDef, Input = Output> {
+@@ -52,12 +53,12 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
+     };
+     _parseSync(input: ParseInput): SyncParseReturnType<Output>;
+     _parseAsync(input: ParseInput): AsyncParseReturnType<Output>;
+-    parse(data: unknown, params?: Partial<ParseParams>): Output;
+-    safeParse(data: unknown, params?: Partial<ParseParams>): SafeParseReturnType<Input, Output>;
+-    parseAsync(data: unknown, params?: Partial<ParseParams>): Promise<Output>;
+-    safeParseAsync(data: unknown, params?: Partial<ParseParams>): Promise<SafeParseReturnType<Input, Output>>;
++    parse<TOpt extends 'lax' | 'strict' = 'lax'>(data: TOpt extends 'strict' ? Input : unknown, params?: Partial<ParseParams>): Output; // Make it easier..
++    safeParse<TOpt extends 'lax' | 'strict' = 'lax'>(data: TOpt extends 'strict' ? Input : unknown, params?: Partial<ParseParams>): SafeParseReturnType<Input, Output>;
++    parseAsync<TOpt extends 'lax' | 'strict' = 'lax'>(data: TOpt extends 'strict' ? Input : unknown, params?: Partial<ParseParams>): Promise<Output>;
++    safeParseAsync<TOpt extends 'lax' | 'strict' = 'lax'>(data: TOpt extends 'strict' ? Input : unknown, params?: Partial<ParseParams>): Promise<SafeParseReturnType<Input, Output>>;
+     /** Alias of safeParseAsync */
+-    spa: (data: unknown, params?: Partial<ParseParams> | undefined) => Promise<SafeParseReturnType<Input, Output>>;
++    spa: <TOpt extends 'lax' | 'strict' = 'lax'>(data: TOpt extends 'strict' ? Input : unknown, params?: Partial<ParseParams> | undefined) => Promise<SafeParseReturnType<Input, Output>>;
+     refine<RefinedOutput extends Output>(check: (arg: Output) => arg is RefinedOutput, message?: string | CustomErrorParams | ((arg: Output) => CustomErrorParams)): ZodEffects<this, RefinedOutput, RefinedOutput>;
+     refine(check: (arg: Output) => unknown | Promise<unknown>, message?: string | CustomErrorParams | ((arg: Output) => CustomErrorParams)): ZodEffects<this, Output, Input>;
+     refinement<RefinedOutput extends Output>(check: (arg: Output) => arg is RefinedOutput, refinementData: IssueData | ((arg: Output, ctx: RefinementCtx) => IssueData)): ZodEffects<this, RefinedOutput, RefinedOutput>;

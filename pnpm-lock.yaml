@@ -41,9 +41,9 @@ patchedDependencies:
   typescript@4.8.2:
     hash: 5eymtkfhh4duhys6jj5r56cgu4
     path: patches/typescript@4.8.2.patch
-  zod@3.17.3:
-    hash: xu7aurm5xt45eyihloj63cgv2e
-    path: patches/zod@3.17.3.patch
+  zod@3.19.0:
+    hash: 2uv7u7drlenzqcxpe7vsfv4c5a
+    path: patches/zod@3.19.0.patch
 
 importers:
 
@@ -109,9 +109,9 @@ importers:
 
   apps/app:
     specifiers:
-      zod: 3.17.3
+      zod: 3.19.0
     dependencies:
-      zod: 3.17.3_xu7aurm5xt45eyihloj63cgv2e
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
 
   apps/app-config:
     specifiers:
@@ -148,7 +148,7 @@ importers:
       read-file-safe: 1.0.10
       tunnel: 0.0.6
       write-file-safe: 1.3.1
-      zod: 3.17.3
+      zod: 3.19.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../packages/cdk-core
       '@ledger-sync/cdk-ledger': link:../../packages/cdk-ledger
@@ -181,7 +181,7 @@ importers:
       read-file-safe: 1.0.10
       tunnel: 0.0.6
       write-file-safe: 1.3.1
-      zod: 3.17.3_xu7aurm5xt45eyihloj63cgv2e
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     devDependencies:
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
@@ -372,7 +372,7 @@ importers:
       pgzod: 3.1.0
       slonik: 30.3.1
       slonik-interceptor-preset: 1.2.10
-      zod: 3.17.3
+      zod: 3.19.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/util': link:../../@utils/util
@@ -381,7 +381,7 @@ importers:
       pg-native: 3.0.1
       slonik: 30.3.1_pg-native@3.0.1
       slonik-interceptor-preset: 1.2.10_pg-native@3.0.1
-      zod: 3.17.3_xu7aurm5xt45eyihloj63cgv2e
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     devDependencies:
       '@types/pg': 8.6.5
       pgzod: 3.1.0_pg-native@3.0.1
@@ -502,12 +502,12 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/core-integration-postgres': '*'
       '@ledger-sync/util': '*'
-      zod: 3.17.3
+      zod: 3.19.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/core-integration-postgres': link:../core-integration-postgres
       '@ledger-sync/util': link:../../@utils/util
-      zod: 3.17.3_xu7aurm5xt45eyihloj63cgv2e
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     devDependencies:
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
 
@@ -729,7 +729,7 @@ importers:
       type-fest: 2.19.0
       ulidx: 0.3.0
       write-file-safe: 1.3.1
-      zod: 3.17.3
+      zod: 3.19.0
     dependencies:
       '@blossomfinance/iso-4217-currencies': 0.2.5
       '@github/mini-throttle': 2.1.0
@@ -777,7 +777,7 @@ importers:
       tiny-invariant: 1.2.0
       type-fest: 2.19.0
       ulidx: 0.3.0
-      zod: 3.17.3_xu7aurm5xt45eyihloj63cgv2e
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     devDependencies:
       '@subspace/red-black-tree': 0.1.3
       '@types/accounting': 0.4.2
@@ -9553,7 +9553,7 @@ packages:
       ora: 6.1.2
       slonik: 30.3.1_pg-native@3.0.1
       yargs: 17.5.1
-      zod: 3.18.0
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     transitivePeerDependencies:
       - pg-native
     dev: true
@@ -10768,7 +10768,7 @@ packages:
       roarr: 7.12.3
       serialize-error: 8.1.0
       through2: 4.0.2
-      zod: 3.18.0
+      zod: 3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a
     transitivePeerDependencies:
       - pg-native
 
@@ -12154,10 +12154,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod/3.17.3_xu7aurm5xt45eyihloj63cgv2e:
-    resolution: {integrity: sha512-4oKP5zvG6GGbMlqBkI5FESOAweldEhSOZ6LI6cG+JzUT7ofj1ZOC0PJudpQOpT1iqOFpYYtX5Pw0+o403y4bcg==}
-    dev: false
+  /zod/3.19.0_2uv7u7drlenzqcxpe7vsfv4c5a:
+    resolution: {integrity: sha512-Yw0qvUsCNGBe5YacikdMt5gVYeUuaEFVDIHKMfElrGSaBhwR3CQK6vOzgfAJOjTdGIhEeoaj8GtT+NDZrepZbw==}
     patched: true
-
-  /zod/3.18.0:
-    resolution: {integrity: sha512-gwTm8RfUCe8l9rDwN5r2A17DkAa8Ez4Yl4yXqc5VqeGaXaJahzYYXbTwvhroZi0SNBqTwh/bKm2N0mpCzuw4bA==}

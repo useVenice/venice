@@ -85,7 +85,7 @@
       "remeda@0.0.32": "patches/remeda@0.0.32.patch",
       "timm@1.7.1": "patches/timm@1.7.1.patch",
       "typescript@4.8.2": "patches/typescript@4.8.2.patch",
-      "zod@3.17.3": "patches/zod@3.17.3.patch"
+      "zod@3.19.0": "patches/zod@3.19.0.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {
