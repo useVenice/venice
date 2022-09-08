@@ -35,25 +35,34 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
       const ctx: ConnectContextInput = {...options, envName, ledgerId}
 
       try {
-        console.log(`${int.provider} Will connect`)
+        console.log(`[useLedgerSync] ${int.provider} Will connect`)
 
         const preConnRes = await client.mutation('preConnect', [int, ctx])
-        console.log(`${int.provider} preConnnectRes`, preConnRes)
+        console.log(
+          `[useLedgerSync] ${int.provider} preConnnectRes`,
+          preConnRes,
+        )
 
         const res = await hooks[int.provider]?.(preConnRes, ctx)
-        console.log(`${int.provider} innerConnectRes`, res)
+        console.log(`[useLedgerSync] ${int.provider} innerConnectRes`, res)
 
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
-        console.log(`${int.provider} postConnectRes`, postConRes)
+        console.log(
+          `[useLedgerSync] ${int.provider} postConnectRes`,
+          postConRes,
+        )
 
         await connectionsRes.refetch() // Should we invalidate instead of trigger explicit refetch?
 
-        console.log(`${int.provider} Did connect`)
+        console.log(`[useLedgerSync] ${int.provider} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
-          console.log(`${int.provider} Cancelled`)
+          console.log(`[useLedgerSync] ${int.provider} Cancelled`)
         } else {
-          console.error(`${int.provider} Connection failed`, err)
+          console.error(
+            `[useLedgerSync] ${int.provider} Connection failed`,
+            err,
+          )
         }
       }
     },

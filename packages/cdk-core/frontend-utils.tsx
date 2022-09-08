@@ -29,6 +29,10 @@ export function loadScriptOnce(src: string) {
 }
 loadScriptOnce.cache = new Map<string, HTMLScriptElement>()
 
+/**
+ * @deprecated. TODO: Replace me with https://github.com/hupe1980/react-script-hook
+ * fwiw plaid link uses react-script-hook also
+ */
 export function useScript(src: string) {
   const deferred = React.useRef(new Deferred<void>())
   React.useEffect(() => {

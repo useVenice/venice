@@ -7,13 +7,28 @@ import type {
 } from 'react-plaid-link'
 import {usePlaidLink} from 'react-plaid-link'
 
-import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
+import {
+  CANCELLATION_TOKEN,
+  makeSyncProvider,
+  zWebhookInput,
+} from '@ledger-sync/cdk-core'
 import {
   ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
-import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+import type {
+  RequiredOnly} from '@ledger-sync/util';
+import {
+  A,
+  Deferred,
+  R,
+  RateLimit,
+  Rx,
+  rxjs,
+  z,
+  zCast,
+} from '@ledger-sync/util'
 
 import {
   getPlaidAccountBalance,
@@ -154,36 +169,62 @@ export const plaidProvider = makeSyncProvider({
       }),
 
   useConnectHook: (_) => {
-    const [options, setOptions] = React.useState<Partial<PlaidLinkOptions>>({})
-    const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
-    )
+    console.log('[plaid] useConnectHook')
+    const [state, setState] = React.useState<{
+      options: RequiredOnly<PlaidLinkOptions, 'token'>
+      res$: Deferred<typeof def['_types']['connectOutput']>
+    } | null>(null)
+
     const plaidLink = usePlaidLink({
-      token: null,
-      ...options,
+      token: null, // Null token prevent plaid from showing the UI but still allows script to be loaded for performance
+      ...state?.options,
       // token: 'link-sandbox-49a06045-6ef6-4dfd-ab9a-33dc6380513d',
       // webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
       // oauthRedirectUri: 'http://localhost:3000',
-      onSuccess: (publicToken, meta) => {
-        console.log({publicToken, meta})
-        deferred.resolve({publicToken, meta: meta as any})
+      onLoad: () => {
+        console.log('[plaid] onLoad')
       },
-      onEvent: (evt) => {
-        console.log('plaid evt', evt)
+      onEvent: (event, meta) => {
+        console.log('[plaid] onEvent', event, meta)
+      },
+      onSuccess: (publicToken, meta) => {
+        console.log('[plaid] onSuccess', {publicToken, meta})
+        state?.res$.resolve({publicToken, meta: meta as any})
+        setState(null)
+      },
+      onExit: (err) => {
+        console.log('[plaid] onExit', err)
+        state?.res$.reject(err ?? CANCELLATION_TOKEN)
+        setState(null)
       },
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(global as any).plaidLink = plaidLink
-    React.useEffect(() => {
-      if (options.token && plaidLink.ready) {
-        console.log('shall open plaid link')
-        plaidLink.open() // Is this working?
-      }
-    }, [options.token, plaidLink])
+    ;(globalThis as any).plaidLink = plaidLink
 
-    return (opts) => {
-      setOptions({token: opts.link_token})
-      return deferred.promise
+    React.useEffect(() => {
+      if (plaidLink.ready && state) {
+        console.log('[plaid] Will open')
+        plaidLink.open() // Unfortunately open gets called multiple times due to unmounting.
+        // It is a bit of a no-op though, so we should be fine...
+      }
+      return () => {
+        console.log('[plaid] Did unmount...')
+      }
+    }, [plaidLink, state])
+
+    return async (opts, {institutionId}) => {
+      console.log('[plaid] Will connect', opts, plaidLink)
+      if (plaidLink.error) {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
+        throw plaidLink.error
+      }
+      // TODO: Implement a dialog fallback to tell user to search for the needed
+      // institution in the next screen to work around the problem that
+      // plaid does not support instiutionId
+      console.warn('[plaid] institutionId not handled', {institutionId})
+      const res$ = new Deferred<typeof def['_types']['connectOutput']>()
+      setState({options: {token: opts.link_token}, res$})
+      return res$.promise
     }
   },
 

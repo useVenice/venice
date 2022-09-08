@@ -35,6 +35,7 @@ export class Deferred<T> {
   completed = false
   promise = new Promise<T>((resolve, reject) => {
     this.reject = (err) => {
+      // Should we prevent / warn on calls post-completion?
       reject(err)
       this.completed = true
     }
