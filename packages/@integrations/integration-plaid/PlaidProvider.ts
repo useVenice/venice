@@ -19,6 +19,7 @@ import {
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
 import type {RequiredOnly} from '@ledger-sync/util'
+import {splitPrefixedId} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
@@ -160,14 +161,17 @@ export const plaidProvider = makeSyncProvider({
       }
     },
   },
-  preConnect: (config, {envName, ledgerId}) =>
-    makePlaidClient(config)
+  preConnect: (config, {envName, ledgerId, connection, institutionId}) => {
+    const insId = institutionId && splitPrefixedId(institutionId)[2]
+    return makePlaidClient(config)
       .linkTokenCreate(envName, {
+        access_token: connection?.settings.accessToken, // Reconnecting
+        institution_id: insId ?? undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: ledgerId},
         client_name: config.clientName,
         // TODO: Move these into config instead...
         language: 'en',
-        products: ['transactions'],
+        ...(!connection?.settings.accessToken && {products: ['transactions']}),
         country_codes: ['US'],
         // Webhook and redirect_uri would be part of the `connection` already.
         redirect_uri: 'http://localhost:3000/oauth',
@@ -176,7 +180,8 @@ export const plaidProvider = makeSyncProvider({
       .then((res) => {
         console.log('willConnect response', res)
         return res
-      }),
+      })
+  },
 
   useConnectHook: (_) => {
     console.log('[plaid] useConnectHook')

@@ -60,8 +60,8 @@ export type UseConnectHook<T extends AnyProviderDef> = (
   context: ConnectContextInput, // ConnectContext<T, 'frontend'>,
 ) => Promise<T['_types']['connectOutput']>
 
-export type ConnectContextInput = z.input<typeof zConnectContext>
-export const zConnectContext = z.object({
+export type ConnectContextInput = z.input<typeof zConnectContextInput>
+export const zConnectContextInput = z.object({
   envName: zEnvName,
   ledgerId: z.string(),
   /** Noop if `connectionId` is specified */
@@ -69,22 +69,12 @@ export const zConnectContext = z.object({
   connectionId: zId('conn').nullish(),
 })
 
-export type ConnectContext<
-  T extends AnyProviderDef,
-  TVariant extends 'frontend' | 'backend',
-> = {
+export interface ConnectContext<TSettings> {
   ledgerId: string
   envName: EnvName
-} & (
-  | {mode: 'connect-discover'} // Defaults to discover
-  | {mode: 'connect-institution'; institution: {externalId: string}}
-  | {
-      mode: 'reconnect'
-      connection: {externalId: string} & (TVariant extends 'backend'
-        ? {settings: T['_types']['connectionSettings']}
-        : never)
-    }
-)
+  institutionId?: string | null
+  connection?: {id: string; settings: TSettings} | null
+}
 export interface PreConnOptions<T = unknown> {
   key: string
   label: string
@@ -335,7 +325,7 @@ export function makeSyncProvider<
   TPreConn extends _opt<
     (
       config: T['_types']['integrationConfig'],
-      context: ConnectContextInput, // ConnectContext<T, 'backend'>,
+      context: ConnectContext<T['_types']['connectionSettings']>,
     ) => Promise<T['_types']['connectInput']>
   >,
   TUseConnHook extends _opt<UseConnectHook<T>>,
@@ -343,7 +333,7 @@ export function makeSyncProvider<
     (
       connectOutput: T['_types']['connectOutput'],
       config: T['_types']['integrationConfig'],
-      context: ConnectContextInput, // ConnectContext<T, 'backend'>,
+      context: ConnectContext<T['_types']['connectionSettings']>,
     ) => Promise<ConnectedSource<T>>
   >,
   // This probably need to also return an observable

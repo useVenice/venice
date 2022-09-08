@@ -3,6 +3,7 @@ import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
+import type {ConnId} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../../components/Layout'
@@ -10,7 +11,11 @@ import {Layout} from '../../../components/Layout'
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: string}
-  const {connectionsRes} = useLedgerSync({
+
+  // NOTE: envName is not relevant when reconnecting,
+  // and honestly neither is ledgerId...
+  // How do we express these situations?
+  const {connectionsRes, connect} = useLedgerSync({
     ledgerId,
     envName: 'sandbox', // Add control for me...
   })
@@ -70,6 +75,17 @@ export default function LedgerMyConnectionsScreen() {
                       )}>
                       <Circle weight="fill" />
                       <span>{conn.status}</span>
+                      {conn.status === 'disconnected' && (
+                        <button
+                          onClick={() => {
+                            connect(
+                              {provider: 'plaid'}, // Need the integration id too
+                              {connectionId: conn.id as ConnId},
+                            )
+                          }}>
+                          Reconnect
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

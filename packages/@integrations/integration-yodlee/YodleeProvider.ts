@@ -231,6 +231,7 @@ export const yodleeProvider = makeSyncProvider({
       }
     },
   },
+  // TODO: handle reconnecting scenario
   preConnect: async (config, {envName, ledgerId}) => {
     const loginName = ledgerId
     const accessToken = await makeYodleeClient(config, {

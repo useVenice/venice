@@ -7,7 +7,12 @@ import type {
   PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
-import {makeMemoryKVStore, zDestination, zSource} from '@ledger-sync/cdk-core'
+import {
+  makeMemoryKVStore,
+  zConnectContextInput,
+  zDestination,
+  zSource,
+} from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
 
 import {makeMetaStore} from './makeMetaStore'
@@ -65,6 +70,8 @@ export interface PipelineInput<
   >
   watch?: boolean
 }
+
+// Consider adding connectContextInput here...
 
 export type ParsedConn = z.infer<ReturnType<typeof makeSyncHelpers>['zConn']>
 export type ParsedInt = z.infer<ReturnType<typeof makeSyncHelpers>['zInt']>
@@ -283,6 +290,23 @@ export function makeSyncHelpers<
       return true
     })
 
+  const zConnectContext = zConnectContextInput.transform(
+    zGuard(async ({connectionId, ...rest}) => {
+      const rawConn = connectionId
+        ? await metaStore.getConnection(connectionId)
+        : undefined
+      console.log('rawConn', rawConn)
+      // Should we throw here if connection not found?
+      const connection = rawConn
+        ? await zConn.parseAsync({...rawConn, id: connectionId})
+        : null
+
+      // We don't have a getInsitution here... so just wiat for now
+      // We should probably at least get the external id working though
+      return {...rest, connection}
+    }),
+  )
+
   return {
     providerMap,
     zProvider,
@@ -301,6 +325,7 @@ export function makeSyncHelpers<
       z.ZodTypeDef,
       PipelineInput<TProviders[number], TProviders[number], TLinks>
     >,
+    zConnectContext,
     metaStore,
     getDefaultIntegrations,
   }

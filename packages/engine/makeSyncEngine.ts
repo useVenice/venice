@@ -6,11 +6,11 @@ import type {
   InsId,
   KVStore,
   Link,
-  LinkFactory} from '@ledger-sync/cdk-core';
+  LinkFactory,
+} from '@ledger-sync/cdk-core'
 import {
   handlersLink,
   makeCoreId,
-  zConnectContext,
   zStandardConnection,
   zStandardInstitution,
   zWebhookInput,
@@ -86,6 +86,7 @@ export const makeSyncEngine = <
     zInt,
     zConn,
     zPipeline,
+    zConnectContext,
     metaStore,
     getDefaultIntegrations,
     providerMap,
