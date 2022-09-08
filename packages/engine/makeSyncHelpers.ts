@@ -1,4 +1,5 @@
 import type {
+  AnyEntityPayload,
   AnySyncProvider,
   ConnId,
   Destination,
@@ -7,13 +8,8 @@ import type {
   PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
-import {
-  makeMemoryKVStore,
-  zConnectContextInput,
-  zDestination,
-  zSource,
-} from '@ledger-sync/cdk-core'
-import {deepMerge, mapDeep, R, z, zGuard} from '@ledger-sync/util'
+import {makeMemoryKVStore, zConnectContextInput} from '@ledger-sync/cdk-core'
+import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
 import {makeMetaStore} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
@@ -174,8 +170,8 @@ export function makeSyncHelpers<
     .extend({
       integrationId: z.string().optional(),
       settings: z.record(z.unknown()).optional(),
-      _source$: zSource.optional(),
-      _destination$$: zDestination.optional(),
+      _source$: zCast<Source<AnyEntityPayload>>().optional(),
+      _destination$$: zCast<Destination>().optional(),
     })
     .transform(
       zGuard(async ({id, _source$, _destination$$, ...input}) => {

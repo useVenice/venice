@@ -10,11 +10,11 @@ import type {
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
-  makeCoreId,
   zStandardConnection,
   zStandardInstitution,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
+import {makeCoreId} from '@ledger-sync/cdk-core/meta.types'
 import {
   R,
   routerFromZFunctionMap,

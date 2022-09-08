@@ -1,35 +1,9 @@
-import {castIs, makePrefixedId, z} from '@ledger-sync/util'
+import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
-import type {Destination, EnvName, Source, SyncOperation} from './protocol'
-import {zEnvName} from './protocol'
-
-export const CORE_NAME_TO_PREFIX = {
-  integration: 'int',
-  connection: 'conn',
-  pipeline: 'pipe',
-  institution: 'ins',
-} as const
-type Prefix = typeof CORE_NAME_TO_PREFIX[keyof typeof CORE_NAME_TO_PREFIX]
-
-// Move to protocol?
-
-export function makeCoreId<TPrefix extends Prefix, TPName extends string>(
-  prefix: TPrefix,
-  providerName: TPName,
-  externalId: string,
-) {
-  return makePrefixedId(prefix, providerName, externalId)
-}
-
-export function zId<TPrefix extends Prefix>(prefix: TPrefix) {
-  return z
-    .string()
-    .refine(
-      (s): s is `${TPrefix}_${string}` => s.startsWith(`${prefix}_`),
-      `Not a valid ${prefix} id`,
-    )
-}
+import type {EnvName} from './meta.types'
+import {makeCoreId, zEnvName, zId} from './meta.types'
+import type {Destination, Source, SyncOperation} from './protocol'
 
 // MARK: - Types
 

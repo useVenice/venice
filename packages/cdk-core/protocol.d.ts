@@ -6,15 +6,9 @@ import type {
   ObjectPartialDeep,
   rxjs,
 } from '@ledger-sync/util'
-import {z, zCast} from '@ledger-sync/util'
 
-export type EnvName = z.infer<typeof zEnvName>
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
-
-export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
-export type IntId<TName extends string = string> = `int_${TName}_${string}`
-export type InsId<TName extends string = string> = `ins_${TName}_${string}`
-export type PipeId = `pipe_${string}`
+// Consider removing this...
+import type {ConnId, EnvName, IntId} from './meta.types'
 
 /**
  * This will be standardized over time into either
@@ -67,7 +61,6 @@ export type SyncOperation<
 export type AnySyncOperation = MergeUnion<SyncOperation>
 
 export type Source<T extends Data> = rxjs.Observable<SyncOperation<T>>
-export const zSource = zCast<Source<AnyEntityPayload>>() // Make me better...
 
 /**
  * Adapted from TRPC link and Apollo Link
@@ -81,7 +74,6 @@ export type Link<DataIn extends Data = Data, DataOut extends Data = DataIn> = (
  * for the engine to listen to. The resulting event may not be the same as the input events
  */
 export type Destination<T extends Data = Data> = Link<T, AnyEntityPayload>
-export const zDestination = zCast<Destination>() // Make me better...
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LinkFactory<TArg = any> = (arg: TArg) => Link<any, any>
