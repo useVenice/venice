@@ -124,11 +124,13 @@ export const plaidProvider = makeSyncProvider({
       },
     },
   }),
+  // Should this run at runtime rather than sync time? That way we don't have to
+  // keep resyncing the 10k institutions from Plaid to make this happen...
   standardMappers: {
     connection: () => ({}),
     institution: (ins) => ({
       name: ins.name,
-      logoUrl: ins.logo ?? '',
+      logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,
       envName: undefined,
     }),
@@ -303,6 +305,7 @@ export const plaidProvider = makeSyncProvider({
           offset,
           count: 500,
           country_codes: ['US', 'CA', 'GB'],
+          options: {include_optional_metadata: true},
         })
         if (institutions.institutions.length === 0) {
           break

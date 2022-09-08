@@ -92,7 +92,7 @@ export type StandardInstitution = z.infer<typeof zStandardInstitution>
 export const zStandardInstitution = z.object({
   id: z.string(),
   name: z.string(),
-  logoUrl: z.string().url(),
+  logoUrl: z.string().url().optional(),
   loginUrl: z.string().url().optional(),
   /** Environment specific providers */
   envName: zEnvName.optional(),
