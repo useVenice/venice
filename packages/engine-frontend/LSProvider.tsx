@@ -34,15 +34,16 @@ export function LSProvider<
   const client = trpc.createClient({url: routerUrl})
 
   const dialogRef = React.useRef<DialogInstance>(null)
-  const [DialogComponent, setDialogComponent] =
-    React.useState<React.ComponentType<{hide: () => void}> | null>(null)
+  const [dialog, setDialog] = React.useState<{
+    Component: React.ComponentType<{hide: () => void}>
+    options?: {onHidden?: () => void}
+  } | null>(null)
 
   const hooks = R.mapToObj(config.providers, (p) => [
     p.name,
     p.useConnectHook?.({
-      openDialog: (render) => {
-        // Using closure, otherwise setter will execute component as thunk
-        setDialogComponent(() => render)
+      openDialog: (render, options) => {
+        setDialog({Component: render, options})
       },
     }),
   ])
@@ -52,16 +53,18 @@ export function LSProvider<
       <LSContext.Provider value={{trpc, hooks, client}}>
         {children}
 
-        {DialogComponent && (
+        {dialog && (
           <Dialog
             ref={dialogRef}
             open
             onOpenChange={(newOpen) => {
               if (!newOpen) {
-                setDialogComponent(null)
+                console.log('Will close dialog (set to null)')
+                dialog.options?.onHidden?.()
+                setDialog(null)
               }
             }}>
-            <DialogComponent hide={() => dialogRef.current?.close()} />
+            <dialog.Component hide={() => dialogRef.current?.close()} />
           </Dialog>
         )}
       </LSContext.Provider>

@@ -22,12 +22,12 @@ export function YodleeFastLink({
   onClose,
   onEvent,
 }: YodleeFastLinkProps) {
-  // console.log('[YodleeFastLink] render')
+  console.log('[YodleeFastLink] render')
   React.useLayoutEffect(
     () => {
-      // console.log('[YodleeFastLink] start layout effect')
+      console.log('[YodleeFastLink] start layout effect')
       setTimeout(() => {
-        // console.log('[YodleeFastLink] setTimeout runs')
+        console.log('[YodleeFastLink] setTimeout runs')
         const options: FastLinkOpenOptions = {
           fastLinkURL: {
             sandbox:

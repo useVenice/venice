@@ -57,18 +57,11 @@ const def = makeSyncProvider.def({
   connectionSettings: zSettings,
   institutionData: zYodleeInstitution,
   // Should accessToken be cached based on provider / ledgerId?
-  connectInput: zSettings
-    .pick({envName: true, loginName: true})
-    .extend({accessToken: zAccessToken}),
-  /** Should this be named postConnectInput? */
-  connectOutput: zSettings
-    .pick({
-      envName: true, // How do make these not needed?
-      loginName: true, // How do make these not needed?
-      providerAccountId: true,
-      // user / providerId are optional...
-    })
-    .extend({providerId: z.number()}),
+  connectInput: z.object({accessToken: zAccessToken}),
+  connectOutput: z.object({
+    providerAccountId: z.number(),
+    providerId: z.number(), // Technically optional
+  }),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -199,9 +192,9 @@ export const yodleeProvider = makeSyncProvider({
   // is the `id` actually externalId?
   standardMappers: {
     institution: (ins) => ({
-      logoUrl: ins.logo!,
+      logoUrl: ins.logo,
       loginUrl: ins.loginUrl,
-      name: ins.name!,
+      name: ins.name ?? `<${ins.id}>`,
       envName: ins._envName,
     }),
     connection: (settings) => ({
@@ -216,56 +209,68 @@ export const yodleeProvider = makeSyncProvider({
       role: 'admin',
       envName,
     }).generateAccessToken(loginName)
-    return {accessToken, envName, loginName}
+    return {accessToken}
   },
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    return async ({accessToken, envName, loginName}, ctx) => {
-      console.log('[Yodlee.connect] ctx', ctx)
+    console.log('[yodlee] useConnectHook')
+    return async ({accessToken}, {envName, institutionId}) => {
+      console.log('[yodlee] connect', {accessToken, envName, institutionId})
       await loaded
 
-      const deferred = new Deferred<typeof def['_types']['connectOutput']>()
-      scope.openDialog(({hide}) =>
-        YodleeFastLink({
-          envName,
-          fastlinkToken: `Bearer ${accessToken.accessToken}`,
-          providerId: zYodleeId
-            .optional()
-            .parse<'typed'>(
-              (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
-                undefined,
-            ),
-          // providerAccountId: '',
-          onSuccess: (data) => {
-            console.debug('[yodlee] Did receive successful response', data)
-            hide()
-            deferred.resolve({
+      console.log('[yodlee] script loaded, will open dialog')
+
+      return new Promise((resolve, reject) => {
+        scope.openDialog(
+          ({hide}) =>
+            YodleeFastLink({
               envName,
-              loginName,
-              providerAccountId: data.providerAccountId,
-              providerId: data.providerId,
-            })
+              fastlinkToken: `Bearer ${accessToken.accessToken}`,
+              providerId: zYodleeId
+                .optional()
+                .parse<'typed'>(
+                  (institutionId && splitPrefixedId(institutionId)[2]) ||
+                    undefined,
+                ),
+              // providerAccountId: '',
+              onSuccess: (data) => {
+                console.debug('[yodlee] Did receive successful response', data)
+                hide()
+                resolve({
+                  providerAccountId: data.providerAccountId,
+                  providerId: data.providerId,
+                })
+              },
+              onError: (_data) => {
+                const data = _data as MergeUnion<typeof _data>
+                console.warn('[yodlee] Did receive an error', data)
+                hide()
+                reject(new Error(data.reason ?? data.message))
+              },
+              onClose: (data) => {
+                console.debug('[yodlee] Did close', data)
+                hide()
+                reject(CANCELLATION_TOKEN)
+              },
+              onEvent: (data) => {
+                console.log('[yodlee] event', data)
+              },
+            }),
+          {
+            onHidden: () => {
+              window.fastlink?.close() // is this a noop if we are closed?
+              console.log('onHidden')
+            },
           },
-          onError: (_data) => {
-            const data = _data as MergeUnion<typeof _data>
-            console.warn('[yodlee] Did receive an error', data)
-            hide()
-            deferred.reject(new Error(data.reason ?? data.message))
-          },
-          onClose: (data) => {
-            console.debug('[yodlee] Did close', data)
-            hide()
-            deferred.reject(CANCELLATION_TOKEN)
-          },
-        }),
-      )
-      return deferred.promise
+        )
+      })
     }
   },
 
   postConnect: async (
-    {envName, loginName, providerAccountId, providerId},
+    {providerAccountId, providerId},
     config,
+    {envName, ledgerId: loginName},
   ) => {
     const yodlee = makeYodleeClient(config, {role: 'user', envName, loginName})
     const [providerAccount, provider, user] = await Promise.all([

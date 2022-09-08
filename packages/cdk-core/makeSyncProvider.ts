@@ -42,7 +42,10 @@ export const zUseLedgerSyncOptions = z.object({
 
 /** TODO: Move me to client side... */
 export interface UseConnectScope {
-  openDialog: (render: (ctx: {hide: () => void}) => JSX.Element) => void
+  openDialog: (
+    render: (ctx: {hide: () => void}) => JSX.Element,
+    options?: {onHidden?: () => void},
+  ) => void
 }
 
 export type ConnectContextInput = z.input<typeof zConnectContext>
