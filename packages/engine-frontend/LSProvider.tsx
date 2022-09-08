@@ -38,13 +38,15 @@ export function LSProvider<
   const client = trpc.createClient({url: routerUrl})
 
   const dialogRef = React.useRef<DialogInstance>(null)
-  const [dialog, setDialog] = React.useState<DialogConfig | null>(null)
+  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
+    null,
+  )
 
   const hooks = R.mapToObj(config.providers, (p) => [
     p.name,
     p.useConnectHook?.({
       openDialog: (render, options) => {
-        setDialog({Component: render, options})
+        setDialogConfig({Component: render, options})
         dialogRef.current?.open()
       },
     }),
@@ -55,18 +57,19 @@ export function LSProvider<
       <LSContext.Provider value={{trpc, hooks, client}}>
         {children}
 
-        {dialog && (
+        {dialogConfig && (
           <Dialog
             ref={dialogRef}
+            modal // TODO: Modal is true by default, but dialog still auto-dismiss on press outside...
             open
             onOpenChange={(newOpen) => {
               console.log('Dialog.onOpenChange', {newOpen})
               if (!newOpen) {
-                dialog.options?.onClose?.()
-                setDialog(null)
+                dialogConfig.options?.onClose?.()
+                setDialogConfig(null)
               }
             }}>
-            <dialog.Component close={() => dialogRef.current?.close()} />
+            <dialogConfig.Component close={() => dialogRef.current?.close()} />
           </Dialog>
         )}
       </LSContext.Provider>
