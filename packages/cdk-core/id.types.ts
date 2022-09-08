@@ -1,9 +1,6 @@
 import {z} from '@ledger-sync/util'
 
-// MARK: - IDs
-
 /** Provider independent ids */
-
 export const BASE_META_IDS = {
   ledger: 'ldgr', // Technicall we do not store this...
   pipeline: 'pipe',
@@ -64,10 +61,6 @@ export function extractId(id: Id[keyof Id]) {
 // Input type (generic)
 // - DB type conforms to input type (not generic, possibly generated)
 // Output type (parsed, generic)
-
-// Move these somewhere else...
-export type EnvName = z.infer<typeof zEnvName>
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
 // MARK: - Deprecated stuff
 

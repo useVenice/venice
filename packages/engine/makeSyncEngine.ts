@@ -10,11 +10,11 @@ import type {
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
+  makeId,
   zStandardConnection,
   zStandardInstitution,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import {makeCoreId} from '@ledger-sync/cdk-core/meta.types'
 import {
   R,
   routerFromZFunctionMap,
@@ -105,11 +105,7 @@ export const makeSyncEngine = <
       provider: int.provider,
       integrationId: int.id,
       config: int.config,
-      id: makeCoreId(
-        'conn',
-        int.provider.name,
-        cs.externalId,
-      ) as ParsedConn['id'],
+      id: makeId('conn', int.provider.name, cs.externalId) as ParsedConn['id'],
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
       // ConnectionUpdates should be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(

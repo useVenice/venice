@@ -1,8 +1,9 @@
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
-import type {EnvName} from './id.types'
-import {makeId, zEnvName, zId} from './id.types'
+import {makeId, zId} from './id.types'
+import type {EnvName} from './meta.types'
+import {zEnvName} from './meta.types'
 import type {Destination, Source, SyncOperation} from './protocol'
 
 // MARK: - Types

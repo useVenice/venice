@@ -4,5 +4,6 @@ export * from './frontend-utils'
 export * from './id.types'
 export * from './kvStore'
 export * from './makeSyncProvider'
+export * from './meta.types'
 export * from './protocol.d'
 // codegen:end
