@@ -45,6 +45,7 @@ export function LSProvider<
     p.useConnectHook?.({
       openDialog: (render, options) => {
         setDialog({Component: render, options})
+        dialogRef.current?.open()
       },
     }),
   ])
@@ -65,7 +66,7 @@ export function LSProvider<
                 setDialog(null)
               }
             }}>
-            <dialog.Component hide={() => dialogRef.current?.close()} />
+            <dialog.Component close={() => dialogRef.current?.close()} />
           </Dialog>
         )}
       </LSContext.Provider>

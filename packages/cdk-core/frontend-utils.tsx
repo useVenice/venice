@@ -52,9 +52,13 @@ export function DivContainer(props: {
   React.useLayoutEffect(
     () => {
       setTimeout(() => {
+        console.log('[DivContainer] onMount')
         props.onMount?.()
       }, 0)
-      return props.onUnmount
+      return () => {
+        console.log('[DivContainer] onUnmount')
+        props.onUnmount?.()
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

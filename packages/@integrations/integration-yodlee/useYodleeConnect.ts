@@ -37,7 +37,7 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
     console.log('[yodlee] script loaded, will open dialog')
 
     return new Promise((resolve, reject) => {
-      scope.openDialog(({hide}) => {
+      scope.openDialog(({close}) => {
         const openOptions: FastLinkOpenOptions = {
           fastLinkURL: {
             sandbox:
@@ -59,27 +59,28 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
           },
           onSuccess: (data) => {
             console.debug('[yodlee] Did receive successful response', data)
-            hide()
+            close()
             resolve({
               providerAccountId: data.providerAccountId,
               providerId: data.providerId,
             })
           },
           onError: (_data) => {
+            console.warn('[yodlee] Did receive an error', _data)
             const data = _data as MergeUnion<typeof _data>
-            console.warn('[yodlee] Did receive an error', data)
-            hide()
+            close()
             reject(new Error(data.reason ?? data.message))
           },
           onClose: (data) => {
-            console.debug('[yodlee] Did close', data)
-            hide()
+            console.log('[yodlee] Did close', data)
+            close()
             reject(CANCELLATION_TOKEN)
           },
           onEvent: (data) => {
             console.log('[yodlee] event', data)
           },
         }
+        console.log('[yodlee] Open options', openOptions)
         return DivContainer({
           id: YODLEE_CONTAINER_ID,
           onMount: () =>

@@ -41,7 +41,7 @@ export const zUseLedgerSyncOptions = z.object({
 })
 
 export interface DialogConfig {
-  Component: React.ComponentType<{hide: () => void}>
+  Component: React.ComponentType<{close: () => void}>
   options?: {onClose?: () => void}
 }
 

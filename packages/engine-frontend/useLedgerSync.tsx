@@ -35,6 +35,8 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
       const ctx: ConnectContextInput = {...options, envName, ledgerId}
 
       try {
+        console.log(`${int.provider} Will connect`)
+
         const preConnRes = await client.mutation('preConnect', [int, ctx])
         console.log(`${int.provider} preConnnectRes`, preConnRes)
 
@@ -43,8 +45,10 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
 
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
         console.log(`${int.provider} postConnectRes`, postConRes)
-        // TODO: We should get the client and invalidate instead
-        await connectionsRes.refetch()
+
+        await connectionsRes.refetch() // Should we invalidate instead of trigger explicit refetch?
+
+        console.log(`${int.provider} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
           console.log(`${int.provider} Cancelled`)
