@@ -1,12 +1,9 @@
-import type {EntityPayload} from './entity-link-types'
-import {zEntityPayload} from './entity-link-types'
-import type {
-  AnyProviderDef,
-  AnySyncProvider,
-  Source,
-} from '@ledger-sync/cdk-core'
+import type {AnyProviderDef, AnySyncProvider} from '@ledger-sync/cdk-core'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {z} from '@ledger-sync/util'
+
+import type {EntityPayload} from './entity-link-types'
+import {zEntityPayload} from './entity-link-types'
 
 // NEXT: add institution, etc.
 
@@ -34,12 +31,7 @@ export const ledgerSyncProviderBase = <
   >,
 >(
   def: T,
-  extension: {
-    sourceMapEntity: TSourceMapEntity
-    getInstitutions?: (
-      config: T['_types']['integrationConfig'],
-    ) => Source<T['_types']['sourceOutputEntity']>
-  },
+  extension: {sourceMapEntity: TSourceMapEntity},
 ) => makeSyncProvider({...makeSyncProvider.defaults, def, extension})
 
 ledgerSyncProviderBase.def = makeSyncProvider.def({

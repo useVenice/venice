@@ -1,12 +1,8 @@
-import React from 'react'
-
-import type {SyncOperation} from '@ledger-sync/cdk-core';
-import { useScript} from '@ledger-sync/cdk-core'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
   A,
-  Deferred,
   identity,
   parseMoney,
   Rx,
@@ -15,9 +11,6 @@ import {
   z,
 } from '@ledger-sync/util'
 
-import type {HandleSuccessTellerEnrollment} from './teller-utils'
-import {useTellerAPI} from './teller-utils'
-import type {zEnvName} from './TellerClient'
 import {
   accountTellerSchema,
   makeTellerClient,

@@ -13,7 +13,7 @@ import {
   makePostingsMap,
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
-import {A, Deferred, R, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
   getPlaidAccountBalance,
@@ -42,6 +42,7 @@ const def = makeSyncProvider.def({
     item: zCast<plaid.Item | undefined>(),
     status: zCast<plaid.ItemGetResponse['status'] | undefined>(),
   }),
+  institutionData: zCast<plaid.Institution>(),
   connectInput: z.object({link_token: z.string()}),
   connectOutput: z.object({
     publicToken: z.string(),
@@ -64,11 +65,6 @@ const def = makeSyncProvider.def({
       id: z.string(),
       entityName: z.literal('transaction'),
       entity: zCast<plaid.Transaction>(),
-    }),
-    z.object({
-      id: z.string(),
-      entityName: z.literal('institution'),
-      entity: zCast<plaid.Institution>(),
     }),
   ]),
   webhookInput: zWebhookInput,
@@ -127,35 +123,16 @@ export const plaidProvider = makeSyncProvider({
         }
       },
     },
-    // How do we think about this relative to pre-connect input?
-    getInstitutions: (config) => {
-      // Rate limit is easily exceeded, so we will have to introduce
-      // a management layer for that, which will be process-wide and
-      // eventually distributed rate limiter too
-      // @see https://share.cleanshot.com/w7xCNK
-      const client = makePlaidClient(config)
-      async function* iterateInstitutions() {
-        let offset = 0
-        while (true) {
-          const institutions = await client.institutionsGet('sandbox', {
-            offset,
-            count: 500,
-            country_codes: ['US', 'CA', 'GB'],
-          })
-          if (institutions.institutions.length === 0) {
-            break
-          }
-          yield institutions.institutions.map((ins) =>
-            def._opData('institution', ins.institution_id, ins),
-          )
-          offset += institutions.institutions.length
-        }
-      }
-      return rxjs
-        .from(iterateInstitutions())
-        .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
-    },
   }),
+  standardMappers: {
+    connection: () => ({}),
+    institution: (ins) => ({
+      name: ins.name,
+      logoUrl: ins.logo ?? '',
+      loginUrl: ins.url ?? undefined,
+      envName: undefined,
+    }),
+  },
   preConnect: (config, {envName, ledgerId}) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
@@ -252,6 +229,14 @@ export const plaidProvider = makeSyncProvider({
     }
   },
 
+  revokeConnection: (input, config) =>
+    makePlaidClient(config).itemRemove(input.accessToken),
+
+  handleWebhook: (input) => {
+    console.log('Handling plaid webhook input', input)
+    return []
+  },
+
   sourceSync: ({config, settings, options}) => {
     const client = makePlaidClient(config)
     async function* iterateEntities() {
@@ -303,11 +288,42 @@ export const plaidProvider = makeSyncProvider({
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
   },
 
-  revokeConnection: (input, config) =>
-    makePlaidClient(config).itemRemove(input.accessToken),
-
-  handleWebhook: (input) => {
-    console.log('Handling plaid webhook input', input)
-    return []
+  metaSync: ({config}) => {
+    // Rate limit is easily exceeded, so we will have to introduce
+    // a management layer for that, which will be process-wide and
+    // eventually distributed rate limiter too
+    // @see https://share.cleanshot.com/w7xCNK
+    const client = makePlaidClient(config)
+    async function* iterateInstitutions() {
+      let offset = 0
+      while (true) {
+        console.log('Awaiting rate limit')
+        await insGetLimit()
+        const institutions = await client.institutionsGet('sandbox', {
+          offset,
+          count: 500,
+          country_codes: ['US', 'CA', 'GB'],
+        })
+        if (institutions.institutions.length === 0) {
+          break
+        }
+        yield institutions.institutions.map((ins) =>
+          def._insOpData(ins.institution_id, ins),
+        )
+        offset += institutions.institutions.length
+      }
+    }
+    return rxjs
+      .from(iterateInstitutions())
+      .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
   },
 })
+
+/**
+ * Institution get rate limit.. Not accounting for per item or per client yet...
+ * https://plaid.com/docs/errors/rate-limit-exceeded/#production-and-development-rate-limits
+ *
+ * 10 requests per min is the limit in sandbox, we do 8 to be safe.
+ * All of plaid's rate limits are per-minute...
+ */
+const insGetLimit = RateLimit(7, {timeUnit: 60 * 1000})
