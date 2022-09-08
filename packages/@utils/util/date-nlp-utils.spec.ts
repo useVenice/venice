@@ -1,3 +1,6 @@
+import {advanceTo, clear} from 'jest-date-mock'
+import {DateTime} from 'luxon'
+import {RRule} from 'rrule'
 import type {RRuleOptions} from './date-nlp-utils'
 import {
   boundRRuleSetInInterval,
@@ -8,9 +11,6 @@ import {
   reformatScheduleExpression,
 } from './date-nlp-utils'
 import {formatDate, parseOptionalISODate} from './date-utils'
-import {advanceTo, clear} from 'jest-date-mock'
-import {DateTime} from 'luxon'
-import {RRule} from 'rrule'
 
 const now = DateTime.fromISO('2020-04-13', {zone: 'utc'})
 

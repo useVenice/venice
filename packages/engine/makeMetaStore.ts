@@ -110,7 +110,7 @@ export function makeMetaStore<T extends AnySyncProvider = AnySyncProvider>(
   const patch =
     kvStore.patch ??
     (async (id, _patch) => {
-      if (!Object.keys(_patch).length) {
+      if (Object.keys(_patch).length === 0) {
         return
       }
       const data = await kvStore.get(id)

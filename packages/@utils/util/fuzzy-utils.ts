@@ -69,9 +69,10 @@ export function fuzzyMatch(query: string, source: string): FuzzyMatchResult {
   // If no source, then only return true if query is also empty
   if (!normalizedSource || !normalizedQuery) {
     return {
-      match: !query.length,
-      ranges: !query.length ? [{start: 0, stop: normalizedSource.length}] : [],
-      score: Number(!query.length),
+      match: query.length === 0,
+      ranges:
+        query.length === 0 ? [{start: 0, stop: normalizedSource.length}] : [],
+      score: Number(query.length === 0),
     }
   }
 

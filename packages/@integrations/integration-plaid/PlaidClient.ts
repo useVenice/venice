@@ -14,6 +14,15 @@ import {
   PlaidEnvironments,
   Products,
 } from 'plaid'
+import {
+  castIs,
+  getDefaultProxyAgent,
+  memoize,
+  z,
+  zCast,
+  zFunction,
+} from '@ledger-sync/util'
+import {inferPlaidEnvFromToken} from './plaid-utils'
 
 import {
   castIs,

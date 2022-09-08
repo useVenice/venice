@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DataExtractsEventLinks = {
   properties: {
     methodType: {
@@ -16,4 +16,4 @@ export const $DataExtractsEventLinks = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerificationAccount = {
   properties: {
     accountName: {
@@ -21,4 +21,4 @@ export const $VerificationAccount = {
       isRequired: true,
     },
   },
-} as const;
+} as const

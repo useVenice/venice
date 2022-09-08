@@ -2,16 +2,16 @@
 // This would be especially useful in tight spaces like charts and reports
 // This should probably exist in the format-decimal layer and get used over here
 // Should be supported in both intlFormat and customFormat layer
-import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
-import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
-import type {StrictIntlNumberFormatOptions} from './formatting-number'
-import {formatDecimal, getIntlNumberFormat} from './formatting-number'
-import {DBL_EPSILON} from './math-utils'
 import {
   currencies as ISO_CURRENCIES,
   map as ISO_CURRENCY_SYMBOL_TO_INFO,
 } from '@blossomfinance/iso-4217-currencies'
 import pluralize from 'pluralize'
+import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
+import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
+import type {StrictIntlNumberFormatOptions} from './formatting-number'
+import {formatDecimal, getIntlNumberFormat} from './formatting-number'
+import {DBL_EPSILON} from './math-utils'
 
 /** Will format into an unambiguous format */
 export function legacy_parsableFormatAmount(

@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('node:path')
 const webpack = require('webpack')
 // prettier-ignore
 const withTM = require('next-transpile-modules')([

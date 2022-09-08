@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountAddress = {
   properties: {
     zip: {
@@ -34,4 +34,4 @@ export const $AccountAddress = {
       type: 'Enum',
     },
   },
-} as const;
+} as const

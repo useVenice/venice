@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountHistoricalBalancesResponse = {
   properties: {
     account: {
@@ -11,4 +11,4 @@ export const $AccountHistoricalBalancesResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

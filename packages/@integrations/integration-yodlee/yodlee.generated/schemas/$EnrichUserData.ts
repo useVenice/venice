@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $EnrichUserData = {
   properties: {
     user: {
@@ -25,4 +25,4 @@ export const $EnrichUserData = {
       isRequired: true,
     },
   },
-} as const;
+} as const

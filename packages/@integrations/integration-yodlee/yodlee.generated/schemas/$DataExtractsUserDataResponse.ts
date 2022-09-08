@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DataExtractsUserDataResponse = {
   properties: {
     userData: {
@@ -11,4 +11,4 @@ export const $DataExtractsUserDataResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

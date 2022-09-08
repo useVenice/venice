@@ -1,4 +1,5 @@
 import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
+import institutionsWsResponse from './institutionWsResponse.json'
 
 import institutionsWsResponse from './institutionWsResponse.json'
 
@@ -47,9 +48,9 @@ declare global {
 
 // Will be used on production mode to use cert
 /*
-import fs from 'fs'
+import fs from 'node:fs'
 import https from 'https'
-import path from 'path'
+import path from 'node:path'
 */
 
 // Todo: Move all of schema to separate file or keep it stay

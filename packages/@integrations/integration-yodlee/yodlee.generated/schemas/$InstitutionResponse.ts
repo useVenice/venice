@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $InstitutionResponse = {
   properties: {
     institution: {
@@ -11,4 +11,4 @@ export const $InstitutionResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

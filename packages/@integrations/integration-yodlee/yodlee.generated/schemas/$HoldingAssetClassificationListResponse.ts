@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $HoldingAssetClassificationListResponse = {
   properties: {
     assetClassificationList: {
@@ -11,4 +11,4 @@ export const $HoldingAssetClassificationListResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

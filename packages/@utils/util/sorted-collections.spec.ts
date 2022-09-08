@@ -1,3 +1,5 @@
+import {NodeManagerJsNumber, Tree} from '@subspace/red-black-tree'
+import {RBTree} from 'bintrees'
 import {withPerf} from './perf-utils'
 import {
   DEFAULT_ENTRY_COMPARATOR,
@@ -5,8 +7,6 @@ import {
   SortedMap,
   SortedSet,
 } from './sorted-collections'
-import {NodeManagerJsNumber, Tree} from '@subspace/red-black-tree'
-import {RBTree} from 'bintrees'
 
 // MARK: - Correctness
 

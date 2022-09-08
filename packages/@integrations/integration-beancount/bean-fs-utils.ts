@@ -1,9 +1,4 @@
 import {
-  convBeanFile,
-  defaultOptions,
-  sortBeanEntries,
-} from './beancountConverters'
-import {
   $ensureDir,
   $fs,
   $readFile,
@@ -14,6 +9,11 @@ import {
   R,
   stableStringify,
 } from '@ledger-sync/util'
+import {
+  convBeanFile,
+  defaultOptions,
+  sortBeanEntries,
+} from './beancountConverters'
 
 // For use from Beancount destination
 

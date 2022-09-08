@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdateCategoryRequest = {
   properties: {
     highLevelCategoryName: {
@@ -20,4 +20,4 @@ export const $UpdateCategoryRequest = {
       type: 'string',
     },
   },
-} as const;
+} as const

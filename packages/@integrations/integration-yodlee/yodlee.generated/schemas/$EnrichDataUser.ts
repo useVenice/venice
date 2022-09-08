@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $EnrichDataUser = {
   properties: {
     preferences: {
@@ -29,4 +29,4 @@ export const $EnrichDataUser = {
       type: 'string',
     },
   },
-} as const;
+} as const

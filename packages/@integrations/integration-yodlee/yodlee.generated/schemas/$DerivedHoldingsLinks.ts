@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DerivedHoldingsLinks = {
   properties: {
     holdings: {
@@ -8,4 +8,4 @@ export const $DerivedHoldingsLinks = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

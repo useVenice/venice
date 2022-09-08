@@ -1,3 +1,4 @@
+import {A} from '@ledger-sync/util'
 import {
   _convertAmount,
   _getConversionPath,
@@ -10,7 +11,6 @@ import {
   invertPrice,
   P,
 } from './prices'
-import {A} from '@ledger-sync/util'
 
 const prices = [
   P('2019-05-01', 'USD', 1.25, 'CAD'),

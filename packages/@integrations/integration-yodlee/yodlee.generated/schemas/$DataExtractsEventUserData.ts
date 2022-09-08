@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DataExtractsEventUserData = {
   properties: {
     links: {
@@ -15,4 +15,4 @@ export const $DataExtractsEventUserData = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
+import {ActiveLink} from './ActiveLink'
 
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 

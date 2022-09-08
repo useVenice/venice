@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCategoryResponse = {
   properties: {
     transactionCategory: {
@@ -11,4 +11,4 @@ export const $TransactionCategoryResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

@@ -171,7 +171,7 @@ export const stripeProvider = makeSyncProvider({
         const res2 = await client.getBalanceTransactions({
           secretKey,
           starting_after:
-            starting_after && starting_after.length
+            starting_after && starting_after.length > 0
               ? starting_after
               : undefined,
         })

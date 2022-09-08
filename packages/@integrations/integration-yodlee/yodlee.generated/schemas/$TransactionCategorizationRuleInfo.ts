@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCategorizationRuleInfo = {
   properties: {
     ruleClause: {
@@ -23,4 +23,4 @@ export const $TransactionCategorizationRuleInfo = {
       format: 'int32',
     },
   },
-} as const;
+} as const

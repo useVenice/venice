@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DocumentResponse = {
   properties: {
     document: {
@@ -11,4 +11,4 @@ export const $DocumentResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

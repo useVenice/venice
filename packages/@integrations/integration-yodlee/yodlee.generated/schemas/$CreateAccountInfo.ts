@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $CreateAccountInfo = {
   properties: {
     includeInNetWorth: {
@@ -53,4 +53,4 @@ export const $CreateAccountInfo = {
       type: 'Enum',
     },
   },
-} as const;
+} as const

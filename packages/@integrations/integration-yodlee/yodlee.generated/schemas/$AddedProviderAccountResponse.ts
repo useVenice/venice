@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AddedProviderAccountResponse = {
   properties: {
     providerAccount: {
@@ -11,4 +11,4 @@ export const $AddedProviderAccountResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

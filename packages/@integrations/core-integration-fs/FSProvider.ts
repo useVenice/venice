@@ -1,4 +1,3 @@
-import {_pathFromId} from './makeFsKVStore'
 import type {AnyEntityPayload, SyncOperation} from '@ledger-sync/cdk-core'
 import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
@@ -16,6 +15,7 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
+import {_pathFromId} from './makeFsKVStore'
 
 // MARK: - Source Sync
 

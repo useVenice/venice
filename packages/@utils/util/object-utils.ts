@@ -1,6 +1,3 @@
-import {R} from './data-utils'
-import {math} from './math-utils'
-import type {AnyRecord, ObjectPartialDeep} from './type-utils'
 import {createCustomEqual, deepEqual, shallowEqual} from 'fast-equals'
 import {
   isEmpty as _isEmpty,
@@ -9,6 +6,9 @@ import {
 } from 'lodash'
 import {omit as _omit, pick as _pick, compact} from 'remeda'
 import {mergeDeep as _deepMerge} from 'timm'
+import {R} from './data-utils'
+import {math} from './math-utils'
+import type {AnyRecord, ObjectPartialDeep} from './type-utils'
 
 export const floatingDeepEqual = createCustomEqual(
   (_deepEqual) => (a, b, meta) => {
@@ -183,7 +183,7 @@ export function deepMerge<T extends AnyRecord>(
   ...args: [(T | null)?, ...Array<Partial<T> | null | undefined>]
 ): T {
   const objs = compact(args) as [T, ...Array<Partial<T>>]
-  return !objs.length
+  return objs.length === 0
     ? (undefined as unknown as T) // Not technically correct...
     : (_deepMerge(...objs) as T)
 }

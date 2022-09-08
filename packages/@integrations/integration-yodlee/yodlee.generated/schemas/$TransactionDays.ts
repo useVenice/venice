@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionDays = {
   properties: {
     fullAccountNumberFields: {
@@ -14,4 +14,4 @@ export const $TransactionDays = {
       format: 'int32',
     },
   },
-} as const;
+} as const

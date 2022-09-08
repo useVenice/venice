@@ -1,5 +1,3 @@
-import {defineProxyFn} from './di-utils'
-import {stringifyQueryParams} from './url-utils'
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -8,8 +6,10 @@ import type {
   Method,
 } from 'axios'
 import _Axios from 'axios'
-import type http from 'http'
-import type https from 'https'
+import type http from 'node:http'
+import type https from 'node:https'
+import {defineProxyFn} from './di-utils'
+import {stringifyQueryParams} from './url-utils'
 
 // MARK: - Proxy Agent
 
@@ -64,8 +64,8 @@ export class HTTPError<
     ) {
       try {
         requestData = JSON.parse(requestData)
-      } catch (error) {
-        logger.warn(error, 'HTTPError JSON requestData parsing hack failed')
+      } catch (err_) {
+        logger.warn(err_, 'HTTPError JSON requestData parsing hack failed')
       }
     }
 

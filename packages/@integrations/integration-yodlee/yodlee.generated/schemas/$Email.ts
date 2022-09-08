@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $Email = {
   properties: {
     type: {
@@ -12,4 +12,4 @@ export const $Email = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

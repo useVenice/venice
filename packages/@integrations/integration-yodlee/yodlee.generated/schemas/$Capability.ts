@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $Capability = {
   properties: {
     container: {
@@ -15,4 +15,4 @@ export const $Capability = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

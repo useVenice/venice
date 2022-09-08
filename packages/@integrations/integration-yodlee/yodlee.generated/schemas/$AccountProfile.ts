@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountProfile = {
   properties: {
     identifier: {
@@ -32,4 +32,4 @@ export const $AccountProfile = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

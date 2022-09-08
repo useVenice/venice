@@ -1,3 +1,4 @@
+import type {createNodeRedisClient} from 'handy-redis'
 import {zKVStore} from '@ledger-sync/cdk-core'
 import {
   defineProxyFn,
@@ -6,7 +7,6 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-import type {createNodeRedisClient} from 'handy-redis'
 
 export const $createNodeRedisClient = defineProxyFn<
   () => typeof createNodeRedisClient

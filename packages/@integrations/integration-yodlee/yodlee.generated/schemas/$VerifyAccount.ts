@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerifyAccount = {
   properties: {
     transactionCriteria: {
@@ -16,4 +16,4 @@ export const $VerifyAccount = {
       },
     },
   },
-} as const;
+} as const

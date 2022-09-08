@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerificationRequest = {
   properties: {
     verification: {
@@ -8,4 +8,4 @@ export const $VerificationRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

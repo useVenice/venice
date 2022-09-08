@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerificationResponse = {
   properties: {
     verification: {
@@ -11,4 +11,4 @@ export const $VerificationResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

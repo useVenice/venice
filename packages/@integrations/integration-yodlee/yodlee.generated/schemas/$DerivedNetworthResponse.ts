@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DerivedNetworthResponse = {
   properties: {
     networth: {
@@ -11,4 +11,4 @@ export const $DerivedNetworthResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

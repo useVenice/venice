@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdateAccountInfo = {
   properties: {
     container: {
@@ -59,4 +59,4 @@ export const $UpdateAccountInfo = {
       maxLength: 50,
     },
   },
-} as const;
+} as const

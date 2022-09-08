@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountResponse = {
   properties: {
     account: {
@@ -11,4 +11,4 @@ export const $AccountResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

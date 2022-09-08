@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdateConsentRequest = {
   properties: {
     scopeId: {
@@ -10,4 +10,4 @@ export const $UpdateConsentRequest = {
       },
     },
   },
-} as const;
+} as const

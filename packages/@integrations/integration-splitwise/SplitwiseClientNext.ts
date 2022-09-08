@@ -1,7 +1,7 @@
-import type {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
-import {zExpensesParams} from './splitwise-schema'
 import type {HTTPError} from '@ledger-sync/util'
 import {createHTTPClient, OAuth2Client, z, zFunction} from '@ledger-sync/util'
+import type {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
+import {zExpensesParams} from './splitwise-schema'
 
 const zSplitwiseConfig = z.object({
   baseURL: z.string().nullish(),

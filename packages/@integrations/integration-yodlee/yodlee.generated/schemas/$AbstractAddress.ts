@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AbstractAddress = {
   properties: {
     zip: {
@@ -25,4 +25,4 @@ export const $AbstractAddress = {
       type: 'string',
     },
   },
-} as const;
+} as const

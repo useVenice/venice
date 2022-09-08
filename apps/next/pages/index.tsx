@@ -1,6 +1,6 @@
-import {Layout} from '../components/Layout'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
+import {Layout} from '../components/Layout'
 
 export default function HomeScreen() {
   const router = useRouter()

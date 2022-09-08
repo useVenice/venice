@@ -288,7 +288,7 @@ export const makeSyncEngine = <
             .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
         : []
 
-      if (!pipelines.length && defaultPipeline) {
+      if (pipelines.length === 0 && defaultPipeline) {
         pipelines.push(
           await zPipeline.parseAsync({
             ...defaultPipeline,

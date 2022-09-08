@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $Money = {
   properties: {
     amount: {
@@ -19,4 +19,4 @@ export const $Money = {
       type: 'Enum',
     },
   },
-} as const;
+} as const

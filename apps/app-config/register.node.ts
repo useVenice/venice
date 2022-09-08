@@ -3,12 +3,12 @@ import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
 
-import * as fs from 'fs/promises'
-import * as path from 'path'
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
 import chokidar from 'chokidar'
+import url from 'node:url'
 import {readFile} from 'read-file-safe'
 import tunnel from 'tunnel'
-import url from 'url'
 import {writeFile as _writeFile} from 'write-file-safe'
 
 import {

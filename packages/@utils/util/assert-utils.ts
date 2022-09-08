@@ -1,8 +1,8 @@
 /** Development time assertions to catch errors */
+import invariant from 'tiny-invariant'
 import {arrayEquals, sort, uniqBy} from './array-utils'
 import {identity} from './converter-utils'
 import {fastEnsureUTC} from './schrono'
-import invariant from 'tiny-invariant'
 
 /**
  * This works for now. Though we could probably write a babel plugin to remove

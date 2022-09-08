@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdateUserRequest = {
   properties: {
     user: {
@@ -8,4 +8,4 @@ export const $UpdateUserRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

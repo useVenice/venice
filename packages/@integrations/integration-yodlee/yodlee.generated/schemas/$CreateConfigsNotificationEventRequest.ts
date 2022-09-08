@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $CreateConfigsNotificationEventRequest = {
   properties: {
     event: {
@@ -8,4 +8,4 @@ export const $CreateConfigsNotificationEventRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

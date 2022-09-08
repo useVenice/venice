@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $Name = {
   properties: {
     middle: {
@@ -16,4 +16,4 @@ export const $Name = {
       type: 'string',
     },
   },
-} as const;
+} as const

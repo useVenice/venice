@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdateTransaction = {
   properties: {
     categorySource: {
@@ -33,4 +33,4 @@ export const $UpdateTransaction = {
       format: 'int64',
     },
   },
-} as const;
+} as const

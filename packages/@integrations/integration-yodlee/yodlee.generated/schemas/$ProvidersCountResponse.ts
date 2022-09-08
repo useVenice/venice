@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $ProvidersCountResponse = {
   properties: {
     provider: {
@@ -8,4 +8,4 @@ export const $ProvidersCountResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

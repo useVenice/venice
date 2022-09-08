@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $SecurityHolding = {
   properties: {
     security: {
@@ -12,4 +12,4 @@ export const $SecurityHolding = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

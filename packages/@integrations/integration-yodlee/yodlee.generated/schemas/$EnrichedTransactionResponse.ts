@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $EnrichedTransactionResponse = {
   properties: {
     enrichedTransaction: {
@@ -11,4 +11,4 @@ export const $EnrichedTransactionResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

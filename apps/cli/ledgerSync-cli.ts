@@ -4,9 +4,9 @@
 import '@ledger-sync/app-config/register.node'
 
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
-import http from 'http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
+import http from 'node:http'
 
 import type {LedgerSyncRouter} from '@ledger-sync/app-config'
 import {

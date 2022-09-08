@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $ApiKeyResponse = {
   properties: {
     apiKey: {
@@ -10,4 +10,4 @@ export const $ApiKeyResponse = {
       },
     },
   },
-} as const;
+} as const

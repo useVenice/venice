@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCategoryRequest = {
   properties: {
     parentCategoryId: {
@@ -19,4 +19,4 @@ export const $TransactionCategoryRequest = {
       minLength: 1,
     },
   },
-} as const;
+} as const

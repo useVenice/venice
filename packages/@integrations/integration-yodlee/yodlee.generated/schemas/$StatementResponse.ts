@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $StatementResponse = {
   properties: {
     statement: {
@@ -11,4 +11,4 @@ export const $StatementResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

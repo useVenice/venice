@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $HolderProfileResponse = {
   properties: {
     holderProfile: {
@@ -11,4 +11,4 @@ export const $HolderProfileResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

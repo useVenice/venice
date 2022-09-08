@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCategorizationRuleResponse = {
   properties: {
     txnRules: {
@@ -11,4 +11,4 @@ export const $TransactionCategorizationRuleResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

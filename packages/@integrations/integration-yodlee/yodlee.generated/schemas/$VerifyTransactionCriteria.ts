@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerifyTransactionCriteria = {
   properties: {
     date: {
@@ -33,4 +33,4 @@ export const $VerifyTransactionCriteria = {
       type: 'Enum',
     },
   },
-} as const;
+} as const

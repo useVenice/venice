@@ -146,7 +146,7 @@ export function cleanBeancountAccountName(name: string) {
       // Does not accept underscores even also must start witih capital case
       .replace(/[^A-Za-z0-9/]+/g, ' ')
       .trim()
-      .replace(/ /g, '-')
+      .replaceAll(' ', '-')
       .replace(/\//g, ':')
       .split(':')
       .map((n) => n.replace(/^[^A-Za-z0-9/]/, '')) // Leading `-` is not allowed
@@ -162,7 +162,7 @@ export const convAccountFullName = conv<
   forward: (fullName) => {
     const [_type, ...segments] = fullName.split(':')
     const type = _type ? convAccountType(_type) : undefined
-    const name = segments.join('/').replace(/-/g, ' ')
+    const name = segments.join('/').replaceAll('-', ' ')
     // console.log(`convAccountFullName.forward`, {type, name})
     return {type, name}
   },
@@ -729,7 +729,7 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
       if (ret && ret.variant !== 'beancount') {
         throw new Error(`Expected variant beancount, got ${ret.variant}`)
       }
-      if (ret.errors.length) {
+      if (ret.errors.length > 0) {
         console.warn('Error parsing bean string', ret.errors)
       }
       return ret

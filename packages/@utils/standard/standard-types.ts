@@ -1,9 +1,9 @@
+import type {Amount, AmountMap, Split, z} from '@ledger-sync/util'
 import type {
   zAccountType,
   zConnectionStatus,
   zReviewStatus,
 } from './standard-utils'
-import type {Amount, AmountMap, Split, z} from '@ledger-sync/util'
 
 // MARK: - Connection
 

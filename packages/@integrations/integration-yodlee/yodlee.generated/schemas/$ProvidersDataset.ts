@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $ProvidersDataset = {
   properties: {
     name: {
@@ -13,4 +13,4 @@ export const $ProvidersDataset = {
       },
     },
   },
-} as const;
+} as const

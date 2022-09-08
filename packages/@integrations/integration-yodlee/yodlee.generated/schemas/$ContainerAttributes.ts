@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $ContainerAttributes = {
   properties: {
     BANK: {
@@ -19,4 +19,4 @@ export const $ContainerAttributes = {
       type: 'TransactionDays',
     },
   },
-} as const;
+} as const

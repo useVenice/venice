@@ -1,4 +1,3 @@
-import type {MaybeArray} from './type-utils'
 import {sameValueZeroEqual} from 'fast-equals'
 import type {Comparator2, ValueIteratee} from 'lodash'
 import {
@@ -6,6 +5,7 @@ import {
   differenceBy as _differenceBy,
   differenceWith as _differenceWith,
 } from 'lodash'
+import type {MaybeArray} from './type-utils'
 
 export function nonEmpty<T>(arr: T[]) {
   if (arr.length === 0) {

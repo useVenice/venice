@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountMigrationResponse = {
   properties: {
     providerId: {
@@ -14,4 +14,4 @@ export const $AccountMigrationResponse = {
       format: 'int64',
     },
   },
-} as const;
+} as const

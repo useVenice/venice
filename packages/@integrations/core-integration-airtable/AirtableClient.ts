@@ -1,5 +1,5 @@
-import {defineProxyFn, z, zFunction} from '@ledger-sync/util'
 import type {Base, FieldSet, Records} from 'airtable'
+import {defineProxyFn, z, zFunction} from '@ledger-sync/util'
 
 export const $airtable =
   defineProxyFn<() => typeof import('airtable')>('$airtable')
@@ -39,8 +39,8 @@ export const makeAirtableClient = zFunction(
             // TODO: Need to find a way to prevent duplicate records
             // Refs:  https://community.airtable.com/t/solved-record-duplication-detection-deduping-and-duplicate-merging/340/5
             await base(titleCase(entityName)).create([data])
-          } catch (error) {
-            console.log(error)
+          } catch (err) {
+            console.log(err)
           }
         },
       ),

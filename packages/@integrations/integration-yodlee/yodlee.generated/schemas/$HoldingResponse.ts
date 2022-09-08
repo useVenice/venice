@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $HoldingResponse = {
   properties: {
     holding: {
@@ -11,4 +11,4 @@ export const $HoldingResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

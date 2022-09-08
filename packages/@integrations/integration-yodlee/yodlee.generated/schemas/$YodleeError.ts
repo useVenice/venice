@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $YodleeError = {
   properties: {
     errorMessage: {
@@ -13,4 +13,4 @@ export const $YodleeError = {
       type: 'string',
     },
   },
-} as const;
+} as const

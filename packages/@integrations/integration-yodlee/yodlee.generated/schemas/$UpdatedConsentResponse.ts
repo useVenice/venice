@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UpdatedConsentResponse = {
   properties: {
     consent: {
@@ -11,4 +11,4 @@ export const $UpdatedConsentResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

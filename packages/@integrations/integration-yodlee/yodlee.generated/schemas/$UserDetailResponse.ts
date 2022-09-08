@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UserDetailResponse = {
   properties: {
     user: {
@@ -8,4 +8,4 @@ export const $UserDetailResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

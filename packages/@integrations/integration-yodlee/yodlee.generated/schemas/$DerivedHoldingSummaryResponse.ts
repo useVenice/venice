@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DerivedHoldingSummaryResponse = {
   properties: {
     holdingSummary: {
@@ -15,4 +15,4 @@ export const $DerivedHoldingSummaryResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

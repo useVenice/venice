@@ -1,6 +1,6 @@
 import {UserImpl} from '@firebase/auth/internal'
-import {z, zFunction} from '@ledger-sync/util'
 import firebase from 'firebase/compat/app'
+import {z, zFunction} from '@ledger-sync/util'
 // TODO: Migrate to tree-shakable version 9 of firebase once we confirm
 // compat is working
 import 'firebase/compat/auth'

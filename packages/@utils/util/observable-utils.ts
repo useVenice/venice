@@ -1,7 +1,7 @@
-import {Deferred, withConcurrency} from './promise-utils'
-import type {NonVoid} from './type-utils'
 import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
+import {Deferred, withConcurrency} from './promise-utils'
+import type {NonVoid} from './type-utils'
 
 export {rxjs, Rx}
 

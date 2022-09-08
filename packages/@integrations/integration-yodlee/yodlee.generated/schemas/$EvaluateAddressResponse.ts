@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $EvaluateAddressResponse = {
   properties: {
     address: {
@@ -14,4 +14,4 @@ export const $EvaluateAddressResponse = {
       type: 'boolean',
     },
   },
-} as const;
+} as const

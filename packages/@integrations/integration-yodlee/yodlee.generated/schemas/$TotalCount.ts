@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TotalCount = {
   properties: {
     count: {
@@ -9,4 +9,4 @@ export const $TotalCount = {
       format: 'int64',
     },
   },
-} as const;
+} as const

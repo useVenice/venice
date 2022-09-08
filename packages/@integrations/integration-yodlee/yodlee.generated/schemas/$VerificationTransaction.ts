@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerificationTransaction = {
   properties: {
     amount: {
@@ -12,4 +12,4 @@ export const $VerificationTransaction = {
       isRequired: true,
     },
   },
-} as const;
+} as const

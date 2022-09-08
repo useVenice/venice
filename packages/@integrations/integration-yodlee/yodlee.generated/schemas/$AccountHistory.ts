@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $AccountHistory = {
   properties: {
     historicalBalances: {
@@ -16,4 +16,4 @@ export const $AccountHistory = {
       format: 'int64',
     },
   },
-} as const;
+} as const

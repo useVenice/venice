@@ -1,6 +1,6 @@
-import {DateTime, maxDateTime, minDateTime} from './date-utils'
 import {Settings} from 'luxon'
 import * as tzMock from 'timezone-mock'
+import {DateTime, maxDateTime, minDateTime} from './date-utils'
 
 // Warning: How would this behave if timezone is involved? Gah :(
 

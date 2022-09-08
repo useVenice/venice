@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UserRegistration = {
   properties: {
     preferences: {
@@ -25,4 +25,4 @@ export const $UserRegistration = {
       type: 'string',
     },
   },
-} as const;
+} as const

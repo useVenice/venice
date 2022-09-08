@@ -1,15 +1,15 @@
 import {
-  cleanBeancountAccountName,
-  convAccountFullName,
-  convBeanToStdJson,
-} from './beancountConverters'
-import {
   ACCOUNT_TYPES,
   makePostingsMap,
   type Standard,
 } from '@ledger-sync/standard'
 // Not sure why this is needed for ci but not locally, but cannot be bothered to find out for now
 import {A} from '@ledger-sync/util'
+import {
+  cleanBeancountAccountName,
+  convAccountFullName,
+  convBeanToStdJson,
+} from './beancountConverters'
 
 const stringSnapshotSerializer: jest.SnapshotSerializerPlugin = {
   serialize(val) {

@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $ConfigsNotificationResponse = {
   properties: {
     event: {
@@ -11,4 +11,4 @@ export const $ConfigsNotificationResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

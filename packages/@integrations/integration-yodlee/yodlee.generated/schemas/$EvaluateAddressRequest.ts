@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $EvaluateAddressRequest = {
   properties: {
     address: {
@@ -8,4 +8,4 @@ export const $EvaluateAddressRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

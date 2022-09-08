@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DocumentDownloadResponse = {
   properties: {
     document: {
@@ -11,4 +11,4 @@ export const $DocumentDownloadResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

@@ -1,8 +1,4 @@
-import {
-  businessResponseSchema,
-  makeRampClient,
-  transactionResponseItemSchema,
-} from './RampClient'
+import React from 'react'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
   ledgerSyncProviderBase,
@@ -19,7 +15,11 @@ import {
   rxjs,
   z,
 } from '@ledger-sync/util'
-import React from 'react'
+import {
+  businessResponseSchema,
+  makeRampClient,
+  transactionResponseItemSchema,
+} from './RampClient'
 
 const kRamp = 'ramp' as const
 type RampEntity = z.infer<typeof def['sourceOutputEntity']>
@@ -193,7 +193,7 @@ export const rampProvider = makeSyncProvider({
         const res2 = await client.getTransactions({
           accessToken,
           start:
-            starting_after && starting_after.length
+            starting_after && starting_after.length > 0
               ? starting_after
               : undefined,
         })

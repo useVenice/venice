@@ -1,3 +1,12 @@
+import type admin from 'firebase-admin'
+import type firebase from 'firebase/compat'
+import type {InjectionToken, PossibleDate} from '@ledger-sync/util'
+import {
+  objectKeys,
+  parseOptionalDateTime,
+  resolveDependency,
+  rxjs,
+} from '@ledger-sync/util'
 import type {
   AnyDocumentReference,
   AnyDocumentSnapshot,
@@ -16,15 +25,6 @@ import type {
   SnapshotData,
   Timestamp,
 } from './firebase-types'
-import type {InjectionToken, PossibleDate} from '@ledger-sync/util'
-import {
-  objectKeys,
-  parseOptionalDateTime,
-  resolveDependency,
-  rxjs,
-} from '@ledger-sync/util'
-import type admin from 'firebase-admin'
-import type firebase from 'firebase/compat'
 
 /** @deprecated. to be removed */
 export const kFieldPath = Symbol(

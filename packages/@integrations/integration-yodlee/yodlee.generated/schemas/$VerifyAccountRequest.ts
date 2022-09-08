@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $VerifyAccountRequest = {
   properties: {
     container: {
@@ -18,4 +18,4 @@ export const $VerifyAccountRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

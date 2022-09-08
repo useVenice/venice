@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCategorizationRuleRequest = {
   properties: {
     rule: {
@@ -8,4 +8,4 @@ export const $TransactionCategorizationRuleRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

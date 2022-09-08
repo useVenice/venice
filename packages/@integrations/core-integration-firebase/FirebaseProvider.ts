@@ -1,12 +1,4 @@
-import type {AnyQuery} from './firebase-types'
-import {
-  getPathForQuery,
-  getQueryDocumentSnapshot$,
-  getQuerySnapshot$,
-  isTimestamp,
-} from './firebase-utils'
-import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
-import {MultiBatch} from './MultiBatch'
+import firebase from 'firebase/compat/app'
 import type {AnyEntityPayload, Link, SyncOperation} from '@ledger-sync/cdk-core'
 import {handlersLink, makeSyncProvider, mergeReady} from '@ledger-sync/cdk-core'
 import {
@@ -23,7 +15,15 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-import firebase from 'firebase/compat/app'
+import type {AnyQuery} from './firebase-types'
+import {
+  getPathForQuery,
+  getQueryDocumentSnapshot$,
+  getQuerySnapshot$,
+  isTimestamp,
+} from './firebase-utils'
+import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
+import {MultiBatch} from './MultiBatch'
 
 export const $admin =
   defineProxyFn<() => typeof import('firebase-admin')>('firebase-admin')
@@ -107,7 +107,7 @@ export const firebaseProvider = makeSyncProvider({
       ...(options._queries ?? []),
       ...(options.collectionPaths ?? []).map((path) => fst.collection(path)),
     ]
-    if (!queries.length) {
+    if (queries.length === 0) {
       throw new Error('[firebase] queries missing')
     }
     console.log(

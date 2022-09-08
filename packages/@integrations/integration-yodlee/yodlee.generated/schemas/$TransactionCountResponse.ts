@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionCountResponse = {
   properties: {
     transaction: {
@@ -8,4 +8,4 @@ export const $TransactionCountResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

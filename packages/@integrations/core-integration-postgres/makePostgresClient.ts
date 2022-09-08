@@ -1,3 +1,4 @@
+import {createInterceptors} from 'slonik-interceptor-preset'
 import {
   defineProxyFn,
   isPlainObject,
@@ -6,7 +7,6 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-import {createInterceptors} from 'slonik-interceptor-preset'
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
 export const $slonikMigrator =

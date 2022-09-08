@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $HoldingTypeListResponse = {
   properties: {
     holdingType: {
@@ -11,4 +11,4 @@ export const $HoldingTypeListResponse = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

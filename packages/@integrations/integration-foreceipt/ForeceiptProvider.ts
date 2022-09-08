@@ -1,7 +1,3 @@
-import type {_parseConnectionInfo} from './foreceipt-utils'
-import {_parseAccounts} from './foreceipt-utils'
-import type {ForeceiptClientOptions} from './ForeceiptClient'
-import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {SerializedTimestamp} from '@ledger-sync/core-integration-firebase'
@@ -21,6 +17,10 @@ import {
   z,
   zCast,
 } from '@ledger-sync/util'
+import type {_parseConnectionInfo} from './foreceipt-utils'
+import {_parseAccounts} from './foreceipt-utils'
+import type {ForeceiptClientOptions} from './ForeceiptClient'
+import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
 const def = makeSyncProvider.def({

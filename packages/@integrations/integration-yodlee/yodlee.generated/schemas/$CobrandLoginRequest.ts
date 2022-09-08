@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $CobrandLoginRequest = {
   properties: {
     cobrand: {
@@ -8,4 +8,4 @@ export const $CobrandLoginRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

@@ -1,8 +1,8 @@
-import {MPDate, MPInterval} from './schrono'
 import type {Interval} from 'luxon'
 import {DateTime} from 'luxon'
 import type {Options as _RRuleOptions} from 'rrule'
 import {RRule, RRuleSet} from 'rrule'
+import {MPDate, MPInterval} from './schrono'
 
 /**
  * @deprecated. Please use schrono

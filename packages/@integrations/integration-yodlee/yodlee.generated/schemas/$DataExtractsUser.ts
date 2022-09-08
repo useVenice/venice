@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $DataExtractsUser = {
   properties: {
     loginName: {
@@ -8,4 +8,4 @@ export const $DataExtractsUser = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

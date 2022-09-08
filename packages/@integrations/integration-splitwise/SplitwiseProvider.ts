@@ -1,6 +1,3 @@
-import type {zUser} from './splitwise-schema'
-import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
-import {makeSplitwiseClient} from './SplitwiseClientNext'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
@@ -15,6 +12,9 @@ import {
   rxjs,
   z,
 } from '@ledger-sync/util'
+import type {zUser} from './splitwise-schema'
+import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
+import {makeSplitwiseClient} from './SplitwiseClientNext'
 
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
@@ -171,11 +171,11 @@ export const splitwiseProvider = makeSyncProvider({
           // For now it's easiest to get the group name
           // TODO: Need to check for the better way to get the group name
           const group_name =
-            groups.filter((a) =>
+            groups.find((a) =>
               a.name
                 .toLowerCase()
                 .includes(formatUser(t.users[0]?.user).toLowerCase()),
-            )[0]?.name || formatUser(t.users[0]?.user)
+            )?.name || formatUser(t.users[0]?.user)
           return def._opData('transaction', `${t.id}`, {
             ...t,
             group_name,

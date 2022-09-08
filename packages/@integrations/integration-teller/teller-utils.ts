@@ -1,5 +1,5 @@
-import {loadScriptOnce} from '@ledger-sync/cdk-core'
 import React from 'react'
+import {loadScriptOnce} from '@ledger-sync/cdk-core'
 
 function loadTellerConnect() {
   return new Promise((resolve) => {

@@ -1,5 +1,5 @@
-import {extractExternalId} from './import-format-utils'
 import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
+import {extractExternalId} from './import-format-utils'
 
 export class RowIdMaker {
   readonly ids = new Set<string>()

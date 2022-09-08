@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $CreatedAccountInfo = {
   properties: {
     accountName: {
@@ -17,4 +17,4 @@ export const $CreatedAccountInfo = {
       isReadOnly: true,
     },
   },
-} as const;
+} as const

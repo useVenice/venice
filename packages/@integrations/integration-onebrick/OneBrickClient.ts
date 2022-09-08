@@ -1,4 +1,3 @@
-import {inferOneBrickEnvFromToken} from './onebrick-utils'
 import {
   castIs,
   createHTTPClient,
@@ -7,6 +6,7 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
+import {inferOneBrickEnvFromToken} from './onebrick-utils'
 
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'production'])

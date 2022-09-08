@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $TransactionRequest = {
   properties: {
     transaction: {
@@ -8,4 +8,4 @@ export const $TransactionRequest = {
       isRequired: true,
     },
   },
-} as const;
+} as const

@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 export const $UserAccessToken = {
   properties: {
     accessTokens: {
@@ -10,4 +10,4 @@ export const $UserAccessToken = {
       },
     },
   },
-} as const;
+} as const
