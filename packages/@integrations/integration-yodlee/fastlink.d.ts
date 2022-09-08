@@ -1,76 +1,3 @@
-import React from 'react'
-import {toast} from 'react-hot-toast'
-
-export interface YodleeFastLinkProps {
-  envName: Yodlee.EnvName
-  fastlinkToken: string
-  providerId?: number | string
-  providerAccountId?: number | string
-  onSuccess?: (data: OnSuccessData) => void
-  onError?: (data: OnErrorData) => void
-  onClose?: (data: OnCloseData) => void
-  onEvent?: (data: unknown) => void
-}
-
-export function YodleeFastLink({
-  envName,
-  fastlinkToken,
-  providerId,
-  providerAccountId,
-  onSuccess,
-  onError,
-  onClose,
-  onEvent,
-}: YodleeFastLinkProps) {
-  console.log('[YodleeFastLink] render')
-  React.useLayoutEffect(
-    () => {
-      console.log('[YodleeFastLink] start layout effect')
-      setTimeout(() => {
-        console.log('[YodleeFastLink] setTimeout runs')
-        const options: FastLinkOpenOptions = {
-          fastLinkURL: {
-            sandbox:
-              'https://fl4.sandbox.yodlee.com/authenticate/restserver/fastlink',
-            development:
-              'https://fl4.preprod.yodlee.com/authenticate/development-75/fastlink/?channelAppName=tieredpreprod',
-            production:
-              'https://fl4.prod.yodlee.com/authenticate/production-148/fastlink/?channelAppName=tieredprod',
-          }[envName],
-          accessToken: fastlinkToken,
-          forceIframe: true,
-          params: {
-            configName: 'Aggregation',
-            ...(providerAccountId
-              ? {flow: 'edit', providerAccountId}
-              : providerId
-              ? {flow: 'add', providerId}
-              : undefined),
-          },
-          onSuccess,
-          onError,
-          onClose,
-          onEvent,
-        }
-        try {
-          console.log('[YodleeFastLink] Will open with options', options)
-          window.fastlink?.open(options, YODLEE_CONTAINER_ID)
-        } catch (err) {
-          console.error('[YodleeFastLink] Failed to open FastLink', err)
-          toast.error('Something went wrong (ERR_YODLEE_OPEN_FAIL)')
-        }
-      }, 0)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  )
-  return <div id={YODLEE_CONTAINER_ID} />
-}
-
-const YODLEE_CONTAINER_ID = 'yodlee-container'
-
-// MARK: -
-
 declare global {
   interface Window {
     fastlink?: FastLink
@@ -83,7 +10,7 @@ interface FastLink {
   close: () => unknown
 }
 
-interface FastLinkOpenOptions {
+export interface FastLinkOpenOptions {
   fastLinkURL: string
   accessToken: string
   forceIframe?: boolean
@@ -114,7 +41,14 @@ interface FastLinkOpenOptions {
   )
   onSuccess?: (data: OnSuccessData) => void
   onError?: (data: OnErrorData) => void
+  /**
+   * Aka `onCancelled`
+   * The onClose method is called to report when the FastLink application is closed
+   * by user-initiated actions. For more details, refer to the onClose(data)
+   * Method section in FastLink 4 Advanced Integration.
+   */
   onClose?: (data: OnCloseData) => void
+
   onEvent?: (data: unknown) => void
 }
 

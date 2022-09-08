@@ -1,5 +1,6 @@
 import {
   CANCELLATION_TOKEN,
+  DivContainer,
   makeSyncProvider,
   useScript,
 } from '@ledger-sync/cdk-core'
@@ -8,7 +9,6 @@ import type {Standard} from '@ledger-sync/standard'
 import type {MergeUnion} from '@ledger-sync/util'
 import {
   A,
-  Deferred,
   objectFromObject,
   parseDateTime,
   Rx,
@@ -18,6 +18,7 @@ import {
   zCast,
 } from '@ledger-sync/util'
 
+import type {FastLinkOpenOptions} from './fastlink'
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
@@ -39,7 +40,6 @@ import {
   zUserCreds,
   zYodleeId,
 } from './YodleeClient'
-import {YodleeFastLink} from './YodleeFastLink'
 
 const zSettings = zUserCreds.extend({
   /** Used to be _id */
@@ -213,56 +213,78 @@ export const yodleeProvider = makeSyncProvider({
   },
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
+    const YODLEE_CONTAINER_ID = 'yodlee-container'
     console.log('[yodlee] useConnectHook')
-    return async ({accessToken}, {envName, institutionId}) => {
-      console.log('[yodlee] connect', {accessToken, envName, institutionId})
+
+    const parseExtId = (id: string | undefined | null) =>
+      zYodleeId
+        .optional()
+        .parse<'typed'>((id && splitPrefixedId(id)[2]) || undefined)
+
+    return async ({accessToken}, {envName, institutionId, connectionId}) => {
+      const providerId = parseExtId(institutionId)
+      const providerAccountId = parseExtId(connectionId)
+      console.log('[yodlee] connect', {
+        accessToken,
+        envName,
+        providerId,
+        providerAccountId,
+      })
       await loaded
 
       console.log('[yodlee] script loaded, will open dialog')
 
       return new Promise((resolve, reject) => {
-        scope.openDialog(
-          ({hide}) =>
-            YodleeFastLink({
-              envName,
-              fastlinkToken: `Bearer ${accessToken.accessToken}`,
-              providerId: zYodleeId
-                .optional()
-                .parse<'typed'>(
-                  (institutionId && splitPrefixedId(institutionId)[2]) ||
-                    undefined,
-                ),
-              // providerAccountId: '',
-              onSuccess: (data) => {
-                console.debug('[yodlee] Did receive successful response', data)
-                hide()
-                resolve({
-                  providerAccountId: data.providerAccountId,
-                  providerId: data.providerId,
-                })
-              },
-              onError: (_data) => {
-                const data = _data as MergeUnion<typeof _data>
-                console.warn('[yodlee] Did receive an error', data)
-                hide()
-                reject(new Error(data.reason ?? data.message))
-              },
-              onClose: (data) => {
-                console.debug('[yodlee] Did close', data)
-                hide()
-                reject(CANCELLATION_TOKEN)
-              },
-              onEvent: (data) => {
-                console.log('[yodlee] event', data)
-              },
-            }),
-          {
-            onHidden: () => {
-              window.fastlink?.close() // is this a noop if we are closed?
-              console.log('onHidden')
+        scope.openDialog(({hide}) => {
+          const openOptions: FastLinkOpenOptions = {
+            fastLinkURL: {
+              sandbox:
+                'https://fl4.sandbox.yodlee.com/authenticate/restserver/fastlink',
+              development:
+                'https://fl4.preprod.yodlee.com/authenticate/development-75/fastlink/?channelAppName=tieredpreprod',
+              production:
+                'https://fl4.prod.yodlee.com/authenticate/production-148/fastlink/?channelAppName=tieredprod',
+            }[envName],
+            accessToken: `Bearer ${accessToken.accessToken}`,
+            forceIframe: true,
+            params: {
+              configName: 'Aggregation',
+              ...(providerAccountId
+                ? {flow: 'edit', providerAccountId}
+                : providerId
+                ? {flow: 'add', providerId}
+                : undefined),
             },
-          },
-        )
+            onSuccess: (data) => {
+              console.debug('[yodlee] Did receive successful response', data)
+              hide()
+              resolve({
+                providerAccountId: data.providerAccountId,
+                providerId: data.providerId,
+              })
+            },
+            onError: (_data) => {
+              const data = _data as MergeUnion<typeof _data>
+              console.warn('[yodlee] Did receive an error', data)
+              hide()
+              reject(new Error(data.reason ?? data.message))
+            },
+            onClose: (data) => {
+              console.debug('[yodlee] Did close', data)
+              hide()
+              reject(CANCELLATION_TOKEN)
+            },
+            onEvent: (data) => {
+              console.log('[yodlee] event', data)
+            },
+          }
+          return DivContainer({
+            id: YODLEE_CONTAINER_ID,
+            onMount: () =>
+              window.fastlink?.open(openOptions, YODLEE_CONTAINER_ID),
+            onUnmount: () => window.fastlink?.close(),
+          })
+        })
       })
     }
   },

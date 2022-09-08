@@ -1,5 +1,6 @@
-import {Deferred} from '@ledger-sync/util'
 import React from 'react'
+
+import {Deferred} from '@ledger-sync/util'
 
 export function loadScriptOnce(src: string) {
   const cachedScript = loadScriptOnce.cache.get(src)
@@ -40,3 +41,23 @@ export function useScript(src: string) {
 }
 
 export const CANCELLATION_TOKEN = 'CANCELLED'
+
+export function DivContainer(props: {
+  id: string
+  /** Does not cause re-render */
+  onMount?: () => void
+  /** Does not cause re-render */
+  onUnmount?: () => void
+}) {
+  React.useLayoutEffect(
+    () => {
+      setTimeout(() => {
+        props.onMount?.()
+      }, 0)
+      return props.onUnmount
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+  return <div id={props.id} />
+}
