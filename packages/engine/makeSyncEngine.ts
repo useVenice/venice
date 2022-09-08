@@ -193,7 +193,7 @@ export const makeSyncEngine = <
       id: int.id,
     })),
 
-    syncMetadata: zFunction(zInt.optional(), async (int) => {
+    syncMetadata: zFunction(zInt.nullish(), async (int) => {
       const ints = int ? [int] : await getDefaultIntegrations()
       const stats = await sync({
         source: rxjs.merge(

@@ -25,6 +25,8 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
 
   const insRes = trpc.useQuery(['listInstitutions', []])
 
+  const syncMeta = trpc.useMutation('syncMetadata')
+
   const connect = React.useCallback(
     async function (
       int: NonNullableOnly<IntegrationInput, 'provider'>,
@@ -58,5 +60,6 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
     integrationsRes,
     connectionsRes,
     insRes,
+    syncMeta,
   }
 }
