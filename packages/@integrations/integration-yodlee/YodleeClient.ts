@@ -14,6 +14,7 @@ import {
 
 import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
+import {createFetcher} from './YodleeFetcher'
 
 export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
@@ -142,6 +143,11 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     createOpenApiRequestFactory(http, CancelablePromise),
   )
 
+  const fetcher = createFetcher({
+    baseUrl: http.defaults.baseURL,
+    headers: http.defaults.headers,
+  })
+
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
     new AuthService({
       config: api.request.config,
@@ -169,12 +175,20 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       }),
   )
 
+  const getProvider2 = zFunction(
+    zYodleeId,
+    async (providerId) =>
+      (await fetcher.getProvider({providerId: zYodleeId.parse(providerId)}))
+        .data.provider?.[0],
+  )
+
   const client = {
     get accessToken() {
       return accessToken
     },
     generateAccessToken,
     getProvider,
+    getProvider2,
     async registerUser(user: {loginName: string; email: string}) {
       const token = await generateAccessToken(config.adminLoginName)
       return http
@@ -200,6 +214,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
           throw err
         }),
 
+    getUser2: async () => await (await fetcher.getUser({})).data.user,
     async updateUser(user: {email?: string; loginName?: string}) {
       return http
         .put<{user: Yodlee.User}>('/user', {user})

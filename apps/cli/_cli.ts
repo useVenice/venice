@@ -3,6 +3,7 @@ import type {PROVIDERS} from '@ledger-sync/app-config/env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from '@ledger-sync/app-config/env'
 
 import '@ledger-sync/app-config/register.node'
+import './fetch-polyfill'
 
 import {loadedEnv} from '@ledger-sync/app-config/register.node'
 import {

@@ -22,9 +22,11 @@
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
+    "@types/node-fetch": "2",
     "cac": "6.7.12",
     "keytar": "7.9.0",
     "micro": "9.3.5-canary.3",
-    "ngrok": "4.3.3"
+    "ngrok": "4.3.3",
+    "node-fetch": "2"
   }
 }
