@@ -1,8 +1,10 @@
-import {Layout} from '../../../components/Layout'
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
+
+import {useLedgerSync} from '@ledger-sync/engine-frontend'
+
+import {Layout} from '../../../components/Layout'
 
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
@@ -35,24 +37,23 @@ export default function LedgerMyConnectionsScreen() {
                     <div className="flex flex-col space-y-2">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={
-                          (conn as any).institution?.logo ||
-                          (conn as any).provider?.logo
-                        }
-                        alt={`"${(conn as any).institution?.name}" logo`}
+                        src={conn.institution?.logoUrl}
+                        alt={`"${conn.institution?.name}" logo`}
                         className="h-12 w-12 overflow-hidden object-contain"
                       />
 
-                      <span className="badge-outline badge uppercase">
-                        {(conn as any).envName}
-                      </span>
+                      <div className="flex-row gap-4">
+                        <span className="badge-outline badge uppercase">
+                          {conn.institution?.envName}
+                        </span>
+                        <span>{conn.id}</span>
+                      </div>
                     </div>
                   </div>
 
                   <div className="flex justify-between space-x-4">
                     <span className="text-xl font-medium">
-                      {(conn as any).institution?.name ||
-                        (conn as any).provider?.name}
+                      {conn.displayName}
                     </span>
 
                     <div className="flex items-center space-x-2 text-sm text-green-600">

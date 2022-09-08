@@ -309,11 +309,9 @@ export function makeSyncProvider<
   TMappers extends _opt<{
     institution?: (
       data: T['_types']['institutionData'],
-      config: T['_types']['integrationConfig'],
     ) => Omit<StandardInstitution, 'id'>
     connection: (
       settings: T['_types']['connectionSettings'],
-      config: T['_types']['integrationConfig'],
     ) => StandardConnection
   }>,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods

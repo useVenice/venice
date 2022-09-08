@@ -189,11 +189,23 @@ export const yodleeProvider = makeSyncProvider({
       name: ins.name ?? `<${ins.id}>`,
       envName: ins._envName,
     }),
-    connection: (settings) => ({
-      id: `${settings.providerAccountId}`,
-      displayName:
-        settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
-    }),
+    connection(settings) {
+      return {
+        id: `${settings.providerAccountId}`,
+        displayName:
+          settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
+        institution: settings.provider
+          ? {
+              // TODO: Figure out how not to repeat ourselves here...
+              ...this.institution!({
+                ...settings.provider,
+                _envName: settings.envName,
+              }),
+              id: `ins_yodlee_${settings.provider.id}`, // Need to fix me...
+            }
+          : undefined,
+      }
+    },
   },
   preConnect: async (config, {envName, ledgerId}) => {
     const loginName = ledgerId

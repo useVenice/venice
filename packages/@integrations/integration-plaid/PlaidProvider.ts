@@ -17,18 +17,8 @@ import {
   makePostingsMap,
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
-import type {
-  RequiredOnly} from '@ledger-sync/util';
-import {
-  A,
-  Deferred,
-  R,
-  RateLimit,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-} from '@ledger-sync/util'
+import type {RequiredOnly} from '@ledger-sync/util'
+import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
   getPlaidAccountBalance,
@@ -49,8 +39,6 @@ const def = makeSyncProvider.def({
     clientName: z.string().max(30),
   }),
   connectionSettings: z.object({
-    // Do we need this field? Or should it be computed based on connId?
-    // Making this nullish for now because zConn is used for SyncInput too...
     itemId: z.string().nullish(),
     accessToken: z.string(),
     institution: zCast<plaid.Institution | undefined>(),
@@ -142,13 +130,26 @@ export const plaidProvider = makeSyncProvider({
   // Should this run at runtime rather than sync time? That way we don't have to
   // keep resyncing the 10k institutions from Plaid to make this happen...
   standardMappers: {
-    connection: () => ({}),
     institution: (ins) => ({
       name: ins.name,
       logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,
       envName: undefined,
     }),
+    connection(settings) {
+      return {
+        id: `${settings.itemId}`,
+        displayName: settings.institution?.name ?? '',
+        institution: settings.institution
+          ? {
+              // TODO: Figure out how not to repeat ourselves here...
+              ...this.institution!(settings.institution),
+              id: `ins_plaid_${settings.institution.institution_id}`, // Need to fix me...
+              envName: inferPlaidEnvFromToken(settings.accessToken),
+            }
+          : undefined,
+      }
+    },
   },
   preConnect: (config, {envName, ledgerId}) =>
     makePlaidClient(config)
@@ -287,9 +288,22 @@ export const plaidProvider = makeSyncProvider({
       const {accessToken} = settings
       const accountIds = options.accountIds?.length ? options.accountIds : null
       const {item, status} = await client.itemGet(accessToken)
+
+      const institution = item.institution_id
+        ? await client
+            .institutionsGetById(inferPlaidEnvFromToken(accessToken), {
+              institution_id: item.institution_id,
+              country_codes: ['US'],
+              options: {include_optional_metadata: true},
+            })
+            .then((r) => r.institution)
+        : undefined
+
       const {item_id: itemId} = item
       yield [
-        def._opConn(itemId, {settings: {item, status, itemId, accessToken}}),
+        def._opConn(itemId, {
+          settings: {item, status, itemId, accessToken, institution},
+        }),
       ]
 
       // Sync accounts

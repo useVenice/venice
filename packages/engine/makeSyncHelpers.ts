@@ -284,6 +284,7 @@ export function makeSyncHelpers<
     })
 
   return {
+    providerMap,
     zProvider,
     zInt: zInt as unknown as z.ZodType<
       z.output<typeof zInt>,

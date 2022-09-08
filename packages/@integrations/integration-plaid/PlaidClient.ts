@@ -1,12 +1,3 @@
-import {inferPlaidEnvFromToken} from './plaid-utils'
-import {
-  castIs,
-  getDefaultProxyAgent,
-  memoize,
-  z,
-  zCast,
-  zFunction,
-} from '@ledger-sync/util'
 import type {
   AccountsGetRequest,
   InstitutionsGetByIdRequest,
@@ -23,6 +14,17 @@ import {
   PlaidEnvironments,
   Products,
 } from 'plaid'
+
+import {
+  castIs,
+  getDefaultProxyAgent,
+  memoize,
+  z,
+  zCast,
+  zFunction,
+} from '@ledger-sync/util'
+
+import {inferPlaidEnvFromToken} from './plaid-utils'
 
 type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
@@ -59,8 +61,7 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
     return new PlaidApi(configuration)
   })
 
-  const fromToken = (token: string) =>
-    fromEnv(inferPlaidEnvFromToken(token) ?? undefined)
+  const fromToken = (token: string) => fromEnv(inferPlaidEnvFromToken(token))
 
   const getData = <T>(r: {data: T}) => r.data
 

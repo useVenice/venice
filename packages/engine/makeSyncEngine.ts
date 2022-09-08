@@ -6,12 +6,12 @@ import type {
   InsId,
   KVStore,
   Link,
-  LinkFactory,
-} from '@ledger-sync/cdk-core'
+  LinkFactory} from '@ledger-sync/cdk-core';
 import {
   handlersLink,
   makeCoreId,
   zConnectContext,
+  zStandardConnection,
   zStandardInstitution,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
@@ -82,13 +82,19 @@ export const makeSyncEngine = <
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {zInt, zConn, zPipeline, metaStore, getDefaultIntegrations} =
-    makeSyncHelpers({
-      providers,
-      kvStore,
-      defaultIntegrations,
-      defaultPipeline,
-    })
+  const {
+    zInt,
+    zConn,
+    zPipeline,
+    metaStore,
+    getDefaultIntegrations,
+    providerMap,
+  } = makeSyncHelpers({
+    providers,
+    kvStore,
+    defaultIntegrations,
+    defaultPipeline,
+  })
 
   function parsedConn(
     int: ParsedInt,
@@ -154,14 +160,16 @@ export const makeSyncEngine = <
         .map(([id, value]) => ({...value, id}))
         .filter((item) => item.id.startsWith('ins_'))
         .flatMap((item) => {
-          const res = zStandardInstitution
-            .omit({id: true})
-            .safeParse((item as any).standard)
+          const [, providerName, externalId] = splitPrefixedId(item.id)
+          const standard = providerMap[
+            providerName
+          ]?.standardMappers?.institution?.((item as any).external)
+          const res = zStandardInstitution.omit({id: true}).safeParse(standard)
+
           if (!res.success) {
             console.error('Invalid institution found', item, res.error)
             return []
           }
-          const [, providerName, externalId] = splitPrefixedId(item.id)
           return (intsByProviderName[providerName] ?? []).map((int) => ({
             ins: {...res.data, id: item.id as InsId, externalId},
             int: {id: int.id, provider: int.provider.name},
@@ -173,8 +181,10 @@ export const makeSyncEngine = <
       async ({ledgerId} = {}) => {
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
-        const stuff = await metaStore.list<[string, Record<string, unknown>]>()
-        return stuff
+        const records = await metaStore.list<
+          [string, Record<string, unknown>]
+        >()
+        return records
           .map(([id, value]) => ({...value, id}))
           .filter((item) => item.id.startsWith('conn'))
           .filter(
@@ -182,6 +192,15 @@ export const makeSyncEngine = <
               !ledgerId ||
               (item as Record<string, unknown>)['ledgerId'] === ledgerId,
           )
+          .map((item) => {
+            const [, providerName, externalId] = splitPrefixedId(item.id)
+            const standard = providerMap[
+              providerName
+            ]?.standardMappers?.connection((item as any).settings)
+            console.log('map connection', {item, standard})
+            const res = zStandardConnection.omit({id: true}).safeParse(standard)
+            return {...res.data, id: item.id, externalId}
+          })
       },
     ),
 
@@ -210,7 +229,6 @@ export const makeSyncEngine = <
                           external: op.data.entity,
                           standard: int.provider.standardMappers?.institution?.(
                             op.data.entity,
-                            int.config,
                           ),
                         },
                       },
