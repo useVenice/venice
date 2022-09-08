@@ -1,7 +1,11 @@
 import {createReactQueryHooks} from '@trpc/react'
 import React from 'react'
 
-import type {AnySyncProvider, LinkFactory} from '@ledger-sync/cdk-core'
+import type {
+  AnySyncProvider,
+  DialogConfig,
+  LinkFactory,
+} from '@ledger-sync/cdk-core'
 import type {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
 import {R} from '@ledger-sync/util'
 
@@ -34,10 +38,7 @@ export function LSProvider<
   const client = trpc.createClient({url: routerUrl})
 
   const dialogRef = React.useRef<DialogInstance>(null)
-  const [dialog, setDialog] = React.useState<{
-    Component: React.ComponentType<{hide: () => void}>
-    options?: {onHidden?: () => void}
-  } | null>(null)
+  const [dialog, setDialog] = React.useState<DialogConfig | null>(null)
 
   const hooks = R.mapToObj(config.providers, (p) => [
     p.name,
@@ -58,9 +59,9 @@ export function LSProvider<
             ref={dialogRef}
             open
             onOpenChange={(newOpen) => {
+              console.log('Dialog.onOpenChange', {newOpen})
               if (!newOpen) {
-                console.log('Will close dialog (set to null)')
-                dialog.options?.onHidden?.()
+                dialog.options?.onClose?.()
                 setDialog(null)
               }
             }}>

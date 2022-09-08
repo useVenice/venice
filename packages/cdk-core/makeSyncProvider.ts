@@ -40,13 +40,25 @@ export const zUseLedgerSyncOptions = z.object({
   ledgerId: z.string(),
 })
 
+export interface DialogConfig {
+  Component: React.ComponentType<{hide: () => void}>
+  options?: {onClose?: () => void}
+}
+
 /** TODO: Move me to client side... */
 export interface UseConnectScope {
   openDialog: (
-    render: (ctx: {hide: () => void}) => JSX.Element,
-    options?: {onHidden?: () => void},
+    Component: DialogConfig['Component'],
+    options?: DialogConfig['options'],
   ) => void
 }
+
+export type UseConnectHook<T extends AnyProviderDef> = (
+  scope: UseConnectScope,
+) => (
+  connectInput: T['_types']['connectInput'],
+  context: ConnectContextInput, // ConnectContext<T, 'frontend'>,
+) => Promise<T['_types']['connectOutput']>
 
 export type ConnectContextInput = z.input<typeof zConnectContext>
 export const zConnectContext = z.object({
@@ -316,12 +328,7 @@ export function makeSyncProvider<
       context: ConnectContextInput, // ConnectContext<T, 'backend'>,
     ) => Promise<T['_types']['connectInput']>
   >,
-  TUseConnHook extends _opt<
-    (scope: UseConnectScope) => (
-      connectInput: T['_types']['connectInput'],
-      context: ConnectContextInput, // ConnectContext<T, 'frontend'>,
-    ) => Promise<T['_types']['connectOutput']>
-  >,
+  TUseConnHook extends _opt<UseConnectHook<T>>,
   TPostConn extends _opt<
     (
       connectOutput: T['_types']['connectOutput'],

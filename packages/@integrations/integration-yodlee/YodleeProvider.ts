@@ -1,24 +1,17 @@
-import {
-  CANCELLATION_TOKEN,
-  DivContainer,
-  makeSyncProvider,
-  useScript,
-} from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
-import type {MergeUnion} from '@ledger-sync/util'
 import {
   A,
   objectFromObject,
   parseDateTime,
   Rx,
   rxjs,
-  splitPrefixedId,
   z,
   zCast,
 } from '@ledger-sync/util'
 
-import type {FastLinkOpenOptions} from './fastlink'
+import {useYodleeConnect} from './useYodleeConnect'
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
@@ -38,7 +31,6 @@ import {
   zAccessToken,
   zConfig,
   zUserCreds,
-  zYodleeId,
 } from './YodleeClient'
 
 const zSettings = zUserCreds.extend({
@@ -50,7 +42,7 @@ const zSettings = zUserCreds.extend({
   providerAccount: zProviderAccount.nullish(),
 })
 
-const def = makeSyncProvider.def({
+export const yodleeProviderDef = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('yodlee'),
   integrationConfig: zConfig,
@@ -84,7 +76,7 @@ const def = makeSyncProvider.def({
 })
 
 export const yodleeProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...ledgerSyncProviderBase(yodleeProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({
         id: `${a.id}`,
@@ -211,84 +203,9 @@ export const yodleeProvider = makeSyncProvider({
     }).generateAccessToken(loginName)
     return {accessToken}
   },
-  useConnectHook: (scope) => {
-    const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-    const YODLEE_CONTAINER_ID = 'yodlee-container'
-    console.log('[yodlee] useConnectHook')
-
-    const parseExtId = (id: string | undefined | null) =>
-      zYodleeId
-        .optional()
-        .parse<'typed'>((id && splitPrefixedId(id)[2]) || undefined)
-
-    return async ({accessToken}, {envName, institutionId, connectionId}) => {
-      const providerId = parseExtId(institutionId)
-      const providerAccountId = parseExtId(connectionId)
-      console.log('[yodlee] connect', {
-        accessToken,
-        envName,
-        providerId,
-        providerAccountId,
-      })
-      await loaded
-
-      console.log('[yodlee] script loaded, will open dialog')
-
-      return new Promise((resolve, reject) => {
-        scope.openDialog(({hide}) => {
-          const openOptions: FastLinkOpenOptions = {
-            fastLinkURL: {
-              sandbox:
-                'https://fl4.sandbox.yodlee.com/authenticate/restserver/fastlink',
-              development:
-                'https://fl4.preprod.yodlee.com/authenticate/development-75/fastlink/?channelAppName=tieredpreprod',
-              production:
-                'https://fl4.prod.yodlee.com/authenticate/production-148/fastlink/?channelAppName=tieredprod',
-            }[envName],
-            accessToken: `Bearer ${accessToken.accessToken}`,
-            forceIframe: true,
-            params: {
-              configName: 'Aggregation',
-              ...(providerAccountId
-                ? {flow: 'edit', providerAccountId}
-                : providerId
-                ? {flow: 'add', providerId}
-                : undefined),
-            },
-            onSuccess: (data) => {
-              console.debug('[yodlee] Did receive successful response', data)
-              hide()
-              resolve({
-                providerAccountId: data.providerAccountId,
-                providerId: data.providerId,
-              })
-            },
-            onError: (_data) => {
-              const data = _data as MergeUnion<typeof _data>
-              console.warn('[yodlee] Did receive an error', data)
-              hide()
-              reject(new Error(data.reason ?? data.message))
-            },
-            onClose: (data) => {
-              console.debug('[yodlee] Did close', data)
-              hide()
-              reject(CANCELLATION_TOKEN)
-            },
-            onEvent: (data) => {
-              console.log('[yodlee] event', data)
-            },
-          }
-          return DivContainer({
-            id: YODLEE_CONTAINER_ID,
-            onMount: () =>
-              window.fastlink?.open(openOptions, YODLEE_CONTAINER_ID),
-            onUnmount: () => window.fastlink?.close(),
-          })
-        })
-      })
-    }
-  },
-
+  // Without closure we get type issues in ledgerSync.config.ts, not sure why
+  // https://share.cleanshot.com/X3cQDA
+  useConnectHook: (scope) => useYodleeConnect(scope),
   postConnect: async (
     {providerAccountId, providerId},
     config,
@@ -301,7 +218,7 @@ export const yodleeProvider = makeSyncProvider({
       yodlee.getUser(),
     ])
 
-    const settings = def._type('connectionSettings', {
+    const settings = yodleeProviderDef._type('connectionSettings', {
       envName,
       loginName,
       providerAccountId,
@@ -329,10 +246,12 @@ export const yodleeProvider = makeSyncProvider({
       ])
 
       yield [
-        ...accounts.map((a) => def._opData('account', `${a.id}`, a)),
+        ...accounts.map((a) =>
+          yodleeProviderDef._opData('account', `${a.id}`, a),
+        ),
         ...holdings.map(
           // Need to check on if to use h.id or h.security.id
-          (h) => def._opData('commodity', `${h.id}`, h),
+          (h) => yodleeProviderDef._opData('commodity', `${h.id}`, h),
         ),
       ]
       // TODO(P2): How does yodlee handle pending transactions
@@ -341,12 +260,18 @@ export const yodleeProvider = makeSyncProvider({
         skipInvestmentTransactions: !SHOULD_SYNC_INVESTMENT_TRANSACTIONS,
         accountId: accounts.map((a) => a.id).join(','),
       })) {
-        yield transactions.map((t) => def._opData('transaction', `${t.id}`, t))
+        yield transactions.map((t) =>
+          yodleeProviderDef._opData('transaction', `${t.id}`, t),
+        )
       }
     }
     return rxjs
       .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+      .pipe(
+        Rx.mergeMap((ops) =>
+          rxjs.from([...ops, yodleeProviderDef._op('commit')]),
+        ),
+      )
   },
 
   metaSync: ({config}) => {
@@ -356,7 +281,9 @@ export const yodleeProvider = makeSyncProvider({
     const yodlee = makeYodleeClient(config, {role: 'admin', envName})
     return rxjs.from(yodlee.iterateInstitutions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
-      Rx.map((ins) => def._insOpData(`${ins.id}`, {...ins, _envName: envName})),
+      Rx.map((ins) =>
+        yodleeProviderDef._insOpData(`${ins.id}`, {...ins, _envName: envName}),
+      ),
     )
   },
 })
