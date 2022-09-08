@@ -8,7 +8,7 @@ import type {
 } from '@ledger-sync/util'
 
 // Consider removing this...
-import type {ConnId, EnvName, IntId} from './meta.types'
+import type {ConnId, EnvName, IntId} from './id.types'
 
 /**
  * This will be standardized over time into either

@@ -17,6 +17,7 @@ makeUlid.decodeTime = decodeTime
 export const ALPHANUMERIC_SAN_LOOKALIKES =
   '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstwxyz'
 
+// TODO: Refactor providerName out of this ...
 export function makePrefixedId<P extends string, T extends string>(
   prefix: P,
   providerName: T, // Remove dependency on this.

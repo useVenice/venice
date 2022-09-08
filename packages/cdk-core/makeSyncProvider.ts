@@ -1,8 +1,8 @@
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
-import type {EnvName} from './meta.types'
-import {makeCoreId, zEnvName, zId} from './meta.types'
+import type {EnvName} from './id.types'
+import {makeId, zEnvName, zId} from './id.types'
 import type {Destination, Source, SyncOperation} from './protocol'
 
 // MARK: - Types
@@ -195,7 +195,7 @@ function makeSyncProviderDef<
     _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
       // We don't prefix in `_opData`, should we actually prefix here?
       ...rest,
-      id: makeCoreId('conn', schemas.name.value, id),
+      id: makeId('conn', schemas.name.value, id),
       type: 'connUpdate',
     }),
     _opState: (
@@ -222,7 +222,7 @@ function makeSyncProviderDef<
       type: 'data',
       data: {
         // We don't prefix in `_opData`, should we actually prefix here?
-        id: makeCoreId('ins', schemas.name.value, id),
+        id: makeId('ins', schemas.name.value, id),
         entityName: 'institution',
         entity: insitutionData,
       },
