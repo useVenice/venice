@@ -204,6 +204,30 @@ export const yodleeProvider = makeSyncProvider({
               id: `ins_yodlee_${settings.provider.id}`, // Need to fix me...
             }
           : undefined,
+        status: (() => {
+          switch (settings.providerAccount?.status) {
+            case 'SUCCESS':
+              return 'healthy'
+            case 'USER_INPUT_REQUIRED':
+              return 'disconnected'
+            case 'FAILED':
+              // Venmo refresh seems to run into this issue
+              if (
+                settings.providerAccount.dataset[0]?.updateEligibility ===
+                'ALLOW_UPDATE_WITH_CREDENTIALS'
+              ) {
+                return 'disconnected'
+              }
+              return 'error'
+            // TODO: Handle these three situations
+            case 'IN_PROGRESS':
+            case 'LOGIN_IN_PROGRESS':
+            case 'PARTIAL_SUCCESS':
+              return 'healthy'
+            default:
+              return undefined
+          }
+        })(),
       }
     },
   },

@@ -115,9 +115,21 @@ export const zStandardInstitution = z.object({
 
 export type StandardConnection = z.infer<typeof zStandardConnection>
 export const zStandardConnection = z.object({
-  id: z.string().nullish(),
+  id: z.string().nullish(), // FIXME: This is not optional...
   displayName: z.string().nullish(),
   institution: zStandardInstitution.optional(),
+  /**
+   * This correspond to the connection status.
+   * Pipeline shall have a separate syncStatus */
+  status: z
+    .enum([
+      'healthy', // Connected and all is well
+      'disconnected', // User intervention needed to reconnect
+      'error', // System error, nothing user can do. This would also include revoked
+      'manual', // This is a manual connection (e.g. import. So normal status does not apply)
+    ])
+    .nullish(), // Status unknown
+  statusMessage: z.string().nullish(),
 })
 
 export type WebhookInput = z.infer<typeof zWebhookInput>

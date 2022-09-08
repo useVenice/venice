@@ -1,4 +1,5 @@
 import type * as plaid from 'plaid'
+import type {PlaidError} from 'plaid'
 import React from 'react'
 import type {
   PlaidAccount as PlaidLinkAccount,
@@ -137,6 +138,7 @@ export const plaidProvider = makeSyncProvider({
       envName: undefined,
     }),
     connection(settings) {
+      const err = settings.item?.error as PlaidError | null
       return {
         id: `${settings.itemId}`,
         displayName: settings.institution?.name ?? '',
@@ -148,6 +150,13 @@ export const plaidProvider = makeSyncProvider({
               envName: inferPlaidEnvFromToken(settings.accessToken),
             }
           : undefined,
+        status:
+          err?.error_code === 'ITEM_LOGIN_REQUIRED'
+            ? 'disconnected'
+            : err
+            ? 'error'
+            : 'healthy',
+        statusMessage: err?.error_message,
       }
     },
   },

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
+import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 
@@ -56,9 +57,19 @@ export default function LedgerMyConnectionsScreen() {
                       {conn.displayName}
                     </span>
 
-                    <div className="flex items-center space-x-2 text-sm text-green-600">
+                    <div
+                      className={twMerge(
+                        'flex items-center space-x-2 text-sm',
+                        conn.status === 'healthy'
+                          ? ' text-green-600'
+                          : conn.status === 'disconnected'
+                          ? 'text-orange-600'
+                          : conn.status === 'error'
+                          ? 'text-red-600'
+                          : '',
+                      )}>
                       <Circle weight="fill" />
-                      <span>Active</span>
+                      <span>{conn.status}</span>
                     </div>
                   </div>
                 </div>
