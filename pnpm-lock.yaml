@@ -67,6 +67,7 @@ importers:
       eslint-plugin-jest: 27.0.1
       eslint-plugin-jest-formatting: 3.1.0
       eslint-plugin-promise: 6.0.1
+      eslint-plugin-sql: 2.2.1
       eslint-plugin-tailwindcss: 3.6.1
       eslint-plugin-unicorn: 43.0.2
       husky: 8.0.1
@@ -79,6 +80,7 @@ importers:
       postgraphile: 4.12.11
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18
+      prettier-plugin-sql: 0.12.1
       tsx: 3.9.0
       typescript: 4.8.2
     devDependencies:
@@ -100,6 +102,7 @@ importers:
       eslint-plugin-jest: 27.0.1_i5cbjflh3cetjxoewo6bhmjucy
       eslint-plugin-jest-formatting: 3.1.0_eslint@8.23.0
       eslint-plugin-promise: 6.0.1_eslint@8.23.0
+      eslint-plugin-sql: 2.2.1_eslint@8.23.0
       eslint-plugin-tailwindcss: 3.6.1
       eslint-plugin-unicorn: 43.0.2_eslint@8.23.0
       husky: 8.0.1
@@ -112,6 +115,7 @@ importers:
       postgraphile: 4.12.11
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18_prettier@2.7.1
+      prettier-plugin-sql: 0.12.1_prettier@2.7.1
       tsx: 3.9.0
       typescript: 4.8.2_5eymtkfhh4duhys6jj5r56cgu4
 
@@ -4001,6 +4005,11 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /astring/1.8.3:
+    resolution: {integrity: sha512-sRpyiNrx2dEYIMmUXprS8nlpRg2Drs8m9ElX9vVEXaCB4XEAJhKfs7IcX0IwShjuOAjLR6wzIrgoptz1n19i1A==}
+    hasBin: true
+    dev: true
+
   /async-retry/1.3.3:
     resolution: {integrity: sha512-wfr/jstw9xNi/0teMHrRW7dsz3Lt5ARhYNZ2ewpadnhaIp5mbALhOAP+EAdsC7t4Z6wqsDVv9+W6gm1Dk9mEyw==}
     dependencies:
@@ -4208,7 +4217,6 @@ packages:
   /big-integer/1.6.51:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
     engines: {node: '>=0.6'}
-    dev: false
 
   /big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
@@ -6020,6 +6028,22 @@ packages:
       resolve: 2.0.0-next.4
       semver: 6.3.0
       string.prototype.matchall: 4.0.7
+    dev: true
+
+  /eslint-plugin-sql/2.2.1_eslint@8.23.0:
+    resolution: {integrity: sha512-e5BaUYZfl3xd6428KW5De/dofhAnitdI3Zu4matpRSg5+swDpAWHKfwLI4rltWmL/XuyB6+LnfvGSjyPf1E62w==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      eslint: '>=8.1.0'
+    dependencies:
+      astring: 1.8.3
+      debug: 4.3.4
+      eslint: 8.23.0
+      lodash: 4.17.21
+      pg-formatter: 1.3.0
+      sql-parse: 0.1.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /eslint-plugin-tailwindcss/3.6.1:
@@ -9265,6 +9289,13 @@ packages:
     resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==}
     dev: true
 
+  /node-sql-parser/4.5.0:
+    resolution: {integrity: sha512-PlfkkCZHXQ/SxdhS6GT5p+UC6w45QifecPH4bE6+BNHeHvqCbP2Q4faSdxFhS2EPRjK3Gg4E55Jgei4i06+UGw==}
+    engines: {node: '>=8'}
+    dependencies:
+      big-integer: 1.6.51
+    dev: true
+
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
     dependencies:
@@ -9711,7 +9742,6 @@ packages:
     dependencies:
       shell-quote: 1.7.3
       yargs: 17.5.1
-    dev: false
 
   /pg-int8/1.0.1:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
@@ -10147,6 +10177,18 @@ packages:
     dependencies:
       prettier: 2.7.1
       sort-package-json: 1.57.0
+    dev: true
+
+  /prettier-plugin-sql/0.12.1_prettier@2.7.1:
+    resolution: {integrity: sha512-2z0pMmQEC61Xywerw2FJFpEIaA9lJUjB5mj+9dfRU8HkU7iICFrIizpMjSSDMoGkhh5W+IRROVgLlgRdpphI7g==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      prettier: ^2.0.0
+    dependencies:
+      node-sql-parser: 4.5.0
+      prettier: 2.7.1
+      sql-formatter: 10.6.0
+      tslib: 2.4.0
     dev: true
 
   /prettier/2.7.1:
@@ -11376,6 +11418,19 @@ packages:
 
   /sprintf-js/1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  /sql-formatter/10.6.0:
+    resolution: {integrity: sha512-JJ8Hzz0DvucqOq+OGjJIUm8wqkh5BDBOfqG5hMiTUtoA9dlAHaG+E1nG1zNPPXkdltN3UnwXkWvQ3mTpWVISUg==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+      nearley: 2.20.1
+    dev: true
+
+  /sql-parse/0.1.5:
+    resolution: {integrity: sha512-e2ExBX6iDHoCDC1zN2NvZV49UMhKVLvvwrDjzSVHFS3TKHKtIpl2nMDQkdlbTjDVvf2bxRYBq9iXAAMZvZpGVA==}
+    engines: {node: '>=0.10'}
+    dev: true
 
   /ssf/0.11.2:
     resolution: {integrity: sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==}

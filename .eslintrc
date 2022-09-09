@@ -17,7 +17,8 @@
     "eslint-comments",
     "promise",
     "tailwindcss",
-    "unicorn"
+    "unicorn",
+    "sql"
   ],
   "extends": [
     "next/core-web-vitals",

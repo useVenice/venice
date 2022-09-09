@@ -16,7 +16,7 @@
     "base64url": "3.0.1",
     "bintrees": "1.0.2",
     "chroma-js": "2.4.2",
-    "chrono-node": "2.4.1",
+    "chrono-node": "2.3.8",
     "data-forge": "1.9.6",
     "decimal.js": "10.4.0",
     "fast-copy": "2.1.3",
