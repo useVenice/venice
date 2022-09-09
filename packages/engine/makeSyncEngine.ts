@@ -32,8 +32,8 @@ import type {
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
-} from './makeSyncHelpers'
-import {makeSyncHelpers} from './makeSyncHelpers'
+} from './makeSyncParsers'
+import {makeSyncParsers} from './makeSyncParsers'
 import {sync} from './sync'
 
 export {type inferProcedureInput} from '@trpc/server'
@@ -82,25 +82,48 @@ export const makeSyncEngine = <
   metaService: MetaService,
 ) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
-
+  const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const metaLinks = makeMetaLinks(metaService)
 
+  const defaultIntegrationInputs = Array.isArray(defaultIntegrations)
+    ? defaultIntegrations
+    : R.toPairs(defaultIntegrations ?? {}).map(
+        ([name, config]): IntegrationInput => ({
+          provider: name,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          config: config as any,
+          // TODO: Re-enable me when providers are no longer being constructed client side...
+          // Perhaps validating the default pipeline also
+          // config:
+          //   providerMap[name]?.def.integrationConfig?.parse(config, {
+          //     errorMap: () => ({
+          //       message: `[${name}] Error parsing provider config`,
+          //     }),
+          //   }) ?? config,
+        }),
+      )
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {
-    zInt,
-    zConn,
-    zPipeline,
-    zConnectContext,
-    getDefaultIntegrations,
-    providerMap,
-  } = makeSyncHelpers(
-    {
-      providers,
-      defaultIntegrations,
-      defaultPipeline,
-    },
+  const {zInt, zConn, zPipeline, zConnectContext} = makeSyncParsers({
+    providers,
+    defaultPipeline,
+    getDefaultConfig: (name, id) =>
+      defaultIntegrationInputs.find(
+        (i) => (id && i.id === id) || i.provider === name,
+      )?.config,
     metaService,
-  )
+  })
+
+  const getDefaultIntegrations = async () =>
+    Promise.all(
+      defaultIntegrationInputs.map((input) =>
+        zInt.parseAsync(input).catch((err) => {
+          console.error('Error initialzing', input, err)
+          throw new Error(
+            `Error initializing integration ${input.id} ${input.provider}`,
+          )
+        }),
+      ),
+    )
 
   function parsedConn(
     int: ParsedInt,
@@ -364,6 +387,8 @@ export const makeSyncEngine = <
     }),
   }
 
+  // TODO: Figure out how to decouple makeRouter from here once we can figure
+  // out how the types work...
   const makeRouter = () => trpc.router()
 
   // This is a single function for now because we can't figure out how to type

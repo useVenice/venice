@@ -12,6 +12,8 @@ import {zId} from './id.types'
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
+// MARK: - Standard types
+
 export type ZStandard = {
   [k in keyof typeof zStandard]: z.infer<typeof zStandard[k]>
 }
@@ -47,6 +49,8 @@ export const zStandard = {
 
 // TODO: Make the Input types compatible with our raw types...
 
+// MARK: - Raw types
+
 export type ZRaw = {
   [k in keyof typeof zRaw]: z.infer<typeof zRaw[k]>
 }
@@ -73,6 +77,9 @@ export const zRaw = {
     sourceOptions: zJsonObject.optional(),
     destinationId: zId('conn').optional(),
     destinationOptions: zJsonObject.optional(),
+    links: z
+      .array(z.union([z.string(), z.tuple([z.string(), z.unknown()])]))
+      .nullish(),
   }),
   institution: z.object({
     id: zId('ins'),

@@ -2,20 +2,33 @@ import type {
   AnyEntityPayload,
   AnySyncProvider,
   ConnectContext,
-  ConnId,
   Destination,
-  IntId,
+  Id,
   LinkFactory,
   MetaService,
   PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
+import {zRaw} from '@ledger-sync/cdk-core'
 import {zId} from '@ledger-sync/cdk-core'
 import {zConnectContextInput} from '@ledger-sync/cdk-core'
 import type {JsonObject} from '@ledger-sync/util'
 import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
 import type {SyncEngineConfig} from './makeSyncEngine'
+
+export const zInput = (() => {
+  const integration = zRaw.integration.partial({id: true})
+  const connection = zRaw.connection.partial({id: true}).extend({
+    integration: integration.optional(),
+  })
+  const pipeline = zRaw.pipeline.partial({id: true}).extend({
+    source: connection,
+    destination: connection,
+    watch: z.boolean().optional(),
+  })
+  return {integration, connection, pipeline}
+})()
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
@@ -24,7 +37,7 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
     ? {
-        id?: IntId<T['name']>
+        id?: Id<T['name']>['int']
         provider?: T['name']
         config?: Partial<_inferInput<T['def']['integrationConfig']>>
       }
@@ -34,8 +47,8 @@ export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
 export type ConnectionInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
     ? Omit<IntegrationInput<T>, 'id'> & {
-        id?: ConnId<T['name']>
-        integrationId?: IntId<T['name']>
+        id?: Id<T['name']>['conn']
+        integrationId?: Id<T['name']>['int']
         settings?: Partial<_inferInput<T['def']['connectionSettings']>>
         _source$?: Source<T['def']['_types']['sourceOutputEntity']>
         _destination$$?: Destination<
@@ -72,69 +85,37 @@ export interface PipelineInput<
 
 // Consider adding connectContextInput here...
 
-export type ParsedConn = z.infer<ReturnType<typeof makeSyncHelpers>['zConn']>
-export type ParsedInt = z.infer<ReturnType<typeof makeSyncHelpers>['zInt']>
+export type ParsedConn = z.infer<ReturnType<typeof makeSyncParsers>['zConn']>
+export type ParsedInt = z.infer<ReturnType<typeof makeSyncParsers>['zInt']>
 export type ParsedPipeline = z.infer<
-  ReturnType<typeof makeSyncHelpers>['zPipeline']
+  ReturnType<typeof makeSyncParsers>['zPipeline']
 >
 
-export function makeSyncHelpers<
+export function makeSyncParsers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->(
-  {
-    providers,
-    linkMap,
-    defaultIntegrations: _defaultIntegrations,
-    defaultPipeline,
-  }: Pick<
-    SyncEngineConfig<TProviders, TLinks>,
-    'providers' | 'linkMap' | 'defaultIntegrations' | 'defaultPipeline'
-  >,
-  m: MetaService, // Destructure can cause dependencies to be loaded...
-) {
+>({
+  providers,
+  linkMap,
+  defaultPipeline,
+  getDefaultConfig,
+  metaService: m, // Destructure can cause dependencies to be loaded...
+}: Pick<
+  SyncEngineConfig<TProviders, TLinks>,
+  'providers' | 'linkMap' | 'defaultPipeline'
+> & {
+  getDefaultConfig: (
+    name: TProviders[number]['name'],
+    integrationId?: string,
+  ) => TProviders[number]['def']['_types']['integrationConfig']
+  metaService: MetaService
+}) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
-
-  const defaultIntegrationInputs = Array.isArray(_defaultIntegrations)
-    ? _defaultIntegrations
-    : R.toPairs(_defaultIntegrations ?? {}).map(
-        ([name, config]): IntegrationInput => ({
-          provider: name,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          config: config as any,
-          // TODO: Re-enable me when providers are no longer being constructed client side...
-          // config:
-          //   providerMap[name]?.def.integrationConfig?.parse(config, {
-          //     errorMap: () => ({
-          //       message: `[${name}] Error parsing provider config`,
-          //     }),
-          //   }) ?? config,
-        }),
-      )
-  const getDefaultIntegrations = async () =>
-    Promise.all(
-      defaultIntegrationInputs.map((input) =>
-        zInt.parseAsync(input).catch((err) => {
-          console.error('Error initialzing', input, err)
-          throw new Error(
-            `Error initializing integration ${input.id} ${input.provider}`,
-          )
-        }),
-      ),
-    )
-
-  const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
-    defaultIntegrationInputs.find(
-      (i) => (id && i.id === id) || i.provider === name,
-    )?.config
-
-  // TODO: Validate default integrations / destination at startup time
 
   const zProvider = z.preprocess(
     (arg) =>
-      typeof arg === 'string'
-        ? /^(int|conn)_(.+)_.+$/.exec(arg)?.[2] ?? arg
-        : arg,
+      // Use splitId here...
+      typeof arg === 'string' ? /^(int|conn)_(.+)$/.exec(arg)?.[2] ?? arg : arg,
     z
       .enum(Object.keys(providerMap) as [TProviders[number]['name']])
       .transform((name) => providerMap[name]!),
@@ -313,9 +294,6 @@ export function makeSyncHelpers<
   )
 
   return {
-    // TODO: Move these two functions out and then rename file to makeSyncInputSchemas
-    getDefaultIntegrations,
-    providerMap,
     zProvider,
     zInt: zInt as unknown as z.ZodType<
       z.output<typeof zInt>,
