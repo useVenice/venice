@@ -2,6 +2,11 @@
 -- Meta: App level
 --
 
+-- TODO: Add check guards id prefixes...
+-- TODO: Switch to the references / primary key syntax
+-- TODO: Use varchar rather than character varying to be shorter
+-- TODO: Add generated column as well as indexes on them (e.g. institution name full text search)
+
 CREATE TABLE IF NOT EXISTS "public"."integration" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   -- "standard" jsonb NOT NULL DEFAULT '{}', What should it be?
@@ -33,6 +38,7 @@ CREATE TABLE IF NOT EXISTS "public"."connection" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "ledger_id" character varying NOT NULL,
   "integration_id" character varying,
+  "institution_id" character varying,
   "env_name" character varying,
   -- "standard" jsonb NOT NULL DEFAULT '{}', What should it be?
   "settings" jsonb NOT NULL DEFAULT '{}',
@@ -40,8 +46,9 @@ CREATE TABLE IF NOT EXISTS "public"."connection" (
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_connection" PRIMARY KEY ("id"),
   CONSTRAINT "fk_integration_id" FOREIGN KEY ("integration_id")
-    REFERENCES "public"."integration"("id") ON DELETE RESTRICT
-
+    REFERENCES "public"."integration"("id") ON DELETE RESTRICT,
+  CONSTRAINT "fk_institution_id" FOREIGN KEY ("institution_id")
+    REFERENCES "public"."institution"("id") ON DELETE RESTRICT
 );
 CREATE INDEX IF NOT EXISTS connection_created_at ON connection (created_at);
 CREATE INDEX IF NOT EXISTS connection_updated_at ON connection (updated_at);

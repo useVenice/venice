@@ -1,7 +1,7 @@
 import type {NoInfer, ObjectPartialDeep} from '@ledger-sync/util'
 
 import type {Id, IDS} from './id.types'
-import type {ZMeta, zMeta} from './meta.types'
+import type {ZRaw, zRaw} from './meta.types'
 
 export interface MetaTable<
   TID extends string = string,
@@ -24,11 +24,11 @@ export interface MetaTable<
 
 export interface MetaService {
   tables: {
-    [k in keyof typeof zMeta]: MetaTable<Id[typeof IDS[k]], ZMeta[k]>
+    [k in keyof typeof zRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
   }
   // Add tables in here instead...
-  listTopInstitutions: () => Promise<ReadonlyArray<ZMeta['institution']>>
+  listTopInstitutions: () => Promise<ReadonlyArray<ZRaw['institution']>>
   findPipelines: (options: {
     connectionId: Id['conn']
-  }) => Promise<ReadonlyArray<ZMeta['pipeline']>>
+  }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
 }

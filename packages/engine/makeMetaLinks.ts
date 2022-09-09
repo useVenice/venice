@@ -1,10 +1,4 @@
-import type {
-  Id,
-  IDS,
-  MetaService,
-  MetaTable,
-  ZMeta,
-} from '@ledger-sync/cdk-core'
+import type {Id, IDS, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
 import {handlersLink} from '@ledger-sync/cdk-core'
 import type {ObjectPartialDeep} from '@ledger-sync/util'
 import {deepMerge, R} from '@ledger-sync/util'
@@ -25,7 +19,7 @@ export function makeMetaLinks(metaBase: MetaService) {
         await patch(
           'institution',
           id as Id['ins'],
-          entity as ZMeta['institution'],
+          entity as ZRaw['institution'],
         )
         // console.log(`[meta] Did update connection`, id, op.data)
         return op
@@ -77,10 +71,10 @@ export function makeMetaLinks(metaBase: MetaService) {
       },
     })
 
-  const patch = async <TTable extends keyof ZMeta>(
+  const patch = async <TTable extends keyof ZRaw>(
     tableName: TTable,
     id: Id[typeof IDS[TTable]],
-    _patch: ObjectPartialDeep<ZMeta[TTable]>,
+    _patch: ObjectPartialDeep<ZRaw[TTable]>,
   ) => {
     if (Object.keys(_patch).length === 0) {
       return

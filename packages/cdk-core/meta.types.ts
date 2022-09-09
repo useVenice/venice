@@ -47,10 +47,10 @@ export const zStandard = {
 
 // TODO: Make the Input types compatible with our raw types...
 
-export type ZMeta = {
-  [k in keyof typeof zMeta]: z.infer<typeof zMeta[k]>
+export type ZRaw = {
+  [k in keyof typeof zRaw]: z.infer<typeof zRaw[k]>
 }
-export const zMeta = {
+export const zRaw = {
   integration: z.object({
     id: zId('int'),
     config: zJsonObject.optional(),
@@ -59,6 +59,7 @@ export const zMeta = {
     id: zId('conn'),
     ledgerId: zId('ldgr').optional(),
     integrationId: zId('int').optional(),
+    institutionId: zId('ins').optional(),
     settings: zJsonObject.optional(),
     // TODO: Does envName belong in Raw layer or Standard layer?
     /** Development env often allows connection to production institutions */
@@ -79,38 +80,3 @@ export const zMeta = {
     external: zJsonObject,
   }),
 }
-
-// const test = `
-// {
-//   pipeline {
-//     id
-//     source {
-//       id
-//       integration {
-//         id
-//         provider {
-//           name
-//         }
-//       }
-//       institution {
-//         id
-//       }
-//     }
-//     sourceOptions
-
-//     destination {
-//       id
-//       integration {
-//         id
-//         provider {
-//           name
-//         }
-//       }
-//       institution {
-//         id
-//       }
-//     }
-//     destinationOptions
-//   }
-// }
-// `
