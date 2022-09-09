@@ -12,6 +12,7 @@ import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {
   corePostgresProvider,
   makePostgresKVStore,
+  makePostgresMetabase,
 } from '@ledger-sync/core-integration-postgres'
 import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {makeSyncEngine} from '@ledger-sync/engine'
@@ -130,6 +131,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     // },
   },
   kvStore: getKvStore(),
+  metaBase: makePostgresMetabase({databaseUrl: getEnv('POSTGRES_URL')}),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   routerUrl: '/api', // apiUrl?
   getLinksForPipeline: ({src, links, dest}) =>

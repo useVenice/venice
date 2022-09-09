@@ -3,7 +3,6 @@ import type {
   MaybePromise,
   NoInfer,
   ObjectPartialDeep,
-  z,
 } from '@ledger-sync/util'
 import {R, zCast} from '@ledger-sync/util'
 
@@ -46,8 +45,8 @@ export function makeMemoryKVStore<T>(): KVStore<T> {
 }
 
 export interface MetaTable<
-  TID extends string,
-  T extends Record<string, unknown>,
+  TID extends string = string,
+  T extends Record<string, unknown> = Record<string, unknown>,
 > {
   get(id: TID): Promise<T | undefined | null>
   list?(options: {
@@ -58,7 +57,7 @@ export interface MetaTable<
     limit?: number
     offset?: number
   }): Promise<readonly T[]>
-  set?(id: TID, data: T): Promise<void>
+  set(id: TID, data: T): Promise<void>
   patch?(id: TID, partial: ObjectPartialDeep<NoInfer<T>>): Promise<void>
   delete?(id: TID): Promise<void>
 }

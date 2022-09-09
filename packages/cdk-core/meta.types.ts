@@ -1,15 +1,8 @@
-import {z} from '@ledger-sync/util'
+import {z, zJsonObject} from '@ledger-sync/util'
 
 import {zId} from './id.types'
 
 // Utility types
-type JsonLiteral = boolean | null | number | string
-type Json = JsonLiteral | {[key: string]: Json} | Json[]
-const zJsonLiteral = z.union([z.string(), z.number(), z.boolean(), z.null()])
-const zJson: z.ZodSchema<Json> = z.lazy(() =>
-  z.union([zJsonLiteral, z.array(zJson), z.record(zJson)]),
-)
-const zJsonObject = z.record(zJson)
 
 // Types
 // Input type (generic, nested)
@@ -63,6 +56,9 @@ export const zMeta = {
     ledgerId: zId('ldgr').optional(),
     integrationId: zId('int').optional(),
     settings: zJsonObject.optional(),
+    // TODO: Does envName belong in Raw layer or Standard layer?
+    /** Development env often allows connection to production institutions */
+    envName: zEnvName.optional(),
     standard: zStandard.connection.omit({id: true}),
   }),
   pipeline: z.object({

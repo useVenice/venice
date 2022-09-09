@@ -11,7 +11,7 @@ import type {
 import {makeMemoryKVStore, zConnectContextInput} from '@ledger-sync/cdk-core'
 import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
-import {makeMetaStore} from './makeMetaStore'
+import {makeMetaLinks, makeMetaStore} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
@@ -80,6 +80,7 @@ export function makeSyncHelpers<
   TLinks extends Record<string, LinkFactory>,
 >({
   kvStore,
+  metaBase,
   providers,
   linkMap,
   defaultIntegrations: _defaultIntegrations,
@@ -89,6 +90,7 @@ export function makeSyncHelpers<
   | 'providers'
   | 'linkMap'
   | 'kvStore'
+  | 'metaBase'
   | 'defaultIntegrations'
   | 'defaultPipeline'
 >) {
@@ -123,6 +125,7 @@ export function makeSyncHelpers<
     )
 
   const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
+  const metaLinks = makeMetaLinks(metaBase)
 
   const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
     defaultIntegrationInputs.find(
@@ -324,5 +327,6 @@ export function makeSyncHelpers<
     zConnectContext,
     metaStore,
     getDefaultIntegrations,
+    metaLinks,
   }
 }

@@ -7,6 +7,7 @@ import type {
   KVStore,
   Link,
   LinkFactory,
+  MetaBase,
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
@@ -48,6 +49,7 @@ export interface SyncEngineConfig<
 
   /** Used to store metadata */
   kvStore: KVStore<Record<string, unknown>> | undefined
+  metaBase: MetaBase
 
   /** Base url of the router when deployed, e.g. `localhost:3000/api/ledger-sync` */
   routerUrl?: string
@@ -75,6 +77,7 @@ export const makeSyncEngine = <
 >({
   providers,
   kvStore,
+  metaBase,
   defaultPipeline,
   defaultIntegrations,
   getLinksForPipeline,
@@ -92,6 +95,7 @@ export const makeSyncEngine = <
     providerMap,
   } = makeSyncHelpers({
     providers,
+    metaBase,
     kvStore,
     defaultIntegrations,
     defaultPipeline,
