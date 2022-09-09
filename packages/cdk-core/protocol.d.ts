@@ -7,7 +7,7 @@ import type {
   rxjs,
 } from '@ledger-sync/util'
 
-// Consider removing this...
+// Consider removing this... Cuz frankly we don't need it...
 import type {EnvName, Id} from './id.types'
 
 /**
@@ -41,16 +41,20 @@ export type SyncOperation<
 > =
   | {
       type: 'connUpdate'
+      // TODO: Consider merging all the fields below into a single field
       id: Id['conn']
-      integrationId?: Id['int']
-      ledgerId?: string // Should we prefix this too? It comes from the consuming application.
-      envName?: EnvName
       settings?: ObjectPartialDeep<NoInfer<TSettings>>
+      institutionId?: Id['ins']
+      // TODO: Consider if these fields should actually exist on the operation itself
+      integrationId?: Id['int']
+      ledgerId?: Id['ldgr']
+      envName?: EnvName
     }
   | {
       type: 'stateUpdate'
       // TODO: We should separate state from options, and perhaps make state
       // less black box also, see airbyte protocol v2 for inspiration
+      // Also consider merging fields below into a single field
       sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcSyncOptions>>
       destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestSyncOptions>>
     }

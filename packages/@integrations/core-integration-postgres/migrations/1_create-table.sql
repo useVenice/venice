@@ -2,10 +2,12 @@
 -- Meta: App level
 --
 
--- TODO: Add check guards id prefixes...
--- TODO: Switch to the references / primary key syntax
--- TODO: Use varchar rather than character varying to be shorter
--- TODO: Add generated column as well as indexes on them (e.g. institution name full text search)
+
+-- TODO(p2): Add generated column as well as indexes on them (e.g. institution name full text search)
+
+-- TODO(p3): Add check guards id prefixes...
+-- TODO(p3): Switch to the references / primary key syntax
+-- TODO(p3): Use varchar rather than character varying to be shorter
 
 CREATE TABLE IF NOT EXISTS "public"."integration" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
@@ -78,7 +80,6 @@ CREATE INDEX IF NOT EXISTS pipeline_updated_at ON pipeline (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "ledger_id" character varying NOT NULL,
   "source_id" character varying, -- Intentionally no reference, may be stored in separate db
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -91,7 +92,6 @@ CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "ledger_id" character varying NOT NULL,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -104,7 +104,6 @@ CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "ledger_id" character varying NOT NULL,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',

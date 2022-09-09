@@ -267,9 +267,10 @@ export const yodleeProvider = makeSyncProvider({
     })
 
     return {
-      externalId: `${providerAccountId}`,
+      externalId: providerAccountId,
       settings,
       source$: rxjs.EMPTY,
+      externalInstitutionId: providerId,
     }
   },
 

@@ -285,6 +285,7 @@ export const plaidProvider = makeSyncProvider({
         ),
         source$,
       ),
+      externalInstitutionId: meta?.institution?.institution_id,
     }
   },
 
@@ -314,16 +315,17 @@ export const plaidProvider = makeSyncProvider({
             .then((r) => r.institution)
         : undefined
 
-      const {item_id: itemId} = item
+      const {item_id: itemId, institution_id} = item
       yield [
         def._opConn(itemId, {
           settings: {item, status, itemId, accessToken, institution},
+          institutionId: institution_id ?? undefined,
         }),
       ]
 
       // Sync accounts
       const {accounts} = await client.accountsGet({
-        access_token: settings.accessToken,
+        access_token: accessToken,
         options: {...(accountIds && {account_ids: accountIds})},
       })
       yield accounts.map((a) => def._opData('account', a.account_id, a))
@@ -332,7 +334,7 @@ export const plaidProvider = makeSyncProvider({
       let cursor = options.transactionSyncCursor ?? undefined
       while (true) {
         const res = await client.transactionsSync({
-          access_token: settings.accessToken,
+          access_token: accessToken,
           cursor,
           options: {include_personal_finance_category: true},
         })

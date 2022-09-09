@@ -44,7 +44,7 @@
       }
     ],
     "unicorn/catch-error-name": ["warn", {"name": "err"}],
-    "unicorn/consistent-destructuring": "warn",
+    "unicorn/consistent-destructuring": "warn", // Too annoying...
     "unicorn/empty-brace-spaces": "warn",
     "unicorn/error-message": "warn",
     "unicorn/escape-case": "warn",

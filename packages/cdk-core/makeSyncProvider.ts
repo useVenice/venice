@@ -1,7 +1,7 @@
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
-import type {Id} from './id.types'
+import type {ExternalId, Id} from './id.types'
 import {makeId, zId} from './id.types'
 import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
@@ -53,12 +53,17 @@ export interface ConnectContext<TSettings> {
 }
 
 // type Optional<T> = {[P in keyof T]: T[P] | undefined}
+
+/** TODO: Should this be simply the connUpdate type? but with non-optional types? */
 export interface ConnectedSource<T extends AnyProviderDef>
   extends Partial<UseLedgerSyncOptions> {
   // Should we instead use mapStandardConnection for this?
-  externalId: string
+  externalId: ExternalId
   settings: T['_types']['connectionSettings']
   source$: Source<T['_types']['sourceOutputEntity']>
+  externalInstitutionId?: ExternalId
+  /** syncConnection should be called after */
+  // triggerSync: boolean
 }
 
 export type WebhookInput = z.infer<typeof zWebhookInput>
@@ -157,11 +162,20 @@ function makeSyncProviderDef<
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
+    _opConn: (
+      id: string,
+      rest: Omit<OpConn, 'id' | 'type' | 'institutionId'> & {
+        institutionId?: string
+      },
+    ): Op => ({
       // We don't prefix in `_opData`, should we actually prefix here?
       ...rest,
       id: makeId('conn', schemas.name.value, id),
       type: 'connUpdate',
+      // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
+      institutionId: rest.institutionId
+        ? makeId('ins', schemas.name.value, rest.institutionId)
+        : undefined,
     }),
     _opState: (
       sourceSyncOptions?: OpState['sourceSyncOptions'],

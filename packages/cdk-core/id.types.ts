@@ -1,5 +1,9 @@
 import {compact, z} from '@ledger-sync/util'
 
+export type ExternalId = z.infer<typeof zExternalId>
+export const zExternalId = z.union([z.string(), z.number()])
+// .brand<'externalId'>()
+
 /** Provider independent ids */
 export const BASE_META_IDS = {
   ledger: 'ldgr', // Technicall we do not store this... Consider renaming to ownerId e.g. own_123

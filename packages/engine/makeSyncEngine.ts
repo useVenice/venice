@@ -123,7 +123,7 @@ export const makeSyncEngine = <
     cs: ConnectedSource<TProviders[number]['def']>,
   ): ParsedConn {
     return {
-      id: makeId('conn', int.provider.name, cs.externalId) as ParsedConn['id'],
+      id: makeId('conn', int.provider.name, `${cs.externalId}`),
       integration: int,
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
       // ConnectionUpdates should be synced without needing a pipeline at all...
@@ -131,11 +131,16 @@ export const makeSyncEngine = <
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
-          int.provider.def._opConn(cs.externalId, {
+          int.provider.def._opConn(`${cs.externalId}`, {
+            // TODO: These attributes should be directly passed into the metaLink
+            // rather than sent as part of the connUpdate event
             integrationId: int.id,
             settings: cs.settings,
             ledgerId: cs.ledgerId,
             envName: cs.envName,
+            institutionId: cs.externalInstitutionId
+              ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
+              : undefined,
           }),
         ),
       ),

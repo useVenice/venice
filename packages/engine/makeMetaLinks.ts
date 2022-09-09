@@ -52,7 +52,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           settings,
           envName,
           integrationId,
-          ledgerId: ledgerId as Id['ldgr'], // not sure about this realy
+          ledgerId,
         })
         return op
       },

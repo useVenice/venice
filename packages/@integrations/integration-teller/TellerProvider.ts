@@ -167,9 +167,10 @@ export const tellerProvider = makeSyncProvider({
     const source$: rxjs.Observable<TellerSyncOperation> =
       tellerProvider.sourceSync({settings, config, options: {}})
     return {
-      externalId: input.token,
+      externalId: input.token, // FIXME
       settings,
       source$,
+      externalInstitutionId: '', // FIXME
     }
   },
   sourceSync: ({settings: input, config}) => {
