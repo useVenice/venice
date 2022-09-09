@@ -30,12 +30,13 @@ import type {
 import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
 import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 
+// TODO: Can we use the `parsedConn` type here?
 export const mapStandardEntityLink = ({
-  provider,
+  integration: {provider},
   settings: initialSettings,
   id: sourceId,
 }: {
-  provider: AnySyncProvider
+  integration: {provider: AnySyncProvider}
   settings: any
   id: Id['conn'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> => {

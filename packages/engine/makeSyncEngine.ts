@@ -8,6 +8,7 @@ import type {
   MetaService,
   ZStandard,
 } from '@ledger-sync/cdk-core'
+import {extractId} from '@ledger-sync/cdk-core'
 import {
   handlersLink,
   makeId,
@@ -85,21 +86,15 @@ export const makeSyncEngine = <
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const metaLinks = makeMetaLinks(metaService)
 
+  // TODO: Re-enable me when providers are no longer being constructed client side...
+  // Perhaps validating the default pipeline also
   const defaultIntegrationInputs = Array.isArray(defaultIntegrations)
     ? defaultIntegrations
     : R.toPairs(defaultIntegrations ?? {}).map(
         ([name, config]): IntegrationInput => ({
-          provider: name,
+          id: makeId('int', name, ''), // This will end up with an ending `_` is it an issue?
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           config: config as any,
-          // TODO: Re-enable me when providers are no longer being constructed client side...
-          // Perhaps validating the default pipeline also
-          // config:
-          //   providerMap[name]?.def.integrationConfig?.parse(config, {
-          //     errorMap: () => ({
-          //       message: `[${name}] Error parsing provider config`,
-          //     }),
-          //   }) ?? config,
         }),
       )
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
@@ -108,7 +103,7 @@ export const makeSyncEngine = <
     defaultPipeline,
     getDefaultConfig: (name, id) =>
       defaultIntegrationInputs.find(
-        (i) => (id && i.id === id) || i.provider === name,
+        (i) => (id && i.id === id) || (i.id && extractId(i.id)[1] === name),
       )?.config,
     metaService,
   })
@@ -118,9 +113,7 @@ export const makeSyncEngine = <
       defaultIntegrationInputs.map((input) =>
         zInt.parseAsync(input).catch((err) => {
           console.error('Error initialzing', input, err)
-          throw new Error(
-            `Error initializing integration ${input.id} ${input.provider}`,
-          )
+          throw new Error(`Error initializing integration ${input.id} `)
         }),
       ),
     )
@@ -130,10 +123,8 @@ export const makeSyncEngine = <
     cs: ConnectedSource<TProviders[number]['def']>,
   ): ParsedConn {
     return {
-      provider: int.provider,
-      integrationId: int.id,
-      config: int.config,
       id: makeId('conn', int.provider.name, cs.externalId) as ParsedConn['id'],
+      integration: int,
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
       // ConnectionUpdates should be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
@@ -264,24 +255,30 @@ export const makeSyncEngine = <
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
-      const {src, links, dest, watch} = pipeline
+      const {source: src, links, destination: dest, watch, ...rest} = pipeline
       const source$ =
         src._source$ ??
-        src.provider.sourceSync?.(
-          R.pick(src, ['config', 'settings', 'options']),
-        )
+        src.integration.provider.sourceSync?.({
+          config: src.integration.config,
+          settings: src.settings,
+          options: rest.sourceOptions,
+        })
 
       const destination$$ =
         dest._destination$$ ??
-        dest.provider.destinationSync?.(
-          R.pick(dest, ['config', 'settings', 'options']),
-        )
+        dest.integration.provider.destinationSync?.({
+          config: dest.integration.config,
+          settings: dest.settings,
+          options: rest.destinationOptions,
+        })
 
       if (!source$) {
-        throw new Error(`${src.provider.name} is not a source`)
+        throw new Error(`${src.integration.provider.name} is not a source`)
       }
       if (!destination$$) {
-        throw new Error(`${dest.provider.name} is not a destination`)
+        throw new Error(
+          `${dest.integration.provider.name} is not a destination`,
+        )
       }
 
       await sync({
@@ -320,7 +317,7 @@ export const makeSyncEngine = <
             // Could the new connection be dest as well?
             // Should make defaultPipeline a function that accepts a connection
             // TODO: This is really not typesafe, let's fix me...
-            src: {...conn, provider: conn.provider.name},
+            src: {...conn, provider: conn.integration.provider.name},
           }),
         )
       }
@@ -328,8 +325,11 @@ export const makeSyncEngine = <
         pipelines.map((pipe) =>
           syncEngine.syncPipeline.impl({
             ...pipe,
-            src: {...pipe.src, _source$: conn._source$},
-            dest: {...pipe.dest, _destination$$: conn._destination$$},
+            source: {...pipe.source, _source$: conn._source$},
+            destination: {
+              ...pipe.destination,
+              _destination$$: conn._destination$$,
+            },
           }),
         ),
       )
@@ -367,8 +367,10 @@ export const makeSyncEngine = <
         return 'Connection Success'
       },
     ),
-    revokeConnection: zFunction(zConn, async ({provider, settings, config}) =>
-      provider.revokeConnection?.(settings, config),
+    revokeConnection: zFunction(
+      zConn,
+      async ({settings, integration: {provider, config}}) =>
+        provider.revokeConnection?.(settings, config),
     ),
     handleWebhook: zFunction([zInt, zWebhookInput], async (int, input) => {
       if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {

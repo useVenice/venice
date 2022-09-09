@@ -105,14 +105,14 @@ export default function LedgerNewConnectionScreen() {
             </RadioGroup>
 
             <div className="flex flex-col space-y-2">
-              {ls.integrationsRes.data?.map((opt) => (
+              {ls.integrationsRes.data?.map((int) => (
                 <button
-                  key={`${opt.id}-${opt.provider}`}
+                  key={`${int.id}-${int.provider}`}
                   className="h-12 rounded-lg bg-primary px-5 text-white"
                   onClick={() => {
-                    ls.connect(opt, {})
+                    ls.connect(int, {})
                   }}>
-                  {opt.id} {opt.provider}
+                  {int.id} {int.provider}
                 </button>
               ))}
             </div>

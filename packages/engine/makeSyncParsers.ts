@@ -6,28 +6,33 @@ import type {
   Id,
   LinkFactory,
   MetaService,
-  PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
+import {makeId} from '@ledger-sync/cdk-core'
+import {extractId} from '@ledger-sync/cdk-core'
 import {zRaw} from '@ledger-sync/cdk-core'
-import {zId} from '@ledger-sync/cdk-core'
 import {zConnectContextInput} from '@ledger-sync/cdk-core'
-import type {JsonObject} from '@ledger-sync/util'
 import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 export const zInput = (() => {
-  const integration = zRaw.integration.partial({id: true})
-  const connection = zRaw.connection.partial({id: true}).extend({
+  const provider = z.string().brand<'provider'>()
+  // zRaw also have a bunch of things such as ledgerId, envName, etc.
+  // Do we want to worry about those?
+  const integration = zRaw.integration
+  const connection = zRaw.connection.extend({
     integration: integration.optional(),
+    // Should never be actually passed in...
+    _source$: zCast<Source<AnyEntityPayload>>().optional(),
+    _destination$$: zCast<Destination>().optional(),
   })
-  const pipeline = zRaw.pipeline.partial({id: true}).extend({
+  const pipeline = zRaw.pipeline.extend({
     source: connection,
     destination: connection,
     watch: z.boolean().optional(),
   })
-  return {integration, connection, pipeline}
+  return {provider, integration, connection, pipeline}
 })()
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
@@ -37,8 +42,7 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
     ? {
-        id?: Id<T['name']>['int']
-        provider?: T['name']
+        id: Id<T['name']>['int']
         config?: Partial<_inferInput<T['def']['integrationConfig']>>
       }
     : never
@@ -46,10 +50,12 @@ export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
 // Is there a way to infer this? Or would that be too much?
 export type ConnectionInput<T extends AnySyncProvider = AnySyncProvider> =
   T extends AnySyncProvider
-    ? Omit<IntegrationInput<T>, 'id'> & {
-        id?: Id<T['name']>['conn']
+    ? {
+        id: Id<T['name']>['conn']
         integrationId?: Id<T['name']>['int']
+        integration?: IntegrationInput<T>
         settings?: Partial<_inferInput<T['def']['connectionSettings']>>
+        // Runtype only types... Really a hack
         _source$?: Source<T['def']['_types']['sourceOutputEntity']>
         _destination$$?: Destination<
           T['def']['_types']['destinationInputEntity']
@@ -62,16 +68,14 @@ export interface PipelineInput<
   PDest extends AnySyncProvider = AnySyncProvider,
   TLinks extends Record<string, LinkFactory> = {},
 > {
-  id?: PipeId
-  src?: PSrc extends AnySyncProvider
-    ? ConnectionInput<PSrc> & {
-        options?: Partial<_inferInput<PSrc['def']['sourceSyncOptions']>>
-      }
+  id: Id['pipe']
+  source?: PSrc extends AnySyncProvider ? ConnectionInput<PSrc> : never
+  sourceOptions?: PSrc extends AnySyncProvider
+    ? Partial<_inferInput<PSrc['def']['sourceSyncOptions']>>
     : never
-  dest?: PDest extends AnySyncProvider
-    ? ConnectionInput<PDest> & {
-        options?: Partial<_inferInput<PSrc['def']['destinationSyncOptions']>>
-      }
+  destination?: PDest extends AnySyncProvider ? ConnectionInput<PDest> : never
+  destinationOptions?: PDest extends AnySyncProvider
+    ? Partial<_inferInput<PSrc['def']['destinationSyncOptions']>>
     : never
   links?: Array<
     {
@@ -106,86 +110,56 @@ export function makeSyncParsers<
 > & {
   getDefaultConfig: (
     name: TProviders[number]['name'],
-    integrationId?: string,
+    integrationId?: Id<TProviders[number]['name']>['int'],
   ) => TProviders[number]['def']['_types']['integrationConfig']
   metaService: MetaService
 }) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
 
-  const zProvider = z.preprocess(
-    (arg) =>
-      // Use splitId here...
-      typeof arg === 'string' ? /^(int|conn)_(.+)$/.exec(arg)?.[2] ?? arg : arg,
-    z
-      .enum(Object.keys(providerMap) as [TProviders[number]['name']])
-      .transform((name) => providerMap[name]!),
+  const zProvider = zInput.provider.transform(
+    zGuard((input) => {
+      const provider =
+        providerMap[input] ?? providerMap[extractId(input as never)[1]]
+      if (!provider) {
+        throw new Error(`${input} is not a valid provider name`)
+      }
+      return provider
+    }),
   )
 
-  const zInt = z
-    .object({
-      id: zId('int').optional(),
-      provider: z.string().optional(),
-      config: z.record(z.unknown()).optional(),
-    })
-    .transform(
-      zGuard(async ({id, ...input}) => {
-        const int = id ? await m.tables.integration.get(id) : undefined
-        const provider = zProvider.parse(id ?? input.provider, {
-          path: id ? ['id'] : ['provider'],
-        })
-        const _config = deepMerge(
-          getDefaultConfig(provider.name, id),
-          int?.config,
-          input.config,
-        )
-        const config = provider.def.integrationConfig?.parse(_config, {
-          path: ['config'],
-        })
-        return {...int, id: id!, provider, config}
-      }),
-    )
+  const zInt = zInput.integration.transform(
+    zGuard(async ({id, ...input}) => {
+      const integration = await m.tables.integration.get(id)
+      const provider = zProvider.parse(id, {path: ['id']})
+      const _config = deepMerge(
+        getDefaultConfig(provider.name, id),
+        integration?.config,
+        input.config,
+      )
+      const config = provider.def.integrationConfig?.parse(_config, {
+        path: ['config'],
+      })
+      return {...integration, id, provider, config}
+    }),
+  )
 
-  const zConn = z
-    .object({
-      id: zId('conn').optional(),
-      provider: z.string().optional(),
-      config: z.record(z.unknown()).optional(),
-      integrationId: zId('int').optional(),
-      settings: z.record(z.unknown()).optional(),
-      _source$: zCast<Source<AnyEntityPayload>>().optional(),
-      _destination$$: zCast<Destination>().optional(),
-    })
-    .transform(
-      zGuard(async ({id, _source$, _destination$$, ...input}) => {
-        const conn = id ? await m.tables.connection.get(id) : undefined
-        // if (id && !conn && !input.settings) {
-        //   // not 100% correct, because provider could require no conn
-        // }
-        const {id: integrationId, ...int} = await zInt.parseAsync({
-          id: conn?.integrationId ?? input.integrationId,
-          provider: id ?? input.provider,
-          config: input.config,
-        })
-        // Id always rules in case integrationId contains a diff provider than connId
-        // Honestly we should probably throw an error if the providers are mismatching
-        const provider = id ? zProvider.parse(id) : int.provider
-
-        const settings = provider.def.connectionSettings?.parse(
-          deepMerge(conn?.settings, input.settings as JsonObject),
-          {path: ['settings']},
-        )
-        return {
-          ...conn,
-          id,
-          provider,
-          integrationId,
-          config: int.config,
-          settings,
-          _source$,
-          _destination$$,
-        }
-      }),
-    )
+  const zConn = zInput.connection.transform(
+    zGuard(async ({id, _source$, _destination$$, ...input}) => {
+      const conn = await m.tables.connection.get(id)
+      const integration = await zInt.parseAsync<'typed'>({
+        id:
+          conn?.integrationId ??
+          input.integrationId ??
+          makeId('int', extractId(id)[1], ''),
+        config: input.integration?.config,
+      })
+      const settings = integration.provider.def.connectionSettings?.parse(
+        deepMerge(conn?.settings, input.settings),
+        {path: ['settings']},
+      )
+      return {...conn, id, integration, settings, _source$, _destination$$}
+    }),
+  )
 
   const zPipeline = z
     .preprocess(
@@ -193,69 +167,56 @@ export function makeSyncParsers<
         typeof arg === 'object'
           ? deepMerge(defaultPipeline, arg)
           : arg ?? defaultPipeline,
-      z.object({
-        id: zId('pipe').nullish(),
-        src: zConn.innerType().extend({
-          options: z.record(z.unknown()).optional(),
-        }),
-        // Add default please
-        dest: zConn.innerType().extend({
-          options: z.record(z.unknown()).optional(),
-        }),
-        links: z
-          .array(z.union([z.string(), z.tuple([z.string(), z.unknown()])]))
-          .nullish(),
-        watch: z.boolean().optional(),
-      }),
+      zInput.pipeline,
     )
     .transform(
-      zGuard(
-        async ({
-          id,
-          src: {options: srcOptions, ..._src},
-          dest: {options: destOptions, ..._dest},
-          links: rawLinks,
-          ...rest
-        }) => {
-          const pipeline = id ? await m.tables.pipeline.get(id) : undefined
-          const [srcConn, destConn] = await Promise.all([
-            zConn.parseAsync(deepMerge({id: pipeline?.sourceId}, _src), {
-              path: ['src'],
-            }),
-            zConn.parseAsync(deepMerge({id: pipeline?.destinationId}, _dest), {
-              path: ['dest'],
-            }),
-          ])
-          // Validation happens inside for now
-          const links = R.pipe(
-            rawLinks ?? [],
-            R.map((l) =>
-              typeof l === 'string'
-                ? linkMap?.[l]?.(undefined)
-                : linkMap?.[l[0]]?.(l[1]),
+      zGuard(async ({id, ...input}) => {
+        const pipeline = await m.tables.pipeline.get(id)
+        const [source, destination] = await Promise.all([
+          zConn.parseAsync(
+            deepMerge({id: input.sourceId ?? pipeline?.sourceId}, input.source),
+            {path: ['source']},
+          ),
+          zConn.parseAsync(
+            deepMerge(
+              {id: input.destinationId ?? pipeline?.destinationId},
+              input.destination,
             ),
-            R.compact,
+            {path: ['destination']},
+          ),
+        ])
+        // Validation happens inside for now
+        const links = R.pipe(
+          input.links ?? pipeline?.links ?? [],
+          R.map((l) =>
+            typeof l === 'string'
+              ? linkMap?.[l]?.(undefined)
+              : linkMap?.[l[0]]?.(l[1]),
+          ),
+          R.compact,
+        )
+        const sourceOptions =
+          source.integration.provider.def.sourceSyncOptions?.parse(
+            deepMerge(pipeline?.sourceOptions, input.sourceOptions),
+            {path: ['sourceOptions']},
           )
-          const src = {
-            ...srcConn,
-            options: srcConn.provider.def.sourceSyncOptions?.parse(
-              deepMerge(pipeline?.sourceOptions, srcOptions as JsonObject),
-              {path: ['src', 'options']},
-            ),
-          }
-          const dest = {
-            ...destConn,
-            options: destConn.provider.def.destinationSyncOptions?.parse(
-              deepMerge(
-                pipeline?.destinationOptions,
-                destOptions as JsonObject,
-              ),
-              {path: ['dest', 'options']},
-            ),
-          }
-          return {...rest, id, src, links, dest}
-        },
-      ),
+
+        const destinationOptions =
+          destination.integration.provider.def.destinationSyncOptions?.parse(
+            deepMerge(pipeline?.destinationOptions, input.destinationOptions),
+            {path: ['destinationOptions']},
+          )
+        return {
+          ...pipeline,
+          id,
+          source,
+          destination,
+          links,
+          sourceOptions,
+          destinationOptions,
+          watch: input.watch, // Should this be on pipeline too?
+        }
+      }),
     )
     .refine((pipe) => {
       console.dir(

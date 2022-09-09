@@ -4,6 +4,7 @@ import type {
   ConnectContextInput,
   UseLedgerSyncOptions,
 } from '@ledger-sync/cdk-core'
+import {extractId} from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
 import type {IntegrationInput} from '@ledger-sync/engine'
 import type {NonNullableOnly} from '@ledger-sync/util'
@@ -29,40 +30,32 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
 
   const connect = React.useCallback(
     async function (
-      int: NonNullableOnly<IntegrationInput, 'provider'>,
+      int: NonNullableOnly<IntegrationInput, 'id'>,
       options: Pick<ConnectContextInput, 'institutionId' | 'connectionId'>,
     ) {
       const ctx: ConnectContextInput = {...options, envName, ledgerId}
 
       try {
-        console.log(`[useLedgerSync] ${int.provider} Will connect`)
+        console.log(`[useLedgerSync] ${int.id} Will connect`)
 
         const preConnRes = await client.mutation('preConnect', [int, ctx])
-        console.log(
-          `[useLedgerSync] ${int.provider} preConnnectRes`,
-          preConnRes,
-        )
+        console.log(`[useLedgerSync] ${int.id} preConnnectRes`, preConnRes)
 
-        const res = await hooks[int.provider]?.(preConnRes, ctx)
-        console.log(`[useLedgerSync] ${int.provider} innerConnectRes`, res)
+        const provider = extractId(int.id)[1]
+        const res = await hooks[provider]?.(preConnRes, ctx)
+        console.log(`[useLedgerSync] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
-        console.log(
-          `[useLedgerSync] ${int.provider} postConnectRes`,
-          postConRes,
-        )
+        console.log(`[useLedgerSync] ${int.id} postConnectRes`, postConRes)
 
         await connectionsRes.refetch() // Should we invalidate instead of trigger explicit refetch?
 
-        console.log(`[useLedgerSync] ${int.provider} Did connect`)
+        console.log(`[useLedgerSync] ${int.id} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
-          console.log(`[useLedgerSync] ${int.provider} Cancelled`)
+          console.log(`[useLedgerSync] ${int.id} Cancelled`)
         } else {
-          console.error(
-            `[useLedgerSync] ${int.provider} Connection failed`,
-            err,
-          )
+          console.error(`[useLedgerSync] ${int.id} Connection failed`, err)
         }
       }
     },

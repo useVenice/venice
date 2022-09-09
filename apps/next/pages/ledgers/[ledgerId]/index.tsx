@@ -3,7 +3,7 @@ import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import type {ConnId, Id} from '@ledger-sync/cdk-core'
+import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../../components/Layout'
@@ -79,8 +79,8 @@ export default function LedgerMyConnectionsScreen() {
                         <button
                           onClick={() => {
                             connect(
-                              {provider: 'plaid'}, // Need the integration id too
-                              {connectionId: conn.id as ConnId},
+                              {id: 'int_plaid_'}, // Need the integration id too
+                              {connectionId: conn.id},
                             )
                           }}>
                           Reconnect

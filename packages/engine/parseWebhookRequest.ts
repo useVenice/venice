@@ -1,7 +1,10 @@
-import type {makeSyncEngine} from './makeSyncEngine'
-import type {IntId, WebhookInput} from '@ledger-sync/cdk-core'
-import type {NonEmptyArray} from '@ledger-sync/util'
 import type {inferProcedureInput} from '@trpc/server'
+
+import type {WebhookInput} from '@ledger-sync/cdk-core'
+import {makeId} from '@ledger-sync/cdk-core'
+import type {NonEmptyArray} from '@ledger-sync/util'
+
+import type {makeSyncEngine} from './makeSyncEngine'
 
 type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
 type HandleWebhookInput = inferProcedureInput<
@@ -15,15 +18,11 @@ export function parseWebhookRequest(
   if (procedure !== 'webhook') {
     return {...req, procedure}
   }
-  const id = localId ? (`int_${provider}_${localId}` as IntId) : undefined
+  const id = makeId('int', provider, localId)
+  // Consider naming it integrationId? not sure.
   const input: HandleWebhookInput = [
-    // Consider naming it integrationId? not sure.
-    id ? {id} : {provider},
-    {
-      query: req.query,
-      headers: req.headers,
-      body: req.body,
-    },
+    {id},
+    {query: req.query, headers: req.headers, body: req.body},
   ]
   return {
     ...req,

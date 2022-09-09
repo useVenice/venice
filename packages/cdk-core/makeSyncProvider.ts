@@ -7,7 +7,7 @@ import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {Destination, Source, SyncOperation} from './protocol'
 
-// MARK: - Types
+// MARK: - Connect types (move these out...)
 
 /** TODO: Move me to client side... */
 export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
@@ -50,11 +50,6 @@ export interface ConnectContext<TSettings> {
   envName: EnvName
   institutionId?: Id['ins'] | null
   connection?: {id: Id['conn']; settings: TSettings} | null
-}
-export interface PreConnOptions<T = unknown> {
-  key: string
-  label: string
-  options: T
 }
 
 // type Optional<T> = {[P in keyof T]: T[P] | undefined}

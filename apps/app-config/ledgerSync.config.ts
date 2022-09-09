@@ -102,11 +102,11 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // TODO: support other config service such as fs later...
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   routerUrl: '/api', // apiUrl?
-  getLinksForPipeline: ({src, links, dest}) =>
-    dest.provider.name === 'beancount'
+  getLinksForPipeline: ({source, links, destination}) =>
+    destination.integration.provider.name === 'beancount'
       ? [
           ...links,
-          mapStandardEntityLink(src),
+          mapStandardEntityLink(source),
           addRemainderByDateLink, // What about just the addRemainder plugin?
           // renameAccountLink({
           //   Ramp: 'Ramp/Posted',
@@ -115,20 +115,21 @@ export const ledgerSyncConfig = makeSyncEngine.config({
           mapAccountNameAndTypeLink(),
           logLink({prefix: 'preDest', verbose: true}),
         ]
-      : dest.provider.name === 'alka'
+      : destination.integration.provider.name === 'alka'
       ? [
           ...links,
           // logLink({prefix: 'preMap'}),
-          mapStandardEntityLink(src),
+          mapStandardEntityLink(source),
           // prefixIdLink(src.provider.name),
           logLink({prefix: 'preDest'}),
         ]
       : [
           ...links,
           // logLink({prefix: 'preMapStandard', verbose: true}),
-          mapStandardEntityLink(src),
+          mapStandardEntityLink(source),
           Rx.map((op) =>
-            op.type === 'data' && dest.provider.name !== 'postgres'
+            op.type === 'data' &&
+            destination.integration.provider.name !== 'postgres'
               ? identity<typeof op>({
                   ...op,
                   data: {
@@ -147,8 +148,9 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // Default destination will have to be computed at runtime based on the current
   // user id for example. Will sort this later
   defaultPipeline: {
-    dest: {
-      provider: 'postgres',
+    id: 'pipe_TODO', // TODO: Default pipeline has got to be a function... Otherwise the `id` field makes no sense...
+    destination: {
+      id: 'conn_postgres_',
       settings: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         databaseUrl: process.env['POSTGRES_URL']!,
