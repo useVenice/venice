@@ -1,5 +1,4 @@
 import type {Amount, AmountMap, Split, z} from '@ledger-sync/util'
-
 import type {
   zAccountType,
   zConnectionStatus,

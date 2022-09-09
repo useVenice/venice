@@ -1,5 +1,4 @@
 import type {createNodeRedisClient} from 'handy-redis'
-
 import {zKVStore} from '@ledger-sync/cdk-core'
 import {
   defineProxyFn,

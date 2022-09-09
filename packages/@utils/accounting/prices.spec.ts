@@ -1,5 +1,4 @@
 import {A} from '@ledger-sync/util'
-
 import {
   _convertAmount,
   _getConversionPath,

@@ -6,7 +6,6 @@ import {
   z,
   zFunction,
 } from '@ledger-sync/util'
-
 import {inferOneBrickEnvFromToken} from './onebrick-utils'
 
 export type EnvName = z.infer<typeof zEnvName>

@@ -1,5 +1,4 @@
 import firebase from 'firebase/compat/app'
-
 import type {AnyEntityPayload, Link, SyncOperation} from '@ledger-sync/cdk-core'
 import {handlersLink, makeSyncProvider, mergeReady} from '@ledger-sync/cdk-core'
 import {
@@ -16,7 +15,6 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-
 import type {AnyQuery} from './firebase-types'
 import {
   getPathForQuery,

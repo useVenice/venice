@@ -1,5 +1,4 @@
 import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
-
 import {extractExternalId} from './import-format-utils'
 
 export class RowIdMaker {

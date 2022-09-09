@@ -13,7 +13,6 @@ module.exports = {
   ],
   importOrderCaseInsensitive: true,
   importOrderGroupNamespaceSpecifiers: true,
-  importOrderSeparation: true, // Needed to make sure register files are imported first
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [

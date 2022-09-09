@@ -5,7 +5,6 @@ import {
   differenceBy as _differenceBy,
   differenceWith as _differenceWith,
 } from 'lodash'
-
 import type {MaybeArray} from './type-utils'
 
 export function nonEmpty<T>(arr: T[]) {

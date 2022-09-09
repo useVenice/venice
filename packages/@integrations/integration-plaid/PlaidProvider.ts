@@ -7,7 +7,6 @@ import type {
   PlaidLinkOptions,
 } from 'react-plaid-link'
 import {usePlaidLink} from 'react-plaid-link'
-
 import {
   CANCELLATION_TOKEN,
   makeSyncProvider,
@@ -21,7 +20,6 @@ import {
 import type {RequiredOnly} from '@ledger-sync/util'
 import {splitPrefixedId} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-
 import {
   getPlaidAccountBalance,
   getPlaidAccountFullName,
