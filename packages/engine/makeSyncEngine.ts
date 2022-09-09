@@ -3,17 +3,17 @@ import * as trpc from '@trpc/server'
 import type {
   AnySyncProvider,
   ConnectedSource,
-  InsId,
   KVStore,
   Link,
   LinkFactory,
   MetaBase,
+  ZStandard,
 } from '@ledger-sync/cdk-core'
 import {
   handlersLink,
   makeId,
-  zStandardConnection,
-  zStandardInstitution,
+  zId,
+  zStandard,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
@@ -26,6 +26,7 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 
+import {makeMetaLinks} from './makeMetaStore'
 import type {
   IntegrationInput,
   ParsedConn,
@@ -76,7 +77,6 @@ export const makeSyncEngine = <
   TLinks extends Record<string, LinkFactory>,
 >({
   providers,
-  kvStore,
   metaBase,
   defaultPipeline,
   defaultIntegrations,
@@ -84,19 +84,20 @@ export const makeSyncEngine = <
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
+  const metaLinks = makeMetaLinks(metaBase)
+
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
   const {
     zInt,
     zConn,
     zPipeline,
     zConnectContext,
-    metaStore,
+
     getDefaultIntegrations,
     providerMap,
   } = makeSyncHelpers({
     providers,
     metaBase,
-    kvStore,
     defaultIntegrations,
     defaultPipeline,
   })
@@ -153,55 +154,50 @@ export const makeSyncEngine = <
       },
     ),
     listInstitutions: zFunction(async () => {
-      const records = await metaStore.list<[string, Record<string, unknown>]>()
+      const institutions = await metaBase.listTopInstitutions()
       const ints = await getDefaultIntegrations()
       const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
 
-      return records
-        .map(([id, value]) => ({...value, id}))
-        .filter((item) => item.id.startsWith('ins_'))
-        .flatMap((item) => {
-          const [, providerName, externalId] = splitPrefixedId(item.id)
-          const standard = providerMap[
-            providerName
-          ]?.standardMappers?.institution?.((item as any).external)
-          const res = zStandardInstitution.omit({id: true}).safeParse(standard)
+      return institutions.flatMap((ins) => {
+        const [, providerName, externalId] = splitPrefixedId(ins.id)
+        const standard = providerMap[
+          providerName
+        ]?.standardMappers?.institution?.(ins.external)
+        const res = zStandard.institution.omit({id: true}).safeParse(standard)
 
-          if (!res.success) {
-            console.error('Invalid institution found', item, res.error)
-            return []
-          }
-          return (intsByProviderName[providerName] ?? []).map((int) => ({
-            ins: {...res.data, id: item.id as InsId, externalId},
-            int: {id: int.id, provider: int.provider.name},
-          }))
-        })
+        if (!res.success) {
+          console.error('Invalid institution found', ins, res.error)
+          return []
+        }
+        return (intsByProviderName[providerName] ?? []).map((int) => ({
+          ins: {...res.data, id: ins.id, externalId},
+          int: {id: int.id, provider: int.provider.name},
+        }))
+      })
     }),
     listConnections: zFunction(
-      z.object({ledgerId: z.string().nullish()}).optional(),
+      z.object({ledgerId: zId('ldgr').nullish()}).optional(),
       async ({ledgerId} = {}) => {
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
-        const records = await metaStore.list<
-          [string, Record<string, unknown>]
-        >()
-        return records
-          .map(([id, value]) => ({...value, id}))
-          .filter((item) => item.id.startsWith('conn'))
-          .filter(
-            (item) =>
-              !ledgerId ||
-              (item as Record<string, unknown>)['ledgerId'] === ledgerId,
-          )
-          .map((item) => {
-            const [, providerName, externalId] = splitPrefixedId(item.id)
-            const standard = providerMap[
-              providerName
-            ]?.standardMappers?.connection((item as any).settings)
-            console.log('map connection', {item, standard})
-            const res = zStandardConnection.omit({id: true}).safeParse(standard)
-            return {...res.data, id: item.id, externalId}
-          })
+        const connections = await metaBase.connection.list({ledgerId})
+        // const institutions = await metaBase.institution.list({ids:})
+        return connections.map((conn) => {
+          const [, providerName, externalId] = splitPrefixedId(conn.id)
+          const standard = providerMap[
+            providerName
+          ]?.standardMappers?.connection(conn.settings)
+          console.log('map connection', {conn, standard})
+          const res = zStandard.connection.omit({id: true}).safeParse(standard)
+          return {
+            ...res.data,
+            id: conn.id,
+            externalId,
+            institution: (res.data as any).institution as
+              | ZStandard['institution']
+              | undefined,
+          }
+        })
       },
     ),
 
@@ -238,7 +234,7 @@ export const makeSyncEngine = <
               ) ?? rxjs.EMPTY,
           ),
         ),
-        destination: metaStore.institutionDestLink(),
+        destination: metaLinks.institutionDestLink(),
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
@@ -267,28 +263,28 @@ export const makeSyncEngine = <
         // Raw Source, may come from fs, firestore or postgres
         source: source$.pipe(
           // logLink({prefix: 'postSource', verbose: true}),
-          metaStore.postSourceLink(pipeline),
+          metaLinks.postSourceLink(pipeline),
         ),
         links: getLinksForPipeline?.(pipeline) ?? links,
-        // WARNING: It is insanely unclear to me why moving `metaStore.link`
+        // WARNING: It is insanely unclear to me why moving `metaLinks.link`
         // to after provider.destinationSync makes all the difference.
         // When syncing from firebase with a large number of docs,
         // we always seem to stop after 1600 or so documents.
-        // I already checked this is because metaStore.link runs a async comment
+        // I already checked this is because metaLinks.link runs a async comment
         // even delay(100) introduces issues.
         // It's worth trying to reproduce this with say a simple counter source and see if
         // it happens...
         destination: rxjs.pipe(
           destination$$,
-          metaStore.postDestinationLink(pipeline),
+          metaLinks.postDestinationLink(pipeline),
         ),
         watch,
       })
     }),
     syncConnection: zFunction(zConn, async function syncConnection(conn) {
       const pipelines = conn.id
-        ? await metaStore
-            .getPipelinesForConnection(conn.id)
+        ? await metaBase
+            .findPipelines({connectionId: conn.id})
             .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
         : []
 
@@ -371,10 +367,9 @@ export const makeSyncEngine = <
   // This is a single function for now because we can't figure out how to type
   // makeLedgerSyncNextRouter separately
   const router = routerFromZFunctionMap(makeRouter(), syncEngine)
-    .query('debug', {input: z.string(), resolve: ({input}) => input})
-    .merge('meta/', routerFromZFunctionMap(makeRouter(), metaStore))
+
   // router.createCaller().query('connectionsget')
-  return [syncEngine, router, metaStore] as const
+  return [syncEngine, router, metaBase] as const
 }
 
 /** Only purpose of this is to support type inference */

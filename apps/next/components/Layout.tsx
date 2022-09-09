@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
 
+import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 
 import {ActiveLink} from './ActiveLink'
@@ -24,7 +25,7 @@ export function Layout({
 }: LayoutProps) {
   // TODO: Sync ledgerId and currentEnv into the url
   const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: string}
+  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
 
   const {syncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
   return (

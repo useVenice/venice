@@ -1,14 +1,8 @@
-import type {
-  EntityPayload,
-  EntityPayloadWithExternal,
-  StdSyncOperation,
-} from './entity-link-types'
-import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
-import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 import {computeTrialBalance} from '@ledger-sync/accounting'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
+  Id,
   Link,
 } from '@ledger-sync/cdk-core'
 import {handlersLink, transformLink} from '@ledger-sync/cdk-core'
@@ -28,6 +22,14 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 
+import type {
+  EntityPayload,
+  EntityPayloadWithExternal,
+  StdSyncOperation,
+} from './entity-link-types'
+import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
+import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
+
 export const mapStandardEntityLink = ({
   provider,
   settings: initialSettings,
@@ -35,7 +37,7 @@ export const mapStandardEntityLink = ({
 }: {
   provider: AnySyncProvider
   settings: any
-  id: string
+  id: Id['conn'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> => {
   if (!isLedgerSyncProvider(provider)) {
     throw new Error('Expecting LedgerSyncProvider in mapStandardEntityLink')

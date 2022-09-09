@@ -38,7 +38,10 @@ export type Id<TName extends string = string> = {
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...
-    (s): s is Id[TPrefix] => s.startsWith(`${prefix}_`),
+    (s): s is Id[TPrefix] =>
+      prefix === 'ldgr'
+        ? true // Bypass check for ledger-ids for now...
+        : s.startsWith(`${prefix}_`),
     `Not a valid ${prefix} id`,
   )
 }

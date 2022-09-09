@@ -204,6 +204,7 @@ export const yodleeProvider = makeSyncProvider({
               id: `ins_yodlee_${settings.provider.id}`, // Need to fix me...
             }
           : undefined,
+        institutionId: `ins_yodlee_${settings.provider?.id}`, // Need to fix me...
         status: (() => {
           switch (settings.providerAccount?.status) {
             case 'SUCCESS':

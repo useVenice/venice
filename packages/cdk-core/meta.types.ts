@@ -12,7 +12,11 @@ import {zId} from './id.types'
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
+export type ZStandard = {
+  [k in keyof typeof zStandard]: z.infer<typeof zStandard[k]>
+}
 export const zStandard = {
+  /** Should this be renamed to `UpstreamProvider` instead? */
   institution: z.object({
     id: zId('ins'),
     name: z.string(),

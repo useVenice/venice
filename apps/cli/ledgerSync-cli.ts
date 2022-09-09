@@ -10,10 +10,7 @@ import {json} from 'micro'
 import ngrok from 'ngrok'
 
 import type {LedgerSyncRouter} from '@ledger-sync/app-config'
-import {
-  ledgerSyncMetaStore as metaStore,
-  ledgerSyncRouter as router,
-} from '@ledger-sync/app-config'
+import {ledgerSyncRouter as router} from '@ledger-sync/app-config'
 import type {inferProcedureInput} from '@ledger-sync/engine'
 import {parseWebhookRequest} from '@ledger-sync/engine'
 import type {NonEmptyArray} from '@ledger-sync/util'
@@ -40,7 +37,7 @@ export type SyncInput = inferProcedureInput<
   LSRouter['_def']['mutations']['syncPipeline']
 >[0]
 
-export const cli = cliFromRouter(router, {cleanup: metaStore.kvStore.close})
+export const cli = cliFromRouter(router, {cleanup: () => {}}) // metaBase.cleanup?
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')

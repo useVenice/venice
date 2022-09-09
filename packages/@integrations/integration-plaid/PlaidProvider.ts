@@ -151,6 +151,7 @@ export const plaidProvider = makeSyncProvider({
               envName: inferPlaidEnvFromToken(settings.accessToken),
             }
           : undefined,
+        institutionId: `ins_plaid_${settings.item?.institution_id}`, // Need to fix me...
         status:
           err?.error_code === 'ITEM_LOGIN_REQUIRED'
             ? 'disconnected'

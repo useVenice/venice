@@ -3,14 +3,14 @@ import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import type {ConnId} from '@ledger-sync/cdk-core'
+import type {ConnId, Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../../components/Layout'
 
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: string}
+  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
 
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...

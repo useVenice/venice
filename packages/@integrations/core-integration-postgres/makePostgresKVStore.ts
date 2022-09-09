@@ -40,20 +40,28 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
 export const makePostgresMetabase = zFunction(
   zPgConfig.pick({databaseUrl: true}),
-  ({databaseUrl}): MetaBase => ({
-    connection: metaTable('connection', _getDeps(databaseUrl)),
-    institution: metaTable('institution', _getDeps(databaseUrl)),
-    integration: metaTable('integration', _getDeps(databaseUrl)),
-    pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
-    findPipelines: ({connectionId}) => {
-      const {getPool, sql} = _getDeps(databaseUrl)
-      return getPool().then((pool) =>
-        pool.any(
-          sql`SELECT * from pipeline where source_id = ${connectionId} OR destination_id =  ${connectionId}`,
-        ),
-      )
-    },
-  }),
+  ({databaseUrl}): MetaBase => {
+    const tables: Omit<MetaBase, 'listTopInstitutions' | 'findPipelines'> = {
+      connection: metaTable('connection', _getDeps(databaseUrl)),
+      institution: metaTable('institution', _getDeps(databaseUrl)),
+      integration: metaTable('integration', _getDeps(databaseUrl)),
+      pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
+    }
+    return {
+      ...tables,
+      // Perhaps this should just be searchInstitutions? And when there are no terms
+      // passed to search it becomes by default listing top ones...
+      listTopInstitutions: () => tables.institution.list({limit: 10}),
+      findPipelines: ({connectionId}) => {
+        const {getPool, sql} = _getDeps(databaseUrl)
+        return getPool().then((pool) =>
+          pool.any(
+            sql`SELECT * from pipeline where source_id = ${connectionId} OR destination_id =  ${connectionId}`,
+          ),
+        )
+      },
+    }
+  },
 )
 
 export const makePostgresKVStore = zFunction(

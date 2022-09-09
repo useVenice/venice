@@ -1,8 +1,9 @@
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
+import type {Id} from './id.types'
 import {makeId, zId} from './id.types'
-import type {EnvName} from './meta.types'
+import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {Destination, Source, SyncOperation} from './protocol'
 
@@ -12,7 +13,7 @@ import type {Destination, Source, SyncOperation} from './protocol'
 export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
 export const zUseLedgerSyncOptions = z.object({
   envName: zEnvName,
-  ledgerId: z.string(),
+  ledgerId: zId('ldgr'),
 })
 
 export interface DialogConfig {
@@ -38,17 +39,17 @@ export type UseConnectHook<T extends AnyProviderDef> = (
 export type ConnectContextInput = z.input<typeof zConnectContextInput>
 export const zConnectContextInput = z.object({
   envName: zEnvName,
-  ledgerId: z.string(),
+  ledgerId: zId('ldgr'),
   /** Noop if `connectionId` is specified */
   institutionId: zId('ins').nullish(),
   connectionId: zId('conn').nullish(),
 })
 
 export interface ConnectContext<TSettings> {
-  ledgerId: string
+  ledgerId: Id['ldgr']
   envName: EnvName
-  institutionId?: string | null
-  connection?: {id: string; settings: TSettings} | null
+  institutionId?: Id['ins'] | null
+  connection?: {id: Id['conn']; settings: TSettings} | null
 }
 export interface PreConnOptions<T = unknown> {
   key: string
@@ -64,38 +65,6 @@ export interface ConnectedSource<T extends AnyProviderDef>
   settings: T['_types']['connectionSettings']
   source$: Source<T['_types']['sourceOutputEntity']>
 }
-
-/**
- * Should this be renamed to `UpstreamProvider` instead?
- */
-export type StandardInstitution = z.infer<typeof zStandardInstitution>
-export const zStandardInstitution = z.object({
-  id: z.string(),
-  name: z.string(),
-  logoUrl: z.string().url().optional(),
-  loginUrl: z.string().url().optional(),
-  /** Environment specific providers */
-  envName: zEnvName.optional(),
-})
-
-export type StandardConnection = z.infer<typeof zStandardConnection>
-export const zStandardConnection = z.object({
-  id: z.string().nullish(), // FIXME: This is not optional...
-  displayName: z.string().nullish(),
-  institution: zStandardInstitution.optional(),
-  /**
-   * This correspond to the connection status.
-   * Pipeline shall have a separate syncStatus */
-  status: z
-    .enum([
-      'healthy', // Connected and all is well
-      'disconnected', // User intervention needed to reconnect
-      'error', // System error, nothing user can do. This would also include revoked
-      'manual', // This is a manual connection (e.g. import. So normal status does not apply)
-    ])
-    .nullish(), // Status unknown
-  statusMessage: z.string().nullish(),
-})
 
 export type WebhookInput = z.infer<typeof zWebhookInput>
 export const zWebhookInput = z.object({
@@ -286,10 +255,10 @@ export function makeSyncProvider<
   TMappers extends _opt<{
     institution?: (
       data: T['_types']['institutionData'],
-    ) => Omit<StandardInstitution, 'id'>
+    ) => Omit<ZStandard['institution'], 'id'>
     connection: (
       settings: T['_types']['connectionSettings'],
-    ) => StandardConnection
+    ) => Omit<ZStandard['connection'], 'id'>
   }>,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods
   // by introducing a separate `instance` method that accepts config

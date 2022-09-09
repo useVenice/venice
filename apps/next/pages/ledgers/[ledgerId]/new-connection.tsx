@@ -4,7 +4,7 @@ import {Plus} from 'phosphor-react'
 import React from 'react'
 import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 
-import type {EnvName} from '@ledger-sync/cdk-core'
+import type {EnvName, Id} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {compact} from '@ledger-sync/util'
@@ -17,7 +17,7 @@ type ConnectMode = 'institution' | 'provider'
 
 export default function LedgerNewConnectionScreen() {
   const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: string}
+  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
   const [mode, setMode] = useQueryParam(
     'mode',
     withDefault(

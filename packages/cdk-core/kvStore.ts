@@ -49,10 +49,11 @@ export interface MetaTable<
   T extends Record<string, unknown> = Record<string, unknown>,
 > {
   get(id: TID): Promise<T | undefined | null>
-  list?(options: {
-    ledgerId?: Id['ldgr']
+  list(options: {
+    ids?: TID[]
+    ledgerId?: Id['ldgr'] | null
     /** Used for search */
-    keywords?: string
+    keywords?: string | null
     /** Pagination, not necessarily supported */
     limit?: number
     offset?: number
@@ -62,9 +63,12 @@ export interface MetaTable<
   delete?(id: TID): Promise<void>
 }
 
+/** TODO: Rename to ConfigService */
 export type MetaBase = {
   [k in keyof typeof zMeta]: MetaTable<Id[typeof IDS[k]], ZMeta[k]> //& {entityName: k}
 } & {
+  // Add tables in here instead...
+  listTopInstitutions: () => Promise<ReadonlyArray<ZMeta['institution']>>
   findPipelines: (options: {
     connectionId: Id['conn']
   }) => Promise<ReadonlyArray<ZMeta['pipeline']>>

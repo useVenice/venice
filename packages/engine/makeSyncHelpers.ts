@@ -1,6 +1,7 @@
 import type {
   AnyEntityPayload,
   AnySyncProvider,
+  ConnectContext,
   ConnId,
   Destination,
   IntId,
@@ -8,10 +9,12 @@ import type {
   PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
-import {makeMemoryKVStore, zConnectContextInput} from '@ledger-sync/cdk-core'
+import {zId} from '@ledger-sync/cdk-core'
+import {zConnectContextInput} from '@ledger-sync/cdk-core'
+import type {JsonObject} from '@ledger-sync/util'
 import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
-import {makeMetaLinks, makeMetaStore} from './makeMetaStore'
+import {makeMetaLinks} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
@@ -79,7 +82,6 @@ export function makeSyncHelpers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
-  kvStore,
   metaBase,
   providers,
   linkMap,
@@ -89,7 +91,6 @@ export function makeSyncHelpers<
   SyncEngineConfig<TProviders, TLinks>,
   | 'providers'
   | 'linkMap'
-  | 'kvStore'
   | 'metaBase'
   | 'defaultIntegrations'
   | 'defaultPipeline'
@@ -124,7 +125,7 @@ export function makeSyncHelpers<
       ),
     )
 
-  const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
+  // const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
   const metaLinks = makeMetaLinks(metaBase)
 
   const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
@@ -146,13 +147,13 @@ export function makeSyncHelpers<
 
   const zInt = z
     .object({
-      id: z.string().optional(),
+      id: zId('int').optional(),
       provider: z.string().optional(),
       config: z.record(z.unknown()).optional(),
     })
     .transform(
       zGuard(async ({id, ...input}) => {
-        const int = id ? await metaStore.getIntegration(id) : undefined
+        const int = id ? await metaBase.integration.get(id) : undefined
         const provider = zProvider.parse(id ?? input.provider, {
           path: id ? ['id'] : ['provider'],
         })
@@ -164,21 +165,23 @@ export function makeSyncHelpers<
         const config = provider.def.integrationConfig?.parse(_config, {
           path: ['config'],
         })
-        return {...int, id: id as IntId, provider, config}
+        return {...int, id: id!, provider, config}
       }),
     )
 
-  const zConn = zInt
-    .innerType()
-    .extend({
-      integrationId: z.string().optional(),
+  const zConn = z
+    .object({
+      id: zId('conn').optional(),
+      provider: z.string().optional(),
+      config: z.record(z.unknown()).optional(),
+      integrationId: zId('int').optional(),
       settings: z.record(z.unknown()).optional(),
       _source$: zCast<Source<AnyEntityPayload>>().optional(),
       _destination$$: zCast<Destination>().optional(),
     })
     .transform(
       zGuard(async ({id, _source$, _destination$$, ...input}) => {
-        const conn = id ? await metaStore.getConnection(id) : undefined
+        const conn = id ? await metaBase.connection.get(id) : undefined
         // if (id && !conn && !input.settings) {
         //   // not 100% correct, because provider could require no conn
         // }
@@ -192,12 +195,12 @@ export function makeSyncHelpers<
         const provider = id ? zProvider.parse(id) : int.provider
 
         const settings = provider.def.connectionSettings?.parse(
-          deepMerge(conn?.settings, input.settings),
+          deepMerge(conn?.settings, input.settings as JsonObject),
           {path: ['settings']},
         )
         return {
           ...conn,
-          id: id as ConnId,
+          id,
           provider,
           integrationId,
           config: int.config,
@@ -215,7 +218,7 @@ export function makeSyncHelpers<
           ? deepMerge(defaultPipeline, arg)
           : arg ?? defaultPipeline,
       z.object({
-        id: z.string().nullish(),
+        id: zId('pipe').nullish(),
         src: zConn.innerType().extend({
           options: z.record(z.unknown()).optional(),
         }),
@@ -238,12 +241,12 @@ export function makeSyncHelpers<
           links: rawLinks,
           ...rest
         }) => {
-          const pipeline = id ? await metaStore.getPipeline(id) : undefined
+          const pipeline = id ? await metaBase.pipeline.get(id) : undefined
           const [srcConn, destConn] = await Promise.all([
-            zConn.parseAsync(deepMerge(pipeline?.src as typeof _src, _src), {
+            zConn.parseAsync(deepMerge({id: pipeline?.sourceId}, _src), {
               path: ['src'],
             }),
-            zConn.parseAsync(deepMerge(pipeline?.dest as typeof _dest, _dest), {
+            zConn.parseAsync(deepMerge({id: pipeline?.destinationId}, _dest), {
               path: ['dest'],
             }),
           ])
@@ -260,14 +263,17 @@ export function makeSyncHelpers<
           const src = {
             ...srcConn,
             options: srcConn.provider.def.sourceSyncOptions?.parse(
-              deepMerge(pipeline?.src.options, srcOptions),
+              deepMerge(pipeline?.sourceOptions, srcOptions as JsonObject),
               {path: ['src', 'options']},
             ),
           }
           const dest = {
             ...destConn,
             options: destConn.provider.def.destinationSyncOptions?.parse(
-              deepMerge(pipeline?.dest.options, destOptions),
+              deepMerge(
+                pipeline?.destinationOptions,
+                destOptions as JsonObject,
+              ),
               {path: ['dest', 'options']},
             ),
           }
@@ -292,7 +298,7 @@ export function makeSyncHelpers<
   const zConnectContext = zConnectContextInput.transform(
     zGuard(async ({connectionId, ...rest}) => {
       const rawConn = connectionId
-        ? await metaStore.getConnection(connectionId)
+        ? await metaBase.connection.get(connectionId)
         : undefined
       console.log('rawConn', rawConn)
       // Should we throw here if connection not found?
@@ -302,7 +308,12 @@ export function makeSyncHelpers<
 
       // We don't have a getInsitution here... so just wiat for now
       // We should probably at least get the external id working though
-      return {...rest, connection}
+      const ctx: ConnectContext<any> = {
+        ...rest,
+        // TODO: Fix the typing here...
+        connection: {settings: {}, ...connection, id: connectionId!},
+      }
+      return ctx
     }),
   )
 
@@ -325,7 +336,6 @@ export function makeSyncHelpers<
       PipelineInput<TProviders[number], TProviders[number], TLinks>
     >,
     zConnectContext,
-    metaStore,
     getDefaultIntegrations,
     metaLinks,
   }
