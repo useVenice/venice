@@ -4,7 +4,6 @@ const webpack = require('webpack')
 const withTM = require('next-transpile-modules')([
   'chrono-node',
   path.resolve(__dirname, '../app-config'),
-  path.resolve(__dirname, '../app'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-airtable'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-firebase'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-fs'),

@@ -1,5 +1,7 @@
 import * as z from 'zod'
 
+import {R} from './data-utils'
+
 export {z}
 
 export function parseIf<T>(value: unknown, typeguard: (v: unknown) => v is T) {
@@ -22,16 +24,20 @@ export type JsonObject = z.infer<typeof zJsonObject>
 export const zJsonObject = z.record(zJson)
 
 export function zGuard<T, U>(fn: (input: T) => U | Promise<U>) {
-  return async (out: T, ctx: z.RefinementCtx) => {
-    try {
-      return await fn(out)
-    } catch (err) {
+  return (out: T, ctx: z.RefinementCtx) => {
+    function catchError(err: unknown) {
       if (err instanceof z.ZodError) {
         err.issues.forEach((issue) => ctx.addIssue({...issue, fatal: true}))
       } else {
         ctx.addIssue({code: 'custom', fatal: true, message: `${err}`})
       }
       return err as U // Due to fatal, this will never be used
+    }
+    try {
+      const ret = fn(out)
+      return R.isPromise(ret) ? ret.catch(catchError) : ret
+    } catch (err) {
+      return catchError(err)
     }
   }
 }
