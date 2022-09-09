@@ -1,7 +1,14 @@
 import Head from 'next/head'
 import {useRouter} from 'next/router'
-import { useState } from 'react'
-import {Circle, Play, Trash, ArrowClockwise, DotsThree, PlugsConnected} from 'phosphor-react'
+import {
+  ArrowClockwise,
+  Circle,
+  DotsThree,
+  Play,
+  PlugsConnected,
+  Trash,
+} from 'phosphor-react'
+import {useState} from 'react'
 import {twMerge} from 'tailwind-merge'
 
 import type {Id} from '@ledger-sync/cdk-core'
@@ -22,7 +29,7 @@ export default function LedgerMyConnectionsScreen() {
   })
   const connections = connectionsRes.data
 
-  const [dropdownShow, setDropdownShow] = useState(false);
+  const [dropdownShow, setDropdownShow] = useState(false)
 
   return (
     <>
@@ -39,7 +46,7 @@ export default function LedgerMyConnectionsScreen() {
         <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div
-              key={"key1"}
+              key={'key1'}
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
               <div className="card-body justify-between pt-4 space-y-8">
                 <div className="flex space-x-4">
@@ -57,19 +64,25 @@ export default function LedgerMyConnectionsScreen() {
                       </div>
                       <div className="flex flex-row space-x-4">
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <ArrowClockwise size={16} />
                           </button>
                           <span className="text-xs text-gray-400">Sync</span>
                         </div>
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <Play size={16} />
                           </button>
                           <div className="text-xs text-gray-400">Full Sync</div>
                         </div>
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <Trash size={16} />
                           </button>
                           <div className="text-xs text-gray-400">Delete</div>
@@ -84,21 +97,22 @@ export default function LedgerMyConnectionsScreen() {
                       Chase Bank
                     </span>
 
-                    <div
-                      className='flex items-center space-x-2 text-sm text-green-600'>
+                    <div className="flex items-center space-x-2 text-sm text-green-600">
                       <Circle weight="fill" />
                       <span>Healthy</span>
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM</p>
+                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                      conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div
-              key={"key2"}
+              key={'key2'}
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
               <div className="card-body justify-between pt-4 space-y-8">
                 <div className="flex space-x-4">
@@ -116,19 +130,27 @@ export default function LedgerMyConnectionsScreen() {
                       </div>
                       <div className="flex flex-row space-x-4">
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <PlugsConnected size={16} />
                           </button>
-                          <span className="text-xs text-gray-400">Reconnect</span>
+                          <span className="text-xs text-gray-400">
+                            Reconnect
+                          </span>
                         </div>
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <Play size={16} />
                           </button>
                           <div className="text-xs text-gray-400">Full Sync</div>
                         </div>
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <Trash size={16} />
                           </button>
                           <div className="text-xs text-gray-400">Delete</div>
@@ -143,22 +165,22 @@ export default function LedgerMyConnectionsScreen() {
                       Bank of America
                     </span>
 
-                    <div
-                      className='flex items-center space-x-2 text-sm text-orange-600'>
+                    <div className="flex items-center space-x-2 text-sm text-orange-600">
                       <Circle weight="fill" />
                       <span>Disconnected</span>
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM</p>
+                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                      conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-
             <div
-              key={"key3"}
+              key={'key3'}
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
               <div className="card-body justify-between pt-4 space-y-8">
                 <div className="flex space-x-4">
@@ -176,13 +198,19 @@ export default function LedgerMyConnectionsScreen() {
                       </div>
                       <div className="flex flex-row space-x-4">
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <PlugsConnected size={16} />
                           </button>
-                          <span className="text-xs text-gray-400">Reconnect</span>
+                          <span className="text-xs text-gray-400">
+                            Reconnect
+                          </span>
                         </div>
                         <div className="flex flex-col items-center space-y-1">
-                          <button data-tooltip-target="tooltip-default" className="btn-outline btn btn-sm btn-circle border-base-content/25">
+                          <button
+                            data-tooltip-target="tooltip-default"
+                            className="btn-outline btn btn-sm btn-circle border-base-content/25">
                             <Trash size={16} />
                           </button>
                           <div className="text-xs text-gray-400">Delete</div>
@@ -197,23 +225,19 @@ export default function LedgerMyConnectionsScreen() {
                       Wells Fargo
                     </span>
 
-                    <div
-                      className='flex items-center space-x-2 text-sm text-red-600'>
+                    <div className="flex items-center space-x-2 text-sm text-red-600">
                       <Circle weight="fill" />
                       <span>Reconnect</span>
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM</p>
+                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                      conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-
-
-
-
-
 
             {/* <div
               key={"key3"}

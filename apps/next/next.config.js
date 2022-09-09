@@ -2,7 +2,6 @@ const path = require('node:path')
 const webpack = require('webpack')
 // prettier-ignore
 const withTM = require('next-transpile-modules')([
-  'chrono-node',
   path.resolve(__dirname, '../app-config'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-airtable'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-firebase'),
