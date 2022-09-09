@@ -2,7 +2,7 @@ import {z} from '@ledger-sync/util'
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
-  ledger: 'ldgr', // Technicall we do not store this...
+  ledger: 'ldgr', // Technicall we do not store this... Consider renaming to ownerId e.g. own_123
   pipeline: 'pipe',
 } as const
 

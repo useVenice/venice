@@ -1,25 +1,10 @@
--- TODO: Consider using https://salsita.github.io/node-pg-migrate/#/migrations
--- to reduce the tons of duplication
-
--- Meta (Deprecated)
-
-CREATE TABLE IF NOT EXISTS "public"."meta" (
-  "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "data" jsonb NOT NULL DEFAULT '{}',
-  "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  CONSTRAINT "pk_meta" PRIMARY KEY ("id")
-);
-CREATE INDEX IF NOT EXISTS meta_created_at ON meta (created_at);
-CREATE INDEX IF NOT EXISTS meta_updated_at ON meta (updated_at);
-
 --
--- App
+-- Meta: App level
 --
 
 CREATE TABLE IF NOT EXISTS "public"."integration" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "ledger_id" character varying NOT NULL,
+  -- "standard" jsonb NOT NULL DEFAULT '{}', What should it be?
   "config" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -28,11 +13,28 @@ CREATE TABLE IF NOT EXISTS "public"."integration" (
 CREATE INDEX IF NOT EXISTS integration_created_at ON integration (created_at);
 CREATE INDEX IF NOT EXISTS integration_updated_at ON integration (updated_at);
 
+
+CREATE TABLE IF NOT EXISTS "public"."institution" (
+  "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "standard" jsonb NOT NULL DEFAULT '{}',
+  "external" jsonb NOT NULL DEFAULT '{}',
+  "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  CONSTRAINT "pk_institution" PRIMARY KEY ("id")
+);
+CREATE INDEX IF NOT EXISTS institution_created_at ON institution (created_at);
+CREATE INDEX IF NOT EXISTS institution_updated_at ON institution (updated_at);
+
+--
+-- Meta: Ledger specific
+--
+
 CREATE TABLE IF NOT EXISTS "public"."connection" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "ledger_id" character varying NOT NULL,
   "integration_id" character varying,
   "env_name" character varying,
+  -- "standard" jsonb NOT NULL DEFAULT '{}', What should it be?
   "settings" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -62,14 +64,13 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline" (
 CREATE INDEX IF NOT EXISTS pipeline_created_at ON pipeline (created_at);
 CREATE INDEX IF NOT EXISTS pipeline_updated_at ON pipeline (updated_at);
 
-
 --
--- LedgerSync
+-- Data
 --
 
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "provider_name" character varying,
+  "ledger_id" character varying NOT NULL,
   "source_id" character varying, -- Intentionally no reference, may be stored in separate db
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -82,7 +83,7 @@ CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "provider_name" character varying,
+  "ledger_id" character varying NOT NULL,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -95,7 +96,7 @@ CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "provider_name" character varying,
+  "ledger_id" character varying NOT NULL,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -106,3 +107,5 @@ CREATE TABLE IF NOT EXISTS "public"."commodity" (
 CREATE INDEX IF NOT EXISTS commodity_created_at ON commodity (created_at);
 CREATE INDEX IF NOT EXISTS commodity_updated_at ON commodity (updated_at);
 
+-- Add balance table
+-- Add price table
