@@ -22,7 +22,7 @@ export interface MetaTable<
   delete?(id: TID): Promise<void>
 }
 
-export interface ConfigService {
+export interface MetaService {
   tables: {
     [k in keyof typeof zMeta]: MetaTable<Id[typeof IDS[k]], ZMeta[k]>
   }

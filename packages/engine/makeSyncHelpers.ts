@@ -6,6 +6,7 @@ import type {
   Destination,
   IntId,
   LinkFactory,
+  MetaService,
   PipeId,
   Source,
 } from '@ledger-sync/cdk-core'
@@ -80,20 +81,18 @@ export type ParsedPipeline = z.infer<
 export function makeSyncHelpers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->({
-  configService: c,
-  providers,
-  linkMap,
-  defaultIntegrations: _defaultIntegrations,
-  defaultPipeline,
-}: Pick<
-  SyncEngineConfig<TProviders, TLinks>,
-  | 'providers'
-  | 'linkMap'
-  | 'configService'
-  | 'defaultIntegrations'
-  | 'defaultPipeline'
->) {
+>(
+  {
+    providers,
+    linkMap,
+    defaultIntegrations: _defaultIntegrations,
+    defaultPipeline,
+  }: Pick<
+    SyncEngineConfig<TProviders, TLinks>,
+    'providers' | 'linkMap' | 'defaultIntegrations' | 'defaultPipeline'
+  >,
+  m: MetaService, // Destructure can cause dependencies to be loaded...
+) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
 
   const defaultIntegrationInputs = Array.isArray(_defaultIntegrations)
@@ -149,7 +148,7 @@ export function makeSyncHelpers<
     })
     .transform(
       zGuard(async ({id, ...input}) => {
-        const int = id ? await c.tables.integration.get(id) : undefined
+        const int = id ? await m.tables.integration.get(id) : undefined
         const provider = zProvider.parse(id ?? input.provider, {
           path: id ? ['id'] : ['provider'],
         })
@@ -177,7 +176,7 @@ export function makeSyncHelpers<
     })
     .transform(
       zGuard(async ({id, _source$, _destination$$, ...input}) => {
-        const conn = id ? await c.tables.connection.get(id) : undefined
+        const conn = id ? await m.tables.connection.get(id) : undefined
         // if (id && !conn && !input.settings) {
         //   // not 100% correct, because provider could require no conn
         // }
@@ -237,7 +236,7 @@ export function makeSyncHelpers<
           links: rawLinks,
           ...rest
         }) => {
-          const pipeline = id ? await c.tables.pipeline.get(id) : undefined
+          const pipeline = id ? await m.tables.pipeline.get(id) : undefined
           const [srcConn, destConn] = await Promise.all([
             zConn.parseAsync(deepMerge({id: pipeline?.sourceId}, _src), {
               path: ['src'],
@@ -294,7 +293,7 @@ export function makeSyncHelpers<
   const zConnectContext = zConnectContextInput.transform(
     zGuard(async ({connectionId, ...rest}) => {
       const rawConn = connectionId
-        ? await c.tables.connection.get(connectionId)
+        ? await m.tables.connection.get(connectionId)
         : undefined
       console.log('rawConn', rawConn)
       // Should we throw here if connection not found?

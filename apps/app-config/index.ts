@@ -1,4 +1,4 @@
-import {makePostgresConfigService} from '@ledger-sync/core-integration-postgres'
+import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {type inferProcedureInput, makeSyncEngine} from '@ledger-sync/engine'
 
 import {getEnv, ledgerSyncConfig} from './ledgerSync.config'
@@ -14,7 +14,7 @@ export * from './ledgerSync.config'
 export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
   makeSyncEngine(
     ledgerSyncConfig,
-    makePostgresConfigService({
+    makePostgresMetaService({
       databaseUrl: getEnv('POSTGRES_URL'),
     }),
   )

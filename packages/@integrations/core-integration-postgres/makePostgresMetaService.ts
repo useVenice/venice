@@ -1,4 +1,4 @@
-import type {ConfigService, MetaTable} from '@ledger-sync/cdk-core'
+import type {MetaService, MetaTable} from '@ledger-sync/cdk-core'
 import {memoize, zFunction} from '@ledger-sync/util'
 
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
@@ -34,10 +34,10 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
   }
 }
 
-export const makePostgresConfigService = zFunction(
+export const makePostgresMetaService = zFunction(
   zPgConfig.pick({databaseUrl: true}),
-  ({databaseUrl}): ConfigService => {
-    const getTables = (): ConfigService['tables'] => ({
+  ({databaseUrl}): MetaService => {
+    const getTables = (): MetaService['tables'] => ({
       // Delay calling of __getDeps until later..
       connection: metaTable('connection', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),

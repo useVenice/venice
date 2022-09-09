@@ -1,7 +1,7 @@
 import type {
-  ConfigService,
   Id,
   IDS,
+  MetaService,
   MetaTable,
   ZMeta,
 } from '@ledger-sync/cdk-core'
@@ -9,7 +9,7 @@ import {handlersLink} from '@ledger-sync/cdk-core'
 import type {ObjectPartialDeep} from '@ledger-sync/util'
 import {deepMerge, R} from '@ledger-sync/util'
 
-export function makeMetaLinks(metaBase: ConfigService) {
+export function makeMetaLinks(metaBase: MetaService) {
   // TODO: Validate connection before saving...
   // metaStore and syncHelpers appear to be a bit circular relationship...
   // So we cannot use the ParsedPipeline type. Consider improving this

@@ -6,7 +6,7 @@ import type {
 } from '@ledger-sync/util'
 import {R, zCast} from '@ledger-sync/util'
 
-/** @deprecated. See configService. */
+/** @deprecated. See metaService. */
 export interface KVStore<T = Json> {
   get(id: string): MaybePromise<T | null | undefined>
   list(): MaybePromise<ReadonlyArray<readonly [string, T]>>
