@@ -1,7 +1,10 @@
 import '@ledger-sync/app-config/register.node'
 
 import {loadedEnv} from '@ledger-sync/app-config/register.node'
-import {makePostgresKVStore} from '@ledger-sync/core-integration-postgres'
+import {
+  makePostgresKVStore,
+  makePostgresMetabase,
+} from '@ledger-sync/core-integration-postgres'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
@@ -36,6 +39,10 @@ if (require.main === module) {
       }),
     pgKv: () =>
       makePostgresKVStore({
+        databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
+      }) as unknown as ZFunctionMap,
+    pgMeta: () =>
+      makePostgresMetabase({
         databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
       }) as unknown as ZFunctionMap,
     plaid: () =>

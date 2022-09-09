@@ -49,6 +49,10 @@ export const zStandard = {
 }
 
 // TODO: Make the Input types compatible with our raw types...
+
+export type ZMeta = {
+  [k in keyof typeof zMeta]: z.infer<typeof zMeta[k]>
+}
 export const zMeta = {
   integration: z.object({
     id: zId('int'),

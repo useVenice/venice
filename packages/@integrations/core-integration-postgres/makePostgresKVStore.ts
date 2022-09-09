@@ -3,7 +3,6 @@ import {z} from 'zod'
 import type {MetaBase, MetaTable} from '@ledger-sync/cdk-core'
 import {zKVStore} from '@ledger-sync/cdk-core'
 import type {JsonObject} from '@ledger-sync/util'
-import {zCast} from '@ledger-sync/util'
 import {memoize, zFunction} from '@ledger-sync/util'
 
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
@@ -41,12 +40,19 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
 export const makePostgresMetabase = zFunction(
   zPgConfig.pick({databaseUrl: true}),
-  zCast<MetaBase>(),
-  ({databaseUrl}) => ({
+  ({databaseUrl}): MetaBase => ({
     connection: metaTable('connection', _getDeps(databaseUrl)),
     institution: metaTable('institution', _getDeps(databaseUrl)),
     integration: metaTable('integration', _getDeps(databaseUrl)),
     pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
+    findPipelines: ({connectionId}) => {
+      const {getPool, sql} = _getDeps(databaseUrl)
+      return getPool().then((pool) =>
+        pool.any(
+          sql`SELECT * from pipeline where source_id = ${connectionId} OR destination_id =  ${connectionId}`,
+        ),
+      )
+    },
   }),
 )
 

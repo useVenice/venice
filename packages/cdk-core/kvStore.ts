@@ -8,7 +8,7 @@ import type {
 import {R, zCast} from '@ledger-sync/util'
 
 import type {Id, IDS} from './id.types'
-import type {zMeta} from './meta.types'
+import type {ZMeta, zMeta} from './meta.types'
 
 export interface KVStore<T = Json> {
   get(id: string): MaybePromise<T | null | undefined>
@@ -64,8 +64,9 @@ export interface MetaTable<
 }
 
 export type MetaBase = {
-  [k in keyof typeof zMeta]: MetaTable<
-    Id[typeof IDS[k]],
-    z.infer<typeof zMeta[k]>
-  > //& {entityName: k}
+  [k in keyof typeof zMeta]: MetaTable<Id[typeof IDS[k]], ZMeta[k]> //& {entityName: k}
+} & {
+  findPipelines: (options: {
+    connectionId: Id['conn']
+  }) => Promise<ReadonlyArray<ZMeta['pipeline']>>
 }
