@@ -14,7 +14,6 @@ import {zConnectContextInput} from '@ledger-sync/cdk-core'
 import type {JsonObject} from '@ledger-sync/util'
 import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
 
-import {makeMetaLinks} from './makeMetaStore'
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
@@ -82,7 +81,7 @@ export function makeSyncHelpers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
-  metaBase,
+  configService: {tables},
   providers,
   linkMap,
   defaultIntegrations: _defaultIntegrations,
@@ -91,7 +90,7 @@ export function makeSyncHelpers<
   SyncEngineConfig<TProviders, TLinks>,
   | 'providers'
   | 'linkMap'
-  | 'metaBase'
+  | 'configService'
   | 'defaultIntegrations'
   | 'defaultPipeline'
 >) {
@@ -125,9 +124,6 @@ export function makeSyncHelpers<
       ),
     )
 
-  // const metaStore = makeMetaStore(kvStore ?? makeMemoryKVStore())
-  const metaLinks = makeMetaLinks(metaBase)
-
   const getDefaultConfig = (name: TProviders[number]['name'], id?: string) =>
     defaultIntegrationInputs.find(
       (i) => (id && i.id === id) || i.provider === name,
@@ -153,7 +149,7 @@ export function makeSyncHelpers<
     })
     .transform(
       zGuard(async ({id, ...input}) => {
-        const int = id ? await metaBase.integration.get(id) : undefined
+        const int = id ? await tables.integration.get(id) : undefined
         const provider = zProvider.parse(id ?? input.provider, {
           path: id ? ['id'] : ['provider'],
         })
@@ -181,7 +177,7 @@ export function makeSyncHelpers<
     })
     .transform(
       zGuard(async ({id, _source$, _destination$$, ...input}) => {
-        const conn = id ? await metaBase.connection.get(id) : undefined
+        const conn = id ? await tables.connection.get(id) : undefined
         // if (id && !conn && !input.settings) {
         //   // not 100% correct, because provider could require no conn
         // }
@@ -241,7 +237,7 @@ export function makeSyncHelpers<
           links: rawLinks,
           ...rest
         }) => {
-          const pipeline = id ? await metaBase.pipeline.get(id) : undefined
+          const pipeline = id ? await tables.pipeline.get(id) : undefined
           const [srcConn, destConn] = await Promise.all([
             zConn.parseAsync(deepMerge({id: pipeline?.sourceId}, _src), {
               path: ['src'],
@@ -298,7 +294,7 @@ export function makeSyncHelpers<
   const zConnectContext = zConnectContextInput.transform(
     zGuard(async ({connectionId, ...rest}) => {
       const rawConn = connectionId
-        ? await metaBase.connection.get(connectionId)
+        ? await tables.connection.get(connectionId)
         : undefined
       console.log('rawConn', rawConn)
       // Should we throw here if connection not found?
@@ -318,6 +314,8 @@ export function makeSyncHelpers<
   )
 
   return {
+    // TODO: Move these two functions out and then rename file to makeSyncInputSchemas
+    getDefaultIntegrations,
     providerMap,
     zProvider,
     zInt: zInt as unknown as z.ZodType<
@@ -336,7 +334,5 @@ export function makeSyncHelpers<
       PipelineInput<TProviders[number], TProviders[number], TLinks>
     >,
     zConnectContext,
-    getDefaultIntegrations,
-    metaLinks,
   }
 }

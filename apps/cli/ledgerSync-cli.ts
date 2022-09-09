@@ -37,7 +37,7 @@ export type SyncInput = inferProcedureInput<
   LSRouter['_def']['mutations']['syncPipeline']
 >[0]
 
-export const cli = cliFromRouter(router, {cleanup: () => {}}) // metaBase.cleanup?
+export const cli = cliFromRouter(router, {cleanup: () => {}}) // configService.cleanup?
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')

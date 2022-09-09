@@ -6,7 +6,7 @@
 // }
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture}.{ts,tsx}"}
-export * from './makeMetaStore'
+export * from './makeMetaLinks'
 export * from './makeSyncEngine'
 export * from './makeSyncHelpers'
 export * from './parseWebhookRequest'

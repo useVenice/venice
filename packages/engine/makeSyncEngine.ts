@@ -2,11 +2,10 @@ import * as trpc from '@trpc/server'
 
 import type {
   AnySyncProvider,
+  ConfigService,
   ConnectedSource,
-  KVStore,
   Link,
   LinkFactory,
-  MetaBase,
   ZStandard,
 } from '@ledger-sync/cdk-core'
 import {
@@ -26,7 +25,7 @@ import {
   zFunction,
 } from '@ledger-sync/util'
 
-import {makeMetaLinks} from './makeMetaStore'
+import {makeMetaLinks} from './makeMetaLinks'
 import type {
   IntegrationInput,
   ParsedConn,
@@ -49,8 +48,8 @@ export interface SyncEngineConfig<
   linkMap?: TLinks
 
   /** Used to store metadata */
-  kvStore: KVStore<Record<string, unknown>> | undefined
-  metaBase: MetaBase
+
+  configService: ConfigService
 
   /** Base url of the router when deployed, e.g. `localhost:3000/api/ledger-sync` */
   routerUrl?: string
@@ -77,14 +76,14 @@ export const makeSyncEngine = <
   TLinks extends Record<string, LinkFactory>,
 >({
   providers,
-  metaBase,
+  configService,
   defaultPipeline,
   defaultIntegrations,
   getLinksForPipeline,
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
-  const metaLinks = makeMetaLinks(metaBase)
+  const metaLinks = makeMetaLinks(configService)
 
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
   const {
@@ -92,12 +91,11 @@ export const makeSyncEngine = <
     zConn,
     zPipeline,
     zConnectContext,
-
     getDefaultIntegrations,
     providerMap,
   } = makeSyncHelpers({
     providers,
-    metaBase,
+    configService,
     defaultIntegrations,
     defaultPipeline,
   })
@@ -154,7 +152,7 @@ export const makeSyncEngine = <
       },
     ),
     listInstitutions: zFunction(async () => {
-      const institutions = await metaBase.listTopInstitutions()
+      const institutions = await configService.listTopInstitutions()
       const ints = await getDefaultIntegrations()
       const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
 
@@ -180,7 +178,9 @@ export const makeSyncEngine = <
       async ({ledgerId} = {}) => {
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
-        const connections = await metaBase.connection.list({ledgerId})
+        const connections = await configService.tables.connection.list({
+          ledgerId,
+        })
         // const institutions = await metaBase.institution.list({ids:})
         return connections.map((conn) => {
           const [, providerName, externalId] = splitPrefixedId(conn.id)
@@ -283,7 +283,7 @@ export const makeSyncEngine = <
     }),
     syncConnection: zFunction(zConn, async function syncConnection(conn) {
       const pipelines = conn.id
-        ? await metaBase
+        ? await configService
             .findPipelines({connectionId: conn.id})
             .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
         : []
@@ -369,7 +369,7 @@ export const makeSyncEngine = <
   const router = routerFromZFunctionMap(makeRouter(), syncEngine)
 
   // router.createCaller().query('connectionsget')
-  return [syncEngine, router, metaBase] as const
+  return [syncEngine, router, configService] as const
 }
 
 /** Only purpose of this is to support type inference */

@@ -7,14 +7,12 @@ import {
 } from '@ledger-sync/cdk-ledger'
 import {airtableProvider} from '@ledger-sync/core-integration-airtable'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
-import {fsProvider, makeFsKVStore} from '@ledger-sync/core-integration-fs'
+import {fsProvider} from '@ledger-sync/core-integration-fs'
 import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
 import {
   corePostgresProvider,
-  makePostgresKVStore,
-  makePostgresMetabase,
+  makePostgresConfigService,
 } from '@ledger-sync/core-integration-postgres'
-import {makeRedisKVStore} from '@ledger-sync/core-integration-redis'
 import {makeSyncEngine} from '@ledger-sync/engine'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
@@ -43,35 +41,6 @@ function getEnv(key: string, opts?: {json?: boolean; optional?: boolean}) {
     (zt) => zt.transform((arg) => safeJSONParse(arg) ?? arg), // What about null?
     (zt) => zt.parse(process.env[key]),
   )
-}
-
-const getKvStore = () => {
-  const variant = z
-    .enum(['fs', 'postgres', 'redis'])
-    .optional()
-    .parse(process.env['KV_STORE'])
-  switch (variant) {
-    case 'fs':
-      console.log('[kvStore] fs')
-      return makeFsKVStore({
-        basePath: getEnv('FS_META_PATH') ?? './data/meta',
-      })
-    case 'postgres':
-      console.log('[kvStore] postgres')
-      return makePostgresKVStore({
-        databaseUrl: getEnv('POSTGRES_URL'),
-      })
-    case 'redis':
-      console.log('[kvStore] redis')
-      return makeRedisKVStore({
-        redisUrl: getEnv('REDIS_URL'),
-      })
-    default:
-      // This is on the frontend, we need to revise how config works
-      // for frontend vs backend so frontend does not import configs
-      // which are only intended for the backend.
-      return 'FIXME' as unknown as ReturnType<typeof makeRedisKVStore>
-  }
 }
 
 /**
@@ -130,8 +99,10 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     //   // envName: 'staging',
     // },
   },
-  kvStore: getKvStore(),
-  metaBase: makePostgresMetabase({databaseUrl: getEnv('POSTGRES_URL')}),
+  // TODO: support other config service such as fs later...
+  configService: makePostgresConfigService({
+    databaseUrl: getEnv('POSTGRES_URL'),
+  }),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   routerUrl: '/api', // apiUrl?
   getLinksForPipeline: ({src, links, dest}) =>
