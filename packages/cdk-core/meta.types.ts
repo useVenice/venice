@@ -49,7 +49,7 @@ export const zStandard = {
 }
 
 // TODO: Make the Input types compatible with our raw types...
-export const zRaw = {
+export const zMeta = {
   integration: z.object({
     id: zId('int'),
     config: zJsonObject.optional(),
