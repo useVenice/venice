@@ -6,7 +6,6 @@ import type {
   Link,
   LinkFactory,
   MetaService,
-  ZStandard,
 } from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {
@@ -17,6 +16,7 @@ import {
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
+  compact,
   identity,
   R,
   routerFromZFunctionMap,
@@ -187,7 +187,7 @@ export const makeSyncEngine = <
         }
         return (intsByProviderName[providerName] ?? []).map((int) => ({
           ins: {...res.data, id: ins.id, externalId},
-          int: {id: int.id, provider: int.provider.name},
+          int: {id: int.id},
         }))
       })
     }),
@@ -199,21 +199,27 @@ export const makeSyncEngine = <
         const connections = await metaService.tables.connection.list({
           ledgerId,
         })
-        // const institutions = await metaBase.institution.list({ids:})
+        const insById = R.pipe(
+          await metaService.tables.institution.list({
+            ids: compact(connections.map((c) => c.institutionId)),
+          }),
+          (insList) => R.mapToObj(insList, (ins) => [ins.id, ins]),
+        )
         return connections.map((conn) => {
           const [, providerName, externalId] = splitPrefixedId(conn.id)
-          const standard = providerMap[
-            providerName
-          ]?.standardMappers?.connection(conn.settings)
+          const mappers = providerMap[providerName]?.standardMappers
+          const standard = mappers?.connection(conn.settings)
           console.log('map connection', {conn, standard})
           const res = zStandard.connection.omit({id: true}).safeParse(standard)
           return {
             ...res.data,
             id: conn.id,
             externalId,
-            institution: (res.data as any).institution as
-              | ZStandard['institution']
-              | undefined,
+            institution: conn.institutionId
+              ? zStandard.institution.parse(
+                  mappers?.institution?.(insById[conn.institutionId]?.external),
+                )
+              : undefined,
           }
         })
       },
