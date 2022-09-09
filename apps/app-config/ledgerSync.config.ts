@@ -150,7 +150,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   defaultPipeline: {
     id: 'pipe_TODO', // TODO: Default pipeline has got to be a function... Otherwise the `id` field makes no sense...
     destination: {
-      id: 'conn_postgres_',
+      id: 'conn_postgres',
       settings: {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         databaseUrl: process.env['POSTGRES_URL']!,

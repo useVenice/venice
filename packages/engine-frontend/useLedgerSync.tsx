@@ -7,7 +7,6 @@ import type {
 import {extractId} from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
 import type {IntegrationInput} from '@ledger-sync/engine'
-import type {NonNullableOnly} from '@ledger-sync/util'
 
 import {LSProvider} from './LSProvider'
 
@@ -30,7 +29,7 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
 
   const connect = React.useCallback(
     async function (
-      int: NonNullableOnly<IntegrationInput, 'id'>,
+      int: IntegrationInput,
       options: Pick<ConnectContextInput, 'institutionId' | 'connectionId'>,
     ) {
       const ctx: ConnectContextInput = {...options, envName, ledgerId}

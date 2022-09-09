@@ -8,7 +8,7 @@ import type {
 } from '@ledger-sync/util'
 
 // Consider removing this...
-import type {ConnId, EnvName, IntId} from './id.types'
+import type {EnvName, Id} from './id.types'
 
 /**
  * This will be standardized over time into either
@@ -41,8 +41,8 @@ export type SyncOperation<
 > =
   | {
       type: 'connUpdate'
-      id: ConnId
-      integrationId?: IntId
+      id: Id['conn']
+      integrationId?: Id['int']
       ledgerId?: string // Should we prefix this too? It comes from the consuming application.
       envName?: EnvName
       settings?: ObjectPartialDeep<NoInfer<TSettings>>

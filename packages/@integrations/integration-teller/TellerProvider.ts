@@ -114,7 +114,7 @@ export const tellerProvider = makeSyncProvider({
   standardMappers: {
     connection: (settings) => ({
       displayName: 'TODO' + settings.token,
-      institutionId: 'ins_teller_',
+      institutionId: 'ins_teller_TODO',
     }),
     institution: (data) => ({
       name: data.name,

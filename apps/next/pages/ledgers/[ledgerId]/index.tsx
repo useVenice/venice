@@ -79,7 +79,7 @@ export default function LedgerMyConnectionsScreen() {
                         <button
                           onClick={() => {
                             connect(
-                              {id: 'int_plaid_'}, // Need the integration id too
+                              {id: 'int_plaid'}, // Need the integration id too
                               {connectionId: conn.id},
                             )
                           }}>

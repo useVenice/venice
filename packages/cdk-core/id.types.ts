@@ -1,4 +1,4 @@
-import {z} from '@ledger-sync/util'
+import {compact, z} from '@ledger-sync/util'
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
@@ -32,7 +32,7 @@ export type IdPrefix = typeof IDS[keyof typeof IDS]
 export type Id<TName extends string = string> = {
   [k in IdPrefix]: k extends BASE_META_ID_PREFIX
     ? `${k}_${string}`
-    : `${k}_${TName}_${string}`
+    : `${k}_${TName}${string}` // 3rd segment is not guaranteed to exist
 }
 
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
@@ -51,27 +51,13 @@ export function makeId<TPrefix extends IdPrefix, TPName extends string>(
     ? [TPrefix, string]
     : [TPrefix, TPName, string]
 ) {
-  return args.join('_') as Id<TPName>[TPrefix]
+  return compact(args).join('_') as Id<TPName>[TPrefix]
 }
 
 export function extractId(id: Id[keyof Id]) {
   const [prefix, providerName, ...rest] = id.split('_')
+  // TODO: Check prefix match predefined prefixes and that providerName is truthy
+  // rest.join shall have a type of string which is actually totally the correct type
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return [prefix as IdPrefix, providerName!, rest.join('_')] as const
 }
-
-// Types
-// Input type (generic)
-// - DB type conforms to input type (not generic, possibly generated)
-// Output type (parsed, generic)
-
-// MARK: - Deprecated stuff
-
-/** @deprecated, use `Id` */
-export type ConnId<TName extends string = string> = `conn_${TName}_${string}`
-/** @deprecated, use `Id` */
-export type IntId<TName extends string = string> = `int_${TName}_${string}`
-/** @deprecated, use `Id` */
-export type InsId<TName extends string = string> = `ins_${TName}_${string}`
-/** @deprecated, use `Id` */
-export type PipeId = `pipe_${string}`
