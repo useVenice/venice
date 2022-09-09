@@ -12,7 +12,6 @@ import {
   rxjs,
   z,
 } from '@ledger-sync/util'
-
 import type {zUser} from './splitwise-schema'
 import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
 import {makeSplitwiseClient} from './SplitwiseClientNext'

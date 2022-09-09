@@ -1,6 +1,5 @@
 /** Development time assertions to catch errors */
 import invariant from 'tiny-invariant'
-
 import {arrayEquals, sort, uniqBy} from './array-utils'
 import {identity} from './converter-utils'
 import {fastEnsureUTC} from './schrono'

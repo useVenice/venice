@@ -1,5 +1,4 @@
 import _chroma from 'chroma-js'
-
 import {catchAsNull} from './function-utils'
 import {sdbmHash} from './string-utils'
 

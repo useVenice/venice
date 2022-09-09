@@ -1,5 +1,4 @@
 import firebase from 'firebase/compat/app'
-
 import {
   getQuerySnapshot$,
   initFirebase,
@@ -15,7 +14,6 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
-
 import {_parseConnectionInfo} from './foreceipt-utils'
 
 class ForeceiptError extends Error {

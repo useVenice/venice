@@ -1,5 +1,4 @@
 import {A} from '@ledger-sync/util'
-
 import {computeRemainders} from './computeRemainders'
 
 test('sanity check', () => {

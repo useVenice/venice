@@ -1,7 +1,5 @@
 import Stripe from 'stripe'
-
 import {castIs, memoize, z, zFunction} from '@ledger-sync/util'
-
 import {inferStripeModeFromToken} from './stripe-utils'
 
 export type ModeName = z.infer<typeof zModeName>

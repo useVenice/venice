@@ -9,7 +9,6 @@ import {
   R,
   stableStringify,
 } from '@ledger-sync/util'
-
 import {
   convBeanFile,
   defaultOptions,

@@ -5,7 +5,6 @@ import type {
   EnumOf,
 } from '@ledger-sync/util'
 import {objectFromArray, startCase, temp_makeId, z} from '@ledger-sync/util'
-
 import type * as Standard from './standard-types'
 
 export function stdTypeAndEntity<T extends Standard.TypeAndEntity[0]>(

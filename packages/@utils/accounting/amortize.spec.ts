@@ -1,5 +1,4 @@
 import * as tzMock from 'timezone-mock'
-
 import {
   A,
   compactStringify,
@@ -11,7 +10,6 @@ import {
   omit,
   Settings,
 } from '@ledger-sync/util'
-
 import {computeAmortization} from './amoritze'
 
 const DEFAULT_ZONE = Settings.defaultZone
