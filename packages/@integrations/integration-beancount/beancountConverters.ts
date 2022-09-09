@@ -338,8 +338,7 @@ const convPostingsMap = conv<
       .map(convPosting)
       .map((p, i) => ({...p, sortKey: p.sortKey ?? i}))
     if (rest.length === 1 && rest[0]?.amount.unit === main?.amount.unit) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return makePostingsMap({main, remainder: omit(rest[0]!, ['amount'])})
+      return makePostingsMap({main, remainder: omit(rest[0], ['amount'])})
     }
     return makePostingsMap(
       {main},

@@ -83,10 +83,8 @@ export class HTTPError<
       },
       // https://stackoverflow.com/questions/39153080/how-can-i-get-the-status-code-from-an-http-error-in-axios
       err.response && {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        status: err.response!.status,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        statusText: err.response!.statusText,
+        status: err.response.status,
+        statusText: err.response.statusText,
         data: err.response.data,
         headers: lowercaseHeaders(err.response.headers) as Record<
           string,

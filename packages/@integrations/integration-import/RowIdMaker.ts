@@ -44,7 +44,7 @@ export class RowIdMaker {
       id = accountExternalId
     }
     if (name == null) {
-      return id as Id.external
+      return id
     }
     return md5Hash(`${id}_${name}`) as Id.external
   }

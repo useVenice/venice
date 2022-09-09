@@ -146,7 +146,7 @@ export const plaidProvider = makeSyncProvider({
         institution: settings.institution
           ? {
               // TODO: Figure out how not to repeat ourselves here...
-              ...this.institution!(settings.institution),
+              ...this.institution(settings.institution),
               id: `ins_plaid_${settings.institution.institution_id}`, // Need to fix me...
               envName: inferPlaidEnvFromToken(settings.accessToken),
             }

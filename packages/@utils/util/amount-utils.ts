@@ -356,7 +356,7 @@ export function parseMultiAmount(
 ): MultiAmount {
   const amounts = input
     .split(separator)
-    .map((substr) => parseAmount(substr, restOpts) as Amount | null)
+    .map((substr) => parseAmount(substr, restOpts))
     .filter((a): a is Amount => a != null)
   return {amounts}
 }
