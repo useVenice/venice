@@ -12,24 +12,38 @@ import {makeId} from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {zRaw} from '@ledger-sync/cdk-core'
 import {zConnectContextInput} from '@ledger-sync/cdk-core'
-import {deepMerge, mapDeep, R, z, zCast, zGuard} from '@ledger-sync/util'
+import {
+  castInput,
+  deepMerge,
+  identity,
+  mapDeep,
+  R,
+  z,
+  zCast,
+  zGuard,
+} from '@ledger-sync/util'
 
 import type {SyncEngineConfig} from './makeSyncEngine'
+
+// Four different types
+// Generic Input / Input
+// Generic Output / Output
+// We implement all except Generic Output
 
 export const zInput = (() => {
   const provider = z.string().brand<'provider'>()
   // zRaw also have a bunch of things such as ledgerId, envName, etc.
   // Do we want to worry about those?
   const integration = zRaw.integration
-  const connection = zRaw.connection.extend({
+  const connection = zRaw.connection.omit({standard: true}).extend({
     integration: integration.optional(),
     // Should never be actually passed in...
     _source$: zCast<Source<AnyEntityPayload>>().optional(),
     _destination$$: zCast<Destination>().optional(),
   })
   const pipeline = zRaw.pipeline.extend({
-    source: connection,
-    destination: connection,
+    source: connection.optional(),
+    destination: connection.optional(),
     watch: z.boolean().optional(),
   })
   return {provider, integration, connection, pipeline}
@@ -75,14 +89,15 @@ export interface PipelineInput<
     : never
   destination?: PDest extends AnySyncProvider ? ConnectionInput<PDest> : never
   destinationOptions?: PDest extends AnySyncProvider
-    ? Partial<_inferInput<PSrc['def']['destinationSyncOptions']>>
+    ? Partial<_inferInput<PDest['def']['destinationSyncOptions']>>
     : never
   links?: Array<
+    // prettier-ignore
     {
-      [K in keyof TLinks]: undefined extends Parameters<TLinks[K]>[0]
+      [K in Extract<keyof TLinks, string>]: undefined extends Parameters<TLinks[K]>[0]
         ? [name: K, args: Parameters<TLinks[K]>[0]] | [name: K] | K
         : [name: K, args: Parameters<TLinks[K]>[0]]
-    }[keyof TLinks]
+    }[Extract<keyof TLinks, string>]
   >
   watch?: boolean
 }
@@ -127,7 +142,9 @@ export function makeSyncParsers<
     }),
   )
 
-  const zInt = zInput.integration.transform(
+  const zInt = castInput(zInput.integration)<
+    IntegrationInput<TProviders[number]>
+  >().transform(
     zGuard(async ({id, ...input}) => {
       const integration = await m.tables.integration.get(id)
       const provider = zProvider.parse(id, {path: ['id']})
@@ -143,16 +160,20 @@ export function makeSyncParsers<
     }),
   )
 
-  const zConn = zInput.connection.transform(
+  const zConn = castInput(zInput.connection)<
+    ConnectionInput<TProviders[number]>
+  >().transform(
     zGuard(async ({id, _source$, _destination$$, ...input}) => {
       const conn = await m.tables.connection.get(id)
-      const integration = await zInt.parseAsync<'typed'>({
-        id:
-          conn?.integrationId ??
-          input.integrationId ??
-          makeId('int', extractId(id)[1], ''),
-        config: input.integration?.config,
-      })
+      const integration = await zInt.parseAsync(
+        identity<z.infer<typeof zInput['integration']>>({
+          id:
+            conn?.integrationId ??
+            input.integrationId ??
+            makeId('int', extractId(id)[1], ''),
+          config: input.integration?.config,
+        }),
+      )
       const settings = integration.provider.def.connectionSettings?.parse(
         deepMerge(conn?.settings, input.settings),
         {path: ['settings']},
@@ -167,7 +188,9 @@ export function makeSyncParsers<
         typeof arg === 'object'
           ? deepMerge(defaultPipeline, arg)
           : arg ?? defaultPipeline,
-      zInput.pipeline,
+      castInput(zInput.pipeline)<
+        PipelineInput<TProviders[number], TProviders[number], TLinks>
+      >(),
     )
     .transform(
       zGuard(async ({id, ...input}) => {
@@ -254,23 +277,5 @@ export function makeSyncParsers<
     }),
   )
 
-  return {
-    zProvider,
-    zInt: zInt as unknown as z.ZodType<
-      z.output<typeof zInt>,
-      z.ZodTypeDef,
-      IntegrationInput<TProviders[number]>
-    >,
-    zConn: zConn as unknown as z.ZodType<
-      z.output<typeof zConn>,
-      z.ZodTypeDef,
-      ConnectionInput<TProviders[number]>
-    >,
-    zPipeline: zPipeline as unknown as z.ZodType<
-      z.output<typeof zPipeline>,
-      z.ZodTypeDef,
-      PipelineInput<TProviders[number], TProviders[number], TLinks>
-    >,
-    zConnectContext,
-  }
+  return {zProvider, zInt, zConn, zPipeline, zConnectContext}
 }

@@ -49,6 +49,7 @@ export function zRefineNonNull<ZType extends z.ZodTypeAny>(zType: ZType) {
 }
 
 /**
+ * e.g. `schema.transform(cast<TOut>())
  * Useful as a casting typeguard
  * HOC because prettier doesn't understand how to format... https://share.cleanshot.com/vfED5U
  * and it is also tricky in ts to declare
@@ -56,11 +57,20 @@ export function zRefineNonNull<ZType extends z.ZodTypeAny>(zType: ZType) {
  */
 // prettier-ignore
 export const cast = <T>() => (_input: unknown) => _input as T
+
 // prettier-ignore
+/** `schema.refine(castIs<TOut>)` */
 export const castIs = <T>() =>(_input: unknown): _input is T => true
 
+/** `zCast<TOut>()` standalone */
 export const zCast = <T>(...args: Parameters<typeof z['unknown']>) =>
   z.unknown(...args).refine(castIs<T>())
+
+/** `castInput(schema)<TInput>()` */
+export const castInput =
+  <T extends z.ZodTypeAny>(schema: T) =>
+  <TInput extends T['_input']>() =>
+    schema as z.ZodType<T['_output'], z.ZodTypeDef, TInput>
 
 export function isZodType(input: unknown): input is z.ZodTypeAny {
   const obj = input as z.ZodTypeAny

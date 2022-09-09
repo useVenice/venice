@@ -54,6 +54,7 @@ export const zStandard = {
 export type ZRaw = {
   [k in keyof typeof zRaw]: z.infer<typeof zRaw[k]>
 }
+/** Should this be a factory function so we can use typed config / settings? */
 export const zRaw = {
   integration: z.object({
     id: zId('int'),
@@ -78,7 +79,13 @@ export const zRaw = {
     destinationId: zId('conn').optional(),
     destinationOptions: zJsonObject.optional(),
     links: z
-      .array(z.union([z.string(), z.tuple([z.string(), z.unknown()])]))
+      .array(
+        z.union([
+          z.string(),
+          z.tuple([z.string()]),
+          z.tuple([z.string(), z.unknown()]),
+        ]),
+      )
       .nullish(),
   }),
   institution: z.object({
