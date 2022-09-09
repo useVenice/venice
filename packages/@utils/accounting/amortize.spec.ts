@@ -37,7 +37,7 @@ expect.addSnapshotSerializer(jsonStringifySnapshotSerializer)
 
 describe('sanity checks', () => {
   // https://github.com/moment/luxon/pull/778/files
-  test('DateTime#diff can handle \'quarters\' as a unit', () => {
+  test("DateTime#diff can handle 'quarters' as a unit", () => {
     const t = () => DateTime.local().diff(DateTime.fromMillis(0), 'quarters')
     expect(t).not.toThrow()
   })

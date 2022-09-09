@@ -14,9 +14,6 @@ import {
 import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 
-import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
-import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
-
 export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
 

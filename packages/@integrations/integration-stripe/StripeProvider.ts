@@ -1,10 +1,8 @@
 import React from 'react'
 import type Stripe from 'stripe'
-
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
-
 import {makeStripeClient, zStripeConfig} from './StripeClient'
 
 // const kStripe = 'stripe' as const

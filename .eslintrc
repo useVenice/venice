@@ -29,7 +29,7 @@
     "arrow-body-style": "warn",
     "object-shorthand": "warn",
     "prefer-const": "warn",
-    "quotes": ["warn", "single"],
+    "quotes": ["warn", "single", {"avoidEscape": true}],
     "codegen/codegen": "warn",
     "import/no-unresolved": "error",
     "eslint-comments/disable-enable-pair": "off",
