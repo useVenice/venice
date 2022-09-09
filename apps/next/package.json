@@ -13,7 +13,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@ledger-sync/app": "*",
     "@ledger-sync/app-config": "*",
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/engine": "*",

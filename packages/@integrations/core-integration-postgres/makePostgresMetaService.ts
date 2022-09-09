@@ -2,14 +2,10 @@ import type {MetaService, MetaTable} from '@ledger-sync/cdk-core'
 import {memoize, zFunction} from '@ledger-sync/util'
 
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
-import {MetaRead} from './schemas'
 
-const _getDeps = memoize((databaseUrl: string) => {
-  const client = makePostgresClient({databaseUrl})
-  const sqlMeta = client.sql.type(MetaRead)
-  const ret = {...client, sqlMeta}
-  return ret
-})
+const _getDeps = memoize((databaseUrl: string) =>
+  makePostgresClient({databaseUrl}),
+)
 type Deps = ReturnType<typeof _getDeps>
 
 function metaTable<TID extends string, T extends Record<string, unknown>>(
