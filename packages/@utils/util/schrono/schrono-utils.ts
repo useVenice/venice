@@ -1,3 +1,7 @@
+import type * as Chrono from 'chrono-node'
+import {casual as chrono} from 'chrono-node'
+import {DateTime} from 'luxon'
+
 import {
   BaseRelativeDateFormatParser,
   RelativeDateFormatParser,
@@ -7,8 +11,6 @@ import {
   TimeUnitCasualRelativeFormatParser,
 } from './chrono-parsers/TimeUnitCasualRelativeFormatParser'
 import type {DateTimePrecision, ISOMPDate} from './MPDate'
-import * as chrono from 'chrono-node'
-import {DateTime} from 'luxon'
 
 export function fastEnsurePrecision(
   dt: DateTime | ISOMPDate,
@@ -57,7 +59,7 @@ const ISO_YEAR_LEN = '2000'.length
 const ISO_MONTH_LEN = '2000-01'.length
 const ISO_DAY_LEN = '2000-01-01'.length
 
-const enhancedChrono = chrono.casual.clone()
+const enhancedChrono = chrono.clone()
 enhancedChrono.parsers = enhancedChrono.parsers.map((parser) => {
   if (parser instanceof BaseRelativeDateFormatParser) {
     return new RelativeDateFormatParser()
@@ -88,7 +90,7 @@ function precisionFromISO(
 }
 
 function precisionFromChronoComponents(
-  comps: chrono.ParsedComponents,
+  comps: Chrono.ParsedComponents,
 ): DateTimePrecision {
   if (comps.isCertain('hour')) {
     return 'millisecond'

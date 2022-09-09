@@ -80,7 +80,6 @@
     "patchedDependencies": {
       "@trpc/server@9.26.0": "patches/@trpc__server@9.26.0.patch",
       "cac@6.7.12": "patches/cac@6.7.12.patch",
-      "chrono-node@2.3.8": "patches/chrono-node@2.3.8.patch",
       "esbuild-jest@0.5.0": "patches/esbuild-jest@0.5.0.patch",
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",
       "js-combinatorics@1.5.7": "patches/js-combinatorics@1.5.7.patch",

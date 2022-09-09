@@ -1,8 +1,9 @@
-import {SCHelpers} from './schrono-utils'
-import type * as chrono from 'chrono-node'
+import type * as Chrono from 'chrono-node'
 import type {DateTimeJSOptions, DateTimeOptions} from 'luxon'
 import {DateTime, FixedOffsetZone, Interval, Settings} from 'luxon'
 import type {Mutable} from 'type-fest'
+
+import {SCHelpers} from './schrono-utils'
 
 /**
  * TODO:
@@ -100,7 +101,7 @@ export const MPDate = {
     return this.fromChronoComponents(res.start, res.text)
   },
 
-  fromChronoComponents(comps: chrono.ParsedComponents, exp: MPDateExpression) {
+  fromChronoComponents(comps: Chrono.ParsedComponents, exp: MPDateExpression) {
     // Using `DateTime.fromObject` here works better with mocked dates
     const offset = comps.get('timezoneOffset')
     const zone = offset != null ? FixedOffsetZone.instance(offset) : undefined
