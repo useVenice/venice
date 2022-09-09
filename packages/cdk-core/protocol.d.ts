@@ -8,7 +8,10 @@ import type {
 } from '@ledger-sync/util'
 
 // Consider removing this... Cuz frankly we don't need it...
-import type {EnvName, Id} from './id.types'
+// TODO: Bad imports are not throwing issue. We should fix that
+// Maybe checklibs?
+import type {Id} from './id.types'
+import type {EnvName} from './meta.types'
 
 /**
  * This will be standardized over time into either

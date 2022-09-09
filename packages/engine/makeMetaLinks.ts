@@ -1,47 +1,50 @@
 import type {Id, IDS, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
+import {IDS_INVERTED} from '@ledger-sync/cdk-core'
 import {handlersLink} from '@ledger-sync/cdk-core'
 import type {ObjectPartialDeep} from '@ledger-sync/util'
 import {deepMerge, R} from '@ledger-sync/util'
 
+// TODO: Validate connection before saving...
+// metaStore and syncHelpers appear to be a bit circular relationship...
+// So we cannot use the ParsedPipeline type. Consider improving this
+// for the future
+
+// Should the mapping of the StandardInstitution happen inside here?
+
 export function makeMetaLinks(metaBase: MetaService) {
-  // TODO: Validate connection before saving...
-  // metaStore and syncHelpers appear to be a bit circular relationship...
-  // So we cannot use the ParsedPipeline type. Consider improving this
-  // for the future
+  const postSource = (opts: {sourceId: Id['conn']}) =>
+    handle({connectionId: opts.sourceId})
 
-  // Should the mapping of the StandardInstitution happen inside here?
-  const institutionDestLink = () =>
-    handlersLink({
-      data: async (op) => {
-        // prettier-ignore
-        const {data: {entity, id}} = op
-        console.log('[institutionDestLink] patch', id, entity)
-        await patch(
-          'institution',
-          id as Id['ins'],
-          entity as ZRaw['institution'],
-        )
-        // console.log(`[meta] Did update connection`, id, op.data)
-        return op
-      },
-    })
+  const postDestination = (opts: {
+    pipelineId: Id['pipe']
+    destinationId: Id['conn']
+  }) => handle({connectionId: opts.destinationId})
 
-  const postSourceLink = (_pipe: {id?: string | null}) =>
+  const persistInstitution = () => handle({})
+
+  const handle = ({
+    pipelineId,
+    connectionId,
+  }: {
+    /** Used for state persistence. Do not pass in until destination handled event already */
+    pipelineId?: Id['pipe']
+    connectionId?: Id['conn']
+  }) =>
     handlersLink({
       connUpdate: async (op) => {
-        const {id, settings = {}} = op
-        console.log('[postSourceLink] patch', id, R.keys(settings))
-        await patch('connection', id as Id['conn'], {settings})
-        // console.log(`[meta] Did update connection`, id, op.data)
-        return op
-      },
-    })
+        if (op.id !== connectionId) {
+          return op
+        }
+        const {
+          id,
+          settings = {},
+          envName,
+          integrationId,
+          institutionId,
+          ledgerId,
+        } = op
 
-  const postDestinationLink = (pipe: {id?: string | null}) =>
-    handlersLink({
-      connUpdate: async (op) => {
-        const {id, settings = {}, envName, integrationId, ledgerId} = op
-        console.log('[postDestinationLink] connUpdate', {
+        console.log('[metaLink] connUpdate', {
           connectionId: id,
           settings: R.keys(settings),
           envName,
@@ -52,21 +55,33 @@ export function makeMetaLinks(metaBase: MetaService) {
           settings,
           envName,
           integrationId,
+          institutionId,
           ledgerId,
         })
         return op
       },
       stateUpdate: async (op) => {
-        if (pipe.id) {
-          console.log('[postDestinationLink] stateUpdate', pipe.id, {
+        if (pipelineId) {
+          console.log('[metaLink] stateUpdate', pipelineId, {
             sourceSyncOptions: R.keys(op.sourceSyncOptions ?? {}),
             destinationSyncOptions: R.keys(op.destinationSyncOptions ?? {}),
           })
-          await patch('pipeline', pipe.id as Id['pipe'], {
+          await patch('pipeline', pipelineId as Id['pipe'], {
             sourceOptions: op.sourceSyncOptions,
             destinationOptions: op.destinationSyncOptions,
           })
         }
+        return op
+      },
+      data: async (op) => {
+        // prettier-ignore
+        const {data: {entity, entityName, id}} = op
+        if (entityName !== IDS_INVERTED.ins) {
+          return op
+        }
+        console.log('[metaLink] patch', id, entity)
+        await patch(entityName, id as Id['ins'], entity as ZRaw['institution'])
+        // console.log(`[meta] Did update connection`, id, op.data)
         return op
       },
     })
@@ -89,9 +104,5 @@ export function makeMetaLinks(metaBase: MetaService) {
     }
   }
 
-  return {
-    institutionDestLink,
-    postSourceLink,
-    postDestinationLink,
-  }
+  return {postSource, postDestination, persistInstitution}
 }

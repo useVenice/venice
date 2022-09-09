@@ -132,15 +132,15 @@ export const makeSyncEngine = <
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
           int.provider.def._opConn(`${cs.externalId}`, {
-            // TODO: These attributes should be directly passed into the metaLink
+            institutionId: cs.externalInstitutionId
+              ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
+              : undefined,
+            // TODO: These attributes below should be directly passed into the metaLink
             // rather than sent as part of the connUpdate event
             integrationId: int.id,
             settings: cs.settings,
             ledgerId: cs.ledgerId,
             envName: cs.envName,
-            institutionId: cs.externalInstitutionId
-              ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
-              : undefined,
           }),
         ),
       ),
@@ -255,7 +255,7 @@ export const makeSyncEngine = <
               ) ?? rxjs.EMPTY,
           ),
         ),
-        destination: metaLinks.institutionDestLink(),
+        destination: metaLinks.persistInstitution(),
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
@@ -290,7 +290,9 @@ export const makeSyncEngine = <
         // Raw Source, may come from fs, firestore or postgres
         source: source$.pipe(
           // logLink({prefix: 'postSource', verbose: true}),
-          metaLinks.postSourceLink(pipeline),
+
+          // Maybe there is a better way, but we explicitly do not
+          metaLinks.postSource({sourceId: src.id}),
         ),
         links: getLinksForPipeline?.(pipeline) ?? links,
         // WARNING: It is insanely unclear to me why moving `metaLinks.link`
@@ -303,7 +305,10 @@ export const makeSyncEngine = <
         // it happens...
         destination: rxjs.pipe(
           destination$$,
-          metaLinks.postDestinationLink(pipeline),
+          metaLinks.postDestination({
+            pipelineId: pipeline.id,
+            destinationId: dest.id,
+          }),
         ),
         watch,
       })
@@ -372,11 +377,6 @@ export const makeSyncEngine = <
         return 'Connection Success'
       },
     ),
-    revokeConnection: zFunction(
-      zConn,
-      async ({settings, integration: {provider, config}}) =>
-        provider.revokeConnection?.(settings, config),
-    ),
     handleWebhook: zFunction([zInt, zWebhookInput], async (int, input) => {
       if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
         console.warn(`${int.provider.name} does not handle webhooks`)
@@ -392,6 +392,12 @@ export const makeSyncEngine = <
         ),
       )
     }),
+    // What about delete? Should this delete also? Or soft delete?
+    revokeConnection: zFunction(
+      zConn,
+      async ({settings, integration: {provider, config}}) =>
+        provider.revokeConnection?.(settings, config),
+    ),
   }
 
   // TODO: Figure out how to decouple makeRouter from here once we can figure

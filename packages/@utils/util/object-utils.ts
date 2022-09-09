@@ -4,12 +4,13 @@ import {
   isPlainObject as _isPlainObject,
   pickBy as _pickBy,
 } from 'lodash'
+import {invert as _invert} from 'lodash'
 import {omit as _omit, pick as _pick, compact} from 'remeda'
 import {mergeDeep as _deepMerge} from 'timm'
 
 import {R} from './data-utils'
 import {math} from './math-utils'
-import type {AnyRecord, ObjectPartialDeep} from './type-utils'
+import type {AnyRecord, Invert, ObjectPartialDeep} from './type-utils'
 
 export const floatingDeepEqual = createCustomEqual(
   (_deepEqual) => (a, b, meta) => {
@@ -415,8 +416,12 @@ export {
   shallowEqual,
 } from 'fast-equals'
 export {flattie} from 'flattie'
-export {invert, isEmpty, omitBy, pickBy, setWith as setAtWith} from 'lodash'
+export {isEmpty, omitBy, pickBy, setWith as setAtWith} from 'lodash'
 export {default as diff} from 'microdiff'
 export {nestie} from 'nestie'
 export {mapKeys, mapValues, mergeAll} from 'remeda'
 export {get as getAt, set as setAt} from 'shvl'
+
+export function invert<T extends Record<keyof T, keyof any>>(obj: T) {
+  return _invert(obj) as Invert<T>
+}

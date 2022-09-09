@@ -1,4 +1,4 @@
-import {compact, z} from '@ledger-sync/util'
+import {compact, invert, Invert, R, z} from '@ledger-sync/util'
 
 export type ExternalId = z.infer<typeof zExternalId>
 export const zExternalId = z.union([z.string(), z.number()])
@@ -29,6 +29,8 @@ export const IDS = {
   ...META_IDS,
   ...DATA_IDS,
 }
+
+export const IDS_INVERTED = invert(IDS)
 
 type BASE_META_ID_PREFIX = typeof BASE_META_IDS[keyof typeof BASE_META_IDS]
 
