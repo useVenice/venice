@@ -9,10 +9,7 @@ import {airtableProvider} from '@ledger-sync/core-integration-airtable'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider} from '@ledger-sync/core-integration-fs'
 import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
-import {
-  corePostgresProvider,
-  makePostgresConfigService,
-} from '@ledger-sync/core-integration-postgres'
+import {corePostgresProvider} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine'
 import {beancountProvider} from '@ledger-sync/integration-beancount'
 import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
@@ -29,7 +26,10 @@ import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
-function getEnv(key: string, opts?: {json?: boolean; optional?: boolean}) {
+export function getEnv(
+  key: string,
+  opts?: {json?: boolean; optional?: boolean},
+) {
   // Modify me to work on clientSide also...
   // Using perhaps localStorage, with param for clientOnly
   if (typeof window !== 'undefined') {
@@ -100,9 +100,6 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     // },
   },
   // TODO: support other config service such as fs later...
-  configService: makePostgresConfigService({
-    databaseUrl: getEnv('POSTGRES_URL'),
-  }),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   routerUrl: '/api', // apiUrl?
   getLinksForPipeline: ({src, links, dest}) =>

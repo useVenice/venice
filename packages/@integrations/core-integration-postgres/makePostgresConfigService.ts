@@ -37,17 +37,20 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 export const makePostgresConfigService = zFunction(
   zPgConfig.pick({databaseUrl: true}),
   ({databaseUrl}): ConfigService => {
-    const tables: ConfigService['tables'] = {
+    const getTables = (): ConfigService['tables'] => ({
+      // Delay calling of __getDeps until later..
       connection: metaTable('connection', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),
       integration: metaTable('integration', _getDeps(databaseUrl)),
       pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
-    }
+    })
     return {
-      tables,
+      get tables() {
+        return getTables()
+      },
       // Perhaps this should just be searchInstitutions? And when there are no terms
       // passed to search it becomes by default listing top ones...
-      listTopInstitutions: () => tables.institution.list({limit: 10}),
+      listTopInstitutions: () => getTables().institution.list({limit: 10}),
       findPipelines: ({connectionId}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
         return getPool().then((pool) =>

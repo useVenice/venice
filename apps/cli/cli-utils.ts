@@ -1,7 +1,9 @@
-import * as trpc from '@trpc/server'
-import cac from 'cac'
 import fs from 'node:fs'
 import path from 'node:path'
+
+import * as trpc from '@trpc/server'
+import cac from 'cac'
+
 import type {AnyZFunction, z} from '@ledger-sync/util'
 import {
   compact,
@@ -103,7 +105,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       // This doesn't work very well as it makes the args passed to action disappear
       // Figure out a better type if we can...
       // .command(compact([name, tuple?.items.length && '[...args]']).join(' '))
-      .command(`${name} [...maybeArgs]`)
+      .command(`${name} [...args]`)
       .allowUnknownOptions() // No args supported, only options...
       .action(async (args: string[], {'--': _, ...options} = {}) => {
         /**
@@ -150,7 +152,7 @@ export function cliFromZFunctionMap(
       (k) => !commandKeys.includes(k),
     )) {
       cli
-        .command(`${name} [...maybeArgs]`)
+        .command(`${name} [...args]`)
         .allowUnknownOptions()
         .action(async (args: string[], {'--': _, ...options}) => {
           console.log(`[cli] ${name} args options`, args, options)

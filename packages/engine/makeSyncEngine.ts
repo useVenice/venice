@@ -47,10 +47,6 @@ export interface SyncEngineConfig<
   providers: TProviders
   linkMap?: TLinks
 
-  /** Used to store metadata */
-
-  configService: ConfigService
-
   /** Base url of the router when deployed, e.g. `localhost:3000/api/ledger-sync` */
   routerUrl?: string
 
@@ -74,13 +70,17 @@ export interface SyncEngineConfig<
 export const makeSyncEngine = <
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->({
-  providers,
-  configService,
-  defaultPipeline,
-  defaultIntegrations,
-  getLinksForPipeline,
-}: SyncEngineConfig<TProviders, TLinks>) => {
+>(
+  {
+    providers,
+    defaultPipeline,
+    defaultIntegrations,
+    getLinksForPipeline,
+  }: SyncEngineConfig<TProviders, TLinks>,
+  // Consider separating out clientConfigs from serverConfigs...
+  /** Used to store metadata */
+  configService: ConfigService,
+) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
 
   const metaLinks = makeMetaLinks(configService)
