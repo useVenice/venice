@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
+
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
+
 import {ActiveLink} from './ActiveLink'
 
 export interface LinkInput {

@@ -1,6 +1,7 @@
 import {maxBy, minBy} from 'lodash'
 import {DateTime} from 'luxon'
 import {format as formatTimeAgo} from 'timeago.js'
+
 import {catchAsNull, memoizeBy} from './function-utils'
 import {shallowEqual} from './object-utils'
 import {MPDate} from './schrono'

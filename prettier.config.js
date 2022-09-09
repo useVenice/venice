@@ -8,7 +8,7 @@ module.exports = {
   importOrder: ['<THIRD_PARTY_MODULES>', '^@ledger-sync/(.*)$', '^[./]'],
   importOrderCaseInsensitive: true,
   importOrderGroupNamespaceSpecifiers: true,
-  importOrderSeparation: false, // Needed to make sure register files are imported first
+  importOrderSeparation: true, // Needed to make sure register files are imported first
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [

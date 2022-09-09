@@ -14,6 +14,7 @@ import {
   PlaidEnvironments,
   Products,
 } from 'plaid'
+
 import {
   castIs,
   getDefaultProxyAgent,
@@ -22,6 +23,7 @@ import {
   zCast,
   zFunction,
 } from '@ledger-sync/util'
+
 import {inferPlaidEnvFromToken} from './plaid-utils'
 
 type EnvName = z.infer<typeof zEnvName>

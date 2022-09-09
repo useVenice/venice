@@ -2,6 +2,7 @@ import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
 import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {fromCompletion, z, zCast} from '@ledger-sync/util'
+
 import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
 
 const def = makeSyncProvider.def({

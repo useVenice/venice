@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {loadScriptOnce} from '@ledger-sync/cdk-core'
 
 function loadTellerConnect() {

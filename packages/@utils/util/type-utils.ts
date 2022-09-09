@@ -1,4 +1,5 @@
 import type {JsonValue, Primitive, UnionToIntersection} from 'type-fest'
+
 import type {rxjs} from './observable-utils'
 
 export type AnyArray<T> = T[] | readonly T[]

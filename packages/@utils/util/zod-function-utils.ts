@@ -1,4 +1,5 @@
 import {z} from 'zod'
+
 import {isZodType} from './zod-utils'
 
 /** Use fn.implementation to access the raw fn without validation */

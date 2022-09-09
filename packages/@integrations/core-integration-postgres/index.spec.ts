@@ -1,4 +1,5 @@
 import './register.node'
+
 import {upsertByIdQuery} from './makePostgresClient'
 
 // String snapshot serializer

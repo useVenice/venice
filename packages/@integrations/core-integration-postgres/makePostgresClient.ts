@@ -1,4 +1,5 @@
 import {createInterceptors} from 'slonik-interceptor-preset'
+
 import {
   defineProxyFn,
   isPlainObject,

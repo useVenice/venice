@@ -1,8 +1,10 @@
 import React from 'react'
+
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
+
 import {
   itemProjectResponseSchema,
   itemTimeEntriesSchema,

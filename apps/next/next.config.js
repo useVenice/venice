@@ -2,6 +2,7 @@ const path = require('node:path')
 const webpack = require('webpack')
 // prettier-ignore
 const withTM = require('next-transpile-modules')([
+  'chrono-node',
   path.resolve(__dirname, '../app-config'),
   path.resolve(__dirname, '../app'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-airtable'),
@@ -42,6 +43,9 @@ module.exports = withTM(
     swcMinify: true,
     typescript: {
       ignoreBuildErrors: true,
+    },
+    eslint: {
+      ignoreDuringBuilds: true,
     },
     experimental: {
       esmExternals: false,
