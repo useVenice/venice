@@ -16,7 +16,7 @@ export function normalizeError(err: unknown) {
     return err
   }
   if (isPlainObject(err)) {
-    return new RichError(getErrorMessage(err), err as Record<string, unknown>)
+    return new RichError(getErrorMessage(err), err)
   }
   return new Error(getErrorMessage(err))
 }

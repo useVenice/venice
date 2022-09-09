@@ -49,8 +49,7 @@ export const fieldArrayRemove = <T>(val: T) =>
   fieldValue().arrayRemove(val) as unknown as T[]
 
 export const timestamp = () => resolveDependency(kTimestamp)
-export const currentTimestamp = () =>
-  resolveDependency(kTimestamp).now() as AnyTimestamp
+export const currentTimestamp = () => resolveDependency(kTimestamp).now()
 // Start using  serverTimestamp() later once we have a dependency
 // on the serverTimestamp() being accurate
 // fieldValue().serverTimestamp() as AnyTimestamp

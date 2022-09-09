@@ -260,7 +260,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
       const snap = await rxjs.firstValueFrom(getReceiptsSnapshot$(updatedSince))
       return snap.docs.map((d) => ({
         _docId: d.id,
-        ...(d.data() as Foreceipt.Receipt),
+        ...d.data(),
       }))
     }),
     getUserAndTeamInfo: zFunction(async () => {

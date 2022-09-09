@@ -197,7 +197,7 @@ export const yodleeProvider = makeSyncProvider({
         institution: settings.provider
           ? {
               // TODO: Figure out how not to repeat ourselves here...
-              ...this.institution!({
+              ...this.institution({
                 ...settings.provider,
                 _envName: settings.envName,
               }),
