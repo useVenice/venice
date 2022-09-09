@@ -5,7 +5,12 @@ module.exports = {
   arrowParens: 'always',
   bracketSameLine: true,
   bracketSpacing: false,
-  importOrder: ['<THIRD_PARTY_MODULES>', '^@ledger-sync/(.*)$', '^[./]'],
+  importOrder: [
+    '^node:(.+)$',
+    '<THIRD_PARTY_MODULES>',
+    '^@ledger-sync/(.+)$',
+    '^[./]',
+  ],
   importOrderCaseInsensitive: true,
   importOrderGroupNamespaceSpecifiers: true,
   importOrderSeparation: true, // Needed to make sure register files are imported first

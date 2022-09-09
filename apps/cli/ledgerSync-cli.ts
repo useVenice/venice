@@ -3,10 +3,11 @@
 // and thus causing runtime failure... Therefore we moved it to the ledgerSync bin
 import '@ledger-sync/app-config/register.node'
 
+import http from 'node:http'
+
 import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
-import http from 'node:http'
 
 import type {LedgerSyncRouter} from '@ledger-sync/app-config'
 import {
