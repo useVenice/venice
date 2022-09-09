@@ -17,6 +17,7 @@ import {
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
+  identity,
   R,
   routerFromZFunctionMap,
   Rx,
@@ -33,6 +34,7 @@ import type {
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
+  zInput,
 } from './makeSyncParsers'
 import {makeSyncParsers} from './makeSyncParsers'
 import {sync} from './sync'
@@ -132,15 +134,10 @@ export const makeSyncEngine = <
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
           int.provider.def._opConn(`${cs.externalId}`, {
+            settings: cs.settings,
             institutionId: cs.externalInstitutionId
               ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
               : undefined,
-            // TODO: These attributes below should be directly passed into the metaLink
-            // rather than sent as part of the connUpdate event
-            integrationId: int.id,
-            settings: cs.settings,
-            ledgerId: cs.ledgerId,
-            envName: cs.envName,
           }),
         ),
       ),
@@ -290,9 +287,7 @@ export const makeSyncEngine = <
         // Raw Source, may come from fs, firestore or postgres
         source: source$.pipe(
           // logLink({prefix: 'postSource', verbose: true}),
-
-          // Maybe there is a better way, but we explicitly do not
-          metaLinks.postSource({sourceId: src.id}),
+          metaLinks.postSource({src}),
         ),
         links: getLinksForPipeline?.(pipeline) ?? links,
         // WARNING: It is insanely unclear to me why moving `metaLinks.link`
@@ -305,10 +300,7 @@ export const makeSyncEngine = <
         // it happens...
         destination: rxjs.pipe(
           destination$$,
-          metaLinks.postDestination({
-            pipelineId: pipeline.id,
-            destinationId: dest.id,
-          }),
+          metaLinks.postDestination({pipelineId: pipeline.id, dest}),
         ),
         watch,
       })
@@ -322,19 +314,23 @@ export const makeSyncEngine = <
 
       if (pipelines.length === 0 && defaultPipeline) {
         pipelines.push(
-          await zPipeline.parseAsync({
-            ...defaultPipeline,
-            // Could the new connection be dest as well?
-            // Should make defaultPipeline a function that accepts a connection
-            // TODO: This is really not typesafe, let's fix me...
-            src: {...conn, provider: conn.integration.provider.name},
-          }),
+          await zPipeline.parseAsync(
+            identity<z.infer<typeof zInput['pipeline']>>({
+              // TODO: Make getDefaultPipeline a function...
+              ...defaultPipeline,
+              // Could the new connection be dest as well?
+              // Should make defaultPipeline a function that accepts a connection
+              source: conn,
+              // Notably integrationId, ledgerId, etc does not apply to the destination, only src
+            }),
+          ),
         )
       }
       await Promise.all(
         pipelines.map((pipe) =>
           syncEngine.syncPipeline.impl({
             ...pipe,
+            // TODO: How do we refactor to get rid of _source$ and _destination$$
             source: {...pipe.source, _source$: conn._source$},
             destination: {
               ...pipe.destination,

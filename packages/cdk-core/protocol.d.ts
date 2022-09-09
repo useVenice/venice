@@ -44,14 +44,10 @@ export type SyncOperation<
 > =
   | {
       type: 'connUpdate'
-      // TODO: Consider merging all the fields below into a single field
+      // TODO: Consider merging into single field...
       id: Id['conn']
       settings?: ObjectPartialDeep<NoInfer<TSettings>>
       institutionId?: Id['ins']
-      // TODO: Consider if these fields should actually exist on the operation itself
-      integrationId?: Id['int']
-      ledgerId?: Id['ldgr']
-      envName?: EnvName
     }
   | {
       type: 'stateUpdate'

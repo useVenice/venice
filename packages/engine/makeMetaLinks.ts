@@ -12,51 +12,42 @@ import {deepMerge, R} from '@ledger-sync/util'
 // Should the mapping of the StandardInstitution happen inside here?
 
 export function makeMetaLinks(metaBase: MetaService) {
-  const postSource = (opts: {sourceId: Id['conn']}) =>
-    handle({connectionId: opts.sourceId})
+  type Conn = Pick<
+    ZRaw['connection'],
+    'id' | 'envName' | 'integrationId' | 'ledgerId'
+  >
+  const postSource = (opts: {src: Conn}) => handle({connection: opts.src})
 
-  const postDestination = (opts: {
-    pipelineId: Id['pipe']
-    destinationId: Id['conn']
-  }) => handle({connectionId: opts.destinationId})
+  const postDestination = (opts: {pipelineId: Id['pipe']; dest: Conn}) =>
+    handle({connection: opts.dest})
 
   const persistInstitution = () => handle({})
 
   const handle = ({
     pipelineId,
-    connectionId,
+    connection,
   }: {
     /** Used for state persistence. Do not pass in until destination handled event already */
     pipelineId?: Id['pipe']
-    connectionId?: Id['conn']
+    connection?: Conn
   }) =>
     handlersLink({
       connUpdate: async (op) => {
-        if (op.id !== connectionId) {
+        if (op.id !== connection?.id) {
           return op
         }
-        const {
-          id,
-          settings = {},
-          envName,
-          integrationId,
-          institutionId,
-          ledgerId,
-        } = op
-
+        const {id, settings = {}, institutionId} = op
         console.log('[metaLink] connUpdate', {
-          connectionId: id,
+          id,
           settings: R.keys(settings),
-          envName,
-          integrationId,
-          ledgerId,
+          institutionId,
         })
         await patch('connection', id, {
           settings,
-          envName,
-          integrationId,
           institutionId,
-          ledgerId,
+          envName: connection.envName,
+          integrationId: connection.integrationId,
+          ledgerId: connection.ledgerId,
         })
         return op
       },
