@@ -30,6 +30,9 @@ import type {SyncEngineConfig} from './makeSyncEngine'
 // Generic Output / Output
 // We implement all except Generic Output
 
+export type ZInput = {
+  [k in keyof typeof zInput]: z.infer<typeof zInput[k]>
+}
 export const zInput = (() => {
   const provider = z.string().brand<'provider'>()
   // zRaw also have a bunch of things such as ledgerId, envName, etc.
@@ -119,12 +122,12 @@ export function makeSyncParsers<
 >({
   providers,
   linkMap,
-  defaultPipeline,
+  getDefaultPipeline,
   getDefaultConfig,
   metaService: m, // Destructure can cause dependencies to be loaded...
 }: Pick<
   SyncEngineConfig<TProviders, TLinks>,
-  'providers' | 'linkMap' | 'defaultPipeline'
+  'providers' | 'linkMap' | 'getDefaultPipeline'
 > & {
   getDefaultConfig: (
     name: TProviders[number]['name'],
@@ -218,15 +221,14 @@ export function makeSyncParsers<
   )
 
   const zPipeline = z
-    .preprocess(
-      (arg) =>
-        typeof arg === 'object'
-          ? deepMerge(defaultPipeline, arg)
-          : arg ?? defaultPipeline,
-      castInput(zInput.pipeline)<
-        PipelineInput<TProviders[number], TProviders[number], TLinks>
-      >(),
-    )
+    .preprocess((arg) => {
+      const defaultPipe = getDefaultPipeline?.()
+      return !arg
+        ? defaultPipe
+        : typeof arg === 'object'
+        ? deepMerge(defaultPipe, arg)
+        : arg
+    }, castInput(zInput.pipeline)<PipelineInput<TProviders[number], TProviders[number], TLinks>>())
     .transform(
       zGuard(async ({id, ...input}) => {
         const pipeline = await m.tables.pipeline.get(id)

@@ -1,4 +1,4 @@
-import {debugProvider, logLink} from '@ledger-sync/cdk-core'
+import {debugProvider, extractId, logLink, makeId} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -147,27 +147,21 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // Default destination connection, may contain integration data
   // Default destination will have to be computed at runtime based on the current
   // user id for example. Will sort this later
-  defaultPipeline: {
-    id: 'pipe_TODO', // TODO: Default pipeline has got to be a function... Otherwise the `id` field makes no sense...
+  getDefaultPipeline: (conn) => ({
+    id: makeId('pipe', (conn?.id && extractId(conn.id)[1]) || 'default'),
+    source: conn,
     destination: {
       id: 'conn_postgres',
-      settings: {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        databaseUrl: process.env['POSTGRES_URL']!,
-        // Add migration here later.
-      },
+      // TODO: Add validation here, and perhaps migration too
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      settings: {databaseUrl: process.env['POSTGRES_URL']!},
       // provider: 'alka',
-      // data: {
+      // settings: {
       //   // authUserJson: getEnv('FIREBASE_AUTH_USER_STAGING'),
       //   ledgerIds: ['ldgr_default' as Id.ldgr],
       // },
     },
-  },
-  // defaultDestination: {
-  //   provider: 'beancount',
-  //   data: {outPath: './data'},
-  // },
+  }),
 })
 
-// TODO: Add me back once we are less verbosed
-// console.log('Using config', ledgerSyncConfig)
+// console.log('Using config', ledgerSyncConfig) // Too verbose...
