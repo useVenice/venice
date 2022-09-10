@@ -24,10 +24,16 @@ export interface MetaTable<
 
 export interface MetaService {
   tables: {
-    [k in keyof typeof zRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
+    [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
   }
   // Add tables in here instead...
   listTopInstitutions: () => Promise<ReadonlyArray<ZRaw['institution']>>
+  searchInstitutions: (options: {
+    /** Leave empty to list the top institutions */
+    keywords?: string | null
+    limit?: number
+    offset?: number
+  }) => Promise<ReadonlyArray<ZRaw['institution']>>
   findPipelines: (options: {
     connectionId: Id['conn']
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
