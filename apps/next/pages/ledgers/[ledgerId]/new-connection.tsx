@@ -26,7 +26,8 @@ export default function LedgerNewConnectionScreen() {
     ),
   )
   const [envName, setEnvName] = React.useState<EnvName>('sandbox')
-  const ls = useLedgerSync({ledgerId, envName})
+  const [keywords, setKeywords] = React.useState('')
+  const ls = useLedgerSync({ledgerId, envName, keywords})
   const institutions = ls.insRes.data
   return (
     <>
@@ -56,8 +57,7 @@ export default function LedgerNewConnectionScreen() {
                 event.preventDefault()
                 router.push(`/ledgers/${ledgerId}`)
               }}
-              className="pb-8"
-              >
+              className="pb-8">
               <div className="form-control">
                 <label htmlFor="searchInstitution" className="label">
                   <span className="label-text">Search Institution</span>
@@ -70,9 +70,13 @@ export default function LedgerNewConnectionScreen() {
                     placeholder="Ex: Chase or Amex"
                     id="searchInstitution"
                     className="input-bordered input w-full"
+                    value={keywords}
+                    onChange={(e) => setKeywords(e.target.value)}
                   />
 
-                  <button className="btn btn-primary text-lg px-8" type="submit">
+                  <button
+                    className="btn btn-primary px-8 text-lg"
+                    type="submit">
                     Search
                   </button>
                 </div>
@@ -84,7 +88,7 @@ export default function LedgerNewConnectionScreen() {
                   key={`${ins.id}`}
                   className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
                   <div className="card-body space-y-4">
-                    <div className="flex space-x-4 items-center">
+                    <div className="flex items-center space-x-4">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={ins.logoUrl}
