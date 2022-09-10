@@ -31,9 +31,12 @@ export const makePostgresClient = zFunction(
       async () => {
         const pool = await createPool(databaseUrl, {
           interceptors: createInterceptors({
-            logQueries: true, // TODO: Use roar-cli to make things better
+            logQueries: true, // TODO: Use roarr-cli to make things better
             normaliseQueries: true,
-            transformFieldNames: false,
+            // Inverse of what we are doing in `upsertByIdQuery` method
+            // This is not guaranteed to work so very important to have extra validation on top of
+            // the field values returned
+            transformFieldNames: true,
             benchmarkQueries: false,
           }),
           statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
