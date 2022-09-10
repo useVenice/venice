@@ -35,8 +35,10 @@ export const zInput = (() => {
   // zRaw also have a bunch of things such as ledgerId, envName, etc.
   // Do we want to worry about those?
   const integration = zRaw.integration
+  const institution = zRaw.institution
   const connection = zRaw.connection.omit({standard: true}).extend({
     integration: integration.optional(),
+    institution: institution.optional(),
     // Should never be actually passed in...
     _source$: zCast<Source<AnyEntityPayload>>().optional(),
     _destination$$: zCast<Destination>().optional(),
@@ -46,7 +48,7 @@ export const zInput = (() => {
     destination: connection.optional(),
     watch: z.boolean().optional(),
   })
-  return {provider, integration, connection, pipeline}
+  return {provider, institution, integration, connection, pipeline}
 })()
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
@@ -160,25 +162,58 @@ export function makeSyncParsers<
     }),
   )
 
+  const zIns = zInput.institution.transform(
+    zGuard(async ({id, ...input}) => {
+      const institution = await m.tables.institution.get(id)
+      const provider = zProvider.parse(id, {path: ['id']})
+      const external = deepMerge(institution?.external, input.external)
+      const standard = provider.def.institutionData?.parse(external, {
+        path: ['external'],
+      })
+      return {...institution, ...input, external, standard}
+    }),
+  )
+
   const zConn = castInput(zInput.connection)<
     ConnectionInput<TProviders[number]>
   >().transform(
     zGuard(async ({id, ...input}) => {
       const conn = await m.tables.connection.get(id)
-      const integration = await zInt.parseAsync(
-        identity<z.infer<typeof zInput['integration']>>({
-          id:
-            conn?.integrationId ??
-            input.integrationId ??
-            makeId('int', extractId(id)[1], ''),
-          config: input.integration?.config,
-        }),
-      )
+      const [
+        integration,
+        // , institution
+      ] = await Promise.all([
+        zInt.parseAsync(
+          identity<z.infer<typeof zInput['integration']>>({
+            id:
+              conn?.integrationId ??
+              input.integrationId ??
+              makeId('int', extractId(id)[1], ''),
+            config: input.integration?.config,
+          }),
+        ),
+        // zIns.parseAsync(
+        //   identity<z.infer<typeof zInput['institution']>>({
+        //     id:
+        //       conn?.institutionId ??
+        //       input.institutionId ??
+        //       makeId('ins', extractId(id)[1], ''),
+        //     external: input.institution?.external,
+        //   }),
+        // ),
+      ])
       const settings = integration.provider.def.connectionSettings?.parse(
         deepMerge(conn?.settings, input.settings),
         {path: ['settings']},
       )
-      return {...conn, ...input, id, integration, settings}
+      return {
+        ...conn,
+        ...input,
+        id,
+        integration,
+        // institution,
+        settings,
+      }
     }),
   )
 
@@ -277,5 +312,5 @@ export function makeSyncParsers<
     }),
   )
 
-  return {zProvider, zInt, zConn, zPipeline, zConnectContext}
+  return {zProvider, zInt, zIns, zConn, zPipeline, zConnectContext}
 }

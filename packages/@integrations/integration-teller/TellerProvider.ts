@@ -170,7 +170,7 @@ export const tellerProvider = makeSyncProvider({
       externalId: input.token, // FIXME
       settings,
       source$,
-      externalInstitutionId: '', // FIXME
+      // externalInstitutionId: '', // FIXME
     }
   },
   sourceSync: ({settings: input, config}) => {

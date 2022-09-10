@@ -7,7 +7,7 @@ import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {Destination, Source, SyncOperation} from './protocol'
 
-// MARK: - Connect types (move these out...)
+// MARK: - Client side connect types
 
 /** TODO: Move me to client side... */
 export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
@@ -21,7 +21,6 @@ export interface DialogConfig {
   options?: {onClose?: () => void}
 }
 
-/** TODO: Move me to client side... */
 export interface UseConnectScope {
   openDialog: (
     Component: DialogConfig['Component'],
@@ -45,6 +44,8 @@ export const zConnectContextInput = z.object({
   connectionId: zId('conn').nullish(),
 })
 
+// MARK: - Connect types
+
 export interface ConnectContext<TSettings> {
   ledgerId: Id['ldgr']
   envName: EnvName
@@ -60,8 +61,11 @@ export interface ConnectedSource<T extends AnyProviderDef>
   // Should we instead use mapStandardConnection for this?
   externalId: ExternalId
   settings: T['_types']['connectionSettings']
+  institution?: {
+    externalId: ExternalId
+    data: T['_types']['institutionData']
+  }
   source$: Source<T['_types']['sourceOutputEntity']>
-  externalInstitutionId?: ExternalId
   /** syncConnection should be called after */
   // triggerSync: boolean
 }

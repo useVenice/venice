@@ -270,7 +270,7 @@ export const yodleeProvider = makeSyncProvider({
       externalId: providerAccountId,
       settings,
       source$: rxjs.EMPTY,
-      externalInstitutionId: providerId,
+      // externalInstitutionId: providerId,
     }
   },
 

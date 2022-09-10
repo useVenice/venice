@@ -285,7 +285,7 @@ export const plaidProvider = makeSyncProvider({
         ),
         source$,
       ),
-      externalInstitutionId: meta?.institution?.institution_id,
+      // externalInstitutionId: meta?.institution?.institution_id,
     }
   },
 

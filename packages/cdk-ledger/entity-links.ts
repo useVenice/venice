@@ -47,7 +47,7 @@ export const mapStandardEntityLink = ({
     if (op.type !== 'data') {
       return rxjs.of(op)
     }
-    // TODO: Fold in the `prefixId` link
+
     // TODO: Update the initialConn as we receive connection updates
 
     const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>

@@ -91,6 +91,6 @@ export const zRaw = {
   institution: z.object({
     id: zId('ins'),
     standard: zStandard.institution.omit({id: true}).optional(),
-    external: zJsonObject,
+    external: zJsonObject.optional(),
   }),
 }
