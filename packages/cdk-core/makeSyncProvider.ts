@@ -98,13 +98,7 @@ type NeverKeys<T> = Exclude<
 
 type OmitNever<T> = Omit<T, NeverKeys<T>> // & {[k in NeverKeys<T>]?: undefined}
 
-export type AnyProviderDef = Omit<
-  ReturnType<typeof makeSyncProviderDef>,
-  // Including these three introduces type issues... Not entirely
-  // sure how to fix them for now. Other keys seems fine somehow...
-  // Perhaps we should use `Pick` instead of `Omit`?
-  '_type' | '_op' | '_opConn' | '_preConnOption' | '_insOpData'
->
+export type AnyProviderDef = ReturnType<typeof makeSyncProviderDef>
 function makeSyncProviderDef<
   TName extends string,
   ZIntConfig extends _opt<z.ZodTypeAny>,
@@ -160,15 +154,23 @@ function makeSyncProviderDef<
       _types['destinationSyncOptions']
     >
   >
+  return {
+    ...schemas,
+    _types: {} as _types,
+    _opType: {} as Op,
+    _insOpType: {} as InsOpData,
+  }
+}
+
+makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
+  type _types = T['_types']
+  type InsOpData = T['_insOpType']
+  type Op = T['_opType']
   type OpData = Extract<Op, {type: 'data'}>
   type OpConn = Extract<Op, {type: 'connUpdate'}>
   type OpState = Extract<Op, {type: 'stateUpdate'}>
   return {
-    ...schemas,
-    /** Helpers. Would be great if they could be extracted to separate namespace from schemas */
-    _types: {} as _types,
-    _opType: {} as Op,
-    _insOpType: {} as InsOpData,
+    ...def,
     _type: <K extends keyof _types>(_k: K, v: _types[K]) => v,
     _op: <K extends Op['type']>(
       ...args: {} extends Omit<Extract<Op, {type: K}>, 'type'>
@@ -179,7 +181,7 @@ function makeSyncProviderDef<
       // We don't prefix in `_opData`, should we actually prefix here?
       ...rest,
       // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-      id: makeId('conn', schemas.name.value, id),
+      id: makeId('conn', def.name.value, id),
       type: 'connUpdate',
     }),
     _opState: (
@@ -206,7 +208,7 @@ function makeSyncProviderDef<
       type: 'data',
       data: {
         // We don't prefix in `_opData`, should we actually prefix here?
-        id: makeId('ins', schemas.name.value, id),
+        id: makeId('ins', def.name.value, id),
         entityName: 'institution',
         entity: insitutionData,
       },

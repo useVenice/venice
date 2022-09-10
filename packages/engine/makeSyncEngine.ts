@@ -3,18 +3,16 @@ import * as trpc from '@trpc/server'
 import type {
   AnySyncProvider,
   ConnectedSource,
-  ConnUpdateData,
   Link,
   LinkFactory,
   MetaService,
-  StateUpdateData,
-  SyncOperation,
   ZRaw,
 } from '@ledger-sync/cdk-core'
 import {
   extractId,
   handlersLink,
   makeId,
+  makeSyncProvider,
   zId,
   zStandard,
   zWebhookInput,
@@ -141,24 +139,7 @@ export const makeSyncEngine = <
       //   : undefined,
     }
     console.log('[parsedConn]', conn)
-    // TODO: Fix me...
-    type _types = typeof int.provider.def['_types']
-    type Op = SyncOperation<
-      _types['sourceOutputEntity'],
-      ConnUpdateData<_types['connectionSettings'], _types['institutionData']>,
-      StateUpdateData<
-        _types['sourceSyncOptions'],
-        _types['destinationSyncOptions']
-      >
-    >
-    type OpConn = Extract<Op, {type: 'connUpdate'}>
-    const _opConn = (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
-      // We don't prefix in `_opData`, should we actually prefix here?
-      ...rest,
-      // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-      id: makeId('conn', int.provider.def.name.value, id),
-      type: 'connUpdate',
-    })
+    const helpers = makeSyncProvider.def.helpers(int.provider.def)
     // Questionable whether this should be the case...
     return {
       ...conn,
@@ -171,7 +152,7 @@ export const makeSyncEngine = <
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
-          _opConn(`${cs.externalId}`, {
+          helpers._opConn(`${cs.externalId}`, {
             settings: conn.settings,
             // institutionId: conn.institutionId,
           }),

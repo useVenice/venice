@@ -42,7 +42,7 @@ const zSettings = zUserCreds.extend({
   providerAccount: zProviderAccount.nullish(),
 })
 
-export const yodleeProviderDef = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('yodlee'),
   integrationConfig: zConfig,
@@ -74,6 +74,7 @@ export const yodleeProviderDef = makeSyncProvider.def({
 
   // Should the mappers be in here instead? Or a separate function?
 })
+export const yodleeProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const yodleeProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(yodleeProviderDef, {

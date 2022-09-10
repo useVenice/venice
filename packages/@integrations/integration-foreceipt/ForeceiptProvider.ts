@@ -24,7 +24,7 @@ import type {ForeceiptClientOptions} from './ForeceiptClient'
 import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('foreceipt'),
   // integrationConfig: zForeceiptConfig,
@@ -62,6 +62,7 @@ const def = makeSyncProvider.def({
     }),
   ]),
 })
+const def = makeSyncProvider.def.helpers(_def)
 
 export const foreceiptProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {

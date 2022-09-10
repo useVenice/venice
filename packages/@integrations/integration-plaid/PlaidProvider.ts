@@ -33,7 +33,7 @@ import {makePlaidClient, zPlaidClientConfig} from './PlaidClient'
 
 type PlaidSyncOperation = typeof def['_opType']
 
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
@@ -74,6 +74,7 @@ const def = makeSyncProvider.def({
   ]),
   webhookInput: zWebhookInput,
 })
+const def = makeSyncProvider.def.helpers(_def)
 
 export const plaidProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {

@@ -11,7 +11,7 @@ import {makeStripeClient, zStripeConfig} from './StripeClient'
 type StripeEntity = z.infer<typeof def['sourceOutputEntity']>
 type StripeSyncOperation = typeof def['_opType']
 
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('stripe'),
   integrationConfig: zStripeConfig,
@@ -47,6 +47,7 @@ const def = makeSyncProvider.def({
     })
     .default({}),
 })
+const def = makeSyncProvider.def.helpers(_def)
 
 export const stripeProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {

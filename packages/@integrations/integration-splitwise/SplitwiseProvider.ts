@@ -17,7 +17,7 @@ import type {zUser} from './splitwise-schema'
 import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
 import {makeSplitwiseClient} from './SplitwiseClientNext'
 
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('splitwise'),
   connectionSettings: z.object({
@@ -38,6 +38,7 @@ const def = makeSyncProvider.def({
     }),
   ]),
 })
+const def = makeSyncProvider.def.helpers(_def)
 
 export const splitwiseProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {
