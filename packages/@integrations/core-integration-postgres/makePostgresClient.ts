@@ -106,7 +106,9 @@ export function upsertByIdQuery(
   const [cols, vals] = R.pipe(
     omitBy(valueMap, (v) => v === undefined),
     R.mapKeys((k) => snakeCase(k as string)), // Should this ben an option?
-    R.mapValues((v) => (isPlainObject(v) ? sql.jsonb(v as any) : v)),
+    R.mapValues((v) =>
+      isPlainObject(v) || Array.isArray(v) ? sql.jsonb(v as any) : v,
+    ),
     (vmap) => ({...vmap, id, updated_at: sql.literalValue('now()')}),
     R.toPairs,
     R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),

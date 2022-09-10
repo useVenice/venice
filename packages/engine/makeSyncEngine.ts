@@ -327,7 +327,7 @@ export const makeSyncEngine = <
       console.log('[syncPipeline]', pipeline)
       const {
         source: src,
-        cookedLinks: links,
+        links: links,
         destination: dest,
         watch,
         ...rest
