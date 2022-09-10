@@ -140,6 +140,7 @@ export const makeSyncEngine = <
     return {
       ...conn,
       integration: int,
+      integrationId: int.id,
       // ConnectionUpdates can technically be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
         // Should we actually start with _opConn? Or let each provider control this
@@ -158,6 +159,9 @@ export const makeSyncEngine = <
   const syncEngine = {
     // Should we infer the input / return types if possible even without validation?
     health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
+
+    // MARK: - Metadata  etc
+
     listIntegrations: zFunction(
       z.object({type: z.enum(['source', 'destination']).nullish()}),
       // z.promise(z.array(z.object({type: z.enum(['source'])}))),
@@ -243,13 +247,13 @@ export const makeSyncEngine = <
       },
     ),
 
-    // TODO: Test out the `describe` function in zod...
-
     getIntegration: zFunction(zInt, async (int) => ({
       config: int.config,
       provider: int.provider.name,
       id: int.id,
     })),
+
+    // MARK: - Sync
 
     syncMetadata: zFunction(zInt.nullish(), async (int) => {
       const ints = int ? [int] : await getDefaultIntegrations()
@@ -282,9 +286,52 @@ export const makeSyncEngine = <
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
+    syncConnection: zFunction(zConn, async function syncConnection(conn) {
+      console.log('[syncConnection]', conn)
+      const pipelines = conn.id
+        ? await metaService
+            .findPipelines({connectionId: conn.id})
+            .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
+        : []
+
+      if (pipelines.length === 0 && defaultPipeline) {
+        pipelines.push(
+          await zPipeline.parseAsync(
+            identity<z.infer<typeof zInput['pipeline']>>({
+              // TODO: Make getDefaultPipeline a function...
+              ...defaultPipeline,
+              // Could the new connection be dest as well?
+              // Should make defaultPipeline a function that accepts a connection
+              source: conn,
+              ledgerId: conn.ledgerId,
+              // Notably integrationId, ledgerId, etc does not apply to the destination, only src
+            }),
+          ),
+        )
+      }
+      await Promise.all(
+        pipelines.map((pipe) =>
+          syncEngine.syncPipeline.impl({
+            ...pipe,
+            // TODO: How do we refactor to get rid of _source$ and _destination$$
+            source: {...pipe.source, _source$: conn._source$},
+            destination: {
+              ...pipe.destination,
+              _destination$$: conn._destination$$,
+            },
+          }),
+        ),
+      )
+    }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
       console.log('[syncPipeline]', pipeline)
-      const {source: src, links, destination: dest, watch, ...rest} = pipeline
+      const {
+        source: src,
+        cookedLinks: links,
+        destination: dest,
+        watch,
+        ...rest
+      } = pipeline
       const source$ =
         src._source$ ??
         src.integration.provider.sourceSync?.({
@@ -327,48 +374,13 @@ export const makeSyncEngine = <
         // it happens...
         destination: rxjs.pipe(
           destination$$,
-          metaLinks.postDestination({pipelineId: pipeline.id, dest}),
+          metaLinks.postDestination({pipeline, dest}),
         ),
         watch,
       })
     }),
-    syncConnection: zFunction(zConn, async function syncConnection(conn) {
-      console.log('[syncConnection]', conn)
-      const pipelines = conn.id
-        ? await metaService
-            .findPipelines({connectionId: conn.id})
-            .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
-        : []
 
-      if (pipelines.length === 0 && defaultPipeline) {
-        pipelines.push(
-          await zPipeline.parseAsync(
-            identity<z.infer<typeof zInput['pipeline']>>({
-              // TODO: Make getDefaultPipeline a function...
-              ...defaultPipeline,
-              // Could the new connection be dest as well?
-              // Should make defaultPipeline a function that accepts a connection
-              source: conn,
-              // Notably integrationId, ledgerId, etc does not apply to the destination, only src
-            }),
-          ),
-        )
-      }
-      await Promise.all(
-        pipelines.map((pipe) =>
-          syncEngine.syncPipeline.impl({
-            ...pipe,
-            // TODO: How do we refactor to get rid of _source$ and _destination$$
-            source: {...pipe.source, _source$: conn._source$},
-            destination: {
-              ...pipe.destination,
-              _destination$$: conn._destination$$,
-            },
-          }),
-        ),
-      )
-    }),
-    // getPreConnectInputs happens client side only
+    // MARK: - Connect lifecycle
 
     // SessionID would be awfully handy here...
     preConnect: zFunction(

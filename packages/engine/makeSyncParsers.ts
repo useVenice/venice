@@ -211,7 +211,9 @@ export function makeSyncParsers<
         ...input,
         id,
         integration,
+        integrationId: integration.id, // Ensure consistency
         // institution,
+        // insitutionId,
         settings,
       }
     }),
@@ -244,7 +246,7 @@ export function makeSyncParsers<
           ),
         ])
         // Validation happens inside for now
-        const links = R.pipe(
+        const cookedLinks = R.pipe(
           input.links ?? pipeline?.links ?? [],
           R.map((l) =>
             typeof l === 'string'
@@ -266,10 +268,13 @@ export function makeSyncParsers<
           )
         return {
           ...pipeline,
+          ...input,
           id,
           source,
+          sourceId: source.id, // Ensure consistency
           destination,
-          links,
+          destinationId: destination.id, // Ensure consistency
+          cookedLinks,
           sourceOptions,
           destinationOptions,
           watch: input.watch, // Should this be on pipeline too?

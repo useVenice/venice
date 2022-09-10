@@ -25,19 +25,24 @@ export function makeMetaLinks(metaBase: MetaService) {
     ZRaw['connection'],
     'id' | 'envName' | 'integrationId' | 'ledgerId'
   >
+  type Pipe = Pick<
+    ZRaw['pipeline'],
+    'id' | 'sourceId' | 'destinationId' | 'ledgerId' | 'links'
+  >
+
   const postSource = (opts: {src: Conn}) => handle({connection: opts.src})
 
-  const postDestination = (opts: {pipelineId: Id['pipe']; dest: Conn}) =>
-    handle({connection: opts.dest})
+  const postDestination = (opts: {pipeline: Pipe; dest: Conn}) =>
+    handle({connection: opts.dest, pipeline: opts.pipeline})
 
   const persistInstitution = () => handle({})
 
   const handle = ({
-    pipelineId,
+    pipeline,
     connection,
   }: {
     /** Used for state persistence. Do not pass in until destination handled event already */
-    pipelineId?: Id['pipe']
+    pipeline?: Pipe
     connection?: Conn
   }) =>
     // TODO: make standard insitution and connection here...
@@ -84,20 +89,40 @@ export function makeMetaLinks(metaBase: MetaService) {
           // connection establishing..
           integrationId,
           institutionId,
+          // maybe we should distinguish between setDefaults (from existingConnection) vs. actually
+          // updating the values...
           envName: connection.envName,
           ledgerId: connection.ledgerId,
         })
         return op
       },
       stateUpdate: async (op) => {
-        if (pipelineId) {
-          console.log('[metaLink] stateUpdate', pipelineId, {
+        console.log('[metaLink] stateUpdate', op, pipeline)
+        if (pipeline) {
+          console.log('[metaLink] stateUpdate', pipeline.id, {
             sourceSyncOptions: R.keys(op.sourceSyncOptions ?? {}),
             destinationSyncOptions: R.keys(op.destinationSyncOptions ?? {}),
           })
-          await patch('pipeline', pipelineId as Id['pipe'], {
+          // Workaround for default pipeline such as `conn_postgres` etc which
+          // does not exist in the database...
+          const sourceId =
+            pipeline.sourceId && extractId(pipeline.sourceId)[2] === ''
+              ? undefined
+              : pipeline.sourceId
+          const destinationId =
+            pipeline.destinationId &&
+            extractId(pipeline.destinationId)[2] === ''
+              ? undefined
+              : pipeline.destinationId
+          await patch('pipeline', pipeline.id, {
             sourceOptions: op.sourceSyncOptions,
             destinationOptions: op.destinationSyncOptions,
+            // Should be part of setDefaults...
+            sourceId,
+            destinationId,
+            ledgerId: pipeline.ledgerId,
+            id: pipeline.id,
+            links: pipeline.links,
           })
         }
         return op
