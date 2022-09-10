@@ -67,3 +67,11 @@ export function extractId(id: Id[keyof Id]) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return [prefix as IdPrefix, providerName!, rest.join('_')] as const
 }
+
+export function swapPrefix<TPrefix extends IdPrefix>(
+  id: Id[keyof Id],
+  newPrefix: TPrefix,
+) {
+  const [, providerName, rest] = extractId(id)
+  return makeId<TPrefix, string>(...([newPrefix, providerName, rest] as any))
+}
