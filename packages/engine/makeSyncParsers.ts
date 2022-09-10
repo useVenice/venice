@@ -93,7 +93,8 @@ export interface PipelineInput<
   destinationOptions?: PDest extends AnySyncProvider
     ? Partial<_inferInput<PDest['def']['destinationSyncOptions']>>
     : never
-  links?: Array<
+  /** Used to initialize links */
+  linkOptions?: Array<
     // prettier-ignore
     {
       [K in Extract<keyof TLinks, string>]: undefined extends Parameters<TLinks[K]>[0]
@@ -246,8 +247,8 @@ export function makeSyncParsers<
           ),
         ])
         // Validation happens inside for now
-        const cookedLinks = R.pipe(
-          input.links ?? pipeline?.links ?? [],
+        const links = R.pipe(
+          input.linkOptions ?? pipeline?.linkOptions ?? [],
           R.map((l) =>
             typeof l === 'string'
               ? linkMap?.[l]?.(undefined)
@@ -274,7 +275,7 @@ export function makeSyncParsers<
           sourceId: source.id, // Ensure consistency
           destination,
           destinationId: destination.id, // Ensure consistency
-          cookedLinks,
+          links,
           sourceOptions,
           destinationOptions,
           watch: input.watch, // Should this be on pipeline too?

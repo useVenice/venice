@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "source_options" jsonb NOT NULL DEFAULT '{}',
   "destination_id" character varying,
   "destination_options" jsonb NOT NULL DEFAULT '{}',
-  "links" jsonb NOT NULL DEFAULT '{}',
+  "link_options" jsonb NOT NULL DEFAULT '[]',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_pipeline" PRIMARY KEY ("id"),

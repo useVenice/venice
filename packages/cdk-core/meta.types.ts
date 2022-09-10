@@ -78,7 +78,7 @@ export const zRaw = {
     sourceOptions: zJsonObject.nullish(),
     destinationId: zId('conn').nullish(),
     destinationOptions: zJsonObject.nullish(),
-    links: z
+    linkOptions: z
       .array(
         z.union([
           z.string(),
