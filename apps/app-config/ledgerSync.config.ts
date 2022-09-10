@@ -102,7 +102,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // TODO: support other config service such as fs later...
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   routerUrl: '/api', // apiUrl?
-  getLinksForPipeline: ({source, links, destination}) =>
+  getLinksForPipeline: ({source, cookedLinks: links, destination}) =>
     destination.integration.provider.name === 'beancount'
       ? [
           ...links,
