@@ -13,8 +13,12 @@ import {LSProvider} from './LSProvider'
 /**
  * Client side of makeSyncEngine
  */
-export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
-  console.log('[useLedgerSync]', {ledgerId, envName})
+export function useLedgerSync({
+  ledgerId,
+  envName,
+  keywords,
+}: UseLedgerSyncOptions) {
+  console.log('[useLedgerSync]', {ledgerId, envName, keywords})
   // There has to be a shorthand for this...
 
   const {hooks, client, trpc} = LSProvider.useContext()
@@ -23,7 +27,7 @@ export function useLedgerSync({ledgerId, envName}: UseLedgerSyncOptions) {
     enabled: !!ledgerId,
   })
 
-  const insRes = trpc.useQuery(['listInstitutions', []])
+  const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
 
   const syncMeta = trpc.useMutation('syncMetadata')
 

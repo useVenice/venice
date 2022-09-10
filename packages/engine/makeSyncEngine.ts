@@ -203,28 +203,6 @@ export const makeSyncEngine = <
         })
       },
     ),
-    listInstitutions: zFunction(async () => {
-      const institutions = await metaService.listTopInstitutions()
-      const ints = await getDefaultIntegrations()
-      const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
-
-      return institutions.flatMap((ins) => {
-        const [, providerName, externalId] = splitPrefixedId(ins.id)
-        const standard = providerMap[
-          providerName
-        ]?.standardMappers?.institution?.(ins.external)
-        const res = zStandard.institution.omit({id: true}).safeParse(standard)
-
-        if (!res.success) {
-          console.error('Invalid institution found', ins, res.error)
-          return []
-        }
-        return (intsByProviderName[providerName] ?? []).map((int) => ({
-          ins: {...res.data, id: ins.id, externalId},
-          int: {id: int.id},
-        }))
-      })
-    }),
     listConnections: zFunction(
       z.object({ledgerId: zId('ldgr').nullish()}).optional(),
       async ({ledgerId} = {}) => {

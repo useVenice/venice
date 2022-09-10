@@ -60,9 +60,6 @@ export const makePostgresMetaService = zFunction(
       get tables() {
         return getTables()
       },
-      // Perhaps this should just be searchInstitutions? And when there are no terms
-      // passed to search it becomes by default listing top ones...
-      listTopInstitutions: () => getTables().institution.list({limit: 10}),
       searchInstitutions: (opts) =>
         getTables().institution.list({limit: 10, ...opts}),
 

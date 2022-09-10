@@ -20,6 +20,7 @@ export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
 export const zUseLedgerSyncOptions = z.object({
   envName: zEnvName,
   ledgerId: zId('ldgr'),
+  keywords: z.string().nullish(),
 })
 
 export interface DialogConfig {

@@ -26,8 +26,6 @@ export interface MetaService {
   tables: {
     [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
   }
-  // Add tables in here instead...
-  listTopInstitutions: () => Promise<ReadonlyArray<ZRaw['institution']>>
   searchInstitutions: (options: {
     /** Leave empty to list the top institutions */
     keywords?: string | null
