@@ -31,11 +31,14 @@ export const postgresProvider = makeSyncProvider({
         const {
           data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
-        await upsertById(entityName, id, {
-          standard: data.entity,
-          external: data.external,
-          source_id: sourceId,
-        })
+        await upsertById(entityName, [
+          {
+            id,
+            standard: data.entity,
+            external: data.external,
+            source_id: sourceId,
+          },
+        ])
         return op
       },
     })

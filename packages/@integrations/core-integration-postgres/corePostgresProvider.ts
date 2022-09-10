@@ -20,7 +20,7 @@ export const corePostgresProvider = makeSyncProvider({
       data: async (op) => {
         // prettier-ignore
         const {data: {id, entityName, entity}} = op
-        await upsertById('meta', `${entityName}_${id}`, {data: entity})
+        await upsertById('meta', [{id: `${entityName}_${id}`, data: entity}])
         return op
       },
     })
