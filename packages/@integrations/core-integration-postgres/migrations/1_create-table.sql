@@ -48,9 +48,12 @@ CREATE TABLE IF NOT EXISTS "public"."connection" (
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_connection" PRIMARY KEY ("id"),
   CONSTRAINT "fk_integration_id" FOREIGN KEY ("integration_id")
-    REFERENCES "public"."integration"("id") ON DELETE RESTRICT,
-  CONSTRAINT "fk_institution_id" FOREIGN KEY ("institution_id")
-    REFERENCES "public"."institution"("id") ON DELETE RESTRICT
+    REFERENCES "public"."integration"("id") ON DELETE RESTRICT
+  -- TODO(p2): Add me back once we figure out how to ensure institution
+  -- are always inserted before connections...
+  -- ,
+  -- CONSTRAINT "fk_institution_id" FOREIGN KEY ("institution_id")
+  --   REFERENCES "public"."institution"("id") ON DELETE RESTRICT
 );
 CREATE INDEX IF NOT EXISTS connection_created_at ON connection (created_at);
 CREATE INDEX IF NOT EXISTS connection_updated_at ON connection (updated_at);

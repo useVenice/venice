@@ -4,7 +4,9 @@ import {
   defineProxyFn,
   isPlainObject,
   memoize,
+  omitBy,
   R,
+  snakeCase,
   z,
   zFunction,
 } from '@ledger-sync/util'
@@ -80,6 +82,7 @@ export const makePostgresClient = zFunction(
 
 /**
  * Expects an `id` and `updated_at` column to exist
+ * Will automatically snake_case
  *
  * https://blog.sequin.io/airtable-sync-process/
  * insert into public.products (id,created_time,name,size,color)
@@ -93,14 +96,18 @@ export function upsertByIdQuery(
   id: string,
   valueMap: Record<string, unknown>,
 ) {
+  // console.log('[upsertByIdQuery]', {tableName, id, valueMap})
+
   const {sql} = $slonik()
   const table = sql.identifier([tableName])
   const [cols, vals] = R.pipe(
-    R.mapValues(valueMap, (v) => (isPlainObject(v) ? sql.jsonb(v as any) : v)),
+    omitBy(valueMap, (v) => v === undefined),
+    R.mapKeys((k) => snakeCase(k as string)), // Should this ben an option?
+    R.mapValues((v) => (isPlainObject(v) ? sql.jsonb(v as any) : v)),
     (vmap) => ({...vmap, id, updated_at: sql.literalValue('now()')}),
     R.toPairs,
     R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
-    (pairs) => [pairs.map((p) => p.key), pairs.map((p) => p.value)] as const,
+    (items) => [items.map((p) => p.key), items.map((p) => p.value)] as const,
   )
 
   // TODOs: 1) Support JSON patching

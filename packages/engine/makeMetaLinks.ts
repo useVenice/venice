@@ -1,4 +1,13 @@
-import type {Id, IDS, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
+import type {
+  Id,
+  IDS,
+  MetaService,
+  MetaTable,
+  ZRaw} from '@ledger-sync/cdk-core';
+import {
+  extractId,
+  makeId
+} from '@ledger-sync/cdk-core'
 import {IDS_INVERTED} from '@ledger-sync/cdk-core'
 import {handlersLink} from '@ledger-sync/cdk-core'
 import type {ObjectPartialDeep} from '@ledger-sync/util'
@@ -41,12 +50,25 @@ export function makeMetaLinks(metaBase: MetaService) {
           id,
           settings: R.keys(settings),
           institutionId,
+          existingConnection: connection,
         })
+        // Workaround for default integrations such as `int_plaid` etc which
+        // do not exist in the database and would otherwise cause foreign key issue
+        // Is it a hack? When there is no 3rd component of id, does that always
+        // mean that the integration does not in fact exist in database?
+        const integrationId =
+          connection.integrationId &&
+          extractId(connection.integrationId)[2] === ''
+            ? undefined
+            : connection.integrationId
+
         await patch('connection', id, {
           settings,
+          // It is also an issue that institution may not exist at the initial time of
+          // connection establishing..
           institutionId,
+          integrationId,
           envName: connection.envName,
-          integrationId: connection.integrationId,
           ledgerId: connection.ledgerId,
         })
         return op

@@ -69,7 +69,7 @@ export const zRaw = {
     // TODO: Does envName belong in Raw layer or Standard layer?
     /** Development env often allows connection to production institutions */
     envName: zEnvName.optional(),
-    standard: zStandard.connection.omit({id: true}),
+    standard: zStandard.connection.omit({id: true}).optional(),
   }),
   pipeline: z.object({
     id: zId('pipe'),
@@ -90,7 +90,7 @@ export const zRaw = {
   }),
   institution: z.object({
     id: zId('ins'),
-    standard: zStandard.institution.omit({id: true}),
+    standard: zStandard.institution.omit({id: true}).optional(),
     external: zJsonObject,
   }),
 }

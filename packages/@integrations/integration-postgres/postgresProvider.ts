@@ -35,8 +35,6 @@ export const postgresProvider = makeSyncProvider({
           standard: data.entity,
           external: data.external,
           source_id: sourceId,
-          // Do we still need provider_name in the presence of source_id?
-          provider_name: providerName,
         })
         return op
       },

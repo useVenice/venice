@@ -6,6 +6,7 @@ import type {
   Link,
   LinkFactory,
   MetaService,
+  ZRaw,
 } from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {
@@ -15,10 +16,13 @@ import {
   zStandard,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
+import type {
+  NonNullableOnly} from '@ledger-sync/util';
 import {
   compact,
   identity,
   R,
+  RequiredOnly,
   routerFromZFunctionMap,
   Rx,
   rxjs,
@@ -124,20 +128,29 @@ export const makeSyncEngine = <
     int: ParsedInt,
     cs: ConnectedSource<TProviders[number]['def']>,
   ): ParsedConn {
-    return {
+    const conn: NonNullableOnly<ZRaw['connection'], 'settings'> = {
       id: makeId('conn', int.provider.name, `${cs.externalId}`),
-      integration: int,
       settings: int.provider.def.connectionSettings?.parse(cs.settings),
+      envName: cs.envName,
+      integrationId: int.id,
+      ledgerId: cs.ledgerId,
+      institutionId: cs.externalInstitutionId
+        ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
+        : undefined,
+    }
+    console.log('[parsedConn]', conn)
+    // Questionable whether this should be the case...
+    return {
+      ...conn,
+      integration: int,
       // ConnectionUpdates should be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
         // Should we actually start with _opMeta? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
           int.provider.def._opConn(`${cs.externalId}`, {
-            settings: cs.settings,
-            institutionId: cs.externalInstitutionId
-              ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
-              : undefined,
+            settings: conn.settings,
+            institutionId: conn.institutionId,
           }),
         ),
       ),
@@ -263,6 +276,7 @@ export const makeSyncEngine = <
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
+      console.log('[syncPipeline]', pipeline)
       const {source: src, links, destination: dest, watch, ...rest} = pipeline
       const source$ =
         src._source$ ??
@@ -312,6 +326,7 @@ export const makeSyncEngine = <
       })
     }),
     syncConnection: zFunction(zConn, async function syncConnection(conn) {
+      console.log('[syncConnection]', conn)
       const pipelines = conn.id
         ? await metaService
             .findPipelines({connectionId: conn.id})

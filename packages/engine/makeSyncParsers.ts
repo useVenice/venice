@@ -156,14 +156,14 @@ export function makeSyncParsers<
       const config = provider.def.integrationConfig?.parse(_config, {
         path: ['config'],
       })
-      return {...integration, id, provider, config}
+      return {...integration, ...input, id, provider, config}
     }),
   )
 
   const zConn = castInput(zInput.connection)<
     ConnectionInput<TProviders[number]>
   >().transform(
-    zGuard(async ({id, _source$, _destination$$, ...input}) => {
+    zGuard(async ({id, ...input}) => {
       const conn = await m.tables.connection.get(id)
       const integration = await zInt.parseAsync(
         identity<z.infer<typeof zInput['integration']>>({
@@ -178,7 +178,7 @@ export function makeSyncParsers<
         deepMerge(conn?.settings, input.settings),
         {path: ['settings']},
       )
-      return {...conn, id, integration, settings, _source$, _destination$$}
+      return {...conn, ...input, id, integration, settings}
     }),
   )
 
