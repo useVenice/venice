@@ -51,13 +51,40 @@ export default function LedgerNewConnectionScreen() {
           <TabContent
             value="institution"
             className="mx-auto hidden w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault()
+                router.push(`/ledgers/${ledgerId}`)
+              }}
+              className="pb-8"
+              >
+              <div className="form-control">
+                <label htmlFor="searchInstitution" className="label">
+                  <span className="label-text">Search Institution</span>
+                </label>
+                <div className="flex flex-row items-center space-x-2">
+                  <input
+                    type="text"
+                    required
+                    minLength={1}
+                    placeholder="Ex: Chase or Amex"
+                    id="searchInstitution"
+                    className="input-bordered input w-full"
+                  />
+
+                  <button className="btn btn-primary text-lg px-8" type="submit">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </form>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {institutions?.map(({ins, int}) => (
                 <div
                   key={`${ins.id}`}
                   className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
                   <div className="card-body space-y-4">
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 items-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={ins.logoUrl}
