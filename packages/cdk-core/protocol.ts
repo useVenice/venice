@@ -1,17 +1,12 @@
 import type {
   JsonLiteral,
-  JsonObject,
   MergeUnion,
   NoInfer,
   ObjectPartialDeep,
   rxjs,
 } from '@ledger-sync/util'
 
-// Consider removing this... Cuz frankly we don't need it...
-// TODO: Bad imports are not throwing issue. We should fix that
-// Maybe checklibs?
 import type {Id} from './id.types'
-import type {EnvName} from './meta.types'
 
 /**
  * This will be standardized over time into either
@@ -31,52 +26,64 @@ export interface AnyEntityPayload {
   id: string
   entity: object | JsonLiteral | null // Record<string, unknown> doesn't work with normal ts interfaces...
 }
-type Data = AnyEntityPayload
-type NullableEntity<T> = T extends Data
+
+export interface ConnUpdateData<TSettings = {}> {
+  id: Id['conn']
+  settings?: ObjectPartialDeep<NoInfer<TSettings>>
+  institutionId?: Id['ins']
+}
+export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {
+  sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcOptions>>
+  destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestOptions>>
+}
+
+type NullableEntity<T> = T extends AnyEntityPayload
   ? {[k in keyof T]: k extends 'entity' ? T[k] | null : T[k]}
   : T
 
 export type SyncOperation<
-  TData extends Data = Data,
-  TSettings = JsonObject,
-  TSrcSyncOptions = JsonObject,
-  TDestSyncOptions = JsonObject,
+  TData extends AnyEntityPayload = AnyEntityPayload,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
 > =
-  | {
-      type: 'connUpdate'
-      // TODO: Consider merging into single field...
-      id: Id['conn']
-      settings?: ObjectPartialDeep<NoInfer<TSettings>>
-      institutionId?: Id['ins']
-    }
-  | {
-      type: 'stateUpdate'
-      // TODO: We should separate state from options, and perhaps make state
-      // less black box also, see airbyte protocol v2 for inspiration
-      // Also consider merging fields below into a single field
-      sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcSyncOptions>>
-      destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestSyncOptions>>
-    }
+  | (TConnUpdate & {type: 'connUpdate'})
+  // TODO: We should separate state from options, and perhaps make state
+  // less black box also, see airbyte protocol v2 for inspiration
+  // Also consider merging fields below into a single field
+  | (TStateUpdate & {type: 'stateUpdate'})
   | {type: 'data'; data: NullableEntity<TData>} // Rename entityName to `stream` and lift to top level?
   | {type: 'commit'} // Do we still need this if we have separate `stateUpdate` message?
   | {type: 'ready'}
 
 export type AnySyncOperation = MergeUnion<SyncOperation>
 
-export type Source<T extends Data> = rxjs.Observable<SyncOperation<T>>
+export type Source<
+  T extends AnyEntityPayload,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+> = rxjs.Observable<SyncOperation<T, TConnUpdate, TStateUpdate>>
 
 /**
  * Adapted from TRPC link and Apollo Link
  * A specialized version of rxjs.OperatorFucntion. Often times stateful.
  */
-export type Link<DataIn extends Data = Data, DataOut extends Data = DataIn> = (
-  obs: rxjs.Observable<SyncOperation<DataIn>>,
-) => rxjs.Observable<SyncOperation<DataOut>>
+export type Link<
+  DataIn extends AnyEntityPayload = AnyEntityPayload,
+  DataOut extends AnyEntityPayload = DataIn,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+> = (
+  obs: rxjs.Observable<SyncOperation<DataIn, TConnUpdate, TStateUpdate>>,
+) => rxjs.Observable<SyncOperation<DataOut, TConnUpdate, TStateUpdate>>
 /**
  * Terminating link is just a link... It can still emit things like ready event
  * for the engine to listen to. The resulting event may not be the same as the input events
  */
-export type Destination<T extends Data = Data> = Link<T, AnyEntityPayload>
+export type Destination<
+  T extends AnyEntityPayload = AnyEntityPayload,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+> = Link<T, AnyEntityPayload, TConnUpdate, TStateUpdate>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LinkFactory<TArg = any> = (arg: TArg) => Link<any, any>

@@ -1,21 +1,39 @@
-import type {AnyEntityPayload, Link, SyncOperation} from './protocol'
 import type {WritableDraft} from '@ledger-sync/util'
 import {compact, produce, R, Rx, rxjs} from '@ledger-sync/util'
 
+import type {
+  AnyEntityPayload,
+  ConnUpdateData,
+  Link,
+  StateUpdateData,
+  SyncOperation,
+} from './protocol'
+
 type Data = AnyEntityPayload
 type OperationType = SyncOperation['type']
-type Handlers<T extends Data> = Partial<{
+type Handlers<
+  T extends Data,
+  TConnUpdate extends object,
+  TStateUpdate extends object,
+> = Partial<{
   [k in OperationType]: (
-    op: Extract<SyncOperation<T>, {type: k}>,
+    op: Extract<SyncOperation<T, TConnUpdate, TStateUpdate>, {type: k}>,
   ) => rxjs.ObservableInput<SyncOperation<T>> | void
 }>
 
-/** If handler returns void, we will return rxjs.EMPTY. Uses concatMap to respect input order */
-export function handlersLink<T extends Data>(handlers: Handlers<T>) {
+/**
+ * If handler returns void, we will return rxjs.EMPTY. Uses concatMap to respect input order
+ * Consider using zod for runtime typechecking here
+ */
+export function handlersLink<
+  T extends Data,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+>(handlers: Handlers<T, TConnUpdate, TStateUpdate>) {
   // Order is important by default. mergeMap would result in `ready` being fired before
   // file has been written to disk as an example. Use mergeMap only if perf or a special
   // reason justifies it and order doesn't matter
-  return Rx.concatMap((op: SyncOperation<T>) =>
+  return Rx.concatMap((op: SyncOperation<T, TConnUpdate, TStateUpdate>) =>
     R.pipe(handlers[op.type], (h) =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       h ? h(op as any) ?? rxjs.EMPTY : rxjs.of(op),

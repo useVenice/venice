@@ -1,4 +1,13 @@
-import type {Id, IDS, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
+import type {
+  AnyEntityPayload,
+  ConnUpdateData,
+  Id,
+  IDS,
+  MetaService,
+  MetaTable,
+  StateUpdateData,
+  ZRaw,
+} from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {IDS_INVERTED} from '@ledger-sync/cdk-core'
 import {handlersLink} from '@ledger-sync/cdk-core'
@@ -32,7 +41,7 @@ export function makeMetaLinks(metaBase: MetaService) {
     pipelineId?: Id['pipe']
     connection?: Conn
   }) =>
-    handlersLink({
+    handlersLink<AnyEntityPayload>({
       connUpdate: async (op) => {
         if (op.id !== connection?.id) {
           return op

@@ -1,17 +1,23 @@
 import type {
   AnyEntityPayload,
+  ConnUpdateData,
   Destination,
   Link,
   Source,
+  StateUpdateData,
 } from '@ledger-sync/cdk-core'
 import {identity, Rx, toCompletion} from '@ledger-sync/util'
 
 type Data = AnyEntityPayload
 
-export async function sync<T extends Data = Data>(input: {
-  source: Source<T>
-  destination: Destination<T>
-  links?: Array<Link<T, T>>
+export async function sync<
+  T extends Data = Data,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+>(input: {
+  source: Source<T, TConnUpdate, TStateUpdate>
+  destination: Destination<T, TConnUpdate, TStateUpdate>
+  links?: Array<Link<T, T, TConnUpdate, TStateUpdate>>
   watch?: boolean
 }) {
   const start = Date.now()
@@ -21,7 +27,9 @@ export async function sync<T extends Data = Data>(input: {
     // Raw Source, may come from fs, firestore or postgres
     input.source
       // Plugins
-      .pipe(...((input.links ?? []) as [Link<T>, Link<T>]))
+      .pipe(
+        ...((input.links ?? []) as [NonNullable<typeof input.links>[number]]),
+      )
       // Destination
       .pipe(input.destination)
       // Progress & flow controlß

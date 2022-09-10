@@ -6,5 +6,5 @@ export * from './kvStore'
 export * from './makeSyncProvider'
 export * from './meta.types'
 export * from './metaService.d'
-export * from './protocol.d'
+export * from './protocol'
 // codegen:end

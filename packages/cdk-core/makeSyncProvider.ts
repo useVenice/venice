@@ -5,7 +5,13 @@ import type {ExternalId, Id} from './id.types'
 import {makeId, zId} from './id.types'
 import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
-import type {Destination, Source, SyncOperation} from './protocol'
+import type {
+  ConnUpdateData,
+  Destination,
+  Source,
+  StateUpdateData,
+  SyncOperation,
+} from './protocol'
 
 // MARK: - Client side connect types
 
@@ -147,9 +153,11 @@ function makeSyncProviderDef<
   >
   type Op = SyncOperation<
     _types['sourceOutputEntity'],
-    _types['connectionSettings'],
-    _types['sourceSyncOptions'],
-    _types['destinationSyncOptions']
+    ConnUpdateData<_types['connectionSettings']>,
+    StateUpdateData<
+      _types['sourceSyncOptions'],
+      _types['destinationSyncOptions']
+    >
   >
   type OpData = Extract<Op, {type: 'data'}>
   type OpConn = Extract<Op, {type: 'connUpdate'}>
