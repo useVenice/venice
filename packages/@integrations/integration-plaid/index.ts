@@ -1,4 +1,4 @@
-// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture}.{ts,tsx}"}
+// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,types}.{ts,tsx}"}
 export * from './plaid-utils'
 export * from './PlaidClient'
 export * from './PlaidProvider'
