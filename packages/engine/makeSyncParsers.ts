@@ -171,7 +171,7 @@ export function makeSyncParsers<
       const standard = provider.def.institutionData?.parse(external, {
         path: ['external'],
       })
-      return {...institution, ...input, external, standard}
+      return {...institution, ...input, id, external, standard}
     }),
   )
 
@@ -180,10 +180,7 @@ export function makeSyncParsers<
   >().transform(
     zGuard(async ({id, ...input}) => {
       const conn = await m.tables.connection.get(id)
-      const [
-        integration,
-        // , institution
-      ] = await Promise.all([
+      const [integration, institution] = await Promise.all([
         zInt.parseAsync(
           identity<z.infer<typeof zInput['integration']>>({
             id:
@@ -193,15 +190,15 @@ export function makeSyncParsers<
             config: input.integration?.config,
           }),
         ),
-        // zIns.parseAsync(
-        //   identity<z.infer<typeof zInput['institution']>>({
-        //     id:
-        //       conn?.institutionId ??
-        //       input.institutionId ??
-        //       makeId('ins', extractId(id)[1], ''),
-        //     external: input.institution?.external,
-        //   }),
-        // ),
+        zIns.optional().parseAsync(
+          identity<z.infer<typeof zInput['institution']>>({
+            id:
+              conn?.institutionId ??
+              input.institutionId ??
+              makeId('ins', extractId(id)[1], ''),
+            external: input.institution?.external,
+          }),
+        ),
       ])
       const settings = integration.provider.def.connectionSettings?.parse(
         deepMerge(conn?.settings, input.settings),
@@ -213,8 +210,8 @@ export function makeSyncParsers<
         id,
         integration,
         integrationId: integration.id, // Ensure consistency
-        // institution,
-        // insitutionId,
+        institution,
+        institutionId: institution?.id,
         settings,
       }
     }),
