@@ -25,6 +25,7 @@ import {
 } from '@ledger-sync/util'
 
 import {inferPlaidEnvFromToken} from './plaid-utils'
+import type {WebhookShape} from './plaid.types'
 
 type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
@@ -38,6 +39,8 @@ export const zPlaidClientConfig = z.object({
     .record(z.string())
     .refine(castIs<Partial<{[K in EnvName]: string}>>()),
 })
+
+export const zWebhook = zCast<WebhookShape>()
 
 /**
  * Consider using open API version to give us more control over things like enum type generation
