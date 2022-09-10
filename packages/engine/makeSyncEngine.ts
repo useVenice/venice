@@ -122,7 +122,8 @@ export const makeSyncEngine = <
         }),
       ),
     )
-
+  // FIXME...
+  // TODO: Remove this entire function. It gets more and more hacky...
   function parsedConn(
     int: ParsedInt,
     cs: ConnectedSource<TProviders[number]['def']>,
@@ -134,6 +135,7 @@ export const makeSyncEngine = <
       integrationId: int.id,
       ledgerId: cs.ledgerId,
     }
+
     console.log('[parsedConn]', conn)
     const helpers = makeSyncProvider.def.helpers(int.provider.def)
     // Questionable whether this should be the case...
@@ -141,6 +143,8 @@ export const makeSyncEngine = <
       ...conn,
       integration: int,
       integrationId: int.id,
+      institution: undefined, // FIXME...
+      institutionId: undefined,
       // ConnectionUpdates can technically be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
         // Should we actually start with _opConn? Or let each provider control this
@@ -293,7 +297,6 @@ export const makeSyncEngine = <
             .findPipelines({connectionId: conn.id})
             .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
         : []
-
       if (pipelines.length === 0 && defaultPipeline) {
         pipelines.push(
           await zPipeline.parseAsync(
