@@ -71,9 +71,14 @@ export function makeMetaLinks(metaBase: MetaService) {
 
         // Can we run this in one transaction?
         if (institution && institutionId) {
-          await patch('institution', institutionId, institution.data)
+          await patch('institution', institutionId, {
+            id: institutionId,
+            external: institution.data,
+            // Map standard here?
+          })
         }
         await patch('connection', id, {
+          id,
           settings,
           // It is also an issue that institution may not exist at the initial time of
           // connection establishing..

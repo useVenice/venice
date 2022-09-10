@@ -58,26 +58,26 @@ export type ZRaw = {
 export const zRaw = {
   integration: z.object({
     id: zId('int'),
-    config: zJsonObject.optional(),
+    config: zJsonObject.nullish(),
   }),
   connection: z.object({
     id: zId('conn'),
-    ledgerId: zId('ldgr').optional(),
-    integrationId: zId('int').optional(),
-    institutionId: zId('ins').optional(),
-    settings: zJsonObject.optional(),
+    ledgerId: zId('ldgr').nullish(),
+    integrationId: zId('int').nullish(),
+    institutionId: zId('ins').nullish(),
+    settings: zJsonObject.nullish(),
     // TODO: Does envName belong in Raw layer or Standard layer?
     /** Development env often allows connection to production institutions */
-    envName: zEnvName.optional(),
-    standard: zStandard.connection.omit({id: true}).optional(),
+    envName: zEnvName.nullish(),
+    standard: zStandard.connection.omit({id: true}).nullish(),
   }),
   pipeline: z.object({
     id: zId('pipe'),
-    ledgerId: zId('ldgr').optional(),
-    sourceId: zId('conn').optional(),
-    sourceOptions: zJsonObject.optional(),
-    destinationId: zId('conn').optional(),
-    destinationOptions: zJsonObject.optional(),
+    ledgerId: zId('ldgr').nullish(),
+    sourceId: zId('conn').nullish(),
+    sourceOptions: zJsonObject.nullish(),
+    destinationId: zId('conn').nullish(),
+    destinationOptions: zJsonObject.nullish(),
     links: z
       .array(
         z.union([
@@ -90,7 +90,7 @@ export const zRaw = {
   }),
   institution: z.object({
     id: zId('ins'),
-    standard: zStandard.institution.omit({id: true}).optional(),
-    external: zJsonObject.optional(),
+    standard: zStandard.institution.omit({id: true}).nullish(),
+    external: zJsonObject.nullish(),
   }),
 }

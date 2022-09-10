@@ -218,17 +218,21 @@ export const makeSyncEngine = <
         return connections.map((conn) => {
           const [, providerName, externalId] = splitPrefixedId(conn.id)
           const mappers = providerMap[providerName]?.standardMappers
-          const standard = mappers?.connection(conn.settings)
-          console.log('map connection', {conn, standard})
-          const res = zStandard.connection.omit({id: true}).safeParse(standard)
+          const standardConn = mappers?.connection(conn.settings)
+          const standardIns = conn.institutionId
+            ? mappers?.institution?.(insById[conn.institutionId]?.external)
+            : undefined
+          console.log('map connection', {conn, standardConn, standardIns})
+
           return {
-            ...res.data,
+            ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
             externalId,
             institution: conn.institutionId
-              ? zStandard.institution.parse(
-                  mappers?.institution?.(insById[conn.institutionId]?.external),
-                )
+              ? {
+                  ...zStandard.institution.omit({id: true}).parse(standardIns),
+                  id: conn.institutionId,
+                }
               : undefined,
           }
         })
