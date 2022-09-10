@@ -1,7 +1,11 @@
 import {createInterceptors} from 'slonik-interceptor-preset'
+import type {PrimitiveValueExpression} from 'slonik/dist/src/types'
 
+import type {
+  MaybeArray} from '@ledger-sync/util';
 import {
   defineProxyFn,
+  fromMaybeArray,
   isPlainObject,
   memoize,
   omitBy,
@@ -77,6 +81,9 @@ export const makePostgresClient = zFunction(
     async function upsertById(...args: Parameters<typeof upsertByIdQuery>) {
       const pool = await getPool()
       const query = upsertByIdQuery(...args)
+      if (!query) {
+        return
+      }
       await pool.query(query)
     }
     return {getPool, sql, upsertById}
@@ -84,8 +91,11 @@ export const makePostgresClient = zFunction(
 )
 
 /**
- * Expects an `id` and `updated_at` column to exist
+ * First row is used for type inference. Will need to support explicit columns later
+ * Expects an `id` and `updated_at` column to exist in db
  * Will automatically snake_case
+ * TODOs: 1) Support JSON patching
+ * 2) Supports explict column definition
  *
  * https://blog.sequin.io/airtable-sync-process/
  * insert into public.products (id,created_time,name,size,color)
@@ -93,34 +103,46 @@ export const makePostgresClient = zFunction(
  * on conflict (id) do update set
  * id=excluded.id, created_time=excluded.created_time, name=excluded.name, size=excluded.size, color=excluded.color
  * where (created_time, name, size, color) is distinct from (excluded.created_time, excluded.name, excluded.size, excluded.color)
+ *
  */
 export function upsertByIdQuery(
   tableName: string,
-  id: string,
-  valueMap: Record<string, unknown>,
+  _valueMaps: MaybeArray<{id: string; [k: string]: unknown}>,
 ) {
-  // console.log('[upsertByIdQuery]', {tableName, id, valueMap})
+  // console.log('[upsertByIdQuery]', {tableName, valueMaps})
+  const valueMaps = fromMaybeArray(_valueMaps)
+  const firstValueMap = valueMaps[0]
+  if (!firstValueMap) {
+    return null
+  }
 
   const {sql} = $slonik()
   const table = sql.identifier([tableName])
-  const [cols, vals] = R.pipe(
-    omitBy(valueMap, (v) => v === undefined),
-    R.mapKeys((k) => snakeCase(k as string)), // Should this ben an option?
-    R.mapValues((v) =>
-      isPlainObject(v) || Array.isArray(v) ? sql.jsonb(v as any) : v,
-    ),
-    (vmap) => ({...vmap, id, updated_at: sql.literalValue('now()')}),
-    R.toPairs,
-    R.map(([k, v]) => ({key: sql.identifier([k]), value: v})),
-    (items) => [items.map((p) => p.key), items.map((p) => p.value)] as const,
-  )
 
-  // TODOs: 1) Support JSON patching
-  // 2) Support batch insert many rows at once
+  const kUpdatedAt = 'updatedAt'
+  const keys = R.keys({...firstValueMap, [kUpdatedAt]: null})
+
+  const cols = keys.map((k) => sql.identifier([snakeCase(k)]))
+  const valLists = valueMaps.map((vmap) =>
+    keys.map((k) => {
+      if (k === kUpdatedAt) {
+        return sql.literalValue('now()')
+      }
+      const v = vmap[k]
+      return isPlainObject(v) || Array.isArray(v)
+        ? sql.jsonb(v as any)
+        : v === undefined // `undefined` is not supported by postgres and we make it mean `set to null` for now.
+        ? null
+        : (v as PrimitiveValueExpression)
+    }),
+  )
 
   const query = sql`
     INSERT INTO ${table} (${sql.join(cols, sql`, `)})
-    VALUES (${sql.join(vals, sql`, `)})
+    VALUES (${sql.join(
+      valLists.map((vals) => sql.join(vals, sql`, `)),
+      sql`), (`,
+    )})
     ON CONFLICT (id) DO UPDATE SET
       ${sql.join(
         cols
