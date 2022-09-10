@@ -1,4 +1,4 @@
-import {debugProvider, extractId, logLink, makeId} from '@ledger-sync/cdk-core'
+import {debugProvider, logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -148,7 +148,7 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   // Default destination will have to be computed at runtime based on the current
   // user id for example. Will sort this later
   getDefaultPipeline: (conn) => ({
-    id: makeId('pipe', (conn?.id && extractId(conn.id)[1]) || 'default'),
+    id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),
     source: conn,
     destination: {
       id: 'conn_postgres',
