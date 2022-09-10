@@ -49,7 +49,7 @@
     "unicorn/error-message": "warn",
     "unicorn/escape-case": "warn",
     "unicorn/expiring-todo-comments": "warn",
-    "unicorn/explicit-length-check": "warn",
+    "unicorn/explicit-length-check": "off", // No strong reason to...
     "unicorn/import-style": "warn",
     "unicorn/new-for-builtins": "warn",
     "unicorn/no-array-callback-reference": "warn",

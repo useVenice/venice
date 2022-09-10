@@ -32,12 +32,13 @@ import {
 
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
+  ConnectionInput,
   IntegrationInput,
   ParsedConn,
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
-  zInput,
+  ZInput,
 } from './makeSyncParsers'
 import {makeSyncParsers} from './makeSyncParsers'
 import {sync} from './sync'
@@ -59,11 +60,9 @@ export interface SyncEngineConfig<
   // Figure out why we have to say `Link<any>` here rather than AnyEntityPayload
   getLinksForPipeline?: (pipeline: ParsedPipeline) => Array<Link<any>>
 
-  defaultPipeline?: PipelineInput<
-    TProviders[number],
-    TProviders[number],
-    TLinks
-  >
+  getDefaultPipeline?: (
+    connInput?: ConnectionInput<TProviders[number]>,
+  ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
   defaultIntegrations?:
     | Array<IntegrationInput<TProviders[number]>>
     | {
@@ -79,7 +78,7 @@ export const makeSyncEngine = <
 >(
   {
     providers,
-    defaultPipeline,
+    getDefaultPipeline,
     defaultIntegrations,
     getLinksForPipeline,
   }: SyncEngineConfig<TProviders, TLinks>,
@@ -105,7 +104,7 @@ export const makeSyncEngine = <
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
   const {zInt, zConn, zPipeline, zConnectContext} = makeSyncParsers({
     providers,
-    defaultPipeline,
+    getDefaultPipeline,
     getDefaultConfig: (name, id) =>
       defaultIntegrationInputs.find(
         (i) => (id && i.id === id) || (i.id && extractId(i.id)[1] === name),
@@ -292,25 +291,19 @@ export const makeSyncEngine = <
     }),
     syncConnection: zFunction(zConn, async function syncConnection(conn) {
       console.log('[syncConnection]', conn)
-      const pipelines = conn.id
-        ? await metaService
-            .findPipelines({connectionId: conn.id})
-            .then((res) => Promise.all(res.map((r) => zPipeline.parseAsync(r))))
-        : []
-      if (pipelines.length === 0 && defaultPipeline) {
-        pipelines.push(
-          await zPipeline.parseAsync(
-            identity<z.infer<typeof zInput['pipeline']>>({
-              // TODO: Make getDefaultPipeline a function...
-              ...defaultPipeline,
-              // Could the new connection be dest as well?
-              // Should make defaultPipeline a function that accepts a connection
-              source: conn,
-              // Notably integrationId, ledgerId, etc does not apply to the destination, only src
-            }),
-          ),
+
+      const defaultPipeline = () =>
+        getDefaultPipeline?.(
+          identity<ZInput['connection']>(conn) as ConnectionInput<
+            TProviders[number]
+          >,
         )
-      }
+
+      const pipelines = await metaService
+        .findPipelines({connectionId: conn.id})
+        .then((pipes) => (pipes.length ? pipes : compact([defaultPipeline()])))
+        .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
+
       await Promise.all(
         pipelines.map((pipe) =>
           syncEngine.syncPipeline.impl({
