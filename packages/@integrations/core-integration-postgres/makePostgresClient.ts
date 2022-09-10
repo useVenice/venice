@@ -1,14 +1,12 @@
 import {createInterceptors} from 'slonik-interceptor-preset'
 import type {PrimitiveValueExpression} from 'slonik/dist/src/types'
 
-import type {
-  MaybeArray} from '@ledger-sync/util';
+import type {MaybeArray} from '@ledger-sync/util'
 import {
   defineProxyFn,
   fromMaybeArray,
   isPlainObject,
   memoize,
-  omitBy,
   R,
   snakeCase,
   z,
@@ -120,7 +118,10 @@ export function upsertByIdQuery(
   const table = sql.identifier([tableName])
 
   const kUpdatedAt = 'updatedAt'
-  const keys = R.keys({...firstValueMap, [kUpdatedAt]: null})
+  // `undefined` is not supported by postgres and we make it mean `set to null` for now.
+  const keys = R.keys({...firstValueMap, [kUpdatedAt]: null}).filter(
+    (k) => k === kUpdatedAt || firstValueMap[k] !== undefined,
+  )
 
   const cols = keys.map((k) => sql.identifier([snakeCase(k)]))
   const valLists = valueMaps.map((vmap) =>
@@ -131,8 +132,6 @@ export function upsertByIdQuery(
       const v = vmap[k]
       return isPlainObject(v) || Array.isArray(v)
         ? sql.jsonb(v as any)
-        : v === undefined // `undefined` is not supported by postgres and we make it mean `set to null` for now.
-        ? null
         : (v as PrimitiveValueExpression)
     }),
   )
