@@ -73,7 +73,6 @@ export const zRaw = {
   }),
   pipeline: z.object({
     id: zId('pipe'),
-    ledgerId: zId('ldgr').nullish(),
     sourceId: zId('conn').nullish(),
     sourceOptions: zJsonObject.nullish(),
     destinationId: zId('conn').nullish(),

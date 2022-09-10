@@ -27,7 +27,7 @@ export function makeMetaLinks(metaBase: MetaService) {
   >
   type Pipe = Pick<
     ZRaw['pipeline'],
-    'id' | 'sourceId' | 'destinationId' | 'ledgerId' | 'linkOptions'
+    'id' | 'sourceId' | 'destinationId' | 'linkOptions'
   >
 
   const postSource = (opts: {src: Conn}) => handle({connection: opts.src})
@@ -120,7 +120,6 @@ export function makeMetaLinks(metaBase: MetaService) {
             // Should be part of setDefaults...
             sourceId,
             destinationId,
-            ledgerId: pipeline.ledgerId,
             id: pipeline.id,
             linkOptions: pipeline.linkOptions,
           })
