@@ -5,10 +5,14 @@ import type {
   Link,
   Source,
   StateUpdateData,
+  SyncOperation,
 } from '@ledger-sync/cdk-core'
 import {identity, Rx, toCompletion} from '@ledger-sync/util'
 
 type Data = AnyEntityPayload
+
+// Consider whether we should still have `init` and `shutdown` events...
+const COMMIT: Extract<SyncOperation, {type: 'commit'}> = {type: 'commit'}
 
 export async function sync<
   T extends Data = Data,
@@ -26,6 +30,9 @@ export async function sync<
   await toCompletion(
     // Raw Source, may come from fs, firestore or postgres
     input.source
+      // Final commit in case the source does not emit one to make sure
+      // destination always get a chance before pipeline shuts down
+      .pipe(Rx.endWith(COMMIT))
       // Plugins
       .pipe(
         ...((input.links ?? []) as [NonNullable<typeof input.links>[number]]),
