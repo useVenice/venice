@@ -133,10 +133,6 @@ export const makeSyncEngine = <
       envName: cs.envName,
       integrationId: int.id,
       ledgerId: cs.ledgerId,
-      // Need full institution, not just id...
-      // institutionId: cs.externalInstitutionId
-      //   ? makeId('ins', int.provider.name, `${cs.externalInstitutionId}`)
-      //   : undefined,
     }
     console.log('[parsedConn]', conn)
     const helpers = makeSyncProvider.def.helpers(int.provider.def)
@@ -144,17 +140,14 @@ export const makeSyncEngine = <
     return {
       ...conn,
       integration: int,
-      // institution: {},
-      // ConnectionUpdates should be synced without needing a pipeline at all...
+      // ConnectionUpdates can technically be synced without needing a pipeline at all...
       _source$: cs.source$.pipe(
-        // Get institution in here...
-
-        // Should we actually start with _opMeta? Or let each provider control this
+        // Should we actually start with _opConn? Or let each provider control this
         // and reduce connectedSource to a mere [connectionId, Source] ?
         Rx.startWith(
           helpers._opConn(`${cs.externalId}`, {
             settings: conn.settings,
-            // institutionId: conn.institutionId,
+            institution: cs.institution,
           }),
         ),
       ),

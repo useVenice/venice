@@ -68,7 +68,7 @@ export interface ConnectedSource<T extends AnyProviderDef>
   externalId: ExternalId
   settings: T['_types']['connectionSettings']
   institution?: {
-    externalId: ExternalId
+    id: ExternalId
     data: T['_types']['institutionData']
   }
   source$: Source<T['_types']['sourceOutputEntity']>
@@ -202,7 +202,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
       type: 'data',
     }),
     _insOpData: (
-      id: string,
+      id: ExternalId,
       insitutionData: _types['institutionData'],
     ): InsOpData => ({
       type: 'data',

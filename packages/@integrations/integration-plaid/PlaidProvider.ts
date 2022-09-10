@@ -280,6 +280,10 @@ export const plaidProvider = makeSyncProvider({
     return {
       externalId: res.item_id,
       settings,
+      institution: insRes?.institution && {
+        id: insRes.institution.institution_id,
+        data: insRes.institution,
+      },
       source$: rxjs.concat(
         rxjs.from(
           (meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),

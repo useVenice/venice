@@ -271,6 +271,9 @@ export const yodleeProvider = makeSyncProvider({
       externalId: providerAccountId,
       settings,
       source$: rxjs.EMPTY,
+      institution: provider
+        ? {id: providerId, data: {...provider, _envName: envName}}
+        : undefined,
       // externalInstitutionId: providerId,
     }
   },
@@ -316,13 +319,14 @@ export const yodleeProvider = makeSyncProvider({
 
   metaSync: ({config}) => {
     // console.log('[yodlee.metaSync]', config)
-    // TODO: Should environment name be part of the yodlee institution id?
+    // TODO: Should environment name be part of the yodlee institution id itself?
     const envName: YodleeEnvName = 'sandbox'
     const yodlee = makeYodleeClient(config, {role: 'admin', envName})
     return rxjs.from(yodlee.iterateInstitutions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
       Rx.map((ins) =>
-        yodleeProviderDef._insOpData(`${ins.id}`, {...ins, _envName: envName}),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        yodleeProviderDef._insOpData(ins.id!, {...ins, _envName: envName}),
       ),
     )
   },
