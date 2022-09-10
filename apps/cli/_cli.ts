@@ -30,7 +30,7 @@ if (require.main === module) {
   const clients: ClientMap = {
     env: () =>
       R.mapValues(loadedEnv ?? {}, (v, k) => () => {
-        const json = JSON.parse(v)
+        const json = safeJSONParse(v)
         console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
         return json ?? v
       }),

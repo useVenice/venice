@@ -8,7 +8,7 @@ git clone git@github.com:alkafinance/ledger-sync.git
 
 1. Copy .env.example into .env and populate your own values
 
-2. Run the migrations files manually inside `apps/app/migrations` against a postgres database you would like to use
+2. Run the migrations files manually inside `packages/@integrations/core-integration-postgres/migrations` against a postgres database you would like to use
 
    - Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
 

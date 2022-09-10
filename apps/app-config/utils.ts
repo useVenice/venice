@@ -1,10 +1,16 @@
 // Better to use this...
 import * as path from 'node:path'
+
 import {loadEnvConfig} from '@next/env'
 import findConfig from 'find-config'
 
 import {safeJSONParse} from '@ledger-sync/util'
 
+/**
+ * Vercel uses dotenv expand by default.. Really not great in case of a password with $
+ * @see https://github.com/vercel/vercel/discussions/4391
+ * Really tempted to just do our own .env parsing...
+ */
 export function loadEnv() {
   const envPath = findConfig('.env')
   if (!envPath) {
