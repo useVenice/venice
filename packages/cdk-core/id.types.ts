@@ -54,8 +54,8 @@ export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
 
 export function makeId<TPrefix extends IdPrefix, TPName extends string>(
   ...args: TPrefix extends BASE_META_ID_PREFIX
-    ? [TPrefix, string]
-    : [TPrefix, TPName, string]
+    ? [TPrefix, ExternalId]
+    : [TPrefix, TPName, ExternalId]
 ) {
   return compact(args).join('_') as Id<TPName>[TPrefix]
 }

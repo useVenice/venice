@@ -6,7 +6,7 @@ import type {
   rxjs,
 } from '@ledger-sync/util'
 
-import type {Id} from './id.types'
+import type {ExternalId, Id} from './id.types'
 
 /**
  * This will be standardized over time into either
@@ -23,14 +23,18 @@ import type {Id} from './id.types'
 export interface AnyEntityPayload {
   // typename: string
   entityName: string
-  id: string
+  id: string // ExternalId
   entity: object | JsonLiteral | null // Record<string, unknown> doesn't work with normal ts interfaces...
 }
 
-export interface ConnUpdateData<TSettings = {}> {
+export interface ConnUpdateData<TSettings = {}, TInsData = {}> {
   id: Id['conn']
   settings?: ObjectPartialDeep<NoInfer<TSettings>>
-  institutionId?: Id['ins']
+
+  institution?: {
+    id: ExternalId
+    data: TInsData
+  }
 }
 export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {
   sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcOptions>>

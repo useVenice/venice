@@ -1,13 +1,12 @@
 import type {
   AnyEntityPayload,
-  ConnUpdateData,
   Id,
   IDS,
   MetaService,
   MetaTable,
-  StateUpdateData,
   ZRaw,
 } from '@ledger-sync/cdk-core'
+import {makeId} from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {IDS_INVERTED} from '@ledger-sync/cdk-core'
 import {handlersLink} from '@ledger-sync/cdk-core'
@@ -41,18 +40,21 @@ export function makeMetaLinks(metaBase: MetaService) {
     pipelineId?: Id['pipe']
     connection?: Conn
   }) =>
+    // TODO: make standard insitution and connection here...
     handlersLink<AnyEntityPayload>({
       connUpdate: async (op) => {
         if (op.id !== connection?.id) {
           return op
         }
-        const {id, settings = {}, institutionId} = op
+        const {id, settings = {}, institution} = op
+        const providerName = extractId(connection.id)[1]
         console.log('[metaLink] connUpdate', {
           id,
           settings: R.keys(settings),
-          institutionId,
+          institution,
           existingConnection: connection,
         })
+
         // Workaround for default integrations such as `int_plaid` etc which
         // do not exist in the database and would otherwise cause foreign key issue
         // Is it a hack? When there is no 3rd component of id, does that always
@@ -63,12 +65,20 @@ export function makeMetaLinks(metaBase: MetaService) {
             ? undefined
             : connection.integrationId
 
+        const institutionId = institution
+          ? makeId('ins', providerName, institution.id)
+          : undefined
+
+        // Can we run this in one transaction?
+        if (institution && institutionId) {
+          await patch('institution', institutionId, institution.data)
+        }
         await patch('connection', id, {
           settings,
           // It is also an issue that institution may not exist at the initial time of
           // connection establishing..
-          institutionId,
           integrationId,
+          institutionId,
           envName: connection.envName,
           ledgerId: connection.ledgerId,
         })
@@ -94,7 +104,11 @@ export function makeMetaLinks(metaBase: MetaService) {
           return op
         }
         console.log('[metaLink] patch', id, entity)
-        await patch(entityName, id as Id['ins'], entity as ZRaw['institution'])
+        await patch(
+          'institution',
+          id as Id['ins'],
+          entity as ZRaw['institution'],
+        )
         // console.log(`[meta] Did update connection`, id, op.data)
         return op
       },

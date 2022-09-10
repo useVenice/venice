@@ -102,7 +102,8 @@ export type AnyProviderDef = Omit<
   ReturnType<typeof makeSyncProviderDef>,
   // Including these three introduces type issues... Not entirely
   // sure how to fix them for now. Other keys seems fine somehow...
-  '_type' | '_op' | '_preConnOption' | '_insOpData'
+  // Perhaps we should use `Pick` instead of `Omit`?
+  '_type' | '_op' | '_opConn' | '_preConnOption' | '_insOpData'
 >
 function makeSyncProviderDef<
   TName extends string,
@@ -153,7 +154,7 @@ function makeSyncProviderDef<
   >
   type Op = SyncOperation<
     _types['sourceOutputEntity'],
-    ConnUpdateData<_types['connectionSettings']>,
+    ConnUpdateData<_types['connectionSettings'], _types['institutionData']>,
     StateUpdateData<
       _types['sourceSyncOptions'],
       _types['destinationSyncOptions']
@@ -174,20 +175,12 @@ function makeSyncProviderDef<
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opConn: (
-      id: string,
-      rest: Omit<OpConn, 'id' | 'type' | 'institutionId'> & {
-        institutionId?: string
-      },
-    ): Op => ({
+    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
       // We don't prefix in `_opData`, should we actually prefix here?
       ...rest,
+      // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
       id: makeId('conn', schemas.name.value, id),
       type: 'connUpdate',
-      // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-      institutionId: rest.institutionId
-        ? makeId('ins', schemas.name.value, rest.institutionId)
-        : undefined,
     }),
     _opState: (
       sourceSyncOptions?: OpState['sourceSyncOptions'],

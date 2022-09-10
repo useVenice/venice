@@ -315,11 +315,14 @@ export const plaidProvider = makeSyncProvider({
             .then((r) => r.institution)
         : undefined
 
-      const {item_id: itemId, institution_id} = item
+      const {item_id: itemId} = item
       yield [
         def._opConn(itemId, {
           settings: {item, status, itemId, accessToken, institution},
-          institutionId: institution_id ?? undefined,
+          institution: institution && {
+            id: institution.institution_id,
+            data: institution,
+          },
         }),
       ]
 
