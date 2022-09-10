@@ -306,7 +306,6 @@ export const makeSyncEngine = <
               // Could the new connection be dest as well?
               // Should make defaultPipeline a function that accepts a connection
               source: conn,
-              ledgerId: conn.ledgerId,
               // Notably integrationId, ledgerId, etc does not apply to the destination, only src
             }),
           ),

@@ -57,7 +57,6 @@ CREATE INDEX IF NOT EXISTS connection_updated_at ON connection (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
-  "ledger_id" character varying NOT NULL,
   "source_id" character varying,
   "source_options" jsonb NOT NULL DEFAULT '{}',
   "destination_id" character varying,
