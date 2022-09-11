@@ -18,7 +18,7 @@ import {Dialog} from './components/Dialog'
 export type SyncEngineCommonConfig<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
-> = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'routerUrl'>
+> = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'apiUrl'>
 
 type Router = ReturnType<typeof makeSyncEngine>[1]
 const trpc = createReactQueryHooks<Router>()
@@ -42,8 +42,7 @@ export function LSProvider<
   config: SyncEngineCommonConfig<T, TLinks>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
-  const routerUrl = config.routerUrl ?? '/api/ledger-sync'
-  const client = trpc.createClient({url: routerUrl})
+  const client = trpc.createClient({url: config.apiUrl ?? '/api'})
 
   const dialogRef = React.useRef<DialogInstance>(null)
   const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(

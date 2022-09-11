@@ -48,9 +48,11 @@ export interface SyncEngineConfig<
   TLinks extends Record<string, LinkFactory>,
 > {
   providers: TProviders
-  /** Base url of the router when deployed, e.g. `localhost:3000/api/ledger-sync` */
-  routerUrl?: string
-
+  /**
+   * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/ledger-sync`
+   * This is needed for 1) server side rendering and 2) webhook handling
+   */
+  apiUrl?: string
   // Backend only
   linkMap?: TLinks
   /** Used to store metadata */

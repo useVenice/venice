@@ -10,8 +10,27 @@ import type {IntegrationInput} from '@ledger-sync/engine-backend'
 
 import {LSProvider} from './LSProvider'
 
+/** Non ledger-specific */
+export function useLedgerSyncDevInfo({
+  ledgerIdKeywords,
+}: {
+  ledgerIdKeywords?: string
+}) {
+  // Add a context for if user is in developer mode...
+
+  const {trpc} = LSProvider.useContext()
+  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
+
+  const ledgerIdsRes = trpc.useQuery([
+    'searchLedgerIds',
+    [{keywords: ledgerIdKeywords}],
+  ])
+
+  return {integrationsRes, ledgerIdsRes}
+}
+
 /**
- * Client side of makeSyncEngine
+ * Ledger-specific
  */
 export function useLedgerSync({
   ledgerId,
