@@ -6,7 +6,7 @@ import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 import {useLedgerSyncDevInfo} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../components/Layout'
-import {Tab, TabContent, TabList, Tabs} from '../components/Tabs'
+import {TabContent, Tabs} from '../components/Tabs'
 
 type ConnectMode = 'enter' | 'search'
 
@@ -71,19 +71,25 @@ export default function HomeScreen() {
                 </div>
               </form>
               <div className="grid grid-cols-1 divide-y py-8">
-                {ledgerIdsRes.data?.map((id) => (
+                {ledgerIdsRes.data?.map((l) => (
                   <div
-                    key={id}
+                    key={l.id}
                     className="card rounded-none transition-[transform,shadow] hover:scale-105 hover:shadow-lg"
-                    onClick={() => router.push(`/ledgers/${id}`)}>
+                    onClick={() => router.push(`/ledgers/${l.id}`)}>
                     <div className="card-body px-2">
                       <div className="flex items-center space-x-4 px-2">
                         <div className="flex flex-col space-y-1">
                           <span className="card-title text-base	 text-black">
-                            {id}
+                            {l.id}
                           </span>
                           <span className="text-sm">
-                            00214199232302 TODO: Show number of connections
+                            # Connections: {l.connectionCount}
+                          </span>
+                          <span className="text-sm">
+                            First connected: {l.firstCreatedAt}
+                          </span>
+                          <span className="text-sm">
+                            Last updated: {l.lastUpdatedAt}
                           </span>
                         </div>
 

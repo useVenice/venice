@@ -239,7 +239,10 @@ export const makeSyncEngine = <
     searchInstitutions: zFunction(
       z.object({keywords: zTrimedString.nullish()}).optional(),
       async ({keywords} = {}) => {
-        const institutions = await metaService.searchInstitutions({keywords})
+        const institutions = await metaService.searchInstitutions({
+          keywords,
+          limit: 10,
+        })
         const ints = await getDefaultIntegrations()
         const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
         return institutions.flatMap((ins) => {
