@@ -6,6 +6,7 @@ import '@ledger-sync/core-integration-redis/register.node'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import url from 'node:url'
+
 import chokidar from 'chokidar'
 import {readFile} from 'read-file-safe'
 import tunnel from 'tunnel'
@@ -25,7 +26,7 @@ import {
   memoize,
 } from '@ledger-sync/util'
 
-import {loadEnv} from './utils'
+import {loadEnv} from './loadEnv.node'
 
 console.log('[Dep] app-config/register.node')
 

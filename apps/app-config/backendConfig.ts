@@ -7,9 +7,11 @@ import {
 } from '@ledger-sync/cdk-ledger'
 import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
+// console.log('Using config', ledgerSyncConfig) // Too verbose...
+import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
 
-import {ledgerSyncCommonConfig} from './ledgerSync.config.common'
+import {ledgerSyncCommonConfig} from './commonConfig'
 
 export function getEnv(
   key: string,
@@ -33,7 +35,7 @@ export function getEnv(
  * TODO: Separate it so that the entire config isn't constructed client side
  * and only the minimal needed methods are...
  */
-export const ledgerSyncConfig = makeSyncEngine.config({
+export const ledgerSyncBackendConfig = makeSyncEngine.config({
   ...ledgerSyncCommonConfig,
   // TODO: support other config service such as fs later...
   metaService: makePostgresMetaService({databaseUrl: getEnv('POSTGRES_URL')}),
@@ -124,4 +126,14 @@ export const ledgerSyncConfig = makeSyncEngine.config({
   }),
 })
 
-// console.log('Using config', ledgerSyncConfig) // Too verbose...
+export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
+  makeSyncEngine(ledgerSyncBackendConfig)
+export type LedgerSyncRouter = typeof ledgerSyncRouter
+export type LedgerSyncInput = inferProcedureInput<
+  LedgerSyncRouter['_def']['mutations']['syncPipeline']
+>[0]
+
+export {
+  parseWebhookRequest,
+  type inferProcedureInput,
+} from '@ledger-sync/engine-backend'
