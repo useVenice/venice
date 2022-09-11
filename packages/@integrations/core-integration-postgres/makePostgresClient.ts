@@ -1,5 +1,8 @@
 import {createInterceptors} from 'slonik-interceptor-preset'
-import type {PrimitiveValueExpression} from 'slonik/dist/src/types'
+import type {
+  PrimitiveValueExpression,
+  TaggedTemplateLiteralInvocation,
+} from 'slonik/dist/src/types'
 
 import type {MaybeArray} from '@ledger-sync/util'
 import {mapValues} from '@ledger-sync/util'
@@ -177,4 +180,15 @@ export function upsertByIdQuery(
       )};
   `
   return query
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function applyLimitOffset<T extends Record<string, any>>(
+  query: TaggedTemplateLiteralInvocation<T>,
+  opts: {limit?: number; offset?: number},
+) {
+  const {sql} = $slonik()
+  const limit = opts.limit ? sql`LIMIT ${opts.limit}` : sql``
+  const offset = opts.offset ? sql`OFFSET ${opts.offset}` : sql``
+  return sql<T>`${query} ${limit} ${offset}`
 }

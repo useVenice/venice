@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
-import React from 'react'
+import { useState } from 'react'
 
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
@@ -26,6 +26,9 @@ export function Layout({
   // TODO: Sync ledgerId and currentEnv into the url
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
+
+  // Turn Developer Mode ON/OFF
+  const [enabled, setEnabled] = useState(false);
 
   const {syncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
   return (
@@ -60,7 +63,20 @@ export function Layout({
 
       {children}
 
-      <footer className="border-t border-gray-100 p-4">
+      <footer className="flex justify-between border-t border-gray-100 p-8">
+        <div className="relative flex flex-col items-center justify-center">
+          <div className="flex">
+            <label className="inline-flex relative items-center mr-5 cursor-pointer">
+                <input type="checkbox" className="sr-only peer" checked={enabled} readOnly />
+                <div onClick={() => {setEnabled(!enabled)}}
+                    className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"
+                ></div>
+                <span className="ml-2 text-sm font-medium text-gray-900">
+                    Developer Mode: { enabled ? 'ON' : 'OFF'}
+                </span>
+            </label>
+          </div>
+        </div>
         <button
           className="btn-outline btn"
           onClick={() => {
