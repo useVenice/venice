@@ -23,6 +23,13 @@ export interface MetaTable<
   delete?(id: TID): Promise<void>
 }
 
+interface LedgerIdResultRow {
+  id: Id['ldgr']
+  connectionCount?: number
+  firstCreatedAt?: unknown
+  lastUpdatedAt?: unknown
+}
+
 export interface MetaService {
   tables: {
     [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
@@ -31,7 +38,7 @@ export interface MetaService {
     keywords?: string | null
     limit?: number
     offset?: number
-  }) => Promise<ReadonlyArray<Id['ldgr']>>
+  }) => Promise<readonly LedgerIdResultRow[]>
   searchInstitutions: (options: {
     /** Leave empty to list the top institutions */
     keywords?: string | null

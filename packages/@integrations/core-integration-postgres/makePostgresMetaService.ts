@@ -1,4 +1,9 @@
-import type {Id, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
+import type {
+  LedgerIdResultRow,
+  MetaService,
+  MetaTable,
+  ZRaw,
+} from '@ledger-sync/cdk-core'
 import {compact, memoize, zFunction} from '@ledger-sync/util'
 
 import {
@@ -72,13 +77,22 @@ export const makePostgresMetaService = zFunction(
           ? sql`WHERE ledger_id ILIKE ${'%' + keywords + '%'}`
           : sql``
         const query = applyLimitOffset(
-          sql`SELECT DISTINCT ledger_id FROM connection ${where}`,
+          sql`
+            SELECT
+              ledger_id as id,
+              count(*) AS connection_count,
+              min(created_at) AS first_created_at,
+              max(updated_at) AS last_updated_at
+            FROM
+              connection
+            ${where}
+            GROUP BY ledger_id
+          `,
           rest,
         )
-        return getPool().then((pool) => pool.anyFirst<Id['ldgr']>(query))
+        return getPool().then((pool) => pool.any<LedgerIdResultRow>(query))
       },
-      searchInstitutions: (opts) =>
-        tables.institution.list({limit: 10, ...opts}),
+      searchInstitutions: (opts) => tables.institution.list(opts),
 
       findPipelines: ({connectionId}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
