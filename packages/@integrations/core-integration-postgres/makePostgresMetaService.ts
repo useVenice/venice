@@ -1,7 +1,11 @@
-import type {MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
+import type {Id, MetaService, MetaTable, ZRaw} from '@ledger-sync/cdk-core'
 import {compact, memoize, zFunction} from '@ledger-sync/util'
 
-import {makePostgresClient, zPgConfig} from './makePostgresClient'
+import {
+  applyLimitOffset,
+  makePostgresClient,
+  zPgConfig,
+} from './makePostgresClient'
 
 const _getDeps = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
@@ -13,6 +17,8 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
   {sql, upsertById, getPool}: Deps,
 ): MetaTable<TID, T> {
   const table = sql.identifier([tableName])
+
+  //  const sqlType = sql.type(zRaw[tableName])
 
   // TODO: Convert case from snake_case to camelCase
   return {
@@ -30,9 +36,9 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
           conditions.length > 0
             ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
             : sql``
-        const limit = rest.limit ? sql`LIMIT ${rest.limit}` : sql``
-        const offset = rest.offset ? sql`OFFSET ${rest.offset}` : sql``
-        return pool.any(sql`SELECT * FROM ${table} ${where} ${limit} ${offset}`)
+        return pool.any(
+          applyLimitOffset(sql`SELECT * FROM ${table} ${where}`, rest),
+        )
       }),
     get: (id) =>
       getPool().then((pool) =>
@@ -51,26 +57,37 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 export const makePostgresMetaService = zFunction(
   zPgConfig.pick({databaseUrl: true}),
   ({databaseUrl}): MetaService => {
-    const getTables = (): MetaService['tables'] => ({
+    const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
       connection: metaTable('connection', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),
       integration: metaTable('integration', _getDeps(databaseUrl)),
       pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
-    })
+    }
     return {
-      get tables() {
-        return getTables()
+      tables,
+      searchLedgerIds: ({keywords, ...rest}) => {
+        const {getPool, sql} = _getDeps(databaseUrl)
+        const where = keywords
+          ? sql`WHERE ledger_id ILIKE ${'%' + keywords + '%'}`
+          : sql``
+        const query = applyLimitOffset(
+          sql`SELECT DISTINCT ledger_id FROM connection ${where}`,
+          rest,
+        )
+        return getPool().then((pool) => pool.anyFirst<Id['ldgr']>(query))
       },
       searchInstitutions: (opts) =>
-        getTables().institution.list({limit: 10, ...opts}),
+        tables.institution.list({limit: 10, ...opts}),
 
       findPipelines: ({connectionId}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
         return getPool().then((pool) =>
-          pool.any(
-            sql`SELECT * from pipeline where source_id = ${connectionId} OR destination_id =  ${connectionId}`,
-          ),
+          pool.any(sql`
+            SELECT * FROM pipeline
+            WHERE source_id = ${connectionId}
+              OR destination_id =  ${connectionId}
+          `),
         )
       },
     }

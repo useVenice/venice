@@ -27,6 +27,7 @@ import {
   splitPrefixedId,
   z,
   zFunction,
+  zTrimedString,
 } from '@ledger-sync/util'
 
 import {makeMetaLinks} from './makeMetaLinks'
@@ -207,6 +208,11 @@ export const makeSyncEngine = <
 
     // MARK: - Metadata  etc
 
+    searchLedgerIds: zFunction(
+      z.object({keywords: zTrimedString.nullish()}).optional(),
+      async ({keywords} = {}) => metaService.searchLedgerIds({keywords}),
+    ),
+
     listIntegrations: zFunction(
       z.object({type: z.enum(['source', 'destination']).nullish()}),
       // z.promise(z.array(z.object({type: z.enum(['source'])}))),
@@ -229,11 +235,9 @@ export const makeSyncEngine = <
       },
     ),
     searchInstitutions: zFunction(
-      z.object({keywords: z.string().nullish()}).optional(),
+      z.object({keywords: zTrimedString.nullish()}).optional(),
       async ({keywords} = {}) => {
-        const institutions = await metaService.searchInstitutions({
-          keywords: keywords?.trim(),
-        })
+        const institutions = await metaService.searchInstitutions({keywords})
         const ints = await getDefaultIntegrations()
         const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
         return institutions.flatMap((ins) => {

@@ -10,6 +10,7 @@ export interface MetaTable<
   get(id: TID): Promise<T | undefined | null>
   list(options: {
     ids?: TID[]
+    /** Maybe remove this? not applicable everywhere */
     ledgerId?: Id['ldgr'] | null
     /** Used for search */
     keywords?: string | null
@@ -26,6 +27,11 @@ export interface MetaService {
   tables: {
     [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
   }
+  searchLedgerIds: (options: {
+    keywords?: string | null
+    limit?: number
+    offset?: number
+  }) => Promise<ReadonlyArray<Id['ldgr']>>
   searchInstitutions: (options: {
     /** Leave empty to list the top institutions */
     keywords?: string | null
