@@ -145,19 +145,11 @@ export const rampProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input) => {
-    const settings = identity<z.infer<typeof def['connectionSettings']>>({
-      ...input,
-    })
-    const source$: rxjs.Observable<RampSyncOperation> = rampProvider.sourceSync(
-      {settings, options: {}},
-    )
-    return {
-      externalId: input.clientId ?? '',
-      settings,
-      source$,
-    }
-  },
+  postConnect: (input) => ({
+    connectionExternalId: input.clientId ?? '',
+    settings: input,
+    triggerDefaultSync: true,
+  }),
 
   // Disable it for now until it's ready
   // handleWebhook: (input) => {

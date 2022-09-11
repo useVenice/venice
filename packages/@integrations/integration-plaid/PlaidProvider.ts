@@ -32,8 +32,6 @@ import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {ErrorShape} from './plaid.types'
 import {makePlaidClient, zPlaidClientConfig, zWebhook} from './PlaidClient'
 
-type PlaidSyncOperation = typeof def['_opType']
-
 const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('plaid'),
@@ -277,23 +275,19 @@ export const plaidProvider = makeSyncProvider({
       accessToken: res.access_token,
       institution: insRes?.institution,
     })
-    const source$: rxjs.Observable<PlaidSyncOperation> =
-      plaidProvider.sourceSync({config, settings, options: {}})
+
     // Emit itemId
     return {
-      externalId: res.item_id,
+      connectionExternalId: res.item_id,
       settings,
       institution: insRes?.institution && {
         id: insRes.institution.institution_id,
         data: insRes.institution,
       },
-      source$: rxjs.concat(
-        rxjs.from(
-          (meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),
-        ),
-        source$,
+      source$: rxjs.from(
+        (meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),
       ),
-      // externalInstitutionId: meta?.institution?.institution_id,
+      triggerSync: true,
     }
   },
 
@@ -406,6 +400,9 @@ export const plaidProvider = makeSyncProvider({
   handleWebhook: (input) => {
     const webhook = zWebhook.parse(input.body)
     console.log('[plaid] Received webhook', webhook)
+    const DEFAULT_SYNC = def._webhookReturn(webhook.item_id, {
+      triggerDefaultSync: true,
+    })
     switch (webhook.webhook_type) {
       case 'ITEM': {
         switch (webhook.webhook_code) {
@@ -428,10 +425,10 @@ export const plaidProvider = makeSyncProvider({
         switch (webhook.webhook_code) {
           case 'INITIAL_UPDATE':
           case 'HISTORICAL_UPDATE':
-            return def._webhookReturn(webhook.item_id, {triggerSync: true})
+            return DEFAULT_SYNC
           // return [{connectionExternalId, triggerSync: true}] // Incremental false?
           case 'DEFAULT_UPDATE':
-            return def._webhookReturn(webhook.item_id, {triggerSync: true})
+            return DEFAULT_SYNC
           case 'TRANSACTIONS_REMOVED':
             return def._webhookReturn(webhook.item_id, {
               source$: rxjs.from(
@@ -445,13 +442,13 @@ export const plaidProvider = makeSyncProvider({
       case 'HOLDINGS': {
         switch (webhook.webhook_code) {
           case 'DEFAULT_UPDATE':
-            return def._webhookReturn(webhook.item_id, {triggerSync: true})
+            return DEFAULT_SYNC
         }
       }
       case 'INVESTMENTS_TRANSACTIONS': {
         switch (webhook.webhook_code) {
           case 'DEFAULT_UPDATE':
-            return def._webhookReturn(webhook.item_id, {triggerSync: true})
+            return DEFAULT_SYNC
         }
       }
     }

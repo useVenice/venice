@@ -112,21 +112,14 @@ export const stripeProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input, config) => {
-    const settings = def._type('connectionSettings', {
+  postConnect: (input) => ({
+    connectionExternalId: input.secretKey ?? '',
+    settings: {
       secretKey: input.secretKey ?? '',
       accountId: input.accountId ?? '',
-    })
-
-    const source$: rxjs.Observable<StripeSyncOperation> =
-      stripeProvider.sourceSync({settings, config, options: {}})
-
-    return {
-      externalId: input.secretKey ?? '',
-      settings,
-      source$,
-    }
-  },
+    },
+    triggerDefaultSync: true,
+  }),
   /*
   rxjs.of(input).pipe(
     Rx.mergeMap((_res) => {

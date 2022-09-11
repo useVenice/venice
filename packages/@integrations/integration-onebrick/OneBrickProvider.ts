@@ -178,7 +178,7 @@ export const oneBrickProvider = makeSyncProvider({
     return def._webhookReturn(md5Hash(accessToken), {
       settings: def.connectionSettings.parse({accessToken}),
       ledgerId: zId('ldgr').parse(userId),
-      triggerSync: true,
+      triggerDefaultSync: true,
     })
   },
 })

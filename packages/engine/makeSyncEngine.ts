@@ -1,29 +1,27 @@
 import * as trpc from '@trpc/server'
 
 import type {
+  AnyEntityPayload,
   AnySyncProvider,
-  ConnectedSource,
+  ConnectionUpdate,
+  Destination,
   Link,
   LinkFactory,
   MetaService,
-  ZRaw,
+  Source,
 } from '@ledger-sync/cdk-core'
 import {
   extractId,
   handlersLink,
   makeId,
-  makeSyncProvider,
   zId,
   zStandard,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import type {NonNullableOnly} from '@ledger-sync/util'
 import {
   compact,
-  identity,
   R,
   routerFromZFunctionMap,
-  Rx,
   rxjs,
   splitPrefixedId,
   z,
@@ -34,8 +32,6 @@ import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
   IntegrationInput,
-  ParsedConn,
-  ParsedInt,
   ParsedPipeline,
   PipelineInput,
   ZInput,
@@ -121,42 +117,91 @@ export const makeSyncEngine = <
         }),
       ),
     )
-  // FIXME...
-  // TODO: Remove this entire function. It gets more and more hacky...
-  function parsedConn(
-    int: ParsedInt,
-    cs: ConnectedSource<TProviders[number]['def']>,
-  ): ParsedConn {
-    const conn: NonNullableOnly<ZRaw['connection'], 'settings'> = {
-      id: makeId('conn', int.provider.name, `${cs.externalId}`),
-      settings: int.provider.def.connectionSettings?.parse(cs.settings),
-      envName: cs.envName,
-      integrationId: int.id,
-      ledgerId: cs.ledgerId,
-    }
 
-    console.log('[parsedConn]', conn)
-    const helpers = makeSyncProvider.def.helpers(int.provider.def)
-    // Questionable whether this should be the case...
-    return {
-      ...conn,
-      integration: int,
-      integrationId: int.id,
-      institution: undefined, // FIXME...
-      institutionId: undefined,
-      // ConnectionUpdates can technically be synced without needing a pipeline at all...
-      _source$: cs.source$.pipe(
-        // Should we actually start with _opConn? Or let each provider control this
-        // and reduce connectedSource to a mere [connectionId, Source] ?
-        Rx.startWith(
-          helpers._opConn(`${cs.externalId}`, {
-            settings: conn.settings,
-            institution: cs.institution,
-          }),
-        ),
-      ),
-      _destination$$: undefined,
+  const getPipelinesForConnection = (connInput: ZInput['connection']) => {
+    const defaultPipeline = () =>
+      getDefaultPipeline?.(connInput as ConnectionInput<TProviders[number]>)
+
+    // TODO: In the case of an existing `conn`, how do we update conn.settings too?
+    // Otherwise we will result in outdated settings...
+    return metaService
+      .findPipelines({connectionId: connInput.id})
+      .then((pipes) => (pipes.length ? pipes : compact([defaultPipeline()])))
+      .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
+  }
+
+  const _syncConnectionUpdate = async (
+    providerName: string,
+    connUpdate: ConnectionUpdate<AnyEntityPayload, {}>,
+  ) => {
+    console.log('[_syncConnectionUpdate]', connUpdate)
+    const connId = makeId('conn', providerName, connUpdate.connectionExternalId)
+    const pipelines = await getPipelinesForConnection({
+      id: connId,
+
+      settings: connUpdate.settings,
+      // institution: connUpdate.institution,
+    })
+
+    await Promise.all(
+      pipelines.map(async (pipe) => {
+        await _syncPipeline(pipe, {source$: connUpdate.source$})
+        if (connUpdate.triggerDefaultSync) {
+          await _syncPipeline(pipe, {})
+        }
+      }),
+    )
+  }
+
+  const _syncPipeline = async (
+    pipeline: ParsedPipeline,
+    opts: {source$?: Source<AnyEntityPayload>; destination$$?: Destination},
+  ) => {
+    console.log('[syncPipeline]', pipeline)
+    const {source: src, links, destination: dest, watch, ...rest} = pipeline
+    const source$ =
+      opts.source$ ??
+      src.integration.provider.sourceSync?.({
+        config: src.integration.config,
+        settings: src.settings,
+        options: rest.sourceOptions,
+      })
+
+    const destination$$ =
+      opts.destination$$ ??
+      dest.integration.provider.destinationSync?.({
+        config: dest.integration.config,
+        settings: dest.settings,
+        options: rest.destinationOptions,
+      })
+
+    if (!source$) {
+      throw new Error(`${src.integration.provider.name} missing source`)
     }
+    if (!destination$$) {
+      throw new Error(`${dest.integration.provider.name} missing destination`)
+    }
+    await sync({
+      // Raw Source, may come from fs, firestore or postgres
+      source: source$.pipe(
+        // logLink({prefix: 'postSource', verbose: true}),
+        metaLinks.postSource({src}),
+      ),
+      links: getLinksForPipeline?.(pipeline) ?? links,
+      // WARNING: It is insanely unclear to me why moving `metaLinks.link`
+      // to after provider.destinationSync makes all the difference.
+      // When syncing from firebase with a large number of docs,
+      // we always seem to stop after 1600 or so documents.
+      // I already checked this is because metaLinks.link runs a async comment
+      // even delay(100) introduces issues.
+      // It's worth trying to reproduce this with say a simple counter source and see if
+      // it happens...
+      destination: rxjs.pipe(
+        destination$$,
+        metaLinks.postDestination({pipeline, dest}),
+      ),
+      watch,
+    })
   }
 
   const syncEngine = {
@@ -291,88 +336,13 @@ export const makeSyncEngine = <
     }),
     syncConnection: zFunction(zConn, async function syncConnection(conn) {
       console.log('[syncConnection]', conn)
-
-      const defaultPipeline = () =>
-        getDefaultPipeline?.(
-          identity<ZInput['connection']>(conn) as ConnectionInput<
-            TProviders[number]
-          >,
-        )
-
-      const pipelines = await metaService
-        .findPipelines({connectionId: conn.id})
-        .then((pipes) => (pipes.length ? pipes : compact([defaultPipeline()])))
-        .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
-
-      await Promise.all(
-        pipelines.map((pipe) =>
-          syncEngine.syncPipeline.impl({
-            ...pipe,
-            // TODO: How do we refactor to get rid of _source$ and _destination$$
-            source: {...pipe.source, _source$: conn._source$},
-            destination: {
-              ...pipe.destination,
-              _destination$$: conn._destination$$,
-            },
-          }),
-        ),
-      )
+      /** Every ParsedConn also conforms to connectionInput  */
+      const pipelines = await getPipelinesForConnection(conn)
+      await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, {})))
     }),
     syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
       console.log('[syncPipeline]', pipeline)
-      const {
-        source: src,
-        links: links,
-        destination: dest,
-        watch,
-        ...rest
-      } = pipeline
-      const source$ =
-        src._source$ ??
-        src.integration.provider.sourceSync?.({
-          config: src.integration.config,
-          settings: src.settings,
-          options: rest.sourceOptions,
-        })
-
-      const destination$$ =
-        dest._destination$$ ??
-        dest.integration.provider.destinationSync?.({
-          config: dest.integration.config,
-          settings: dest.settings,
-          options: rest.destinationOptions,
-        })
-
-      if (!source$) {
-        throw new Error(`${src.integration.provider.name} is not a source`)
-      }
-      if (!destination$$) {
-        throw new Error(
-          `${dest.integration.provider.name} is not a destination`,
-        )
-      }
-
-      await sync({
-        // Raw Source, may come from fs, firestore or postgres
-        source: source$.pipe(
-          // logLink({prefix: 'postSource', verbose: true}),
-          metaLinks.postSource({src}),
-        ),
-        links: getLinksForPipeline?.(pipeline) ?? links,
-        // WARNING: It is insanely unclear to me why moving `metaLinks.link`
-        // to after provider.destinationSync makes all the difference.
-        // When syncing from firebase with a large number of docs,
-        // we always seem to stop after 1600 or so documents.
-        // I already checked this is because metaLinks.link runs a async comment
-        // even delay(100) introduces issues.
-        // It's worth trying to reproduce this with say a simple counter source and see if
-        // it happens...
-        destination: rxjs.pipe(
-          destination$$,
-          metaLinks.postDestination({pipeline, dest}),
-        ),
-        watch,
-      })
+      return _syncPipeline(pipeline, {})
     }),
 
     // MARK: - Connect lifecycle
@@ -396,14 +366,12 @@ export const makeSyncEngine = <
         if (!p.postConnect || !p.def.connectOutput) {
           return 'Noop'
         }
-        const cs = await p.postConnect(
+        const connUpdate = await p.postConnect(
           p.def.connectOutput.parse(input),
           config,
           ctx,
         )
-
-        await syncEngine.syncConnection.impl(parsedConn(int, {...cs, ...ctx}))
-
+        await _syncConnectionUpdate(p.name, connUpdate)
         console.log('didConnect finish', p.name, input)
         return 'Connection Success'
       },
@@ -417,11 +385,12 @@ export const makeSyncEngine = <
         int.provider.def.webhookInput.parse(input),
         int.config,
       )
-      // await Promise.all(
-      //   csArray.map((cs) =>
-      //     syncEngine.syncConnection.impl(parsedConn(int, cs)),
-      //   ),
-      // )
+      await Promise.all(
+        res.connectionUpdates.map((connUpdate) =>
+          _syncConnectionUpdate(int.provider.name, connUpdate),
+        ),
+      )
+
       return res.response?.body
     }),
     // What about delete? Should this delete also? Or soft delete?

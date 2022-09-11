@@ -116,20 +116,13 @@ export const wiseProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input) => {
-    const settings = identity<z.infer<typeof def['connectionSettings']>>({
+  postConnect: (input) => ({
+    connectionExternalId: input.apiToken ?? '',
+    settings: {
       envName: input.envName ?? '',
       apiToken: input.apiToken,
-    })
-    const source$: rxjs.Observable<WiseSyncOperation> = wiseProvider.sourceSync(
-      {settings, options: {}},
-    )
-    return {
-      externalId: input.apiToken ?? '',
-      settings,
-      source$,
-    }
-  },
+    },
+  }),
   sourceSync: ({settings: conn}) => {
     const client = makeWiseClient({...conn})
     async function* iterateEntities() {

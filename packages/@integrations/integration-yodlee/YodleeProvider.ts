@@ -257,24 +257,20 @@ export const yodleeProvider = makeSyncProvider({
       yodlee.getUser(),
     ])
 
-    const settings = yodleeProviderDef._type('connectionSettings', {
-      envName,
-      loginName,
-      providerAccountId,
-      provider,
-      providerAccount,
-      user,
-      accessToken: yodlee.accessToken,
-    })
-
     return {
-      externalId: providerAccountId,
-      settings,
-      source$: rxjs.EMPTY,
+      connectionExternalId: providerAccountId,
+      settings: {
+        envName,
+        loginName,
+        providerAccountId,
+        provider,
+        providerAccount,
+        user,
+        accessToken: yodlee.accessToken,
+      },
       institution: provider
         ? {id: providerId, data: {...provider, _envName: envName}}
         : undefined,
-      // externalInstitutionId: providerId,
     }
   },
 
