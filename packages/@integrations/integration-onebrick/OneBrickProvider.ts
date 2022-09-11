@@ -1,7 +1,7 @@
 import React from 'react'
 
-import type {SyncOperation} from '@ledger-sync/cdk-core';
-import { zId} from '@ledger-sync/cdk-core'
+import type {SyncOperation} from '@ledger-sync/cdk-core'
+import {zId} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
@@ -36,7 +36,7 @@ const zOneBrickWebhookBody = z.object({
   userId: z.string().nullish(),
 })
 
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('onebrick'),
   integrationConfig: zOneBrickConfig,
@@ -59,6 +59,7 @@ const def = makeSyncProvider.def({
   ]),
   webhookInput: zWebhookInput,
 })
+const def = makeSyncProvider.def.helpers(_def)
 
 export const oneBrickProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {
@@ -168,47 +169,17 @@ export const oneBrickProvider = makeSyncProvider({
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, _op({type: 'commit'})])))
   },
 
-  handleWebhook: (input, config) => {
+  handleWebhook: (input, _config) => {
     const {accessToken, userId} = zOneBrickWebhookBody.parse(input.body)
-    // Get the bank detail using bankId so we can put it up there
-
-    // rxjs.of(input.body as any).pipe(
-    //   Rx.mergeMap((res: OnebrickRedirect) => {
-    //     const conn = identity<z.infer<typeof base['connectionSettings']>>({
-    //       ...safeJSONParse(safeJSONParse(process.env['ONEBRICK_CREDENTIALS'])),
-    //       accessToken: res.accessToken,
-    //     })
-    //     const sync$: rxjs.Observable<OnebrickSyncOperation> =
-    //       oneBrickProvider.sourceSync(conn)
-    //     return rxjs.concat(sync$)
-    //   }),
-    // ),
-    const settings = def.connectionSettings.parse({accessToken})
-
-    const sync$: rxjs.Observable<OnebrickSyncOperation> =
-      oneBrickProvider.sourceSync({settings, config, options: {}})
-
-    return [
-      {
-        connectionExternalId: md5Hash(accessToken),
-        settings,
-        ledgerId: zId('ldgr').parse(userId),
-        source$: sync$,
-        triggerSync: true,
-      },
-    ]
-
-    // return rxjs.concat(
-    //   rxjs.of(
-    //     def._op('connUpdate', {
-    //       // TODO: Figure out if accessToken is actually the only unique thing about
-    //       // onebrick connection, and whether they could be rotated...
-    //       id: `conn_onebrick_${md5Hash(accessToken)}`,
-    //       settings,
-    //     }),
-    //   ),
-    //   sync$,
-    // )
+    // TODO: Add verification to check webhook came from oneBrick provider in fact..
+    // TODO: Get the bank detail using bankId so we can put it up there
+    // TODO: Figure out if accessToken is actually the only unique thing about
+    // onebrick connection, and whether they could be rotated...
+    return def._webhookReturn(md5Hash(accessToken), {
+      settings: def.connectionSettings.parse({accessToken}),
+      ledgerId: zId('ldgr').parse(userId),
+      triggerSync: true,
+    })
   },
 })
 
