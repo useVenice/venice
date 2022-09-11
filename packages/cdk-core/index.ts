@@ -7,4 +7,5 @@ export * from './makeSyncProvider'
 export * from './meta.types'
 export * from './metaService.d'
 export * from './protocol'
+export * from './sync'
 // codegen:end
