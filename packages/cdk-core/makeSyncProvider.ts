@@ -1,4 +1,4 @@
-import {castIs, z} from '@ledger-sync/util'
+import {castIs, MaybePromise, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
@@ -87,7 +87,7 @@ export const zWebhookInput = z.object({
   body: z.unknown(),
 })
 
-export interface WebhookOutputItem<TEntity extends AnyEntityPayload, TSettings>
+export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // make `ConnUpdateData.id` not prefixed so we can have better inheritance
   extends Omit<ConnUpdateData<TSettings>, 'id'> {
   // Subset of connUpdate
@@ -98,6 +98,17 @@ export interface WebhookOutputItem<TEntity extends AnyEntityPayload, TSettings>
   // Extra props not on ConnUpdateData
   source$?: Source<TEntity>
   triggerSync?: boolean
+}
+
+export interface WebhookReturnType<
+  TEntity extends AnyEntityPayload,
+  TSettings,
+> {
+  connectionUpdates: Array<ConnectionUpdate<TEntity, TSettings>>
+  /** HTTP Response body */
+  response?: {
+    body: Record<string, unknown>
+  }
 }
 
 // MARK: - Provider def
@@ -181,7 +192,11 @@ function makeSyncProviderDef<
     // destination type is a function and thus causes issues...
     _opType: {} as Op,
     _insOpType: {} as InsOpData,
-    _webhookOutputItemType: {} as WebhookOutputItem<
+    _connectionUpdateType: {} as ConnectionUpdate<
+      _types['sourceOutputEntity'],
+      _types['connectionSettings']
+    >,
+    _webhookReturnType: {} as WebhookReturnType<
       _types['sourceOutputEntity'],
       _types['connectionSettings']
     >,
@@ -239,10 +254,12 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
         entity: insitutionData,
       },
     }),
-    _webhookResult: (
-      connectionExternalId: T['_webhookOutputItemType']['connectionExternalId'],
-      rest: Omit<T['_webhookOutputItemType'], 'connectionExternalId'>,
-    ) => [{...rest, connectionExternalId}],
+    _webhookReturn: (
+      connectionExternalId: T['_connectionUpdateType']['connectionExternalId'],
+      rest: Omit<T['_connectionUpdateType'], 'connectionExternalId'>,
+    ): T['_webhookReturnType'] => ({
+      connectionUpdates: [{...rest, connectionExternalId}],
+    }),
   }
 }
 
@@ -340,13 +357,10 @@ export function makeSyncProvider<
     (
       webhookInput: T['_types']['webhookInput'],
       config: T['_types']['integrationConfig'],
-    ) => Array<
-      WebhookOutputItem<
-        T['_types']['sourceOutputEntity'],
-        T['_types']['connectionSettings']
-      >
+    ) => WebhookReturnType<
+      T['_types']['sourceOutputEntity'],
+      T['_types']['connectionSettings']
     >
-    // TODO: Consider having a return value for the http response too.
   >,
   TExtension,
 >(impl: {
@@ -422,11 +436,22 @@ makeSyncProvider.defaults = makeSyncProvider({
   extension: undefined,
 })
 
+const debugProviderDef = makeSyncProvider.def({
+  ...makeSyncProvider.def.defaults,
+  name: z.literal('debug'),
+  webhookInput: zWebhookInput,
+  connectionSettings: z.unknown(),
+  integrationConfig: z.unknown(),
+  sourceOutputEntity: z.unknown(),
+  institutionData: z.unknown(),
+})
+
 export const debugProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
-  def: makeSyncProvider.def({
-    ...makeSyncProvider.def.defaults,
-    name: z.literal('debug'),
-  }),
+  def: debugProviderDef,
   destinationSync: () => logLink({prefix: 'debug', verbose: true}),
+  handleWebhook: (input) => ({
+    connectionUpdates: [],
+    response: {body: {echo: input}},
+  }),
 })

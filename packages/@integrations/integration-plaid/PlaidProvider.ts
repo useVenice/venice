@@ -405,17 +405,17 @@ export const plaidProvider = makeSyncProvider({
   // https://plaid.com/docs/#webhook-verification
   handleWebhook: (input) => {
     const webhook = zWebhook.parse(input.body)
-
+    console.log('[plaid] Received webhook', webhook)
     switch (webhook.webhook_type) {
       case 'ITEM': {
         switch (webhook.webhook_code) {
           case 'WEBHOOK_UPDATE_ACKNOWLEDGED':
-            return []
+            return {connectionUpdates: []}
           case 'ERROR':
             // delegate.patchConnection({error: webhook.error})
             // await delegate.commit()
             console.error('[plaid] ITEM webhook error', webhook)
-            return def._webhookResult(webhook.item_id, {
+            return def._webhookReturn(webhook.item_id, {
               source$: rxjs.of(
                 def._opConn(webhook.item_id, {
                   settings: {webhookItemError: webhook.error},
@@ -428,12 +428,12 @@ export const plaidProvider = makeSyncProvider({
         switch (webhook.webhook_code) {
           case 'INITIAL_UPDATE':
           case 'HISTORICAL_UPDATE':
-            return def._webhookResult(webhook.item_id, {triggerSync: true})
+            return def._webhookReturn(webhook.item_id, {triggerSync: true})
           // return [{connectionExternalId, triggerSync: true}] // Incremental false?
           case 'DEFAULT_UPDATE':
-            return def._webhookResult(webhook.item_id, {triggerSync: true})
+            return def._webhookReturn(webhook.item_id, {triggerSync: true})
           case 'TRANSACTIONS_REMOVED':
-            return def._webhookResult(webhook.item_id, {
+            return def._webhookReturn(webhook.item_id, {
               source$: rxjs.from(
                 webhook.removed_transactions.map((tid) =>
                   def._opData('transaction', tid, null),
@@ -445,19 +445,19 @@ export const plaidProvider = makeSyncProvider({
       case 'HOLDINGS': {
         switch (webhook.webhook_code) {
           case 'DEFAULT_UPDATE':
-            return def._webhookResult(webhook.item_id, {triggerSync: true})
+            return def._webhookReturn(webhook.item_id, {triggerSync: true})
         }
       }
       case 'INVESTMENTS_TRANSACTIONS': {
         switch (webhook.webhook_code) {
           case 'DEFAULT_UPDATE':
-            return def._webhookResult(webhook.item_id, {triggerSync: true})
+            return def._webhookReturn(webhook.item_id, {triggerSync: true})
         }
       }
     }
 
     console.warn('[plaid] Unhandled webhook', webhook)
-    return []
+    return {connectionUpdates: []}
   },
 })
 
