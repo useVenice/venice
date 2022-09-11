@@ -2,7 +2,7 @@ import {NextAdapter} from 'next-query-params'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import {QueryParamProvider} from 'use-query-params'
 
-import {ledgerSyncConfig} from '@ledger-sync/app-config/ledgerSync.config'
+import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/ledgerSync.config.common'
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
 const reactQueryClient = new QueryClient({
@@ -18,7 +18,9 @@ export function AppProvider({children}: {children: React.ReactNode}) {
   return (
     <QueryParamProvider adapter={NextAdapter}>
       <QueryClientProvider client={reactQueryClient}>
-        <LSProvider queryClient={reactQueryClient} config={ledgerSyncConfig}>
+        <LSProvider
+          queryClient={reactQueryClient}
+          config={ledgerSyncCommonConfig}>
           {children}
         </LSProvider>
       </QueryClientProvider>

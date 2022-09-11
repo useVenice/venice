@@ -42,17 +42,18 @@ import {makeSyncParsers} from './makeSyncParsers'
 export {type inferProcedureInput} from '@trpc/server'
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
-
 export interface SyncEngineConfig<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 > {
   providers: TProviders
-  linkMap?: TLinks
-
   /** Base url of the router when deployed, e.g. `localhost:3000/api/ledger-sync` */
   routerUrl?: string
 
+  // Backend only
+  linkMap?: TLinks
+  /** Used to store metadata */
+  metaService: MetaService
   // Figure out why we have to say `Link<any>` here rather than AnyEntityPayload
   getLinksForPipeline?: (pipeline: ParsedPipeline) => Array<Link<any>>
 
@@ -71,17 +72,13 @@ export interface SyncEngineConfig<
 export const makeSyncEngine = <
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->(
-  {
-    providers,
-    getDefaultPipeline,
-    defaultIntegrations,
-    getLinksForPipeline,
-  }: SyncEngineConfig<TProviders, TLinks>,
-  // Consider separating out clientConfigs from serverConfigs...
-  /** Used to store metadata */
-  metaService: MetaService,
-) => {
+>({
+  metaService,
+  providers,
+  getDefaultPipeline,
+  defaultIntegrations,
+  getLinksForPipeline,
+}: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const metaLinks = makeMetaLinks(metaService)
