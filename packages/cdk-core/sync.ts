@@ -1,3 +1,5 @@
+import {identity, Rx, toCompletion} from '@ledger-sync/util'
+
 import type {
   AnyEntityPayload,
   ConnUpdateData,
@@ -6,14 +8,14 @@ import type {
   Source,
   StateUpdateData,
   SyncOperation,
-} from '@ledger-sync/cdk-core'
-import {identity, Rx, toCompletion} from '@ledger-sync/util'
+} from './protocol'
 
 type Data = AnyEntityPayload
 
 // Consider whether we should still have `init` and `shutdown` events...
 const COMMIT: Extract<SyncOperation, {type: 'commit'}> = {type: 'commit'}
 
+/** The most fundamental implementation of using using protocol */
 export async function sync<
   T extends Data = Data,
   TConnUpdate extends object = ConnUpdateData,

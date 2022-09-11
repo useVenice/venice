@@ -18,6 +18,7 @@ import {
   zStandard,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
+import {sync} from '@ledger-sync/cdk-core'
 import {
   compact,
   R,
@@ -37,7 +38,6 @@ import type {
   ZInput,
 } from './makeSyncParsers'
 import {makeSyncParsers} from './makeSyncParsers'
-import {sync} from './sync'
 
 export {type inferProcedureInput} from '@trpc/server'
 
