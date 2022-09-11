@@ -11,6 +11,7 @@ type HandleWebhookInput = inferProcedureInput<
   SyncRouter['_def']['mutations']['handleWebhook']
 >
 
+/** Do we also need a parseWebhookResponse? To allow setting headers, redirects and others? */
 export function parseWebhookRequest(
   req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
 ) {

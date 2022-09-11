@@ -1,4 +1,5 @@
-import {castIs, MaybePromise, z} from '@ledger-sync/util'
+import type { MaybePromise} from '@ledger-sync/util';
+import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
@@ -357,9 +358,11 @@ export function makeSyncProvider<
     (
       webhookInput: T['_types']['webhookInput'],
       config: T['_types']['integrationConfig'],
-    ) => WebhookReturnType<
-      T['_types']['sourceOutputEntity'],
-      T['_types']['connectionSettings']
+    ) => MaybePromise<
+      WebhookReturnType<
+        T['_types']['sourceOutputEntity'],
+        T['_types']['connectionSettings']
+      >
     >
   >,
   TExtension,

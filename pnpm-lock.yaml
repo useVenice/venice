@@ -458,6 +458,7 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@types/react': '*'
+      openapi-typescript: 5.4.1
       react: '*'
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
@@ -466,6 +467,7 @@ importers:
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
+      openapi-typescript: 5.4.1
 
   packages/@integrations/integration-plaid:
     specifiers:
@@ -474,7 +476,7 @@ importers:
       '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
       '@types/react': '*'
-      openapi-typescript-codegen: 0.23.0
+      openapi-typescript: 5.4.1
       plaid: 10.7.0
       react: '*'
       react-dom: '*'
@@ -490,7 +492,7 @@ importers:
       react-plaid-link: 3.3.2_sfoxds7t5ydpegc3knd667wn6m
     devDependencies:
       '@types/react': 17.0.39
-      openapi-typescript-codegen: 0.23.0
+      openapi-typescript: 5.4.1
 
   packages/@integrations/integration-postgres:
     specifiers:
