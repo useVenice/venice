@@ -5,7 +5,6 @@
   "sideEffects": [
     "register.node.ts"
   ],
-  "module": "./index.ts",
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/cdk-ledger": "*",
