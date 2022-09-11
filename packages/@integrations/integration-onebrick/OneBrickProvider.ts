@@ -1,6 +1,7 @@
 import React from 'react'
 
-import type {SyncOperation} from '@ledger-sync/cdk-core'
+import type {SyncOperation} from '@ledger-sync/cdk-core';
+import { zId} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, zWebhookInput} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
 import {
@@ -168,7 +169,9 @@ export const oneBrickProvider = makeSyncProvider({
   },
 
   handleWebhook: (input, config) => {
-    const {accessToken} = zOneBrickWebhookBody.parse(input.body)
+    const {accessToken, userId} = zOneBrickWebhookBody.parse(input.body)
+    // Get the bank detail using bankId so we can put it up there
+
     // rxjs.of(input.body as any).pipe(
     //   Rx.mergeMap((res: OnebrickRedirect) => {
     //     const conn = identity<z.infer<typeof base['connectionSettings']>>({
@@ -187,9 +190,11 @@ export const oneBrickProvider = makeSyncProvider({
 
     return [
       {
-        externalId: md5Hash(accessToken),
+        connectionExternalId: md5Hash(accessToken),
         settings,
+        ledgerId: zId('ldgr').parse(userId),
         source$: sync$,
+        triggerSync: true,
       },
     ]
 

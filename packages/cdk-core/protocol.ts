@@ -27,10 +27,16 @@ export interface AnyEntityPayload {
   entity: object | JsonLiteral | null // Record<string, unknown> doesn't work with normal ts interfaces...
 }
 
-export interface ConnUpdateData<TSettings = {}, TInsData = {}> {
+export interface ConnUpdateData<
+  TSettings = {},
+  TInsData = {},
+  TVariant extends 'partial' | 'complete' = 'partial',
+> {
   id: Id['conn']
-  settings?: ObjectPartialDeep<NoInfer<TSettings>>
-
+  // TODO: remove `?` when Variant = 'complete'
+  settings?: TVariant extends 'partial'
+    ? ObjectPartialDeep<NoInfer<TSettings>> | undefined
+    : TSettings
   institution?: {
     id: ExternalId
     data: TInsData
