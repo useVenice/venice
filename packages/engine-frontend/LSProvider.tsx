@@ -15,6 +15,11 @@ import {R} from '@ledger-sync/util'
 import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
 
+export type SyncEngineCommonConfig<
+  TProviders extends AnySyncProvider[],
+  TLinks extends Record<string, LinkFactory>,
+> = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'routerUrl'>
+
 type Router = ReturnType<typeof makeSyncEngine>[1]
 const trpc = createReactQueryHooks<Router>()
 
@@ -34,7 +39,7 @@ export function LSProvider<
   queryClient,
 }: {
   children: React.ReactNode
-  config: SyncEngineConfig<T, TLinks>
+  config: SyncEngineCommonConfig<T, TLinks>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
   const routerUrl = config.routerUrl ?? '/api/ledger-sync'
@@ -82,6 +87,13 @@ export function LSProvider<
 
 /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
 LSProvider.useContext = () => React.useContext(LSContext)!
+
+LSProvider.config = <
+  TProviders extends AnySyncProvider[],
+  TLinks extends Record<string, LinkFactory>,
+>(
+  config: SyncEngineCommonConfig<TProviders, TLinks>,
+) => config
 
 // TODO: Figure out how to work with NextJS SSR here
 // adding typeof withTRPC<Router> breaks prettier, let's figure it out...

@@ -1,30 +1,15 @@
-import {debugProvider, logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
+import {logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
   renameAccountLink,
 } from '@ledger-sync/cdk-ledger'
-import {airtableProvider} from '@ledger-sync/core-integration-airtable'
-import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
-import {fsProvider} from '@ledger-sync/core-integration-fs'
-import {mongodbProvider} from '@ledger-sync/core-integration-mongodb'
-import {corePostgresProvider} from '@ledger-sync/core-integration-postgres'
+import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
-import {beancountProvider} from '@ledger-sync/integration-beancount'
-import {foreceiptProvider} from '@ledger-sync/integration-foreceipt'
-import {importProvider} from '@ledger-sync/integration-import'
-import {oneBrickProvider} from '@ledger-sync/integration-onebrick'
-import {plaidProvider} from '@ledger-sync/integration-plaid'
-import {postgresProvider} from '@ledger-sync/integration-postgres'
-import {rampProvider} from '@ledger-sync/integration-ramp'
-import {splitwiseProvider} from '@ledger-sync/integration-splitwise'
-import {stripeProvider} from '@ledger-sync/integration-stripe'
-import {tellerProvider} from '@ledger-sync/integration-teller'
-import {togglProvider} from '@ledger-sync/integration-toggl'
-import {wiseProvider} from '@ledger-sync/integration-wise'
-import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
+
+import {ledgerSyncCommonConfig} from './ledgerSync.config.common'
 
 export function getEnv(
   key: string,
@@ -49,31 +34,9 @@ export function getEnv(
  * and only the minimal needed methods are...
  */
 export const ledgerSyncConfig = makeSyncEngine.config({
-  // Turn providers into a map rather than array so that we can prevent from
-  // a data-structure level multiple providers with the same `name` being passed in?
-  providers: [
-    // Core
-    debugProvider,
-    fsProvider,
-    firebaseProvider,
-    mongodbProvider,
-    corePostgresProvider,
-    airtableProvider,
-    // Ledger
-    plaidProvider,
-    beancountProvider,
-    importProvider,
-    oneBrickProvider,
-    tellerProvider,
-    stripeProvider,
-    rampProvider,
-    wiseProvider,
-    togglProvider,
-    foreceiptProvider,
-    yodleeProvider,
-    splitwiseProvider,
-    postgresProvider,
-  ],
+  ...ledgerSyncCommonConfig,
+  // TODO: support other config service such as fs later...
+  metaService: makePostgresMetaService({databaseUrl: getEnv('POSTGRES_URL')}),
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.
   // In contrast, connection shall include `external`
@@ -99,9 +62,6 @@ export const ledgerSyncConfig = makeSyncEngine.config({
     //   // envName: 'staging',
     // },
   },
-  // TODO: support other config service such as fs later...
-  // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  routerUrl: '/api', // apiUrl?
   getLinksForPipeline: ({source, links: links, destination}) =>
     destination.integration.provider.name === 'beancount'
       ? [
