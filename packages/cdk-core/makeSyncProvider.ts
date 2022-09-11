@@ -1,4 +1,4 @@
-import type { MaybePromise} from '@ledger-sync/util';
+import type {MaybePromise} from '@ledger-sync/util'
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
@@ -62,23 +62,6 @@ export interface ConnectContext<TSettings> {
   connection?: {id: Id['conn']; settings: TSettings} | null
 }
 
-// type Optional<T> = {[P in keyof T]: T[P] | undefined}
-
-/** TODO: Should this be simply the connUpdate type? but with non-optional types? */
-export interface ConnectedSource<T extends AnyProviderDef>
-  extends Partial<UseLedgerSyncOptions> {
-  // Should we instead use mapStandardConnection for this?
-  externalId: ExternalId
-  settings: T['_types']['connectionSettings']
-  institution?: {
-    id: ExternalId
-    data: T['_types']['institutionData']
-  }
-  source$: Source<T['_types']['sourceOutputEntity']>
-  /** syncConnection should be called after */
-  // triggerSync: boolean
-}
-
 export type WebhookInput = z.infer<typeof zWebhookInput>
 export const zWebhookInput = z.object({
   headers: z
@@ -98,7 +81,7 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
 
   // Extra props not on ConnUpdateData
   source$?: Source<TEntity>
-  triggerSync?: boolean
+  triggerDefaultSync?: boolean
 }
 
 export interface WebhookReturnType<
@@ -342,7 +325,12 @@ export function makeSyncProvider<
       connectOutput: T['_types']['connectOutput'],
       config: T['_types']['integrationConfig'],
       context: ConnectContext<T['_types']['connectionSettings']>,
-    ) => Promise<ConnectedSource<T>>
+    ) => MaybePromise<
+      ConnectionUpdate<
+        T['_types']['sourceOutputEntity'],
+        T['_types']['connectionSettings']
+      >
+    >
   >,
   // This probably need to also return an observable
   TRevokeConn extends _opt<

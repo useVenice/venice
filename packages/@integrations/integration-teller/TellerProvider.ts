@@ -160,20 +160,11 @@ export const tellerProvider = makeSyncProvider({
       })
     }
   },
-
-  postConnect: async (input, config) => {
-    const settings = identity<z.infer<typeof def['connectionSettings']>>({
-      token: input.token,
-    })
-    const source$: rxjs.Observable<TellerSyncOperation> =
-      tellerProvider.sourceSync({settings, config, options: {}})
-    return {
-      externalId: input.token, // FIXME
-      settings,
-      source$,
-      // externalInstitutionId: '', // FIXME
-    }
-  },
+  postConnect: async (input, _config) => ({
+    connectionExternalId: input.token, // FIXME
+    settings: {token: input.token},
+    // institution // FIXME
+  }),
   sourceSync: ({settings: input, config}) => {
     const client = makeTellerClient({...config, token: input.token})
     async function* iterateEntities() {

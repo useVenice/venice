@@ -102,21 +102,15 @@ export const togglProvider = makeSyncProvider({
     }
   },
 
-  postConnect: async (input) => {
-    const settings = identity<z.infer<typeof def['connectionSettings']>>({
+  postConnect: (input) => ({
+    connectionExternalId: input.apiToken,
+    settings: {
       apiToken: input.apiToken,
       email: input.email,
       password: input.password,
-    })
-    const source$: rxjs.Observable<TogglSyncOperation> =
-      togglProvider.sourceSync({settings, options: {}})
-
-    return {
-      externalId: input.apiToken,
-      settings,
-      source$,
-    }
-  },
+    },
+    triggerDefaultSync: true,
+  }),
 
   sourceSync: ({settings: input}) => {
     const client = makeTogglClient({...input})

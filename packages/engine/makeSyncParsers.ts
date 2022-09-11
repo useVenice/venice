@@ -1,12 +1,9 @@
 import type {
-  AnyEntityPayload,
   AnySyncProvider,
   ConnectContext,
-  Destination,
   Id,
   LinkFactory,
   MetaService,
-  Source,
 } from '@ledger-sync/cdk-core'
 import {makeId} from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
@@ -19,7 +16,6 @@ import {
   mapDeep,
   R,
   z,
-  zCast,
   zGuard,
 } from '@ledger-sync/util'
 
@@ -42,9 +38,6 @@ export const zInput = (() => {
   const connection = zRaw.connection.omit({standard: true}).extend({
     integration: integration.optional(),
     institution: institution.optional(),
-    // Should never be actually passed in...
-    _source$: zCast<Source<AnyEntityPayload>>().optional(),
-    _destination$$: zCast<Destination>().optional(),
   })
   const pipeline = zRaw.pipeline.extend({
     source: connection.optional(),
@@ -74,11 +67,6 @@ export type ConnectionInput<T extends AnySyncProvider = AnySyncProvider> =
         integrationId?: Id<T['name']>['int']
         integration?: IntegrationInput<T>
         settings?: Partial<_inferInput<T['def']['connectionSettings']>>
-        // Runtype only types... Really a hack
-        _source$?: Source<T['def']['_types']['sourceOutputEntity']>
-        _destination$$?: Destination<
-          T['def']['_types']['destinationInputEntity']
-        >
       }
     : never
 
