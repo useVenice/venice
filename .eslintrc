@@ -52,7 +52,7 @@
     "unicorn/explicit-length-check": "off", // No strong reason to...
     "unicorn/import-style": "warn",
     "unicorn/new-for-builtins": "warn",
-    "unicorn/no-array-callback-reference": "warn",
+    "unicorn/no-array-callback-reference": "off", // Type checking handles it
     "unicorn/no-array-method-this-argument": "warn",
     "unicorn/no-array-push-push": "warn",
     "unicorn/no-await-expression-member": "warn",

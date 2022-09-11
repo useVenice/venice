@@ -39,6 +39,8 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
         pool.maybeOne<T>(sql`SELECT * FROM ${table} where id = ${id}`),
       ),
     set: (id, data) => upsertById(tableName, {...data, id}),
+    patch: (id, data) =>
+      upsertById(tableName, {...data, id}, {mergeJson: 'shallow'}),
     delete: (id) =>
       getPool()
         .then((pool) => pool.query(sql`DELETE FROM ${table} WHERE id = ${id}`))
