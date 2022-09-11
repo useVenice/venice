@@ -6,6 +6,7 @@ import {makeId, zId} from './id.types'
 import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
+  AnyEntityPayload,
   ConnUpdateData,
   Destination,
   Source,
@@ -86,6 +87,19 @@ export const zWebhookInput = z.object({
   body: z.unknown(),
 })
 
+export interface WebhookOutputItem<TEntity extends AnyEntityPayload, TSettings>
+  // make `ConnUpdateData.id` not prefixed so we can have better inheritance
+  extends Omit<ConnUpdateData<TSettings>, 'id'> {
+  // Subset of connUpdate
+  connectionExternalId: ExternalId
+  // Can we inherit types used by metaLinks?
+  ledgerId?: Id['ldgr']
+
+  // Extra props not on ConnUpdateData
+  source$?: Source<TEntity>
+  triggerSync?: boolean
+}
+
 // MARK: - Provider def
 
 type _opt<T> = T | undefined
@@ -147,19 +161,30 @@ function makeSyncProviderDef<
     }>,
     {type: 'data'}
   >
-  type Op = SyncOperation<
-    _types['sourceOutputEntity'],
-    ConnUpdateData<_types['connectionSettings'], _types['institutionData']>,
-    StateUpdateData<
-      _types['sourceSyncOptions'],
-      _types['destinationSyncOptions']
-    >
+  type ConnUpdate = ConnUpdateData<
+    _types['connectionSettings'],
+    _types['institutionData']
   >
+  type StateUpdate = StateUpdateData<
+    _types['sourceSyncOptions'],
+    _types['destinationSyncOptions']
+  >
+  type Op = SyncOperation<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
+  type Src = Source<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
+
   return {
     ...schemas,
     _types: {} as _types,
+    _connUpdateType: {} as ConnUpdate,
+    _stateUpdateType: {} as StateUpdate,
+    _sourceType: {} as Src,
+    // destination type is a function and thus causes issues...
     _opType: {} as Op,
     _insOpType: {} as InsOpData,
+    _webhookOutputItemType: {} as WebhookOutputItem<
+      _types['sourceOutputEntity'],
+      _types['connectionSettings']
+    >,
   }
 }
 
@@ -214,6 +239,10 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
         entity: insitutionData,
       },
     }),
+    _webhookResult: (
+      connectionExternalId: T['_webhookOutputItemType']['connectionExternalId'],
+      rest: Omit<T['_webhookOutputItemType'], 'connectionExternalId'>,
+    ) => [{...rest, connectionExternalId}],
   }
 }
 
@@ -311,7 +340,12 @@ export function makeSyncProvider<
     (
       webhookInput: T['_types']['webhookInput'],
       config: T['_types']['integrationConfig'],
-    ) => Array<ConnectedSource<T>>
+    ) => Array<
+      WebhookOutputItem<
+        T['_types']['sourceOutputEntity'],
+        T['_types']['connectionSettings']
+      >
+    >
     // TODO: Consider having a return value for the http response too.
   >,
   TExtension,

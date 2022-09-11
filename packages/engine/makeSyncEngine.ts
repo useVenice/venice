@@ -413,15 +413,17 @@ export const makeSyncEngine = <
         console.warn(`${int.provider.name} does not handle webhooks`)
         return
       }
-      const csArray = await int.provider.handleWebhook(
+      // const csArray =
+      await int.provider.handleWebhook(
         int.provider.def.webhookInput.parse(input),
         int.config,
       )
-      await Promise.all(
-        csArray.map((cs) =>
-          syncEngine.syncConnection.impl(parsedConn(int, cs)),
-        ),
-      )
+
+      // await Promise.all(
+      //   csArray.map((cs) =>
+      //     syncEngine.syncConnection.impl(parsedConn(int, cs)),
+      //   ),
+      // )
     }),
     // What about delete? Should this delete also? Or soft delete?
     revokeConnection: zFunction(

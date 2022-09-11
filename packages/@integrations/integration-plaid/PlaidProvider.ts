@@ -29,6 +29,7 @@ import {
   plaidUnitForCurrency,
 } from './legacy/plaid-helpers'
 import {inferPlaidEnvFromToken} from './plaid-utils'
+import type {ErrorShape} from './plaid.types'
 import {makePlaidClient, zPlaidClientConfig, zWebhook} from './PlaidClient'
 
 type PlaidSyncOperation = typeof def['_opType']
@@ -46,6 +47,8 @@ const _def = makeSyncProvider.def({
     institution: zCast<plaid.Institution | undefined>(),
     item: zCast<plaid.Item | undefined>(),
     status: zCast<plaid.ItemGetResponse['status'] | undefined>(),
+    /** Comes from webhook */
+    webhookItemError: zCast<ErrorShape>().nullish(),
   }),
   institutionData: zCast<plaid.Institution>(),
   connectInput: z.object({link_token: z.string()}),
@@ -298,7 +301,9 @@ export const plaidProvider = makeSyncProvider({
     makePlaidClient(config).itemRemove(input.accessToken),
 
   sourceSync: ({config, settings, options}) => {
-    const client = makePlaidClient(config)
+    const client = makePlaidClient(
+      config as typeof def['_types']['integrationConfig'],
+    )
     async function* iterateEntities() {
       // Sync item
       const {accessToken} = settings
@@ -396,77 +401,62 @@ export const plaidProvider = makeSyncProvider({
       .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
   },
 
+  // TODO(P2): Verify Plaid webhook authenticity for added security.
+  // https://plaid.com/docs/#webhook-verification
   handleWebhook: (input) => {
     const webhook = zWebhook.parse(input.body)
 
-    // webhook.item_id
-    def._opConn(webhook.item_id, {
-      settings: {},
-    })
+    switch (webhook.webhook_type) {
+      case 'ITEM': {
+        switch (webhook.webhook_code) {
+          case 'WEBHOOK_UPDATE_ACKNOWLEDGED':
+            return []
+          case 'ERROR':
+            // delegate.patchConnection({error: webhook.error})
+            // await delegate.commit()
+            console.error('[plaid] ITEM webhook error', webhook)
+            return def._webhookResult(webhook.item_id, {
+              source$: rxjs.of(
+                def._opConn(webhook.item_id, {
+                  settings: {webhookItemError: webhook.error},
+                }),
+              ),
+            })
+        }
+      }
+      case 'TRANSACTIONS': {
+        switch (webhook.webhook_code) {
+          case 'INITIAL_UPDATE':
+          case 'HISTORICAL_UPDATE':
+            return def._webhookResult(webhook.item_id, {triggerSync: true})
+          // return [{connectionExternalId, triggerSync: true}] // Incremental false?
+          case 'DEFAULT_UPDATE':
+            return def._webhookResult(webhook.item_id, {triggerSync: true})
+          case 'TRANSACTIONS_REMOVED':
+            return def._webhookResult(webhook.item_id, {
+              source$: rxjs.from(
+                webhook.removed_transactions.map((tid) =>
+                  def._opData('transaction', tid, null),
+                ),
+              ),
+            })
+        }
+      }
+      case 'HOLDINGS': {
+        switch (webhook.webhook_code) {
+          case 'DEFAULT_UPDATE':
+            return def._webhookResult(webhook.item_id, {triggerSync: true})
+        }
+      }
+      case 'INVESTMENTS_TRANSACTIONS': {
+        switch (webhook.webhook_code) {
+          case 'DEFAULT_UPDATE':
+            return def._webhookResult(webhook.item_id, {triggerSync: true})
+        }
+      }
+    }
 
-    // async function handle() {
-    //   console.debug(`[plaid] Did receive webhook`, webhook)
-    //   // TODO(P2): Verify Plaid webhook authenticity for added security
-    //   // https://plaid.com/docs/#webhook-verification
-    //   const delegate = await ctx.getDelegate(webhook.item_id as Id.external)
-
-    //   switch (webhook.webhook_type) {
-    //     case 'ITEM': {
-    //       switch (webhook.webhook_code) {
-    //         case 'WEBHOOK_UPDATE_ACKNOWLEDGED':
-    //           return
-    //         case 'ERROR':
-    //           delegate.patchConnection({error: webhook.error})
-    //           await delegate.commit()
-    //           console.error('[plaid] ITEM webhook error', webhook)
-    //           return
-    //         default:
-    //           console.warn('[plaid] Unhandled ITEM webhook', webhook)
-    //           return
-    //       }
-    //     }
-    //     case 'TRANSACTIONS': {
-    //       switch (webhook.webhook_code) {
-    //         case 'INITIAL_UPDATE':
-    //         case 'HISTORICAL_UPDATE':
-    //           await delegate.sync({syncType: 'webhook', incremental: false})
-    //           return
-    //         case 'DEFAULT_UPDATE':
-    //           await delegate.sync({syncType: 'webhook'})
-    //           return
-    //         case 'TRANSACTIONS_REMOVED':
-    //           for (const tid of webhook.removed_transactions) {
-    //             await delegate.upsertStandardEntity(
-    //               'transaction',
-    //               tid as Id.external,
-    //               null,
-    //             )
-    //           }
-    //           await delegate.commit()
-    //           return
-    //         default:
-    //           console.warn('[plaid] Unhandled TRANSACTIONS webhook', webhook)
-    //           return
-    //       }
-    //     }
-    //     case 'HOLDINGS': {
-    //       switch (webhook.webhook_code) {
-    //         case 'DEFAULT_UPDATE':
-    //           await delegate.sync({syncType: 'webhook'})
-    //           return
-    //       }
-    //     }
-    //     case 'INVESTMENTS_TRANSACTIONS': {
-    //       switch (webhook.webhook_code) {
-    //         case 'DEFAULT_UPDATE':
-    //           await delegate.sync({syncType: 'webhook'})
-    //           return
-    //       }
-    //     }
-    //   }
-    //   console.error('[plaid] Unhandled webhook', webhook)
-    // }
-
+    console.warn('[plaid] Unhandled webhook', webhook)
     return []
   },
 })
