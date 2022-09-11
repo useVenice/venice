@@ -2,6 +2,7 @@ import {createInterceptors} from 'slonik-interceptor-preset'
 import type {PrimitiveValueExpression} from 'slonik/dist/src/types'
 
 import type {MaybeArray} from '@ledger-sync/util'
+import {mapValues} from '@ledger-sync/util'
 import {
   defineProxyFn,
   fromMaybeArray,
@@ -90,7 +91,7 @@ export const makePostgresClient = zFunction(
 
 /**
  * First row is used for type inference. Will need to support explicit columns later
- * Expects an `id` and `updated_at` column to exist in db
+ * Expects an `id` and `updated_at` column to exist in db. Will also ignore updates to `created_at`
  * Will automatically snake_case
  * TODOs: 1) Support JSON patching
  * 2) Supports explict column definition
@@ -106,55 +107,72 @@ export const makePostgresClient = zFunction(
 export function upsertByIdQuery(
   tableName: string,
   _valueMaps: MaybeArray<{id: string; [k: string]: unknown}>,
+  // deep is not implemented yet
+  opts: {mergeJson?: 'shallow'} = {},
 ) {
   // console.log('[upsertByIdQuery]', {tableName, valueMaps})
   const valueMaps = fromMaybeArray(_valueMaps)
-  const firstValueMap = valueMaps[0]
-  if (!firstValueMap) {
+  const firstVMap = valueMaps[0]
+  if (!firstVMap) {
     return null
   }
 
   const {sql} = $slonik()
-  const table = sql.identifier([tableName])
+  const toSqlId = (str: string) => sql.identifier([snakeCase(str)])
 
+  const table = toSqlId(tableName)
+  const kId = 'id'
   const kUpdatedAt = 'updatedAt'
+  const kCreatedAt = 'createdAt'
   // `undefined` is not supported by postgres and we make it mean `set to null` for now.
-  const keys = R.keys({...firstValueMap, [kUpdatedAt]: null}).filter(
-    (k) => k === kUpdatedAt || firstValueMap[k] !== undefined,
+  const keys = R.keys(firstVMap).filter(
+    (k) => k !== kUpdatedAt && k !== kCreatedAt && firstVMap[k] !== undefined,
+  )
+  const typeMap = mapValues(firstVMap, (v) =>
+    isPlainObject(v) || Array.isArray(v) ? 'jsonb' : null,
   )
 
-  const cols = keys.map((k) => sql.identifier([snakeCase(k)]))
+  const cols = keys.map((k) => {
+    const colId = toSqlId(k)
+    const fullId = sql`${table}.${colId}`
+    const excluded =
+      opts.mergeJson === 'shallow' && typeMap[k] === 'jsonb'
+        ? sql`${fullId} || excluded.${colId}`
+        : sql`excluded.${colId}`
+    return {key: k, colId, fullId, excluded}
+  })
   const valLists = valueMaps.map((vmap) =>
     keys.map((k) => {
-      if (k === kUpdatedAt) {
-        return sql.literalValue('now()')
-      }
       const v = vmap[k]
-      return isPlainObject(v) || Array.isArray(v)
+      return typeMap[k] === 'jsonb'
         ? sql.jsonb(v as any)
         : (v as PrimitiveValueExpression)
     }),
   )
 
+  const getColId = (c: typeof cols[number]) => c.colId
+
   const query = sql`
-    INSERT INTO ${table} (${sql.join(cols, sql`, `)})
+    INSERT INTO ${table} (${sql.join(cols.map(getColId), sql`, `)})
     VALUES (${sql.join(
       valLists.map((vals) => sql.join(vals, sql`, `)),
       sql`), (`,
     )})
-    ON CONFLICT (id) DO UPDATE SET
+    ON CONFLICT (${toSqlId(kId)}) DO UPDATE SET
       ${sql.join(
-        cols
-          .filter((c) => !c.names.includes('id'))
-          .map((c) => sql`${c} = excluded.${c}`),
+        [
+          ...cols
+            .filter((c) => c.key !== kId)
+            .map((c) => sql`${c.colId} = ${c.excluded}`),
+          sql`${toSqlId(kUpdatedAt)} = now()`,
+        ],
         sql`, \n`,
       )}
     WHERE
       ${sql.join(
         cols
-          .filter((c) => !c.names.includes('id'))
-          .filter((c) => !c.names.includes('updated_at'))
-          .map((c) => sql`${table}.${c} IS DISTINCT FROM excluded.${c}`),
+          .filter((c) => c.key !== kId && c.key !== kUpdatedAt)
+          .map((c) => sql`${c.fullId} IS DISTINCT FROM ${c.excluded}`),
         sql` OR \n`,
       )};
   `
