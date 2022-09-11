@@ -1,3 +1,6 @@
+import type http from 'node:http'
+import type https from 'node:https'
+
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -6,8 +9,6 @@ import type {
   Method,
 } from 'axios'
 import _Axios from 'axios'
-import type http from 'node:http'
-import type https from 'node:https'
 
 import {defineProxyFn} from './di-utils'
 import {stringifyQueryParams} from './url-utils'
@@ -130,20 +131,13 @@ export class HTTPError<
   }
 }
 
-// @yenbekbay Let's figure out how to conditionally change the response type of R
-// so that responseTransformer may be allowed to change the type of response returned
-// export type HTTPClient<R> = Omit<AxiosInstance, 'get' | 'post' | 'put'> & {
-//   request<T = any> (config: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   get<T = any>(url: string, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   head<T = any>(url: string, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-//   patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R extends AxiosResponse ? R : T>;
-// }
-
 export type HTTPClient = AxiosInstance
 
+/**
+ * TODO: Replace reimplementation to use fetch instead, among other things it is used
+ * by https://www.npmjs.com/package/api / https://api.readme.dev/docs (which is awesome by the way)
+ * and will allow us to better integrate
+ */
 export function createHTTPClient({
   requestTransformer,
   responseTransformer,

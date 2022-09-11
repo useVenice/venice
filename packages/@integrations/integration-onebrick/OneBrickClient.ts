@@ -171,6 +171,17 @@ export const zOneBrickConfig = z.object({
   redirectUrl: z.string().nullish(),
 })
 
+/**
+ * TODO: Switch to v2 api and OpenAPI based implementation
+ *
+ * curl --request GET \
+     --url https://dash.readme.com/api/v1/api-registry/rwkfe1gl7puob14 \
+     --header 'Accept: application/json'
+ * from `const sdk = require('api')('@brickdocs/v2#rwkfe1gl7puob14');`
+ * @see https://technical-docs.onebrick.io/v2/reference/auth-api-in-ovo
+ * @see https://docs.readme.com/reference/getapiregistry
+ *
+ */
 export const makeOneBrickClient = zFunction(zOneBrickConfig, (cfg) => {
   function defaultUrl(envName: EnvName) {
     switch (envName) {

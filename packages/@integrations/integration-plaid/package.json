@@ -7,7 +7,7 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "codegen": "openapi --name PlaidAPI -o ./plaid.generated -i https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas false --indent 2"
+    "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
   },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "openapi-typescript-codegen": "0.23.0"
+    "openapi-typescript": "5.4.1"
   }
 }
