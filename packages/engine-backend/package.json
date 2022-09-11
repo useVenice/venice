@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/engine",
+  "name": "@ledger-sync/engine-backend",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,

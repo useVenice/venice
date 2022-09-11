@@ -6,7 +6,10 @@ import type {
   DialogConfig,
   LinkFactory,
 } from '@ledger-sync/cdk-core'
-import type {makeSyncEngine, SyncEngineConfig} from '@ledger-sync/engine'
+import type {
+  makeSyncEngine,
+  SyncEngineConfig,
+} from '@ledger-sync/engine-backend'
 import {R} from '@ledger-sync/util'
 
 import type {DialogInstance} from './components/Dialog'

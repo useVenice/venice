@@ -1,5 +1,8 @@
 import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
-import {type inferProcedureInput, makeSyncEngine} from '@ledger-sync/engine'
+import {
+  type inferProcedureInput,
+  makeSyncEngine,
+} from '@ledger-sync/engine-backend'
 
 import {getEnv, ledgerSyncConfig} from './ledgerSync.config'
 
@@ -7,7 +10,7 @@ export * from '@ledger-sync/cdk-core'
 export {
   parseWebhookRequest,
   type inferProcedureInput,
-} from '@ledger-sync/engine'
+} from '@ledger-sync/engine-backend'
 export * from './constants'
 export * from './ledgerSync.config'
 

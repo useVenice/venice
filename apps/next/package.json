@@ -15,7 +15,7 @@
   "dependencies": {
     "@ledger-sync/app-config": "*",
     "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/engine": "*",
+    "@ledger-sync/engine-backend": "*",
     "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/util": "*",
     "@radix-ui/react-radio-group": "1.0.0",

@@ -6,7 +6,7 @@ import type {
 } from '@ledger-sync/cdk-core'
 import {extractId} from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
-import type {IntegrationInput} from '@ledger-sync/engine'
+import type {IntegrationInput} from '@ledger-sync/engine-backend'
 
 import {LSProvider} from './LSProvider'
 
