@@ -1,35 +1,83 @@
-import {Fetcher} from 'openapi-typescript-fetch'
-import type {Middleware} from 'openapi-typescript-fetch'
+import OpenAPIClientAxios from 'openapi-client-axios'
 
-import '../../../apps/cli/fetch-polyfill'
+import {
+  $makeProxyAgent,
+  getDefaultProxyAgent,
+  stringifyQueryParams,
+  z,
+  zFunction,
+} from '@ledger-sync/util'
 
-import {z, zFunction} from '@ledger-sync/util'
+import type {Client as YodleeClient} from './client'
 
-import type {paths} from './yodlee.gen'
-
-const fetcherSchema = z.object({
-  baseUrl: z.string().nullish(),
-  headers: z.any().nullish(),
+const zFetcherConfig = z.object({
+  proxy: z.object({url: z.string(), cert: z.string()}).nullish(),
+  clientId: z.string(),
+  clientSecret: z.string(),
+  url: z.string(),
 })
-export const createFetcher = zFunction(fetcherSchema, ({baseUrl, headers}) => {
-  const fetcher = Fetcher.for<paths>()
 
-  const logger: Middleware = async (url, init, next) => {
-    console.log(`fetching ${url} with headers:`, init.headers)
-    const response = await next(url, init)
-    console.log(`fetched ${url}`, init)
-    return response
-  }
-  fetcher.configure({
-    baseUrl: baseUrl ?? '',
-    init: {
-      headers,
-    },
-    use: [logger], // For middleware, to be implemented if it's necessary
-  })
+// Please consider this is as a new type gen since openapi-typescript have a similiar issue with this because of node-fetch https://github.com/nock/nock/issues/2197
+// References: https://github.com/anttiviljami/openapi-client-axios/blob/master/DOCS.md
+// TODO: Will move this entire function to YodleeClient once it finished and tested
+export const createFetcher = zFunction(
+  zFetcherConfig,
+  ({proxy, clientId, clientSecret, url}) => {
+    const generateAccessToken = async (loginName: string) => {
+      const api = new OpenAPIClientAxios({
+        definition: './packages/@integrations/integration-yodlee/yodlee.yaml',
+        withServer: {url},
+        axiosConfigDefaults: {
+          withCredentials: true,
+          httpsAgent:
+            getDefaultProxyAgent() ?? (proxy && $makeProxyAgent(proxy)),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Api-Version': '1.1',
+            loginName,
+          },
+        },
+      })
+      const client = await api.getClient<YodleeClient>()
+      const accesssToken = client.paths['/auth/token'].post(
+        null,
+        stringifyQueryParams({clientId, secret: clientSecret}),
+      )
+      return (await accesssToken).data.token?.accessToken
+    }
 
-  return {
-    getProvider: fetcher.path('/providers/{providerId}').method('get').create(),
-    getUser: fetcher.path('/user').method('get').create(),
-  }
-})
+    // TODO: make it reusable
+    const api = new OpenAPIClientAxios({
+      definition: './packages/@integrations/integration-yodlee/yodlee.yaml',
+      withServer: {url},
+      axiosConfigDefaults: {
+        withCredentials: true,
+        httpsAgent: getDefaultProxyAgent() ?? (proxy && $makeProxyAgent(proxy)),
+        headers: {
+          'cache-control': 'no-cache',
+          'Content-Type': 'application/json',
+          'Api-Version': '1.1',
+        },
+      },
+    })
+    return {
+      getProvider: zFunction(
+        [z.number(), z.string()],
+        async (providerId, accesssToken) => {
+          api.axiosConfigDefaults = {
+            ...api.axiosConfigDefaults,
+            headers: {
+              ...api.axiosConfigDefaults.headers,
+              Authorization: `Bearer ${accesssToken}`,
+            },
+          }
+          const client = await api.getClient<YodleeClient>()
+          return client.paths['/providers/{providerId}'].get({providerId})
+        },
+      ),
+      generateAccessToken: zFunction(z.string(), (loginName) =>
+        generateAccessToken(loginName),
+      ),
+    }
+  },
+)

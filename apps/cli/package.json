@@ -22,11 +22,19 @@
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
-    "@types/node-fetch": "2",
+    "@types/node-fetch": "3",
+    "axios": "^0.25.0",
     "cac": "6.7.12",
+    "cross-fetch": "^3.1.5",
+    "es6-promise": "^4.2.8",
+    "fetch-polyfill": "^0.8.2",
+    "js-yaml": "^4.1.0",
     "keytar": "7.9.0",
     "micro": "9.3.5-canary.3",
     "ngrok": "4.3.3",
-    "node-fetch": "2"
+    "node-fetch": "3",
+    "node-fetch-polyfill": "^2.0.6",
+    "unfetch": "^4.2.0",
+    "whatwg-fetch": "^3.6.2"
   }
 }

@@ -15,13 +15,16 @@
     "@ledger-sync/cdk-ledger": "*",
     "@ledger-sync/standard": "*",
     "@ledger-sync/util": "*",
+    "axios": "^0.25.0",
     "csstype": "*",
+    "js-yaml": "^4.1.0",
     "react": "*",
     "react-dom": "*"
   },
   "devDependencies": {
     "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
+    "openapi-client-axios": "^5.1.2",
     "openapi-typescript": "5.4.1",
     "openapi-typescript-codegen": "0.23.0",
     "openapi-typescript-fetch": "^1.1.3"

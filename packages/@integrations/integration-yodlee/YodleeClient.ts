@@ -144,8 +144,8 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
   )
 
   const fetcher = createFetcher({
-    baseUrl: http.defaults.baseURL,
-    headers: http.defaults.headers,
+    ...config,
+    url: baseUrlFromEnvName(creds.envName),
   })
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
@@ -178,8 +178,14 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
   const getProvider2 = zFunction(
     zYodleeId,
     async (providerId) =>
-      (await fetcher.getProvider({providerId: zYodleeId.parse(providerId)}))
-        .data.provider?.[0],
+      (
+        await fetcher.getProvider(
+          providerId,
+          (await fetcher.generateAccessToken(
+            creds.role === 'user' ? creds.loginName : config.adminLoginName,
+          )) ?? '',
+        )
+      ).data.provider?.[0],
   )
 
   const client = {
@@ -214,7 +220,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
           throw err
         }),
 
-    getUser2: async () => await (await fetcher.getUser({})).data.user,
+    // getUser2: async () => await (await fetcher.getUser({})).data.user,
     async updateUser(user: {email?: string; loginName?: string}) {
       return http
         .put<{user: Yodlee.User}>('/user', {user})
