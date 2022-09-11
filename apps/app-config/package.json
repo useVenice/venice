@@ -15,7 +15,7 @@
     "@ledger-sync/core-integration-mongodb": "*",
     "@ledger-sync/core-integration-postgres": "*",
     "@ledger-sync/core-integration-redis": "*",
-    "@ledger-sync/engine": "*",
+    "@ledger-sync/engine-backend": "*",
     "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/integration-beancount": "*",
     "@ledger-sync/integration-foreceipt": "*",

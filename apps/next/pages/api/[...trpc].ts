@@ -4,7 +4,7 @@ import * as trpcNext from '@trpc/server/adapters/next'
 import type {NextApiHandler} from 'next'
 
 import {ledgerSyncRouter} from '@ledger-sync/app-config'
-import {parseWebhookRequest} from '@ledger-sync/engine'
+import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import {identity} from '@ledger-sync/util'
 
 const handler = trpcNext.createNextApiHandler({

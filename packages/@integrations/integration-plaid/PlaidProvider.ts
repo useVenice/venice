@@ -295,9 +295,8 @@ export const plaidProvider = makeSyncProvider({
     makePlaidClient(config).itemRemove(input.accessToken),
 
   sourceSync: ({config, settings, options}) => {
-    const client = makePlaidClient(
-      config as typeof def['_types']['integrationConfig'],
-    )
+    const client = makePlaidClient(config)
+
     async function* iterateEntities() {
       // Sync item
       const {accessToken} = settings

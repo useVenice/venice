@@ -7,7 +7,7 @@
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/core-integration-firebase": "*",
     "@ledger-sync/core-integration-postgres": "*",
-    "@ledger-sync/engine": "*",
+    "@ledger-sync/engine-backend": "*",
     "@ledger-sync/id": "*",
     "@ledger-sync/integration-beancount": "*",
     "@ledger-sync/integration-onebrick": "*",

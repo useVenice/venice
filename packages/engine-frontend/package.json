@@ -7,7 +7,6 @@
   "dependencies": {
     "@headlessui/react": "1.7.0",
     "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/engine": "*",
     "@ledger-sync/util": "*",
     "@radix-ui/react-dialog": "1.0.0",
     "@react-hookz/web": "15.1.0",
@@ -22,6 +21,7 @@
     "tailwind-merge": "*"
   },
   "devDependencies": {
+    "@ledger-sync/engine-backend": "*",
     "@types/react": "*"
   }
 }
