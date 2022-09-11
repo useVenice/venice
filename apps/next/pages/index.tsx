@@ -1,7 +1,6 @@
 import {useRouter} from 'next/router'
 import {CaretRight} from 'phosphor-react'
 import {useState} from 'react'
-import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 
 import {useLedgerSyncDevInfo} from '@ledger-sync/engine-frontend'
 
