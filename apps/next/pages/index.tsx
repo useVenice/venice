@@ -8,18 +8,9 @@ import {useLedgerSyncDevInfo} from '@ledger-sync/engine-frontend'
 import {Layout} from '../components/Layout'
 import {TabContent, Tabs} from '../components/Tabs'
 
-type ConnectMode = 'enter' | 'search'
-
 export default function HomeScreen() {
   const router = useRouter()
   const [ledgerId, setLedgerId] = useState('')
-  const [mode, setMode] = useQueryParam(
-    'mode',
-    withDefault(
-      createEnumParam<ConnectMode>(['enter', 'search']),
-      'enter' as ConnectMode,
-    ),
-  )
 
   const {ledgerIdsRes} = useLedgerSyncDevInfo({ledgerIdKeywords: ledgerId})
 
@@ -33,12 +24,9 @@ export default function HomeScreen() {
             domination.
           </p>
         </div>
-        <Tabs
-          value={mode}
-          onValueChange={(newMode) => setMode(newMode as ConnectMode)}
-          className="pt-4">
+        <Tabs value="default" className="pt-4">
           <TabContent
-            value="search"
+            value="default"
             className="mx-auto hidden w-full flex-1 flex-col overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
             <div className="flex w-96 flex-col">
               <form
