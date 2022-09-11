@@ -47,7 +47,7 @@ export const ledgerSyncCommonConfig = LSProvider.config({
   ],
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  routerUrl: '/api', // apiUrl?
+  apiUrl: '/api', // apiUrl?
 })
 
 // console.log('Using config', ledgerSyncConfig) // Too verbose...
