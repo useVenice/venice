@@ -38,7 +38,7 @@ export function Layout({
         <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between px-4 md:px-8">
           <Link href="/">
             <a className="rounded-lg bg-gray-100 p-2 text-primary">
-              <span className="text-lg font-bold sm:text-xl">{title}</span>
+              <span className="text-xs font-bold sm:text-xl">{title}</span>
             </a>
           </Link>
 
