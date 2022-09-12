@@ -5,6 +5,7 @@ import {twMerge} from 'tailwind-merge'
 
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {formatDate} from '@ledger-sync/util'
 
 import {Layout} from '../../../components/Layout'
 
@@ -58,10 +59,6 @@ export default function LedgerMyConnectionsScreen() {
                         <span className="badge-outline badge uppercase">
                           {/* FIXME */}
                           sandbox
-                        </span>
-
-                        <span className="badge-outline badge uppercase">
-                          syncInProgress: {conn.syncInProgress}
                         </span>
                       </div>
                     </div>
@@ -140,7 +137,16 @@ export default function LedgerMyConnectionsScreen() {
                     <span className="text-xl font-medium">
                       {conn.displayName}
                     </span>
-
+                    <div>
+                      {conn.syncInProgress
+                        ? 'Syncing...'
+                        : conn.lastSyncCompletedAt
+                        ? `Synced ${formatDate(
+                            conn.lastSyncCompletedAt,
+                            'relative',
+                          )}`
+                        : 'Never synced yet'}
+                    </div>
                     <div
                       className={twMerge(
                         'flex items-center space-x-2 text-sm',
