@@ -303,11 +303,7 @@ export function makeSyncParsers<
 
       // We don't have a getInsitution here... so just wiat for now
       // We should probably at least get the external id working though
-      const ctx: ConnectContext<any> = {
-        ...rest,
-        // TODO: Fix the typing here...
-        connection: {settings: {}, ...connection, id: connectionId},
-      }
+      const ctx: ConnectContext<any> = {...rest, connection}
       return ctx
     }),
   )
