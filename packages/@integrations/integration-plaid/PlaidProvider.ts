@@ -140,20 +140,14 @@ export const plaidProvider = makeSyncProvider({
       loginUrl: ins.url ?? undefined,
       envName: undefined,
     }),
-    connection(settings) {
-      const err = settings.item?.error as PlaidError | null
+    connection: (settings) => {
+      // TODO: Unify item.error and webhookItemError into a single field
+      // so we know what the true status of the item is...
+      const err =
+        (settings.item?.error as PlaidError | null) ?? settings.webhookItemError
       return {
         id: `${settings.itemId}`,
         displayName: settings.institution?.name ?? '',
-        institution: settings.institution
-          ? {
-              // TODO: Figure out how not to repeat ourselves here...
-              ...this.institution(settings.institution),
-              id: `ins_plaid_${settings.institution.institution_id}`, // Need to fix me...
-              envName: inferPlaidEnvFromToken(settings.accessToken),
-            }
-          : undefined,
-        institutionId: `ins_plaid_${settings.item?.institution_id}`, // Need to fix me...
         status:
           err?.error_code === 'ITEM_LOGIN_REQUIRED'
             ? 'disconnected'

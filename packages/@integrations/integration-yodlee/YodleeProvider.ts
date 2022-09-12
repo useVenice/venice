@@ -190,48 +190,35 @@ export const yodleeProvider = makeSyncProvider({
       name: ins.name ?? `<${ins.id}>`,
       envName: ins._envName,
     }),
-    connection(settings) {
-      return {
-        id: `${settings.providerAccountId}`,
-        displayName:
-          settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
-        institution: settings.provider
-          ? {
-              // TODO: Figure out how not to repeat ourselves here...
-              ...this.institution({
-                ...settings.provider,
-                _envName: settings.envName,
-              }),
-              id: `ins_yodlee_${settings.provider.id}`, // Need to fix me...
-            }
-          : undefined,
-        institutionId: `ins_yodlee_${settings.provider?.id}`, // Need to fix me...
-        status: (() => {
-          switch (settings.providerAccount?.status) {
-            case 'SUCCESS':
-              return 'healthy'
-            case 'USER_INPUT_REQUIRED':
+    connection: (settings) => ({
+      id: `${settings.providerAccountId}`,
+      displayName:
+        settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
+      status: (() => {
+        switch (settings.providerAccount?.status) {
+          case 'SUCCESS':
+            return 'healthy'
+          case 'USER_INPUT_REQUIRED':
+            return 'disconnected'
+          case 'FAILED':
+            // Venmo refresh seems to run into this issue
+            if (
+              settings.providerAccount.dataset[0]?.updateEligibility ===
+              'ALLOW_UPDATE_WITH_CREDENTIALS'
+            ) {
               return 'disconnected'
-            case 'FAILED':
-              // Venmo refresh seems to run into this issue
-              if (
-                settings.providerAccount.dataset[0]?.updateEligibility ===
-                'ALLOW_UPDATE_WITH_CREDENTIALS'
-              ) {
-                return 'disconnected'
-              }
-              return 'error'
-            // TODO: Handle these three situations
-            case 'IN_PROGRESS':
-            case 'LOGIN_IN_PROGRESS':
-            case 'PARTIAL_SUCCESS':
-              return 'healthy'
-            default:
-              return undefined
-          }
-        })(),
-      }
-    },
+            }
+            return 'error'
+          // TODO: Handle these three situations
+          case 'IN_PROGRESS':
+          case 'LOGIN_IN_PROGRESS':
+          case 'PARTIAL_SUCCESS':
+            return 'healthy'
+          default:
+            return undefined
+        }
+      })(),
+    }),
   },
   // TODO: handle reconnecting scenario
   preConnect: async (config, {envName, ledgerId}) => {
