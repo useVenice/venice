@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import {useState} from 'react'
 import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
+import {useDeveloperMode, useIsAdmin} from '../contexts/PortalParamsContext'
 import {ActiveLink} from './ActiveLink'
 
 export interface LinkInput {
@@ -25,7 +25,8 @@ export function Layout({
   links = [],
   children,
 }: LayoutProps) {
-  const [developerMode, setDeveloperMode] = useState(false)
+  const isAdmin = useIsAdmin()
+  const [developerMode, setDeveloperMode] = useDeveloperMode()
   const {adminSyncMeta} = useLedgerSyncAdmin({})
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
@@ -77,40 +78,42 @@ export function Layout({
 
       {children}
 
-      <footer className="flex border-t border-gray-100 p-8">
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <input
-              type="checkbox"
-              checked={developerMode}
-              onChange={(event) =>
-                setDeveloperMode(event.currentTarget.checked)
-              }
-              className="toggle-primary toggle"
-            />
-            <span className="label-text pl-2">
-              Developer mode: {developerMode ? 'ON' : 'OFF'}
-            </span>
-          </label>
-        </div>
+      {isAdmin && (
+        <footer className="flex border-t border-gray-100 p-8">
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                checked={developerMode}
+                onChange={(event) =>
+                  setDeveloperMode(event.currentTarget.checked)
+                }
+                className="toggle-primary toggle"
+              />
+              <span className="label-text pl-2">
+                Developer mode: {developerMode ? 'ON' : 'OFF'}
+              </span>
+            </label>
+          </div>
 
-        <div className="flex flex-1 justify-end">
-          <button
-            className="btn-outline btn btn-sm"
-            onClick={() => {
-              adminSyncMeta
-                .mutateAsync([undefined])
-                .then((res) => {
-                  console.log('meta sync success', res)
-                })
-                .catch((err) => {
-                  console.error('meta sync error', err)
-                })
-            }}>
-            Sync metadata (reindex institutions)
-          </button>
-        </div>
-      </footer>
+          <div className="flex flex-1 justify-end">
+            <button
+              className="btn-outline btn btn-sm"
+              onClick={() =>
+                adminSyncMeta
+                  .mutateAsync([undefined])
+                  .then((res) => {
+                    console.log('meta sync success', res)
+                  })
+                  .catch((err) => {
+                    console.error('meta sync error', err)
+                  })
+              }>
+              Sync metadata (reindex institutions)
+            </button>
+          </div>
+        </footer>
+      )}
     </div>
   )
 }

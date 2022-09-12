@@ -1,36 +1,45 @@
+import {atom, Provider, useAtom, useAtomValue} from 'jotai'
 import React from 'react'
-import {createEnumParam, StringParam, useQueryParam} from 'use-query-params'
+import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 
-interface PortalParamsContextValue {
-  accessToken: string | null
-  env: EnvName
-}
+import {atomWithPersistedQueryParam} from './utils/atomWithPersistedQueryParam'
 
-const PortalParamsContext = React.createContext<PortalParamsContextValue>({
-  accessToken: '',
-  env: 'sandbox',
-})
+const accessTokenAtom = atomWithPersistedQueryParam(
+  'accessToken',
+  '',
+  StringParam,
+)
+const envAtom = atomWithPersistedQueryParam<EnvName>(
+  'env',
+  'sandbox',
+  createEnumParam(zEnvName.options),
+)
+const developerModeAtom = atomWithPersistedQueryParam(
+  'developerMode',
+  false,
+  BooleanParam,
+)
+const isAdminAtom = atom((get) => get(accessTokenAtom) === 'admin')
 
 export function PortalParamsProvider({children}: {children: React.ReactNode}) {
-  const [accessToken] = useQueryParam('accessToken', StringParam)
-  const [env] = useQueryParam('env', createEnumParam(zEnvName.options))
-  const value = React.useMemo(
-    (): PortalParamsContextValue => ({
-      accessToken: accessToken ?? null,
-      env: env ?? 'sandbox',
-    }),
-    [accessToken, env],
-  )
-  return (
-    <PortalParamsContext.Provider value={value}>
-      {children}
-    </PortalParamsContext.Provider>
-  )
+  return <Provider>{children}</Provider>
 }
 
-export function usePortalParams() {
-  return React.useContext(PortalParamsContext)
+export function useAccessToken() {
+  return useAtomValue(accessTokenAtom)
+}
+
+export function useEnv() {
+  return useAtomValue(envAtom)
+}
+
+export function useDeveloperMode() {
+  return useAtom(developerModeAtom)
+}
+
+export function useIsAdmin() {
+  return useAtomValue(isAdminAtom)
 }
