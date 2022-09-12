@@ -1,16 +1,16 @@
 import Link from 'next/link'
-import {useRouter} from 'next/router'
 import {useState} from 'react'
 import {twMerge} from 'tailwind-merge'
 
-import type {Id} from '@ledger-sync/cdk-core'
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
 import {ActiveLink} from './ActiveLink'
 
 export interface LinkInput {
   label: string
   href: string
+  /** Overrides href. @yenbekbay let me know a better solution here... */
+  onClick?: () => void
   primary?: boolean
 }
 
@@ -25,15 +25,12 @@ export function Layout({
   links = [],
   children,
 }: LayoutProps) {
-  // TODO: Sync ledgerId and currentEnv into the url
-  const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
   const [developerMode, setDeveloperMode] = useState(false)
-  const {adminSyncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
+  const {adminSyncMeta} = useLedgerSyncAdmin({})
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">
-        {/* TODO: Add global control for envName as well as currentUserId */}
+        {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between px-4 md:px-8">
           <Link href="/">
             <a className="rounded-lg bg-gray-100 p-2 text-primary">
@@ -44,20 +41,34 @@ export function Layout({
           {links.length > 0 && (
             <div className="flex flex-1 items-center justify-end">
               <nav className="flex space-x-6 text-sm font-medium">
-                {links.map((l) => (
-                  <ActiveLink
-                    key={l.href}
-                    href={l.href}
-                    activeClassName={l.primary ? 'underline' : 'text-primary'}>
-                    <a
+                {links.map((l) =>
+                  l.onClick ? (
+                    <button
+                      key={l.href}
+                      onClick={l.onClick}
                       className={twMerge(
                         'btn btn-sm',
                         l.primary ? 'btn-primary' : 'btn-ghost',
                       )}>
                       {l.label}
-                    </a>
-                  </ActiveLink>
-                ))}
+                    </button>
+                  ) : (
+                    <ActiveLink
+                      key={l.href}
+                      href={l.href}
+                      activeClassName={
+                        l.primary ? 'underline' : 'text-primary'
+                      }>
+                      <a
+                        className={twMerge(
+                          'btn btn-sm',
+                          l.primary ? 'btn-primary' : 'btn-ghost',
+                        )}>
+                        {l.label}
+                      </a>
+                    </ActiveLink>
+                  ),
+                )}
               </nav>
             </div>
           )}
