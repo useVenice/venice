@@ -92,7 +92,27 @@ export const makePostgresMetaService = zFunction(
         )
         return getPool().then((pool) => pool.any<LedgerIdResultRow>(query))
       },
-      searchInstitutions: (opts) => tables.institution.list(opts),
+      searchInstitutions: ({keywords, providerNames, ...rest}) => {
+        const {getPool, sql} = _getDeps(databaseUrl)
+        const conditions = compact([
+          // TODO: Generate provider_name column in postgres and index it
+          providerNames &&
+            sql`split_part(id, '_', 2) = ANY(${sql.array(
+              providerNames,
+              'varchar',
+            )})`,
+          keywords && sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
+        ])
+        const where =
+          conditions.length > 0
+            ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
+            : sql``
+        return getPool().then((pool) =>
+          pool.any(
+            applyLimitOffset(sql`SELECT * FROM institution ${where}`, rest),
+          ),
+        )
+      },
 
       findPipelines: ({connectionIds}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
