@@ -105,10 +105,22 @@ export type ParsedPipeline = z.infer<
 >
 
 export const zSyncOptions = z.object({
+  /**
+   * Remove `state` of connection and trigger a full resync
+   */
   fullResync: z.boolean().nullish(),
+
+  /**
+   * Triggers provider to refresh data from its source
+   * https://plaid.com/docs/api/products/transactions/#transactionsrefresh
+   * This may also load historical transactions. For example,
+   * Finicity treats historical transaction as premium service.
+   */
+  todo_upstreamRefresh: z.boolean().nullish(),
+
   // See coda's implmementation. Requires adding a new message to the sync protocol
   // to remove all data from a particular source_id
-  // removeUnsyncedData: z.boolean().nullish(),
+  todo_removeUnsyncedData: z.boolean().nullish(),
 })
 
 export function makeSyncParsers<
