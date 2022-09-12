@@ -3,12 +3,10 @@ import {useRouter} from 'next/router'
 import {Plus} from 'phosphor-react'
 import React from 'react'
 import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
-
 import type {EnvName, Id} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {compact} from '@ledger-sync/util'
-
 import {Layout} from '../../../components/Layout'
 import {Radio, RadioGroup} from '../../../components/RadioGroup'
 import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
@@ -84,7 +82,7 @@ export default function LedgerNewConnectionScreen() {
             </form>
             <div className="flex flex-1 items-center justify-center">
               <svg
-                className="animate-spin -ml-1 mr-3 h-8 w-8 text-black"
+                className="-ml-1 mr-3 h-8 w-8 animate-spin text-black"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24">
@@ -94,7 +92,7 @@ export default function LedgerNewConnectionScreen() {
                   cy="12"
                   r="10"
                   stroke="currentColor"
-                  stroke-width="4"></circle>
+                  strokeWidth="4"></circle>
                 <path
                   className="opacity-75"
                   fill="currentColor"

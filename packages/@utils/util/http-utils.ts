@@ -1,6 +1,5 @@
 import type http from 'node:http'
 import type https from 'node:https'
-
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -9,7 +8,6 @@ import type {
   Method,
 } from 'axios'
 import _Axios from 'axios'
-
 import {defineProxyFn} from './di-utils'
 import {stringifyQueryParams} from './url-utils'
 

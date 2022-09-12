@@ -18,7 +18,6 @@ import {
   z,
   zGuard,
 } from '@ledger-sync/util'
-
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 // Four different types
@@ -299,7 +298,7 @@ export function makeSyncParsers<
       const ctx: ConnectContext<any> = {
         ...rest,
         // TODO: Fix the typing here...
-        connection: {settings: {}, ...connection, id: connectionId!},
+        connection: {settings: {}, ...connection, id: connectionId},
       }
       return ctx
     }),
