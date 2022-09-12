@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import {useRouter} from 'next/router'
 import {useState} from 'react'
+import {twMerge} from 'tailwind-merge'
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {ActiveLink} from './ActiveLink'
@@ -8,6 +9,7 @@ import {ActiveLink} from './ActiveLink'
 export interface LinkInput {
   label: string
   href: string
+  primary?: boolean
 }
 
 export interface LayoutProps {
@@ -24,10 +26,7 @@ export function Layout({
   // TODO: Sync ledgerId and currentEnv into the url
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
-
-  // Turn Developer Mode ON/OFF
-  const [enabled, setEnabled] = useState(false)
-
+  const [developerMode, setDeveloperMode] = useState(false)
   const {syncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
@@ -47,8 +46,12 @@ export function Layout({
                   <ActiveLink
                     key={l.href}
                     href={l.href}
-                    activeClassName="text-primary">
-                    <a className="h-16 leading-[4rem] hover:text-primary">
+                    activeClassName={l.primary ? 'underline' : 'text-primary'}>
+                    <a
+                      className={twMerge(
+                        'btn btn-sm',
+                        l.primary ? 'btn-primary' : 'btn-ghost',
+                      )}>
                       {l.label}
                     </a>
                   </ActiveLink>
@@ -61,41 +64,39 @@ export function Layout({
 
       {children}
 
-      <footer className="flex justify-between border-t border-gray-100 p-8">
-        <div className="relative flex flex-col items-center justify-center">
-          <div className="flex">
-            <label className="relative mr-5 inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                className="peer sr-only"
-                checked={enabled}
-                readOnly
-              />
-              <div
-                onClick={() => {
-                  setEnabled(!enabled)
-                }}
-                className="peer h-6 w-11 rounded-full bg-gray-200  after:absolute  after:top-0.5 after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-              <span className="ml-2 text-sm font-medium text-gray-900">
-                Developer Mode: {enabled ? 'ON' : 'OFF'}
-              </span>
-            </label>
-          </div>
+      <footer className="flex border-t border-gray-100 p-8">
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <input
+              type="checkbox"
+              checked={developerMode}
+              onChange={(event) =>
+                setDeveloperMode(event.currentTarget.checked)
+              }
+              className="toggle-primary toggle"
+            />
+            <span className="label-text pl-2">
+              Developer mode: {developerMode ? 'ON' : 'OFF'}
+            </span>
+          </label>
         </div>
-        <button
-          className="btn-outline btn"
-          onClick={() => {
-            syncMeta
-              .mutateAsync([undefined])
-              .then((res) => {
-                console.log('meta sync success', res)
-              })
-              .catch((err) => {
-                console.error('meta sync error', err)
-              })
-          }}>
-          Sync metadata (reindex institutions)
-        </button>
+
+        <div className="flex flex-1 justify-end">
+          <button
+            className="btn-outline btn btn-sm"
+            onClick={() => {
+              syncMeta
+                .mutateAsync([undefined])
+                .then((res) => {
+                  console.log('meta sync success', res)
+                })
+                .catch((err) => {
+                  console.error('meta sync error', err)
+                })
+            }}>
+            Sync metadata (reindex institutions)
+          </button>
+        </div>
       </footer>
     </div>
   )

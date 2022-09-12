@@ -1,5 +1,4 @@
 import * as trpc from '@trpc/server'
-
 import type {
   AnyEntityPayload,
   AnySyncProvider,
@@ -29,7 +28,6 @@ import {
   zFunction,
   zTrimedString,
 } from '@ledger-sync/util'
-
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -284,8 +282,7 @@ export const makeSyncEngine = <
           const standardIns = conn.institutionId
             ? mappers?.institution?.(insById[conn.institutionId]?.external)
             : undefined
-          console.log('map connection', {conn, standardConn, standardIns})
-
+          // console.log('map connection', {conn, standardConn, standardIns})
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
