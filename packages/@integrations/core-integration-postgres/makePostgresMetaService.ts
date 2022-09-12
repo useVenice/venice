@@ -94,13 +94,13 @@ export const makePostgresMetaService = zFunction(
       },
       searchInstitutions: (opts) => tables.institution.list(opts),
 
-      findPipelines: ({connectionId}) => {
+      findPipelines: ({connectionIds}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
+        const ids = sql.array(connectionIds, 'varchar')
         return getPool().then((pool) =>
           pool.any(sql`
             SELECT * FROM pipeline
-            WHERE source_id = ${connectionId}
-              OR destination_id =  ${connectionId}
+            WHERE source_id = ANY(${ids}) OR destination_id = ANY(${ids})
           `),
         )
       },

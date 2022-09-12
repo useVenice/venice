@@ -86,10 +86,16 @@ export const zRaw = {
         ]),
       )
       .nullish(),
+    // TODO: Add two separate tables sync_jobs to keep track of this instead of these two
+    // though questionnable whether it should be in a separate database completely
+    // just like Airbyte. Or perhaps using airbyte itself as the jobs database
+    lastSyncStartedAt: z.date().nullish(),
+    lastSyncCompletedAt: z.date().nullish(),
   }),
   institution: z.object({
     id: zId('ins'),
     standard: zStandard.institution.omit({id: true}).nullish(),
     external: zJsonObject.nullish(),
   }),
+  // TODO: Add connection_attempts
 }
