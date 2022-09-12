@@ -1,8 +1,8 @@
-import {makeImportFormat} from '../makeImportFormat'
-import {RowIdMaker} from '../RowIdMaker'
+import Papa from 'papaparse'
 import {makePostingsMap} from '@ledger-sync/standard'
 import {A, DateTime, parseMoney, zCast} from '@ledger-sync/util'
-import Papa from 'papaparse'
+import {makeImportFormat} from '../makeImportFormat'
+import {RowIdMaker} from '../RowIdMaker'
 
 export interface CoinbaseTransactionRow {
   /** 2013-05-19T20:21:04Z */

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import {Deferred} from '@ledger-sync/util'
 
 export function loadScriptOnce(src: string) {

@@ -1,6 +1,6 @@
 import * as jestDateMock from 'jest-date-mock'
-import {DateTime, Settings} from 'luxon'
 import * as tzMock from 'timezone-mock'
+import {DateTime, Settings} from 'luxon'
 import {MPDate} from '../MPDate'
 import {MPInterval} from '../MPInterval'
 

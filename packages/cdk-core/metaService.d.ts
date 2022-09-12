@@ -1,5 +1,4 @@
 import type {NoInfer, ObjectPartialDeep} from '@ledger-sync/util'
-
 import type {Id, IDS} from './id.types'
 import type {ZRaw, zRaw} from './meta.types'
 

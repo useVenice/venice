@@ -1,9 +1,7 @@
 import type {inferProcedureInput} from '@trpc/server'
-
 import type {WebhookInput} from '@ledger-sync/cdk-core'
 import {makeId} from '@ledger-sync/cdk-core'
 import type {NonEmptyArray} from '@ledger-sync/util'
-
 import type {makeSyncEngine} from './makeSyncEngine'
 
 type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
