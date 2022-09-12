@@ -21,6 +21,8 @@
     "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
     "@trpc/server": "9.26.0",
+    "cookies-next": "2.1.1",
+    "jotai": "1.8.3",
     "next": "12.2.5",
     "next-query-params": "4.0.0",
     "phosphor-react": "1.4.1",

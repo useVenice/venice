@@ -6,7 +6,7 @@ import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../components/Layout'
 
-export default function HomeScreen() {
+export default function LedgersScreen() {
   const router = useRouter()
   const [ledgerId, setLedgerId] = useState('')
   const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
