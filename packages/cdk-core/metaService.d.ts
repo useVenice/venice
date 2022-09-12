@@ -20,7 +20,7 @@ export interface MetaTable<
   }): Promise<readonly T[]>
   set(id: TID, data: T): Promise<void>
   patch?(id: TID, partial: ObjectPartialDeep<NoInfer<T>>): Promise<void>
-  delete?(id: TID): Promise<void>
+  delete(id: TID): Promise<void>
 }
 
 interface LedgerIdResultRow {

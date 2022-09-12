@@ -29,7 +29,7 @@ export function Layout({
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
   const [developerMode, setDeveloperMode] = useState(false)
-  const {syncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
+  const {adminSyncMeta} = useLedgerSync({ledgerId, envName: 'sandbox'})
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">
@@ -87,7 +87,7 @@ export function Layout({
           <button
             className="btn-outline btn btn-sm"
             onClick={() => {
-              syncMeta
+              adminSyncMeta
                 .mutateAsync([undefined])
                 .then((res) => {
                   console.log('meta sync success', res)

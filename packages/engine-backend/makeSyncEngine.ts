@@ -36,7 +36,9 @@ import type {
   IntegrationInput,
   ParsedPipeline,
   PipelineInput,
-  ZInput,
+  ZInput} from './makeSyncParsers';
+import {
+  zSyncOptions,
 } from './makeSyncParsers'
 import {makeSyncParsers} from './makeSyncParsers'
 
@@ -155,7 +157,10 @@ export const makeSyncEngine = <
 
   const _syncPipeline = async (
     pipeline: ParsedPipeline,
-    opts: {source$?: Source<AnyEntityPayload>; destination$$?: Destination},
+    opts: z.infer<typeof zSyncOptions> & {
+      source$?: Source<AnyEntityPayload>
+      destination$$?: Destination
+    } = {},
   ) => {
     console.log('[syncPipeline]', pipeline)
     const {source: src, links, destination: dest, watch, ...rest} = pipeline
@@ -164,7 +169,9 @@ export const makeSyncEngine = <
       src.integration.provider.sourceSync?.({
         config: src.integration.config,
         settings: src.settings,
-        options: rest.sourceOptions,
+        // Maybe we should rename `options` to `state`?
+        // Should also make the distinction between `config`, `settings` and `state` much more clear.
+        options: opts.fullResync ? undefined : rest.sourceOptions,
       })
 
     const destination$$ =
@@ -172,7 +179,7 @@ export const makeSyncEngine = <
       dest.integration.provider.destinationSync?.({
         config: dest.integration.config,
         settings: dest.settings,
-        options: rest.destinationOptions,
+        options: opts.fullResync ? undefined : rest.destinationOptions,
       })
 
     if (!source$) {
@@ -210,10 +217,15 @@ export const makeSyncEngine = <
 
     // MARK: - Metadata  etc
 
-    searchLedgerIds: zFunction(
+    adminSearchLedgerIds: zFunction(
       z.object({keywords: zTrimedString.nullish()}).optional(),
       async ({keywords} = {}) => metaService.searchLedgerIds({keywords}),
     ),
+    adminGetIntegration: zFunction(zInt, async (int) => ({
+      config: int.config,
+      provider: int.provider.name,
+      id: int.id,
+    })),
 
     listIntegrations: zFunction(
       z.object({type: z.enum(['source', 'destination']).nullish()}),
@@ -300,15 +312,30 @@ export const makeSyncEngine = <
       },
     ),
 
-    getIntegration: zFunction(zInt, async (int) => ({
-      config: int.config,
-      provider: int.provider.name,
-      id: int.id,
-    })),
+    // What about delete? Should this delete also? Or soft delete?
+
+    /** Used for testing */
+    // adminFireWebhook: zFunction(
+    //   zConn,
+    //   async ({settings, integration: {provider, config}}) => {
+
+    //   },
+    // ),
+
+    deleteConnection: zFunction(
+      [zConn, z.object({revokeOnly: z.boolean().nullish()}).optional()],
+      async ({id, settings, integration: {provider, config}}, opts) => {
+        await provider.revokeConnection?.(settings, config)
+        if (opts?.revokeOnly) {
+          return
+        }
+        await metaService.tables.connection.delete(id)
+      },
+    ),
 
     // MARK: - Sync
 
-    syncMetadata: zFunction(zInt.nullish(), async (int) => {
+    adminSyncMetadata: zFunction(zInt.nullish(), async (int) => {
       const ints = int ? [int] : await getDefaultIntegrations()
       const stats = await sync({
         source: rxjs.merge(
@@ -339,18 +366,23 @@ export const makeSyncEngine = <
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
-    syncConnection: zFunction(zConn, async function syncConnection(conn) {
-      console.log('[syncConnection]', conn)
-      /** Every ParsedConn also conforms to connectionInput  */
-      const pipelines = await getPipelinesForConnection(conn)
-      await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, {})))
-    }),
-    syncPipeline: zFunction(zPipeline, async function syncPipeline(pipeline) {
-      console.log('[syncPipeline]', pipeline)
-      return _syncPipeline(pipeline, {})
-    }),
-
-    // MARK: - Connect lifecycle
+    syncConnection: zFunction(
+      [zConn, zSyncOptions.optional()],
+      async function syncConnection(conn, opts) {
+        console.log('[syncConnection]', conn, opts)
+        /** Every ParsedConn also conforms to connectionInput  */
+        const pipelines = await getPipelinesForConnection(conn)
+        await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
+      },
+    ),
+    syncPipeline: zFunction(
+      [zPipeline, zSyncOptions.optional()],
+      async function syncPipeline(pipeline, opts) {
+        console.log('[syncPipeline]', pipeline)
+        return _syncPipeline(pipeline, opts)
+      },
+    ),
+    // MARK: - Connect
 
     // SessionID would be awfully handy here...
     preConnect: zFunction(
@@ -398,12 +430,6 @@ export const makeSyncEngine = <
 
       return res.response?.body
     }),
-    // What about delete? Should this delete also? Or soft delete?
-    revokeConnection: zFunction(
-      zConn,
-      async ({settings, integration: {provider, config}}) =>
-        provider.revokeConnection?.(settings, config),
-    ),
   }
 
   // TODO: Figure out how to decouple makeRouter from here once we can figure
