@@ -326,9 +326,12 @@ export function makeSyncProvider<
       config: T['_types']['integrationConfig'],
       context: ConnectContext<T['_types']['connectionSettings']>,
     ) => MaybePromise<
-      ConnectionUpdate<
-        T['_types']['sourceOutputEntity'],
-        T['_types']['connectionSettings']
+      Omit<
+        ConnectionUpdate<
+          T['_types']['sourceOutputEntity'],
+          T['_types']['connectionSettings']
+        >,
+        'ledgerId'
       >
     >
   >,
