@@ -16,12 +16,21 @@ export default function LedgerMyConnectionsScreen() {
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
   // How do we express these situations?
-  const {connectionsRes, connect, deleteConnection, syncConnection} =
-    useLedgerSync({
-      ledgerId,
-      envName: 'sandbox', // Add control for me...
-    })
+  const {
+    integrationsRes,
+    connectionsRes,
+    connect,
+    syncConnection,
+    deleteConnection,
+  } = useLedgerSync({
+    ledgerId,
+    envName: 'sandbox', // Add control for me...
+  })
   const connections = connectionsRes.data
+
+  const developerMode = false // @yenbekbay please replace me
+  const onlyIntegration =
+    integrationsRes.data?.length === 1 ? integrationsRes.data[0] : undefined
 
   return (
     <>
@@ -36,6 +45,18 @@ export default function LedgerMyConnectionsScreen() {
           {
             label: 'Connect',
             href: `/ledgers/${ledgerId}/new-connection`,
+            onClick:
+              onlyIntegration &&
+              !developerMode &&
+              (() => {
+                connect({id: onlyIntegration.id}, {})
+                  .then((res) => {
+                    console.log('connect success', res)
+                  })
+                  .catch((err) => {
+                    console.error('connect error', err)
+                  })
+              }),
             primary: true,
           },
         ]}>

@@ -1,3 +1,4 @@
+import {httpLink} from '@trpc/client/links/httpLink'
 import {createReactQueryHooks} from '@trpc/react'
 import React from 'react'
 
@@ -42,7 +43,16 @@ export function LSProvider<
   config: SyncEngineCommonConfig<T, TLinks>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
-  const client = trpc.createClient({url: config.apiUrl ?? '/api'})
+  // @yenbekbay what's the way way to have a global debug confi?
+  const __DEBUG__ =
+    typeof window !== 'undefined' && window.location.href.includes('localhost')
+
+  const url = config.apiUrl ?? '/api'
+
+  // Disable reqeuest batching in DEBUG mode for easier debugging
+  const client = trpc.createClient(
+    __DEBUG__ ? {links: [httpLink({url})]} : {url},
+  )
 
   const dialogRef = React.useRef<DialogInstance>(null)
   const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(

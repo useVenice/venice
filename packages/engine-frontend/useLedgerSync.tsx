@@ -11,7 +11,7 @@ import type {IntegrationInput} from '@ledger-sync/engine-backend'
 import {LSProvider} from './LSProvider'
 
 /** Non ledger-specific */
-export function useLedgerSyncDevInfo({
+export function useLedgerSyncAdmin({
   ledgerIdKeywords,
 }: {
   ledgerIdKeywords?: string
@@ -25,8 +25,9 @@ export function useLedgerSyncDevInfo({
     'adminSearchLedgerIds',
     [{keywords: ledgerIdKeywords}],
   ])
+  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
 
-  return {integrationsRes, ledgerIdsRes}
+  return {integrationsRes, ledgerIdsRes, adminSyncMeta}
 }
 
 /**
@@ -44,12 +45,11 @@ export function useLedgerSync({
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
   const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
     enabled: !!ledgerId,
-    refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
+    // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   })
 
   const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
 
-  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
   const syncConnection = trpc.useMutation('syncConnection')
   const deleteConnection = trpc.useMutation('deleteConnection')
 
@@ -93,7 +93,6 @@ export function useLedgerSync({
     integrationsRes,
     connectionsRes,
     insRes,
-    adminSyncMeta,
     syncConnection,
     deleteConnection,
   }

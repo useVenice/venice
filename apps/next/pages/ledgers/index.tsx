@@ -2,14 +2,14 @@ import {useRouter} from 'next/router'
 import {CaretRight} from 'phosphor-react'
 import {useState} from 'react'
 
-import {useLedgerSyncDevInfo} from '@ledger-sync/engine-frontend'
+import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../components/Layout'
 
 export default function HomeScreen() {
   const router = useRouter()
   const [ledgerId, setLedgerId] = useState('')
-  const {ledgerIdsRes} = useLedgerSyncDevInfo({ledgerIdKeywords: ledgerId})
+  const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
   const ledgerIds = ledgerIdsRes.data
   return (
     <Layout>

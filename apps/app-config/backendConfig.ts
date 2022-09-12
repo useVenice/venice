@@ -52,9 +52,9 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
       ...getEnv('PLAID_CREDENTIALS'),
       clientName: 'Alka',
     },
-    teller: getEnv('TELLER_CREDENTIALS'),
-    yodlee: getEnv('YODLEE_CONFIG'),
-    beancount: undefined,
+    // teller: getEnv('TELLER_CREDENTIALS'),
+    // yodlee: getEnv('YODLEE_CONFIG'),
+    // beancount: undefined,
     // onebrick: getEnv('ONEBRICK_CREDENTIALS'),
     // alka: {
     //   baseDir: './data',
