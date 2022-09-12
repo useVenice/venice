@@ -11,6 +11,7 @@
 
 CREATE TABLE IF NOT EXISTS "public"."integration" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   -- "standard" jsonb NOT NULL DEFAULT '{}', What should it be?
   "config" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -19,10 +20,11 @@ CREATE TABLE IF NOT EXISTS "public"."integration" (
 );
 CREATE INDEX IF NOT EXISTS integration_created_at ON integration (created_at);
 CREATE INDEX IF NOT EXISTS integration_updated_at ON integration (updated_at);
-
+CREATE INDEX IF NOT EXISTS integration_provider_name ON integration (provider_name);
 
 CREATE TABLE IF NOT EXISTS "public"."institution" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
@@ -31,6 +33,7 @@ CREATE TABLE IF NOT EXISTS "public"."institution" (
 );
 CREATE INDEX IF NOT EXISTS institution_created_at ON institution (created_at);
 CREATE INDEX IF NOT EXISTS institution_updated_at ON institution (updated_at);
+CREATE INDEX IF NOT EXISTS institution_provider_name ON institution (provider_name);
 
 --
 -- Meta: Ledger specific
@@ -38,6 +41,7 @@ CREATE INDEX IF NOT EXISTS institution_updated_at ON institution (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."connection" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   "ledger_id" character varying NOT NULL,
   "integration_id" character varying,
   "institution_id" character varying,
@@ -54,6 +58,7 @@ CREATE TABLE IF NOT EXISTS "public"."connection" (
 );
 CREATE INDEX IF NOT EXISTS connection_created_at ON connection (created_at);
 CREATE INDEX IF NOT EXISTS connection_updated_at ON connection (updated_at);
+CREATE INDEX IF NOT EXISTS connection_provider_name ON connection (provider_name);
 
 CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
@@ -81,6 +86,7 @@ CREATE INDEX IF NOT EXISTS pipeline_updated_at ON pipeline (updated_at);
 
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   "source_id" character varying, -- Intentionally no reference, may be stored in separate db
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -90,9 +96,12 @@ CREATE TABLE IF NOT EXISTS "public"."transaction" (
 );
 CREATE INDEX IF NOT EXISTS transaction_created_at ON transaction (created_at);
 CREATE INDEX IF NOT EXISTS transaction_updated_at ON transaction (updated_at);
+CREATE INDEX IF NOT EXISTS transaction_provider_name ON transaction (provider_name);
+CREATE INDEX IF NOT EXISTS transaction_source_id ON transaction (source_id);
 
 CREATE TABLE IF NOT EXISTS "public"."account" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -102,9 +111,12 @@ CREATE TABLE IF NOT EXISTS "public"."account" (
 );
 CREATE INDEX IF NOT EXISTS account_created_at ON account (created_at);
 CREATE INDEX IF NOT EXISTS account_updated_at ON account (updated_at);
+CREATE INDEX IF NOT EXISTS account_provider_name ON account (provider_name);
+CREATE INDEX IF NOT EXISTS account_source_id ON account (source_id);
 
 CREATE TABLE IF NOT EXISTS "public"."commodity" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
+  "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
   "source_id" character varying,
   "standard" jsonb NOT NULL DEFAULT '{}',
   "external" jsonb NOT NULL DEFAULT '{}',
@@ -114,6 +126,8 @@ CREATE TABLE IF NOT EXISTS "public"."commodity" (
 );
 CREATE INDEX IF NOT EXISTS commodity_created_at ON commodity (created_at);
 CREATE INDEX IF NOT EXISTS commodity_updated_at ON commodity (updated_at);
+CREATE INDEX IF NOT EXISTS commodity_provider_name ON commodity (provider_name);
+CREATE INDEX IF NOT EXISTS commodity_source_id ON commodity (source_id);
 
 -- Add balance table
 -- Add price table
