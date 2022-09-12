@@ -37,7 +37,11 @@ export default function LedgerNewConnectionScreen() {
         title={`Viewing as ${ledgerId}`}
         links={[
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
-          {label: 'Connect', href: `/ledgers/${ledgerId}/new-connection`},
+          {
+            label: 'Connect',
+            href: `/ledgers/${ledgerId}/new-connection`,
+            primary: true,
+          },
         ]}>
         <Tabs
           value={mode}
@@ -49,56 +53,24 @@ export default function LedgerNewConnectionScreen() {
 
           <TabContent
             value="institution"
-            className="mx-auto hidden w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
-            <form
-              onSubmit={(event) => {
-                event.preventDefault()
-                router.push(`/ledgers/${ledgerId}`)
-              }}
-              className="pb-8">
-              <div className="form-control">
-                <label htmlFor="searchInstitution" className="label">
-                  <span className="label-text">Search Institution</span>
-                </label>
-                <div className="flex flex-row items-center space-x-2">
-                  <input
-                    type="text"
-                    required
-                    minLength={1}
-                    placeholder="Ex: Chase or Amex"
-                    id="searchInstitution"
-                    className="input-bordered input w-full"
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                  />
+            className="mx-auto hidden w-full max-w-screen-2xl flex-1 flex-col space-y-8 overflow-y-auto px-4 py-8 radix-state-active:flex md:px-8">
+            <div className="form-control">
+              <label htmlFor="keywords" className="label">
+                <span className="label-text">Search institutions</span>
+              </label>
 
-                  <button
-                    className="btn btn-primary px-8 text-lg"
-                    type="submit">
-                    Search
-                  </button>
-                </div>
-              </div>
-            </form>
-            <div className="flex flex-1 items-center justify-center">
-              <svg
-                className="-ml-1 mr-3 h-8 w-8 animate-spin text-black"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <input
+                type="text"
+                required
+                minLength={1}
+                placeholder="e.g. Chase, Amex"
+                id="keywords"
+                value={keywords}
+                onChange={(event) => setKeywords(event.currentTarget.value)}
+                className="input-bordered input w-full"
+              />
             </div>
+
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {institutions?.map(({ins, int}) => (
                 <div
@@ -125,9 +97,9 @@ export default function LedgerNewConnectionScreen() {
                       <div className="flex flex-1 justify-end">
                         <button
                           className="btn-outline btn btn-sm btn-circle border-base-content/25"
-                          onClick={() => {
+                          onClick={() =>
                             ls.connect(int, {institutionId: ins.id})
-                          }}>
+                          }>
                           <Plus />
                         </button>
                       </div>
@@ -157,9 +129,7 @@ export default function LedgerNewConnectionScreen() {
                 <button
                   key={`${int.id}-${int.provider}`}
                   className="h-12 rounded-lg bg-primary px-5 text-white"
-                  onClick={() => {
-                    ls.connect(int, {})
-                  }}>
+                  onClick={() => ls.connect(int, {})}>
                   {int.id} {int.provider}
                 </button>
               ))}
