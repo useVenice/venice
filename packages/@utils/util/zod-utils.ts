@@ -50,8 +50,12 @@ export function zGuardTransform<ZType extends z.ZodTypeAny, U>(
   return (zType: ZType) => zType.transform(zGuard(fn))
 }
 
-export function zRefineNonNull<ZType extends z.ZodTypeAny>(zType: ZType) {
-  return zType.superRefine((input) => !!input).transform((input) => input)
+export function zRefineNonNull<TOut, ZType extends z.ZodType<TOut>>(
+  zType: ZType,
+) {
+  return zType
+    .superRefine((input) => !!input)
+    .transform((input) => input as NonNullable<TOut>)
 }
 
 /**
