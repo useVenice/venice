@@ -1,7 +1,21 @@
 import '../__generated__/tailwind.css'
+import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
-import {AppProvider} from '../AppProvider'
+import {QueryClient, QueryClientProvider} from 'react-query'
+import {QueryParamProvider} from 'use-query-params'
+import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
+import {LSProvider} from '@ledger-sync/engine-frontend'
+import {PortalParamsProvider} from '../contexts/PortalParamsContext'
+
+const reactQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // staleTime: 5 * 60 * 1000, // 5 mins
+      refetchOnWindowFocus: false, // Too many requests for going between devTool and not... alternative is to change the stale time
+    },
+  },
+})
 
 export default function MyApp({Component, pageProps}: AppProps) {
   return (
@@ -11,21 +25,17 @@ export default function MyApp({Component, pageProps}: AppProps) {
         <title>LedgerSync</title>
       </Head>
 
-      <AppProvider>
-        <Component {...pageProps} />
-      </AppProvider>
+      <QueryParamProvider adapter={NextAdapter}>
+        <QueryClientProvider client={reactQueryClient}>
+          <LSProvider
+            queryClient={reactQueryClient}
+            config={ledgerSyncCommonConfig}>
+            <PortalParamsProvider>
+              <Component {...pageProps} />
+            </PortalParamsProvider>
+          </LSProvider>
+        </QueryClientProvider>
+      </QueryParamProvider>
     </>
   )
 }
-
-// export const WrappedAppNotWorkingYet = withLedgerSync({
-//   config() {
-//     return {
-//       // Improve typing to omit options.config.url, it is a noop
-//       url: 'http://localhost:3000/api',
-//       transformer: superjson,
-//       queryClientConfig: {defaultOptions: {queries: {staleTime: 60}}},
-//     }
-//   },
-//   ssr: true,
-// })(App)
