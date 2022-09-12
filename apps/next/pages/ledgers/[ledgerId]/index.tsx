@@ -2,8 +2,10 @@ import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Circle} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
+
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
+
 import {Layout} from '../../../components/Layout'
 
 export default function LedgerMyConnectionsScreen() {

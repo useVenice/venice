@@ -1,4 +1,5 @@
 import type {Base, FieldSet, Records} from 'airtable'
+
 import {defineProxyFn, z, zFunction} from '@ledger-sync/util'
 
 export const $airtable =

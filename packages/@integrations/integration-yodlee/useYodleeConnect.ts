@@ -6,6 +6,7 @@ import {
 } from '@ledger-sync/cdk-core'
 import type {MergeUnion} from '@ledger-sync/util'
 import {splitPrefixedId} from '@ledger-sync/util'
+
 import type {FastLinkOpenOptions} from './fastlink'
 import {zYodleeId} from './YodleeClient'
 import type {yodleeProviderDef} from './YodleeProvider'

@@ -1,5 +1,6 @@
 import type admin from 'firebase-admin'
 import type firebase from 'firebase/compat'
+
 import type {InjectionToken, PossibleDate} from '@ledger-sync/util'
 import {
   objectKeys,
@@ -7,6 +8,7 @@ import {
   resolveDependency,
   rxjs,
 } from '@ledger-sync/util'
+
 import type {
   AnyDocumentReference,
   AnyDocumentSnapshot,

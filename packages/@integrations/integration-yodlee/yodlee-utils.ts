@@ -1,5 +1,6 @@
 import type {Standard} from '@ledger-sync/standard'
 import {A, DateTime, pick} from '@ledger-sync/util'
+
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'
 
 export function getYodleeAccountName(account: YodleeAccount) {

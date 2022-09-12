@@ -3,6 +3,7 @@ import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
 import type {UnionToIntersection} from '@ledger-sync/util'
 import {Rx, rxjs, z} from '@ledger-sync/util'
+
 import {
   formatAlliantCreditUnion,
   formatAppleCard,

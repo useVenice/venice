@@ -13,6 +13,7 @@ module.exports = {
   ],
   importOrderCaseInsensitive: true,
   importOrderGroupNamespaceSpecifiers: true,
+  importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [

@@ -1,5 +1,6 @@
 import type {MicroMemoize as Memoize} from 'micro-memoize'
 import memoize from 'micro-memoize'
+
 import type {AnyFunction} from './type-utils'
 
 export function memoizeBy<TFunc extends AnyFunction>(

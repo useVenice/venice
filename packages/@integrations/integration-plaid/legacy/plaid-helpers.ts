@@ -1,5 +1,6 @@
 import type plaid from 'plaid'
 import type {PlaidAccount as PlaidLinkAccount} from 'react-plaid-link'
+
 import type {Standard} from '@ledger-sync/standard'
 import {A} from '@ledger-sync/util'
 

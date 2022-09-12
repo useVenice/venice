@@ -7,6 +7,7 @@ import {
   map as ISO_CURRENCY_SYMBOL_TO_INFO,
 } from '@blossomfinance/iso-4217-currencies'
 import pluralize from 'pluralize'
+
 import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
 import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
 import type {StrictIntlNumberFormatOptions} from './formatting-number'
