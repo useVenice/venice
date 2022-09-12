@@ -22,7 +22,7 @@ export function useLedgerSyncDevInfo({
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
 
   const ledgerIdsRes = trpc.useQuery([
-    'searchLedgerIds',
+    'adminSearchLedgerIds',
     [{keywords: ledgerIdKeywords}],
   ])
 
@@ -48,8 +48,12 @@ export function useLedgerSync({
 
   const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
 
-  const syncMeta = trpc.useMutation('syncMetadata')
+  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
+  const syncConnection = trpc.useMutation('syncConnection')
+  const deleteConnection = trpc.useMutation('deleteConnection')
 
+  // Connect should return a shape similar to client.mutation such that
+  // consumers can use the same pattern of hanlding loading and error...
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
@@ -88,6 +92,8 @@ export function useLedgerSync({
     integrationsRes,
     connectionsRes,
     insRes,
-    syncMeta,
+    adminSyncMeta,
+    syncConnection,
+    deleteConnection,
   }
 }

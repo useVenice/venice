@@ -104,6 +104,13 @@ export type ParsedPipeline = z.infer<
   ReturnType<typeof makeSyncParsers>['zPipeline']
 >
 
+export const zSyncOptions = z.object({
+  fullResync: z.boolean().nullish(),
+  // See coda's implmementation. Requires adding a new message to the sync protocol
+  // to remove all data from a particular source_id
+  // removeUnsyncedData: z.boolean().nullish(),
+})
+
 export function makeSyncParsers<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,

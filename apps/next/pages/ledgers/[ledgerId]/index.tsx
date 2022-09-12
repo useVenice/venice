@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import {useRouter} from 'next/router'
-import {Circle} from 'phosphor-react'
+import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {Id} from '@ledger-sync/cdk-core'
@@ -15,10 +15,11 @@ export default function LedgerMyConnectionsScreen() {
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
   // How do we express these situations?
-  const {connectionsRes, connect} = useLedgerSync({
-    ledgerId,
-    envName: 'sandbox', // Add control for me...
-  })
+  const {connectionsRes, connect, deleteConnection, syncConnection} =
+    useLedgerSync({
+      ledgerId,
+      envName: 'sandbox', // Add control for me...
+    })
   const connections = connectionsRes.data
 
   return (
@@ -61,6 +62,42 @@ export default function LedgerMyConnectionsScreen() {
                       </div>
                     </div>
 
+                    <div className="flex flex-col items-center space-y-1">
+                      <button
+                        data-tooltip-target="tooltip-default"
+                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
+                        onClick={() => {
+                          syncConnection
+                            .mutateAsync([{id: conn.id}, {}])
+                            .then((res) => {
+                              console.log('syncConnection success', res)
+                            })
+                            .catch((err) => {
+                              console.error('syncConnection error', err)
+                            })
+                        }}>
+                        <ArrowClockwise size={16} />
+                      </button>
+                      <span className="text-xs text-gray-400">Sync</span>
+                    </div>
+                    <div className="flex flex-col items-center space-y-1">
+                      <button
+                        data-tooltip-target="tooltip-default"
+                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
+                        onClick={() => {
+                          syncConnection
+                            .mutateAsync([{id: conn.id}, {fullResync: true}])
+                            .then((res) => {
+                              console.log('syncConnection success', res)
+                            })
+                            .catch((err) => {
+                              console.error('syncConnection error', err)
+                            })
+                        }}>
+                        <Play size={16} />
+                      </button>
+                      <div className="text-xs text-gray-400">Full Sync</div>
+                    </div>
                     <div className="flex flex-1 justify-end">
                       {conn.status === 'disconnected' && (
                         <button
@@ -74,6 +111,24 @@ export default function LedgerMyConnectionsScreen() {
                           Reconnect
                         </button>
                       )}
+                    </div>
+                    <div className="flex flex-col items-center space-y-1">
+                      <button
+                        data-tooltip-target="tooltip-default"
+                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
+                        onClick={() => {
+                          deleteConnection
+                            .mutateAsync([{id: conn.id}, {}])
+                            .then((res) => {
+                              console.log('deleteConnection success', res)
+                            })
+                            .catch((err) => {
+                              console.error('deleteConnection error', err)
+                            })
+                        }}>
+                        <Trash size={16} />
+                      </button>
+                      <div className="text-xs text-gray-400">Delete</div>
                     </div>
                   </div>
 
