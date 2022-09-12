@@ -95,12 +95,8 @@ export const makePostgresMetaService = zFunction(
       searchInstitutions: ({keywords, providerNames, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
         const conditions = compact([
-          // TODO: Generate provider_name column in postgres and index it
           providerNames &&
-            sql`split_part(id, '_', 2) = ANY(${sql.array(
-              providerNames,
-              'varchar',
-            )})`,
+            sql`provider_name = ANY(${sql.array(providerNames, 'varchar')})`,
           keywords && sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
         ])
         const where =
