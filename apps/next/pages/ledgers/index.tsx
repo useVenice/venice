@@ -13,8 +13,8 @@ export default function HomeScreen() {
   const ledgerIds = ledgerIdsRes.data
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col items-center justify-center py-8">
-        <div className="flex w-full max-w-3xl flex-col">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
+        <div className="mx-auto flex w-full max-w-3xl flex-col">
           <form
             onSubmit={(event) => {
               event.preventDefault()
