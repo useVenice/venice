@@ -307,7 +307,7 @@ export const makeSyncEngine = <
               (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
               (pipe.lastSyncStartedAt &&
                 pipe.lastSyncCompletedAt &&
-                pipe.lastSyncStartedAt < pipe.lastSyncCompletedAt),
+                pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
           })),
           (pipes) =>
             R.mapToObj(connections, (c) => [
@@ -325,17 +325,27 @@ export const makeSyncEngine = <
             ? mappers?.institution?.(insById[conn.institutionId]?.external)
             : undefined
 
-          const syncInProgress = pipelinesByConnId[conn.id]?.some(
-            (p) => p.syncInProgress,
-          )
+          const pipes = pipelinesByConnId[conn.id] ?? []
+          const syncInProgress = pipes.some((p) => p.syncInProgress)
+          const lastSyncCompletedAt = R.maxBy(
+            pipes,
+            (p) => p.lastSyncCompletedAt?.getTime() ?? 0,
+          )?.lastSyncCompletedAt
 
-          // console.log('map connection', {conn, standardConn, standardIns})
+          console.log('map connection', {
+            conn,
+            standardConn,
+            standardIns,
+            syncInProgress,
+            'pipelinesByConnId[conn.id]': pipelinesByConnId[conn.id],
+          })
 
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
             externalId,
             syncInProgress,
+            lastSyncCompletedAt,
             institution: conn.institutionId
               ? {
                   ...zStandard.institution.omit({id: true}).parse(standardIns),
