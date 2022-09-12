@@ -57,11 +57,9 @@ export const makePostgresClient = zFunction(
             // Default slonik parsers aren't great.
             // and parses timestamptz into a number
             // https://share.cleanshot.com/5Dqx8C
-            // Until we update typegen we are gonna treat timestamp
-            // as string
             {
               name: 'timestamptz',
-              parse: (d) => new Date(d).toISOString(),
+              parse: (d) => new Date(d), //.toISOString(),
             },
           ],
         })
@@ -132,7 +130,11 @@ export function upsertByIdQuery(
     (k) => k !== kUpdatedAt && k !== kCreatedAt && firstVMap[k] !== undefined,
   )
   const typeMap = mapValues(firstVMap, (v) =>
-    isPlainObject(v) || Array.isArray(v) ? 'jsonb' : null,
+    v instanceof Date
+      ? 'date'
+      : isPlainObject(v) || Array.isArray(v)
+      ? 'jsonb'
+      : null,
   )
 
   const cols = keys.map((k) => {
@@ -147,8 +149,11 @@ export function upsertByIdQuery(
   const valLists = valueMaps.map((vmap) =>
     keys.map((k) => {
       const v = vmap[k]
+
       return typeMap[k] === 'jsonb'
         ? sql.jsonb(v as any)
+        : typeMap[k] === 'date'
+        ? sql.timestamp(v as Date)
         : (v as PrimitiveValueExpression)
     }),
   )

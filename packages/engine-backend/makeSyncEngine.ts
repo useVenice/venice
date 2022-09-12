@@ -36,10 +36,9 @@ import type {
   IntegrationInput,
   ParsedPipeline,
   PipelineInput,
-  ZInput} from './makeSyncParsers';
-import {
-  zSyncOptions,
+  ZInput,
 } from './makeSyncParsers'
+import {zSyncOptions} from './makeSyncParsers'
 import {makeSyncParsers} from './makeSyncParsers'
 
 export {type inferProcedureInput} from '@trpc/server'
@@ -127,7 +126,7 @@ export const makeSyncEngine = <
     // TODO: In the case of an existing `conn`, how do we update conn.settings too?
     // Otherwise we will result in outdated settings...
     return metaService
-      .findPipelines({connectionId: connInput.id})
+      .findPipelines({connectionIds: [connInput.id]})
       .then((pipes) => (pipes.length ? pipes : compact([defaultPipeline()])))
       .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
   }
@@ -188,6 +187,11 @@ export const makeSyncEngine = <
     if (!destination$$) {
       throw new Error(`${dest.integration.provider.name} missing destination`)
     }
+
+    await metaLinks.patch('pipeline', pipeline.id, {
+      lastSyncStartedAt: new Date(),
+    })
+
     await sync({
       // Raw Source, may come from fs, firestore or postgres
       source: source$.pipe(
@@ -208,7 +212,11 @@ export const makeSyncEngine = <
         metaLinks.postDestination({pipeline, dest}),
       ),
       watch,
-    })
+    }).finally(() =>
+      metaLinks.patch('pipeline', pipeline.id, {
+        lastSyncCompletedAt: new Date(),
+      }),
+    )
   }
 
   const syncEngine = {
@@ -289,6 +297,26 @@ export const makeSyncEngine = <
           }),
           (insList) => R.mapToObj(insList, (ins) => [ins.id, ins]),
         )
+        const pipelinesByConnId = R.pipe(
+          await metaService.findPipelines({
+            connectionIds: connections.map((c) => c.id),
+          }),
+          R.map((pipe) => ({
+            ...pipe,
+            syncInProgress:
+              (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
+              (pipe.lastSyncStartedAt &&
+                pipe.lastSyncCompletedAt &&
+                pipe.lastSyncStartedAt < pipe.lastSyncCompletedAt),
+          })),
+          (pipes) =>
+            R.mapToObj(connections, (c) => [
+              c.id,
+              pipes.filter(
+                (p) => p.sourceId === c.id || p.destinationId === c.id,
+              ),
+            ]),
+        )
         return connections.map((conn) => {
           const [, providerName, externalId] = splitPrefixedId(conn.id)
           const mappers = providerMap[providerName]?.standardMappers
@@ -296,11 +324,18 @@ export const makeSyncEngine = <
           const standardIns = conn.institutionId
             ? mappers?.institution?.(insById[conn.institutionId]?.external)
             : undefined
+
+          const syncInProgress = pipelinesByConnId[conn.id]?.some(
+            (p) => p.syncInProgress,
+          )
+
           // console.log('map connection', {conn, standardConn, standardIns})
+
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
             externalId,
+            syncInProgress,
             institution: conn.institutionId
               ? {
                   ...zStandard.institution.omit({id: true}).parse(standardIns),

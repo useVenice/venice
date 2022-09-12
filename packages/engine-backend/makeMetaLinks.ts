@@ -161,5 +161,5 @@ export function makeMetaLinks(metaBase: MetaService) {
     }
   }
 
-  return {postSource, postDestination, persistInstitution}
+  return {postSource, postDestination, persistInstitution, patch}
 }

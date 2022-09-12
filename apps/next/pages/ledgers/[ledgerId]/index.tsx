@@ -59,6 +59,10 @@ export default function LedgerMyConnectionsScreen() {
                           {/* FIXME */}
                           sandbox
                         </span>
+
+                        <span className="badge-outline badge uppercase">
+                          syncInProgress: {conn.syncInProgress}
+                        </span>
                       </div>
                     </div>
 

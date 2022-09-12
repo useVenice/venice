@@ -44,6 +44,7 @@ export function useLedgerSync({
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
   const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
     enabled: !!ledgerId,
+    refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   })
 
   const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
