@@ -1,11 +1,14 @@
 import '../__generated__/tailwind.css'
+
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import {QueryParamProvider} from 'use-query-params'
+
 import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import {LSProvider} from '@ledger-sync/engine-frontend'
+
 import {PortalParamsProvider} from '../contexts/PortalParamsContext'
 
 const reactQueryClient = new QueryClient({

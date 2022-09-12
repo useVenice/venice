@@ -5,6 +5,7 @@ import type {
   ObjectPartialDeep,
   rxjs,
 } from '@ledger-sync/util'
+
 import type {ExternalId, Id} from './id.types'
 
 /**

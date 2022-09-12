@@ -3,6 +3,7 @@ import type {
   PrimitiveValueExpression,
   TaggedTemplateLiteralInvocation,
 } from 'slonik/dist/src/types'
+
 import type {MaybeArray} from '@ledger-sync/util'
 import {mapValues} from '@ledger-sync/util'
 import {

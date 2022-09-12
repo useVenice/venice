@@ -2,13 +2,16 @@ import '@ledger-sync/core-integration-airtable/register.node'
 import '@ledger-sync/core-integration-mongodb/register.node'
 import '@ledger-sync/core-integration-postgres/register.node'
 import '@ledger-sync/core-integration-redis/register.node'
+
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import url from 'node:url'
+
 import chokidar from 'chokidar'
 import {readFile} from 'read-file-safe'
 import tunnel from 'tunnel'
 import {writeFile as _writeFile} from 'write-file-safe'
+
 import {
   $appendFile,
   $chokidar,
@@ -22,6 +25,7 @@ import {
   implementProxyFn,
   memoize,
 } from '@ledger-sync/util'
+
 import {loadEnv} from './loadEnv.node'
 
 console.log('[Dep] app-config/register.node')

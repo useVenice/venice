@@ -1,4 +1,5 @@
 import type {Dirent} from 'node:fs'
+
 import {memoize} from './function-utils'
 import {$fs, $path, $readFile, $writeFile} from './injected-utils'
 import {safeJSONParse, stableStringify} from './json-utils'

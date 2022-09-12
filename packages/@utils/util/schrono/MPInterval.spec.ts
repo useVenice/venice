@@ -1,5 +1,6 @@
 import * as jestDateMock from 'jest-date-mock'
 import {DateTime} from 'luxon'
+
 import {MPInterval} from './MPInterval'
 
 const now = DateTime.fromISO('2020-04-13', {zone: 'utc'})

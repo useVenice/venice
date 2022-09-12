@@ -1,7 +1,9 @@
 import {useRouter} from 'next/router'
 import {CaretRight} from 'phosphor-react'
 import {useState} from 'react'
+
 import {useLedgerSyncDevInfo} from '@ledger-sync/engine-frontend'
+
 import {Layout} from '../../components/Layout'
 
 export default function HomeScreen() {
