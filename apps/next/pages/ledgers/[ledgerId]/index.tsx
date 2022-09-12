@@ -10,10 +10,8 @@ import {
 } from 'phosphor-react'
 import {useState} from 'react'
 import {twMerge} from 'tailwind-merge'
-
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
-
 import {Layout} from '../../../components/Layout'
 
 export default function LedgerMyConnectionsScreen() {
@@ -46,19 +44,19 @@ export default function LedgerMyConnectionsScreen() {
         <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div
-              key={'key1'}
+              key="key1"
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-              <div className="card-body justify-between pt-4 space-y-8">
+              <div className="card-body justify-between space-y-8 pt-4">
                 <div className="flex space-x-4">
-                  <div className="flex flex-col space-y-2 w-full">
-                    <div className="flex flex-row justify-between items-center">
+                  <div className="flex w-full flex-col space-y-2">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col justify-center space-y-4">
                         <img
                           src="https://joeschmoe.io/api/v1/random"
                           alt="Random Logo"
                           className="h-12 w-12 overflow-hidden object-contain"
                         />
-                        <span className="badge-outline badge uppercase text-black text-xs">
+                        <span className="badge-outline badge text-xs uppercase text-black">
                           SANDBOX
                         </span>
                       </div>
@@ -93,7 +91,7 @@ export default function LedgerMyConnectionsScreen() {
                 </div>
                 <div className="flex flex-col space-y-2 pt-4">
                   <div className="flex justify-between space-x-4">
-                    <span className="text-xl text-black font-medium">
+                    <span className="text-xl font-medium text-black">
                       Chase Bank
                     </span>
 
@@ -103,7 +101,7 @@ export default function LedgerMyConnectionsScreen() {
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                    <p className="w-70 truncate font-mono text-sm text-gray-400 hover:text-clip">
                       conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
                     </p>
                   </div>
@@ -112,19 +110,19 @@ export default function LedgerMyConnectionsScreen() {
             </div>
 
             <div
-              key={'key2'}
+              key="key2"
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-              <div className="card-body justify-between pt-4 space-y-8">
+              <div className="card-body justify-between space-y-8 pt-4">
                 <div className="flex space-x-4">
-                  <div className="flex flex-col space-y-2 w-full">
-                    <div className="flex flex-row justify-between items-center">
+                  <div className="flex w-full flex-col space-y-2">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col justify-center space-y-4">
                         <img
                           src="https://joeschmoe.io/api/v1/random"
                           alt="Random Logo"
                           className="h-12 w-12 overflow-hidden object-contain"
                         />
-                        <span className="badge-outline badge uppercase text-black text-xs">
+                        <span className="badge-outline badge text-xs uppercase text-black">
                           DEVELOPMENT
                         </span>
                       </div>
@@ -161,7 +159,7 @@ export default function LedgerMyConnectionsScreen() {
                 </div>
                 <div className="flex flex-col space-y-2 pt-4">
                   <div className="flex justify-between space-x-4">
-                    <span className="text-xl text-black font-medium">
+                    <span className="text-xl font-medium text-black">
                       Bank of America
                     </span>
 
@@ -171,7 +169,7 @@ export default function LedgerMyConnectionsScreen() {
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                    <p className="w-70 truncate font-mono text-sm text-gray-400 hover:text-clip">
                       conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
                     </p>
                   </div>
@@ -180,19 +178,19 @@ export default function LedgerMyConnectionsScreen() {
             </div>
 
             <div
-              key={'key3'}
+              key="key3"
               className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-              <div className="card-body justify-between pt-4 space-y-8">
+              <div className="card-body justify-between space-y-8 pt-4">
                 <div className="flex space-x-4">
-                  <div className="flex flex-col space-y-2 w-full">
-                    <div className="flex flex-row justify-between items-center">
+                  <div className="flex w-full flex-col space-y-2">
+                    <div className="flex flex-row items-center justify-between">
                       <div className="flex flex-col justify-center space-y-4">
                         <img
                           src="https://joeschmoe.io/api/v1/random"
                           alt="Random Logo"
                           className="h-12 w-12 overflow-hidden object-contain"
                         />
-                        <span className="badge-outline badge uppercase text-black text-xs">
+                        <span className="badge-outline badge text-xs uppercase text-black">
                           PRODUCTION
                         </span>
                       </div>
@@ -221,7 +219,7 @@ export default function LedgerMyConnectionsScreen() {
                 </div>
                 <div className="flex flex-col space-y-2 pt-4">
                   <div className="flex justify-between space-x-4">
-                    <span className="text-xl text-black font-medium">
+                    <span className="text-xl font-medium text-black">
                       Wells Fargo
                     </span>
 
@@ -231,7 +229,7 @@ export default function LedgerMyConnectionsScreen() {
                     </div>
                   </div>
                   <div>
-                    <p className="truncate w-70 hover:text-clip font-mono text-sm text-gray-400">
+                    <p className="w-70 truncate font-mono text-sm text-gray-400 hover:text-clip">
                       conn_plaid_yE1Nd9K8e5SpnDQLJdPvuxopn46ER8tyvaPbM
                     </p>
                   </div>

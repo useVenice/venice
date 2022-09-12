@@ -36,7 +36,7 @@ export const Dialog = React.forwardRef(function Dialog(
   const [rect, contentRef] = useMeasure()
   useUpdateEffect(() => {
     if (rect?.height) {
-      controls.start({
+      void controls.start({
         height: rect.height,
         transition: {
           type: 'spring',

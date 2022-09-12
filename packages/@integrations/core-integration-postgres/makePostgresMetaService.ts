@@ -5,7 +5,6 @@ import type {
   ZRaw,
 } from '@ledger-sync/cdk-core'
 import {compact, memoize, zFunction} from '@ledger-sync/util'
-
 import {
   applyLimitOffset,
   makePostgresClient,
