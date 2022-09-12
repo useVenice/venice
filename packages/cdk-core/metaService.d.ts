@@ -42,6 +42,8 @@ export interface MetaService {
   searchInstitutions: (options: {
     /** Leave empty to list the top institutions */
     keywords?: string | null
+    /** is there a stronger type here than string? */
+    providerNames?: string[]
     limit?: number
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
