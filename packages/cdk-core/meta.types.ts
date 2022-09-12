@@ -1,5 +1,4 @@
 import {z, zJsonObject} from '@ledger-sync/util'
-
 import {zId} from './id.types'
 
 // Utility types

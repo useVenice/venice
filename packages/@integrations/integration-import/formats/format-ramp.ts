@@ -1,3 +1,4 @@
+import Papa from 'papaparse'
 import {makePostingsMap} from '@ledger-sync/standard'
 import {
   A,
@@ -7,7 +8,6 @@ import {
   parseMoney,
   zCast,
 } from '@ledger-sync/util'
-import Papa from 'papaparse'
 import {makeImportFormat} from '../makeImportFormat'
 
 // prettier-ignore

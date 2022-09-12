@@ -1,6 +1,5 @@
 import type {MaybePromise} from '@ledger-sync/util'
 import {castIs, z} from '@ledger-sync/util'
-
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
 import {makeId, zId} from './id.types'

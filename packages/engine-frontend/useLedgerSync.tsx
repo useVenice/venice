@@ -1,5 +1,4 @@
 import React from 'react'
-
 import type {
   ConnectContextInput,
   UseLedgerSyncOptions,
@@ -7,7 +6,6 @@ import type {
 import {extractId} from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
 import type {IntegrationInput} from '@ledger-sync/engine-backend'
-
 import {LSProvider} from './LSProvider'
 
 /** Non ledger-specific */

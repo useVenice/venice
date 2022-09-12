@@ -1,7 +1,7 @@
+import Papa from 'papaparse'
+import {A, DateTime, zCast} from '@ledger-sync/util'
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'
-import {A, DateTime, zCast} from '@ledger-sync/util'
-import Papa from 'papaparse'
 
 export interface AlliantCreditUnionTransactionRow {
   /* 02/24/2020 */
