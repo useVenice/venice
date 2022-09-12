@@ -8,7 +8,10 @@ import type {
   Link,
   LinkFactory,
   MetaService,
-  Source,
+  Source} from '@ledger-sync/cdk-core';
+import {
+  Id,
+  makeSyncProvider
 } from '@ledger-sync/cdk-core'
 import {
   extractId,
@@ -34,6 +37,7 @@ import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
   IntegrationInput,
+  ParsedInt,
   ParsedPipeline,
   PipelineInput,
   ZInput,
@@ -132,21 +136,41 @@ export const makeSyncEngine = <
   }
 
   const _syncConnectionUpdate = async (
-    providerName: string,
+    int: ParsedInt,
     connUpdate: ConnectionUpdate<AnyEntityPayload, {}>,
   ) => {
     console.log('[_syncConnectionUpdate]', connUpdate)
-    const connId = makeId('conn', providerName, connUpdate.connectionExternalId)
+    const connId = makeId(
+      'conn',
+      int.provider.name,
+      connUpdate.connectionExternalId,
+    )
     const pipelines = await getPipelinesForConnection({
       id: connId,
-
+      // Should we spread connUpdate into it?
       settings: connUpdate.settings,
+      ledgerId: connUpdate.ledgerId,
       // institution: connUpdate.institution,
     })
+    console.log('_syncConnectionUpdate', pipelines)
+
+    const helpers = makeSyncProvider.def.helpers(int.provider.def)
 
     await Promise.all(
       pipelines.map(async (pipe) => {
-        await _syncPipeline(pipe, {source$: connUpdate.source$})
+        // TODO(p2)
+        // FIXME: Combine the two calls to _syncPipeline so it is only one...
+        await _syncPipeline(pipe, {
+          source$: rxjs.concat(
+            rxjs.of(
+              helpers._opConn(`${connUpdate.connectionExternalId}`, {
+                settings: connUpdate.settings,
+                institution: connUpdate.institution,
+              }),
+            ),
+            connUpdate.source$ ?? rxjs.EMPTY,
+          ),
+        })
         if (connUpdate.triggerDefaultSync) {
           await _syncPipeline(pipe, {})
         }
@@ -189,6 +213,8 @@ export const makeSyncEngine = <
     }
 
     await metaLinks.patch('pipeline', pipeline.id, {
+      // TODO(p2)
+      sourceId: pipeline.sourceId, // FIXME: This needs to be consistently used... Let metaLinks handle it
       lastSyncStartedAt: new Date(),
     })
 
@@ -454,7 +480,11 @@ export const makeSyncEngine = <
           config,
           ctx,
         )
-        await _syncConnectionUpdate(p.name, connUpdate)
+        await _syncConnectionUpdate(int, {
+          ...connUpdate,
+          // No need for each integration to worry about this, unlike in the case of handleWebhook.
+          ledgerId: ctx.ledgerId,
+        })
         console.log('didConnect finish', p.name, input)
         return 'Connection Success'
       },
@@ -470,7 +500,7 @@ export const makeSyncEngine = <
       )
       await Promise.all(
         res.connectionUpdates.map((connUpdate) =>
-          _syncConnectionUpdate(int.provider.name, connUpdate),
+          _syncConnectionUpdate(int, connUpdate),
         ),
       )
 
