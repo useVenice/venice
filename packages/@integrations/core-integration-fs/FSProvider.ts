@@ -22,7 +22,6 @@ import {_pathFromId} from './makeFsKVStore'
 
 const zWatchPathsInput = z.object({
   basePath: z.string(),
-  /** Only used for sourceSync, not destSync */
   paths: z.array(z.string()).optional(),
 })
 
@@ -30,16 +29,23 @@ const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('fs'),
   connectionSettings: zWatchPathsInput.pick({basePath: true}),
+  /**
+   * `paths` only used for sourceSync, not destSync. Though these are not technically states...
+   * And they are not safe to just erase if fullSync = true.
+   * TODO: Introduce a separate sourceOptions / destinationOptions type later when it becomes an
+   * actual problem... for now this issue only impacts FirebaseProvider and FSProvider
+   * which are not actually being used as top level providers
+   */
+  sourceState: zWatchPathsInput.pick({paths: true}),
   sourceOutputEntity: zCast<AnyEntityPayload>(),
-  sourceSyncOptions: zWatchPathsInput.pick({paths: true}),
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
 
 export const fsProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
-  sourceSync: ({settings, options}) =>
-    _fsWatchPaths$({...settings, ...options}).pipe(_readPathData()),
+  sourceSync: ({settings, state}) =>
+    _fsWatchPaths$({...settings, ...state}).pipe(_readPathData()),
   destinationSync: ({settings: {basePath}}) =>
     // TODO: Should we add the connectionId to data?
     handlersLink({

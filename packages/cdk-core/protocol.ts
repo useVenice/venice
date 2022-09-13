@@ -43,8 +43,8 @@ export interface ConnUpdateData<
   }
 }
 export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {
-  sourceSyncOptions?: ObjectPartialDeep<NoInfer<TSrcOptions>>
-  destinationSyncOptions?: ObjectPartialDeep<NoInfer<TDestOptions>>
+  sourceState?: ObjectPartialDeep<NoInfer<TSrcOptions>>
+  destinationState?: ObjectPartialDeep<NoInfer<TDestOptions>>
 }
 
 type NullableEntity<T> = T extends AnyEntityPayload

@@ -112,8 +112,8 @@ export const togglProvider = makeSyncProvider({
     triggerDefaultSync: true,
   }),
 
-  sourceSync: ({settings: input}) => {
-    const client = makeTogglClient({...input})
+  sourceSync: ({settings}) => {
+    const client = makeTogglClient({...settings})
     async function* iterateEntities() {
       const user = await client.getMe()
       const res = await client.getProjects(`${user.default_workspace_id}`)

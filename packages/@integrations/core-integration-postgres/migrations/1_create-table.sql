@@ -63,9 +63,9 @@ CREATE INDEX IF NOT EXISTS connection_provider_name ON connection (provider_name
 CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "source_id" character varying,
-  "source_options" jsonb NOT NULL DEFAULT '{}',
+  "source_state" jsonb NOT NULL DEFAULT '{}',
   "destination_id" character varying,
-  "destination_options" jsonb NOT NULL DEFAULT '{}',
+  "destination_state" jsonb NOT NULL DEFAULT '{}',
   "link_options" jsonb NOT NULL DEFAULT '[]',
   "last_sync_started_at" TIMESTAMP WITH TIME ZONE,
   "last_sync_completed_at" TIMESTAMP WITH TIME ZONE,

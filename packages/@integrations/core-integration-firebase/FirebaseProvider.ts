@@ -38,19 +38,8 @@ const zSettings = z.discriminatedUnion('role', [
   z.object({role: z.literal('admin'), serviceAccount: zServiceAccount}),
   z.object({role: z.literal('user')}).merge(zFirebaseUserConfig),
 ])
-type Settings = z.infer<typeof zSettings>
 
-const zSrcSyncOptions = z.object({
-  collectionPaths: z.array(z.string()).nullish(),
-  /**
-   * NEXT: We should use a JSON representation of query so that it can be transfered over the network
-   * However firestore doesn't expose serialize / deserialize, therefore using Query type directly as a short
-   * term hack...
-   * @see https://firebase.google.com/docs/firestore/reference/rest/v1/StructuredQuery
-   */
-  _queries: zCast<AnyQuery[] | undefined>(),
-  _fb: zCast<WrappedFirebase | undefined>(),
-})
+type AuthSettings = z.infer<typeof zSettings>
 
 type _query = firebase.firestore.Query<any>
 type _adminQuery = import('firebase-admin').firestore.Query<any>
@@ -95,7 +84,24 @@ const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('firebase'),
   connectionSettings: zSettings,
-  sourceSyncOptions: zSrcSyncOptions,
+  sourceState: z.object({
+    /**
+     * Only used for sourceSync, not destSync. Though these are not technically states...
+     * And they are not safe to just erase if fullSync = true.
+     * TODO: Introduce a separate sourceOptions / destinationOptions type later when it becomes an
+     * actual problem... for now this issue only impacts FirebaseProvider and FSProvider
+     * which are not actually being used as top level providers
+     */
+    collectionPaths: z.array(z.string()).nullish(),
+    /**
+     * NEXT: We should use a JSON representation of query so that it can be transfered over the network
+     * However firestore doesn't expose serialize / deserialize, therefore using Query type directly as a short
+     * term hack...
+     * @see https://firebase.google.com/docs/firestore/reference/rest/v1/StructuredQuery
+     */
+    _queries: zCast<AnyQuery[] | undefined>(),
+    _fb: zCast<WrappedFirebase | undefined>(),
+  }),
   sourceOutputEntity: zCast<AnyEntityPayload>(),
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
@@ -103,11 +109,11 @@ const def = makeSyncProvider.def({
 export const firebaseProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
-  sourceSync: ({settings, options}) => {
-    const {fst, cleanup, connect} = options._fb ?? initFirebase(settings)
+  sourceSync: ({settings, state}) => {
+    const {fst, cleanup, connect} = state._fb ?? initFirebase(settings)
     const queries = [
-      ...(options._queries ?? []),
-      ...(options.collectionPaths ?? []).map((path) => fst.collection(path)),
+      ...(state._queries ?? []),
+      ...(state.collectionPaths ?? []).map((path) => fst.collection(path)),
     ]
     if (queries.length === 0) {
       throw new Error('[firebase] queries missing')
@@ -125,10 +131,10 @@ export const firebaseProvider = makeSyncProvider({
   },
 
   // Should we add the connectionId to data...
-  destinationSync: ({settings: conn}) => {
-    const {fst, cleanup, connect} = initFirebase(conn)
+  destinationSync: ({settings}) => {
+    const {fst, cleanup, connect} = initFirebase(settings)
     const batch = new MultiBatch(fst)
-    console.log('[Firestore] destSync', conn)
+    console.log('[Firestore] destSync', settings)
     return rxjs.pipe(
       handlersLink({
         data: ({data}) => {
@@ -158,7 +164,7 @@ export const firebaseProvider = makeSyncProvider({
 export type WrappedFirebase = ReturnType<typeof initFirebase>
 
 export const anyFirestore = zFunction(
-  z.enum(zSettings.validDiscriminatorValues as [Settings['role']]),
+  z.enum(zSettings.validDiscriminatorValues as [AuthSettings['role']]),
   (role) => (role === 'admin' ? $admin().firestore : firebase.firestore),
 )
 

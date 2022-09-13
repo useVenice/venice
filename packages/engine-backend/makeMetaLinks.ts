@@ -100,8 +100,8 @@ export function makeMetaLinks(metaBase: MetaService) {
         console.log('[metaLink] stateUpdate', op, pipeline)
         if (pipeline) {
           console.log('[metaLink] stateUpdate', pipeline.id, {
-            sourceSyncOptions: R.keys(op.sourceSyncOptions ?? {}),
-            destinationSyncOptions: R.keys(op.destinationSyncOptions ?? {}),
+            sourceState: R.keys(op.sourceState ?? {}),
+            destinationState: R.keys(op.destinationState ?? {}),
           })
           // Workaround for default pipeline such as `conn_postgres` etc which
           // does not exist in the database...
@@ -115,8 +115,8 @@ export function makeMetaLinks(metaBase: MetaService) {
               ? undefined
               : pipeline.destinationId
           await patch('pipeline', pipeline.id, {
-            sourceOptions: op.sourceSyncOptions,
-            destinationOptions: op.destinationSyncOptions,
+            sourceState: op.sourceState,
+            destinationState: op.destinationState,
             // Should be part of setDefaults...
             sourceId,
             destinationId,

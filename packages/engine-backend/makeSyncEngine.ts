@@ -191,7 +191,7 @@ export const makeSyncEngine = <
         settings: src.settings,
         // Maybe we should rename `options` to `state`?
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
-        options: opts.fullResync ? undefined : rest.sourceOptions,
+        state: opts.fullResync ? undefined : rest.sourceState,
       })
 
     const destination$$ =
@@ -199,7 +199,7 @@ export const makeSyncEngine = <
       dest.integration.provider.destinationSync?.({
         config: dest.integration.config,
         settings: dest.settings,
-        options: opts.fullResync ? undefined : rest.destinationOptions,
+        state: opts.fullResync ? undefined : rest.destinationState,
       })
 
     if (!source$) {

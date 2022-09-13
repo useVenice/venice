@@ -62,9 +62,6 @@ const zConfig = z
   })
   .nullish()
 
-/** NEXT: Implement other import sources such as Airtable */
-const zSrcSyncOptions = z.object({csvString: z.string()})
-
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('import'),
@@ -75,7 +72,10 @@ const def = makeSyncProvider.def({
   }),
   sourceOutputEntity: zSrcEntitySchema,
   integrationConfig: zConfig,
-  sourceSyncOptions: zSrcSyncOptions,
+  /** NEXT: Implement other import sources such as Airtable */
+  // csvString belongs in syncState because among other things we can actually naturally
+  // persist the csvString used for every single sync as part of the pipeline_jobs table!
+  sourceState: z.object({csvString: z.string()}),
 })
 
 export const importProvider = makeSyncProvider({
@@ -88,8 +88,8 @@ export const importProvider = makeSyncProvider({
         conn.accountExternalId as Id.external,
       ),
   }),
-  sourceSync: ({settings: conn, options: input}) =>
-    rxjs.from(formats[conn.preset].parseRows(input.csvString)).pipe(
+  sourceSync: ({settings, state}) =>
+    rxjs.from(formats[settings.preset].parseRows(state.csvString)).pipe(
       Rx.map(
         (row, index): ImportSyncOperation => ({
           // This part is rather generic. we don't know what a row represents just yet
@@ -98,7 +98,7 @@ export const importProvider = makeSyncProvider({
           data: {
             id: `row_${index}`,
             entityName: 'csv_row',
-            entity: {preset: conn.preset, row} as ImportEntity,
+            entity: {preset: settings.preset, row} as ImportEntity,
           },
         }),
       ),

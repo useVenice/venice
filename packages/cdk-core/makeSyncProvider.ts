@@ -123,9 +123,9 @@ function makeSyncProviderDef<
     z.ZodType<any, any, z.input<typeof zWebhookInput>>
   >,
   // Sync
-  ZSrcSyncOptions extends _opt<z.ZodTypeAny>,
+  ZSrcState extends _opt<z.ZodTypeAny>,
   ZSrcOutEntity extends _opt<z.ZodTypeAny>,
-  ZDestSyncOptions extends _opt<z.ZodTypeAny>,
+  ZDestState extends _opt<z.ZodTypeAny>,
   ZDestInEntity extends _opt<z.ZodTypeAny>,
   // Connect
   ZPreConnInput extends _opt<z.ZodTypeAny>,
@@ -141,9 +141,9 @@ function makeSyncProviderDef<
   connectInput: ZConnInput
   connectOutput: ZConnOutput
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
-  sourceSyncOptions: ZSrcSyncOptions
+  sourceState: ZSrcState
   sourceOutputEntity: ZSrcOutEntity
-  destinationSyncOptions: ZDestSyncOptions
+  destinationState: ZDestState
   destinationInputEntity: ZDestInEntity
 }) {
   type Schemas = typeof schemas
@@ -161,8 +161,8 @@ function makeSyncProviderDef<
     _types['institutionData']
   >
   type StateUpdate = StateUpdateData<
-    _types['sourceSyncOptions'],
-    _types['destinationSyncOptions']
+    _types['sourceState'],
+    _types['destinationState']
   >
   type Op = SyncOperation<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
   type Src = Source<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
@@ -210,11 +210,11 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
       type: 'connUpdate',
     }),
     _opState: (
-      sourceSyncOptions?: OpState['sourceSyncOptions'],
-      destinationSyncOptions?: OpState['destinationSyncOptions'],
+      sourceState?: OpState['sourceState'],
+      destinationState?: OpState['destinationState'],
     ): Op => ({
-      sourceSyncOptions,
-      destinationSyncOptions,
+      sourceState,
+      destinationState,
       type: 'stateUpdate',
     }),
     _opData: <K extends OpData['data']['entityName']>(
@@ -256,8 +256,8 @@ makeSyncProviderDef.defaults = makeSyncProviderDef({
   connectInput: undefined,
   connectOutput: undefined,
   sourceOutputEntity: undefined,
-  sourceSyncOptions: undefined,
-  destinationSyncOptions: undefined,
+  sourceState: undefined,
+  destinationState: undefined,
   destinationInputEntity: undefined,
 })
 
@@ -277,7 +277,7 @@ export function makeSyncProvider<
       input: OmitNever<{
         config: T['_types']['integrationConfig']
         settings: T['_types']['connectionSettings']
-        options: T['_types']['sourceSyncOptions']
+        state: T['_types']['sourceState']
       }>,
     ) => Source<T['_types']['sourceOutputEntity']>
   >,
@@ -286,7 +286,7 @@ export function makeSyncProvider<
       input: OmitNever<{
         config: T['_types']['integrationConfig']
         settings: T['_types']['connectionSettings']
-        options: T['_types']['destinationSyncOptions']
+        state: T['_types']['destinationState']
       }>,
     ) => Destination<T['_types']['destinationInputEntity']>
   >,
@@ -294,7 +294,7 @@ export function makeSyncProvider<
     (
       input: OmitNever<{
         config: T['_types']['integrationConfig']
-        // options: T['_types']['sourceSyncOptions']
+        // options: T['_types']['sourceState']
       }>,
     ) => Source<T['_insOpType']['data']>
   >,

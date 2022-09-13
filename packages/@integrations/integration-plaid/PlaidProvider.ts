@@ -55,7 +55,7 @@ const _def = makeSyncProvider.def({
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
   }),
   /** "Manually" extending for now, this will get better / safer */
-  sourceSyncOptions: ledgerSyncProviderBase.def.sourceSyncOptions
+  sourceState: ledgerSyncProviderBase.def.sourceState
     .removeDefault()
     .extend({
       transactionSyncCursor: z.string().nullish(),
@@ -289,13 +289,13 @@ export const plaidProvider = makeSyncProvider({
   revokeConnection: (input, config) =>
     makePlaidClient(config).itemRemove(input.accessToken),
 
-  sourceSync: ({config, settings, options}) => {
+  sourceSync: ({config, settings, state}) => {
     const client = makePlaidClient(config)
 
     async function* iterateEntities() {
       // Sync item
       const {accessToken} = settings
-      const accountIds = options.accountIds?.length ? options.accountIds : null
+      const accountIds = state.accountIds?.length ? state.accountIds : null
       const {item, status} = await client.itemGet(accessToken)
 
       const institution = item.institution_id
@@ -327,7 +327,7 @@ export const plaidProvider = makeSyncProvider({
       yield accounts.map((a) => def._opData('account', a.account_id, a))
 
       // Sync transactions
-      let cursor = options.transactionSyncCursor ?? undefined
+      let cursor = state.transactionSyncCursor ?? undefined
       while (true) {
         const res = await client.transactionsSync({
           access_token: accessToken,

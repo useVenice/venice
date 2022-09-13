@@ -19,6 +19,9 @@ import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
 
+// TODO: Removing providers we are not using so we don't have nearly as much code, at least on the frontend!
+// Further perhaps code from supported providers can be loaded dynamically based on
+// listIntegrations output.
 export const ledgerSyncCommonConfig = LSProvider.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
