@@ -1,5 +1,5 @@
 import {httpLink} from '@trpc/client/links/httpLink'
-import {createReactQueryHooks} from '@trpc/react'
+import {createReactQueryHooks, HTTPHeaders} from '@trpc/react'
 import React from 'react'
 
 import type {
@@ -40,10 +40,16 @@ export function LSProvider<
 >({
   children,
   config,
+  getAccessToken,
   queryClient,
 }: {
   children: React.ReactNode
   config: SyncEngineCommonConfig<T, TLinks>
+  /**
+   * This will override the cookie values, as we cannot always expect cookie
+   * to be sent (for example when we run mitmproxy debugging on a diff port.)
+   */
+  getAccessToken?: () => string | undefined
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
   console.log('[LSProvider] render')
@@ -55,8 +61,20 @@ export function LSProvider<
 
   // Disable reqeuest batching in DEBUG mode for easier debugging
   const trpcClient = React.useMemo(
-    () => trpc.createClient(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
-    [__DEBUG__, url],
+    () =>
+      trpc.createClient({
+        headers: () =>
+          R.pipe(
+            getAccessToken?.(),
+            (token) => (token ? {Authorization: `Bearer ${token}`} : {}),
+            (res) => {
+              console.log('headders', res)
+              return res
+            },
+          ),
+        ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
+      }),
+    [__DEBUG__, getAccessToken, url],
   )
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
