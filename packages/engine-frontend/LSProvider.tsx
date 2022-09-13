@@ -27,6 +27,7 @@ const trpc = createReactQueryHooks<Router>()
 export const LSContext = React.createContext<{
   trpc: typeof trpc
   client: ReturnType<typeof trpc.createClient>
+  queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   // TODO: get the proper types from cdk-core
   hooks: Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
 } | null>(null)
@@ -71,7 +72,7 @@ export function LSProvider<
 
   return (
     <trpc.Provider client={client} queryClient={queryClient}>
-      <LSContext.Provider value={{trpc, hooks, client}}>
+      <LSContext.Provider value={{trpc, hooks, client, queryClient}}>
         {children}
 
         {dialogConfig && (
