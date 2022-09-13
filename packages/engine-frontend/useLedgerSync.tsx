@@ -4,11 +4,19 @@ import type {
   ConnectContextInput,
   UseLedgerSyncOptions,
 } from '@ledger-sync/cdk-core'
-import {extractId} from '@ledger-sync/cdk-core'
-import {CANCELLATION_TOKEN} from '@ledger-sync/cdk-core'
-import type {IntegrationInput} from '@ledger-sync/engine-backend'
+import {CANCELLATION_TOKEN, extractId} from '@ledger-sync/cdk-core'
+import type {
+  IntegrationInput,
+  makeSyncEngine,
+} from '@ledger-sync/engine-backend'
+import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 
 import {LSProvider} from './LSProvider'
+
+export type LedgerSyncRouter = ReturnType<typeof makeSyncEngine>[1]
+export type LedgerSyncPreConnectInput = inferProcedureInput<
+  LedgerSyncRouter['_def']['queries']['preConnect']
+>
 
 /** Non ledger-specific */
 export function useLedgerSyncAdmin({
@@ -41,14 +49,46 @@ export function useLedgerSync({
   console.log('[useLedgerSync]', {ledgerId, envName, keywords})
   // There has to be a shorthand for this...
 
-  const {hooks, client, trpc} = LSProvider.useContext()
+  const {hooks, client, trpc, queryClient} = LSProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
   const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
     enabled: !!ledgerId,
-    refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
+    // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   })
-
   const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
+
+  const preConnFetchOpts = React.useCallback(
+    (
+      input: LedgerSyncPreConnectInput,
+    ): NonNullable<Parameters<typeof queryClient.fetchQuery>[2]> => ({
+      queryKey: ['preConnect', input],
+      queryFn: async ({queryKey, ...rest}) => {
+        console.log('preConnQueryFn', queryKey, rest)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+        return client.query(queryKey[0] as any, queryKey[1] as any)
+      },
+      staleTime: 15 * 60 * 1000, // This should be provider dependent
+      // in particular dependent on the response from preConnect.
+      // Plaid link token expires in ~4 hours, while yodlee access token expires in
+      // ~30 mins. The expireAt are both within the token itself.
+    }),
+    [client, queryClient],
+  )
+
+  React.useEffect(() => {
+    integrationsRes.data
+      ?.map((int) => preConnFetchOpts([{id: int.id}, {envName, ledgerId}]))
+      // If we have been sitting on the page for 15 mins, will refetch occur still?
+      .forEach((options) => queryClient.prefetchQuery(options))
+  }, [envName, ledgerId, integrationsRes.data, preConnFetchOpts, queryClient])
+
+  // Alternatively... unfortunate... No trpc.useQueries https://github.com/trpc/trpc/issues/1454
+  // @yenbekbay is prefetch better or useQueries better?
+  // useQueries(
+  //   (integrationsRes.data ?? []).map((int) =>
+  //     preConnFetchOpts([{id: int.id}, {envName, ledgerId}]),
+  //   ),
+  // )
 
   const syncConnection = trpc.useMutation('syncConnection')
   const deleteConnection = trpc.useMutation('deleteConnection')
@@ -64,8 +104,10 @@ export function useLedgerSync({
 
       try {
         console.log(`[useLedgerSync] ${int.id} Will connect`)
-
-        const preConnRes = await client.mutation('preConnect', [int, ctx])
+        const preConnRes = await queryClient.fetchQuery(
+          preConnFetchOpts([int, ctx]),
+        )
+        // const preConnRes = await client.query('preConnect', [int, ctx])
         console.log(`[useLedgerSync] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
@@ -75,6 +117,7 @@ export function useLedgerSync({
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
         console.log(`[useLedgerSync] ${int.id} postConnectRes`, postConRes)
 
+        // queryClient.invalidateQueries(['listConnections'])
         await connectionsRes.refetch() // Should we invalidate instead of trigger explicit refetch?
 
         console.log(`[useLedgerSync] ${int.id} Did connect`)
@@ -86,7 +129,15 @@ export function useLedgerSync({
         }
       }
     },
-    [envName, ledgerId, client, hooks, connectionsRes],
+    [
+      envName,
+      ledgerId,
+      queryClient,
+      preConnFetchOpts,
+      hooks,
+      client,
+      connectionsRes,
+    ],
   )
   return {
     connect,
