@@ -647,7 +647,7 @@ importers:
       '@ledger-sync/standard': '*'
       '@ledger-sync/util': '*'
       '@types/react': '*'
-      axios: ^0.25.0
+      axios: 0.21.1
       csstype: '*'
       js-yaml: ^4.1.0
       openapi-client-axios: ^5.1.2
@@ -661,7 +661,7 @@ importers:
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
       '@ledger-sync/standard': link:../../@utils/standard
       '@ledger-sync/util': link:../../@utils/util
-      axios: 0.25.0
+      axios: 0.21.1
       csstype: 3.1.0
       js-yaml: 4.1.0
       react: 17.0.2
@@ -669,7 +669,7 @@ importers:
     devDependencies:
       '@cfworker/json-schema': 1.12.4
       '@types/react': 17.0.39
-      openapi-client-axios: 5.1.2_axios@0.25.0+js-yaml@4.1.0
+      openapi-client-axios: 5.1.2_axios@0.21.1+js-yaml@4.1.0
       openapi-typescript: 5.4.1
       openapi-typescript-codegen: 0.23.0
       openapi-typescript-fetch: 1.1.3
@@ -4240,14 +4240,6 @@ packages:
 
   /axios/0.21.1:
     resolution: {integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==}
-    dependencies:
-      follow-redirects: 1.15.1
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /axios/0.25.0:
-    resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
     dependencies:
       follow-redirects: 1.15.1
     transitivePeerDependencies:
@@ -9339,14 +9331,14 @@ packages:
     dependencies:
       mimic-fn: 4.0.0
 
-  /openapi-client-axios/5.1.2_axios@0.25.0+js-yaml@4.1.0:
+  /openapi-client-axios/5.1.2_axios@0.21.1+js-yaml@4.1.0:
     resolution: {integrity: sha512-asLM6/X34tLvl+cjHFt20r+hfzOr6b/ktignqR+33bm30kCsXP/mmhYRkFjXKN79dGyqplv+qk0HMdGNaVOCig==}
     peerDependencies:
       axios: ^0.25.0
       js-yaml: ^4.1.0
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
-      axios: 0.25.0
+      axios: 0.21.1
       bath-es5: 3.0.3
       copy-anything: 3.0.2
       js-yaml: 4.1.0

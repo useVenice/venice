@@ -23,7 +23,24 @@ const zFetcherConfig = z.object({
 export const createFetcher = zFunction(
   zFetcherConfig,
   ({proxy, clientId, clientSecret, url}) => {
-    const generateAccessToken = async (loginName: string) => {
+    const createClientInstance = async (
+      accessToken?: string,
+      loginName?: string,
+    ): Promise<YodleeClient> => {
+      const headers = {
+        'cache-control': 'no-cache',
+        'Api-Version': '1.1',
+      }
+
+      const additionalHeaders = accessToken
+        ? {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          }
+        : {
+            loginName,
+          }
+
       const api = new OpenAPIClientAxios({
         definition: './packages/@integrations/integration-yodlee/yodlee.yaml',
         withServer: {url},
@@ -32,52 +49,39 @@ export const createFetcher = zFunction(
           httpsAgent:
             getDefaultProxyAgent() ?? (proxy && $makeProxyAgent(proxy)),
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Api-Version': '1.1',
-            loginName,
+            ...headers,
+            ...additionalHeaders,
           },
         },
       })
-      const client = await api.getClient<YodleeClient>()
+
+      return await api.getClient<YodleeClient>()
+    }
+    const generateAccessToken = async (loginName: string) => {
+      const client = await createClientInstance(undefined, loginName)
       const accesssToken = client.paths['/auth/token'].post(
         null,
         stringifyQueryParams({clientId, secret: clientSecret}),
       )
+
       return (await accesssToken).data.token?.accessToken
     }
 
-    // TODO: make it reusable
-    const api = new OpenAPIClientAxios({
-      definition: './packages/@integrations/integration-yodlee/yodlee.yaml',
-      withServer: {url},
-      axiosConfigDefaults: {
-        withCredentials: true,
-        httpsAgent: getDefaultProxyAgent() ?? (proxy && $makeProxyAgent(proxy)),
-        headers: {
-          'cache-control': 'no-cache',
-          'Content-Type': 'application/json',
-          'Api-Version': '1.1',
-        },
-      },
-    })
     return {
-      getProvider: zFunction(
-        [z.number(), z.string()],
-        async (providerId, accesssToken) => {
-          api.axiosConfigDefaults = {
-            ...api.axiosConfigDefaults,
-            headers: {
-              ...api.axiosConfigDefaults.headers,
-              Authorization: `Bearer ${accesssToken}`,
-            },
-          }
-          const client = await api.getClient<YodleeClient>()
-          return client.paths['/providers/{providerId}'].get({providerId})
-        },
-      ),
       generateAccessToken: zFunction(z.string(), (loginName) =>
         generateAccessToken(loginName),
       ),
+      getProvider: zFunction(
+        [z.number(), z.string()],
+        async (providerId, accessToken) => {
+          const client = await createClientInstance(accessToken)
+          return client.paths['/providers/{providerId}'].get({providerId})
+        },
+      ),
+      getUser: zFunction(z.string(), async (accesssToken) => {
+        const client = await createClientInstance(accesssToken)
+        return client.paths['/user'].get()
+      }),
     }
   },
 )
