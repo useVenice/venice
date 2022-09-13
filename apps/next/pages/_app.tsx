@@ -14,7 +14,7 @@ import {PortalParamsProvider} from '../contexts/PortalParamsContext'
 const reactQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // staleTime: 5 * 60 * 1000, // 5 mins
+      // staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
       refetchOnWindowFocus: false, // Too many requests for going between devTool and not... alternative is to change the stale time
     },
   },

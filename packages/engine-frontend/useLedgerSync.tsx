@@ -49,15 +49,42 @@ export function useLedgerSync({
   console.log('[useLedgerSync]', {ledgerId, envName, keywords})
   // There has to be a shorthand for this...
 
-  const {hooks, client, trpc, queryClient} = LSProvider.useContext()
+  const {trpc} = LSProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
   const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
     enabled: !!ledgerId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   })
   const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
+  const syncConnection = trpc.useMutation('syncConnection')
+  const deleteConnection = trpc.useMutation('deleteConnection')
 
-  const preConnFetchOpts = React.useCallback(
+  // Connect should return a shape similar to client.mutation such that
+  // consumers can use the same pattern of hanlding loading and error...
+  const connect = useLedgerSyncConnect({ledgerId, envName})
+
+  return {
+    connect,
+    integrationsRes,
+    connectionsRes,
+    insRes,
+    syncConnection,
+    deleteConnection,
+  }
+}
+
+/** Also ledger-specific */
+export function useLedgerSyncConnect({
+  ledgerId,
+  envName,
+}: UseLedgerSyncOptions) {
+  console.log('[useLedgerSyncConnect]', {ledgerId, envName})
+  // There has to be a shorthand for this...
+
+  const {hooks, trpcClient: client, trpc, queryClient} = LSProvider.useContext()
+  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
+
+  const preConnOpts = React.useCallback(
     (
       input: LedgerSyncPreConnectInput,
     ): NonNullable<Parameters<typeof queryClient.fetchQuery>[2]> => ({
@@ -77,21 +104,20 @@ export function useLedgerSync({
 
   React.useEffect(() => {
     integrationsRes.data
-      ?.map((int) => preConnFetchOpts([{id: int.id}, {envName, ledgerId}]))
-      // If we have been sitting on the page for 15 mins, will refetch occur still?
+      ?.map((int) => preConnOpts([{id: int.id}, {envName, ledgerId}]))
+      // If we have been sitting on the page for 15 mins, can prefetch re-run automatically?
+      // Or would that be a reason for useQueries instead?
       .forEach((options) => queryClient.prefetchQuery(options))
-  }, [envName, ledgerId, integrationsRes.data, preConnFetchOpts, queryClient])
+  }, [envName, ledgerId, integrationsRes.data, preConnOpts, queryClient])
 
   // Alternatively... unfortunate... No trpc.useQueries https://github.com/trpc/trpc/issues/1454
+  // One downside is we will have ot add react-query as a direct dependency, which might be fine...
   // @yenbekbay is prefetch better or useQueries better?
   // useQueries(
   //   (integrationsRes.data ?? []).map((int) =>
   //     preConnFetchOpts([{id: int.id}, {envName, ledgerId}]),
   //   ),
   // )
-
-  const syncConnection = trpc.useMutation('syncConnection')
-  const deleteConnection = trpc.useMutation('deleteConnection')
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
@@ -104,10 +130,7 @@ export function useLedgerSync({
 
       try {
         console.log(`[useLedgerSync] ${int.id} Will connect`)
-        const preConnRes = await queryClient.fetchQuery(
-          preConnFetchOpts([int, ctx]),
-        )
-        // const preConnRes = await client.query('preConnect', [int, ctx])
+        const preConnRes = await queryClient.fetchQuery(preConnOpts([int, ctx]))
         console.log(`[useLedgerSync] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
@@ -117,8 +140,7 @@ export function useLedgerSync({
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
         console.log(`[useLedgerSync] ${int.id} postConnectRes`, postConRes)
 
-        // queryClient.invalidateQueries(['listConnections'])
-        await connectionsRes.refetch() // Should we invalidate instead of trigger explicit refetch?
+        void queryClient.invalidateQueries(['listConnections'])
 
         console.log(`[useLedgerSync] ${int.id} Did connect`)
       } catch (err) {
@@ -129,22 +151,7 @@ export function useLedgerSync({
         }
       }
     },
-    [
-      envName,
-      ledgerId,
-      queryClient,
-      preConnFetchOpts,
-      hooks,
-      client,
-      connectionsRes,
-    ],
+    [envName, ledgerId, queryClient, preConnOpts, hooks, client],
   )
-  return {
-    connect,
-    integrationsRes,
-    connectionsRes,
-    insRes,
-    syncConnection,
-    deleteConnection,
-  }
+  return connect
 }
