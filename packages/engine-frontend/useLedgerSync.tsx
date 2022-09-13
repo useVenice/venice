@@ -108,6 +108,9 @@ export function useLedgerSyncConnect({
   )
 
   React.useEffect(() => {
+    if (!ledgerId || !envName) {
+      return
+    }
     integrationsRes.data
       ?.map((int) => preConnOpts([{id: int.id}, {envName, ledgerId}]))
       // If we have been sitting on the page for 15 mins, can prefetch re-run automatically?
