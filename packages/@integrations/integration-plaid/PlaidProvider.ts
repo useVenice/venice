@@ -214,11 +214,12 @@ export const plaidProvider = makeSyncProvider({
     ;(globalThis as any).plaidLink = plaidLink
 
     React.useEffect(() => {
-      if (plaidLink.ready && state) {
-        console.log('[plaid] Will open')
-        plaidLink.open() // Unfortunately open gets called multiple times due to unmounting.
-        // It is a bit of a no-op though, so we should be fine...
+      if (!plaidLink.ready || !state) {
+        return
       }
+      console.log('[plaid] Will open')
+      plaidLink.open() // Unfortunately open gets called multiple times due to unmounting.
+      // It is a bit of a no-op though, so we should be fine...
       return () => {
         console.log('[plaid] Did unmount...')
       }

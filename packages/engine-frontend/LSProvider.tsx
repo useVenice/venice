@@ -29,7 +29,9 @@ export const LSContext = React.createContext<{
   trpcClient: ReturnType<typeof trpc.createClient>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   // TODO: get the proper types from cdk-core
-  hooks: Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
+  connectFnMapRef: React.RefObject<
+    Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
+  >
 } | null>(null)
 
 export function LSProvider<
@@ -44,6 +46,7 @@ export function LSProvider<
   config: SyncEngineCommonConfig<T, TLinks>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
+  console.log('[LSProvider] render')
   // @yenbekbay what's the way way to have a global debug confi?
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
@@ -51,16 +54,12 @@ export function LSProvider<
   const url = config.apiUrl ?? '/api'
 
   // Disable reqeuest batching in DEBUG mode for easier debugging
-  const trpcClient = trpc.createClient(
-    __DEBUG__ ? {links: [httpLink({url})]} : {url},
+  const trpcClient = React.useMemo(
+    () => trpc.createClient(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
+    [__DEBUG__, url],
   )
 
-  const dialogRef = React.useRef<DialogInstance>(null)
-  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
-    null,
-  )
-
-  const hooks = R.mapToObj(config.providers, (p) => [
+  const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
     p.useConnectHook?.({
       openDialog: (render, options) => {
@@ -69,10 +68,23 @@ export function LSProvider<
       },
     }),
   ])
+  const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
+  React.useEffect(() => {
+    connectFnMapRef.current = connectFnMap
+  }, [connectFnMap])
+
+  const dialogRef = React.useRef<DialogInstance>(null)
+  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
+    null,
+  )
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <LSContext.Provider value={{trpc, hooks, trpcClient, queryClient}}>
+      <LSContext.Provider
+        value={React.useMemo(
+          () => ({trpc, connectFnMapRef, trpcClient, queryClient}),
+          [connectFnMapRef, queryClient, trpcClient],
+        )}>
         {children}
 
         {dialogConfig && (

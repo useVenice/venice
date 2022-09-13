@@ -81,7 +81,12 @@ export function useLedgerSyncConnect({
   console.log('[useLedgerSyncConnect]', {ledgerId, envName})
   // There has to be a shorthand for this...
 
-  const {hooks, trpcClient: client, trpc, queryClient} = LSProvider.useContext()
+  const {
+    connectFnMapRef,
+    trpcClient: client,
+    trpc,
+    queryClient,
+  } = LSProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
 
   const preConnOpts = React.useCallback(
@@ -109,7 +114,6 @@ export function useLedgerSyncConnect({
       // Or would that be a reason for useQueries instead?
       .forEach((options) => queryClient.prefetchQuery(options))
   }, [envName, ledgerId, integrationsRes.data, preConnOpts, queryClient])
-
   // Alternatively... unfortunate... No trpc.useQueries https://github.com/trpc/trpc/issues/1454
   // One downside is we will have ot add react-query as a direct dependency, which might be fine...
   // @yenbekbay is prefetch better or useQueries better?
@@ -121,37 +125,53 @@ export function useLedgerSyncConnect({
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
+  // TODO: We should add something to know whether we are currently connecting in a global state
+  // And if we are then return early
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
       options: Pick<ConnectContextInput, 'institutionId' | 'connectionId'>,
     ) {
+      if (!envName || !ledgerId) {
+        console.log('Connect missing params, noop', {envName, ledgerId})
+        return
+      }
       const ctx: ConnectContextInput = {...options, envName, ledgerId}
 
       try {
-        console.log(`[useLedgerSync] ${int.id} Will connect`)
+        console.log(`[useLedgerSyncConnect] ${int.id} Will connect`)
         const preConnRes = await queryClient.fetchQuery(preConnOpts([int, ctx]))
-        console.log(`[useLedgerSync] ${int.id} preConnnectRes`, preConnRes)
+        console.log(
+          `[useLedgerSyncConnect] ${int.id} preConnnectRes`,
+          preConnRes,
+        )
 
         const provider = extractId(int.id)[1]
-        const res = await hooks[provider]?.(preConnRes, ctx)
-        console.log(`[useLedgerSync] ${int.id} innerConnectRes`, res)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const res = await connectFnMapRef.current?.[provider]?.(preConnRes, ctx)
+        console.log(`[useLedgerSyncConnect] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.mutation('postConnect', [res, int, ctx])
-        console.log(`[useLedgerSync] ${int.id} postConnectRes`, postConRes)
+        console.log(
+          `[useLedgerSyncConnect] ${int.id} postConnectRes`,
+          postConRes,
+        )
 
         void queryClient.invalidateQueries(['listConnections'])
 
-        console.log(`[useLedgerSync] ${int.id} Did connect`)
+        console.log(`[useLedgerSyncConnect] ${int.id} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
-          console.log(`[useLedgerSync] ${int.id} Cancelled`)
+          console.log(`[useLedgerSyncConnect] ${int.id} Cancelled`)
         } else {
-          console.error(`[useLedgerSync] ${int.id} Connection failed`, err)
+          console.error(
+            `[useLedgerSyncConnect] ${int.id} Connection failed`,
+            err,
+          )
         }
       }
     },
-    [envName, ledgerId, queryClient, preConnOpts, hooks, client],
+    [envName, ledgerId, connectFnMapRef, preConnOpts, queryClient, client],
   )
   return connect
 }
