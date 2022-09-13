@@ -198,10 +198,7 @@ export const foreceiptProvider = makeSyncProvider({
               info = res
               return firebaseProvider.sourceSync({
                 settings: client.fbSettings,
-                options: {
-                  _fb: fb,
-                  _queries: Object.values(q),
-                },
+                state: {_fb: fb, _queries: Object.values(q)},
               })
             }),
           )

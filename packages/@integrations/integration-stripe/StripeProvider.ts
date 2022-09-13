@@ -40,7 +40,7 @@ const _def = makeSyncProvider.def({
       entity: zCast<Stripe.BalanceTransaction>(),
     }),
   ]),
-  sourceSyncOptions: ledgerSyncProviderBase.def.sourceSyncOptions
+  sourceState: ledgerSyncProviderBase.def.sourceState
     .removeDefault()
     .extend({
       transactionSyncCursor: z.string().nullish(),
@@ -142,7 +142,7 @@ export const stripeProvider = makeSyncProvider({
     ),
     */
 
-  sourceSync: ({config: _config, settings}) => {
+  sourceSync: ({settings}) => {
     const secretKey = settings.secretKey ?? ''
     const accountId = settings.accountId ?? ''
     const client = makeStripeClient({secretKey, accountId})

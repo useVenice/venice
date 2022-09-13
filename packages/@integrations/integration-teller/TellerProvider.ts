@@ -165,8 +165,8 @@ export const tellerProvider = makeSyncProvider({
     settings: {token: input.token},
     // institution // FIXME
   }),
-  sourceSync: ({settings: input, config}) => {
-    const client = makeTellerClient({...config, token: input.token})
+  sourceSync: ({settings, config}) => {
+    const client = makeTellerClient({...config, token: settings.token})
     async function* iterateEntities() {
       const res = await client.getAccounts(undefined)
       const combineRes = await Promise.all(

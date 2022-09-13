@@ -10,7 +10,7 @@ import {zEntityPayload} from './entity-link-types'
 type _opt<T> = T | undefined
 
 /**
- * TODO: Narrow the type of AnyProviderDef to only those whose `sourceSyncOptions`
+ * TODO: Narrow the type of AnyProviderDef to only those whose `sourceState`
  * and `destinationInputEntity` match the type needed for ledgerSync
  */
 export const ledgerSyncProviderBase = <
@@ -36,7 +36,7 @@ export const ledgerSyncProviderBase = <
 
 ledgerSyncProviderBase.def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
-  sourceSyncOptions: z
+  sourceState: z
     .object({
       /** Account ids to sync */
       accountIds: z.array(z.string()).nullish(),

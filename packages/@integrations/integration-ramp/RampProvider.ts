@@ -25,7 +25,7 @@ import {
 
 const kRamp = 'ramp' as const
 type RampEntity = z.infer<typeof def['sourceOutputEntity']>
-type RampSrcSyncOptions = z.infer<typeof def['sourceSyncOptions']>
+type RampSrcSyncOptions = z.infer<typeof def['sourceState']>
 type RampSyncOperation = typeof def['_opType']
 
 const def = makeSyncProvider.def({
@@ -57,7 +57,7 @@ const def = makeSyncProvider.def({
       entity: transactionResponseItemSchema,
     }),
   ]),
-  sourceSyncOptions: z.object({
+  sourceState: z.object({
     startAfterTransactionId: z.string().nullish(),
     accessToken: z.string().nullish(),
     clientId: z.string().nullish(),
@@ -219,9 +219,9 @@ const opData = <K extends RampEntity['entityName']>(
   entity: Extract<RampEntity, {entityName: K}>['entity'] | null,
 ) => ({type: 'data', data: {entity, entityName, id}} as RampSyncOperation)
 
-const opMeta = (id: string, sourceSyncOptions: Partial<RampSrcSyncOptions>) =>
+const opMeta = (id: string, sourceState: Partial<RampSrcSyncOptions>) =>
   ({
     type: 'connUpdate',
     id: makeStandardId('conn', kRamp, id),
-    sourceSyncOptions,
+    sourceState,
   } as RampSyncOperation)

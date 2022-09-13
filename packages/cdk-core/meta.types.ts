@@ -72,9 +72,9 @@ export const zRaw = {
   pipeline: z.object({
     id: zId('pipe'),
     sourceId: zId('conn').nullish(),
-    sourceOptions: zJsonObject.nullish(),
+    sourceState: zJsonObject.nullish(),
     destinationId: zId('conn').nullish(),
-    destinationOptions: zJsonObject.nullish(),
+    destinationState: zJsonObject.nullish(),
     linkOptions: z
       .array(
         z.union([

@@ -123,10 +123,10 @@ export const wiseProvider = makeSyncProvider({
       apiToken: input.apiToken,
     },
   }),
-  sourceSync: ({settings: conn}) => {
-    const client = makeWiseClient({...conn})
+  sourceSync: ({settings}) => {
+    const client = makeWiseClient({...settings})
     async function* iterateEntities() {
-      const res = await client.getProfiles(conn.envName)
+      const res = await client.getProfiles(settings.envName)
       yield res.map((a) =>
         _op({
           type: 'data',
@@ -138,7 +138,7 @@ export const wiseProvider = makeSyncProvider({
         res.map(
           async (a: z.infer<typeof profileResponseItemSchema>) =>
             await client.getTransfers({
-              envName: conn.envName,
+              envName: settings.envName,
               profileId: a.id,
             }),
         ),

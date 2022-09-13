@@ -77,12 +77,12 @@ export interface PipelineInput<
 > {
   id: Id['pipe']
   source?: PSrc extends AnySyncProvider ? ConnectionInput<PSrc> : never
-  sourceOptions?: PSrc extends AnySyncProvider
-    ? Partial<_inferInput<PSrc['def']['sourceSyncOptions']>>
+  sourceState?: PSrc extends AnySyncProvider
+    ? Partial<_inferInput<PSrc['def']['sourceState']>>
     : never
   destination?: PDest extends AnySyncProvider ? ConnectionInput<PDest> : never
-  destinationOptions?: PDest extends AnySyncProvider
-    ? Partial<_inferInput<PDest['def']['destinationSyncOptions']>>
+  destinationState?: PDest extends AnySyncProvider
+    ? Partial<_inferInput<PDest['def']['destinationState']>>
     : never
   /** Used to initialize links */
   linkOptions?: Array<
@@ -262,16 +262,15 @@ export function makeSyncParsers<
           ),
           R.compact,
         )
-        const sourceOptions =
-          source.integration.provider.def.sourceSyncOptions?.parse(
-            deepMerge(pipeline?.sourceOptions, input.sourceOptions),
-            {path: ['sourceOptions']},
-          )
+        const sourceState = source.integration.provider.def.sourceState?.parse(
+          deepMerge(pipeline?.sourceState, input.sourceState),
+          {path: ['sourceState']},
+        )
 
-        const destinationOptions =
-          destination.integration.provider.def.destinationSyncOptions?.parse(
-            deepMerge(pipeline?.destinationOptions, input.destinationOptions),
-            {path: ['destinationOptions']},
+        const destinationState =
+          destination.integration.provider.def.destinationState?.parse(
+            deepMerge(pipeline?.destinationState, input.destinationState),
+            {path: ['destinationState']},
           )
         return {
           ...pipeline,
@@ -282,8 +281,8 @@ export function makeSyncParsers<
           destination,
           destinationId: destination.id, // Ensure consistency
           links,
-          sourceOptions,
-          destinationOptions,
+          sourceState,
+          destinationState,
           watch: input.watch, // Should this be on pipeline too?
         }
       }),

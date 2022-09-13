@@ -26,12 +26,12 @@ export const zBeancountDestOptions = z.object({
 const def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
   name: z.literal('beancount'),
-  destinationSyncOptions: zBeancountDestOptions,
+  destinationState: zBeancountDestOptions,
 })
 
 export const beancountProvider = makeSyncProvider({
   ...ledgerSyncProviderBase(def, {sourceMapEntity: undefined}),
-  destinationSync: ({options}) =>
+  destinationSync: ({state: options}) =>
     cachingLink((cache) => fromCompletion(outputBeanFiles(cache, options))),
   sourceSync: undefined,
 })
