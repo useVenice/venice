@@ -22,6 +22,14 @@ export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
 export const zUseLedgerSyncOptions = z.object({
   envName: zEnvName,
   ledgerId: zId('ldgr'),
+  /**
+   * Wait to create concept of user / customer in service providers
+   * until the last possible moment. Otherwise preConnect will be eagerly called
+   * as soon as user loads the webpage which could end up creating a bunch of entities
+   * such as StripeCustomer, YodleeUser that never have any material amount of data.
+   */
+  lazyUserCreation: z.boolean().nullish(),
+  /** When searching for for institution  */
   keywords: z.string().nullish(),
 })
 
