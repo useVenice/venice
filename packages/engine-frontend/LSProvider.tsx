@@ -26,7 +26,7 @@ const trpc = createReactQueryHooks<Router>()
 
 export const LSContext = React.createContext<{
   trpc: typeof trpc
-  client: ReturnType<typeof trpc.createClient>
+  trpcClient: ReturnType<typeof trpc.createClient>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   // TODO: get the proper types from cdk-core
   hooks: Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
@@ -51,7 +51,7 @@ export function LSProvider<
   const url = config.apiUrl ?? '/api'
 
   // Disable reqeuest batching in DEBUG mode for easier debugging
-  const client = trpc.createClient(
+  const trpcClient = trpc.createClient(
     __DEBUG__ ? {links: [httpLink({url})]} : {url},
   )
 
@@ -71,8 +71,8 @@ export function LSProvider<
   ])
 
   return (
-    <trpc.Provider client={client} queryClient={queryClient}>
-      <LSContext.Provider value={{trpc, hooks, client, queryClient}}>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <LSContext.Provider value={{trpc, hooks, trpcClient, queryClient}}>
         {children}
 
         {dialogConfig && (
