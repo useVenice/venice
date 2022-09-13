@@ -9,8 +9,6 @@ import {ActiveLink} from './ActiveLink'
 export interface LinkInput {
   label: string
   href: string
-  /** Overrides href. @yenbekbay let me know a better solution here... */
-  onClick?: () => void
   primary?: boolean
 }
 
@@ -42,34 +40,20 @@ export function Layout({
           {links.length > 0 && (
             <div className="flex flex-1 items-center justify-end">
               <nav className="flex space-x-6 text-sm font-medium">
-                {links.map((l) =>
-                  l.onClick ? (
-                    <button
-                      key={l.href}
-                      onClick={l.onClick}
+                {links.map((l) => (
+                  <ActiveLink
+                    key={l.href}
+                    href={l.href}
+                    activeClassName={l.primary ? 'underline' : 'text-primary'}>
+                    <a
                       className={twMerge(
                         'btn btn-sm',
                         l.primary ? 'btn-primary' : 'btn-ghost',
                       )}>
                       {l.label}
-                    </button>
-                  ) : (
-                    <ActiveLink
-                      key={l.href}
-                      href={l.href}
-                      activeClassName={
-                        l.primary ? 'underline' : 'text-primary'
-                      }>
-                      <a
-                        className={twMerge(
-                          'btn btn-sm',
-                          l.primary ? 'btn-primary' : 'btn-ghost',
-                        )}>
-                        {l.label}
-                      </a>
-                    </ActiveLink>
-                  ),
-                )}
+                    </a>
+                  </ActiveLink>
+                ))}
               </nav>
             </div>
           )}
