@@ -77,8 +77,9 @@ export function useLedgerSync({
 export function useLedgerSyncConnect({
   ledgerId,
   envName,
+  lazyUserCreation,
 }: UseLedgerSyncOptions) {
-  console.log('[useLedgerSyncConnect]', {ledgerId, envName})
+  console.log('[useLedgerSyncConnect]', {ledgerId, envName, lazyUserCreation})
   // There has to be a shorthand for this...
 
   const {
@@ -96,8 +97,10 @@ export function useLedgerSyncConnect({
       queryKey: ['preConnect', input],
       queryFn: async ({queryKey, ...rest}) => {
         console.log('preConnQueryFn', queryKey, rest)
+        // "mutation" because preConnect can have side effects such as causing `user` to be registered
+        // This is used by prefetchQuery though afaik only query results may be cached by react-query
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-        return client.query(queryKey[0] as any, queryKey[1] as any)
+        return client.mutation(queryKey[0] as any, queryKey[1] as any)
       },
       staleTime: 15 * 60 * 1000, // This should be provider dependent
       // in particular dependent on the response from preConnect.
@@ -108,7 +111,7 @@ export function useLedgerSyncConnect({
   )
 
   React.useEffect(() => {
-    if (!ledgerId || !envName) {
+    if (!ledgerId || !envName || lazyUserCreation) {
       return
     }
     integrationsRes.data
@@ -116,7 +119,14 @@ export function useLedgerSyncConnect({
       // If we have been sitting on the page for 15 mins, can prefetch re-run automatically?
       // Or would that be a reason for useQueries instead?
       .forEach((options) => queryClient.prefetchQuery(options))
-  }, [envName, ledgerId, integrationsRes.data, preConnOpts, queryClient])
+  }, [
+    envName,
+    ledgerId,
+    integrationsRes.data,
+    preConnOpts,
+    queryClient,
+    lazyUserCreation,
+  ])
   // Alternatively... unfortunate... No trpc.useQueries https://github.com/trpc/trpc/issues/1454
   // One downside is we will have ot add react-query as a direct dependency, which might be fine...
   // @yenbekbay is prefetch better or useQueries better?
