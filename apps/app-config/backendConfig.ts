@@ -37,6 +37,7 @@ export function getEnv(
  */
 export const ledgerSyncBackendConfig = makeSyncEngine.config({
   ...ledgerSyncCommonConfig,
+  jwtSecretOrPublicKey: getEnv('JWT_SECRET_OR_PUBLIC_KEY'),
   // TODO: support other config service such as fs later...
   metaService: makePostgresMetaService({databaseUrl: getEnv('POSTGRES_URL')}),
   linkMap: {renameAccount: renameAccountLink, log: logLink},

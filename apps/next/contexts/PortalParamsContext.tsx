@@ -7,13 +7,15 @@ import {zEnvName} from '@ledger-sync/cdk-core'
 
 import {atomWithPersistedQueryParam} from './utils/atomWithPersistedQueryParam'
 
+export const kAccessToken = 'accessToken' as const
+export const kEnv = 'env' as const
 const accessTokenAtom = atomWithPersistedQueryParam(
-  'accessToken',
+  kAccessToken,
   '',
   StringParam,
 )
 const envAtom = atomWithPersistedQueryParam<EnvName>(
-  'env',
+  kEnv,
   'sandbox',
   createEnumParam(zEnvName.options),
 )

@@ -1,4 +1,5 @@
 import * as trpc from '@trpc/server'
+import type {JwtPayload} from 'jsonwebtoken'
 
 import type {
   AnyEntityPayload,
@@ -31,6 +32,7 @@ import {
   zTrimedString,
 } from '@ledger-sync/util'
 
+import type {UserInfo} from './createEngineContext'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -57,6 +59,11 @@ export interface SyncEngineConfig<
   apiUrl?: string
   // Backend only
   linkMap?: TLinks
+
+  /** Used for authentication */
+  jwtSecretOrPublicKey?: string
+  userInfoFromJwt?: (jwtPayload: JwtPayload) => UserInfo
+
   /** Used to store metadata */
   metaService: MetaService
   // Figure out why we have to say `Link<any>` here rather than AnyEntityPayload

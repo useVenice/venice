@@ -828,11 +828,16 @@ importers:
       '@ledger-sync/cdk-ledger': '*'
       '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
+      '@types/jsonwebtoken': 8.5.9
+      jsonwebtoken: 8.5.1
     dependencies:
       '@ledger-sync/cdk-core': link:../cdk-core
       '@ledger-sync/cdk-ledger': link:../cdk-ledger
       '@ledger-sync/util': link:../@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      jsonwebtoken: 8.5.1
+    devDependencies:
+      '@types/jsonwebtoken': 8.5.9
 
   packages/engine-frontend:
     specifiers:
