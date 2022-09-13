@@ -1,14 +1,41 @@
 import '@ledger-sync/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
-import type {NextApiHandler} from 'next'
+import {getCookie} from 'cookies-next'
+import type {NextApiHandler, NextApiRequest} from 'next'
 
-import {ledgerSyncRouter} from '@ledger-sync/app-config/backendConfig'
-import {parseWebhookRequest} from '@ledger-sync/engine-backend'
-import {identity} from '@ledger-sync/util'
+import {
+  ledgerSyncBackendConfig,
+  ledgerSyncRouter,
+} from '@ledger-sync/app-config/backendConfig'
+import {
+  createEngineContext,
+  parseWebhookRequest,
+} from '@ledger-sync/engine-backend'
+import {fromMaybeArray, identity, R, safeJSONParse} from '@ledger-sync/util'
+
+import {kAccessToken} from '../../contexts/PortalParamsContext'
+
+export function getAccessToken(req: NextApiRequest) {
+  return (
+    fromMaybeArray(req.query['accessToken'] ?? [])[0] ??
+    req.headers.authorization?.match(/^Bearer (.+)/)?.[1] ??
+    R.pipe(
+      getCookie(kAccessToken, {req}),
+      (v) => (typeof v === 'string' ? safeJSONParse(v) : undefined),
+      (v) => (typeof v === 'string' ? v : undefined),
+    )
+  )
+}
 
 const handler = trpcNext.createNextApiHandler({
   router: ledgerSyncRouter,
+  createContext: ({req}) => {
+    const accessToken = getAccessToken(req)
+    const ctx = createEngineContext(ledgerSyncBackendConfig, {accessToken})
+    console.log('[createContext] Got ctx', ctx)
+    return ctx
+  },
   onError: ({error}) => {
     console.warn('error', error)
   },

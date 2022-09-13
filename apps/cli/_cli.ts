@@ -7,6 +7,7 @@ import '@ledger-sync/app-config/register.node'
 
 import {loadedEnv} from '@ledger-sync/app-config/register.node'
 import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
+import {makeJwtClient} from '@ledger-sync/engine-backend'
 import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
@@ -39,7 +40,10 @@ if (require.main === module) {
         console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
         return json ?? v
       }),
-
+    jwt: () =>
+      makeJwtClient({
+        secretOrPublicKey: process.env['JWT_SECRET_OR_PUBLIC_KEY']!,
+      }),
     pgMeta: () =>
       makePostgresMetaService({
         databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
