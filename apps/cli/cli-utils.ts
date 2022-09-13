@@ -1,3 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+/* eslint-disable @typescript-eslint/await-thenable */
+
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -96,11 +105,6 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
     // @see https://share.cleanshot.com/BtVq26
     // Do not name query the same way as we do mutations
 
-    const tuple = R.pipe(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parseIf((_procedure as any).inputParser, isZodType),
-      (t) => (t?._def?.typeName === 'ZodTuple' ? (t as z.ZodTuple) : undefined),
-    )
     cli
       // This doesn't work very well as it makes the args passed to action disappear
       // Figure out a better type if we can...
@@ -108,17 +112,14 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       .command(`${name} [...args]`)
       .allowUnknownOptions() // No args supported, only options...
       .action(async (args: string[], {'--': _, ...options} = {}) => {
-        /**
-         * Normalize as sometimes router requires array arguments (or not), esp
-         * when generated from zFunction and it is hard for cli to know
-         * whether to use array or not.
-         */
+        // We rely on the inputParser inside the router itself to normalize into
+        // array with the right # of arguments. Here we just make a best attempt
+        // at passing data into the router
         const input = R.pipe(
           await readStdin().then(safeJSONParse),
           (stdin) => deepMerge(stdin ?? {}, options),
           (opts) => compact([...args, Object.keys(opts).length > 0 && opts]),
           (arr) => (arr.length <= 1 ? arr[0] : arr),
-          (i) => (tuple && !Array.isArray(i) ? compact([i]) : i),
         )
 
         console.log(`[cli] ${name} input`, input)

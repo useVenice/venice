@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import type {
   CreateProcedureWithInputOutputParser,
   inferProcedureFromOptions,
@@ -93,10 +96,16 @@ export function routerFromZFunctionMap<
           // Whether cli or http request and it is hard to control. However fn parameters
           // are always going to be arrays, so let's pre-process
           // Need to think about whether it makes sense to keep the logic inside cliFromRouter
-          input: z.preprocess(
-            (i) => (Array.isArray(i) ? i : [i]),
-            fn.parameters,
-          ),
+          input: z.preprocess((i) => {
+            const input = R.pipe(Array.isArray(i) ? i : [i], (arr) => [
+              ...arr,
+              ...new Array(
+                Math.max(fn.parameters.items.length - arr.length, 0),
+              ),
+            ])
+            console.log(`[${method}] preprocessed input`, input)
+            return input
+          }, fn.parameters),
           output: fn.returnType,
           resolve: ({input}) => fn.impl(...input),
         }),
@@ -104,4 +113,3 @@ export function routerFromZFunctionMap<
     ),
   ) as any
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
