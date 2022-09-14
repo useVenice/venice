@@ -1,5 +1,5 @@
 import * as trpc from '@trpc/server'
-import type {inferProcedureInput} from '@trpc/server'
+import type {inferProcedureInput, inferProcedureOutput} from '@trpc/server'
 import {TRPCError} from '@trpc/server'
 import type {JwtPayload} from 'jsonwebtoken'
 
@@ -75,12 +75,20 @@ export interface SyncEngineConfig<
 }
 
 export type AnySyncRouter = ReturnType<typeof makeSyncEngine>['router']
+
 export type AnySyncQueryInput<
   K extends keyof AnySyncRouter['_def']['queries'],
 > = inferProcedureInput<AnySyncRouter['_def']['queries'][K]>
+export type AnySyncQueryOutput<
+  K extends keyof AnySyncRouter['_def']['queries'],
+> = inferProcedureOutput<AnySyncRouter['_def']['queries'][K]>
+
 export type AnySyncMutationInput<
   K extends keyof AnySyncRouter['_def']['mutations'],
 > = inferProcedureInput<AnySyncRouter['_def']['mutations'][K]>
+export type AnySyncMutationOutput<
+  K extends keyof AnySyncRouter['_def']['mutations'],
+> = inferProcedureOutput<AnySyncRouter['_def']['mutations'][K]>
 
 export const makeSyncEngine = <
   TProviders extends AnySyncProvider[],

@@ -1,4 +1,6 @@
 import React from 'react'
+// Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
+import type {UseQueryResult} from 'react-query'
 
 import type {
   ConnectContextInput,
@@ -7,6 +9,7 @@ import type {
 import {CANCELLATION_TOKEN, extractId} from '@ledger-sync/cdk-core'
 import type {
   AnySyncMutationInput,
+  AnySyncQueryOutput,
   IntegrationInput,
 } from '@ledger-sync/engine-backend'
 
@@ -21,12 +24,16 @@ export function useLedgerSyncAdmin({
   // Add a context for if user is in developer mode...
 
   const {trpc} = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
+
+  const integrationsRes = trpc.useQuery([
+    'listIntegrations',
+    {},
+  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const ledgerIdsRes = trpc.useQuery([
     'adminSearchLedgerIds',
     {keywords: ledgerIdKeywords},
-  ])
+  ]) as UseQueryResult<AnySyncQueryOutput<'adminSearchLedgerIds'>>
   const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
 
   return {integrationsRes, ledgerIdsRes, adminSyncMeta}
@@ -41,12 +48,18 @@ export function useLedgerSync({
   keywords,
 }: UseLedgerSyncOptions) {
   const {trpc} = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
+  const integrationsRes = trpc.useQuery([
+    'listIntegrations',
+    {},
+  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
   const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
     enabled: !!ledgerId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
-  })
-  const insRes = trpc.useQuery(['searchInstitutions', {keywords}])
+  }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
+  const insRes = trpc.useQuery([
+    'searchInstitutions',
+    {keywords},
+  ]) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
   const syncConnection = trpc.useMutation('syncConnection')
   const deleteConnection = trpc.useMutation('deleteConnection')
 
@@ -76,7 +89,10 @@ export function useLedgerSyncConnect({
     trpc,
     queryClient,
   } = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
+  const integrationsRes = trpc.useQuery([
+    'listIntegrations',
+    {},
+  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const preConnOpts = React.useCallback(
     (
