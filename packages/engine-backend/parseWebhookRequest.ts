@@ -2,7 +2,7 @@ import type {WebhookInput} from '@ledger-sync/cdk-core'
 import {makeId} from '@ledger-sync/cdk-core'
 import type {NonEmptyArray} from '@ledger-sync/util'
 
-import type {AnySyncQueryInput} from './makeSyncEngine'
+import type {AnySyncMutationInput} from './makeSyncEngine'
 
 /** Do we also need a parseWebhookResponse? To allow setting headers, redirects and others? */
 export function parseWebhookRequest(
@@ -14,7 +14,7 @@ export function parseWebhookRequest(
   }
   const id = makeId('int', provider, localId)
   // Consider naming it integrationId? not sure.
-  const input: AnySyncQueryInput<'handleWebhook'> = [
+  const input: AnySyncMutationInput<'handleWebhook'> = [
     {id},
     {query: req.query, headers: req.headers, body: req.body},
   ]

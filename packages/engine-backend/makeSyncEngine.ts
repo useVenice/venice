@@ -1,6 +1,6 @@
 import * as trpc from '@trpc/server'
-import type {inferProcedureInput} from '@trpc/server';
-import { TRPCError} from '@trpc/server'
+import type {inferProcedureInput} from '@trpc/server'
+import {TRPCError} from '@trpc/server'
 import type {JwtPayload} from 'jsonwebtoken'
 
 import type {
@@ -289,7 +289,7 @@ export const makeSyncEngine = <
     // MARK: - Metadata  etc
     .query('listIntegrations', {
       input: z.object({type: z.enum(['source', 'destination']).nullish()}),
-      resolve: async ({input: {type}, ctx}) => {
+      resolve: async ({input: {type}}) => {
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
@@ -429,7 +429,7 @@ export const makeSyncEngine = <
     .mutation('preConnect', {
       input: z.tuple([zInt, zConnectContext]),
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      resolve: ({input: [{provider: p, config}, connCtx], ctx}) =>
+      resolve: ({input: [{provider: p, config}, connCtx]}) =>
         p.preConnect?.(config, connCtx),
     })
     // useConnectHook happens client side only
