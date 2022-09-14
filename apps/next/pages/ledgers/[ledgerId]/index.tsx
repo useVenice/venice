@@ -9,6 +9,7 @@ import type {Id, ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
+import {InstitutionLogo} from '../../../components/InstitutionLogo'
 import {Layout} from '../../../components/Layout'
 import {Loading} from '../../../components/Loading'
 import {useEnv} from '../../../contexts/PortalParamsContext'
@@ -82,12 +83,7 @@ function ConnectionCard({
       <div className="card-body space-y-4">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={conn.institution?.logoUrl}
-              alt={`"${conn.displayName}" logo`}
-              className="h-12 w-12 overflow-hidden object-contain"
-            />
+            <InstitutionLogo institution={conn.institution} />
 
             <div className="flex-row gap-4">
               <span className="badge-outline badge text-2xs badge-sm uppercase">
