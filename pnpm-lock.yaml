@@ -241,6 +241,7 @@ importers:
       '@ledger-sync/engine-frontend': '*'
       '@ledger-sync/util': '*'
       '@radix-ui/react-radio-group': 1.0.0
+      '@radix-ui/react-slot': 1.0.0
       '@radix-ui/react-tabs': 1.0.0
       '@react-hookz/web': 15.1.0
       '@trpc/server': 9.26.0
@@ -273,6 +274,7 @@ importers:
       '@ledger-sync/engine-frontend': link:../../packages/engine-frontend
       '@ledger-sync/util': link:../../packages/@utils/util
       '@radix-ui/react-radio-group': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
+      '@radix-ui/react-slot': 1.0.0_react@17.0.2
       '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
       '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm

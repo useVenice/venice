@@ -5,6 +5,7 @@ import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
 import {useDeveloperMode, useIsAdmin} from '../contexts/PortalParamsContext'
 import {ActiveLink} from './ActiveLink'
+import {Container} from './Container'
 
 export interface LinkInput {
   label: string
@@ -30,7 +31,7 @@ export function Layout({
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
-        <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between px-4 md:px-8">
+        <Container className="h-16 flex-row items-center justify-between py-0">
           <Link href="/">
             <a className="rounded-lg bg-gray-100 p-2 text-primary">
               <span className="text-xs font-bold sm:text-xl">{title}</span>
@@ -57,7 +58,7 @@ export function Layout({
               </nav>
             </div>
           )}
-        </div>
+        </Container>
       </header>
 
       {children}

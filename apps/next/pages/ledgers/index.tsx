@@ -6,6 +6,7 @@ import {match} from 'ts-pattern'
 import type {LedgerIdResultRow} from '@ledger-sync/cdk-core'
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
+import {Container} from '../../components/Container'
 import {Layout} from '../../components/Layout'
 import {Loading} from '../../components/Loading'
 
@@ -15,7 +16,7 @@ export default function LedgersScreen() {
   const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
   return (
     <Layout>
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
+      <Container className="flex-1 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-3xl flex-col">
           <form
             onSubmit={(event) => {
@@ -46,20 +47,28 @@ export default function LedgersScreen() {
             </div>
           </form>
 
-          <div className="grid grid-cols-1 divide-y py-8">
+          <div className="py-8">
             {match(ledgerIdsRes)
+              .with({status: 'idle'}, () => null)
               .with({status: 'loading'}, () => <Loading />)
+              .with({status: 'error'}, () => (
+                <span className="text-xs">Something went wrong</span>
+              ))
               .with({status: 'success'}, (res) =>
                 res.data.length === 0 ? (
                   <span className="text-xs">No results</span>
                 ) : (
-                  res.data.map((l) => <LedgerCard key={l.id} ledger={l} />)
+                  <div className="grid grid-cols-1 divide-y">
+                    {res.data.map((l) => (
+                      <LedgerCard key={l.id} ledger={l} />
+                    ))}
+                  </div>
                 ),
               )
-              .run()}
+              .exhaustive()}
           </div>
         </div>
-      </div>
+      </Container>
     </Layout>
   )
 }
