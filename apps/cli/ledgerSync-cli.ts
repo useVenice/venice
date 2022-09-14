@@ -9,9 +9,7 @@ import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
 
-import type {LedgerSyncRouter} from '@ledger-sync/app-config/backendConfig'
 import {ledgerSyncRouter as router} from '@ledger-sync/app-config/backendConfig'
-import type {inferProcedureInput} from '@ledger-sync/engine-backend'
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import type {NonEmptyArray} from '@ledger-sync/util'
 import {
@@ -31,11 +29,6 @@ if (!process.env['DEBUG']) {
 if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
-
-export type LSRouter = LedgerSyncRouter
-export type SyncInput = inferProcedureInput<
-  LSRouter['_def']['mutations']['syncPipeline']
->[0]
 
 export const cli = cliFromRouter(router, {cleanup: () => {}}) // metaService.shutdown?
 

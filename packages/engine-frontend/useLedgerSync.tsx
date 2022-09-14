@@ -6,17 +6,11 @@ import type {
 } from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN, extractId} from '@ledger-sync/cdk-core'
 import type {
+  AnySyncMutationInput,
   IntegrationInput,
-  makeSyncEngine,
 } from '@ledger-sync/engine-backend'
-import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 
 import {LSProvider} from './LSProvider'
-
-export type LedgerSyncRouter = ReturnType<typeof makeSyncEngine>[1]
-export type LedgerSyncPreConnectInput = inferProcedureInput<
-  LedgerSyncRouter['_def']['queries']['preConnect']
->
 
 /** Non ledger-specific */
 export function useLedgerSyncAdmin({
@@ -92,7 +86,7 @@ export function useLedgerSyncConnect({
 
   const preConnOpts = React.useCallback(
     (
-      input: LedgerSyncPreConnectInput,
+      input: AnySyncMutationInput<'preConnect'>,
     ): NonNullable<Parameters<typeof queryClient.fetchQuery>[2]> => ({
       queryKey: ['preConnect', input],
       queryFn: async ({queryKey, ...rest}) => {

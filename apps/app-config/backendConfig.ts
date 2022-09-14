@@ -127,14 +127,10 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
   }),
 })
 
-export const [ledgerSync, ledgerSyncRouter, ledgerSyncMetaStore] =
-  makeSyncEngine(ledgerSyncBackendConfig)
+export const {router: ledgerSyncRouter} = makeSyncEngine(
+  ledgerSyncBackendConfig,
+)
 export type LedgerSyncRouter = typeof ledgerSyncRouter
 export type LedgerSyncInput = inferProcedureInput<
   LedgerSyncRouter['_def']['mutations']['syncPipeline']
 >[0]
-
-export {
-  parseWebhookRequest,
-  type inferProcedureInput,
-} from '@ledger-sync/engine-backend'

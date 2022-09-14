@@ -1,5 +1,5 @@
 import {httpLink} from '@trpc/client/links/httpLink'
-import {createReactQueryHooks, HTTPHeaders} from '@trpc/react'
+import {createReactQueryHooks} from '@trpc/react'
 import React from 'react'
 
 import type {
@@ -7,10 +7,7 @@ import type {
   DialogConfig,
   LinkFactory,
 } from '@ledger-sync/cdk-core'
-import type {
-  makeSyncEngine,
-  SyncEngineConfig,
-} from '@ledger-sync/engine-backend'
+import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
 import {R} from '@ledger-sync/util'
 
 import type {DialogInstance} from './components/Dialog'
@@ -21,8 +18,7 @@ export type SyncEngineCommonConfig<
   TLinks extends Record<string, LinkFactory>,
 > = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'apiUrl'>
 
-type Router = ReturnType<typeof makeSyncEngine>[1]
-const trpc = createReactQueryHooks<Router>()
+const trpc = createReactQueryHooks<AnySyncRouter>()
 
 export const LSContext = React.createContext<{
   trpc: typeof trpc
