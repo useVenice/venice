@@ -1,5 +1,6 @@
 import * as trpc from '@trpc/server'
-import type {inferProcedureInput} from '@trpc/server'
+import type {inferProcedureInput} from '@trpc/server';
+import { TRPCError} from '@trpc/server'
 import type {JwtPayload} from 'jsonwebtoken'
 
 import type {
@@ -24,7 +25,7 @@ import {
 } from '@ledger-sync/cdk-core'
 import {compact, R, rxjs, z, zTrimedString} from '@ledger-sync/util'
 
-import type {EngineContext, UserInfo} from './createEngineContext'
+import type {EngineContext, EngineMeta, UserInfo} from './createEngineContext'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -249,26 +250,46 @@ export const makeSyncEngine = <
     )
   }
 
-  const router = trpc
-    .router<EngineContext>()
+  const baseRouter: typeof trpc.router<EngineContext, EngineMeta> = trpc.router
+
+  const anonRouter = baseRouter()
     .query('health', {resolve: () => 'Ok ' + new Date().toISOString()})
+    .mutation('handleWebhook', {
+      input: z.tuple([zInt, zWebhookInput]),
+      resolve: async ({input: [int, input]}) => {
+        if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
+          console.warn(`${int.provider.name} does not handle webhooks`)
+          return
+        }
+        const res = await int.provider.handleWebhook(
+          int.provider.def.webhookInput.parse(input),
+          int.config,
+        )
+        await Promise.all(
+          res.connectionUpdates.map((connUpdate) =>
+            _syncConnectionUpdate(int, connUpdate),
+          ),
+        )
+
+        return res.response?.body
+      },
+    })
+
+  const authenticatedRouter = baseRouter()
+    .middleware(({next, ctx}) => {
+      if (!ctx.ledgerId) {
+        throw new TRPCError({code: 'UNAUTHORIZED', message: 'Auth required'})
+      }
+      // Figure out how we can pass the context into zod validators so that we can
+      // check user has access to connection pipline etc in a single place...
+      // Also we probably don't want non-admin user to be able to provider anything
+      // other than the `id` for integration, connection and pipeline
+      return next({ctx: {...ctx, ledgerId: ctx.ledgerId}})
+    })
     // MARK: - Metadata  etc
-    .query('adminSearchLedgerIds', {
-      input: z.object({keywords: zTrimedString.nullish()}).optional(),
-      resolve: async ({input: {keywords} = {}}) =>
-        metaService.searchLedgerIds({keywords}),
-    })
-    .query('adminGetIntegration', {
-      input: zInt,
-      resolve: ({input: int}) => ({
-        config: int.config,
-        provider: int.provider.name,
-        id: int.id,
-      }),
-    })
     .query('listIntegrations', {
       input: z.object({type: z.enum(['source', 'destination']).nullish()}),
-      resolve: async ({input: {type}}) => {
+      resolve: async ({input: {type}, ctx}) => {
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
@@ -387,6 +408,97 @@ export const makeSyncEngine = <
         })
       },
     })
+    // What about delete? Should this delete also? Or soft delete?
+    .mutation('deleteConnection', {
+      input: z.tuple([
+        zConn,
+        z.object({revokeOnly: z.boolean().nullish()}).optional(),
+      ]),
+      resolve: async ({input: [{id, settings, integration}, opts]}) => {
+        await integration.provider.revokeConnection?.(
+          settings,
+          integration.config,
+        )
+        if (opts?.revokeOnly) {
+          return
+        }
+        await metaService.tables.connection.delete(id)
+      },
+    })
+    // MARK: - Connect
+    .mutation('preConnect', {
+      input: z.tuple([zInt, zConnectContext]),
+      // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
+      resolve: ({input: [{provider: p, config}, connCtx], ctx}) =>
+        p.preConnect?.(config, connCtx),
+    })
+    // useConnectHook happens client side only
+    // for cli usage, can just call `postConnect` directly. Consider making the
+    // flow a bit smoother with a guided cli flow
+    .mutation('postConnect', {
+      // Questionable why `zConnectContext` should be there. Examine whether this is actually
+      // needed
+      input: z.tuple([z.unknown(), zInt, zConnectContext]),
+      // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
+      resolve: async ({input: [input, int, ctx]}) => {
+        const {provider: p, config} = int
+        console.log('didConnect start', p.name, input)
+        if (!p.postConnect || !p.def.connectOutput) {
+          return 'Noop'
+        }
+        const connUpdate = await p.postConnect(
+          p.def.connectOutput.parse(input),
+          config,
+          ctx,
+        )
+        await _syncConnectionUpdate(int, {
+          ...connUpdate,
+          // No need for each integration to worry about this, unlike in the case of handleWebhook.
+          ledgerId: ctx.ledgerId,
+        })
+        console.log('didConnect finish', p.name, input)
+        return 'Connection Success'
+      },
+    })
+
+    // MARK: - Sync
+    .mutation('syncConnection', {
+      input: z.tuple([zConn, zSyncOptions.optional()]),
+      resolve: async function syncConnection({input: [conn, opts]}) {
+        console.log('[syncConnection]', conn, opts)
+        /** Every ParsedConn also conforms to connectionInput  */
+        const pipelines = await getPipelinesForConnection(conn)
+        await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
+      },
+    })
+    .mutation('syncPipeline', {
+      input: z.tuple([zPipeline, zSyncOptions.optional()]),
+      resolve: async function syncPipeline({input: [pipeline, opts]}) {
+        console.log('[syncPipeline]', pipeline)
+        return _syncPipeline(pipeline, opts)
+      },
+    })
+
+  const adminRouter = baseRouter()
+    .middleware(({next, ctx}) => {
+      if (!ctx.isAdmin) {
+        throw new TRPCError({code: 'UNAUTHORIZED', message: 'Admin only'})
+      }
+      return next({ctx: {...ctx, isAdmin: true as const}})
+    })
+    .query('adminSearchLedgerIds', {
+      input: z.object({keywords: zTrimedString.nullish()}).optional(),
+      resolve: async ({input: {keywords} = {}}) =>
+        metaService.searchLedgerIds({keywords}),
+    })
+    .query('adminGetIntegration', {
+      input: zInt,
+      resolve: ({input: int}) => ({
+        config: int.config,
+        provider: int.provider.name,
+        id: int.id,
+      }),
+    })
     /** Used for testing */
     // adminFireWebhook: zFunction(
     //   zConn,
@@ -394,30 +506,6 @@ export const makeSyncEngine = <
 
     //   },
     // ),
-    // What about delete? Should this delete also? Or soft delete?
-    .mutation('deleteConnection', {
-      input: z.tuple([
-        zConn,
-        z.object({revokeOnly: z.boolean().nullish()}).optional(),
-      ]),
-      resolve: async ({
-        input: [
-          {
-            id,
-            settings,
-            integration: {provider, config},
-          },
-          opts,
-        ],
-      }) => {
-        await provider.revokeConnection?.(settings, config)
-        if (opts?.revokeOnly) {
-          return
-        }
-        await metaService.tables.connection.delete(id)
-      },
-    })
-    // MARK: - Sync
     .mutation('adminSyncMetadata', {
       input: zInt.nullish(),
       resolve: async ({input: int}) => {
@@ -454,77 +542,10 @@ export const makeSyncEngine = <
       },
     })
 
-    .mutation('syncConnection', {
-      input: z.tuple([zConn, zSyncOptions.optional()]),
-      resolve: async function syncConnection({input: [conn, opts]}) {
-        console.log('[syncConnection]', conn, opts)
-        /** Every ParsedConn also conforms to connectionInput  */
-        const pipelines = await getPipelinesForConnection(conn)
-        await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
-      },
-    })
-    .mutation('syncPipeline', {
-      input: z.tuple([zPipeline, zSyncOptions.optional()]),
-      resolve: async function syncPipeline({input: [pipeline, opts]}) {
-        console.log('[syncPipeline]', pipeline)
-        return _syncPipeline(pipeline, opts)
-      },
-    })
-    // MARK: - Connect
-    .mutation('preConnect', {
-      input: z.tuple([zInt, zConnectContext]),
-      // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      resolve: ({input: [{provider: p, config}, ctx]}) =>
-        p.preConnect?.(config, ctx),
-    })
-    // useConnectHook happens client side only
-    // for cli usage, can just call `postConnect` directly. Consider making the
-    // flow a bit smoother with a guided cli flow
-    .mutation('postConnect', {
-      // Questionable why `zConnectContext` should be there. Examine whether this is actually
-      // needed
-      input: z.tuple([z.unknown(), zInt, zConnectContext]),
-      // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
-      resolve: async ({input: [input, int, ctx]}) => {
-        const {provider: p, config} = int
-        console.log('didConnect start', p.name, input)
-        if (!p.postConnect || !p.def.connectOutput) {
-          return 'Noop'
-        }
-        const connUpdate = await p.postConnect(
-          p.def.connectOutput.parse(input),
-          config,
-          ctx,
-        )
-        await _syncConnectionUpdate(int, {
-          ...connUpdate,
-          // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          ledgerId: ctx.ledgerId,
-        })
-        console.log('didConnect finish', p.name, input)
-        return 'Connection Success'
-      },
-    })
-    .mutation('handleWebhook', {
-      input: z.tuple([zInt, zWebhookInput]),
-      resolve: async ({input: [int, input]}) => {
-        if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
-          console.warn(`${int.provider.name} does not handle webhooks`)
-          return
-        }
-        const res = await int.provider.handleWebhook(
-          int.provider.def.webhookInput.parse(input),
-          int.config,
-        )
-        await Promise.all(
-          res.connectionUpdates.map((connUpdate) =>
-            _syncConnectionUpdate(int, connUpdate),
-          ),
-        )
-
-        return res.response?.body
-      },
-    })
+  const router = baseRouter()
+    .merge(anonRouter)
+    .merge(authenticatedRouter)
+    .merge(adminRouter)
 
   return {router}
 }
