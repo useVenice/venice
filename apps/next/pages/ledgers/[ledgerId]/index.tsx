@@ -9,6 +9,7 @@ import type {Id, ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
+import {Container} from '../../../components/Container'
 import {InstitutionLogo} from '../../../components/InstitutionLogo'
 import {Layout} from '../../../components/Layout'
 import {Loading} from '../../../components/Loading'
@@ -38,22 +39,26 @@ export default function LedgerMyConnectionsScreen() {
             primary: true,
           },
         ]}>
-        <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {match(connectionsRes)
-              .with({status: 'loading'}, () => <Loading />)
-              .with({status: 'success'}, (res) =>
-                res.data.length === 0 ? (
-                  <span className="text-xs">No results</span>
-                ) : (
-                  res.data.map((conn) => (
+        <Container className="flex-1 overflow-y-auto">
+          {match(connectionsRes)
+            .with({status: 'idle'}, () => null)
+            .with({status: 'loading'}, () => <Loading />)
+            .with({status: 'error'}, () => (
+              <span className="text-xs">Something went wrong</span>
+            ))
+            .with({status: 'success'}, (res) =>
+              res.data.length === 0 ? (
+                <span className="text-xs">No results</span>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                  {res.data.map((conn) => (
                     <ConnectionCard key={conn.id} connection={conn} />
-                  ))
-                ),
-              )
-              .run()}
-          </div>
-        </div>
+                  ))}
+                </div>
+              ),
+            )
+            .exhaustive()}
+        </Container>
       </Layout>
     </>
   )
