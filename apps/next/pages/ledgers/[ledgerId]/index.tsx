@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import {useRouter} from 'next/router'
+import type {IconProps} from 'phosphor-react'
 import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {Id} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
-import {formatDate} from '@ledger-sync/util'
+import {formatDate, sentenceCase} from '@ledger-sync/util'
 
 import {Layout} from '../../../components/Layout'
 
@@ -56,49 +57,13 @@ export default function LedgerMyConnectionsScreen() {
                       />
 
                       <div className="flex-row gap-4">
-                        <span className="badge-outline badge uppercase">
+                        <span className="badge-outline badge text-2xs badge-sm uppercase">
                           {/* FIXME */}
                           sandbox
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-center space-y-1">
-                      <button
-                        data-tooltip-target="tooltip-default"
-                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
-                        onClick={() => {
-                          syncConnection
-                            .mutateAsync([{id: conn.id}, {}])
-                            .then((res) => {
-                              console.log('syncConnection success', res)
-                            })
-                            .catch((err) => {
-                              console.error('syncConnection error', err)
-                            })
-                        }}>
-                        <ArrowClockwise size={16} />
-                      </button>
-                      <span className="text-xs text-gray-400">Sync</span>
-                    </div>
-                    <div className="flex flex-col items-center space-y-1">
-                      <button
-                        data-tooltip-target="tooltip-default"
-                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
-                        onClick={() => {
-                          syncConnection
-                            .mutateAsync([{id: conn.id}, {fullResync: true}])
-                            .then((res) => {
-                              console.log('syncConnection success', res)
-                            })
-                            .catch((err) => {
-                              console.error('syncConnection error', err)
-                            })
-                        }}>
-                        <Play size={16} />
-                      </button>
-                      <div className="text-xs text-gray-400">Full Sync</div>
-                    </div>
                     <div className="flex flex-1 justify-end">
                       {conn.status === 'disconnected' && (
                         <button
@@ -113,54 +78,84 @@ export default function LedgerMyConnectionsScreen() {
                         </button>
                       )}
                     </div>
-                    <div className="flex flex-col items-center space-y-1">
-                      <button
-                        data-tooltip-target="tooltip-default"
-                        className="btn-outline btn btn-sm btn-circle border-base-content/25"
-                        onClick={() => {
-                          deleteConnection
-                            .mutateAsync([{id: conn.id}, {}])
-                            .then((res) => {
-                              console.log('deleteConnection success', res)
-                            })
-                            .catch((err) => {
-                              console.error('deleteConnection error', err)
-                            })
-                        }}>
-                        <Trash size={16} />
-                      </button>
-                      <div className="text-xs text-gray-400">Delete</div>
-                    </div>
+
+                    <CardButton
+                      label="Sync"
+                      IconComponent={ArrowClockwise}
+                      onClick={() =>
+                        syncConnection
+                          .mutateAsync([{id: conn.id}, {}])
+                          .then((res) => {
+                            console.log('syncConnection success', res)
+                          })
+                          .catch((err) => {
+                            console.error('syncConnection error', err)
+                          })
+                      }
+                    />
+
+                    <CardButton
+                      label="Full Sync"
+                      IconComponent={Play}
+                      onClick={() =>
+                        syncConnection
+                          .mutateAsync([{id: conn.id}, {fullResync: true}])
+                          .then((res) => {
+                            console.log('syncConnection success', res)
+                          })
+                          .catch((err) => {
+                            console.error('syncConnection error', err)
+                          })
+                      }
+                    />
+
+                    <CardButton
+                      label="Delete"
+                      IconComponent={Trash}
+                      onClick={() =>
+                        deleteConnection
+                          .mutateAsync([{id: conn.id}, {}])
+                          .then((res) => {
+                            console.log('deleteConnection success', res)
+                          })
+                          .catch((err) => {
+                            console.error('deleteConnection error', err)
+                          })
+                      }
+                    />
                   </div>
 
                   <div className="flex justify-between space-x-4">
-                    <span className="text-xl font-medium">
+                    <span className="card-title text-xl text-black">
                       {conn.displayName}
                     </span>
-                    <div>
-                      {conn.syncInProgress
-                        ? 'Syncing...'
-                        : conn.lastSyncCompletedAt
-                        ? `Synced ${formatDate(
-                            conn.lastSyncCompletedAt,
-                            'relative',
-                          )}`
-                        : 'Never synced yet'}
-                    </div>
-                    <div
-                      className={twMerge(
-                        'flex items-center space-x-2 text-sm',
-                        conn.status === 'healthy'
-                          ? ' text-green-600'
-                          : conn.status === 'disconnected'
-                          ? 'text-orange-600'
-                          : conn.status === 'error'
-                          ? 'text-red-600'
-                          : '',
-                      )}>
-                      <Circle weight="fill" />
 
-                      <span>{conn.status}</span>
+                    <div className="flex flex-col space-y-1 text-sm">
+                      {conn.status && conn.status !== 'manual' && (
+                        <div
+                          className={twMerge(
+                            'flex items-center space-x-2',
+                            {
+                              healthy: 'text-green-600',
+                              disconnected: 'text-orange-600',
+                              error: 'text-red-600',
+                            }[conn.status],
+                          )}>
+                          <Circle weight="fill" />
+                          <span>{sentenceCase(conn.status)}</span>
+                        </div>
+                      )}
+
+                      <span className="text-xs text-gray-500">
+                        {conn.syncInProgress
+                          ? 'Syncing…'
+                          : conn.lastSyncCompletedAt
+                          ? `Synced ${formatDate(
+                              conn.lastSyncCompletedAt,
+                              'relative',
+                            )}`
+                          : 'Never synced yet'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -170,5 +165,26 @@ export default function LedgerMyConnectionsScreen() {
         </div>
       </Layout>
     </>
+  )
+}
+
+function CardButton({
+  label,
+  IconComponent,
+  onClick,
+}: {
+  label: string
+  IconComponent: React.ComponentType<IconProps>
+  onClick: (event: React.MouseEvent) => void
+}) {
+  return (
+    <button className="flex flex-col items-center space-y-1">
+      <div
+        className="btn-outline btn btn-sm btn-circle border-base-content/25"
+        onClick={onClick}>
+        <IconComponent size={16} />
+      </div>
+      <span className="text-xs text-gray-500">{label}</span>
+    </button>
   )
 }

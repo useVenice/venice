@@ -12,6 +12,7 @@ import {compact} from '@ledger-sync/util'
 import {Layout} from '../../../components/Layout'
 import {Radio, RadioGroup} from '../../../components/RadioGroup'
 import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
+import {useDeveloperMode} from '../../../contexts/PortalParamsContext'
 
 type ConnectMode = 'institution' | 'provider'
 
@@ -55,7 +56,7 @@ export default function LedgerNewConnectionScreen() {
 
   const institutions = ls.insRes.data
 
-  const developerMode = false // @yenbekbay please replace me
+  const developerMode = useDeveloperMode()
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 && !developerMode
       ? integrationsRes.data[0]?.id
