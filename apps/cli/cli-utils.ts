@@ -13,14 +13,12 @@ import path from 'node:path'
 import * as trpc from '@trpc/server'
 import cac from 'cac'
 
-import type {AnyZFunction, z} from '@ledger-sync/util'
+import type {AnyZFunction} from '@ledger-sync/util'
 import {
   compact,
   deepMerge,
   isAsyncIterable,
   isIterable,
-  isZodType,
-  parseIf,
   pick,
   R,
   routerFromZFunctionMap,

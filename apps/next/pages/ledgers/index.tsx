@@ -1,16 +1,18 @@
 import {useRouter} from 'next/router'
 import {CaretRight} from 'phosphor-react'
 import {useState} from 'react'
+import {match} from 'ts-pattern'
 
+import type {LedgerIdResultRow} from '@ledger-sync/cdk-core'
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../components/Layout'
+import {Loading} from '../../components/Loading'
 
 export default function LedgersScreen() {
   const router = useRouter()
   const [ledgerId, setLedgerId] = useState('')
   const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
-  const ledgerIds = ledgerIdsRes.data
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
@@ -22,7 +24,7 @@ export default function LedgersScreen() {
             }}>
             <div className="form-control">
               <label htmlFor="ledgerId" className="label">
-                <span className="label-text">Enter ledger ID</span>
+                <span className="label-text">Ledger ID</span>
               </label>
 
               <div className="flex flex-row items-center space-x-2">
@@ -38,47 +40,52 @@ export default function LedgersScreen() {
                 />
 
                 <button className="btn btn-primary text-lg" type="submit">
-                  Enter
+                  Go
                 </button>
               </div>
             </div>
           </form>
 
           <div className="grid grid-cols-1 divide-y py-8">
-            {ledgerIds?.map((l) => (
-              <div
-                key={l.id}
-                className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg"
-                onClick={() => router.push(`/ledgers/${l.id}`)}>
-                <div className="card-body">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex flex-col space-y-1">
-                      <span className="card-title text-base text-black">
-                        {l.id}
-                      </span>
-                      <span className="text-sm">
-                        # Connections: {l.connectionCount}
-                      </span>
-                      <span className="text-sm">
-                        First connected: {l.firstCreatedAt}
-                      </span>
-                      <span className="text-sm">
-                        Last updated: {l.lastUpdatedAt}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-1 justify-end">
-                      <button className="btn-outline btn btn-sm btn-circle border-base-content/25">
-                        <CaretRight />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {match(ledgerIdsRes)
+              .with({status: 'loading'}, () => <Loading />)
+              .with({status: 'success'}, (res) =>
+                res.data.length === 0 ? (
+                  <span className="text-xs">No results</span>
+                ) : (
+                  res.data.map((l) => <LedgerCard key={l.id} ledger={l} />)
+                ),
+              )
+              .run()}
           </div>
         </div>
       </div>
     </Layout>
+  )
+}
+
+function LedgerCard({ledger: l}: {ledger: LedgerIdResultRow}) {
+  const router = useRouter()
+  return (
+    <div
+      className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg"
+      onClick={() => router.push(`/ledgers/${l.id}`)}>
+      <div className="card-body">
+        <div className="flex items-center space-x-4">
+          <div className="flex flex-col space-y-1">
+            <span className="card-title text-base text-black">{l.id}</span>
+            <span className="text-sm"># Connections: {l.connectionCount}</span>
+            <span className="text-sm">First connected: {l.firstCreatedAt}</span>
+            <span className="text-sm">Last updated: {l.lastUpdatedAt}</span>
+          </div>
+
+          <div className="flex flex-1 justify-end">
+            <button className="btn-outline btn btn-sm btn-circle border-base-content/25">
+              <CaretRight />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

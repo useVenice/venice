@@ -3,27 +3,24 @@ import {useRouter} from 'next/router'
 import type {IconProps} from 'phosphor-react'
 import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
+import {match} from 'ts-pattern'
 
-import type {Id} from '@ledger-sync/cdk-core'
+import type {Id, ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
 import {Layout} from '../../../components/Layout'
+import {Loading} from '../../../components/Loading'
+import {useEnv} from '../../../contexts/PortalParamsContext'
 
 export default function LedgerMyConnectionsScreen() {
   const router = useRouter()
   const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
-
-  // NOTE: envName is not relevant when reconnecting,
-  // and honestly neither is ledgerId...
-  // How do we express these situations?
-  const {connectionsRes, connect, syncConnection, deleteConnection} =
-    useLedgerSync({
-      ledgerId,
-      envName: 'sandbox', // Add control for me...
-    })
-  const connections = connectionsRes.data
-
+  const env = useEnv()
+  const {connectionsRes} = useLedgerSync({
+    ledgerId,
+    envName: env,
+  })
   return (
     <>
       <Head>
@@ -35,136 +32,164 @@ export default function LedgerMyConnectionsScreen() {
         links={[
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {
-            label: 'Connect',
+            label: 'New connection',
             href: `/ledgers/${ledgerId}/new-connection`,
             primary: true,
           },
         ]}>
         <div className="mx-auto w-full max-w-screen-2xl flex-1 flex-col overflow-y-auto px-4 py-8 md:px-8">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {connections?.map((conn) => (
-              <div
-                key={conn.id}
-                className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-                <div className="card-body space-y-4">
-                  <div className="flex space-x-4">
-                    <div className="flex flex-col space-y-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={conn.institution?.logoUrl}
-                        alt={`"${conn.displayName}" logo`}
-                        className="h-12 w-12 overflow-hidden object-contain"
-                      />
-
-                      <div className="flex-row gap-4">
-                        <span className="badge-outline badge text-2xs badge-sm uppercase">
-                          {/* FIXME */}
-                          sandbox
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-1 justify-end">
-                      {conn.status === 'disconnected' && (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => {
-                            void connect(
-                              {id: 'int_plaid'}, // Need the integration id too
-                              {connectionId: conn.id},
-                            )
-                          }}>
-                          Reconnect
-                        </button>
-                      )}
-                    </div>
-
-                    <CardButton
-                      label="Sync"
-                      IconComponent={ArrowClockwise}
-                      onClick={() =>
-                        syncConnection
-                          .mutateAsync([{id: conn.id}, {}])
-                          .then((res) => {
-                            console.log('syncConnection success', res)
-                          })
-                          .catch((err) => {
-                            console.error('syncConnection error', err)
-                          })
-                      }
-                    />
-
-                    <CardButton
-                      label="Full Sync"
-                      IconComponent={Play}
-                      onClick={() =>
-                        syncConnection
-                          .mutateAsync([{id: conn.id}, {fullResync: true}])
-                          .then((res) => {
-                            console.log('syncConnection success', res)
-                          })
-                          .catch((err) => {
-                            console.error('syncConnection error', err)
-                          })
-                      }
-                    />
-
-                    <CardButton
-                      label="Delete"
-                      IconComponent={Trash}
-                      onClick={() =>
-                        deleteConnection
-                          .mutateAsync([{id: conn.id}, {}])
-                          .then((res) => {
-                            console.log('deleteConnection success', res)
-                          })
-                          .catch((err) => {
-                            console.error('deleteConnection error', err)
-                          })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex justify-between space-x-4">
-                    <span className="card-title text-xl text-black">
-                      {conn.displayName}
-                    </span>
-
-                    <div className="flex flex-col space-y-1 text-sm">
-                      {conn.status && conn.status !== 'manual' && (
-                        <div
-                          className={twMerge(
-                            'flex items-center space-x-2',
-                            {
-                              healthy: 'text-green-600',
-                              disconnected: 'text-orange-600',
-                              error: 'text-red-600',
-                            }[conn.status],
-                          )}>
-                          <Circle weight="fill" />
-                          <span>{sentenceCase(conn.status)}</span>
-                        </div>
-                      )}
-
-                      <span className="text-xs text-gray-500">
-                        {conn.syncInProgress
-                          ? 'Syncing…'
-                          : conn.lastSyncCompletedAt
-                          ? `Synced ${formatDate(
-                              conn.lastSyncCompletedAt,
-                              'relative',
-                            )}`
-                          : 'Never synced yet'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {match(connectionsRes)
+              .with({status: 'loading'}, () => <Loading />)
+              .with({status: 'success'}, (res) =>
+                res.data.length === 0 ? (
+                  <span className="text-xs">No results</span>
+                ) : (
+                  res.data.map((conn) => (
+                    <ConnectionCard key={conn.id} connection={conn} />
+                  ))
+                ),
+              )
+              .run()}
           </div>
         </div>
       </Layout>
     </>
+  )
+}
+
+function ConnectionCard({
+  connection: conn,
+}: {
+  connection: ZStandard['connection'] & {
+    syncInProgress: boolean
+    lastSyncCompletedAt: Date | null | undefined
+    institution: ZStandard['institution'] | null | undefined
+  }
+}) {
+  const router = useRouter()
+  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
+  const env = useEnv()
+  // NOTE: envName is not relevant when reconnecting,
+  // and honestly neither is ledgerId...
+  // How do we express these situations?
+  const {connect, syncConnection, deleteConnection} = useLedgerSync({
+    ledgerId,
+    envName: env,
+  })
+  return (
+    <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+      <div className="card-body space-y-4">
+        <div className="flex space-x-4">
+          <div className="flex flex-col space-y-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={conn.institution?.logoUrl}
+              alt={`"${conn.displayName}" logo`}
+              className="h-12 w-12 overflow-hidden object-contain"
+            />
+
+            <div className="flex-row gap-4">
+              <span className="badge-outline badge text-2xs badge-sm uppercase">
+                {/* FIXME */}
+                sandbox
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-1 justify-end">
+            {conn.status === 'disconnected' && (
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => {
+                  void connect(
+                    {id: 'int_plaid'}, // Need the integration id too
+                    {connectionId: conn.id},
+                  )
+                }}>
+                Reconnect
+              </button>
+            )}
+          </div>
+
+          <CardButton
+            label="Sync"
+            IconComponent={ArrowClockwise}
+            onClick={() =>
+              syncConnection
+                .mutateAsync([{id: conn.id}, {}])
+                .then((res) => {
+                  console.log('syncConnection success', res)
+                })
+                .catch((err) => {
+                  console.error('syncConnection error', err)
+                })
+            }
+          />
+
+          <CardButton
+            label="Full Sync"
+            IconComponent={Play}
+            onClick={() =>
+              syncConnection
+                .mutateAsync([{id: conn.id}, {fullResync: true}])
+                .then((res) => {
+                  console.log('syncConnection success', res)
+                })
+                .catch((err) => {
+                  console.error('syncConnection error', err)
+                })
+            }
+          />
+
+          <CardButton
+            label="Delete"
+            IconComponent={Trash}
+            onClick={() =>
+              deleteConnection
+                .mutateAsync([{id: conn.id}, {}])
+                .then((res) => {
+                  console.log('deleteConnection success', res)
+                })
+                .catch((err) => {
+                  console.error('deleteConnection error', err)
+                })
+            }
+          />
+        </div>
+
+        <div className="flex justify-between space-x-4">
+          <span className="card-title text-xl text-black">
+            {conn.displayName}
+          </span>
+
+          <div className="flex flex-col space-y-1 text-sm">
+            {conn.status && conn.status !== 'manual' && (
+              <div
+                className={twMerge(
+                  'flex items-center space-x-2',
+                  {
+                    healthy: 'text-green-600',
+                    disconnected: 'text-orange-600',
+                    error: 'text-red-600',
+                  }[conn.status],
+                )}>
+                <Circle weight="fill" />
+                <span>{sentenceCase(conn.status)}</span>
+              </div>
+            )}
+
+            <span className="text-xs text-gray-500">
+              {conn.syncInProgress
+                ? 'Syncing…'
+                : conn.lastSyncCompletedAt
+                ? `Synced ${formatDate(conn.lastSyncCompletedAt, 'relative')}`
+                : 'Never synced yet'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 

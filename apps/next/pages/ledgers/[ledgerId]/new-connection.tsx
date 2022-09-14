@@ -2,6 +2,7 @@ import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Plus} from 'phosphor-react'
 import React from 'react'
+import {match} from 'ts-pattern'
 import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 
 import type {EnvName, Id} from '@ledger-sync/cdk-core'
@@ -10,6 +11,7 @@ import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {compact} from '@ledger-sync/util'
 
 import {Layout} from '../../../components/Layout'
+import {Loading} from '../../../components/Loading'
 import {Radio, RadioGroup} from '../../../components/RadioGroup'
 import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
 import {useDeveloperMode} from '../../../contexts/PortalParamsContext'
@@ -54,8 +56,6 @@ export default function LedgerNewConnectionScreen() {
     [_connect, router, ledgerId],
   )
 
-  const institutions = ls.insRes.data
-
   const developerMode = useDeveloperMode()
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 && !developerMode
@@ -80,7 +80,7 @@ export default function LedgerNewConnectionScreen() {
         links={[
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {
-            label: 'Connect',
+            label: 'New connection',
             href: `/ledgers/${ledgerId}/new-connection`,
             primary: true,
           },
@@ -115,41 +115,52 @@ export default function LedgerNewConnectionScreen() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                {institutions?.map(({ins, int}) => (
-                  <div
-                    key={`${ins.id}`}
-                    className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-                    <div className="card-body space-y-4">
-                      <div className="flex items-center space-x-4">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={ins.logoUrl}
-                          alt={`"${ins.name}" logo`}
-                          className="h-12 w-12 object-contain"
-                        />
+                {match(ls.insRes)
+                  .with({status: 'loading'}, () => <Loading />)
+                  .with({status: 'success'}, (res) =>
+                    res.data.length === 0 ? (
+                      <span className="text-xs">No results</span>
+                    ) : (
+                      res.data.map(({ins, int}) => (
+                        <div
+                          key={`${ins.id}`}
+                          className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+                          <div className="card-body space-y-4">
+                            <div className="flex items-center space-x-4">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={ins.logoUrl}
+                                alt={`"${ins.name}" logo`}
+                                className="h-12 w-12 object-contain"
+                              />
 
-                        <div className="flex flex-col space-y-1">
-                          <span className="card-title text-black">
-                            {ins.name}
-                          </span>
-                          <span className="text-sm">
-                            {compact([ins.id, int.id, ins.envName]).join(':')}
-                          </span>
-                        </div>
+                              <div className="flex flex-col space-y-1">
+                                <span className="card-title text-black">
+                                  {ins.name}
+                                </span>
+                                <span className="text-sm">
+                                  {compact([ins.id, int.id, ins.envName]).join(
+                                    ':',
+                                  )}
+                                </span>
+                              </div>
 
-                        <div className="flex flex-1 justify-end">
-                          <button
-                            className="btn-outline btn btn-sm btn-circle border-base-content/25"
-                            onClick={() =>
-                              connect(int, {institutionId: ins.id})
-                            }>
-                            <Plus />
-                          </button>
+                              <div className="flex flex-1 justify-end">
+                                <button
+                                  className="btn-outline btn btn-sm btn-circle border-base-content/25"
+                                  onClick={() =>
+                                    connect(int, {institutionId: ins.id})
+                                  }>
+                                  <Plus />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                      ))
+                    ),
+                  )
+                  .run()}
               </div>
             </TabContent>
 

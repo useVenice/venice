@@ -20,6 +20,7 @@
     "@ledger-sync/util": "*",
     "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
+    "@react-hookz/web": "15.1.0",
     "@trpc/server": "9.26.0",
     "cookies-next": "2.1.1",
     "jotai": "1.8.3",
@@ -31,6 +32,7 @@
     "react-query": "3.39.2",
     "superjson": "1.9.1",
     "tailwind-merge": "1.6.0",
+    "ts-pattern": "4.0.5",
     "use-query-params": "2.1.0"
   },
   "devDependencies": {

@@ -242,6 +242,7 @@ importers:
       '@ledger-sync/util': '*'
       '@radix-ui/react-radio-group': 1.0.0
       '@radix-ui/react-tabs': 1.0.0
+      '@react-hookz/web': 15.1.0
       '@trpc/server': 9.26.0
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.13
@@ -262,6 +263,7 @@ importers:
       tailwind-merge: 1.6.0
       tailwindcss: 3.1.8
       tailwindcss-radix: 2.5.0
+      ts-pattern: 4.0.5
       use-query-params: 2.1.0
       webpack: '*'
     dependencies:
@@ -272,6 +274,7 @@ importers:
       '@ledger-sync/util': link:../../packages/@utils/util
       '@radix-ui/react-radio-group': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
       '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
+      '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       cookies-next: 2.1.1
       jotai: 1.8.3_react@17.0.2
@@ -283,6 +286,7 @@ importers:
       react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
       superjson: 1.9.1
       tailwind-merge: 1.6.0
+      ts-pattern: 4.0.5
       use-query-params: 2.1.0_sfoxds7t5ydpegc3knd667wn6m
     devDependencies:
       '@types/react': 17.0.39
@@ -11546,6 +11550,10 @@ packages:
   /ts-error/1.0.6:
     resolution: {integrity: sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==}
     dev: true
+
+  /ts-pattern/4.0.5:
+    resolution: {integrity: sha512-Bq44KCEt7JVaNLa148mBCJkcQf4l7jtLEBDuDdeuLynWDA+1a60P4D0rMkqSM9mOKLQbIWUddE9h3XKyKwBeqA==}
+    dev: false
 
   /tsconfig-paths/3.14.1:
     resolution: {integrity: sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==}
