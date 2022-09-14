@@ -24,7 +24,6 @@ export function atomWithPersistedQueryParam<T>(
         return paramValue
       } else {
         const cookieValue = get(cookieAtom)
-        console.log(key, cookieValue)
         return cookieValue
       }
     },

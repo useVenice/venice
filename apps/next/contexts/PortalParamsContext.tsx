@@ -24,7 +24,10 @@ const developerModeAtom = atomWithPersistedQueryParam(
   false,
   BooleanParam,
 )
-const isAdminAtom = atom((get) => get(accessTokenAtom) === 'admin')
+const isAdminAtom = atom(
+  (get) =>
+    get(accessTokenAtom) === 'admin' || process.env.NODE_ENV === 'development',
+)
 
 export function PortalParamsProvider({children}: {children: React.ReactNode}) {
   return <Provider>{children}</Provider>

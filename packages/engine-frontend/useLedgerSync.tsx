@@ -40,9 +40,6 @@ export function useLedgerSync({
   envName,
   keywords,
 }: UseLedgerSyncOptions) {
-  console.log('[useLedgerSync]', {ledgerId, envName, keywords})
-  // There has to be a shorthand for this...
-
   const {trpc} = LSProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', {}])
   const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
@@ -73,9 +70,6 @@ export function useLedgerSyncConnect({
   envName,
   lazyUserCreation,
 }: UseLedgerSyncOptions) {
-  console.log('[useLedgerSyncConnect]', {ledgerId, envName, lazyUserCreation})
-  // There has to be a shorthand for this...
-
   const {
     connectFnMapRef,
     trpcClient: client,

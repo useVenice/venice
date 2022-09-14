@@ -33,14 +33,12 @@ export function Layout({
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
           <Link href="/">
-            <a className="rounded-lg bg-gray-100 p-2 text-primary">
-              <span className="text-xs font-bold sm:text-xl">{title}</span>
-            </a>
+            <a className="truncate text-xl font-bold text-primary">{title}</a>
           </Link>
 
           {links.length > 0 && (
-            <div className="flex flex-1 items-center justify-end">
-              <nav className="flex space-x-6 text-sm font-medium">
+            <div className="flex shrink-0 grow items-center justify-end">
+              <nav className="flex space-x-2 text-sm font-medium md:space-x-4">
                 {links.map((l) => (
                   <ActiveLink
                     key={l.href}
@@ -64,7 +62,7 @@ export function Layout({
       {children}
 
       {isAdmin && (
-        <footer className="flex border-t border-gray-100 p-8">
+        <footer className="flex flex-col space-y-4 border-t border-gray-100 p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
           <div className="form-control">
             <label className="label cursor-pointer">
               <input
@@ -81,9 +79,9 @@ export function Layout({
             </label>
           </div>
 
-          <div className="flex flex-1 justify-end">
+          <div className="flex">
             <button
-              className="btn-outline btn btn-sm"
+              className="btn-outline btn btn-sm truncate"
               onClick={() =>
                 adminSyncMeta
                   .mutateAsync()
