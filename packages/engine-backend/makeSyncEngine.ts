@@ -1,4 +1,5 @@
 import * as trpc from '@trpc/server'
+import type {inferProcedureInput} from '@trpc/server'
 import type {JwtPayload} from 'jsonwebtoken'
 
 import type {
@@ -80,6 +81,14 @@ export interface SyncEngineConfig<
         >
       }
 }
+
+export type AnySyncRouter = ReturnType<typeof makeSyncEngine>['router']
+export type AnySyncQueryInput<
+  K extends keyof AnySyncRouter['_def']['queries'],
+> = inferProcedureInput<AnySyncRouter['_def']['queries'][K]>
+export type AnySyncMutationInput<
+  K extends keyof AnySyncRouter['_def']['mutations'],
+> = inferProcedureInput<AnySyncRouter['_def']['mutations'][K]>
 
 export const makeSyncEngine = <
   TProviders extends AnySyncProvider[],
@@ -521,7 +530,7 @@ export const makeSyncEngine = <
   const router = routerFromZFunctionMap(makeRouter(), syncEngine)
 
   // router.createCaller().query('connectionsget')
-  return [syncEngine, router, metaService] as const
+  return {router}
 }
 
 /** Only purpose of this is to support type inference */

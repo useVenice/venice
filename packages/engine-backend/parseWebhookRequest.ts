@@ -1,15 +1,8 @@
-import type {inferProcedureInput} from '@trpc/server'
-
 import type {WebhookInput} from '@ledger-sync/cdk-core'
 import {makeId} from '@ledger-sync/cdk-core'
 import type {NonEmptyArray} from '@ledger-sync/util'
 
-import type {makeSyncEngine} from './makeSyncEngine'
-
-type SyncRouter = ReturnType<typeof makeSyncEngine>[1]
-type HandleWebhookInput = inferProcedureInput<
-  SyncRouter['_def']['mutations']['handleWebhook']
->
+import type {AnySyncQueryInput} from './makeSyncEngine'
 
 /** Do we also need a parseWebhookResponse? To allow setting headers, redirects and others? */
 export function parseWebhookRequest(
@@ -21,7 +14,7 @@ export function parseWebhookRequest(
   }
   const id = makeId('int', provider, localId)
   // Consider naming it integrationId? not sure.
-  const input: HandleWebhookInput = [
+  const input: AnySyncQueryInput<'handleWebhook'> = [
     {id},
     {query: req.query, headers: req.headers, body: req.body},
   ]
