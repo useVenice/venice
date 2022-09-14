@@ -21,11 +21,11 @@ export function useLedgerSyncAdmin({
   // Add a context for if user is in developer mode...
 
   const {trpc} = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
 
   const ledgerIdsRes = trpc.useQuery([
     'adminSearchLedgerIds',
-    [{keywords: ledgerIdKeywords}],
+    {keywords: ledgerIdKeywords},
   ])
   const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
 
@@ -44,12 +44,12 @@ export function useLedgerSync({
   // There has to be a shorthand for this...
 
   const {trpc} = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
-  const connectionsRes = trpc.useQuery(['listConnections', [{ledgerId}]], {
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
+  const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
     enabled: !!ledgerId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   })
-  const insRes = trpc.useQuery(['searchInstitutions', [{keywords}]])
+  const insRes = trpc.useQuery(['searchInstitutions', {keywords}])
   const syncConnection = trpc.useMutation('syncConnection')
   const deleteConnection = trpc.useMutation('deleteConnection')
 
@@ -82,7 +82,7 @@ export function useLedgerSyncConnect({
     trpc,
     queryClient,
   } = LSProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', [{}]])
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}])
 
   const preConnOpts = React.useCallback(
     (

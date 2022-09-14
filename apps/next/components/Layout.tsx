@@ -86,7 +86,7 @@ export function Layout({
               className="btn-outline btn btn-sm"
               onClick={() =>
                 adminSyncMeta
-                  .mutateAsync([undefined])
+                  .mutateAsync()
                   .then((res) => {
                     console.log('meta sync success', res)
                   })

@@ -9,8 +9,14 @@ import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
 
-import {ledgerSyncRouter as router} from '@ledger-sync/app-config/backendConfig'
-import {parseWebhookRequest} from '@ledger-sync/engine-backend'
+import {
+  ledgerSyncBackendConfig,
+  ledgerSyncRouter,
+} from '@ledger-sync/app-config/backendConfig'
+import {
+  createEngineContext,
+  parseWebhookRequest,
+} from '@ledger-sync/engine-backend'
 import type {NonEmptyArray} from '@ledger-sync/util'
 import {
   compact,
@@ -30,7 +36,7 @@ if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
-export const cli = cliFromRouter(router, {cleanup: () => {}}) // metaService.shutdown?
+export const cli = cliFromRouter(ledgerSyncRouter, {cleanup: () => {}}) // metaService.shutdown?
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')
@@ -61,7 +67,17 @@ cli
             // @ts-expect-error
             req.body = ret.body // Still need this even for GET since we exhausted the stream otherwise handler will hang
           }
-          return nodeHTTPRequestHandler({router, path: procedure, req, res})
+          return nodeHTTPRequestHandler({
+            router: ledgerSyncRouter,
+            path: procedure,
+            req,
+            res,
+            createContext: ({req}) =>
+              createEngineContext(ledgerSyncBackendConfig, {
+                accessToken:
+                  req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
+              }),
+          })
         })
 
         server.listen(port)
