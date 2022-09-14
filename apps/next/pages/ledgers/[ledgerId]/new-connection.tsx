@@ -10,6 +10,7 @@ import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {compact} from '@ledger-sync/util'
 
+import {InstitutionLogo} from '../../../components/InstitutionLogo'
 import {Layout} from '../../../components/Layout'
 import {Loading} from '../../../components/Loading'
 import {Radio, RadioGroup} from '../../../components/RadioGroup'
@@ -127,17 +128,13 @@ export default function LedgerNewConnectionScreen() {
                           className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
                           <div className="card-body space-y-4">
                             <div className="flex items-center space-x-4">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={ins.logoUrl}
-                                alt={`"${ins.name}" logo`}
-                                className="h-12 w-12 object-contain"
-                              />
+                              <InstitutionLogo institution={ins} />
 
                               <div className="flex flex-col space-y-1">
                                 <span className="card-title text-black">
                                   {ins.name}
                                 </span>
+
                                 <span className="text-sm">
                                   {compact([ins.id, int.id, ins.envName]).join(
                                     ':',
