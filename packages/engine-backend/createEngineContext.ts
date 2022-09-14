@@ -14,6 +14,9 @@ export const zUserInfo = z.object({
 
 export type EngineContext = UserInfo
 
+/** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
+export interface EngineMeta {}
+
 export const createEngineContext = (
   config: Pick<
     SyncEngineConfig<[], {}>,
