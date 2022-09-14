@@ -1,22 +1,15 @@
-// Better to use this...
-import * as path from 'node:path'
-
+// @next/env has been patched to use 'find-config' to load from parent
 import {loadEnvConfig} from '@next/env'
-import findConfig from 'find-config'
 
 import {safeJSONParse} from '@ledger-sync/util'
 
 /**
  * Vercel uses dotenv expand by default.. Really not great in case of a password with $
  * @see https://github.com/vercel/vercel/discussions/4391
- * Really tempted to just do our own .env parsing...
+ * Really tempted to just do our own .env parsing... Or otherwise patching it...
  */
 export function loadEnv() {
-  const envPath = findConfig('.env')
-  if (!envPath) {
-    return {}
-  }
-  const loaded = loadEnvConfig(path.dirname(envPath))
+  const loaded = loadEnvConfig('./')
   const envs = loaded.combinedEnv as Record<string, string>
 
   // Workaround for https://github.com/motdotla/dotenv/issues/664
