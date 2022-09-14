@@ -174,7 +174,7 @@ importers:
       '@ledger-sync/integration-wise': link:../../packages/@integrations/integration-wise
       '@ledger-sync/integration-yodlee': link:../../packages/@integrations/integration-yodlee
       '@ledger-sync/util': link:../../packages/@utils/util
-      '@next/env': 12.2.5
+      '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
       chokidar: 3.5.3
       execa: 6.1.0
       find-config: 1.0.0
@@ -308,12 +308,14 @@ importers:
   apps/tests:
     specifiers:
       '@ledger-sync/app-config': '*'
+      openapi-typescript: 5.4.1
       remeda: 0.0.32
       tsx: 3.4.2
     dependencies:
       '@ledger-sync/app-config': link:../app-config
       remeda: 0.0.32_h54ufjkapm5h3lgo7ynxsqpg3u
     devDependencies:
+      openapi-typescript: 5.4.1
       tsx: 3.4.2
 
   packages/@integrations/core-integration-airtable:
@@ -2448,9 +2450,10 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@next/env/12.2.5:
+  /@next/env/12.2.5_atv7jky62tkac2egbnendfcmcq:
     resolution: {integrity: sha512-vLPLV3cpPGjUPT3PjgRj7e3nio9t6USkuew3JE/jMeon/9Mvp1WyR18v3iwnCuX7eUAm1HmAbJHHLAbcu/EJcw==}
     dev: false
+    patched: true
 
   /@next/eslint-plugin-next/12.2.5:
     resolution: {integrity: sha512-VBjVbmqEzGiOTBq4+wpeVXt/KgknnGB6ahvC/AxiIGnN93/RCSyXhFRI4uSfftM2Ba3w7ZO7076bfKasZsA0fw==}
@@ -5915,7 +5918,7 @@ packages:
     dependencies:
       fast-glob: 3.2.11
       postcss: 8.4.14
-      tailwindcss: 3.1.8
+      tailwindcss: 3.1.8_postcss@8.4.14
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -8961,7 +8964,7 @@ packages:
       sass:
         optional: true
     dependencies:
-      '@next/env': 12.2.5
+      '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
       '@swc/helpers': 0.4.3
       caniuse-lite: 1.0.30001388
       postcss: 8.4.14
@@ -11309,37 +11312,6 @@ packages:
 
   /tailwindcss-radix/2.5.0:
     resolution: {integrity: sha512-vPIvolTmb0L6DlvIKBJRVGo+gB7ZU2jZbO8EpZw/5gBSTHx6PezRgQhR68kOuteh3F1q2PV3oBQgaIN4FxVmrw==}
-    dev: true
-
-  /tailwindcss/3.1.8:
-    resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
-    engines: {node: '>=12.13.0'}
-    hasBin: true
-    dependencies:
-      arg: 5.0.2
-      chokidar: 3.5.3
-      color-name: 1.1.4
-      detective: 5.2.1
-      didyoumean: 1.2.2
-      dlv: 1.1.3
-      fast-glob: 3.2.11
-      glob-parent: 6.0.2
-      is-glob: 4.0.3
-      lilconfig: 2.0.6
-      normalize-path: 3.0.0
-      object-hash: 3.0.0
-      picocolors: 1.0.0
-      postcss: 8.4.14
-      postcss-import: 14.1.0_postcss@8.4.14
-      postcss-js: 4.0.0_postcss@8.4.14
-      postcss-load-config: 3.1.4_postcss@8.4.14
-      postcss-nested: 5.0.6_postcss@8.4.14
-      postcss-selector-parser: 6.0.10
-      postcss-value-parser: 4.2.0
-      quick-lru: 5.1.1
-      resolve: 1.22.1
-    transitivePeerDependencies:
-      - ts-node
     dev: true
 
   /tailwindcss/3.1.8_postcss@8.4.14:
