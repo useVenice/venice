@@ -1,5 +1,5 @@
+import {useRouterQuery} from 'next-router-query'
 import Head from 'next/head'
-import {useRouter} from 'next/router'
 import type {IconProps} from 'phosphor-react'
 import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
@@ -16,8 +16,7 @@ import {Loading} from '../../../components/Loading'
 import {useEnv} from '../../../contexts/PortalParamsContext'
 
 export default function LedgerMyConnectionsScreen() {
-  const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
+  const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr']}
   const env = useEnv()
   const {connectionsRes} = useLedgerSync({
     ledgerId,
@@ -30,7 +29,6 @@ export default function LedgerMyConnectionsScreen() {
       </Head>
 
       <Layout
-        title={`Viewing as ${ledgerId}`}
         links={[
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {
@@ -52,7 +50,11 @@ export default function LedgerMyConnectionsScreen() {
               ) : (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                   {res.data.map((conn) => (
-                    <ConnectionCard key={conn.id} connection={conn} />
+                    <ConnectionCard
+                      key={conn.id}
+                      ledgerId={ledgerId}
+                      connection={conn}
+                    />
                   ))}
                 </div>
               ),
@@ -65,16 +67,16 @@ export default function LedgerMyConnectionsScreen() {
 }
 
 function ConnectionCard({
+  ledgerId,
   connection: conn,
 }: {
+  ledgerId: Id['ldgr']
   connection: ZStandard['connection'] & {
     syncInProgress: boolean
     lastSyncCompletedAt: Date | null | undefined
     institution: ZStandard['institution'] | null | undefined
   }
 }) {
-  const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
   const env = useEnv()
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
@@ -91,7 +93,7 @@ function ConnectionCard({
             <InstitutionLogo institution={conn.institution} />
 
             <div className="flex-row gap-4">
-              <span className="badge-outline badge text-2xs badge-sm uppercase">
+              <span className="badge-outline badge text-2xs border-base-content/25 uppercase">
                 {/* FIXME */}
                 sandbox
               </span>
@@ -164,11 +166,11 @@ function ConnectionCard({
             {conn.displayName}
           </span>
 
-          <div className="flex flex-col space-y-1 text-sm">
+          <div className="flex flex-col items-end space-y-1 text-sm">
             {conn.status && conn.status !== 'manual' && (
               <div
                 className={twMerge(
-                  'flex items-center space-x-2',
+                  'flex items-center space-x-1',
                   {
                     healthy: 'text-green-600',
                     disconnected: 'text-orange-600',

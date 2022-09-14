@@ -1,3 +1,4 @@
+import {useRouterQuery} from 'next-router-query'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import {Plus} from 'phosphor-react'
@@ -22,7 +23,7 @@ type ConnectMode = 'institution' | 'provider'
 
 export default function LedgerNewConnectionScreen() {
   const router = useRouter()
-  const {ledgerId} = router.query as {ledgerId: Id['ldgr']}
+  const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr']}
   const [mode, setMode] = useQueryParam(
     'mode',
     withDefault(
@@ -73,11 +74,10 @@ export default function LedgerNewConnectionScreen() {
   return (
     <>
       <Head>
-        <title>LedgerSync | Viewing as {ledgerId} | Connect</title>
+        <title>LedgerSync | Viewing as {ledgerId} | New connection</title>
       </Head>
 
       <Layout
-        title={`Viewing as ${ledgerId}`}
         links={[
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {

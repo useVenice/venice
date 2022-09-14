@@ -10,7 +10,7 @@ export function Container({asChild, className, ...restProps}: ContainerProps) {
   return (
     <Comp
       className={twMerge(
-        'mx-auto flex max-w-screen-2xl flex-col px-4 py-8 sm:max-w-screen-2xl md:max-w-screen-2xl md:px-8 lg:max-w-screen-2xl',
+        'mx-auto flex w-full max-w-screen-2xl flex-col px-4 py-8 sm:max-w-screen-2xl md:max-w-screen-2xl md:px-8 lg:max-w-screen-2xl',
         className,
       )}
       {...restProps}

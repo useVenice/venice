@@ -48,14 +48,12 @@ export function LSProvider<
   getAccessToken?: () => string | undefined
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
-  console.log('[LSProvider] render')
   // @yenbekbay what's the way way to have a global debug confi?
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
   const url = config.apiUrl ?? '/api'
 
-  // Disable reqeuest batching in DEBUG mode for easier debugging
   const trpcClient = React.useMemo(
     () =>
       trpc.createClient({
@@ -63,11 +61,12 @@ export function LSProvider<
           R.pipe(
             getAccessToken?.(),
             (token) => (token ? {Authorization: `Bearer ${token}`} : {}),
-            (res) => {
-              console.log('headders', res)
-              return res
-            },
+            // (res) => {
+            //   console.log('headers', res)
+            //   return res
+            // },
           ),
+        // Disable reqeuest batching in DEBUG mode for easier debugging
         ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
       }),
     [__DEBUG__, getAccessToken, url],

@@ -4,9 +4,9 @@ import React from 'react'
 export function Loading() {
   const [count, setCount] = React.useState(0)
   useIntervalEffect(() => {
-    setCount((prev) => (prev + 1) % 4)
+    setCount((prev) => (prev + 1) % 3)
   }, INTERVAL_MS)
-  return <span className="text-xs">Loading{'.'.repeat(count)}</span>
+  return <span className="text-xs">Loading{'.'.repeat(count + 1)}</span>
 }
 
 const INTERVAL_MS = 500
