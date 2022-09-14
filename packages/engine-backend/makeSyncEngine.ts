@@ -22,18 +22,9 @@ import {
   zStandard,
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
-import {
-  compact,
-  R,
-  routerFromZFunctionMap,
-  rxjs,
-  splitPrefixedId,
-  z,
-  zFunction,
-  zTrimedString,
-} from '@ledger-sync/util'
+import {compact, R, rxjs, z, zTrimedString} from '@ledger-sync/util'
 
-import type {UserInfo} from './createEngineContext'
+import type {EngineContext, UserInfo} from './createEngineContext'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -258,26 +249,26 @@ export const makeSyncEngine = <
     )
   }
 
-  const syncEngine = {
-    // Should we infer the input / return types if possible even without validation?
-    health: zFunction([], z.string(), () => 'Ok ' + new Date().toISOString()),
-
+  const router = trpc
+    .router<EngineContext>()
+    .query('health', {resolve: () => 'Ok ' + new Date().toISOString()})
     // MARK: - Metadata  etc
-
-    adminSearchLedgerIds: zFunction(
-      z.object({keywords: zTrimedString.nullish()}).optional(),
-      async ({keywords} = {}) => metaService.searchLedgerIds({keywords}),
-    ),
-    adminGetIntegration: zFunction(zInt, async (int) => ({
-      config: int.config,
-      provider: int.provider.name,
-      id: int.id,
-    })),
-
-    listIntegrations: zFunction(
-      z.object({type: z.enum(['source', 'destination']).nullish()}),
-      // z.promise(z.array(z.object({type: z.enum(['source'])}))),
-      async ({type}) => {
+    .query('adminSearchLedgerIds', {
+      input: z.object({keywords: zTrimedString.nullish()}).optional(),
+      resolve: async ({input: {keywords} = {}}) =>
+        metaService.searchLedgerIds({keywords}),
+    })
+    .query('adminGetIntegration', {
+      input: zInt,
+      resolve: ({input: int}) => ({
+        config: int.config,
+        provider: int.provider.name,
+        id: int.id,
+      }),
+    })
+    .query('listIntegrations', {
+      input: z.object({type: z.enum(['source', 'destination']).nullish()}),
+      resolve: async ({input: {type}}) => {
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
@@ -294,10 +285,10 @@ export const makeSyncEngine = <
               (type === 'destination' && int.isDestination),
           )
       },
-    ),
-    searchInstitutions: zFunction(
-      z.object({keywords: zTrimedString.nullish()}).optional(),
-      async ({keywords} = {}) => {
+    })
+    .query('searchInstitutions', {
+      input: z.object({keywords: zTrimedString.nullish()}).optional(),
+      resolve: async ({input: {keywords} = {}}) => {
         const ints = await getDefaultIntegrations()
         const institutions = await metaService.searchInstitutions({
           keywords,
@@ -306,7 +297,7 @@ export const makeSyncEngine = <
         })
         const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
         return institutions.flatMap((ins) => {
-          const [, providerName, externalId] = splitPrefixedId(ins.id)
+          const [, providerName, externalId] = extractId(ins.id)
           const standard = providerMap[
             providerName
           ]?.standardMappers?.institution?.(ins.external)
@@ -322,10 +313,10 @@ export const makeSyncEngine = <
           }))
         })
       },
-    ),
-    listConnections: zFunction(
-      z.object({ledgerId: zId('ldgr').nullish()}).optional(),
-      async ({ledgerId} = {}) => {
+    })
+    .query('listConnections', {
+      input: z.object({ledgerId: zId('ldgr').nullish()}).optional(),
+      resolve: async ({input: {ledgerId} = {}}) => {
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
         const connections = await metaService.tables.connection.list({
@@ -358,7 +349,7 @@ export const makeSyncEngine = <
             ]),
         )
         return connections.map((conn) => {
-          const [, providerName, externalId] = splitPrefixedId(conn.id)
+          const [, providerName, externalId] = extractId(conn.id)
           const mappers = providerMap[providerName]?.standardMappers
           const standardConn = mappers?.connection(conn.settings)
           const standardIns = conn.institutionId
@@ -395,10 +386,7 @@ export const makeSyncEngine = <
           }
         })
       },
-    ),
-
-    // What about delete? Should this delete also? Or soft delete?
-
+    })
     /** Used for testing */
     // adminFireWebhook: zFunction(
     //   zConn,
@@ -406,83 +394,98 @@ export const makeSyncEngine = <
 
     //   },
     // ),
-
-    deleteConnection: zFunction(
-      [zConn, z.object({revokeOnly: z.boolean().nullish()}).optional()],
-      async ({id, settings, integration: {provider, config}}, opts) => {
+    // What about delete? Should this delete also? Or soft delete?
+    .mutation('deleteConnection', {
+      input: z.tuple([
+        zConn,
+        z.object({revokeOnly: z.boolean().nullish()}).optional(),
+      ]),
+      resolve: async ({
+        input: [
+          {
+            id,
+            settings,
+            integration: {provider, config},
+          },
+          opts,
+        ],
+      }) => {
         await provider.revokeConnection?.(settings, config)
         if (opts?.revokeOnly) {
           return
         }
         await metaService.tables.connection.delete(id)
       },
-    ),
-
+    })
     // MARK: - Sync
-
-    adminSyncMetadata: zFunction(zInt.nullish(), async (int) => {
-      const ints = int ? [int] : await getDefaultIntegrations()
-      const stats = await sync({
-        source: rxjs.merge(
-          ...ints.map(
-            (int) =>
-              int.provider.metaSync?.({config: int.config}).pipe(
-                handlersLink({
-                  data: (op) =>
-                    rxjs.of({
-                      ...op,
-                      data: {
-                        ...op.data,
-                        entity: {
-                          external: op.data.entity,
-                          standard: int.provider.standardMappers?.institution?.(
-                            op.data.entity,
-                          ),
+    .mutation('adminSyncMetadata', {
+      input: zInt.nullish(),
+      resolve: async ({input: int}) => {
+        const ints = int ? [int] : await getDefaultIntegrations()
+        const stats = await sync({
+          source: rxjs.merge(
+            ...ints.map(
+              (int) =>
+                int.provider.metaSync?.({config: int.config}).pipe(
+                  handlersLink({
+                    data: (op) =>
+                      rxjs.of({
+                        ...op,
+                        data: {
+                          ...op.data,
+                          entity: {
+                            external: op.data.entity,
+                            standard:
+                              int.provider.standardMappers?.institution?.(
+                                op.data.entity,
+                              ),
+                          },
                         },
-                      },
-                    }),
-                }),
-              ) ?? rxjs.EMPTY,
+                      }),
+                  }),
+                ) ?? rxjs.EMPTY,
+            ),
           ),
-        ),
-        // This single destination is a bottleneck to us removing
-        // prefixed ids from protocol itself
-        destination: metaLinks.persistInstitution(),
-      })
-      return `Synced ${stats} institutions from ${ints.length} providers`
-    }),
-    syncConnection: zFunction(
-      [zConn, zSyncOptions.optional()],
-      async function syncConnection(conn, opts) {
+          // This single destination is a bottleneck to us removing
+          // prefixed ids from protocol itself
+          destination: metaLinks.persistInstitution(),
+        })
+        return `Synced ${stats} institutions from ${ints.length} providers`
+      },
+    })
+
+    .mutation('syncConnection', {
+      input: z.tuple([zConn, zSyncOptions.optional()]),
+      resolve: async function syncConnection({input: [conn, opts]}) {
         console.log('[syncConnection]', conn, opts)
         /** Every ParsedConn also conforms to connectionInput  */
         const pipelines = await getPipelinesForConnection(conn)
         await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
       },
-    ),
-    syncPipeline: zFunction(
-      [zPipeline, zSyncOptions.optional()],
-      async function syncPipeline(pipeline, opts) {
+    })
+    .mutation('syncPipeline', {
+      input: z.tuple([zPipeline, zSyncOptions.optional()]),
+      resolve: async function syncPipeline({input: [pipeline, opts]}) {
         console.log('[syncPipeline]', pipeline)
         return _syncPipeline(pipeline, opts)
       },
-    ),
+    })
     // MARK: - Connect
-
-    // SessionID would be awfully handy here...
-    preConnect: zFunction(
-      [zInt, zConnectContext],
-      ({provider: p, config}, ctx) => p.preConnect?.(config, ctx),
-    ),
+    .mutation('preConnect', {
+      input: z.tuple([zInt, zConnectContext]),
+      // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
+      resolve: ({input: [{provider: p, config}, ctx]}) =>
+        p.preConnect?.(config, ctx),
+    })
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
     // flow a bit smoother with a guided cli flow
-    postConnect: zFunction(
+    .mutation('postConnect', {
       // Questionable why `zConnectContext` should be there. Examine whether this is actually
       // needed
-      [z.unknown(), zInt, zConnectContext],
+      input: z.tuple([z.unknown(), zInt, zConnectContext]),
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
-      async (input, int, ctx) => {
+      resolve: async ({input: [input, int, ctx]}) => {
         const {provider: p, config} = int
         console.log('didConnect start', p.name, input)
         if (!p.postConnect || !p.def.connectOutput) {
@@ -501,35 +504,28 @@ export const makeSyncEngine = <
         console.log('didConnect finish', p.name, input)
         return 'Connection Success'
       },
-    ),
-    handleWebhook: zFunction([zInt, zWebhookInput], async (int, input) => {
-      if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
-        console.warn(`${int.provider.name} does not handle webhooks`)
-        return
-      }
-      const res = await int.provider.handleWebhook(
-        int.provider.def.webhookInput.parse(input),
-        int.config,
-      )
-      await Promise.all(
-        res.connectionUpdates.map((connUpdate) =>
-          _syncConnectionUpdate(int, connUpdate),
-        ),
-      )
+    })
+    .mutation('handleWebhook', {
+      input: z.tuple([zInt, zWebhookInput]),
+      resolve: async ({input: [int, input]}) => {
+        if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
+          console.warn(`${int.provider.name} does not handle webhooks`)
+          return
+        }
+        const res = await int.provider.handleWebhook(
+          int.provider.def.webhookInput.parse(input),
+          int.config,
+        )
+        await Promise.all(
+          res.connectionUpdates.map((connUpdate) =>
+            _syncConnectionUpdate(int, connUpdate),
+          ),
+        )
 
-      return res.response?.body
-    }),
-  }
+        return res.response?.body
+      },
+    })
 
-  // TODO: Figure out how to decouple makeRouter from here once we can figure
-  // out how the types work...
-  const makeRouter = () => trpc.router()
-
-  // This is a single function for now because we can't figure out how to type
-  // makeLedgerSyncNextRouter separately
-  const router = routerFromZFunctionMap(makeRouter(), syncEngine)
-
-  // router.createCaller().query('connectionsget')
   return {router}
 }
 
