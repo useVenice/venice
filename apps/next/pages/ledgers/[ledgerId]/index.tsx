@@ -41,6 +41,7 @@ export default function LedgerMyConnectionsScreen() {
             label: 'New connection',
             href: `/ledgers/${ledgerId}/new-connection`,
             primary: true,
+            fixed: true,
           },
         ]}>
         <Container className="flex-1 overflow-y-auto">
@@ -121,7 +122,7 @@ function ConnectionCard({
 
             <DropdownMenuContent className="w-screen md:w-52">
               <DropdownMenuItem
-                className="btn btn-ghost gap-1"
+                className="btn btn-ghost no-animation justify-start gap-1"
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {}])
@@ -137,7 +138,7 @@ function ConnectionCard({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="btn btn-ghost gap-1"
+                className="btn btn-ghost no-animation justify-start gap-1"
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {fullResync: true}])
@@ -153,7 +154,7 @@ function ConnectionCard({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="btn btn-ghost gap-1"
+                className="btn btn-ghost no-animation justify-start gap-1"
                 onClick={() =>
                   deleteConnection
                     .mutateAsync([{id: conn.id}, {}])

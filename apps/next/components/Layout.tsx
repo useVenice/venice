@@ -18,6 +18,8 @@ export interface LinkInput {
   label: string
   href: string
   primary?: boolean
+  /** i.e. not collapsing into the menu on small screen size */
+  fixed?: boolean
 }
 
 export interface LayoutProps {
@@ -47,29 +49,7 @@ export function Layout({
 
           {links.length > 0 && (
             <div className="flex shrink-0 grow items-center justify-end">
-              <DropdownMenu>
-                <DropdownMenuTrigger className="btn-outline btn btn-sm btn-circle border-base-content/25 md:hidden">
-                  <List />
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent className="w-screen">
-                  {links.map((l) => (
-                    <DropdownMenuItem key={l.href} asChild>
-                      <ActiveLink
-                        href={l.href}
-                        className={twMerge(
-                          'btn',
-                          l.primary ? 'btn-primary' : 'btn-ghost',
-                        )}
-                        activeClassName="underline">
-                        {l.label}
-                      </ActiveLink>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <nav className="hidden space-x-2 text-sm font-medium md:flex md:space-x-4">
+              <nav className="flex space-x-2 text-sm font-medium md:space-x-4">
                 {links.map((l) => (
                   <ActiveLink
                     key={l.href}
@@ -77,11 +57,38 @@ export function Layout({
                     className={twMerge(
                       'btn btn-sm',
                       l.primary ? 'btn-primary' : 'btn-ghost',
+                      !l.fixed && 'hidden md:inline-flex',
                     )}
-                    activeClassName="underline">
+                    activeClassName={l.primary ? 'btn-disabled' : 'text-black'}>
                     {l.label}
                   </ActiveLink>
                 ))}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="btn btn-ghost btn-sm btn-circle text-lg md:hidden">
+                    <List />
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent className="w-screen">
+                    {links
+                      .filter((l) => !l.fixed)
+                      .map((l) => (
+                        <DropdownMenuItem key={l.href} asChild>
+                          <ActiveLink
+                            href={l.href}
+                            className={twMerge(
+                              'btn no-animation justify-start',
+                              l.primary ? 'btn-primary' : 'btn-ghost',
+                            )}
+                            activeClassName={
+                              l.primary ? 'btn-disabled' : 'text-black'
+                            }>
+                            {l.label}
+                          </ActiveLink>
+                        </DropdownMenuItem>
+                      ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </nav>
             </div>
           )}

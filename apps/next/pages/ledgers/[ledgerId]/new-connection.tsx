@@ -80,6 +80,7 @@ export default function LedgerNewConnectionScreen() {
             label: 'New connection',
             href: `/ledgers/${ledgerId}/new-connection`,
             primary: true,
+            fixed: true,
           },
         ]}>
         {match(integrationsRes)
