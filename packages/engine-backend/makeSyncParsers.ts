@@ -1,14 +1,10 @@
 import type {
   AnySyncProvider,
-  ConnectContext,
   Id,
   LinkFactory,
   MetaService,
 } from '@ledger-sync/cdk-core'
-import {makeId} from '@ledger-sync/cdk-core'
-import {extractId} from '@ledger-sync/cdk-core'
-import {zRaw} from '@ledger-sync/cdk-core'
-import {zConnectContextInput} from '@ledger-sync/cdk-core'
+import {extractId, makeId, zRaw} from '@ledger-sync/cdk-core'
 import {
   castInput,
   deepMerge,
@@ -301,23 +297,5 @@ export function makeSyncParsers<
       return true
     })
 
-  const zConnectContext = zConnectContextInput.transform(
-    zGuard(async ({connectionId, ...rest}) => {
-      const rawConn = connectionId
-        ? await m.tables.connection.get(connectionId)
-        : undefined
-      console.log('rawConn', rawConn)
-      // Should we throw here if connection not found?
-      const connection = rawConn
-        ? await zConn.parseAsync({...rawConn, id: connectionId})
-        : null
-
-      // We don't have a getInsitution here... so just wiat for now
-      // We should probably at least get the external id working though
-      const ctx: ConnectContext<any> = {...rest, connection}
-      return ctx
-    }),
-  )
-
-  return {zProvider, zInt, zIns, zConn, zPipeline, zConnectContext}
+  return {zProvider, zInt, zIns, zConn, zPipeline}
 }

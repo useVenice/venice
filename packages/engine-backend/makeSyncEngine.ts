@@ -19,6 +19,7 @@ import {
   makeId,
   makeSyncProvider,
   sync,
+  zConnectContextInput,
   zId,
   zStandard,
   zWebhookInput,
@@ -116,7 +117,7 @@ export const makeSyncEngine = <
         }),
       )
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {zInt, zConn, zPipeline, zConnectContext} = makeSyncParsers({
+  const {zInt, zConn, zPipeline} = makeSyncParsers({
     providers,
     getDefaultPipeline,
     getDefaultConfig: (name, id) =>
@@ -438,29 +439,59 @@ export const makeSyncEngine = <
     })
     // MARK: - Connect
     .mutation('preConnect', {
-      input: z.tuple([zInt, zConnectContext]),
+      input: z.tuple([zInt, zConnectContextInput]),
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      resolve: ({input: [{provider: p, config}, connCtx]}) =>
-        p.preConnect?.(config, connCtx),
+      resolve: async ({
+        input: [{provider: p, config}, {connectionExternalId, ...connCtxInput}],
+        ctx,
+      }) => {
+        const conn = connectionExternalId
+          ? await metaService.tables.connection
+              .get(makeId('conn', p.name, connectionExternalId))
+              .then((input) => zConn.parseAsync(input))
+          : undefined
+        return p.preConnect?.(config, {
+          ...connCtxInput,
+          ledgerId: ctx.ledgerId,
+          connection: conn
+            ? {externalId: connectionExternalId!, settings: conn.settings}
+            : undefined,
+        })
+      },
     })
     // useConnectHook happens client side only
     // for cli usage, can just call `postConnect` directly. Consider making the
     // flow a bit smoother with a guided cli flow
     .mutation('postConnect', {
-      // Questionable why `zConnectContext` should be there. Examine whether this is actually
+      // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
       // needed
-      input: z.tuple([z.unknown(), zInt, zConnectContext]),
+      input: z.tuple([z.unknown(), zInt, zConnectContextInput]),
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
-      resolve: async ({input: [input, int, ctx]}) => {
+      resolve: async ({
+        input: [input, int, {connectionExternalId, ...connCtxInput}],
+        ctx,
+      }) => {
         const {provider: p, config} = int
         console.log('didConnect start', p.name, input)
         if (!p.postConnect || !p.def.connectOutput) {
           return 'Noop'
         }
+        const conn = connectionExternalId
+          ? await metaService.tables.connection
+              .get(makeId('conn', p.name, connectionExternalId))
+              .then((input) => zConn.parseAsync(input))
+          : undefined
+
         const connUpdate = await p.postConnect(
           p.def.connectOutput.parse(input),
           config,
-          ctx,
+          {
+            ...connCtxInput,
+            ledgerId: ctx.ledgerId,
+            connection: conn
+              ? {externalId: connectionExternalId!, settings: conn.settings}
+              : undefined,
+          },
         )
         await _syncConnectionUpdate(int, {
           ...connUpdate,
