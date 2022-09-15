@@ -11,14 +11,15 @@ import type {
 
 type Data = AnyEntityPayload
 type OperationType = SyncOperation['type']
-type Handlers<
-  T extends Data,
-  TConnUpdate extends object,
-  TStateUpdate extends object,
+export type OpHandlers<
+  TRet,
+  T extends Data = Data,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
 > = Partial<{
   [k in OperationType]: (
     op: Extract<SyncOperation<T, TConnUpdate, TStateUpdate>, {type: k}>,
-  ) => rxjs.ObservableInput<SyncOperation<T>> | void
+  ) => TRet
 }>
 
 /**
@@ -26,14 +27,21 @@ type Handlers<
  * Consider using zod for runtime typechecking here
  */
 export function handlersLink<
-  T extends Data,
+  TData extends Data,
   TConnUpdate extends object = ConnUpdateData,
   TStateUpdate extends object = StateUpdateData,
->(handlers: Handlers<T, TConnUpdate, TStateUpdate>) {
+>(
+  handlers: OpHandlers<
+    rxjs.ObservableInput<SyncOperation<TData>> | void,
+    TData,
+    TConnUpdate,
+    TStateUpdate
+  >,
+) {
   // Order is important by default. mergeMap would result in `ready` being fired before
   // file has been written to disk as an example. Use mergeMap only if perf or a special
   // reason justifies it and order doesn't matter
-  return Rx.concatMap((op: SyncOperation<T, TConnUpdate, TStateUpdate>) =>
+  return Rx.concatMap((op: SyncOperation<TData, TConnUpdate, TStateUpdate>) =>
     R.pipe(handlers[op.type], (h) =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       h ? h(op as any) ?? rxjs.EMPTY : rxjs.of(op),
