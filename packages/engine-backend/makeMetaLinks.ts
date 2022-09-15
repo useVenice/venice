@@ -4,14 +4,17 @@ import type {
   IDS,
   MetaService,
   MetaTable,
+  OpHandlers,
   ZRaw,
 } from '@ledger-sync/cdk-core'
-import {makeId} from '@ledger-sync/cdk-core'
-import {extractId} from '@ledger-sync/cdk-core'
-import {IDS_INVERTED} from '@ledger-sync/cdk-core'
-import {handlersLink} from '@ledger-sync/cdk-core'
+import {
+  extractId,
+  handlersLink,
+  IDS_INVERTED,
+  makeId,
+} from '@ledger-sync/cdk-core'
 import type {ObjectPartialDeep} from '@ledger-sync/util'
-import {deepMerge, R} from '@ledger-sync/util'
+import {deepMerge, infer, R} from '@ledger-sync/util'
 
 // TODO: Validate connection before saving...
 // metaStore and syncHelpers appear to be a bit circular relationship...
@@ -37,7 +40,23 @@ export function makeMetaLinks(metaBase: MetaService) {
 
   const persistInstitution = () => handle({})
 
-  const handle = ({
+  const handle = (...args: Parameters<typeof handlers>) =>
+    handlersLink<AnyEntityPayload>({
+      connUpdate: async (op) => {
+        await handlers(...args).connUpdate(op)
+        return op
+      },
+      stateUpdate: async (op) => {
+        await handlers(...args).stateUpdate(op)
+        return op
+      },
+      data: async (op) => {
+        await handlers(...args).data(op)
+        return op
+      },
+    })
+
+  const handlers = ({
     pipeline,
     connection,
   }: {
@@ -45,11 +64,11 @@ export function makeMetaLinks(metaBase: MetaService) {
     pipeline?: Pipe
     connection?: Conn
   }) =>
-    // TODO: make standard insitution and connection here...
-    handlersLink<AnyEntityPayload>({
+    infer<OpHandlers<Promise<void>>>()({
+      // TODO: make standard insitution and connection here...
       connUpdate: async (op) => {
         if (op.id !== connection?.id) {
-          return op
+          return
         }
         const {id, settings = {}, institution} = op
         const providerName = extractId(connection.id)[1]
@@ -59,16 +78,6 @@ export function makeMetaLinks(metaBase: MetaService) {
           institution,
           existingConnection: connection,
         })
-
-        // Workaround for default integrations such as `int_plaid` etc which
-        // do not exist in the database and would otherwise cause foreign key issue
-        // Is it a hack? When there is no 3rd component of id, does that always
-        // mean that the integration does not in fact exist in database?
-        const integrationId =
-          connection.integrationId &&
-          extractId(connection.integrationId)[2] === ''
-            ? undefined
-            : connection.integrationId
 
         const institutionId = institution
           ? makeId('ins', providerName, institution.id)
@@ -82,6 +91,18 @@ export function makeMetaLinks(metaBase: MetaService) {
             // Map standard here?
           })
         }
+        // Workaround for default integrations such as `int_plaid` etc which
+        // do not exist in the database and would otherwise cause foreign key issue
+        // Is it a hack? When there is no 3rd component of id, does that always
+        // mean that the integration does not in fact exist in database?
+        const integrationId =
+          connection.integrationId &&
+          extractId(connection.integrationId)[2] === ''
+            ? undefined
+            : connection.integrationId
+
+        // Can we run this in one transaction?
+
         await patch('connection', id, {
           id,
           settings,
@@ -94,15 +115,13 @@ export function makeMetaLinks(metaBase: MetaService) {
           envName: connection.envName,
           ledgerId: connection.ledgerId,
         })
-        return op
       },
       stateUpdate: async (op) => {
-        console.log('[metaLink] stateUpdate', op, pipeline)
+        console.log('[metaLink] stateUpdate', pipeline?.id, {
+          sourceState: R.keys(op.sourceState ?? {}),
+          destinationState: R.keys(op.destinationState ?? {}),
+        })
         if (pipeline) {
-          console.log('[metaLink] stateUpdate', pipeline.id, {
-            sourceState: R.keys(op.sourceState ?? {}),
-            destinationState: R.keys(op.destinationState ?? {}),
-          })
           // Workaround for default pipeline such as `conn_postgres` etc which
           // does not exist in the database...
           const sourceId =
@@ -122,15 +141,17 @@ export function makeMetaLinks(metaBase: MetaService) {
             destinationId,
             id: pipeline.id,
             linkOptions: pipeline.linkOptions,
+            lastSyncStartedAt: op.subtype === 'init' ? new Date() : undefined,
+            lastSyncCompletedAt:
+              op.subtype === 'complete' ? new Date() : undefined,
           })
         }
-        return op
       },
       data: async (op) => {
         // prettier-ignore
         const {data: {entity, entityName, id}} = op
         if (entityName !== IDS_INVERTED.ins) {
-          return op
+          return
         }
         console.log('[metaLink] patch', id, entity)
         await patch(
@@ -139,7 +160,6 @@ export function makeMetaLinks(metaBase: MetaService) {
           entity as ZRaw['institution'],
         )
         // console.log(`[meta] Did update connection`, id, op.data)
-        return op
       },
     })
 
@@ -153,7 +173,7 @@ export function makeMetaLinks(metaBase: MetaService) {
     }
     const table: MetaTable = metaBase.tables[tableName]
     if (table.patch) {
-      table.patch(id, _patch)
+      await table.patch(id, _patch)
     } else {
       const data = await table.get(id)
       // console.log(`[patch] Will merge patch and data`, {_patch, data})
@@ -161,5 +181,11 @@ export function makeMetaLinks(metaBase: MetaService) {
     }
   }
 
-  return {postSource, postDestination, persistInstitution, patch}
+  return {
+    postSource,
+    postDestination,
+    persistInstitution,
+    handlers,
+    patch,
+  }
 }

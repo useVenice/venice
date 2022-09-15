@@ -60,10 +60,10 @@ export type SyncOperation<
   // TODO: We should separate state from options, and perhaps make state
   // less black box also, see airbyte protocol v2 for inspiration
   // Also consider merging fields below into a single field
-  | (TStateUpdate & {type: 'stateUpdate'})
+  | (TStateUpdate & {type: 'stateUpdate'; subtype?: 'init' | 'complete'})
   | {type: 'data'; data: NullableEntity<TData>} // Rename entityName to `stream` and lift to top level?
-  | {type: 'commit'} // Do we still need this if we have separate `stateUpdate` message?
-  | {type: 'ready'}
+  | {type: 'commit'} // Should this be a separate type of StateUpdate
+  | {type: 'ready'} // Should this be a separate type of StateUpdate
 
 export type AnySyncOperation = MergeUnion<SyncOperation>
 

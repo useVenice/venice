@@ -1,10 +1,11 @@
-import type {MaybePromise} from '@ledger-sync/util'
+import type { MaybePromise} from '@ledger-sync/util';
+import {identity} from '@ledger-sync/util'
 import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
 import {makeId, zExternalId} from './id.types'
-import type {ZStandard} from './meta.types'
+import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
@@ -57,6 +58,7 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   connectionExternalId: ExternalId
   // Can we inherit types used by metaLinks?
   ledgerId?: Id['ldgr']
+  envName?: EnvName
 
   // Extra props not on ConnUpdateData
   source$?: Source<TEntity>
@@ -190,30 +192,33 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>): Op => ({
-      // We don't prefix in `_opData`, should we actually prefix here?
-      ...rest,
-      // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-      id: makeId('conn', def.name.value, id),
-      type: 'connUpdate',
-    }),
+    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>) =>
+      identity<Op>({
+        // We don't prefix in `_opData`, should we actually prefix here?
+        ...rest,
+        // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
+        id: makeId('conn', def.name.value, id),
+        type: 'connUpdate',
+      }) as OpConn,
     _opState: (
       sourceState?: OpState['sourceState'],
       destinationState?: OpState['destinationState'],
-    ): Op => ({
-      sourceState,
-      destinationState,
-      type: 'stateUpdate',
-    }),
+    ) =>
+      identity<Op>({
+        sourceState,
+        destinationState,
+        type: 'stateUpdate',
+      }) as OpState,
     _opData: <K extends OpData['data']['entityName']>(
       entityName: K,
       id: string,
       entity: Extract<OpData['data'], {entityName: K}>['entity'] | null,
-    ): Op => ({
-      // TODO: Figure out why we need an `unknown` cast here
-      data: {entityName, id, entity} as unknown as OpData['data'],
-      type: 'data',
-    }),
+    ) =>
+      identity<Op>({
+        // TODO: Figure out why we need an `unknown` cast here
+        data: {entityName, id, entity} as unknown as OpData['data'],
+        type: 'data',
+      }) as OpData,
     _insOpData: (
       id: ExternalId,
       insitutionData: _types['institutionData'],
