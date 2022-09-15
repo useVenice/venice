@@ -10,7 +10,6 @@
     "dev:css": "pnpm run generate:css --watch",
     "dev:next": "next dev",
     "generate:css": "tailwindcss -i ./global.css -o ./__generated__/tailwind.css",
-    "postinstall": "pnpm run generate:css",
     "start": "next start"
   },
   "dependencies": {

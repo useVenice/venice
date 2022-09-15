@@ -45,6 +45,9 @@ jobs:
       - name: Run type checks
         run: pnpm run typecheck
 
+      - name: Generate assets required for lint
+        run: pnpm --dir ./apps/next/ run generate:css
+
       - name: Run lint
         run: pnpm run lint
 
