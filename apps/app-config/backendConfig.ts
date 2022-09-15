@@ -127,7 +127,7 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
   }),
 })
 
-export const {router: ledgerSyncRouter} = makeSyncEngine(
+export const {router: ledgerSyncRouter, ...syncEngine} = makeSyncEngine(
   ledgerSyncBackendConfig,
 )
 export type LedgerSyncRouter = typeof ledgerSyncRouter

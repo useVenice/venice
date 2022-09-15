@@ -10,13 +10,10 @@ import {json} from 'micro'
 import ngrok from 'ngrok'
 
 import {
-  ledgerSyncBackendConfig,
   ledgerSyncRouter,
+  syncEngine,
 } from '@ledger-sync/app-config/backendConfig'
-import {
-  createEngineContext,
-  parseWebhookRequest,
-} from '@ledger-sync/engine-backend'
+import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import type {NonEmptyArray} from '@ledger-sync/util'
 import {
   compact,
@@ -73,10 +70,9 @@ cli
             req,
             res,
             createContext: ({req}) =>
-              createEngineContext(ledgerSyncBackendConfig, {
-                accessToken:
-                  req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
-              }),
+              syncEngine.zAccessTokenContext.parse(
+                req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
+              ),
           })
         })
 

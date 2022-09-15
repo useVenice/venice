@@ -5,13 +5,10 @@ import {getCookie} from 'cookies-next'
 import type {NextApiHandler, NextApiRequest} from 'next'
 
 import {
-  ledgerSyncBackendConfig,
   ledgerSyncRouter,
+  syncEngine,
 } from '@ledger-sync/app-config/backendConfig'
-import {
-  createEngineContext,
-  parseWebhookRequest,
-} from '@ledger-sync/engine-backend'
+import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import {fromMaybeArray, identity, R, safeJSONParse} from '@ledger-sync/util'
 
 import {kAccessToken} from '../../contexts/PortalParamsContext'
@@ -31,8 +28,7 @@ export function getAccessToken(req: NextApiRequest) {
 const handler = trpcNext.createNextApiHandler({
   router: ledgerSyncRouter,
   createContext: ({req}) => {
-    const accessToken = getAccessToken(req)
-    const ctx = createEngineContext(ledgerSyncBackendConfig, {accessToken})
+    const ctx = syncEngine.zAccessTokenContext.parse(getAccessToken(req))
     console.log('[createContext] Got ctx', ctx)
     return ctx
   },

@@ -1,5 +1,6 @@
 import {httpLink} from '@trpc/client/links/httpLink'
 import {createReactQueryHooks} from '@trpc/react'
+import {decode as jwtDecode} from 'jsonwebtoken'
 import React from 'react'
 
 import type {
@@ -19,7 +20,10 @@ import {Dialog} from './components/Dialog'
 export type SyncEngineCommonConfig<
   TProviders extends AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
-> = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'apiUrl'>
+> = Pick<
+  SyncEngineConfig<TProviders, TLinks>,
+  'providers' | 'apiUrl' | 'parseJwtPayload'
+>
 
 type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
 type ConnectFn = ReturnType<UseConnectHook<AnyProviderDef>>
@@ -68,6 +72,10 @@ export function LSProvider<
   const url = config.apiUrl ?? '/api'
 
   const getAccessToken = useGetter(accessToken)
+
+  const data = accessToken ? jwtDecode(accessToken, {json: true}) : null
+  console.log('data', data)
+
   // const getLedgerId = useGetter(ledgerId) // Pass me to the server...
 
   const trpcClient = React.useMemo(
