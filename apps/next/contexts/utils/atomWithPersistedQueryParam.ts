@@ -6,6 +6,7 @@ import type {QueryParamConfig} from 'use-query-params'
 import {atomWithCookie} from './atomWithCookie'
 import {atomWithQueryParam, getSearchParams} from './atomWithQueryParam'
 
+/** Persist query param into cookie */
 export function atomWithPersistedQueryParam<T>(
   key: string,
   initialValue: T,

@@ -16,7 +16,6 @@ import {Layout} from '../../../components/Layout'
 import {Loading} from '../../../components/Loading'
 import {Radio, RadioGroup} from '../../../components/RadioGroup'
 import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
-import {useDeveloperMode} from '../../../contexts/PortalParamsContext'
 
 type ConnectMode = 'institution' | 'provider'
 
@@ -36,6 +35,7 @@ export default function LedgerNewConnectionScreen() {
     ledgerId,
     integrationsRes,
     connect: _connect,
+    developerMode,
     ...ls
   } = useLedgerSync({envName, keywords})
 
@@ -55,7 +55,6 @@ export default function LedgerNewConnectionScreen() {
     [_connect, router, ledgerId],
   )
 
-  const [developerMode] = useDeveloperMode()
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 && !developerMode
       ? integrationsRes.data[0]?.id
