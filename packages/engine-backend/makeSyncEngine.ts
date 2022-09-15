@@ -19,7 +19,7 @@ import {
   makeId,
   makeSyncProvider,
   sync,
-  zConnectContextInput,
+  zConnectOptions,
   zId,
   zStandard,
   zWebhookInput,
@@ -439,7 +439,7 @@ export const makeSyncEngine = <
     })
     // MARK: - Connect
     .mutation('preConnect', {
-      input: z.tuple([zInt, zConnectContextInput]),
+      input: z.tuple([zInt, zConnectOptions]),
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
       resolve: async ({
         input: [{provider: p, config}, {connectionExternalId, ...connCtxInput}],
@@ -465,7 +465,7 @@ export const makeSyncEngine = <
     .mutation('postConnect', {
       // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
       // needed
-      input: z.tuple([z.unknown(), zInt, zConnectContextInput]),
+      input: z.tuple([z.unknown(), zInt, zConnectOptions]),
       // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
       resolve: async ({
         input: [input, int, {connectionExternalId, ...connCtxInput}],

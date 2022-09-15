@@ -2,7 +2,7 @@ import React from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 import type {UseQueryResult} from 'react-query'
 
-import type {ConnectContextInput, Id} from '@ledger-sync/cdk-core'
+import type {ConnectOptions, Id} from '@ledger-sync/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@ledger-sync/cdk-core'
 import type {
   AnySyncMutationInput,
@@ -158,25 +158,25 @@ export function useLedgerSyncConnect({
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
-      opts: {institutionId?: Id['ins']; connectionId?: Id['conn']},
+      _opts: {institutionId?: Id['ins']; connectionId?: Id['conn']},
     ) {
       if (!envName || !ledgerId) {
         console.log('Connect missing params, noop', {envName, ledgerId})
         return
       }
 
-      const ctx: ConnectContextInput = {
-        institutionExternalId: opts.institutionId
-          ? extractId(opts.institutionId)[2]
+      const opt: ConnectOptions = {
+        institutionExternalId: _opts.institutionId
+          ? extractId(_opts.institutionId)[2]
           : undefined,
-        connectionExternalId: opts.connectionId
-          ? extractId(opts.connectionId)[2]
+        connectionExternalId: _opts.connectionId
+          ? extractId(_opts.connectionId)[2]
           : undefined,
         envName,
       }
       try {
         console.log(`[useLedgerSyncConnect] ${int.id} Will connect`)
-        const preConnRes = await queryClient.fetchQuery(preConnOpts([int, ctx]))
+        const preConnRes = await queryClient.fetchQuery(preConnOpts([int, opt]))
         console.log(
           `[useLedgerSyncConnect] ${int.id} preConnnectRes`,
           preConnRes,
@@ -184,10 +184,10 @@ export function useLedgerSyncConnect({
 
         const provider = extractId(int.id)[1]
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const res = await connectFnMapRef.current?.[provider]?.(preConnRes, ctx)
+        const res = await connectFnMapRef.current?.[provider]?.(preConnRes, opt)
         console.log(`[useLedgerSyncConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.mutation('postConnect', [res, int, ctx])
+        const postConRes = await client.mutation('postConnect', [res, int, opt])
         console.log(
           `[useLedgerSyncConnect] ${int.id} postConnectRes`,
           postConRes,
