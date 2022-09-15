@@ -45,6 +45,9 @@ jobs:
       - name: Run type checks
         run: pnpm run typecheck
 
+      - name: Run health check
+        run: ./bin/ledgerSync health
+
       - name: Generate assets required for lint
         run: pnpm --dir ./apps/next/ run generate:css
 
