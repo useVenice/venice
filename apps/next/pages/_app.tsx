@@ -15,7 +15,7 @@ import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import type {Id} from '@ledger-sync/cdk-core'
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
-import {accessTokenAtom, useAccessToken} from '../contexts/PortalParamsContext'
+import {accessTokenAtom} from '../contexts/PortalParamsContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {

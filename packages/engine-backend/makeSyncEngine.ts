@@ -403,13 +403,13 @@ export const makeSyncEngine = <
             (p) => p.lastSyncCompletedAt?.getTime() ?? 0,
           )?.lastSyncCompletedAt
 
-          console.log('map connection', {
-            conn,
-            standardConn,
-            standardIns,
-            syncInProgress,
-            'pipelinesByConnId[conn.id]': pipelinesByConnId[conn.id],
-          })
+          // console.log('map connection', {
+          //   conn,
+          //   standardConn,
+          //   standardIns,
+          //   syncInProgress,
+          //   'pipelinesByConnId[conn.id]': pipelinesByConnId[conn.id],
+          // })
 
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
@@ -605,7 +605,7 @@ export const makeSyncEngine = <
 
   const zAccessTokenContext = zUserInfo({
     parseJwtToken: jwtClient ? jwtClient.verify : undefined,
-    parseJwtPayload: parseJwtPayload,
+    parseJwtPayload,
   })
 
   return {router, jwtClient, zAccessTokenContext}

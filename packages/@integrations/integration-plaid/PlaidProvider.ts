@@ -18,7 +18,7 @@ import {
   makePostingsMap,
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
-import type {RequiredOnly} from '@ledger-sync/util'
+import type {IAxiosError, RequiredOnly} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
@@ -291,7 +291,20 @@ export const plaidProvider = makeSyncProvider({
   },
 
   revokeConnection: (input, config) =>
-    makePlaidClient(config).itemRemove(input.accessToken),
+    makePlaidClient(config)
+      .itemRemove(input.accessToken)
+      .catch((err: IAxiosError) => {
+        // TODO: Centralize me inside PlaidClient...
+        if (
+          err.isAxiosError &&
+          (err.response?.data as PlaidError | undefined)?.error_code ===
+            'ITEM_NOT_FOUND'
+        ) {
+          console.log('plaidError', err.response?.data)
+          return
+        }
+        throw err
+      }),
 
   sourceSync: ({config, settings, state}) => {
     const client = makePlaidClient(config)

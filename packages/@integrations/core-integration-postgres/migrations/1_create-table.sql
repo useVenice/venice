@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS "public"."pipeline" (
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_pipeline" PRIMARY KEY ("id"),
   CONSTRAINT "fk_source_id" FOREIGN KEY ("source_id")
-    REFERENCES "public"."connection"("id") ON DELETE RESTRICT,
+    REFERENCES "public"."connection"("id") ON DELETE CASCADE,
   CONSTRAINT "fk_destination_id" FOREIGN KEY ("destination_id")
-    REFERENCES "public"."connection"("id") ON DELETE RESTRICT
+    REFERENCES "public"."connection"("id") ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS pipeline_created_at ON pipeline (created_at);
 CREATE INDEX IF NOT EXISTS pipeline_updated_at ON pipeline (updated_at);

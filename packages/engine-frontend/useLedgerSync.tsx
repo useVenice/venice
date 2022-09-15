@@ -55,21 +55,24 @@ export function useLedgerSyncAdmin({
  * Ledger-specific
  */
 export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
-  const {trpc, ledgerId, isAdmin, developerMode} = LSProvider.useContext()
+  const {trpc, ledgerId, isAdmin, developerMode, queryClient} =
+    LSProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
   ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
   const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
     enabled: !!ledgerId,
-    // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
+    refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
   const insRes = trpc.useQuery([
     'searchInstitutions',
     {keywords},
   ]) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
   const syncConnection = trpc.useMutation('syncConnection')
-  const deleteConnection = trpc.useMutation('deleteConnection')
+  const deleteConnection = trpc.useMutation('deleteConnection', {
+    onSettled: () => queryClient.invalidateQueries(['listConnections']),
+  })
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
