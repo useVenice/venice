@@ -21,7 +21,6 @@ import type {
 export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
 export const zUseLedgerSyncOptions = z.object({
   envName: zEnvName,
-  ledgerId: zId('ldgr'),
   /**
    * Wait to create concept of user / customer in service providers
    * until the last possible moment. Otherwise preConnect will be eagerly called

@@ -23,17 +23,17 @@ export function useLedgerSyncAdmin({
 }) {
   // Add a context for if user is in developer mode...
 
-  const {trpc} = LSProvider.useContext()
+  const {trpc, isAdmin} = LSProvider.useContext()
 
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
   ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
-  const ledgerIdsRes = trpc.useQuery([
-    'admin.searchLedgerIds',
-    {keywords: ledgerIdKeywords},
-  ]) as UseQueryResult<AnySyncQueryOutput<'admin.searchLedgerIds'>>
+  const ledgerIdsRes = trpc.useQuery(
+    ['admin.searchLedgerIds', {keywords: ledgerIdKeywords}],
+    {enabled: isAdmin},
+  ) as UseQueryResult<AnySyncQueryOutput<'admin.searchLedgerIds'>>
   const adminSyncMeta = trpc.useMutation('admin.syncMetadata')
 
   return {integrationsRes, ledgerIdsRes, adminSyncMeta}
@@ -42,12 +42,8 @@ export function useLedgerSyncAdmin({
 /**
  * Ledger-specific
  */
-export function useLedgerSync({
-  ledgerId,
-  envName,
-  keywords,
-}: UseLedgerSyncOptions) {
-  const {trpc} = LSProvider.useContext()
+export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
+  const {trpc, ledgerId} = LSProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
@@ -65,9 +61,10 @@ export function useLedgerSync({
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
-  const connect = useLedgerSyncConnect({ledgerId, envName})
+  const connect = useLedgerSyncConnect({envName})
 
   return {
+    ledgerId,
     connect,
     integrationsRes,
     connectionsRes,
@@ -79,7 +76,6 @@ export function useLedgerSync({
 
 /** Also ledger-specific */
 export function useLedgerSyncConnect({
-  ledgerId,
   envName,
   lazyUserCreation,
 }: UseLedgerSyncOptions) {
@@ -88,6 +84,7 @@ export function useLedgerSyncConnect({
     trpcClient: client,
     trpc,
     queryClient,
+    ledgerId,
   } = LSProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',

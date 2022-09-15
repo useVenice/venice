@@ -5,11 +5,13 @@ import React from 'react'
 import type {
   AnySyncProvider,
   DialogConfig,
+  Id,
   LinkFactory,
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
 import {R} from '@ledger-sync/util'
 
+import {useGetter} from '../../apps/next/pages/_app'
 import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
 
@@ -28,6 +30,9 @@ export const LSContext = React.createContext<{
   connectFnMapRef: React.RefObject<
     Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
   >
+
+  ledgerId: Id['ldgr'] | undefined
+  isAdmin: boolean
 } | null>(null)
 
 export function LSProvider<
@@ -36,7 +41,8 @@ export function LSProvider<
 >({
   children,
   config,
-  getAccessToken,
+  accessToken,
+  ledgerId,
   queryClient,
 }: {
   children: React.ReactNode
@@ -45,7 +51,8 @@ export function LSProvider<
    * This will override the cookie values, as we cannot always expect cookie
    * to be sent (for example when we run mitmproxy debugging on a diff port.)
    */
-  getAccessToken?: () => string | undefined
+  accessToken: string | undefined
+  ledgerId: Id['ldgr'] | undefined
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
 }) {
   // @yenbekbay what's the way way to have a global debug confi?
@@ -53,6 +60,9 @@ export function LSProvider<
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
   const url = config.apiUrl ?? '/api'
+
+  const getAccessToken = useGetter(accessToken)
+  // const getLedgerId = useGetter(ledgerId) // Pass me to the server...
 
   const trpcClient = React.useMemo(
     () =>
@@ -95,8 +105,15 @@ export function LSProvider<
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <LSContext.Provider
         value={React.useMemo(
-          () => ({trpc, connectFnMapRef, trpcClient, queryClient}),
-          [connectFnMapRef, queryClient, trpcClient],
+          () => ({
+            trpc,
+            connectFnMapRef,
+            trpcClient,
+            queryClient,
+            ledgerId, // TODO: Rename me to ledgerId override
+            isAdmin: false, // TODO: Derive me from accessToken...
+          }),
+          [connectFnMapRef, queryClient, trpcClient, ledgerId],
         )}>
         {children}
 
