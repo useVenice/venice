@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
@@ -6,6 +7,12 @@ import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 import {useDeveloperMode, useIsAdmin} from '../contexts/PortalParamsContext'
 import {ActiveLink} from './ActiveLink'
 import {Container} from './Container'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './DropdownMenu'
 
 export interface LinkInput {
   label: string
@@ -32,25 +39,47 @@ export function Layout({
       <header className="border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
-          <Link href="/">
-            <a className="truncate text-xl font-bold text-primary">{title}</a>
+          <Link
+            href="/"
+            className="btn btn-ghost -mx-4 truncate text-xl font-bold text-primary">
+            {title}
           </Link>
 
           {links.length > 0 && (
             <div className="flex shrink-0 grow items-center justify-end">
-              <nav className="flex space-x-2 text-sm font-medium md:space-x-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="btn-outline btn btn-sm btn-circle border-base-content/25 md:hidden">
+                  <List />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-screen">
+                  {links.map((l) => (
+                    <DropdownMenuItem key={l.href} asChild>
+                      <ActiveLink
+                        href={l.href}
+                        className={twMerge(
+                          'btn',
+                          l.primary ? 'btn-primary' : 'btn-ghost',
+                        )}
+                        activeClassName="underline">
+                        {l.label}
+                      </ActiveLink>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <nav className="hidden space-x-2 text-sm font-medium md:flex md:space-x-4">
                 {links.map((l) => (
                   <ActiveLink
                     key={l.href}
                     href={l.href}
-                    activeClassName={l.primary ? 'underline' : 'text-primary'}>
-                    <a
-                      className={twMerge(
-                        'btn btn-sm',
-                        l.primary ? 'btn-primary' : 'btn-ghost',
-                      )}>
-                      {l.label}
-                    </a>
+                    className={twMerge(
+                      'btn btn-sm',
+                      l.primary ? 'btn-primary' : 'btn-ghost',
+                    )}
+                    activeClassName="underline">
+                    {l.label}
                   </ActiveLink>
                 ))}
               </nav>
