@@ -13,13 +13,16 @@ import path from 'node:path'
 import * as trpc from '@trpc/server'
 import cac from 'cac'
 
-import type {AnyZFunction} from '@ledger-sync/util'
+import type {AnyZFunction, z} from '@ledger-sync/util'
 import {
   compact,
   deepMerge,
   isAsyncIterable,
   isIterable,
+  isZodType,
+  parseIf,
   pick,
+  preprocessArgsTuple,
   R,
   routerFromZFunctionMap,
   safeJSONParse,
@@ -31,10 +34,14 @@ export async function printResult(res: unknown, opts?: {json: boolean}) {
       console.log('[printResult]', opts?.json ? JSON.stringify(r) : r)
     }
   } else {
-    console.log(
-      '[printResult]',
-      opts?.json ? JSON.stringify(await res) : await res,
-    )
+    const out = opts?.json ? JSON.stringify(await res) : await res
+    if (process.env['SILENT']) {
+      console.log('[printResult]')
+      process.stdout.write(`${out}`)
+      process.stdout.write('\n')
+    } else {
+      console.log('[printResult]', out)
+    }
   }
 }
 
@@ -69,6 +76,7 @@ export interface CliOpts {
   safeMode?: boolean
   prepare?: () => void
   cleanup?: () => void
+  context?: unknown
 }
 const globalStart = Date.now() // Not entirely accurate...
 export function cliFromRouter<T extends trpc.AnyRouter>(
@@ -103,6 +111,20 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
     // @see https://share.cleanshot.com/BtVq26
     // Do not name query the same way as we do mutations
 
+    // Normally we rely on the inputParser inside the router itself to normalize into
+    // array with the right # of arguments.
+    // However when not creating router from zFunctionMap then preprocessing
+    // does not happen automatically, causing issue...
+    R.pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      parseIf((_procedure as any).inputParser, isZodType),
+      (t) => (t?._def?.typeName === 'ZodTuple' ? (t as z.ZodTuple) : undefined),
+      (tuple) =>
+        tuple &&
+        ((_procedure as any).parseInputFn = (input: unknown) =>
+          preprocessArgsTuple(tuple).parseAsync(input)),
+    )
+
     cli
       // This doesn't work very well as it makes the args passed to action disappear
       // Figure out a better type if we can...
@@ -110,9 +132,6 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       .command(`${name} [...args]`)
       .allowUnknownOptions() // No args supported, only options...
       .action(async (args: string[], {'--': _, ...options} = {}) => {
-        // We rely on the inputParser inside the router itself to normalize into
-        // array with the right # of arguments. Here we just make a best attempt
-        // at passing data into the router
         const input = R.pipe(
           await readStdin().then(safeJSONParse),
           (stdin) => deepMerge(stdin ?? {}, options),
@@ -124,7 +143,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
         console.log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
         const start = Date.now()
         await cliOpts?.prepare?.()
-        const res = router.createCaller({})[method](name, input)
+        const res = router.createCaller(cliOpts?.context)[method](name, input)
         await printResult(res)
         await cliOpts?.cleanup?.()
         console.log(`[cli] ${name} done in ${Date.now() - start}ms`)

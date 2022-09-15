@@ -28,6 +28,12 @@ import {
 
 import {loadEnv} from './loadEnv.node'
 
+if (process.env['SILENT']) {
+  console.log = () => {} // To suppress spurious log
+  console.debug = () => {} // To suppress spurious log
+  console.info = () => {} // To suppress spurious log
+}
+
 console.log('[Dep] app-config/register.node')
 
 /** Side effect here */

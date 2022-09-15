@@ -33,7 +33,10 @@ if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
-export const cli = cliFromRouter(ledgerSyncRouter, {cleanup: () => {}}) // metaService.shutdown?
+export const cli = cliFromRouter(ledgerSyncRouter, {
+  cleanup: () => {}, // metaService.shutdown?
+  context: syncEngine.zAccessTokenContext.parse(process.env['ACCESS_TOKEN']),
+})
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')
