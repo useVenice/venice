@@ -1,11 +1,10 @@
-import {useRouterQuery} from 'next-router-query'
 import Head from 'next/head'
 import type {IconProps} from 'phosphor-react'
 import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 import {match} from 'ts-pattern'
 
-import type {Id, ZStandard} from '@ledger-sync/cdk-core'
+import type {ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
@@ -16,12 +15,8 @@ import {Loading} from '../../../components/Loading'
 import {useEnv} from '../../../contexts/PortalParamsContext'
 
 export default function LedgerMyConnectionsScreen() {
-  const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr']}
   const env = useEnv()
-  const {connectionsRes} = useLedgerSync({
-    ledgerId,
-    envName: env,
-  })
+  const {connectionsRes, ledgerId} = useLedgerSync({envName: env})
   return (
     <>
       <Head>
@@ -50,11 +45,7 @@ export default function LedgerMyConnectionsScreen() {
               ) : (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                   {res.data.map((conn) => (
-                    <ConnectionCard
-                      key={conn.id}
-                      ledgerId={ledgerId}
-                      connection={conn}
-                    />
+                    <ConnectionCard key={conn.id} connection={conn} />
                   ))}
                 </div>
               ),
@@ -67,10 +58,8 @@ export default function LedgerMyConnectionsScreen() {
 }
 
 function ConnectionCard({
-  ledgerId,
   connection: conn,
 }: {
-  ledgerId: Id['ldgr']
   connection: ZStandard['connection'] & {
     syncInProgress: boolean
     lastSyncCompletedAt: Date | null | undefined
@@ -82,7 +71,6 @@ function ConnectionCard({
   // and honestly neither is ledgerId...
   // How do we express these situations?
   const {connect, syncConnection, deleteConnection} = useLedgerSync({
-    ledgerId,
     envName: env,
   })
   return (

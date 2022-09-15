@@ -1,6 +1,7 @@
 import '../__generated__/tailwind.css'
 
 import {NextAdapter} from 'next-query-params'
+import {useRouterQuery} from 'next-router-query'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import React from 'react'
@@ -10,6 +11,7 @@ import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
 import {QueryParamProvider} from 'use-query-params'
 
 import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
+import type {Id} from '@ledger-sync/cdk-core'
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
 import {useAccessToken} from '../contexts/PortalParamsContext'
@@ -27,7 +29,10 @@ const queryClient = new QueryClient({
   },
 })
 
-if (typeof window !== 'undefined') {
+if (
+  typeof window !== 'undefined' &&
+  !window.location.href.includes('localhost')
+) {
   const persistor = createWebStoragePersistor({storage: window.localStorage})
   // persistor.removeClient() // Will clean up cache
 
@@ -40,12 +45,22 @@ if (typeof window !== 'undefined') {
   })
 }
 
-export default function MyApp({Component, pageProps}: AppProps) {
-  // const accessToken = useAccessToken()
-  // We cannot expect cookie to be always sent d
-  const getAccessToken = useGetter(useAccessToken())
+/** Need this to be a separate function so we can have hooks... */
+function _LSProvider({children}: {children: React.ReactNode}) {
+  const accessToken = useAccessToken()
+  const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr'] | undefined}
+  return (
+    <LSProvider
+      queryClient={queryClient}
+      config={ledgerSyncCommonConfig}
+      accessToken={accessToken}
+      ledgerId={ledgerId}>
+      {children}
+    </LSProvider>
+  )
+}
 
-  // console.log('accessToeken is', accessToken)
+export default function MyApp({Component, pageProps}: AppProps) {
   return (
     <>
       <Head>
@@ -59,12 +74,9 @@ export default function MyApp({Component, pageProps}: AppProps) {
       {/* <PortalParamsProvider> */}
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
-          <LSProvider
-            queryClient={queryClient}
-            config={ledgerSyncCommonConfig}
-            getAccessToken={getAccessToken}>
+          <_LSProvider>
             <Component {...pageProps} />
-          </LSProvider>
+          </_LSProvider>
         </QueryClientProvider>
       </QueryParamProvider>
       {/* </PortalParamsProvider> */}
