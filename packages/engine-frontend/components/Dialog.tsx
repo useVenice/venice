@@ -83,7 +83,7 @@ export const Dialog = React.forwardRef(function Dialog(
             forceMount
             className={twMerge(
               'fixed top-1/2 left-1/2 z-50 flex max-h-[95vh] w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col md:w-full',
-              'overflow-hidden rounded bg-white',
+              'overflow-hidden rounded-lg bg-white',
               'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
             )}>
             <div className="shrink overflow-y-auto">

@@ -47,6 +47,7 @@ module.exports = withTM(
     },
     experimental: {
       esmExternals: false,
+      newNextLinkBehavior: true,
     },
     webpack: (config) => {
       config.module.exprContextCritical = false

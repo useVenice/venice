@@ -1,6 +1,11 @@
 import Head from 'next/head'
-import type {IconProps} from 'phosphor-react'
-import {ArrowClockwise, Circle, Play, Trash} from 'phosphor-react'
+import {
+  ArrowClockwise,
+  Circle,
+  DotsThreeVertical,
+  Play,
+  Trash,
+} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 import {match} from 'ts-pattern'
 
@@ -9,6 +14,12 @@ import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
 import {Container} from '../../../components/Container'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../../../components/DropdownMenu'
 import {InstitutionLogo} from '../../../components/InstitutionLogo'
 import {Layout} from '../../../components/Layout'
 import {Loading} from '../../../components/Loading'
@@ -103,50 +114,61 @@ function ConnectionCard({
             )}
           </div>
 
-          <CardButton
-            label="Sync"
-            IconComponent={ArrowClockwise}
-            onClick={() =>
-              syncConnection
-                .mutateAsync([{id: conn.id}, {}])
-                .then((res) => {
-                  console.log('syncConnection success', res)
-                })
-                .catch((err) => {
-                  console.error('syncConnection error', err)
-                })
-            }
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger className="btn-outline btn btn-sm btn-circle border-base-content/25 text-lg">
+              <DotsThreeVertical />
+            </DropdownMenuTrigger>
 
-          <CardButton
-            label="Full Sync"
-            IconComponent={Play}
-            onClick={() =>
-              syncConnection
-                .mutateAsync([{id: conn.id}, {fullResync: true}])
-                .then((res) => {
-                  console.log('syncConnection success', res)
-                })
-                .catch((err) => {
-                  console.error('syncConnection error', err)
-                })
-            }
-          />
+            <DropdownMenuContent className="w-screen md:w-52">
+              <DropdownMenuItem
+                className="btn btn-ghost gap-1"
+                onClick={() =>
+                  syncConnection
+                    .mutateAsync([{id: conn.id}, {}])
+                    .then((res) => {
+                      console.log('syncConnection success', res)
+                    })
+                    .catch((err) => {
+                      console.error('syncConnection error', err)
+                    })
+                }>
+                <ArrowClockwise />
+                Sync
+              </DropdownMenuItem>
 
-          <CardButton
-            label="Delete"
-            IconComponent={Trash}
-            onClick={() =>
-              deleteConnection
-                .mutateAsync([{id: conn.id}, {}])
-                .then((res) => {
-                  console.log('deleteConnection success', res)
-                })
-                .catch((err) => {
-                  console.error('deleteConnection error', err)
-                })
-            }
-          />
+              <DropdownMenuItem
+                className="btn btn-ghost gap-1"
+                onClick={() =>
+                  syncConnection
+                    .mutateAsync([{id: conn.id}, {fullResync: true}])
+                    .then((res) => {
+                      console.log('syncConnection success', res)
+                    })
+                    .catch((err) => {
+                      console.error('syncConnection error', err)
+                    })
+                }>
+                <Play />
+                Full sync
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                className="btn btn-ghost gap-1"
+                onClick={() =>
+                  deleteConnection
+                    .mutateAsync([{id: conn.id}, {}])
+                    .then((res) => {
+                      console.log('deleteConnection success', res)
+                    })
+                    .catch((err) => {
+                      console.error('deleteConnection error', err)
+                    })
+                }>
+                <Trash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="flex justify-between space-x-4">
@@ -181,26 +203,5 @@ function ConnectionCard({
         </div>
       </div>
     </div>
-  )
-}
-
-function CardButton({
-  label,
-  IconComponent,
-  onClick,
-}: {
-  label: string
-  IconComponent: React.ComponentType<IconProps>
-  onClick: (event: React.MouseEvent) => void
-}) {
-  return (
-    <button className="flex flex-col items-center space-y-1">
-      <div
-        className="btn-outline btn btn-sm btn-circle border-base-content/25"
-        onClick={onClick}>
-        <IconComponent size={16} />
-      </div>
-      <span className="text-xs text-gray-500">{label}</span>
-    </button>
   )
 }

@@ -4,60 +4,44 @@ import {useRouter} from 'next/router'
 import React from 'react'
 import {twMerge} from 'tailwind-merge'
 
-export interface ActiveLinkProps extends LinkProps {
-  children: React.ReactElement
+import type {Merge} from '@ledger-sync/util'
+
+export interface ActiveLinkProps
+  extends Merge<React.ComponentPropsWithoutRef<'a'>, LinkProps> {
   activeClassName: string
 }
 
-export function ActiveLink({
-  children,
-  activeClassName,
-  ...restProps
-}: ActiveLinkProps) {
-  const {asPath, isReady} = useRouter()
-
-  const child = React.Children.only(children)
-  const childClassName = child.props.className ?? ''
-  const [className, setClassName] = React.useState(childClassName)
-
+export const ActiveLink = React.forwardRef(function ActiveLink(
+  {className: classNameProp, activeClassName, ...restProps}: ActiveLinkProps,
+  forwardedRef: React.ForwardedRef<HTMLAnchorElement>,
+) {
+  const router = useRouter()
+  const [className, setClassName] = React.useState(classNameProp)
   React.useEffect(() => {
     // Check if the router fields are updated client-side
-    if (isReady) {
+    if (router.isReady) {
       // Dynamic route will be matched via props.as
       // Static route will be matched via props.href
       const linkPathname = new URL(
         (restProps.as ?? restProps.href) as string,
         window.location.href,
       ).pathname
-
       // Using URL().pathname to get rid of query and hash
-      const activePathname = new URL(asPath, window.location.href).pathname
-
+      const activePathname = new URL(router.asPath, window.location.href)
+        .pathname
       const newClassName =
         linkPathname === activePathname
-          ? twMerge(childClassName, activeClassName)
-          : childClassName
-
-      if (newClassName !== className) {
-        setClassName(newClassName)
-      }
+          ? twMerge(classNameProp, activeClassName)
+          : classNameProp
+      setClassName(newClassName)
     }
   }, [
-    asPath,
-    isReady,
+    activeClassName,
+    classNameProp,
     restProps.as,
     restProps.href,
-    childClassName,
-    activeClassName,
-    setClassName,
-    className,
+    router.asPath,
+    router.isReady,
   ])
-
-  return (
-    <Link {...restProps}>
-      {React.cloneElement(child, {
-        className: className ?? null,
-      })}
-    </Link>
-  )
-}
+  return <Link ref={forwardedRef} className={className} {...restProps} />
+})

@@ -19,6 +19,7 @@
     "@ledger-sync/engine-backend": "*",
     "@ledger-sync/engine-frontend": "*",
     "@ledger-sync/util": "*",
+    "@radix-ui/react-dropdown-menu": "1.0.0",
     "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-slot": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
