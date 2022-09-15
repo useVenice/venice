@@ -3,10 +3,11 @@ import {createReactQueryHooks} from '@trpc/react'
 import React from 'react'
 
 import type {
+  AnyProviderDef,
   AnySyncProvider,
-  DialogConfig,
   Id,
   LinkFactory,
+  UseConnectHook,
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
 import {R} from '@ledger-sync/util'
@@ -20,16 +21,21 @@ export type SyncEngineCommonConfig<
   TLinks extends Record<string, LinkFactory>,
 > = Pick<SyncEngineConfig<TProviders, TLinks>, 'providers' | 'apiUrl'>
 
+type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
+type ConnectFn = ReturnType<UseConnectHook<AnyProviderDef>>
+
+interface DialogConfig {
+  Component: Parameters<UseConnectScope['openDialog']>[0]
+  options: Parameters<UseConnectScope['openDialog']>[1]
+}
+
 const trpc = createReactQueryHooks<AnySyncRouter>()
 
 export const LSContext = React.createContext<{
   trpc: typeof trpc
   trpcClient: ReturnType<typeof trpc.createClient>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
-  // TODO: get the proper types from cdk-core
-  connectFnMapRef: React.RefObject<
-    Record<string, ((input: any, ctx: any) => Promise<any>) | undefined>
-  >
+  connectFnMapRef: React.RefObject<Record<string, ConnectFn | undefined>>
 
   ledgerId: Id['ldgr'] | undefined
   isAdmin: boolean
@@ -85,6 +91,7 @@ export function LSProvider<
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
     p.useConnectHook?.({
+      ledgerId,
       openDialog: (render, options) => {
         setDialogConfig({Component: render, options})
         dialogRef.current?.open()
@@ -97,6 +104,7 @@ export function LSProvider<
   }, [connectFnMap])
 
   const dialogRef = React.useRef<DialogInstance>(null)
+
   const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )

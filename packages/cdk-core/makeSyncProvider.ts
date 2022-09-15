@@ -4,7 +4,7 @@ import {castIs, z} from '@ledger-sync/util'
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
 import {makeId, zExternalId} from './id.types'
-import type {EnvName, ZStandard} from './meta.types'
+import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
@@ -15,29 +15,10 @@ import type {
   SyncOperation,
 } from './protocol'
 
-// MARK: - Client side connect types
+// MARK: - Shared connect types
 
-export interface DialogConfig {
-  Component: React.ComponentType<{close: () => void}>
-  options?: {onClose?: () => void}
-}
-
-export interface UseConnectScope {
-  openDialog: (
-    Component: DialogConfig['Component'],
-    options?: DialogConfig['options'],
-  ) => void
-}
-
-export type UseConnectHook<T extends AnyProviderDef> = (
-  scope: UseConnectScope,
-) => (
-  connectInput: T['_types']['connectInput'],
-  context: ConnectContextInput & {ledgerId: Id['ldgr']},
-) => Promise<T['_types']['connectOutput']>
-
-export type ConnectContextInput = z.input<typeof zConnectContextInput>
-export const zConnectContextInput = z.object({
+export type ConnectOptions = z.input<typeof zConnectOptions>
+export const zConnectOptions = z.object({
   // ledgerId: zId('ldgr'),
   envName: zEnvName,
   /** Noop if `connectionId` is specified */
@@ -45,26 +26,29 @@ export const zConnectContextInput = z.object({
   connectionExternalId: zExternalId.nullish(),
 })
 
-// MARK: - Connect types
+// MARK: - Client side connect types
 
-export interface ConnectContext<TSettings> {
+export type UseConnectHook<T extends AnyProviderDef> = (scope: {
+  ledgerId: Id['ldgr'] | undefined
+  openDialog: (
+    Component: React.ComponentType<{close: () => void}>,
+    options?: {onClose?: () => void},
+  ) => void
+}) => (
+  connectInput: T['_types']['connectInput'],
+  context: ConnectOptions,
+) => Promise<T['_types']['connectOutput']>
+
+// MARK: - Server side connect types
+
+export interface ConnectContext<TSettings>
+  extends Omit<ConnectOptions, 'connectionExternalId'> {
   ledgerId: Id['ldgr']
-  envName: EnvName
-  institutionExternalId?: ExternalId | null
   connection?: {
     externalId: ExternalId
     settings: TSettings
   } | null
 }
-
-export type WebhookInput = z.infer<typeof zWebhookInput>
-export const zWebhookInput = z.object({
-  headers: z
-    .record(z.unknown())
-    .refine(castIs<import('http').IncomingHttpHeaders>()),
-  query: z.record(z.unknown()),
-  body: z.unknown(),
-})
 
 export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // make `ConnUpdateData.id` not prefixed so we can have better inheritance
@@ -78,6 +62,15 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   source$?: Source<TEntity>
   triggerDefaultSync?: boolean
 }
+
+export type WebhookInput = z.infer<typeof zWebhookInput>
+export const zWebhookInput = z.object({
+  headers: z
+    .record(z.unknown())
+    .refine(castIs<import('http').IncomingHttpHeaders>()),
+  query: z.record(z.unknown()),
+  body: z.unknown(),
+})
 
 export interface WebhookReturnType<
   TEntity extends AnyEntityPayload,
