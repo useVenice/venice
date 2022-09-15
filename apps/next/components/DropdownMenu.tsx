@@ -28,18 +28,3 @@ export function DropdownMenuContent({
     </DropdownMenuPrimitive.Portal>
   )
 }
-
-// export interface DropdownMenuItemProps
-//   extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {}
-
-// export function DropdownMenuItem({
-//   className,
-//   ...restProps
-// }: DropdownMenuItemProps) {
-//   return (
-//     <DropdownMenuPrimitive.Item
-//       className={twMerge('btn btn-ghost no-animation', className)}
-//       {...restProps}
-//     />
-//   )
-// }
