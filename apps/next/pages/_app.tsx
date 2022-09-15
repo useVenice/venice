@@ -15,7 +15,10 @@ import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import type {Id} from '@ledger-sync/cdk-core'
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
-import {accessTokenAtom} from '../contexts/PortalParamsContext'
+import {
+  accessTokenAtom,
+  developerModeAtom,
+} from '../contexts/PortalParamsContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +58,7 @@ function _LSProvider({children}: {children: React.ReactNode}) {
       queryClient={queryClient}
       config={ledgerSyncCommonConfig}
       accessToken={accessToken}
+      developerMode={useAtomValue(developerModeAtom)}
       ledgerId={ledgerId}>
       {children}
     </LSProvider>
