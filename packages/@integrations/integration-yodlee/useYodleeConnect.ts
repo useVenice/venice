@@ -5,16 +5,10 @@ import {
   useScript,
 } from '@ledger-sync/cdk-core'
 import type {MergeUnion} from '@ledger-sync/util'
-import {splitPrefixedId} from '@ledger-sync/util'
 
 import type {FastLinkOpenOptions} from './fastlink'
-import {zYodleeId} from './YodleeClient'
 import type {yodleeProviderDef} from './YodleeProvider'
 
-const parseExtId = (id: string | undefined | null) =>
-  zYodleeId
-    .optional()
-    .parse<'typed'>((id && splitPrefixedId(id)[2]) || undefined)
 const YODLEE_CONTAINER_ID = 'yodlee-container'
 
 export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
@@ -23,9 +17,14 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
   const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
   console.log('[yodlee] useConnectHook')
 
-  return async ({accessToken}, {envName, institutionId, connectionId}) => {
-    const providerId = parseExtId(institutionId)
-    const providerAccountId = parseExtId(connectionId)
+  return async (
+    {accessToken},
+    {
+      envName,
+      connectionExternalId: providerAccountId,
+      institutionExternalId: providerId,
+    },
+  ) => {
     console.log('[yodlee] connect', {
       accessToken,
       envName,

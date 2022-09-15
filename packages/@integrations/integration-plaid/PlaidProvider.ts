@@ -19,7 +19,6 @@ import {
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
 import type {RequiredOnly} from '@ledger-sync/util'
-import {splitPrefixedId} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
@@ -158,12 +157,16 @@ export const plaidProvider = makeSyncProvider({
       }
     },
   },
-  preConnect: (config, {envName, ledgerId, connection, institutionId}) => {
-    const insId = institutionId && splitPrefixedId(institutionId)[2]
-    return makePlaidClient(config)
+  preConnect: (
+    config,
+    {envName, ledgerId, connection, institutionExternalId},
+  ) =>
+    makePlaidClient(config)
       .linkTokenCreate(envName, {
         access_token: connection?.settings.accessToken, // Reconnecting
-        institution_id: insId ?? undefined, // Probably doesn't work, but we wish it does...
+        institution_id: institutionExternalId
+          ? `${institutionExternalId}`
+          : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: ledgerId},
         client_name: config.clientName,
         // TODO: Move these into config instead...
@@ -177,8 +180,7 @@ export const plaidProvider = makeSyncProvider({
       .then((res) => {
         console.log('willConnect response', res)
         return res
-      })
-  },
+      }),
 
   useConnectHook: (_) => {
     console.log('[plaid] useConnectHook')
@@ -225,7 +227,7 @@ export const plaidProvider = makeSyncProvider({
       }
     }, [plaidLink, state])
 
-    return async (opts, {institutionId}) => {
+    return async (opts, {institutionExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
       if (plaidLink.error) {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
@@ -234,7 +236,9 @@ export const plaidProvider = makeSyncProvider({
       // TODO: Implement a dialog fallback to tell user to search for the needed
       // institution in the next screen to work around the problem that
       // plaid does not support instiutionId
-      console.warn('[plaid] institutionId not handled', {institutionId})
+      console.warn('[plaid] institutionExternalId not handled', {
+        institutionExternalId,
+      })
       const res$ = new Deferred<typeof def['_types']['connectOutput']>()
       setState({options: {token: opts.link_token}, res$})
       return res$.promise

@@ -2,18 +2,30 @@ import React from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 import type {UseQueryResult} from 'react-query'
 
-import type {
-  ConnectContextInput,
-  UseLedgerSyncOptions,
-} from '@ledger-sync/cdk-core'
-import {CANCELLATION_TOKEN, extractId} from '@ledger-sync/cdk-core'
+import type {ConnectContextInput, Id} from '@ledger-sync/cdk-core'
+import {CANCELLATION_TOKEN, extractId, zEnvName} from '@ledger-sync/cdk-core'
 import type {
   AnySyncMutationInput,
   AnySyncQueryOutput,
   IntegrationInput,
 } from '@ledger-sync/engine-backend'
+import {z} from '@ledger-sync/util'
 
 import {LSProvider} from './LSProvider'
+
+export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
+export const zUseLedgerSyncOptions = z.object({
+  envName: zEnvName,
+  /**
+   * Wait to create concept of user / customer in service providers
+   * until the last possible moment. Otherwise preConnect will be eagerly called
+   * as soon as user loads the webpage which could end up creating a bunch of entities
+   * such as StripeCustomer, YodleeUser that never have any material amount of data.
+   */
+  lazyUserCreation: z.boolean().nullish(),
+  /** When searching for for institution  */
+  keywords: z.string().nullish(),
+})
 
 /** Non ledger-specific */
 export function useLedgerSyncAdmin({
@@ -112,11 +124,13 @@ export function useLedgerSyncConnect({
   )
 
   React.useEffect(() => {
+    // TODO: we dont actually need ledgerId anymore
+    // Maybe we can make trpcClient change ref when accessToken changes instead?
     if (!ledgerId || !envName || lazyUserCreation) {
       return
     }
     integrationsRes.data
-      ?.map((int) => preConnOpts([{id: int.id}, {envName, ledgerId}]))
+      ?.map((int) => preConnOpts([{id: int.id}, {envName}]))
       // If we have been sitting on the page for 15 mins, can prefetch re-run automatically?
       // Or would that be a reason for useQueries instead?
       .forEach((options) => queryClient.prefetchQuery(options))
@@ -144,14 +158,22 @@ export function useLedgerSyncConnect({
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
-      options: Pick<ConnectContextInput, 'institutionId' | 'connectionId'>,
+      opts: {institutionId?: Id['ins']; connectionId?: Id['conn']},
     ) {
       if (!envName || !ledgerId) {
         console.log('Connect missing params, noop', {envName, ledgerId})
         return
       }
-      const ctx: ConnectContextInput = {...options, envName, ledgerId}
 
+      const ctx: ConnectContextInput = {
+        institutionExternalId: opts.institutionId
+          ? extractId(opts.institutionId)[2]
+          : undefined,
+        connectionExternalId: opts.connectionId
+          ? extractId(opts.connectionId)[2]
+          : undefined,
+        envName,
+      }
       try {
         console.log(`[useLedgerSyncConnect] ${int.id} Will connect`)
         const preConnRes = await queryClient.fetchQuery(preConnOpts([int, ctx]))

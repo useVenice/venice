@@ -3,7 +3,7 @@ import {castIs, z} from '@ledger-sync/util'
 
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
-import {makeId, zId} from './id.types'
+import {makeId, zExternalId} from './id.types'
 import type {EnvName, ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
@@ -16,21 +16,6 @@ import type {
 } from './protocol'
 
 // MARK: - Client side connect types
-
-/** TODO: Move me to client side... */
-export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
-export const zUseLedgerSyncOptions = z.object({
-  envName: zEnvName,
-  /**
-   * Wait to create concept of user / customer in service providers
-   * until the last possible moment. Otherwise preConnect will be eagerly called
-   * as soon as user loads the webpage which could end up creating a bunch of entities
-   * such as StripeCustomer, YodleeUser that never have any material amount of data.
-   */
-  lazyUserCreation: z.boolean().nullish(),
-  /** When searching for for institution  */
-  keywords: z.string().nullish(),
-})
 
 export interface DialogConfig {
   Component: React.ComponentType<{close: () => void}>
@@ -48,16 +33,16 @@ export type UseConnectHook<T extends AnyProviderDef> = (
   scope: UseConnectScope,
 ) => (
   connectInput: T['_types']['connectInput'],
-  context: ConnectContextInput, // ConnectContext<T, 'frontend'>,
+  context: ConnectContextInput & {ledgerId: Id['ldgr']},
 ) => Promise<T['_types']['connectOutput']>
 
 export type ConnectContextInput = z.input<typeof zConnectContextInput>
 export const zConnectContextInput = z.object({
+  // ledgerId: zId('ldgr'),
   envName: zEnvName,
-  ledgerId: zId('ldgr'),
   /** Noop if `connectionId` is specified */
-  institutionId: zId('ins').nullish(),
-  connectionId: zId('conn').nullish(),
+  institutionExternalId: zExternalId.nullish(),
+  connectionExternalId: zExternalId.nullish(),
 })
 
 // MARK: - Connect types
@@ -65,8 +50,11 @@ export const zConnectContextInput = z.object({
 export interface ConnectContext<TSettings> {
   ledgerId: Id['ldgr']
   envName: EnvName
-  institutionId?: Id['ins'] | null
-  connection?: {id: Id['conn']; settings: TSettings} | null
+  institutionExternalId?: ExternalId | null
+  connection?: {
+    externalId: ExternalId
+    settings: TSettings
+  } | null
 }
 
 export type WebhookInput = z.infer<typeof zWebhookInput>

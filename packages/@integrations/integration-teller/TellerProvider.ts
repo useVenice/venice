@@ -1,15 +1,7 @@
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
 import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
-import {
-  A,
-  identity,
-  parseMoney,
-  Rx,
-  rxjs,
-  splitPrefixedId,
-  z,
-} from '@ledger-sync/util'
+import {A, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
 
 import {
   accountTellerSchema,
@@ -131,11 +123,11 @@ export const tellerProvider = makeSyncProvider({
   }),
   useConnectHook: (_) => {
     const loaded = useScript('//cdn.teller.io/connect/connect.js')
-    return async (opts, ctx) => {
+    return async (opts, {institutionExternalId}) => {
       await loaded
-      const institution =
-        (ctx.institutionId && splitPrefixedId(ctx.institutionId)[2]) ||
-        undefined
+      const institution = institutionExternalId
+        ? `${institutionExternalId}`
+        : undefined
       return new Promise((resolve, reject) => {
         const tellerConnect = window.TellerConnect.setup({
           applicationId: opts.applicationId,
