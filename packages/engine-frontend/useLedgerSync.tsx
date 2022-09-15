@@ -31,10 +31,10 @@ export function useLedgerSyncAdmin({
   ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const ledgerIdsRes = trpc.useQuery([
-    'adminSearchLedgerIds',
+    'admin.searchLedgerIds',
     {keywords: ledgerIdKeywords},
-  ]) as UseQueryResult<AnySyncQueryOutput<'adminSearchLedgerIds'>>
-  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
+  ]) as UseQueryResult<AnySyncQueryOutput<'admin.searchLedgerIds'>>
+  const adminSyncMeta = trpc.useMutation('admin.syncMetadata')
 
   return {integrationsRes, ledgerIdsRes, adminSyncMeta}
 }
