@@ -284,9 +284,12 @@ export const makeSyncEngine = <
     })
 
   const authenticatedRouter = baseRouter()
-    .middleware(({next, ctx}) => {
+    .middleware(({next, ctx, path}) => {
       if (!ctx.ledgerId) {
-        throw new TRPCError({code: 'UNAUTHORIZED', message: 'Auth required'})
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: `Auth required: ${path}`,
+        })
       }
       // Figure out how we can pass the context into zod validators so that we can
       // check user has access to connection pipline etc in a single place...
@@ -488,18 +491,21 @@ export const makeSyncEngine = <
     })
 
   const adminRouter = baseRouter()
-    .middleware(({next, ctx}) => {
+    .middleware(({next, ctx, path}) => {
       if (!ctx.isAdmin) {
-        throw new TRPCError({code: 'UNAUTHORIZED', message: 'Admin only'})
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: `Admin only: ${path}`,
+        })
       }
       return next({ctx: {...ctx, isAdmin: true as const}})
     })
-    .query('adminSearchLedgerIds', {
+    .query('searchLedgerIds', {
       input: z.object({keywords: zTrimedString.nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) =>
         metaService.searchLedgerIds({keywords}),
     })
-    .query('adminGetIntegration', {
+    .query('getIntegration', {
       input: zInt,
       resolve: ({input: int}) => ({
         config: int.config,
@@ -514,7 +520,7 @@ export const makeSyncEngine = <
 
     //   },
     // ),
-    .mutation('adminSyncMetadata', {
+    .mutation('syncMetadata', {
       input: zInt.nullish(),
       resolve: async ({input: int}) => {
         const ints = int ? [int] : await getDefaultIntegrations()
@@ -553,7 +559,7 @@ export const makeSyncEngine = <
   const router = baseRouter()
     .merge(anonRouter)
     .merge(authenticatedRouter)
-    .merge(adminRouter)
+    .merge('admin.', adminRouter)
 
   return {router}
 }
