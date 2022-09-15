@@ -1,5 +1,6 @@
 import '../__generated__/tailwind.css'
 
+import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import {useRouterQuery} from 'next-router-query'
 import type {AppProps} from 'next/app'
@@ -14,7 +15,7 @@ import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import type {Id} from '@ledger-sync/cdk-core'
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
-import {useAccessToken} from '../contexts/PortalParamsContext'
+import {accessTokenAtom, useAccessToken} from '../contexts/PortalParamsContext'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,7 +48,7 @@ if (
 
 /** Need this to be a separate function so we can have hooks... */
 function _LSProvider({children}: {children: React.ReactNode}) {
-  const accessToken = useAccessToken()
+  const accessToken = useAtomValue(accessTokenAtom)
   const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr'] | undefined}
   return (
     <LSProvider

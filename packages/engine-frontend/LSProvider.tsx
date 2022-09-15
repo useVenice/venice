@@ -1,6 +1,5 @@
 import {httpLink} from '@trpc/client/links/httpLink'
 import {createReactQueryHooks} from '@trpc/react'
-import {decode as jwtDecode} from 'jsonwebtoken'
 import React from 'react'
 
 import type {
@@ -11,6 +10,7 @@ import type {
   UseConnectHook,
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
+import {zUserInfo} from '@ledger-sync/engine-backend/auth-utils'
 import {R} from '@ledger-sync/util'
 
 import {useGetter} from '../../apps/next/pages/_app'
@@ -43,6 +43,7 @@ export const LSContext = React.createContext<{
 
   ledgerId: Id['ldgr'] | undefined
   isAdmin: boolean
+  developerMode: boolean
 } | null>(null)
 
 export function LSProvider<
@@ -52,9 +53,10 @@ export function LSProvider<
   children,
   config,
   accessToken,
-  ledgerId,
   queryClient,
+  ...options
 }: {
+  developerMode?: boolean
   children: React.ReactNode
   config: SyncEngineCommonConfig<T, TLinks>
   /**
@@ -73,8 +75,16 @@ export function LSProvider<
 
   const getAccessToken = useGetter(accessToken)
 
-  const data = accessToken ? jwtDecode(accessToken, {json: true}) : null
-  console.log('data', data)
+  const zUserContext = zUserInfo({parseJwtPayload: config.parseJwtPayload})
+
+  const userContext = zUserContext.parse(accessToken)
+  const isAdmin = userContext.isAdmin ?? false
+  // || process.env.NODE_ENV === 'development'
+  // LedgerId may be overriden if we are admin
+  const ledgerId =
+    (isAdmin ? options.ledgerId : null) ?? userContext.ledgerId ?? undefined
+
+  const developerMode = (userContext.isAdmin && options.developerMode) || false
 
   // const getLedgerId = useGetter(ledgerId) // Pass me to the server...
 
@@ -107,6 +117,7 @@ export function LSProvider<
     }),
   ])
   const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
+
   React.useEffect(() => {
     connectFnMapRef.current = connectFnMap
   }, [connectFnMap])
@@ -126,10 +137,11 @@ export function LSProvider<
             connectFnMapRef,
             trpcClient,
             queryClient,
-            ledgerId, // TODO: Rename me to ledgerId override
-            isAdmin: false, // TODO: Derive me from accessToken...
+            ledgerId,
+            isAdmin,
+            developerMode,
           }),
-          [connectFnMapRef, queryClient, trpcClient, ledgerId],
+          [trpcClient, queryClient, ledgerId, isAdmin, developerMode],
         )}>
         {children}
 

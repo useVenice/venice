@@ -35,7 +35,7 @@ export function useLedgerSyncAdmin({
 }) {
   // Add a context for if user is in developer mode...
 
-  const {trpc, isAdmin} = LSProvider.useContext()
+  const {trpc, isAdmin, developerMode} = LSProvider.useContext()
 
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
@@ -48,14 +48,14 @@ export function useLedgerSyncAdmin({
   ) as UseQueryResult<AnySyncQueryOutput<'admin.searchLedgerIds'>>
   const adminSyncMeta = trpc.useMutation('admin.syncMetadata')
 
-  return {integrationsRes, ledgerIdsRes, adminSyncMeta}
+  return {integrationsRes, ledgerIdsRes, adminSyncMeta, isAdmin, developerMode}
 }
 
 /**
  * Ledger-specific
  */
 export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
-  const {trpc, ledgerId} = LSProvider.useContext()
+  const {trpc, ledgerId, isAdmin, developerMode} = LSProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
@@ -83,6 +83,8 @@ export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
     insRes,
     syncConnection,
     deleteConnection,
+    isAdmin,
+    developerMode,
   }
 }
 

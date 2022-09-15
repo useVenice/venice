@@ -1,10 +1,11 @@
+import {useAtom} from 'jotai'
 import Link from 'next/link'
 import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
-import {useDeveloperMode, useIsAdmin} from '../contexts/PortalParamsContext'
+import {developerModeAtom} from '../contexts/PortalParamsContext'
 import {ActiveLink} from './ActiveLink'
 import {Container} from './Container'
 import {
@@ -33,9 +34,8 @@ export function Layout({
   links = [],
   children,
 }: LayoutProps) {
-  const isAdmin = useIsAdmin()
-  const [developerMode, setDeveloperMode] = useDeveloperMode()
-  const {adminSyncMeta} = useLedgerSyncAdmin({})
+  const [developerMode, setDeveloperMode] = useAtom(developerModeAtom)
+  const {adminSyncMeta, isAdmin} = useLedgerSyncAdmin({})
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">

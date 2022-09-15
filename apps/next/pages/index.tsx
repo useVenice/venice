@@ -3,12 +3,9 @@ import React from 'react'
 
 import {LSProvider} from '@ledger-sync/engine-frontend'
 
-import {useIsAdmin} from '../contexts/PortalParamsContext'
-
 export default function HomeScreen() {
   const router = useRouter()
-  const isAdmin = useIsAdmin()
-  const {ledgerId} = LSProvider.useContext()
+  const {ledgerId, isAdmin} = LSProvider.useContext()
 
   React.useEffect(() => {
     if (isAdmin) {
