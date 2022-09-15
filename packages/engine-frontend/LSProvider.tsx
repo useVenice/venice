@@ -13,7 +13,6 @@ import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
 import {zUserInfo} from '@ledger-sync/engine-backend/auth-utils'
 import {R} from '@ledger-sync/util'
 
-import {useGetter} from '../../apps/next/pages/_app'
 import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
 
@@ -183,3 +182,17 @@ LSProvider.config = <
 //     // Improve typing to omit options.config.url, it is a noop
 //     config: (info) => ({...options.config(info), url: routerUrl}),
 //   })
+
+/**
+ * Used to create a callback to get the current value without re-rendering
+ * whenever value changes...
+ *
+ * TODO: Move me to frontend utils...
+ */
+export function useGetter<T>(value: T) {
+  const ref = React.useRef(value)
+  React.useEffect(() => {
+    ref.current = value
+  }, [value, ref])
+  return React.useCallback(() => ref.current, [ref])
+}
