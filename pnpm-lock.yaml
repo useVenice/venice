@@ -861,8 +861,10 @@ importers:
       '@trpc/client': 9.26.0
       '@trpc/react': 9.26.0
       '@trpc/server': 9.26.0
+      '@types/jsonwebtoken': 8.5.9
       '@types/react': '*'
       framer-motion: 6.5.1
+      jsonwebtoken: 8.5.1
       phosphor-react: 1.4.1
       react: '*'
       react-dom: '*'
@@ -878,6 +880,7 @@ importers:
       '@trpc/react': 9.26.0_irv66ybkadcialtmo3uz32bymi
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       framer-motion: 6.5.1_sfoxds7t5ydpegc3knd667wn6m
+      jsonwebtoken: 8.5.1
       phosphor-react: 1.4.1_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -885,6 +888,7 @@ importers:
       tailwind-merge: 1.6.0
     devDependencies:
       '@ledger-sync/engine-backend': link:../engine-backend
+      '@types/jsonwebtoken': 8.5.9
       '@types/react': 17.0.39
 
 packages:

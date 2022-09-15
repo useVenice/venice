@@ -1,7 +1,6 @@
 import * as trpc from '@trpc/server'
 import type {inferProcedureInput, inferProcedureOutput} from '@trpc/server'
 import {TRPCError} from '@trpc/server'
-import type {JwtPayload} from 'jsonwebtoken'
 
 import type {
   AnyEntityPayload,
@@ -26,7 +25,8 @@ import {
 } from '@ledger-sync/cdk-core'
 import {compact, R, rxjs, z, zTrimedString} from '@ledger-sync/util'
 
-import type {EngineContext, EngineMeta, UserInfo} from './createEngineContext'
+import type {ParseJwtPayload, UserInfo} from './auth-utils'
+import {makeJwtClient, zUserInfo} from './auth-utils'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -40,6 +40,9 @@ import {makeSyncParsers, zSyncOptions} from './makeSyncParsers'
 
 export {type inferProcedureInput} from '@trpc/server'
 
+/** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
+export interface EngineMeta {}
+
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 export interface SyncEngineConfig<
   TProviders extends AnySyncProvider[],
@@ -51,12 +54,14 @@ export interface SyncEngineConfig<
    * This is needed for 1) server side rendering and 2) webhook handling
    */
   apiUrl?: string
+
+  parseJwtPayload?: ParseJwtPayload
+
   // Backend only
   linkMap?: TLinks
 
   /** Used for authentication */
   jwtSecretOrPublicKey?: string
-  userInfoFromJwt?: (jwtPayload: JwtPayload) => UserInfo
 
   /** Used to store metadata */
   metaService: MetaService
@@ -100,6 +105,8 @@ export const makeSyncEngine = <
   getDefaultPipeline,
   defaultIntegrations,
   getLinksForPipeline,
+  jwtSecretOrPublicKey,
+  parseJwtPayload,
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
@@ -259,7 +266,7 @@ export const makeSyncEngine = <
     )
   }
 
-  const baseRouter: typeof trpc.router<EngineContext, EngineMeta> = trpc.router
+  const baseRouter: typeof trpc.router<UserInfo, EngineMeta> = trpc.router
 
   const anonRouter = baseRouter()
     .query('health', {resolve: () => 'Ok ' + new Date().toISOString()})
@@ -592,7 +599,16 @@ export const makeSyncEngine = <
     .merge(authenticatedRouter)
     .merge('admin.', adminRouter)
 
-  return {router}
+  const jwtClient = jwtSecretOrPublicKey
+    ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})
+    : undefined
+
+  const zAccessTokenContext = zUserInfo({
+    parseJwtToken: jwtClient ? jwtClient.verify : undefined,
+    parseJwtPayload: parseJwtPayload,
+  })
+
+  return {router, jwtClient, zAccessTokenContext}
 }
 
 /** Only purpose of this is to support type inference */
