@@ -82,9 +82,10 @@ function ConnectionCard({
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
   // How do we express these situations?
-  const {connect, syncConnection, deleteConnection} = useLedgerSync({
-    envName: env,
-  })
+  const {connect, syncConnection, deleteConnection, developerMode} =
+    useLedgerSync({
+      envName: env,
+    })
   return (
     <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
       <div className="card-body space-y-4">
@@ -92,12 +93,14 @@ function ConnectionCard({
           <div className="flex flex-col space-y-2">
             <InstitutionLogo institution={conn.institution} />
 
-            <div className="flex-row gap-4">
-              <span className="badge-outline badge text-2xs border-base-content/25 uppercase">
-                {/* FIXME */}
-                sandbox
-              </span>
-            </div>
+            {developerMode && (
+              <div className="flex-row gap-4">
+                <span className="badge-outline badge text-2xs border-base-content/25 uppercase">
+                  {/* FIXME */}
+                  sandbox
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-1 justify-end">
@@ -202,6 +205,11 @@ function ConnectionCard({
             </span>
           </div>
         </div>
+        {developerMode && (
+          <div className="flex-row gap-4">
+            <span className="text-2xs border-base-content/25">{conn.id}</span>
+          </div>
+        )}
       </div>
     </div>
   )

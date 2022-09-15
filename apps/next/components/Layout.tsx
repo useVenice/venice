@@ -35,7 +35,11 @@ export function Layout({
   children,
 }: LayoutProps) {
   const [developerMode, setDeveloperMode] = useAtom(developerModeAtom)
-  const {adminSyncMeta, isAdmin} = useLedgerSyncAdmin({})
+  const {adminSyncMeta, isAdmin, integrationsRes} = useLedgerSyncAdmin({})
+  // TODO: deduplicate me...
+  const onlyIntegrationId =
+    integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
+
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
       <header className="border-b border-gray-100">
@@ -115,22 +119,24 @@ export function Layout({
             </label>
           </div>
 
-          <div className="flex">
-            <button
-              className="btn-outline btn btn-sm truncate"
-              onClick={() =>
-                adminSyncMeta
-                  .mutateAsync()
-                  .then((res) => {
-                    console.log('meta sync success', res)
-                  })
-                  .catch((err) => {
-                    console.error('meta sync error', err)
-                  })
-              }>
-              Sync metadata (reindex institutions)
-            </button>
-          </div>
+          {!onlyIntegrationId && (
+            <div className="flex">
+              <button
+                className="btn-outline btn btn-sm truncate"
+                onClick={() =>
+                  adminSyncMeta
+                    .mutateAsync()
+                    .then((res) => {
+                      console.log('meta sync success', res)
+                    })
+                    .catch((err) => {
+                      console.error('meta sync error', err)
+                    })
+                }>
+                Sync metadata (reindex institutions)
+              </button>
+            </div>
+          )}
         </footer>
       )}
     </div>
