@@ -10,12 +10,8 @@ import type {
   UseConnectHook,
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
-import {
-  _zContext,
-  _zUserInfo,
-  kXLedgerId,
-} from '@ledger-sync/engine-backend/auth-utils'
-import {R} from '@ledger-sync/util'
+import {_zContext, kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
+import {debugMe, R} from '@ledger-sync/util'
 
 import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
@@ -76,8 +72,7 @@ export function LSProvider<
 
   const url = config.apiUrl ?? '/api'
 
-  const getAccessToken = useGetter(accessToken)
-  const getLedgerId = useGetter(options.ledgerId)
+  const _ledgerId = options.ledgerId
 
   const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
 
@@ -98,15 +93,13 @@ export function LSProvider<
     () =>
       trpc.createClient({
         headers: () => ({
-          ...R.pipe(getAccessToken?.(), (token) =>
-            token ? {Authorization: `Bearer ${token}`} : {},
-          ),
-          ...R.pipe(getLedgerId?.(), (id) => (id ? {[kXLedgerId]: id} : {})),
+          ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
+          ...(_ledgerId ? {[kXLedgerId]: _ledgerId} : {}),
         }),
         // Disable reqeuest batching in DEBUG mode for easier debugging
         ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
       }),
-    [__DEBUG__, getAccessToken, getLedgerId, url],
+    [__DEBUG__, _ledgerId, accessToken, url],
   )
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
