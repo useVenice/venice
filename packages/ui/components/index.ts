@@ -2,6 +2,7 @@
 export * from './Container'
 export * from './Dialog'
 export * from './DropdownMenu'
+export * from './EffectContainer'
 export * from './Loading'
 export * from './RadioGroup'
 export * from './Tabs'

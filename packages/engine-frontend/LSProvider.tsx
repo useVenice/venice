@@ -54,7 +54,6 @@ export function LSProvider<
   queryClient,
   ...options
 }: {
-  developerMode?: boolean
   children: React.ReactNode
   config: SyncEngineCommonConfig<T, TLinks>
   /**
@@ -62,23 +61,22 @@ export function LSProvider<
    * to be sent (for example when we run mitmproxy debugging on a diff port.)
    */
   accessToken: string | undefined
-  ledgerId: Id['ldgr'] | undefined
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
+  ledgerId: Id['ldgr'] | undefined
+  developerMode?: boolean
 }) {
   // @yenbekbay what's the way way to have a global debug confi?
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
-  const _ledgerId = options.ledgerId
-
   const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
 
+  const {ledgerId: _ledgerId, developerMode: _developerMode} = options
   const {ledgerId, isAdmin = false} = zAuthContext.parse<'typed'>({
     accessToken,
-    ledgerId: options.ledgerId,
+    ledgerId: _ledgerId,
   })
-
-  const developerMode = (isAdmin && options.developerMode) || false
+  const developerMode = (isAdmin && _developerMode) || false
 
   console.log('[LSProvider]', {
     ledgerId,
@@ -117,7 +115,6 @@ export function LSProvider<
   }, [connectFnMap])
 
   const dialogRef = React.useRef<DialogInstance>(null)
-
   const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )
