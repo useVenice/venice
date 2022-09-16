@@ -45,6 +45,8 @@ export function useRouterPlus() {
   return {
     ...router,
     pushPathname: (pathname: string) =>
+      // should we use window.location.search.slice(1) instead?
+      // so that we omit path-based query from the searchQuery?
       router.push({pathname, query: stringifyQueryParams(router.query)}),
   }
 }
