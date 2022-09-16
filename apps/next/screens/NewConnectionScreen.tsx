@@ -6,13 +6,19 @@ import {match} from 'ts-pattern'
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {
+  Container,
+  Loading,
+  Radio,
+  RadioGroup,
+  Tab,
+  TabContent,
+  TabList,
+  Tabs,
+} from '@ledger-sync/ui'
 import {compact} from '@ledger-sync/util'
 
-import {Container} from '../components/Container'
 import {InstitutionLogo} from '../components/InstitutionLogo'
-import {Loading} from '../components/Loading'
-import {Radio, RadioGroup} from '../components/RadioGroup'
-import {Tab, TabContent, TabList, Tabs} from '../components/Tabs'
 import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
 
 type ConnectMode = 'institution' | 'provider'

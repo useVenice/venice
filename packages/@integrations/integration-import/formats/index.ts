@@ -1,4 +1,4 @@
-// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,node}.{ts,tsx}"}
+// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
 export * from './format-alliant-credit-union'
 export * from './format-apple-card'
 export * from './format-bbva-mexico'

@@ -4,10 +4,9 @@ import {match} from 'ts-pattern'
 
 import type {LedgerIdResultRow} from '@ledger-sync/cdk-core'
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
+import {Container, Loading} from '@ledger-sync/ui'
 
-import {Container} from '../components/Container'
 import {Layout} from '../components/Layout'
-import {Loading} from '../components/Loading'
 import {useRouterPlus} from '../contexts/atoms'
 
 export function AdminHomeScreen() {
@@ -53,13 +52,13 @@ export function AdminHomeScreen() {
               .with({status: 'idle'}, () => null)
               .with({status: 'loading'}, () => <Loading />)
               .with({status: 'error'}, () => (
-                <span className="text-xs">Something went wrong</span>
+                <span className="text-sm">Something went wrong</span>
               ))
               .with({status: 'success'}, (res) =>
                 res.data.length === 0 ? (
-                  <span className="text-xs">No results</span>
+                  <span className="text-sm">No results</span>
                 ) : (
-                  <div className="grid grid-cols-1 divide-y">
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                     {res.data.map((l) => (
                       <LedgerCard key={l.id} ledger={l} />
                     ))}

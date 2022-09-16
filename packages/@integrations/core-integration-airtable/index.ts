@@ -1,4 +1,4 @@
-// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,node}.{ts,tsx}"}
+// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
 export * from './AirtableClient'
 export * from './airtableProvider'
 // codegen:end

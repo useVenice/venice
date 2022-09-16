@@ -5,27 +5,18 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@headlessui/react": "1.7.0",
     "@ledger-sync/cdk-core": "*",
     "@ledger-sync/engine-backend": "*",
+    "@ledger-sync/ui": "*",
     "@ledger-sync/util": "*",
-    "@radix-ui/react-dialog": "1.0.0",
-    "@react-hookz/web": "15.1.0",
     "@trpc/client": "9.26.0",
     "@trpc/react": "9.26.0",
     "@trpc/server": "9.26.0",
-    "framer-motion": "6.5.1",
-    "phosphor-react": "1.4.1",
     "react": "*",
     "react-dom": "*",
-    "react-query": "3.39.2",
-    "tailwind-merge": "*"
+    "react-query": "*"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "react-query": "^3.37.0"
-  },
-  "peerDependencies": {
-    "react-query": "^3.37.0 || ^4.0.0-alpha.4"
+    "@types/react": "*"
   }
 }

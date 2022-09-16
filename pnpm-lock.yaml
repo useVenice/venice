@@ -246,17 +246,14 @@ importers:
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/engine-backend': '*'
       '@ledger-sync/engine-frontend': '*'
+      '@ledger-sync/ui': '*'
       '@ledger-sync/util': '*'
-      '@radix-ui/react-dropdown-menu': 1.0.0
-      '@radix-ui/react-radio-group': 1.0.0
-      '@radix-ui/react-slot': 1.0.0
-      '@radix-ui/react-tabs': 1.0.0
-      '@react-hookz/web': 15.1.0
       '@trpc/server': 9.26.0
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.13
       autoprefixer: '*'
       cookies-next: 2.1.1
+      csstype: '*'
       daisyui: 2.24.2
       jotai: 1.8.3
       next: 12.2.5
@@ -282,12 +279,8 @@ importers:
       '@ledger-sync/cdk-core': link:../../packages/cdk-core
       '@ledger-sync/engine-backend': link:../../packages/engine-backend
       '@ledger-sync/engine-frontend': link:../../packages/engine-frontend
+      '@ledger-sync/ui': link:../../packages/ui
       '@ledger-sync/util': link:../../packages/@utils/util
-      '@radix-ui/react-dropdown-menu': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-radio-group': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       cookies-next: 2.1.1
       jotai: 1.8.3_react@17.0.2
@@ -306,6 +299,7 @@ importers:
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.13
       autoprefixer: 10.4.8_postcss@8.4.14
+      csstype: 3.1.0
       daisyui: 2.24.2_6qxuh3ctkxhae7jnbdaexscv2m
       next-transpile-modules: 9.0.0
       node-loader: 2.0.0_webpack@5.74.0
@@ -318,14 +312,12 @@ importers:
   apps/tests:
     specifiers:
       '@ledger-sync/app-config': '*'
-      openapi-typescript: 5.4.1
       remeda: 0.0.32
       tsx: 3.4.2
     dependencies:
       '@ledger-sync/app-config': link:../app-config
       remeda: 0.0.32_h54ufjkapm5h3lgo7ynxsqpg3u
     devDependencies:
-      openapi-typescript: 5.4.1
       tsx: 3.4.2
 
   packages/@integrations/core-integration-airtable:
@@ -638,7 +630,6 @@ importers:
       openapi-typescript-codegen: 0.23.0
       react: '*'
       react-dom: '*'
-      react-hot-toast: 2.3.0
     dependencies:
       '@ledger-sync/cdk-core': link:../../cdk-core
       '@ledger-sync/cdk-ledger': link:../../cdk-ledger
@@ -647,7 +638,6 @@ importers:
       csstype: 3.1.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-hot-toast: 2.3.0_a3rolb2r43cxt5j5fxvpwhxlai
     devDependencies:
       '@cfworker/json-schema': 1.12.4
       '@types/react': 17.0.39
@@ -856,37 +846,58 @@ importers:
 
   packages/engine-frontend:
     specifiers:
-      '@headlessui/react': 1.7.0
       '@ledger-sync/cdk-core': '*'
       '@ledger-sync/engine-backend': '*'
+      '@ledger-sync/ui': '*'
       '@ledger-sync/util': '*'
-      '@radix-ui/react-dialog': 1.0.0
-      '@react-hookz/web': 15.1.0
       '@trpc/client': 9.26.0
       '@trpc/react': 9.26.0
       '@trpc/server': 9.26.0
       '@types/react': '*'
-      framer-motion: 6.5.1
-      phosphor-react: 1.4.1
       react: '*'
       react-dom: '*'
-      react-query: 3.39.2
-      tailwind-merge: '*'
+      react-query: '*'
     dependencies:
-      '@headlessui/react': 1.7.0_sfoxds7t5ydpegc3knd667wn6m
       '@ledger-sync/cdk-core': link:../cdk-core
       '@ledger-sync/engine-backend': link:../engine-backend
+      '@ledger-sync/ui': link:../ui
       '@ledger-sync/util': link:../@utils/util
-      '@radix-ui/react-dialog': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@trpc/client': 9.26.0_@trpc+server@9.26.0
       '@trpc/react': 9.26.0_irv66ybkadcialtmo3uz32bymi
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
+    devDependencies:
+      '@types/react': 17.0.39
+
+  packages/ui:
+    specifiers:
+      '@headlessui/react': 1.7.0
+      '@radix-ui/react-dialog': 1.0.0
+      '@radix-ui/react-dropdown-menu': 1.0.0
+      '@radix-ui/react-radio-group': 1.0.0
+      '@radix-ui/react-slot': 1.0.0
+      '@radix-ui/react-tabs': 1.0.0
+      '@react-hookz/web': '*'
+      '@types/react': '*'
+      framer-motion: 6.5.1
+      phosphor-react: '*'
+      react: '*'
+      react-dom: '*'
+      tailwind-merge: '*'
+    dependencies:
+      '@headlessui/react': 1.7.0_sfoxds7t5ydpegc3knd667wn6m
+      '@radix-ui/react-dialog': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
+      '@radix-ui/react-dropdown-menu': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
+      '@radix-ui/react-radio-group': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
+      '@radix-ui/react-slot': 1.0.0_react@17.0.2
+      '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
+      '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       framer-motion: 6.5.1_sfoxds7t5ydpegc3knd667wn6m
       phosphor-react: 1.4.1_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
       tailwind-merge: 1.6.0
     devDependencies:
       '@types/react': 17.0.39
@@ -6896,14 +6907,6 @@ packages:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
-  /goober/2.1.11_csstype@3.1.0:
-    resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
-    peerDependencies:
-      csstype: ^3.0.10
-    dependencies:
-      csstype: 3.1.0
-    dev: false
-
   /google-auth-library/7.14.1:
     resolution: {integrity: sha512-5Rk7iLNDFhFeBYc3s8l1CqzbEBcdhwR193RlD4vSNFajIcINKI8W8P0JLmBpwymHqqWbX34pJDQu39cSy/6RsA==}
     engines: {node: '>=10'}
@@ -10167,20 +10170,6 @@ packages:
       object-assign: 4.1.1
       react: 17.0.2
       scheduler: 0.20.2
-    dev: false
-
-  /react-hot-toast/2.3.0_a3rolb2r43cxt5j5fxvpwhxlai:
-    resolution: {integrity: sha512-/RxV+bfjld7tSJR1SCLzMAXgFuNW7fCpK6+vbYqfmbGSWcqTMz2rizrvfWKvtcPH5HK0NqxmBaC5SrAy1F42zA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      goober: 2.1.11_csstype@3.1.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    transitivePeerDependencies:
-      - csstype
     dev: false
 
   /react-is/16.13.1:

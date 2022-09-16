@@ -17,8 +17,7 @@
     "@ledger-sync/util": "*",
     "csstype": "*",
     "react": "*",
-    "react-dom": "*",
-    "react-hot-toast": "2.3.0"
+    "react-dom": "*"
   },
   "devDependencies": {
     "@cfworker/json-schema": "1.12.4",

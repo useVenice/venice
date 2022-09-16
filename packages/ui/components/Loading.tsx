@@ -6,7 +6,7 @@ export function Loading() {
   useIntervalEffect(() => {
     setCount((prev) => (prev + 1) % 3)
   }, INTERVAL_MS)
-  return <span className="text-xs">Loading{'.'.repeat(count + 1)}</span>
+  return <span className="text-sm">Loading{'.'.repeat(count + 1)}</span>
 }
 
 const INTERVAL_MS = 500

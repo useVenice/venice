@@ -30,6 +30,7 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../packages/cdk-ledger'),
   path.resolve(__dirname, '../../packages/engine-frontend'),
   path.resolve(__dirname, '../../packages/engine-backend'),
+  path.resolve(__dirname, '../../packages/ui'),
 ])
 
 /**
