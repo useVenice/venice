@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import {
   ArrowClockwise,
   Circle,
@@ -21,13 +20,12 @@ import {
   DropdownMenuTrigger,
 } from '../components/DropdownMenu'
 import {InstitutionLogo} from '../components/InstitutionLogo'
-import {Layout} from '../components/Layout'
 import {Loading} from '../components/Loading'
 import {useEnv} from '../contexts/atoms'
 
 export function MyConnectionsScreen() {
   const env = useEnv()
-  const {connectionsRes, ledgerId} = useLedgerSync({envName: env})
+  const {connectionsRes} = useLedgerSync({envName: env})
   return (
     <Container className="flex-1 overflow-y-auto">
       {match(connectionsRes)

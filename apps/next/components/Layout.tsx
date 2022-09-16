@@ -1,5 +1,4 @@
 import {useAtom} from 'jotai'
-import Link from 'next/link'
 import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
