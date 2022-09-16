@@ -4,22 +4,18 @@ import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 
-import {atomWithPersistedQueryParam} from './utils/atomWithPersistedQueryParam'
+import {atomWithQueryParam} from './utils/atomWithQueryParam'
 
 export const kAccessToken = 'accessToken' as const
 export const kEnv = 'env' as const
-export const accessTokenAtom = atomWithPersistedQueryParam(
-  kAccessToken,
-  '',
-  StringParam,
-)
-const envAtom = atomWithPersistedQueryParam<EnvName>(
+export const accessTokenAtom = atomWithQueryParam(kAccessToken, '', StringParam)
+const envAtom = atomWithQueryParam<EnvName>(
   kEnv,
   'sandbox',
   createEnumParam(zEnvName.options),
 )
 
-export const developerModeAtom = atomWithPersistedQueryParam(
+export const developerModeAtom = atomWithQueryParam(
   'developerMode',
   false,
   BooleanParam,

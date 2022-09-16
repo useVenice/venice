@@ -7,7 +7,7 @@ import {atomWithCookie} from './atomWithCookie'
 import {atomWithQueryParam, getSearchParams} from './atomWithQueryParam'
 
 /** Persist query param into cookie */
-export function atomWithPersistedQueryParam<T>(
+export function buggy__atomWithPersistedQueryParam<T>(
   key: string,
   initialValue: T,
   queryParamConfig: QueryParamConfig<
@@ -21,6 +21,12 @@ export function atomWithPersistedQueryParam<T>(
     (get) => {
       if (typeof window !== 'undefined' && getSearchParams().has(key)) {
         const paramValue = get(paramAtom)
+        // BUG ALERT: This does not invoke write function of the cookie atom
+        // and therefore will be out of sync until page refresh.
+        // Couldn't figure out an easy way to fix it.
+
+        // Also cookieStorage change API is not universal yet (type not available in ts core)
+        // Also cookies are prone to be out of date across tabs...
         setCookie(key, JSON.stringify(paramValue))
         return paramValue
       } else {

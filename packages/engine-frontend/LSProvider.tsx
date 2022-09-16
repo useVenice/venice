@@ -85,6 +85,8 @@ export function LSProvider<
 
   const developerMode = (userContext.isAdmin && options.developerMode) || false
 
+  console.log('[LSProvider]', {ledgerId, isAdmin, userContext, accessToken})
+
   // const getLedgerId = useGetter(ledgerId) // Pass me to the server...
 
   const trpcClient = React.useMemo(
