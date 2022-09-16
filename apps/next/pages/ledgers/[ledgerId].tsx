@@ -14,7 +14,7 @@ export default function LedgerPage() {
   return (
     <>
       <Head>
-        <title>LedgerSync | Viewing as {ledgerId}</title>
+        <title>LedgerSync | {ledgerId}</title>
       </Head>
 
       <Layout
