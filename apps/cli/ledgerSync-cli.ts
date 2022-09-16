@@ -16,10 +16,11 @@ import {
 import type {Id} from '@ledger-sync/cdk-core'
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import {kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
-import type { NonEmptyArray} from '@ledger-sync/util';
-import {fromMaybeArray} from '@ledger-sync/util'
+import type {
+  NonEmptyArray} from '@ledger-sync/util';
 import {
   compact,
+  fromMaybeArray,
   parseUrl,
   R,
   z,
@@ -86,6 +87,9 @@ cli
                   | Id['ldgr']
                   | undefined,
               }),
+            // onError: ({error}) => {
+            //   // error.message = 'new message...'
+            // },
           })
         })
 
