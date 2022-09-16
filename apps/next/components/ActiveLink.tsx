@@ -2,7 +2,6 @@ import type {LinkProps} from 'next/link'
 import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
-import {twMerge} from 'tailwind-merge'
 
 import type {Merge} from '@ledger-sync/util'
 import {parseQueryParams, stringifyQueryParams} from '@ledger-sync/util'
@@ -26,10 +25,12 @@ export const ActiveLink = React.forwardRef(function ActiveLink(
   const pathname = url.pathname
   // Preserve query shall be the default behavior...
   const query = stringifyQueryParams({
+    ...parseQueryParams(url.search), // Sort order...
     ...router.query,
     ...parseQueryParams(url.search),
   })
 
+  // This doesn't work so well anymore now that we use the same pathname...
   // React.useEffect(() => {
   //   // Check if the router fields are updated client-side
   //   if (router.isReady) {

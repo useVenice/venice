@@ -1,4 +1,3 @@
-import {useRouter} from 'next/router'
 import {CaretRight} from 'phosphor-react'
 import {useState} from 'react'
 import {match} from 'ts-pattern'
