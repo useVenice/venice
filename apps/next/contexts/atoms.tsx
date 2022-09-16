@@ -1,4 +1,3 @@
-import {useAtomValue} from 'jotai'
 import {useRouter} from 'next/router'
 import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 
@@ -36,10 +35,6 @@ export const searchByAtom = atomWithQueryParam(
   'institution',
   createEnumParam(['institution' as const, 'provider' as const]),
 )
-
-export function useEnv() {
-  return useAtomValue(envAtom)
-}
 
 export function useRouterPlus() {
   const router = useRouter()

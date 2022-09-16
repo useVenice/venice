@@ -1,3 +1,4 @@
+import {useAtomValue} from 'jotai'
 import {
   ArrowClockwise,
   Circle,
@@ -10,21 +11,21 @@ import {match} from 'ts-pattern'
 
 import type {ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
-import {formatDate, sentenceCase} from '@ledger-sync/util'
-
-import {Container} from '../components/Container'
 import {
+  Container,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../components/DropdownMenu'
+  Loading,
+} from '@ledger-sync/ui'
+import {formatDate, sentenceCase} from '@ledger-sync/util'
+
 import {InstitutionLogo} from '../components/InstitutionLogo'
-import {Loading} from '../components/Loading'
-import {useEnv} from '../contexts/atoms'
+import {envAtom} from '../contexts/atoms'
 
 export function MyConnectionsScreen() {
-  const env = useEnv()
+  const env = useAtomValue(envAtom)
   const {connectionsRes} = useLedgerSync({envName: env})
   return (
     <Container className="flex-1 overflow-y-auto">
@@ -59,14 +60,12 @@ function ConnectionCard({
     institution: ZStandard['institution'] | null | undefined
   }
 }) {
-  const env = useEnv()
+  const env = useAtomValue(envAtom)
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
   // How do we express these situations?
   const {connect, syncConnection, deleteConnection, developerMode} =
-    useLedgerSync({
-      envName: env,
-    })
+    useLedgerSync({envName: env})
   return (
     <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
       <div className="card-body space-y-4">
@@ -100,7 +99,12 @@ function ConnectionCard({
           </div>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="btn-outline btn btn-sm btn-circle border-base-content/25 text-lg">
+            <DropdownMenuTrigger
+              className={twMerge(
+                'btn-outline btn btn-sm btn-circle border-base-content/25 text-lg',
+                (syncConnection.isLoading || deleteConnection.isLoading) &&
+                  'btn-disabled loading',
+              )}>
               <DotsThreeVertical />
             </DropdownMenuTrigger>
 

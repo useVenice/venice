@@ -14,6 +14,7 @@ import {QueryParamProvider} from 'use-query-params'
 import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import type {Id} from '@ledger-sync/cdk-core'
 import {LSProvider} from '@ledger-sync/engine-frontend'
+import {UIProvider} from '@ledger-sync/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 
@@ -69,19 +70,16 @@ export default function MyApp({Component, pageProps}: AppProps) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>LedgerSync</title>
       </Head>
-      {/*
-       Interesting how the Provider is actually not even needed...
-       @yenbekbay let me know if you think we should in fact add a provider...
-       */}
-      {/* <PortalParamsProvider> */}
+
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
-          <_LSProvider>
-            <Component {...pageProps} />
-          </_LSProvider>
+          <UIProvider>
+            <_LSProvider>
+              <Component {...pageProps} />
+            </_LSProvider>
+          </UIProvider>
         </QueryClientProvider>
       </QueryParamProvider>
-      {/* </PortalParamsProvider> */}
     </>
   )
 }

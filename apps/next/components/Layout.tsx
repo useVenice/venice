@@ -3,16 +3,16 @@ import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
-
-import {developerModeAtom} from '../contexts/atoms'
-import {ActiveLink} from './ActiveLink'
-import {Container} from './Container'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './DropdownMenu'
+} from '@ledger-sync/ui'
+
+import {Container} from '../../../packages/ui/components/Container'
+import {developerModeAtom} from '../contexts/atoms'
+import {ActiveLink} from './ActiveLink'
 
 export interface LinkInput {
   label: string
