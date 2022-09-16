@@ -16,7 +16,8 @@
     "prepare": "husky install",
     "typecheck": "tsc --project . --noEmit",
     "validate": "run-s --silent typecheck lint test",
-    "ledgerSync": "tsx ./bin/ledgerSync"
+    "ledgerSync": "tsx ./bin/ledgerSync",
+    "migration": "tsx ./apps/cli/pgMigrator-cli"
   },
   "lint-staged": {
     "**/*.{js,ts,tsx,json,css,yml,yaml}": "prettier --write",

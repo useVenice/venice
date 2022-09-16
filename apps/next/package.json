@@ -5,6 +5,7 @@
   "scripts": {
     "build": "run-s --silent build:*",
     "build:css": "pnpm run generate:css --minify",
+    "build:migration": "pnpm --dir ../../ migration up",
     "build:next": "next build",
     "dev": "run-p --silent dev:*",
     "dev:css": "pnpm run generate:css --watch",

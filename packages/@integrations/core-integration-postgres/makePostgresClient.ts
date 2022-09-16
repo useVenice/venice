@@ -5,11 +5,11 @@ import type {
 } from 'slonik/dist/src/types'
 
 import type {MaybeArray} from '@ledger-sync/util'
-import {mapValues} from '@ledger-sync/util'
 import {
   defineProxyFn,
   fromMaybeArray,
   isPlainObject,
+  mapValues,
   memoize,
   R,
   snakeCase,
@@ -25,12 +25,11 @@ export const zPgConfig = z.object({
   databaseUrl: z.string(),
   migrationsPath: z.string().optional(),
   migrationTableName: z.string().optional(),
-  runMigration: z.boolean().optional(),
 })
 
 export const makePostgresClient = zFunction(
   zPgConfig,
-  ({databaseUrl, migrationsPath, migrationTableName, runMigration}) => {
+  ({databaseUrl, migrationsPath, migrationTableName}) => {
     const {createPool, sql, createTypeParserPreset} = $slonik()
     const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
@@ -63,20 +62,25 @@ export const makePostgresClient = zFunction(
             },
           ],
         })
-        if (runMigration) {
-          console.log('Will migrate with', {migrationsPath})
-          const migrator = new SlonikMigrator({
-            migrationsPath: migrationsPath ?? __dirname + '/migrations',
-            migrationTableName: migrationTableName ?? 'migrations',
-            slonik: pool,
-            logger: console,
-          })
-          await migrator.up()
-        }
         return pool
       },
       {isPromise: true},
     )
+
+    async function getMigrator() {
+      const pool = await getPool()
+      return new SlonikMigrator({
+        migrationsPath: migrationsPath ?? __dirname + '/migrations',
+        migrationTableName: migrationTableName ?? 'migrations',
+        slonik: pool,
+        logger: console,
+      })
+    }
+
+    async function runMigratorCli() {
+      const migrator = await getMigrator()
+      await migrator.runAsCLI()
+    }
 
     async function upsertById(...args: Parameters<typeof upsertByIdQuery>) {
       const pool = await getPool()
@@ -86,7 +90,7 @@ export const makePostgresClient = zFunction(
       }
       await pool.query(query)
     }
-    return {getPool, sql, upsertById}
+    return {getPool, sql, upsertById, getMigrator, runMigratorCli}
   },
 )
 
