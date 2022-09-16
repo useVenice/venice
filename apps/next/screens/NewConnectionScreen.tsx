@@ -1,35 +1,28 @@
+import {useAtom} from 'jotai'
 import Head from 'next/head'
-import {useRouter} from 'next/router'
 import {Plus} from 'phosphor-react'
 import React from 'react'
 import {match} from 'ts-pattern'
-import {createEnumParam, useQueryParam, withDefault} from 'use-query-params'
 
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {compact} from '@ledger-sync/util'
 
-import {Container} from '../../../components/Container'
-import {InstitutionLogo} from '../../../components/InstitutionLogo'
-import {Layout} from '../../../components/Layout'
-import {Loading} from '../../../components/Loading'
-import {Radio, RadioGroup} from '../../../components/RadioGroup'
-import {Tab, TabContent, TabList, Tabs} from '../../../components/Tabs'
+import {Container} from '../components/Container'
+import {InstitutionLogo} from '../components/InstitutionLogo'
+import {Layout} from '../components/Layout'
+import {Loading} from '../components/Loading'
+import {Radio, RadioGroup} from '../components/RadioGroup'
+import {Tab, TabContent, TabList, Tabs} from '../components/Tabs'
+import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
 
 type ConnectMode = 'institution' | 'provider'
 
-export default function LedgerNewConnectionScreen() {
-  const router = useRouter()
-
-  const [mode, setMode] = useQueryParam(
-    'mode',
-    withDefault(
-      createEnumParam<ConnectMode>(['institution', 'provider']),
-      'institution' as ConnectMode,
-    ),
-  )
-  const [envName, setEnvName] = React.useState<EnvName>('sandbox')
+export function NewConnectionScreen() {
+  const [, setMode] = useAtom(modeAtom)
+  const [searchBy, setSearchBy] = useAtom(searchByAtom)
+  const [envName, setEnvName] = useAtom(envAtom)
   const [keywords, setKeywords] = React.useState('')
   const {
     ledgerId,
@@ -43,7 +36,7 @@ export default function LedgerNewConnectionScreen() {
     (...args: Parameters<typeof _connect>) => {
       _connect(...args)
         .finally(() => {
-          void router.replace(`/ledgers/${ledgerId}`)
+          setMode('manage')
         })
         .then((res) => {
           console.log('connect success', res)
@@ -52,7 +45,7 @@ export default function LedgerNewConnectionScreen() {
           console.error('connect error', err)
         })
     },
-    [_connect, router, ledgerId],
+    [_connect, setMode],
   )
 
   const onlyIntegrationId =
@@ -77,7 +70,7 @@ export default function LedgerNewConnectionScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {
             label: 'New connection',
-            href: `/ledgers/${ledgerId}/new-connection`,
+            href: `/ledgers/${ledgerId}?mode=connect`,
             primary: true,
             fixed: true,
           },
@@ -104,8 +97,10 @@ export default function LedgerNewConnectionScreen() {
             }
             return (
               <Tabs
-                value={mode}
-                onValueChange={(newMode) => setMode(newMode as ConnectMode)}>
+                value={searchBy}
+                onValueChange={(newMode) =>
+                  setSearchBy(newMode as ConnectMode)
+                }>
                 <TabList className="border-b border-gray-100">
                   <Tab value="institution">By institution</Tab>
                   <Tab value="provider">By provider (Developer mode)</Tab>

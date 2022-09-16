@@ -11,7 +11,7 @@ import {
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import {fromMaybeArray, identity, R, safeJSONParse} from '@ledger-sync/util'
 
-import {kAccessToken} from '../../contexts/PortalParamsContext'
+import {kAccessToken} from '../../contexts/atoms'
 
 export function getAccessToken(req: NextApiRequest) {
   return (

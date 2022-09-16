@@ -13,19 +13,19 @@ import type {ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {formatDate, sentenceCase} from '@ledger-sync/util'
 
-import {Container} from '../../../components/Container'
+import {Container} from '../components/Container'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/DropdownMenu'
-import {InstitutionLogo} from '../../../components/InstitutionLogo'
-import {Layout} from '../../../components/Layout'
-import {Loading} from '../../../components/Loading'
-import {useEnv} from '../../../contexts/PortalParamsContext'
+} from '../components/DropdownMenu'
+import {InstitutionLogo} from '../components/InstitutionLogo'
+import {Layout} from '../components/Layout'
+import {Loading} from '../components/Loading'
+import {useEnv} from '../contexts/atoms'
 
-export default function LedgerMyConnectionsScreen() {
+export function MyConnectionsScreen() {
   const env = useEnv()
   const {connectionsRes, ledgerId} = useLedgerSync({envName: env})
   return (
@@ -39,7 +39,7 @@ export default function LedgerMyConnectionsScreen() {
           {label: 'My connections', href: `/ledgers/${ledgerId}`},
           {
             label: 'New connection',
-            href: `/ledgers/${ledgerId}/new-connection`,
+            href: `/ledgers/${ledgerId}?mode=connect`,
             primary: true,
             fixed: true,
           },

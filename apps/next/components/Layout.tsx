@@ -5,7 +5,7 @@ import {twMerge} from 'tailwind-merge'
 
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
-import {developerModeAtom} from '../contexts/PortalParamsContext'
+import {developerModeAtom} from '../contexts/atoms'
 import {ActiveLink} from './ActiveLink'
 import {Container} from './Container'
 import {
@@ -45,11 +45,11 @@ export function Layout({
       <header className="border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
-          <Link
+          <ActiveLink
             href="/"
             className="btn btn-ghost -mx-4 truncate text-xl font-bold text-primary">
             {title}
-          </Link>
+          </ActiveLink>
 
           {links.length > 0 && (
             <div className="flex shrink-0 grow items-center justify-end">
