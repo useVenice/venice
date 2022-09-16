@@ -8,14 +8,16 @@ import {
   ledgerSyncRouter,
   syncEngine,
 } from '@ledger-sync/app-config/backendConfig'
+import type {Id} from '@ledger-sync/cdk-core'
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
+import {kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
 import {fromMaybeArray, identity, R, safeJSONParse} from '@ledger-sync/util'
 
-import {kAccessToken} from '../../contexts/atoms'
+import {kAccessToken, kLedgerId} from '../../contexts/atoms'
 
 export function getAccessToken(req: NextApiRequest) {
   return (
-    fromMaybeArray(req.query['accessToken'] ?? [])[0] ??
+    fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??
     req.headers.authorization?.match(/^Bearer (.+)/)?.[1] ??
     R.pipe(
       getCookie(kAccessToken, {req}),
@@ -28,7 +30,16 @@ export function getAccessToken(req: NextApiRequest) {
 const handler = trpcNext.createNextApiHandler({
   router: ledgerSyncRouter,
   createContext: ({req}) => {
-    const ctx = syncEngine.zAccessTokenContext.parse(getAccessToken(req))
+    console.log('[createContext] Got ledgerId', {
+      query: req.query,
+      headers: req.headers,
+    })
+    const ctx = syncEngine.zContext.parse<'typed'>({
+      accessToken: getAccessToken(req),
+      ledgerId: fromMaybeArray(
+        req.query[kLedgerId] ?? req.headers[kXLedgerId] ?? [],
+      )[0] as Id['ldgr'] | undefined,
+    })
     console.log('[createContext] Got ctx', ctx)
     return ctx
   },

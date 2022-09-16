@@ -4,15 +4,35 @@ import {TRPCError} from '@trpc/server'
 import {zId} from '@ledger-sync/cdk-core'
 import {z, zFunction, zGuard} from '@ledger-sync/util'
 
-export type UserInfo = z.infer<typeof _zUserInfo>
-const _zUserInfo = z.object({
+/** Header key */
+export const kXLedgerId = 'X-Ledger-Id'.toLowerCase()
+
+export type UserInfo = z.infer<typeof __zUserInfo>
+const __zUserInfo = z.object({
   ledgerId: zId('ldgr').nullish(),
   isAdmin: z.boolean().nullish(),
 })
 
 export type ParseJwtPayload = (jwtPayload: jwt.JwtPayload) => UserInfo
 
-export const zUserInfo = (options: {
+export type EngineContext = z.infer<ReturnType<typeof _zContext>>
+
+export const _zContext = (...args: Parameters<typeof _zUserInfo>) => {
+  const zUserInfo = _zUserInfo(...args)
+  return z
+    .object({
+      ledgerId: zId('ldgr').nullish(),
+      accessToken: zUserInfo,
+    })
+    .transform(({ledgerId, accessToken: userInfo}) => ({
+      ledgerId:
+        (userInfo.isAdmin && ledgerId) || userInfo.ledgerId || undefined,
+      isAdmin: userInfo.isAdmin ?? false,
+      userInfo,
+    }))
+}
+
+export const _zUserInfo = (options: {
   /** If undefined, will use jwtDecode */
   parseJwtToken?: (token: string) => jwt.JwtPayload
   parseJwtPayload?: ParseJwtPayload
@@ -38,7 +58,7 @@ export const zUserInfo = (options: {
       zGuard((token) => {
         const payload = token ? parseJwtToken(token) : undefined
         const userInfo = parseJwtPayload(payload ?? {})
-        return _zUserInfo.parse(userInfo)
+        return __zUserInfo.parse(userInfo)
       }),
     )
 }
