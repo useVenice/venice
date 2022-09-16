@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import * as z from 'zod'
+import {compact} from 'remeda'
 
 import {R} from './data-utils'
 
@@ -98,4 +102,51 @@ export function zodInsecureDebug() {
     })
     return {message: ctx.defaultError}
   })
+}
+
+// MARK: - Custom wrapper and error handling
+
+/** Better ZodParser... @see https://github.com/colinhacks/zod/issues/105 */
+export function zParser<T extends z.ZodType>(schema: T) {
+  const _catchErr = (err: unknown) =>
+    catchZodError(err, {rootTypeName: schema.description})
+
+  const parseUnknown = (
+    ...args: Parameters<typeof schema.parse>
+  ): z.output<T> => {
+    try {
+      return schema.parse(...args)
+    } catch (err) {
+      return _catchErr(err)
+    }
+  }
+  const parseUnknownAsync: typeof schema.parseAsync = (
+    ...args: Parameters<typeof schema.parseAsync>
+  ): Promise<z.output<T>> => schema.parseAsync(...args).catch(_catchErr)
+
+  return {
+    schema,
+    _input: schema._input as z.input<T>,
+    _output: schema._output as z.output<T>,
+    parseUnknown,
+    parse: (
+      input: T['_input'],
+      ...rest: Rest1<Parameters<typeof parseUnknown>>
+    ) => parseUnknown(input, ...rest),
+    parseUnknownAsync,
+    parseAsync: (
+      input: T['_input'],
+      ...reest: Rest1<Parameters<typeof parseUnknown>>
+    ) => parseUnknownAsync(input, ...reest),
+  }
+}
+type Rest1<T extends [any, ...any[]]> = T extends [any, ...infer U] ? U : []
+
+export function catchZodError(err: unknown, opts?: {rootTypeName?: string}) {
+  if (err instanceof z.ZodError && err.issues[0]) {
+    const issue = err.issues[0]
+    const paths = compact([opts?.rootTypeName, ...issue.path])
+    throw new Error(`${issue.code} at ${paths.join('.')}: ${issue.message}`)
+  }
+  throw err
 }

@@ -11,7 +11,7 @@ import type {
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
 import {_zContext, kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
-import {debugMe, R} from '@ledger-sync/util'
+import {R} from '@ledger-sync/util'
 
 import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
