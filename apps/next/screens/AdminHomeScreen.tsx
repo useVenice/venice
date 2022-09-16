@@ -6,12 +6,14 @@ import {match} from 'ts-pattern'
 import type {LedgerIdResultRow} from '@ledger-sync/cdk-core'
 import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
 
-import {Container} from '../../components/Container'
-import {Layout} from '../../components/Layout'
-import {Loading} from '../../components/Loading'
+import {Container} from '../components/Container'
+import {Layout} from '../components/Layout'
+import {Loading} from '../components/Loading'
+import {useRouterPlus} from '../contexts/atoms'
 
-export default function LedgersScreen() {
-  const router = useRouter()
+export function AdminHomeScreen() {
+  const router = useRouterPlus()
+
   const [ledgerId, setLedgerId] = useState('')
   const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
   return (
@@ -21,7 +23,7 @@ export default function LedgersScreen() {
           <form
             onSubmit={(event) => {
               event.preventDefault()
-              void router.push(`/ledgers/${ledgerId}`)
+              void router.pushPathname(`/ledgers/${ledgerId}`)
             }}>
             <div className="form-control">
               <label htmlFor="ledgerId" className="label">
@@ -74,11 +76,11 @@ export default function LedgersScreen() {
 }
 
 function LedgerCard({ledger: l}: {ledger: LedgerIdResultRow}) {
-  const router = useRouter()
+  const router = useRouterPlus()
   return (
     <div
       className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg"
-      onClick={() => router.push(`/ledgers/${l.id}`)}>
+      onClick={() => router.pushPathname(`/ledgers/${l.id}`)}>
       <div className="card-body">
         <div className="flex items-center space-x-4">
           <div className="flex flex-col space-y-1">
