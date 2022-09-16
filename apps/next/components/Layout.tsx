@@ -42,12 +42,12 @@ export function Layout({
 
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
-      <header className="border-b border-gray-100">
+      <header className="overflow-x-hidden border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
           <ActiveLink
             href="/"
-            className="btn btn-ghost -mx-4 truncate text-xl font-bold text-primary">
+            className="shrink-1 truncate text-xl font-bold text-primary">
             {title}
           </ActiveLink>
 
