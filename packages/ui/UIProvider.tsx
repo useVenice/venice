@@ -1,5 +1,12 @@
 import React from 'react'
 
+import {ToastProvider, ToastViewport} from './components'
+
 export function UIProvider({children}: {children: React.ReactNode}) {
-  return <>{children}</>
+  return (
+    <ToastProvider>
+      {children}
+      <ToastViewport />
+    </ToastProvider>
+  )
 }
