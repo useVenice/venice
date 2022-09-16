@@ -1,22 +1,23 @@
 # Ledger Sync
 
-## Get started
+## One click deploy with Vercel
 
-```bash
-git clone git@github.com:alkafinance/ledger-sync.git
-```
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falkafinance%2Fledger-sync)
 
-1. Copy .env.example into .env and populate your own values
+That's it. 
 
-2. Run the migrations files manually inside `packages/@integrations/core-integration-postgres/migrations` against a postgres database you would like to use
+## Get started with development
 
-   - Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
+1. Clone repo `git clone git@github.com:alkafinance/ledger-sync.git`
+
+2. Copy `.env.example` into `.env` and populate your own values
 
 3. Install dependencies & run
 
 ```bash
 nvm use 16 # Optional, we recommend node 16.x
 pnpm install
+pnpm run migration up # Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
 pnpm run dev
 
 ```
@@ -51,3 +52,4 @@ For integration development, we found the following tools really helpful for gen
 type as well as api clients
 - https://api.openapi-generator.tech/index.html
 - https://transform.tools/
+
