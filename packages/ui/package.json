@@ -11,6 +11,7 @@
     "@radix-ui/react-radio-group": "1.0.0",
     "@radix-ui/react-slot": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
+    "@radix-ui/react-toast": "1.0.0",
     "@react-hookz/web": "*",
     "framer-motion": "6.5.1",
     "phosphor-react": "*",
