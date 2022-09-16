@@ -13,8 +13,11 @@ import {
   ledgerSyncRouter,
   syncEngine,
 } from '@ledger-sync/app-config/backendConfig'
+import type {Id} from '@ledger-sync/cdk-core'
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
-import type {NonEmptyArray} from '@ledger-sync/util'
+import {kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
+import type { NonEmptyArray} from '@ledger-sync/util';
+import {fromMaybeArray} from '@ledger-sync/util'
 import {
   compact,
   parseUrl,
@@ -35,7 +38,10 @@ if (process.env['DEBUG_ZOD']) {
 
 export const cli = cliFromRouter(ledgerSyncRouter, {
   cleanup: () => {}, // metaService.shutdown?
-  context: syncEngine.zAccessTokenContext.parse(process.env['ACCESS_TOKEN']),
+  context: syncEngine.zContext.parse<'typed'>({
+    accessToken: process.env['ACCESS_TOKEN'],
+    ledgerId: process.env['LEDGER_ID'] as Id['ldgr'] | undefined,
+  }),
 })
 
 cli
@@ -73,9 +79,13 @@ cli
             req,
             res,
             createContext: ({req}) =>
-              syncEngine.zAccessTokenContext.parse(
-                req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
-              ),
+              syncEngine.zContext.parse<'typed'>({
+                accessToken:
+                  req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
+                ledgerId: fromMaybeArray(req.headers[kXLedgerId] ?? [])[0] as
+                  | Id['ldgr']
+                  | undefined,
+              }),
           })
         })
 

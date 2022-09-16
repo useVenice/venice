@@ -24,8 +24,9 @@ import {
 } from '@ledger-sync/cdk-core'
 import {compact, R, rxjs, z, zTrimedString} from '@ledger-sync/util'
 
-import type {ParseJwtPayload, UserInfo} from './auth-utils'
-import {makeJwtClient, zUserInfo} from './auth-utils'
+import type { ParseJwtPayload, UserInfo} from './auth-utils';
+import {_zContext} from './auth-utils'
+import {_zUserInfo, makeJwtClient} from './auth-utils'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -607,12 +608,12 @@ export const makeSyncEngine = <
     ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})
     : undefined
 
-  const zAccessTokenContext = zUserInfo({
+  const zContext = _zContext({
     parseJwtToken: jwtClient ? jwtClient.verify : undefined,
     parseJwtPayload,
   })
 
-  return {router, jwtClient, zAccessTokenContext}
+  return {router, jwtClient, zContext}
 }
 
 /** Only purpose of this is to support type inference */

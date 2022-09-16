@@ -10,7 +10,11 @@ import type {
   UseConnectHook,
 } from '@ledger-sync/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
-import {zUserInfo} from '@ledger-sync/engine-backend/auth-utils'
+import {
+  _zContext,
+  _zUserInfo,
+  kXLedgerId,
+} from '@ledger-sync/engine-backend/auth-utils'
 import {R} from '@ledger-sync/util'
 
 import type {DialogInstance} from './components/Dialog'
@@ -73,38 +77,36 @@ export function LSProvider<
   const url = config.apiUrl ?? '/api'
 
   const getAccessToken = useGetter(accessToken)
+  const getLedgerId = useGetter(options.ledgerId)
 
-  const zUserContext = zUserInfo({parseJwtPayload: config.parseJwtPayload})
+  const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
 
-  const userContext = zUserContext.parse(accessToken)
-  const isAdmin = userContext.isAdmin ?? false
-  // || process.env.NODE_ENV === 'development'
-  // LedgerId may be overriden if we are admin
-  const ledgerId =
-    (isAdmin ? options.ledgerId : null) ?? userContext.ledgerId ?? undefined
+  const {ledgerId, isAdmin = false} = zAuthContext.parse<'typed'>({
+    accessToken,
+    ledgerId: options.ledgerId,
+  })
 
-  const developerMode = (userContext.isAdmin && options.developerMode) || false
+  const developerMode = (isAdmin && options.developerMode) || false
 
-  console.log('[LSProvider]', {ledgerId, isAdmin, userContext, accessToken})
-
-  // const getLedgerId = useGetter(ledgerId) // Pass me to the server...
+  console.log('[LSProvider]', {
+    ledgerId,
+    isAdmin,
+    accessToken,
+  })
 
   const trpcClient = React.useMemo(
     () =>
       trpc.createClient({
-        headers: () =>
-          R.pipe(
-            getAccessToken?.(),
-            (token) => (token ? {Authorization: `Bearer ${token}`} : {}),
-            // (res) => {
-            //   console.log('headers', res)
-            //   return res
-            // },
+        headers: () => ({
+          ...R.pipe(getAccessToken?.(), (token) =>
+            token ? {Authorization: `Bearer ${token}`} : {},
           ),
+          ...R.pipe(getLedgerId?.(), (id) => (id ? {[kXLedgerId]: id} : {})),
+        }),
         // Disable reqeuest batching in DEBUG mode for easier debugging
         ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
       }),
-    [__DEBUG__, getAccessToken, url],
+    [__DEBUG__, getAccessToken, getLedgerId, url],
   )
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
