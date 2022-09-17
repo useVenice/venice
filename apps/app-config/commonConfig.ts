@@ -18,6 +18,25 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
+import {z, zEnvVars, zParser} from '@ledger-sync/util'
+
+export const zCommonEnv = zEnvVars({
+  NEXT_PUBLIC_API_URL: z
+    .string()
+    .default('/api')
+    .describe(
+      `Fully qualified url your venice api used for webhooks and server-side rendering.
+      Normally this is $SERVER_HOSTNAME/api. e.g. https://connect.example.com/api`,
+    ),
+})
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+const commonEnv = zParser(zCommonEnv).parse({
+  // Need to use fully qualified form of process.env.$VAR for
+  // webpack DefineEnv that next.js uses to work
+  NEXT_PUBLIC_API_URL: process.env['NEXT_PUBLIC_API_URL']!,
+})
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 // TODO: Removing providers we are not using so we don't have nearly as much code, at least on the frontend!
 // Further perhaps code from supported providers can be loaded dynamically based on
@@ -50,7 +69,7 @@ export const ledgerSyncCommonConfig = LSProvider.config({
   ],
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  apiUrl: process.env['NEXT_PUBLIC_API_URL'] ?? '/api', // apiUrl?
+  apiUrl: commonEnv.NEXT_PUBLIC_API_URL,
 })
 
 // console.log('Using config', ledgerSyncConfig) // Too verbose...
