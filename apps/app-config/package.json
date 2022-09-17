@@ -6,7 +6,7 @@
     "register.node.ts"
   ],
   "scripts": {
-    "dev": "pnpm tsx watch ./_generateReadme.ts"
+    "dev": "pnpm tsx watch ./_generateDocs.bin.ts"
   },
   "dependencies": {
     "@ledger-sync/cdk-core": "*",
