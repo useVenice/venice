@@ -47,4 +47,4 @@ const dotEnvExampleOutPath = path.join(__dirname, '../../', '.env.example')
 fs.writeFileSync(dotEnvExampleOutPath, dotEnvExample)
 console.log(`Wrote ${dotEnvExampleOutPath}`)
 
-console.log(dotEnvExample)
+// console.log(dotEnvExample)

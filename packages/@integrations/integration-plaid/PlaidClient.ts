@@ -32,8 +32,7 @@ export const zCountryCode = z.nativeEnum(CountryCode)
 export const zProducts = z.nativeEnum(Products)
 
 export const zPlaidClientConfig = z.object({
-  client_id: z.string(),
-  public_key: z.string(),
+  clientId: z.string(),
   secrets: z.record(zEnvName, z.string()),
 })
 
@@ -54,7 +53,7 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
     const configuration = new Configuration({
       basePath: PlaidEnvironments[envName],
       baseOptions: {
-        headers: {'PLAID-CLIENT-ID': cfg.client_id, 'PLAID-SECRET': secret},
+        headers: {'PLAID-CLIENT-ID': cfg.clientId, 'PLAID-SECRET': secret},
         httpsAgent: getDefaultProxyAgent(),
       },
     })
