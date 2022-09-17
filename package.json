@@ -1,5 +1,5 @@
 {
-  "name": "alka-monorepo",
+  "name": "ledger-sync",
   "version": "0.0.0",
   "private": true,
   "repository": "git@github.com:alkafinance/ledger-sync.git",

@@ -120,7 +120,7 @@ export const zSyncOptions = z.object({
 })
 
 export function makeSyncParsers<
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
   providers,

@@ -89,6 +89,7 @@ export {
   truncate,
   upperCase,
   upperFirst as upperCaseFirst,
+  kebabCase,
 } from 'lodash'
 export {default as md5Hash} from 'md5-hex'
 export {parseFullName} from 'parse-full-name'

@@ -35,9 +35,7 @@ export const zProducts = z.nativeEnum(Products)
 export const zPlaidClientConfig = z.object({
   client_id: z.string(),
   public_key: z.string(),
-  secrets: z
-    .record(z.string())
-    .refine(castIs<Partial<{[K in EnvName]: string}>>()),
+  secrets: z.record(zEnvName, z.string()),
 })
 
 export const zWebhook = zCast<WebhookShape>()

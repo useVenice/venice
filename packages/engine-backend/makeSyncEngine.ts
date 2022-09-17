@@ -53,7 +53,7 @@ export interface EngineMeta {}
 
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 export interface SyncEngineConfig<
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 > {
   providers: TProviders
@@ -105,7 +105,7 @@ export type AnySyncMutationOutput<
 > = inferProcedureOutput<AnySyncRouter['_def']['mutations'][K]>
 
 export const makeSyncEngine = <
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
   metaService,
@@ -625,9 +625,9 @@ export const makeSyncEngine = <
   // TODO: Move me into a generic location...
   for (const key of ['queries', 'mutations', 'subscriptions'] as const) {
     for (const [name, val] of Object.entries(router._def[key])) {
-      const inputParser = (val ).inputParser
+      const inputParser = val.inputParser
       if (isZodType(inputParser)) {
-        ;(val ).parseInputFn = zParser(
+        val.parseInputFn = zParser(
           inputParser.describe(`${key}.${name}.input`),
         ).parseAsync
       }
@@ -639,7 +639,7 @@ export const makeSyncEngine = <
 
 /** Only purpose of this is to support type inference */
 makeSyncEngine.config = <
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(
   config: SyncEngineConfig<TProviders, TLinks>,
