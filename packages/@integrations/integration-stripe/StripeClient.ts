@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 
-import {castIs, memoize, z, zFunction} from '@ledger-sync/util'
+import {memoize, z, zFunction} from '@ledger-sync/util'
 
 import {inferStripeModeFromToken} from './stripe-utils'
 
@@ -19,14 +19,8 @@ export const zModeName = z.enum(['test', 'live'])
 export const zStripeConfig = z
   .object({
     accountId: z.string().nullish(),
-    publishableKeys: z
-      .record(z.string())
-      .refine(castIs<Partial<{[K in ModeName]: string}>>())
-      .nullish(),
-    secretKeys: z
-      .record(z.string())
-      .refine(castIs<Partial<{[K in ModeName]: string}>>())
-      .nullish(),
+    publishableKeys: z.record(zModeName, z.string()).nullish(),
+    secretKeys: z.record(zModeName, z.string()).nullish(),
     secretKey: z.string().nullish(),
   })
   .nullish()

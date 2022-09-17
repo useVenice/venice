@@ -17,7 +17,7 @@ import type {DialogInstance} from './components/Dialog'
 import {Dialog} from './components/Dialog'
 
 export type SyncEngineCommonConfig<
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 > = Pick<
   SyncEngineConfig<TProviders, TLinks>,
@@ -46,7 +46,7 @@ export const LSContext = React.createContext<{
 } | null>(null)
 
 export function LSProvider<
-  T extends AnySyncProvider[],
+  T extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
   children,
@@ -165,7 +165,7 @@ export function LSProvider<
 LSProvider.useContext = () => React.useContext(LSContext)!
 
 LSProvider.config = <
-  TProviders extends AnySyncProvider[],
+  TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(
   config: SyncEngineCommonConfig<TProviders, TLinks>,
