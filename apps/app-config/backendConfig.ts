@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
@@ -9,9 +10,42 @@ import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
 // console.log('Using config', ledgerSyncConfig) // Too verbose...
 import {type inferProcedureInput} from '@ledger-sync/engine-backend'
-import {identity, R, Rx, safeJSONParse, z} from '@ledger-sync/util'
+import {identity, R, Rx, safeJSONParse, z, zParser} from '@ledger-sync/util'
 
-import {ledgerSyncCommonConfig} from './commonConfig'
+import {ledgerSyncCommonConfig, zCommonEnv} from './commonConfig'
+
+export const zBackendEnv = zParser(
+  zCommonEnv.extend({
+    POSTGRES_URL: z
+      .string()
+      .describe('Primary database used for metadata and user data storage'),
+    JWT_SECRET_OR_PUBLIC_KEY: z
+      .string()
+      .optional()
+      .describe('Used for validating authenticity of accessToken'),
+
+    PLAID_CLIENT_ID: z.string().optional(),
+    PLAID_SANDBOX_SECRET: z.string().optional(),
+    PLAID_DEVELOPMENT_SECRET: z.string().optional(),
+    PLAID_PRODUCTION_SECRET: z.string().optional(),
+
+    YODLEE_SANDBOX_CLIENT_ID: z.string().optional(),
+    YODLEE_SANDBOX_CLIENT_SECRET: z.string().optional(),
+    YODLEE_SANDBOX_ADMIN_LOGIN_NAME: z.string().optional(),
+    YODLEE_DEVELOPMENT_CLIENT_ID: z.string().optional(),
+    YODLEE_DEVELOPMENT_CLIENT_SECRET: z.string().optional(),
+    YODLEE_DEVELOPMENT_ADMIN_LOGIN_NAME: z.string().optional(),
+    YODLEE_PRODUCTION_CLIENT_ID: z.string().optional(),
+    YODLEE_PRODUCTION_CLIENT_SECRET: z.string().optional(),
+    YODLEE_PRODUCTION_ADMIN_LOGIN_NAME: z.string().optional(),
+    YODLEE_PRODUCTION_PROXY_URL: z.string().optional(),
+    YODLEE_PRODUCTION_PROXY_CERT: z.string().optional(),
+
+    TELLER_APPLICATION_ID: z.string().optional(),
+  }),
+)
+
+const backendEnv = zBackendEnv.parseUnknown(process.env)
 
 export function getEnv(
   key: string,
@@ -37,9 +71,9 @@ export function getEnv(
  */
 export const ledgerSyncBackendConfig = makeSyncEngine.config({
   ...ledgerSyncCommonConfig,
-  jwtSecretOrPublicKey: getEnv('JWT_SECRET_OR_PUBLIC_KEY'),
+  jwtSecretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
+  metaService: makePostgresMetaService({databaseUrl: backendEnv.POSTGRES_URL}),
   // TODO: support other config service such as fs later...
-  metaService: makePostgresMetaService({databaseUrl: getEnv('POSTGRES_URL')}),
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.
   // In contrast, connection shall include `external`
@@ -50,11 +84,37 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
   // TODO: Do not expose any of this to the frontend
   defaultIntegrations: {
     plaid: {
-      ...getEnv('PLAID_CREDENTIALS'),
+      client_id: backendEnv.PLAID_CLIENT_ID!,
+      public_key: '', // @deprecated
+      secrets: {
+        sandbox: backendEnv.PLAID_SANDBOX_SECRET!,
+        development: backendEnv.PLAID_DEVELOPMENT_SECRET!,
+        production: backendEnv.PLAID_PRODUCTION_SECRET!,
+      },
       clientName: 'Alka',
     },
     // teller: getEnv('TELLER_CREDENTIALS'),
-    // yodlee: getEnv('YODLEE_CONFIG'),
+    yodlee: {
+      sandbox: {
+        clientId: backendEnv.YODLEE_SANDBOX_CLIENT_ID!,
+        clientSecret: backendEnv.YODLEE_SANDBOX_CLIENT_SECRET!,
+        adminLoginName: backendEnv.YODLEE_SANDBOX_ADMIN_LOGIN_NAME!,
+      },
+      development: {
+        clientId: backendEnv.YODLEE_DEVELOPMENT_CLIENT_ID!,
+        clientSecret: backendEnv.YODLEE_DEVELOPMENT_CLIENT_SECRET!,
+        adminLoginName: backendEnv.YODLEE_DEVELOPMENT_ADMIN_LOGIN_NAME!,
+      },
+      production: {
+        clientId: backendEnv.YODLEE_PRODUCTION_CLIENT_ID!,
+        clientSecret: backendEnv.YODLEE_PRODUCTION_CLIENT_SECRET!,
+        adminLoginName: backendEnv.YODLEE_PRODUCTION_ADMIN_LOGIN_NAME!,
+        proxy: {
+          url: backendEnv.YODLEE_PRODUCTION_PROXY_URL!,
+          cert: backendEnv.YODLEE_PRODUCTION_PROXY_CERT!,
+        },
+      },
+    },
     // beancount: undefined,
     // onebrick: getEnv('ONEBRICK_CREDENTIALS'),
     // alka: {
@@ -116,7 +176,7 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
     destination: {
       id: 'conn_postgres',
       // TODO: Add validation here, and perhaps migration too
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+       
       settings: {databaseUrl: process.env['POSTGRES_URL']!},
       // provider: 'alka',
       // settings: {
