@@ -54,11 +54,6 @@ export const PROVIDERS = [
   postgresProvider,
 ] as const
 
-export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
-  p.name,
-  zFlatten(p.def.integrationConfig ?? z.unknown()),
-])
-
 // MARK: - Env vars
 
 export const zCommonEnv = zEnvVars({
@@ -81,14 +76,18 @@ export const zBackendEnv = zEnvVars({
     .describe('Used for validating authenticity of accessToken'),
 })
 
+export const zFlatConfigByIntId = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
+  `int_${p.name}`,
+  zFlatten(p.def.integrationConfig ?? z.unknown()),
+])
+
 export const zIntegrationEnv = zEnvVars(
   R.pipe(
-    zFlatConfigByProvider,
+    zFlatConfigByIntId,
     R.toPairs,
-    // R.map((p) => flattenZObject(p.def.integrationConfig, [`int_${p.name}`])),
-    R.map(([name, schema]) =>
+    R.map(([intId, schema]) =>
       R.mapKeys(schema.innerType().shape, (k) =>
-        compact([`int_${name}`, k]).join('__'),
+        compact([intId, k]).join('__'),
       ),
     ),
     R.mergeAll,
@@ -103,10 +102,10 @@ export function parseIntConfigsFromEnv(
   env: Record<string, string | undefined>,
 ) {
   return R.pipe(
-    R.mapValues(zFlatConfigByProvider, (zFlatConfig, name) => {
+    R.mapValues(zFlatConfigByIntId, (zFlatConfig, intId) => {
       try {
         const subEnv = R.pipe(
-          filterObject(env, (key) => key.startsWith(`int_${name}`)),
+          filterObject(env, (key) => key.startsWith(intId)),
           R.mapKeys((key) => key.split('__').slice(1).join('__')),
           (sEnv) => (Object.keys(sEnv).length ? sEnv : undefined),
         )
@@ -120,7 +119,7 @@ export function parseIntConfigsFromEnv(
           // const msg = issue.code === 'invalid_type' && issue.message === 'Required' ? ``
           throw new Error(
             `Failed to configure "${name}" provider due to invalid env var "${[
-              `int_${name}`,
+              intId,
               ...issue.path,
             ].join('__')}": ${issue.message} [${issue.code}]`,
           )
@@ -130,17 +129,3 @@ export function parseIntConfigsFromEnv(
     (configMap) => filterObject(configMap, (_, val) => val !== undefined),
   )
 }
-
-// loadEnv()
-// const env = zParser(zAllEnv).parseUnknown(process.env)
-// const configs = parseIntConfigs(env)
-// console.log(env, configs)
-// beancount: undefined,
-// onebrick: getEnv('ONEBRICK_CREDENTIALS'),
-// alka: {
-//   baseDir: './data',
-//   // serviceAccountJson: safeJSONParse(
-//   //   process.env['FIREBASE_SERVICE_ACCOUNT_STAGING'],
-//   // ),
-//   // envName: 'staging',
-// },
