@@ -10,59 +10,12 @@ import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
 // console.log('Using config', ledgerSyncConfig) // Too verbose...
 import {type inferProcedureInput} from '@ledger-sync/engine-backend'
-import {identity, R, Rx, safeJSONParse, z, zParser} from '@ledger-sync/util'
+import {identity, Rx, zParser} from '@ledger-sync/util'
 
-import {ledgerSyncCommonConfig, zCommonEnv} from './commonConfig'
+import {ledgerSyncCommonConfig} from './commonConfig'
+import {zBackendEnv} from './env'
 
-export const zBackendEnv = zParser(
-  zCommonEnv.extend({
-    POSTGRES_URL: z
-      .string()
-      .describe('Primary database used for metadata and user data storage'),
-    JWT_SECRET_OR_PUBLIC_KEY: z
-      .string()
-      .optional()
-      .describe('Used for validating authenticity of accessToken'),
-
-    PLAID_CLIENT_ID: z.string().optional(),
-    PLAID_SANDBOX_SECRET: z.string().optional(),
-    PLAID_DEVELOPMENT_SECRET: z.string().optional(),
-    PLAID_PRODUCTION_SECRET: z.string().optional(),
-
-    YODLEE_SANDBOX_CLIENT_ID: z.string().optional(),
-    YODLEE_SANDBOX_CLIENT_SECRET: z.string().optional(),
-    YODLEE_SANDBOX_ADMIN_LOGIN_NAME: z.string().optional(),
-    YODLEE_DEVELOPMENT_CLIENT_ID: z.string().optional(),
-    YODLEE_DEVELOPMENT_CLIENT_SECRET: z.string().optional(),
-    YODLEE_DEVELOPMENT_ADMIN_LOGIN_NAME: z.string().optional(),
-    YODLEE_PRODUCTION_CLIENT_ID: z.string().optional(),
-    YODLEE_PRODUCTION_CLIENT_SECRET: z.string().optional(),
-    YODLEE_PRODUCTION_ADMIN_LOGIN_NAME: z.string().optional(),
-    YODLEE_PRODUCTION_PROXY_URL: z.string().optional(),
-    YODLEE_PRODUCTION_PROXY_CERT: z.string().optional(),
-
-    TELLER_APPLICATION_ID: z.string().optional(),
-  }),
-)
-
-const backendEnv = zBackendEnv.parseUnknown(process.env)
-
-export function getEnv(
-  key: string,
-  opts?: {json?: boolean; optional?: boolean},
-) {
-  // Modify me to work on clientSide also...
-  // Using perhaps localStorage, with param for clientOnly
-  if (typeof window !== 'undefined') {
-    return undefined
-  }
-  return R.pipe(
-    z.string({required_error: `process.env[${key}] is required`}),
-    (zt) => (opts?.optional ? zt.optional() : zt),
-    (zt) => zt.transform((arg) => safeJSONParse(arg) ?? arg), // What about null?
-    (zt) => zt.parse(process.env[key]),
-  )
-}
+const backendEnv = zParser(zBackendEnv).parseUnknown(process.env)
 
 /**
  * This requires the env vars to exist...
@@ -176,7 +129,7 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
     destination: {
       id: 'conn_postgres',
       // TODO: Add validation here, and perhaps migration too
-       
+
       settings: {databaseUrl: process.env['POSTGRES_URL']!},
       // provider: 'alka',
       // settings: {
