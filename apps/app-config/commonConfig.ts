@@ -18,17 +18,9 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
-import {z, zEnvVars, zParser} from '@ledger-sync/util'
+import {zParser} from '@ledger-sync/util'
 
-export const zCommonEnv = zEnvVars({
-  NEXT_PUBLIC_API_URL: z
-    .string()
-    .default('/api')
-    .describe(
-      `Fully qualified url your venice api used for webhooks and server-side rendering.
-      Normally this is $SERVER_HOSTNAME/api. e.g. https://connect.example.com/api`,
-    ),
-})
+import {zCommonEnv} from './env'
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const commonEnv = zParser(zCommonEnv).parse({
