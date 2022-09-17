@@ -71,13 +71,13 @@ function flattenZObject<T extends z.ZodTypeAny>(
   // console.log('schema def', prefixes, schema._def)
 
   return {
-    [prefixes.join('__')]: z
+    [prefixes.join(separator)]: z
       .string()
       .optional()
       .describe(
         `${schema.isOptional() ? '[Optional]' : '<Required>'} ${
-          (schema._def ).typeName ?? ''
-        } ${schema.description ?? ''}`,
+          schema.description ?? ''
+        }`,
       ),
   }
 }

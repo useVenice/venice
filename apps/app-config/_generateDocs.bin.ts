@@ -3,9 +3,10 @@ import * as path from 'node:path'
 
 import tablemark from 'tablemark'
 
-import {compact, R} from '@ledger-sync/util'
+import {compact, R, zParser} from '@ledger-sync/util'
 
-import {zAllEnv} from './env'
+import {parseIntConfigsFromEnv, zAllEnv} from './env'
+import {loadEnv} from './loadEnv.node'
 
 const envList = R.pipe(
   zAllEnv.shape,
@@ -19,13 +20,14 @@ const envList = R.pipe(
     )
 
     return {
-      Name: key,
+      Name: '`' + key + '`',
       Description: cmtLines.join('</br>'),
       dotEnvLine: R.pipe(cmtLines.map((c) => `# ${c}`).join('\n'), (cmts) =>
         compact([
-          cmtLines.length > 1 && `${cmts}\n`,
+          `${cmts}\n`, // cmtLines.length > 1 && `${cmts}\n`,
           `${key}=""`,
-          cmtLines.length <= 1 && ` ${cmts}`,
+          // comment on same line is not supported by @next/env due to using old version of dotenv.
+          // cmtLines.length <= 1 && ` ${cmts}`,
         ]).join(''),
       ),
     }
@@ -48,3 +50,12 @@ fs.writeFileSync(dotEnvExampleOutPath, dotEnvExample)
 console.log(`Wrote ${dotEnvExampleOutPath}`)
 
 // console.log(dotEnvExample)
+
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Test out loading env vars')
+  loadEnv()
+  const env = zParser(zAllEnv).parseUnknown(process.env)
+  const configs = parseIntConfigsFromEnv(env)
+  console.log('Parsed env', env)
+  console.log('Parsed intConfigs', configs)
+}

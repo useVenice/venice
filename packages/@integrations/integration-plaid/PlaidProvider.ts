@@ -36,7 +36,14 @@ const _def = makeSyncProvider.def({
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
   integrationConfig: zPlaidClientConfig.extend({
-    clientName: z.string().max(30),
+    clientName: z
+      .string()
+      .max(30)
+      .describe(
+        `The name of your application, as it should be displayed in Link.
+        Maximum length of 30 characters.
+        If a value longer than 30 characters is provided, Link will display "This Application" instead.`,
+      ),
   }),
   connectionSettings: z.object({
     itemId: z.string().nullish(),
