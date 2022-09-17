@@ -24,21 +24,40 @@ export function zEnvVars<T extends z.ZodRawShape>(shape: T) {
   return z.object(shape)
 }
 
-/** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
-const separator = '__'
-
-export function zFlatten<T extends z.ZodTypeAny>(schema: T) {
-  const flatSchema = z.object(flattenZObject(schema, []))
+/** Flatten a zod schema for loading from env... */
+export function zFlattenForEnv<T extends z.ZodTypeAny>(
+  schema: T,
+  {
+    prefix,
+    separator = '.',
+  }: {
+    prefix?: string
+    separator?: string
+  },
+) {
+  const flatSchema = z.object(
+    flattenShapeForEnv(schema, {prefixes: prefix ? [prefix] : [], separator}),
+  )
 
   return flatSchema.transform(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    zGuard((input) => schema.parse(unflattenEnv(input))),
+    zGuard((input) => {
+      const nested: Record<string, unknown> = unflattenEnv(input, {separator})
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return schema.parse(prefix ? nested[prefix] : nested)
+    }),
   )
 }
 
-function flattenZObject<T extends z.ZodTypeAny>(
+/** Get a flat shape suitable for passing into z.object  */
+function flattenShapeForEnv<T extends z.ZodTypeAny>(
   schema: T,
-  prefixes: string[],
+  {
+    prefixes,
+    separator,
+  }: {
+    prefixes: string[]
+    separator: string
+  },
 ): z.ZodRawShape {
   // console.log('flattenZObject', schema, prefixes)
   // if (!schema) {
@@ -46,7 +65,15 @@ function flattenZObject<T extends z.ZodTypeAny>(
   // }
   // Need better solution here...
   if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable) {
-    return flattenZObject(schema.unwrap(), prefixes)
+    return flattenShapeForEnv(
+      (schema.unwrap() as z.ZodTypeAny).describe(
+        // TODO: Get '(required)' working too , right now this is only ever optional...
+        `${schema.isOptional() ? '(Optional)' : '(Required)'} ${
+          schema.description ?? ''
+        }`,
+      ),
+      {separator, prefixes},
+    )
   }
   if (schema instanceof z.ZodObject || schema instanceof z.ZodRecord) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -64,25 +91,26 @@ function flattenZObject<T extends z.ZodTypeAny>(
     return R.pipe(
       shape,
       R.toPairs,
-      R.map(([key, value]) => flattenZObject(value, [...prefixes, key])),
+      R.map(([key, value]) =>
+        flattenShapeForEnv(value, {separator, prefixes: [...prefixes, key]}),
+      ),
       R.mergeAll,
     ) as z.ZodRawShape
   }
-  // console.log('schema def', prefixes, schema._def)
 
   return {
     [prefixes.join(separator)]: z
       .string()
       .optional()
-      .describe(
-        `${schema.isOptional() ? '[Optional]' : '<Required>'} ${
-          schema.description ?? ''
-        }`,
-      ),
+      .describe(schema.description ?? ''),
   }
 }
 
-function unflattenEnv(env: Record<string, string | undefined>) {
+/** Prepare env for parsing into nested json from simple values */
+function unflattenEnv(
+  env: Record<string, string | undefined>,
+  {separator}: {separator: string},
+) {
   const nested = {}
   // Sorting keys such that we set the deepest paths first
   // So plaid="" will always override plaid.client_id="id..."

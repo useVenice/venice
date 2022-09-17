@@ -1,4 +1,4 @@
-import {debugProvider} from '@ledger-sync/cdk-core'
+import {debugProvider, makeId} from '@ledger-sync/cdk-core'
 import {airtableProvider} from '@ledger-sync/core-integration-airtable'
 import {firebaseProvider} from '@ledger-sync/core-integration-firebase'
 import {fsProvider} from '@ledger-sync/core-integration-fs'
@@ -17,16 +17,31 @@ import {tellerProvider} from '@ledger-sync/integration-teller'
 import {togglProvider} from '@ledger-sync/integration-toggl'
 import {wiseProvider} from '@ledger-sync/integration-wise'
 import {yodleeProvider} from '@ledger-sync/integration-yodlee'
-import {
-  compact,
-  filterObject,
-  R,
-  z,
-  zEnvVars,
-  zFlatten,
-} from '@ledger-sync/util'
+import {filterObject, R, z, zEnvVars, zFlattenForEnv} from '@ledger-sync/util'
 
-// MARK: - Dependencies
+// MARK: - Env vars
+
+export const zCommonEnv = zEnvVars({
+  NEXT_PUBLIC_API_URL: z
+    .string()
+    .default('/api')
+    .describe(
+      `Fully qualified url your venice api used for webhooks and server-side rendering.
+      Normally this is $SERVER_HOSTNAME/api. e.g. https://connect.example.com/api`,
+    ),
+})
+
+export const zBackendEnv = zEnvVars({
+  POSTGRES_URL: z
+    .string()
+    .describe('Primary database used for metadata and user data storage'),
+  JWT_SECRET_OR_PUBLIC_KEY: z
+    .string()
+    .optional()
+    .describe('Used for validating authenticity of accessToken'),
+})
+
+// MARK: - Integration env vars
 
 export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
 
@@ -54,74 +69,48 @@ export const PROVIDERS = [
   postgresProvider,
 ] as const
 
-// MARK: - Env vars
+/** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
+const separator = '__'
+const getPrefix = (name: string) => makeId('int', name, '')
 
-export const zCommonEnv = zEnvVars({
-  NEXT_PUBLIC_API_URL: z
-    .string()
-    .default('/api')
-    .describe(
-      `Fully qualified url your venice api used for webhooks and server-side rendering.
-      Normally this is $SERVER_HOSTNAME/api. e.g. https://connect.example.com/api`,
-    ),
-})
-
-export const zBackendEnv = zEnvVars({
-  POSTGRES_URL: z
-    .string()
-    .describe('Primary database used for metadata and user data storage'),
-  JWT_SECRET_OR_PUBLIC_KEY: z
-    .string()
-    .optional()
-    .describe('Used for validating authenticity of accessToken'),
-})
-
-export const zFlatConfigByIntId = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
-  `int_${p.name}`,
-  zFlatten(p.def.integrationConfig ?? z.unknown()),
+export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
+  p.name,
+  zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
+    prefix: getPrefix(p.name),
+    separator,
+  }),
 ])
 
 export const zIntegrationEnv = zEnvVars(
   R.pipe(
-    zFlatConfigByIntId,
-    R.toPairs,
-    R.map(([intId, schema]) =>
-      R.mapKeys(schema.innerType().shape, (k) =>
-        compact([intId, k]).join('__'),
-      ),
-    ),
+    zFlatConfigByProvider,
+    R.values,
+    R.map((schema) => schema.innerType().shape),
     R.mergeAll,
   ) as {},
 )
 
 export const zAllEnv = zCommonEnv.merge(zBackendEnv).merge(zIntegrationEnv)
 
-// MARK: - Parsing env vars
+// MARK: - Parsing integration configs
 
 export function parseIntConfigsFromEnv(
   env: Record<string, string | undefined>,
 ) {
   return R.pipe(
-    R.mapValues(zFlatConfigByIntId, (zFlatConfig, intId) => {
+    R.mapValues(zFlatConfigByProvider, (zFlatConfig, name) => {
       try {
-        const subEnv = R.pipe(
-          filterObject(env, (key) => key.startsWith(intId)),
-          R.mapKeys((key) => key.split('__').slice(1).join('__')),
-          (sEnv) => (Object.keys(sEnv).length ? sEnv : undefined),
-        )
-        // console.log('Parsing', name, subEnv)
+        const subEnv = filterObject(env, (k) => k.startsWith(getPrefix(name)))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return zFlatConfig.optional().parse(subEnv)
       } catch (err) {
         if (err instanceof z.ZodError && err.issues[0]) {
           const issue = err.issues[0]
-
           // const msg = issue.code === 'invalid_type' && issue.message === 'Required' ? ``
           throw new Error(
-            `Failed to configure "${name}" provider due to invalid env var "${[
-              intId,
-              ...issue.path,
-            ].join('__')}": ${issue.message} [${issue.code}]`,
+            `Failed to configure "${name}" provider due to invalid env var "${issue.path.join(
+              separator,
+            )}": ${issue.message} [${issue.code}]`,
           )
         }
       }
