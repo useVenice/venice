@@ -5,29 +5,27 @@ import tablemark from 'tablemark'
 
 import {compact, R} from '@ledger-sync/util'
 
-import {zBackendEnv} from './env'
+import {zAllEnv} from './env'
 
 const envList = R.pipe(
-  zBackendEnv.shape,
+  zAllEnv.shape,
   R.toPairs,
   R.map(([key, schema]) => {
-    const comments =
-      compact([
-        schema.isOptional() ? '[Optional]' : '<Required>',
-        schema.description,
-      ])
-        .join(' ')
-        .split('\n')
-        .map((s) => s.trim()) ?? []
+    const cmtLines = R.pipe(
+      // ${schema.isOptional() ? '[Optional]' : '<Required>'}
+      `${schema.description?.trim() ?? ''}`,
+      (desc) => desc.split('\n').map((s) => s.trim()),
+      R.compact,
+    )
 
     return {
       Name: key,
-      Description: comments?.join('</br>'),
-      dotEnvLine: R.pipe(comments.map((c) => `# ${c}`).join('\n'), (cmts) =>
+      Description: cmtLines.join('</br>'),
+      dotEnvLine: R.pipe(cmtLines.map((c) => `# ${c}`).join('\n'), (cmts) =>
         compact([
-          comments.length > 1 && `${cmts}\n`,
+          cmtLines.length > 1 && `${cmts}\n`,
           `${key}=""`,
-          comments.length <= 1 && ` ${cmts}`,
+          cmtLines.length <= 1 && ` ${cmts}`,
         ]).join(''),
       ),
     }
@@ -48,3 +46,5 @@ console.log(`Wrote ${readmeOutPath}`)
 const dotEnvExampleOutPath = path.join(__dirname, '../../', '.env.example')
 fs.writeFileSync(dotEnvExampleOutPath, dotEnvExample)
 console.log(`Wrote ${dotEnvExampleOutPath}`)
+
+console.log(dotEnvExample)
