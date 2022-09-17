@@ -16,7 +16,6 @@ import {
 } from 'plaid'
 
 import {
-  castIs,
   getDefaultProxyAgent,
   memoize,
   z,

@@ -13,9 +13,9 @@ import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 import {identity, Rx, zParser} from '@ledger-sync/util'
 
 import {ledgerSyncCommonConfig} from './commonConfig'
-import {zBackendEnv} from './env'
+import {parseIntConfigsFromEnv, zAllEnv} from './env'
 
-const backendEnv = zParser(zBackendEnv).parseUnknown(process.env)
+const env = zParser(zAllEnv).parseUnknown(process.env)
 
 /**
  * This requires the env vars to exist...
@@ -24,8 +24,8 @@ const backendEnv = zParser(zBackendEnv).parseUnknown(process.env)
  */
 export const ledgerSyncBackendConfig = makeSyncEngine.config({
   ...ledgerSyncCommonConfig,
-  jwtSecretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-  metaService: makePostgresMetaService({databaseUrl: backendEnv.POSTGRES_URL}),
+  jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
+  metaService: makePostgresMetaService({databaseUrl: env.POSTGRES_URL}),
   // TODO: support other config service such as fs later...
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.
@@ -35,49 +35,7 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
 
   // TODO: Validate these immediately upon launch?
   // TODO: Do not expose any of this to the frontend
-  defaultIntegrations: {
-    plaid: {
-      client_id: backendEnv.PLAID_CLIENT_ID!,
-      public_key: '', // @deprecated
-      secrets: {
-        sandbox: backendEnv.PLAID_SANDBOX_SECRET!,
-        development: backendEnv.PLAID_DEVELOPMENT_SECRET!,
-        production: backendEnv.PLAID_PRODUCTION_SECRET!,
-      },
-      clientName: 'Alka',
-    },
-    // teller: getEnv('TELLER_CREDENTIALS'),
-    yodlee: {
-      sandbox: {
-        clientId: backendEnv.YODLEE_SANDBOX_CLIENT_ID!,
-        clientSecret: backendEnv.YODLEE_SANDBOX_CLIENT_SECRET!,
-        adminLoginName: backendEnv.YODLEE_SANDBOX_ADMIN_LOGIN_NAME!,
-      },
-      development: {
-        clientId: backendEnv.YODLEE_DEVELOPMENT_CLIENT_ID!,
-        clientSecret: backendEnv.YODLEE_DEVELOPMENT_CLIENT_SECRET!,
-        adminLoginName: backendEnv.YODLEE_DEVELOPMENT_ADMIN_LOGIN_NAME!,
-      },
-      production: {
-        clientId: backendEnv.YODLEE_PRODUCTION_CLIENT_ID!,
-        clientSecret: backendEnv.YODLEE_PRODUCTION_CLIENT_SECRET!,
-        adminLoginName: backendEnv.YODLEE_PRODUCTION_ADMIN_LOGIN_NAME!,
-        proxy: {
-          url: backendEnv.YODLEE_PRODUCTION_PROXY_URL!,
-          cert: backendEnv.YODLEE_PRODUCTION_PROXY_CERT!,
-        },
-      },
-    },
-    // beancount: undefined,
-    // onebrick: getEnv('ONEBRICK_CREDENTIALS'),
-    // alka: {
-    //   baseDir: './data',
-    //   // serviceAccountJson: safeJSONParse(
-    //   //   process.env['FIREBASE_SERVICE_ACCOUNT_STAGING'],
-    //   // ),
-    //   // envName: 'staging',
-    // },
-  },
+  defaultIntegrations: parseIntConfigsFromEnv(env),
   getLinksForPipeline: ({source, links: links, destination}) =>
     destination.integration.provider.name === 'beancount'
       ? [
