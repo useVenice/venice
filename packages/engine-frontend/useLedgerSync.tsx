@@ -43,10 +43,10 @@ export function useLedgerSyncAdmin({
   ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const ledgerIdsRes = trpc.useQuery(
-    ['admin.searchLedgerIds', {keywords: ledgerIdKeywords}],
+    ['adminSearchLedgerIds', {keywords: ledgerIdKeywords}],
     {enabled: isAdmin},
-  ) as UseQueryResult<AnySyncQueryOutput<'admin.searchLedgerIds'>>
-  const adminSyncMeta = trpc.useMutation('admin.syncMetadata')
+  ) as UseQueryResult<AnySyncQueryOutput<'adminSearchLedgerIds'>>
+  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
 
   return {integrationsRes, ledgerIdsRes, adminSyncMeta, isAdmin, developerMode}
 }

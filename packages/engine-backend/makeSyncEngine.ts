@@ -604,13 +604,13 @@ export const makeSyncEngine = <
       }
       return next({ctx: {...ctx, isAdmin: true as const}})
     })
-    // .query('debugEnv', {resolve: () => process.env}) // Temporary...
-    .query('searchLedgerIds', {
+    // .query('adminDebugEnv', {resolve: () => process.env}) // Temporary...
+    .query('adminSearchLedgerIds', {
       input: z.object({keywords: zTrimedString.nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) =>
         metaService.searchLedgerIds({keywords}),
     })
-    .query('getIntegration', {
+    .query('adminGetIntegration', {
       input: zInt,
       resolve: ({input: int}) => ({
         config: int.config,
@@ -618,7 +618,7 @@ export const makeSyncEngine = <
         id: int.id,
       }),
     })
-    .mutation('syncMetadata', {
+    .mutation('adminSyncMetadata', {
       input: zInt.nullish(),
       resolve: async ({input: int}) => {
         const ints = int ? [int] : await getDefaultIntegrations()
@@ -657,7 +657,7 @@ export const makeSyncEngine = <
   const router = baseRouter()
     .merge(anonRouter)
     .merge(authenticatedRouter)
-    .merge('admin.', adminRouter)
+    .merge(adminRouter)
 
   const jwtClient = jwtSecretOrPublicKey
     ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})
