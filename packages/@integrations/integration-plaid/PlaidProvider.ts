@@ -167,7 +167,7 @@ export const plaidProvider = makeSyncProvider({
   },
   preConnect: (
     config,
-    {envName, ledgerId, connection, institutionExternalId},
+    {envName, ledgerId, connection, institutionExternalId, webhookBaseUrl},
   ) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
@@ -183,7 +183,7 @@ export const plaidProvider = makeSyncProvider({
         country_codes: ['US'],
         // Webhook and redirect_uri would be part of the `connection` already.
         redirect_uri: 'http://localhost:3000/oauth',
-        webhook: 'https://6b90-118-99-92-111.ngrok.io/api/webhook/plaid',
+        webhook: webhookBaseUrl,
       })
       .then((res) => {
         console.log('willConnect response', res)
@@ -309,7 +309,7 @@ export const plaidProvider = makeSyncProvider({
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
         access_token: settings.accessToken,
-        webhook: joinPath(context.webhookBaseUrl, itemId),
+        webhook: context.webhookBaseUrl,
       })
     }
     if (options.sandboxSimulateUpdate) {

@@ -70,8 +70,6 @@ export function LSProvider<
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
-  const url = config.apiUrl ?? '/api'
-
   const _ledgerId = options.ledgerId
 
   const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
@@ -89,6 +87,7 @@ export function LSProvider<
     accessToken,
   })
 
+  const url = config.apiUrl
   const trpcClient = React.useMemo(
     () =>
       trpc.createClient({

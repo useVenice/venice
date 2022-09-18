@@ -42,9 +42,14 @@ export type UseConnectHook<T extends AnyProviderDef> = (scope: {
 
 // MARK: - Server side connect types
 
+export interface CheckConnectionContext {
+  webhookBaseUrl: string
+}
+
 /** Context providers get during the connection establishing phase */
 export interface ConnectContext<TSettings>
-  extends Omit<ConnectOptions, 'connectionExternalId'> {
+  extends Omit<ConnectOptions, 'connectionExternalId'>,
+    CheckConnectionContext {
   ledgerId: Id['ldgr']
   connection?: {
     externalId: ExternalId
@@ -347,7 +352,7 @@ export function makeSyncProvider<
         settings: T['_types']['connectionSettings']
         config: T['_types']['integrationConfig']
         options: CheckConnectionOptions
-        context: {webhookBaseUrl: string}
+        context: CheckConnectionContext
       }>,
     ) => MaybePromise<
       Omit<
