@@ -110,7 +110,10 @@ export function parseIntConfigsFromRawEnv(
 ) {
   return R.pipe(
     R.mapValues(zFlatConfigByProvider, (zFlatConfig, name) => {
-      const subEnv = filterObject(env, (k) => k.startsWith(getPrefix(name)))
+      const subEnv = R.pipe(
+        filterObject(env, (k) => k.startsWith(getPrefix(name))),
+        (e) => (R.keys(e).length ? e : undefined), // To get .optional() to work
+      )
       try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return zFlatConfig.optional().parse(subEnv)
@@ -118,6 +121,7 @@ export function parseIntConfigsFromRawEnv(
         if (err instanceof z.ZodError && err.issues[0]) {
           const issue = err.issues[0]
           // const msg = issue.code === 'invalid_type' && issue.message === 'Required' ? ``
+          // console.log('subEnv', subEnv, issue)
           throw new Error(
             `Failed to configure "${name}" provider due to invalid env var "${issue.path.join(
               separator,
