@@ -154,66 +154,67 @@ export function makeSyncParsers<
   const zInt = castInput(zInput.integration)<
     IntegrationInput<TProviders[number]>
   >().transform(
-    zGuard(async ({id, ...input}) => {
+    zGuard(async ({id, ...rest}) => {
       const integration = await m.tables.integration.get(id)
       const provider = zProvider.parse(id, {path: ['id']})
       const _config = deepMerge(
         getDefaultConfig(provider.name, id),
         integration?.config,
-        input.config,
+        rest.config,
       )
       const config = provider.def.integrationConfig?.parse(_config, {
         path: ['config'],
       })
-      return {...integration, ...input, id, provider, config}
+      // Validated id only
+      return {id, ...integration, ...rest, provider, config}
     }),
   )
 
   const zIns = zInput.institution.transform(
-    zGuard(async ({id, ...input}) => {
+    zGuard(async ({id, ...rest}) => {
       const institution = await m.tables.institution.get(id)
       const provider = zProvider.parse(id, {path: ['id']})
-      const external = deepMerge(institution?.external, input.external)
+      const external = deepMerge(institution?.external, rest.external)
       const standard = provider.def.institutionData?.parse(external, {
         path: ['external'],
       })
-      return {...institution, ...input, id, external, standard}
+      return {id, ...institution, ...rest, external, standard}
     }),
   )
 
   const zConn = castInput(zInput.connection)<
     ConnectionInput<TProviders[number]>
   >().transform(
-    zGuard(async ({id, ...input}) => {
+    zGuard(async ({id, ...rest}) => {
       const conn = await m.tables.connection.get(id)
       const [integration, institution] = await Promise.all([
         zInt.parseAsync(
           identity<z.infer<typeof zInput['integration']>>({
             id:
               conn?.integrationId ??
-              input.integrationId ??
+              rest.integrationId ??
               makeId('int', extractId(id)[1], ''),
-            config: input.integration?.config,
+            config: rest.integration?.config,
           }),
         ),
         zIns.optional().parseAsync(
           identity<z.infer<typeof zInput['institution']>>({
             id:
               conn?.institutionId ??
-              input.institutionId ??
+              rest.institutionId ??
               makeId('ins', extractId(id)[1], ''),
-            external: input.institution?.external,
+            external: rest.institution?.external,
           }),
         ),
       ])
       const settings = integration.provider.def.connectionSettings?.parse(
-        deepMerge(conn?.settings, input.settings),
+        deepMerge(conn?.settings, rest.settings),
         {path: ['settings']},
       )
       return {
-        ...conn,
-        ...input,
         id,
+        ...conn,
+        ...rest,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,
@@ -233,24 +234,24 @@ export function makeSyncParsers<
         : arg
     }, castInput(zInput.pipeline)<PipelineInput<TProviders[number], TProviders[number], TLinks>>())
     .transform(
-      zGuard(async ({id, ...input}) => {
+      zGuard(async ({id, ...rest}) => {
         const pipeline = await m.tables.pipeline.get(id)
         const [source, destination] = await Promise.all([
           zConn.parseAsync(
-            deepMerge({id: input.sourceId ?? pipeline?.sourceId}, input.source),
+            deepMerge({id: rest.sourceId ?? pipeline?.sourceId}, rest.source),
             {path: ['source']},
           ),
           zConn.parseAsync(
             deepMerge(
-              {id: input.destinationId ?? pipeline?.destinationId},
-              input.destination,
+              {id: rest.destinationId ?? pipeline?.destinationId},
+              rest.destination,
             ),
             {path: ['destination']},
           ),
         ])
         // Validation happens inside for now
         const links = R.pipe(
-          input.linkOptions ?? pipeline?.linkOptions ?? [],
+          rest.linkOptions ?? pipeline?.linkOptions ?? [],
           R.map((l) =>
             typeof l === 'string'
               ? linkMap?.[l]?.(undefined)
@@ -259,19 +260,19 @@ export function makeSyncParsers<
           R.compact,
         )
         const sourceState = source.integration.provider.def.sourceState?.parse(
-          deepMerge(pipeline?.sourceState, input.sourceState),
+          deepMerge(pipeline?.sourceState, rest.sourceState),
           {path: ['sourceState']},
         )
 
         const destinationState =
           destination.integration.provider.def.destinationState?.parse(
-            deepMerge(pipeline?.destinationState, input.destinationState),
+            deepMerge(pipeline?.destinationState, rest.destinationState),
             {path: ['destinationState']},
           )
         return {
-          ...pipeline,
-          ...input,
           id,
+          ...pipeline,
+          ...rest,
           source,
           sourceId: source.id, // Ensure consistency
           destination,
@@ -279,7 +280,7 @@ export function makeSyncParsers<
           links,
           sourceState,
           destinationState,
-          watch: input.watch, // Should this be on pipeline too?
+          watch: rest.watch, // Should this be on pipeline too?
         }
       }),
     )
