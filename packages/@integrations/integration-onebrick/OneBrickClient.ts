@@ -162,9 +162,7 @@ export const otpSchema = z.object({
 })
 
 export const zOneBrickConfig = z.object({
-  secrets: z
-    .record(z.string())
-    .refine(castIs<Partial<{[K in EnvName]: string}>>()),
+  secrets: z.record(zEnvName, z.string()),
   accessToken: z.string().nullish(),
   clientId: z.string().nullish(),
   clientSecret: z.string().nullish(),
