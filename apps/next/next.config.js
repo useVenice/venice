@@ -37,11 +37,9 @@ const withTM = require('next-transpile-modules')([
  */
 module.exports = withTM(
   /** @type {import('next').NextConfig} */ ({
-    env: {
-      NEXT_PUBLIC_SERVER_URL:
-        process.env['NEXT_PUBLIC_SERVER_URL'] || process.env['VERCEL_URL'],
-    },
+    env: {VERCEL_URL: process.env['VERCEL_URL']}, // No need for NEXT_PUBLIC because we explicitly define it
     reactStrictMode: true,
+
     swcMinify: true,
     typescript: {
       ignoreBuildErrors: true,

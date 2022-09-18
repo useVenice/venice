@@ -24,12 +24,17 @@ import {filterObject, R, z, zEnvVars, zFlattenForEnv} from '@ledger-sync/util'
 export const zCommonEnv = zEnvVars({
   NEXT_PUBLIC_SERVER_URL: z
     .string()
+    .default(
+      // Explicitly webpack defined in next.config.js so should work client side too...
+      process.env['VERCEL_URL'] ? 'https://' + process.env['VERCEL_URL'] : '/',
+    )
     // Should we default to request url?
     // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
-    .default('/')
     .describe(
       `Fully qualified url your venice next.js app used for redirects, webhooks and server-side rendering.
-      e.g. https://connect.example.com or http://localhost:3000 for development`,
+      e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$VERCEL_URL if not provided
+      @see https://vercel.com/docs/concepts/projects/environment-variables
+      Providing this explicitly is still preferrred as $VERCEL_URL does not account for custom domain`,
     ),
 })
 
