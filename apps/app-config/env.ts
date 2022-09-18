@@ -22,14 +22,14 @@ import {filterObject, R, z, zEnvVars, zFlattenForEnv} from '@ledger-sync/util'
 // MARK: - Env vars
 
 export const zCommonEnv = zEnvVars({
-  NEXT_PUBLIC_API_URL: z
+  NEXT_PUBLIC_SERVER_URL: z
     .string()
     // Should we default to request url?
     // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
-    .default('/api')
+    .default('/')
     .describe(
-      `Fully qualified url your venice api used for webhooks and server-side rendering.
-      Normally this is $SERVER_HOSTNAME/api. e.g. https://connect.example.com/api`,
+      `Fully qualified url your venice next.js app used for redirects, webhooks and server-side rendering.
+      e.g. https://connect.example.com or http://localhost:3000 for development`,
     ),
 })
 

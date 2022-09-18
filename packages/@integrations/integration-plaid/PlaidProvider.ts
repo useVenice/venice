@@ -19,7 +19,6 @@ import {
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
 import type {IAxiosError, RequiredOnly} from '@ledger-sync/util'
-import {joinPath} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
@@ -167,7 +166,7 @@ export const plaidProvider = makeSyncProvider({
   },
   preConnect: (
     config,
-    {envName, ledgerId, connection, institutionExternalId, webhookBaseUrl},
+    {envName, ledgerId, connection, institutionExternalId, ...ctx},
   ) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
@@ -182,8 +181,8 @@ export const plaidProvider = makeSyncProvider({
         ...(!connection?.settings.accessToken && {products: ['transactions']}),
         country_codes: ['US'],
         // Webhook and redirect_uri would be part of the `connection` already.
-        redirect_uri: 'http://localhost:3000/oauth',
-        webhook: webhookBaseUrl,
+        redirect_uri: ctx.redirectUrl,
+        webhook: ctx.webhookBaseUrl,
       })
       .then((res) => {
         console.log('willConnect response', res)
