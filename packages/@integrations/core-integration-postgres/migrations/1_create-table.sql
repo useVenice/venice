@@ -42,7 +42,9 @@ CREATE INDEX IF NOT EXISTS institution_provider_name ON institution (provider_na
 CREATE TABLE IF NOT EXISTS "public"."connection" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
   "provider_name" character varying NOT NULL GENERATED ALWAYS AS (split_part(id, '_', 2)) STORED,
-  "ledger_id" character varying NOT NULL,
+  -- Allow ledger_id to be nullable for now otherwise upsert query doesn't work
+  -- even for updates to existing connections unless ledger_id is provided...
+  "ledger_id" character varying,
   "integration_id" character varying,
   "institution_id" character varying,
   "env_name" character varying,

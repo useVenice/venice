@@ -169,38 +169,38 @@ export const makeSyncEngine = <
 
   const _syncConnectionUpdate = async (
     int: ParsedInt,
-    connUpdate: ConnectionUpdate<AnyEntityPayload, {}>,
+    {
+      ledgerId,
+      envName,
+      settings,
+      institution,
+      ...connUpdate
+    }: ConnectionUpdate<AnyEntityPayload, {}>,
   ) => {
-    console.log('[_syncConnectionUpdate]', int.id, connUpdate)
-    const connId = makeId(
+    console.log('[_syncConnectionUpdate]', int.id, {
+      ledgerId,
+      envName,
+      settings,
+      institution,
+      ...connUpdate,
+    })
+    const id = makeId(
       'conn',
       int.provider.name,
       connUpdate.connectionExternalId,
     )
     await metaLinks
-      .handlers({
-        connection: {
-          id: connId,
-          integrationId: int.id,
-          ledgerId: connUpdate.ledgerId,
-          envName: connUpdate.envName,
-        },
-      })
-      .connUpdate({
-        type: 'connUpdate',
-        id: connId,
-        settings: connUpdate.settings,
-        institution: connUpdate.institution,
-      })
+      .handlers({connection: {id, integrationId: int.id, ledgerId, envName}})
+      .connUpdate({type: 'connUpdate', id, settings, institution})
     if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
       return
     }
 
     const pipelines = await getPipelinesForConnection({
-      id: connId,
+      id,
       // Should we spread connUpdate into it?
-      settings: connUpdate.settings,
-      ledgerId: connUpdate.ledgerId,
+      settings,
+      ledgerId,
       // institution: connUpdate.institution,
     })
 
@@ -451,7 +451,7 @@ export const makeSyncEngine = <
         description: 'Not automatically called, used for debugging for now',
       },
       input: z.tuple([zConn, zCheckConnectionOptions.optional()]),
-      resolve: async ({input: [{settings, integration}, opts], ctx}) => {
+      resolve: async ({input: [{settings, integration}, opts]}) => {
         if (!integration.provider.checkConnection) {
           return `Not implemented in ${integration.provider.name}`
         }
@@ -474,10 +474,8 @@ export const makeSyncEngine = <
             ),
           },
         })
-        await _syncConnectionUpdate(integration, {
-          ...connUpdate,
-          ledgerId: ctx.ledgerId,
-        })
+        /** Do not update the `ledgerId` here... */
+        await _syncConnectionUpdate(integration, connUpdate)
         return 'Ok'
       },
     })
