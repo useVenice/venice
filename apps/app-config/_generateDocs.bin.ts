@@ -3,7 +3,7 @@ import * as path from 'node:path'
 
 import tablemark from 'tablemark'
 
-import {compact, R, zParser} from '@ledger-sync/util'
+import {buildUrl, compact, R, zParser} from '@ledger-sync/util'
 
 import {parseIntConfigsFromEnv, zAllEnv} from './env'
 import {loadEnv} from './loadEnv.node'
@@ -20,6 +20,7 @@ const envList = R.pipe(
     )
 
     return {
+      key,
       Name: '`' + key + '`',
       Description: cmtLines.join('</br>'),
       dotEnvLine: R.pipe(cmtLines.map((c) => `# ${c}`).join('\n'), (cmts) =>
@@ -34,8 +35,52 @@ const envList = R.pipe(
   }),
 )
 
+/** https://vercel.com/docs/deploy-button */
+function makeVercelDeployButton(params: {
+  // Basic info
+  'repository-url': string
+  'root-directory'?: string
+  'project-name'?: string
+
+  // Env vars
+  /** Required env vars */
+  env: string
+  /** A short description of the Required Environment Variables. */
+  envDescription?: string
+  /** A link to an explanation of the Required Environment Variables */
+  envLink?: string
+
+  // Demo info
+  'demo-title'?: string
+  'demo-description'?: string
+  'demo-url'?: string
+  /** URL of the screenshot of an example deployment */
+  'demo-image'?: string
+}) {
+  const url = buildUrl({
+    path: 'https://vercel.com/new/clone',
+    params,
+  })
+  return {
+    url,
+    mkd: `[![Deploy with Vercel](https://vercel.com/button)](${url})`,
+  }
+}
+
+const deployButton = makeVercelDeployButton({
+  'repository-url': 'https://github.com/alkafinance/ledger-sync',
+  'root-directory': 'apps/next',
+  'project-name': 'my-ledger-sync',
+  env: envList.map((e) => e.key).join(','),
+  envDescription: 'Not all values are required. Use empty space to skip values',
+  envLink:
+    'https://github.com/alkafinance/ledger-sync/blob/main/apps/app-config/README.md',
+})
+
 const readme = `
 # Environment variables
+
+${deployButton.mkd}
 
 ${tablemark(envList.map((env) => R.pick(env, ['Name', 'Description'])))}
 `
