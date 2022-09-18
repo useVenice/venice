@@ -25,10 +25,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env*.local
-.env
-.envrc
+# local env files except example
+.env*
+!.env.example
 
 # symlinked for working with ledgerSyncFS
 /data
