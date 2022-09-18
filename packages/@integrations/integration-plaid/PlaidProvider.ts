@@ -1,4 +1,4 @@
-import type * as plaid from 'plaid'
+import * as plaid from 'plaid'
 import type {PlaidError} from 'plaid'
 import React from 'react'
 import type {
@@ -301,14 +301,31 @@ export const plaidProvider = makeSyncProvider({
   checkConnection: async ({config, settings, options, context}) => {
     console.log('[Plaid] checkConnection', options, context)
     const client = makePlaidClient(config)
-    const {item} = await client.itemGet(settings.accessToken)
+    const itemId: string =
+      settings.itemId ??
+      settings.item?.item_id ??
+      (await client.itemGet(settings.accessToken).then((r) => r.item.item_id))
+
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
         access_token: settings.accessToken,
-        webhook: joinPath(context.webhookBaseUrl, item.item_id),
+        webhook: joinPath(context.webhookBaseUrl, itemId),
       })
     }
-    return {connectionExternalId: item.item_id}
+    if (options.sandboxSimulateUpdate) {
+      await client.sandboxItemFireWebhook({
+        access_token: settings.accessToken,
+        // webbook_type defaults to `ITEM`, but if `ITEM` is explicitly
+        // passed in, it would unfortunately error @see https://share.cleanshot.com/ZfZU3U
+        // webhook_type: plaid.WebhookType.Item,
+        webhook_code:
+          plaid.SandboxItemFireWebhookRequestWebhookCodeEnum.DefaultUpdate,
+      })
+    }
+    if (options.sandboxSimulateDisconnect) {
+      await client.sandboxItemResetLogin({access_token: settings.accessToken})
+    }
+    return {connectionExternalId: itemId}
   },
 
   revokeConnection: (settings, config) =>

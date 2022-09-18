@@ -58,6 +58,10 @@ export const zCheckConnectionOptions = z.object({
    * Update the webhook associated with this connection to based on webhookBaseUrl
    */
   updateWebhook: z.boolean().nullish(),
+  /** Fire webhook for default data updates  */
+  sandboxSimulateUpdate: z.boolean().nullish(),
+  /** For testing out disconnection handling */
+  sandboxSimulateDisconnect: z.boolean().nullish(),
 })
 
 export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>

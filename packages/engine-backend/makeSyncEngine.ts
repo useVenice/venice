@@ -10,7 +10,8 @@ import type {
   Link,
   LinkFactory,
   MetaService,
-  Source} from '@ledger-sync/cdk-core';
+  Source,
+} from '@ledger-sync/cdk-core'
 import {
   extractId,
   handlersLink,
@@ -607,12 +608,6 @@ export const makeSyncEngine = <
         id: int.id,
       }),
     })
-    // adminFireWebhook: zFunction(
-    //   zConn,
-    //   async ({settings, integration: {provider, config}}) => {
-
-    //   },
-    // ),
     .mutation('syncMetadata', {
       input: zInt.nullish(),
       resolve: async ({input: int}) => {
