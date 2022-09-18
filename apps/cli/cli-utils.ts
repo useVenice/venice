@@ -114,8 +114,8 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
 
     // Normally we rely on the inputParser inside the router itself to normalize into
     // array with the right # of arguments.
-    // However when not creating router from zFunctionMap then preprocessing
-    // does not happen automatically, causing issue...
+    // However when not creating router directly rather than from zFunctionMap
+    // then preprocessing does not happen automatically, causing issue on cli...
     R.pipe(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       parseIf((_procedure as any).inputParser, isZodType),
@@ -138,6 +138,19 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
           (stdin) => deepMerge(stdin ?? {}, options),
           (opts) => compact([...args, Object.keys(opts).length > 0 && opts]),
           (arr) => (arr.length <= 1 ? arr[0] : arr),
+          // Hacking supporting for tuple of options via --1.name value
+          // for up to 4 argments total
+          (inpt) => {
+            if (typeof inpt !== 'object') {
+              return inpt
+            }
+            const {'1': a1, '2': a2, '3': a3, ...a0} = inpt
+            const tuple = [a0, a1, a2, a3]
+            while (tuple.length && tuple[tuple.length - 1] === undefined) {
+              tuple.pop()
+            }
+            return tuple.length > 1 ? tuple : inpt
+          },
         )
 
         console.log(`[cli] ${name} input`, input)
