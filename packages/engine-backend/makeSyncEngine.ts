@@ -192,6 +192,7 @@ export const makeSyncEngine = <
     await metaLinks
       .handlers({connection: {id, integrationId: int.id, ledgerId, envName}})
       .connUpdate({type: 'connUpdate', id, settings, institution})
+
     if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
       return
     }
@@ -207,16 +208,10 @@ export const makeSyncEngine = <
     console.log('_syncConnectionUpdate existingPipes.len', pipelines.length)
     await Promise.all(
       pipelines.map(async (pipe) => {
-        // TODO(p2)
-        // FIXME: Combine the two calls to _syncPipeline so it is only one...
-        if (connUpdate.source$) {
-          await _syncPipeline(pipe, {
-            source$: connUpdate.source$,
-          })
-        }
-        if (connUpdate.triggerDefaultSync) {
-          await _syncPipeline(pipe, {})
-        }
+        await _syncPipeline(pipe, {
+          source$: connUpdate.source$,
+          source$ConcatDefault: connUpdate.triggerDefaultSync,
+        })
       }),
     )
   }
@@ -225,13 +220,15 @@ export const makeSyncEngine = <
     pipeline: ParsedPipeline,
     opts: z.infer<typeof zSyncOptions> & {
       source$?: Source<AnyEntityPayload>
+      /** Trigger the default sourceSync after source$ exhausts */
+      source$ConcatDefault?: boolean
       destination$$?: Destination
     } = {},
   ) => {
     console.log('[syncPipeline]', pipeline)
     const {source: src, links, destination: dest, watch, ...rest} = pipeline
-    const source$ =
-      opts.source$ ??
+
+    const defaultSource$ = () =>
       src.integration.provider.sourceSync?.({
         config: src.integration.config,
         settings: src.settings,
@@ -239,6 +236,12 @@ export const makeSyncEngine = <
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
         state: opts.fullResync ? undefined : rest.sourceState,
       })
+
+    const source$ = opts.source$
+      ? opts.source$ConcatDefault
+        ? rxjs.concat(opts.source$, defaultSource$() ?? rxjs.EMPTY)
+        : opts.source$
+      : defaultSource$()
 
     const destination$$ =
       opts.destination$$ ??
