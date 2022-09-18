@@ -34,6 +34,14 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 export const zCountryCode = z.nativeEnum(CountryCode)
 export const zProducts = z.nativeEnum(Products)
 
+export const zLanguage = z.enum([
+  'en', // English
+  'fr', // French
+  'es', // Spanish
+  'nl', // Dutch
+  'de', // German
+])
+
 export const zPlaidClientConfig = z.object({
   clientId: z.string(),
   secrets: z.record(zEnvName, z.string()),
