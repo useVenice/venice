@@ -1,5 +1,5 @@
 import {LSProvider} from '@ledger-sync/engine-frontend'
-import {zParser} from '@ledger-sync/util'
+import {joinPath, zParser} from '@ledger-sync/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
 
@@ -7,7 +7,7 @@ import {PROVIDERS, zCommonEnv} from './env'
 const env = zParser(zCommonEnv).parse({
   // Need to use fully qualified form of process.env.$VAR for
   // webpack DefineEnv that next.js uses to work
-  NEXT_PUBLIC_API_URL: process.env['NEXT_PUBLIC_API_URL']!,
+  NEXT_PUBLIC_SERVER_URL: process.env['NEXT_PUBLIC_SERVER_URL']!,
 })
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
@@ -20,7 +20,9 @@ export const ledgerSyncCommonConfig = LSProvider.config({
   providers: PROVIDERS,
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  apiUrl: env.NEXT_PUBLIC_API_URL,
+  apiUrl: joinPath(env.NEXT_PUBLIC_SERVER_URL, '/api'),
+
+  // parseJwtPayload // use default here
 })
 
 // console.log('Using config', ledgerSyncConfig) // Too verbose...

@@ -10,7 +10,7 @@ import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
 // console.log('Using config', ledgerSyncConfig) // Too verbose...
 import {type inferProcedureInput} from '@ledger-sync/engine-backend'
-import {identity, Rx, zParser} from '@ledger-sync/util'
+import {identity, joinPath, Rx, zParser} from '@ledger-sync/util'
 
 import {ledgerSyncCommonConfig} from './commonConfig'
 import {parseIntConfigsFromEnv, zAllEnv} from './env'
@@ -25,6 +25,8 @@ const env = zParser(zAllEnv).parseUnknown(process.env)
 export const ledgerSyncBackendConfig = makeSyncEngine.config({
   ...ledgerSyncCommonConfig,
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
+  getRedirectUrl: (_, ctx) =>
+    joinPath(env.NEXT_PUBLIC_SERVER_URL, `ledgers/${ctx.ledgerId}`),
   metaService: makePostgresMetaService({databaseUrl: env.POSTGRES_URL}),
   // TODO: support other config service such as fs later...
   linkMap: {renameAccount: renameAccountLink, log: logLink},

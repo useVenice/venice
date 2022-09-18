@@ -7,6 +7,7 @@ import type {
   AnySyncProvider,
   ConnectionUpdate,
   Destination,
+  Id,
   Link,
   LinkFactory,
   MetaService,
@@ -65,6 +66,12 @@ export interface SyncEngineConfig<
    */
   apiUrl: string
 
+  /** Used for oauth based connections */
+  getRedirectUrl?: (
+    integration: ParsedInt,
+    ctx: {ledgerId: Id['ldgr']},
+  ) => string
+
   parseJwtPayload?: ParseJwtPayload
 
   // Backend only
@@ -118,6 +125,7 @@ export const makeSyncEngine = <
   jwtSecretOrPublicKey,
   parseJwtPayload,
   apiUrl,
+  getRedirectUrl,
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
@@ -513,6 +521,7 @@ export const makeSyncEngine = <
             ? {externalId: connectionExternalId!, settings: conn.settings}
             : undefined,
           webhookBaseUrl: joinPath(apiUrl, parseWebhookRequest.pathOf(int.id)),
+          redirectUrl: getRedirectUrl?.(int, ctx),
         })
       },
     })
@@ -551,6 +560,7 @@ export const makeSyncEngine = <
               apiUrl,
               parseWebhookRequest.pathOf(int.id),
             ),
+            redirectUrl: getRedirectUrl?.(int, ctx),
           },
         )
         await _syncConnectionUpdate(int, {

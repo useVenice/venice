@@ -51,6 +51,8 @@ export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'connectionExternalId'>,
     CheckConnectionContext {
   ledgerId: Id['ldgr']
+  /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
+  redirectUrl?: string
   connection?: {
     externalId: ExternalId
     settings: TSettings
