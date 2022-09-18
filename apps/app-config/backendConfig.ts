@@ -13,7 +13,7 @@ import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 import {identity, joinPath, Rx, zParser} from '@ledger-sync/util'
 
 import {ledgerSyncCommonConfig} from './commonConfig'
-import {parseIntConfigsFromEnv, zAllEnv} from './env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
@@ -35,9 +35,7 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
 
-  // TODO: Validate these immediately upon launch?
-  // TODO: Do not expose any of this to the frontend
-  defaultIntegrations: parseIntConfigsFromEnv(env),
+  defaultIntegrations: parseIntConfigsFromRawEnv(),
   getLinksForPipeline: ({source, links: links, destination}) =>
     destination.integration.provider.name === 'beancount'
       ? [

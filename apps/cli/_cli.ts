@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type {PROVIDERS} from '@ledger-sync/app-config/env'
-import {parseIntConfigsFromEnv, zAllEnv} from '@ledger-sync/app-config/env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from '@ledger-sync/app-config/env'
 
 import '@ledger-sync/app-config/register.node'
 
@@ -37,7 +37,7 @@ function env() {
   return zParser(zAllEnv).parseUnknown(loadedEnv)
 }
 function intConfig<T extends typeof PROVIDERS[number]['name']>(name: T) {
-  const config = parseIntConfigsFromEnv(env())[name]
+  const config = parseIntConfigsFromRawEnv()[name]
   if (!config) {
     throw new Error(`${name} provider is not configured`)
   }
@@ -52,8 +52,8 @@ if (require.main === module) {
       '': () => env(),
     }),
     intConfig: () => ({
-      ...R.mapValues(parseIntConfigsFromEnv(env()), (v) => () => v),
-      '': () => parseIntConfigsFromEnv(env()),
+      ...R.mapValues(parseIntConfigsFromRawEnv(), (v) => () => v),
+      '': () => parseIntConfigsFromRawEnv(),
     }),
     jwt: () =>
       makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY!}),

@@ -1,8 +1,13 @@
 import {sort} from 'fast-sort'
+import {compact} from 'remeda'
 import {z} from 'zod'
 
 import {R} from './data-utils'
-import {safeJSONParse} from './json-utils'
+import {
+  javascriptStringify,
+  safeJSONParse,
+  safeJSONStringify,
+} from './json-utils'
 import {setAt} from './object-utils'
 import {zGuard} from './zod-utils'
 
@@ -99,12 +104,52 @@ function flattenShapeForEnv<T extends z.ZodTypeAny>(
     ) as z.ZodRawShape
   }
 
+  const hint = schemaHint(schema)
   return {
     [prefixes.join(separator)]: z
       .string()
       .optional()
-      .describe(schema.description ?? ''),
+      // Handle things like array etc.
+      .transform((str) => safeJSONParse(str) ?? str)
+      .describe(
+        compact([
+          hint && '`',
+          hint,
+          hint && '`',
+          hint && schema.description && ' - ',
+          schema.description,
+        ]).join(''),
+      ),
   }
+}
+
+function schemaHint(schema: z.ZodTypeAny): string {
+  if (schema instanceof z.ZodEnum) {
+    return schema.options.join(' | ')
+  } else if (schema instanceof z.ZodNativeEnum) {
+    return Object.values(schema.enum).join(' | ')
+  } else if (schema instanceof z.ZodString) {
+    return 'string'
+  } else if (schema instanceof z.ZodNumber) {
+    return 'number'
+  } else if (schema instanceof z.ZodBoolean) {
+    return 'boolean'
+  } else if (schema instanceof z.ZodOptional) {
+    return schemaHint(schema.unwrap()) + ' | undefined'
+  } else if (schema instanceof z.ZodNullable) {
+    return schemaHint(schema.unwrap()) + ' | null'
+  } else if (schema instanceof z.ZodArray) {
+    return `Array<${schemaHint(schema.element)}>`
+  } else if (schema instanceof z.ZodDefault) {
+    return (
+      schemaHint(schema.removeDefault()) +
+      ` = ${
+        safeJSONStringify(schema._def.defaultValue()) ??
+        javascriptStringify(schema._def.defaultValue())
+      }`
+    )
+  }
+  return ''
 }
 
 /** Prepare env for parsing into nested json from simple values */
@@ -115,10 +160,14 @@ function unflattenEnv(
   const nested = {}
   // Sorting keys such that we set the deepest paths first
   // So plaid="" will always override plaid.client_id="id..."
-  for (const [key, value] of sort(R.toPairs(env)).desc(([k]) => k.length)) {
+  for (const [key, v] of sort(R.toPairs(env)).desc(([k]) => k.length)) {
     // Remove empty strings...
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    setAt(nested, key.split(separator).join('.'), value?.trim() || undefined)
+    setAt(
+      nested,
+      key.split(separator).join('.'),
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      (typeof v === 'string' ? v.trim() : v) || undefined,
+    )
   }
   return nested
 }
