@@ -5,7 +5,7 @@ import tablemark from 'tablemark'
 
 import {buildUrl, compact, R, zParser} from '@ledger-sync/util'
 
-import {parseIntConfigsFromEnv, zAllEnv} from './env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 import {loadEnv} from './loadEnv.node'
 
 const envList = R.pipe(
@@ -78,9 +78,10 @@ const deployButton = makeVercelDeployButton({
 })
 
 const readme = `
-# Environment variables
-
+## Deploy
 ${deployButton.mkd}
+
+## Environment variables
 
 ${tablemark(envList.map((env) => R.pick(env, ['Name', 'Description'])))}
 `
@@ -100,7 +101,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('Test out loading env vars')
   loadEnv()
   const env = zParser(zAllEnv).parseUnknown(process.env)
-  const configs = parseIntConfigsFromEnv(env)
+  const configs = parseIntConfigsFromRawEnv()
   console.log('Parsed env', env)
   console.log('Parsed intConfigs', configs)
 }

@@ -101,13 +101,17 @@ export const zAllEnv = zCommonEnv.merge(zBackendEnv).merge(zIntegrationEnv)
 
 // MARK: - Parsing integration configs
 
-export function parseIntConfigsFromEnv(
-  env: Record<string, string | undefined>,
+/**
+ * Input env must be raw, so means most likely we are parsing the flatConfig input twice
+ * for the moment unfortunately... But we need this to support transforms in flatConfig
+ */
+export function parseIntConfigsFromRawEnv(
+  env: Record<string, string | undefined> = process.env,
 ) {
   return R.pipe(
     R.mapValues(zFlatConfigByProvider, (zFlatConfig, name) => {
+      const subEnv = filterObject(env, (k) => k.startsWith(getPrefix(name)))
       try {
-        const subEnv = filterObject(env, (k) => k.startsWith(getPrefix(name)))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return zFlatConfig.optional().parse(subEnv)
       } catch (err) {
