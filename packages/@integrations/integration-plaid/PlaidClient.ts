@@ -6,6 +6,7 @@ import type {
   ItemWebhookUpdateRequest,
   LinkTokenCreateRequest,
   SandboxItemFireWebhookRequest,
+  SandboxItemResetLoginRequest,
   TransactionsGetRequest,
   TransactionsSyncRequest,
 } from 'plaid'
@@ -109,6 +110,11 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
       zCast<SandboxItemFireWebhookRequest>(),
       (opts) =>
         fromToken(opts.access_token).sandboxItemFireWebhook(opts).then(getData),
+    ),
+    sandboxItemResetLogin: zFunction(
+      zCast<SandboxItemResetLoginRequest>(),
+      (opts) =>
+        fromToken(opts.access_token).sandboxItemResetLogin(opts).then(getData),
     ),
   }
 })
