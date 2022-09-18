@@ -48,6 +48,8 @@ export function zFlattenForEnv<T extends z.ZodTypeAny>(
   return flatSchema.transform(
     zGuard((input) => {
       const nested: Record<string, unknown> = unflattenEnv(input, {separator})
+      // console.log('beforeafter', input, nested, prefix)
+      // Notably this does not work with optional...
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return schema.parse(prefix ? nested[prefix] : nested)
     }),

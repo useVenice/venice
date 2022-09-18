@@ -7,6 +7,9 @@ import {loadEnvConfig} from '@next/env'
  * Really tempted to just do our own .env parsing... Or otherwise patching it...
  */
 export function loadEnv() {
+  if (process.env['SKIP_DOTENV']) {
+    return {}
+  }
   const loaded = loadEnvConfig('./')
   return loaded.combinedEnv as Record<string, string>
 }
