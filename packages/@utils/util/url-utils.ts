@@ -4,6 +4,10 @@ import {
   parseUrl as _parseUrl,
   stringify as _stringifyQueryParams,
 } from 'query-string'
+import {compact} from 'remeda'
+
+export {default as base64url} from 'base64url'
+export {stringify as stringifyQueryParams} from 'query-string'
 
 export function appendPathComponent(href: string, pathComponent: string) {
   const url = new URL(href)
@@ -68,5 +72,12 @@ export function joinPath(p1: string, p2: string) {
   return p1.replace(/\/$/, '') + '/' + p2.replace(/^\//, '')
 }
 
-export {default as base64url} from 'base64url'
-export {stringify as stringifyQueryParams} from 'query-string'
+export function buildUrl(input: {
+  path: string
+  params?: Record<string, unknown>
+}) {
+  return compact([
+    input.path,
+    input.params && _stringifyQueryParams(input.params),
+  ]).join('?')
+}
