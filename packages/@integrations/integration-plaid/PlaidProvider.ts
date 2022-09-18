@@ -29,7 +29,14 @@ import {
 } from './legacy/plaid-helpers'
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {ErrorShape} from './plaid.types'
-import {makePlaidClient, zPlaidClientConfig, zWebhook} from './PlaidClient'
+import {
+  makePlaidClient,
+  zCountryCode,
+  zLanguage,
+  zPlaidClientConfig,
+  zProducts,
+  zWebhook,
+} from './PlaidClient'
 
 const _def = makeSyncProvider.def({
   ...ledgerSyncProviderBase.def,
@@ -44,6 +51,13 @@ const _def = makeSyncProvider.def({
         Maximum length of 30 characters.
         If a value longer than 30 characters is provided, Link will display "This Application" instead.`,
       ),
+    products: zProducts.array().default(['transactions']),
+    countryCodes: zCountryCode.array().default(['US']),
+    /**
+     * When using a Link customization, the language configured
+     * here must match the setting in the customization, or the customization will not be applied.
+     */
+    language: zLanguage.default('en'),
   }),
   connectionSettings: z.object({
     itemId: z.string().nullish(),
@@ -176,10 +190,9 @@ export const plaidProvider = makeSyncProvider({
           : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: ledgerId},
         client_name: config.clientName,
-        // TODO: Move these into config instead...
-        language: 'en',
-        ...(!connection?.settings.accessToken && {products: ['transactions']}),
-        country_codes: ['US'],
+        language: config.language,
+        ...(!connection?.settings.accessToken && {products: config.products}),
+        country_codes: config.countryCodes,
         // Webhook and redirect_uri would be part of the `connection` already.
         redirect_uri: ctx.redirectUrl,
         webhook: ctx.webhookBaseUrl,
@@ -356,7 +369,7 @@ export const plaidProvider = makeSyncProvider({
         ? await client
             .institutionsGetById(inferPlaidEnvFromToken(accessToken), {
               institution_id: item.institution_id,
-              country_codes: ['US'],
+              country_codes: config.countryCodes,
               options: {include_optional_metadata: true},
             })
             .then((r) => r.institution)
