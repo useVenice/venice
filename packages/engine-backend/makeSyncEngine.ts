@@ -604,6 +604,7 @@ export const makeSyncEngine = <
       }
       return next({ctx: {...ctx, isAdmin: true as const}})
     })
+    .query('debugEnv', {resolve: () => process.env}) // Temporary...
     .query('searchLedgerIds', {
       input: z.object({keywords: zTrimedString.nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) =>
