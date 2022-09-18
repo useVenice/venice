@@ -24,6 +24,8 @@ import {filterObject, R, z, zEnvVars, zFlattenForEnv} from '@ledger-sync/util'
 export const zCommonEnv = zEnvVars({
   NEXT_PUBLIC_API_URL: z
     .string()
+    // Should we default to request url?
+    // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
     .default('/api')
     .describe(
       `Fully qualified url your venice api used for webhooks and server-side rendering.

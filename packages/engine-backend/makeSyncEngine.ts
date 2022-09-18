@@ -63,7 +63,7 @@ export interface SyncEngineConfig<
    * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/ledger-sync`
    * This is needed for 1) server side rendering and 2) webhook handling
    */
-  apiUrl?: string
+  apiUrl: string
 
   parseJwtPayload?: ParseJwtPayload
 
@@ -458,12 +458,6 @@ export const makeSyncEngine = <
         if (!integration.provider.checkConnection) {
           return `Not implemented in ${integration.provider.name}`
         }
-        // Can default to request url later https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
-        if (!apiUrl) {
-          throw new Error(
-            'NEXT_PUBLIC_API_URL is required for webhook handling',
-          )
-        }
         const connUpdate = await integration.provider.checkConnection?.({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           settings,
@@ -504,20 +498,21 @@ export const makeSyncEngine = <
       input: z.tuple([zInt, zConnectOptions]),
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
       resolve: async ({
-        input: [{provider: p, config}, {connectionExternalId, ...connCtxInput}],
+        input: [int, {connectionExternalId, ...connCtxInput}],
         ctx,
       }) => {
         const conn = connectionExternalId
           ? await metaService.tables.connection
-              .get(makeId('conn', p.name, connectionExternalId))
+              .get(makeId('conn', int.provider.name, connectionExternalId))
               .then((input) => zConn.parseAsync(input))
           : undefined
-        return p.preConnect?.(config, {
+        return int.provider.preConnect?.(int.config, {
           ...connCtxInput,
           ledgerId: ctx.ledgerId,
           connection: conn
             ? {externalId: connectionExternalId!, settings: conn.settings}
             : undefined,
+          webhookBaseUrl: joinPath(apiUrl, parseWebhookRequest.pathOf(int.id)),
         })
       },
     })
@@ -533,26 +528,29 @@ export const makeSyncEngine = <
         input: [input, int, {connectionExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const {provider: p, config} = int
-        console.log('didConnect start', p.name, input, connCtxInput)
-        if (!p.postConnect || !p.def.connectOutput) {
+        console.log('didConnect start', int.provider.name, input, connCtxInput)
+        if (!int.provider.postConnect || !int.provider.def.connectOutput) {
           return 'Noop'
         }
         const conn = connectionExternalId
           ? await metaService.tables.connection
-              .get(makeId('conn', p.name, connectionExternalId))
+              .get(makeId('conn', int.provider.name, connectionExternalId))
               .then((input) => zConn.parseAsync(input))
           : undefined
 
-        const connUpdate = await p.postConnect(
-          p.def.connectOutput.parse(input),
-          config,
+        const connUpdate = await int.provider.postConnect(
+          int.provider.def.connectOutput.parse(input),
+          int.config,
           {
             ...connCtxInput,
             ledgerId: ctx.ledgerId,
             connection: conn
               ? {externalId: connectionExternalId!, settings: conn.settings}
               : undefined,
+            webhookBaseUrl: joinPath(
+              apiUrl,
+              parseWebhookRequest.pathOf(int.id),
+            ),
           },
         )
         await _syncConnectionUpdate(int, {
@@ -561,7 +559,7 @@ export const makeSyncEngine = <
           ledgerId: ctx.ledgerId,
           envName: connCtxInput.envName,
         })
-        console.log('didConnect finish', p.name, input)
+        console.log('didConnect finish', int.provider.name, input)
         return 'Connection Success'
       },
     })
