@@ -48,7 +48,7 @@ export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
       prefix === 'ldgr'
         ? true // Bypass check for ledger-ids for now...
         : s.startsWith(`${prefix}_`),
-    `Not a valid ${prefix} id`,
+    `Not a valid ${IDS_INVERTED[prefix]} id`,
   )
 }
 

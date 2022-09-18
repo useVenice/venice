@@ -1,7 +1,5 @@
 import type {Id, WebhookInput} from '@ledger-sync/cdk-core'
-import {extractId, makeId} from '@ledger-sync/cdk-core'
 import type {NonEmptyArray} from '@ledger-sync/util'
-import {compact} from '@ledger-sync/util'
 
 import type {AnySyncMutationInput} from './makeSyncEngine'
 
@@ -11,14 +9,14 @@ const kWebhook = 'webhook' as const
 export function parseWebhookRequest(
   req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
 ) {
-  const [procedure, providerName, intExternalId] = req.pathSegments
+  const [procedure, integrationId] = req.pathSegments
   if (procedure !== kWebhook) {
     return {...req, procedure}
   }
-  const id = makeId('int', providerName, intExternalId)
+
   // Consider naming it integrationId? not sure.
   const input: AnySyncMutationInput<'handleWebhook'> = [
-    {id},
+    {id: integrationId as Id['int']},
     {query: req.query, headers: req.headers, body: req.body},
   ]
   return {
@@ -33,7 +31,4 @@ export function parseWebhookRequest(
 parseWebhookRequest.isWebhook = (pathSegments: NonEmptyArray<string>) =>
   pathSegments[0] === kWebhook
 
-parseWebhookRequest.pathOf = (intId: Id['int']) => {
-  const [, providerName, intExternalId] = extractId(intId)
-  return compact([kWebhook, providerName, intExternalId]).join('/')
-}
+parseWebhookRequest.pathOf = (intId: Id['int']) => [kWebhook, intId].join('/')
