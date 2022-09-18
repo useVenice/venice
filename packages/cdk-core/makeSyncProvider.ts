@@ -1,4 +1,4 @@
-import type { MaybePromise} from '@ledger-sync/util';
+import type {MaybePromise} from '@ledger-sync/util'
 import {identity} from '@ledger-sync/util'
 import {castIs, z} from '@ledger-sync/util'
 
@@ -42,6 +42,7 @@ export type UseConnectHook<T extends AnyProviderDef> = (scope: {
 
 // MARK: - Server side connect types
 
+/** Context providers get during the connection establishing phase */
 export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'connectionExternalId'> {
   ledgerId: Id['ldgr']
@@ -50,6 +51,14 @@ export interface ConnectContext<TSettings>
     settings: TSettings
   } | null
 }
+
+export type CheckConnectionOptions = z.infer<typeof zCheckConnectionOptions>
+export const zCheckConnectionOptions = z.object({
+  /**
+   * Update the webhook associated with this connection to based on webhookBaseUrl
+   */
+  updateWebhook: z.boolean().nullish(),
+})
 
 export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // make `ConnUpdateData.id` not prefixed so we can have better inheritance
@@ -328,6 +337,24 @@ export function makeSyncProvider<
       >
     >
   >,
+  TCheckConn extends _opt<
+    (
+      input: OmitNever<{
+        settings: T['_types']['connectionSettings']
+        config: T['_types']['integrationConfig']
+        options: CheckConnectionOptions
+        context: {webhookBaseUrl: string}
+      }>,
+    ) => MaybePromise<
+      Omit<
+        ConnectionUpdate<
+          T['_types']['sourceOutputEntity'],
+          T['_types']['connectionSettings']
+        >,
+        'ledgerId'
+      >
+    >
+  >,
   // This probably need to also return an observable
   TRevokeConn extends _opt<
     (
@@ -370,6 +397,9 @@ export function makeSyncProvider<
 
   /** aka `postConnect` e.g. Exchange public token for access token and persist connection */
   postConnect: TPostConn
+
+  /** Notably may be used to update webhook */
+  checkConnection: TCheckConn
 
   /** Well, what it says... */
   revokeConnection: TRevokeConn
@@ -415,6 +445,7 @@ makeSyncProvider.defaults = makeSyncProvider({
   preConnect: undefined,
   useConnectHook: undefined,
   postConnect: undefined,
+  checkConnection: undefined,
   revokeConnection: undefined,
   handleWebhook: undefined,
   sourceSync: undefined,
