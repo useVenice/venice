@@ -77,6 +77,7 @@ export interface CliOpts {
   prepare?: () => void
   cleanup?: () => void
   context?: unknown
+  defaultHelpCommand?: boolean
 }
 const globalStart = Date.now() // Not entirely accurate...
 export function cliFromRouter<T extends trpc.AnyRouter>(
@@ -150,7 +151,9 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       })
   })
   // This becomes the default command if user enters nothing at all
-  cli.command('', 'No args to output help').action(() => cli.outputHelp())
+  if (cliOpts?.defaultHelpCommand !== false) {
+    cli.command('', 'No args to output help').action(() => cli.outputHelp())
+  }
 
   // @ts-expect-error
   cli._router = router
@@ -162,7 +165,11 @@ export function cliFromZFunctionMap(
   map: Record<string, AnyZFunction | unknown>,
   cliOpts?: CliOpts,
 ) {
-  const cli = cliFromRouter(routerFromZFunctionMap(trpc.router(), map), cliOpts)
+  const cli = cliFromRouter(routerFromZFunctionMap(trpc.router(), map), {
+    ...cliOpts,
+    defaultHelpCommand:
+      ('' in map ? false : undefined) ?? cliOpts?.defaultHelpCommand,
+  })
   // Expose methods that do not have runtime type defintions also for convenience
   if (!cliOpts?.safeMode) {
     const commandKeys = cli.commands.map((c) => c.name.split(' ')[0])

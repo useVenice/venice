@@ -2,6 +2,7 @@ import {sort} from 'fast-sort'
 import {z} from 'zod'
 
 import {R} from './data-utils'
+import {safeJSONParse} from './json-utils'
 import {setAt} from './object-utils'
 import {zGuard} from './zod-utils'
 
@@ -122,9 +123,9 @@ function unflattenEnv(
   return nested
 }
 
-// MARK: - Deprecated...
+// MARK: - Unsafe env access
 
-/** @deprecated */
+/** Do not use together with webpack Define plugin (including NEXT_PUBLIC_...) */
 export function getEnvVars(): Record<string, string | undefined> {
   return (
     (typeof window !== 'undefined' && window.localStorage) ||
@@ -133,7 +134,15 @@ export function getEnvVars(): Record<string, string | undefined> {
   )
 }
 
-/** @deprecated */
-export function getEnvVar(key: string): string | undefined {
-  return getEnvVars()[key] ?? undefined
+/** Do not use together with webpack Define plugin (including NEXT_PUBLIC_...) */
+export function getEnvVar<OptJson extends boolean>(
+  key: string,
+  opts?: {json?: OptJson},
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): OptJson extends true ? any : string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return R.pipe(getEnvVars()[key] ?? undefined, (val) =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    opts?.json ? safeJSONParse(val) : val,
+  )
 }
