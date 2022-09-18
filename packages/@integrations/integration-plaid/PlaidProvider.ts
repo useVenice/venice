@@ -19,6 +19,7 @@ import {
   makeStandardId,
 } from '@ledger-sync/cdk-ledger'
 import type {IAxiosError, RequiredOnly} from '@ledger-sync/util'
+import {joinPath} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {
@@ -297,9 +298,22 @@ export const plaidProvider = makeSyncProvider({
     }
   },
 
-  revokeConnection: (input, config) =>
+  checkConnection: async ({config, settings, options, context}) => {
+    console.log('[Plaid] checkConnection', options, context)
+    const client = makePlaidClient(config)
+    const {item} = await client.itemGet(settings.accessToken)
+    if (options.updateWebhook) {
+      await client.itemWebhookUpdate({
+        access_token: settings.accessToken,
+        webhook: joinPath(context.webhookBaseUrl, item.item_id),
+      })
+    }
+    return {connectionExternalId: item.item_id}
+  },
+
+  revokeConnection: (settings, config) =>
     makePlaidClient(config)
-      .itemRemove(input.accessToken)
+      .itemRemove(settings.accessToken)
       .catch((err: IAxiosError) => {
         // TODO: Centralize me inside PlaidClient...
         if (

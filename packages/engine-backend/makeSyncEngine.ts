@@ -10,13 +10,13 @@ import type {
   Link,
   LinkFactory,
   MetaService,
-  Source,
-} from '@ledger-sync/cdk-core'
+  Source} from '@ledger-sync/cdk-core';
 import {
   extractId,
   handlersLink,
   makeId,
   sync,
+  zCheckConnectionOptions,
   zConnectOptions,
   zId,
   zStandard,
@@ -25,6 +25,7 @@ import {
 import {
   compact,
   isZodType,
+  joinPath,
   R,
   rxjs,
   z,
@@ -33,8 +34,7 @@ import {
 } from '@ledger-sync/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
-import {_zContext} from './auth-utils'
-import {_zUserInfo, makeJwtClient} from './auth-utils'
+import {_zContext, makeJwtClient} from './auth-utils'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   ConnectionInput,
@@ -45,6 +45,7 @@ import type {
   ZInput,
 } from './makeSyncParsers'
 import {makeSyncParsers, zSyncOptions} from './makeSyncParsers'
+import {parseWebhookRequest} from './parseWebhookRequest'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -115,6 +116,7 @@ export const makeSyncEngine = <
   getLinksForPipeline,
   jwtSecretOrPublicKey,
   parseJwtPayload,
+  apiUrl,
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
@@ -174,14 +176,6 @@ export const makeSyncEngine = <
       int.provider.name,
       connUpdate.connectionExternalId,
     )
-    const pipelines = await getPipelinesForConnection({
-      id: connId,
-      // Should we spread connUpdate into it?
-      settings: connUpdate.settings,
-      ledgerId: connUpdate.ledgerId,
-      // institution: connUpdate.institution,
-    })
-
     await metaLinks
       .handlers({
         connection: {
@@ -197,6 +191,18 @@ export const makeSyncEngine = <
         settings: connUpdate.settings,
         institution: connUpdate.institution,
       })
+    if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
+      return
+    }
+
+    const pipelines = await getPipelinesForConnection({
+      id: connId,
+      // Should we spread connUpdate into it?
+      settings: connUpdate.settings,
+      ledgerId: connUpdate.ledgerId,
+      // institution: connUpdate.institution,
+    })
+
     console.log('_syncConnectionUpdate existingPipes.len', pipelines.length)
     await Promise.all(
       pipelines.map(async (pipe) => {
@@ -439,6 +445,41 @@ export const makeSyncEngine = <
         })
       },
     })
+    .mutation('checkConnection', {
+      meta: {
+        description: 'Not automatically called, used for debugging for now',
+      },
+      input: z.tuple([zConn, zCheckConnectionOptions.optional()]),
+      resolve: async ({input: [{settings, integration}, opts], ctx}) => {
+        if (!integration.provider.checkConnection) {
+          return `Not implemented in ${integration.provider.name}`
+        }
+        // Can default to request url later https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
+        if (!apiUrl) {
+          throw new Error(
+            'NEXT_PUBLIC_API_URL is required for webhook handling',
+          )
+        }
+        const connUpdate = await integration.provider.checkConnection?.({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          settings,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          config: integration.config,
+          options: opts ?? {},
+          context: {
+            webhookBaseUrl: joinPath(
+              apiUrl,
+              parseWebhookRequest.pathOf(integration.id),
+            ),
+          },
+        })
+        await _syncConnectionUpdate(integration, {
+          ...connUpdate,
+          ledgerId: ctx.ledgerId,
+        })
+        return 'Ok'
+      },
+    })
     // What about delete? Should this delete also? Or soft delete?
     .mutation('deleteConnection', {
       input: z.tuple([
@@ -528,6 +569,8 @@ export const makeSyncEngine = <
       input: z.tuple([zConn, zSyncOptions.optional()]),
       resolve: async function syncConnection({input: [conn, opts]}) {
         console.log('[syncConnection]', conn, opts)
+        // No need to checkConnection here as sourceSync should take care of it
+
         /** Every ParsedConn also conforms to connectionInput  */
         const pipelines = await getPipelinesForConnection(conn)
         await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
@@ -564,7 +607,6 @@ export const makeSyncEngine = <
         id: int.id,
       }),
     })
-    /** Used for testing */
     // adminFireWebhook: zFunction(
     //   zConn,
     //   async ({settings, integration: {provider, config}}) => {

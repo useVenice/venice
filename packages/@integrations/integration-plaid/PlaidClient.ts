@@ -3,7 +3,9 @@ import type {
   InstitutionsGetByIdRequest,
   InstitutionsGetRequest,
   ItemPublicTokenExchangeRequest,
+  ItemWebhookUpdateRequest,
   LinkTokenCreateRequest,
+  SandboxItemFireWebhookRequest,
   TransactionsGetRequest,
   TransactionsSyncRequest,
 } from 'plaid'
@@ -99,6 +101,14 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
     institutionsGet: zFunction(
       [zEnvName, zCast<InstitutionsGetRequest>()],
       (envName, opts) => fromEnv(envName).institutionsGet(opts).then(getData),
+    ),
+    itemWebhookUpdate: zFunction(zCast<ItemWebhookUpdateRequest>(), (opts) =>
+      fromToken(opts.access_token).itemWebhookUpdate(opts).then(getData),
+    ),
+    sandboxItemFireWebhook: zFunction(
+      zCast<SandboxItemFireWebhookRequest>(),
+      (opts) =>
+        fromToken(opts.access_token).sandboxItemFireWebhook(opts).then(getData),
     ),
   }
 })
