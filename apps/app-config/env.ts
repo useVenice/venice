@@ -116,5 +116,10 @@ export function parseIntConfigsFromEnv(
       }
     }),
     (configMap) => filterObject(configMap, (_, val) => val !== undefined),
-  )
+  ) as {
+    [k in typeof PROVIDERS[number]['name']]?: Extract<
+      typeof PROVIDERS[number],
+      {name: k}
+    >['def']['_types']['integrationConfig']
+  }
 }

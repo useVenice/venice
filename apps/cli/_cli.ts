@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+ 
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import type {PROVIDERS} from '@ledger-sync/app-config/env'
+import {parseIntConfigsFromEnv, zAllEnv} from '@ledger-sync/app-config/env'
+
 import '@ledger-sync/app-config/register.node'
 
 import {loadedEnv} from '@ledger-sync/app-config/register.node'
@@ -25,52 +28,60 @@ import {makeTogglClient} from '@ledger-sync/integration-toggl'
 import {makeWiseClient} from '@ledger-sync/integration-wise'
 import {makeYodleeClient} from '@ledger-sync/integration-yodlee'
 import type {ZFunctionMap} from '@ledger-sync/util'
-import {R, safeJSONParse, z, zodInsecureDebug} from '@ledger-sync/util'
+import {
+  getEnvVar,
+  R,
+  safeJSONParse,
+  z,
+  zodInsecureDebug,
+  zParser,
+} from '@ledger-sync/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
 
-if (process.env['DEBUG_ZOD']) {
+if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
+}
+
+function env() {
+  return zParser(zAllEnv).parseUnknown(loadedEnv)
+}
+function intConfig<T extends typeof PROVIDERS[number]['name']>(name: T) {
+  const config = parseIntConfigsFromEnv(env())[name]
+  if (!config) {
+    throw new Error(`${name} provider is not configured`)
+  }
+  return config
 }
 
 if (require.main === module) {
   type ClientMap = Record<string, () => [ZFunctionMap, CliOpts] | ZFunctionMap>
   const clients: ClientMap = {
-    env: () =>
-      R.mapValues(loadedEnv ?? {}, (v, k) => () => {
-        const json = safeJSONParse(v)
-        console.log(`[env.${k}]: ${json !== undefined ? 'json' : 'string'}`)
-        return json ?? v
-      }),
+    env: () => ({
+      ...R.mapValues(env(), (v) => () => v),
+      '': () => env(),
+    }),
+    intConfig: () => ({
+      ...R.mapValues(parseIntConfigsFromEnv(env()), (v) => () => v),
+      '': () => parseIntConfigsFromEnv(env()),
+    }),
     jwt: () =>
-      makeJwtClient({
-        secretOrPublicKey: process.env['JWT_SECRET_OR_PUBLIC_KEY']!,
-      }),
-    pg: () =>
-      makePostgresClient({
-        databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
-      }),
+      makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY!}),
+    pg: () => makePostgresClient({databaseUrl: env().POSTGRES_URL}),
     pgMeta: () =>
-      makePostgresMetaService({
-        databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
-      }) as unknown as ZFunctionMap,
-    plaid: () =>
-      makePlaidClient(safeJSONParse(process.env['PLAID_CREDENTIALS'])),
-    onebrick: () =>
-      makeOneBrickClient(safeJSONParse(process.env['ONEBRICK_CREDENTIALS'])),
-    teller: () =>
-      makeTellerClient(safeJSONParse(process.env['TELLER_CREDENTIALS'])),
-    stripe: () =>
-      makeStripeClient(safeJSONParse(process.env['STRIPE_CREDENTIALS'])),
-    ramp: () => makeRampClient(safeJSONParse(process.env['RAMP_CONFIG'])),
-    wise: () => makeWiseClient(safeJSONParse(process.env['WISE_CREDENTIALS'])),
-    toggl: () =>
-      makeTogglClient(safeJSONParse(process.env['TOGGL_CREDENTIALS'])),
+      makePostgresMetaService({databaseUrl: env().POSTGRES_URL}) as {},
+    plaid: () => makePlaidClient(intConfig('plaid')),
+    onebrick: () => makeOneBrickClient(intConfig('onebrick')),
+    teller: () => makeTellerClient(intConfig('teller')),
+    stripe: () => makeStripeClient(intConfig('stripe')),
+    ramp: () => makeRampClient(intConfig('ramp')),
+    wise: () => makeWiseClient(intConfig('wise')),
+    toggl: () => makeTogglClient(intConfig('toggl')),
     yodlee: () =>
       makeYodleeClient(
-        safeJSONParse(process.env['YODLEE_CONFIG']),
-        safeJSONParse(process.env['YODLEE_CREDS']),
+        intConfig('yodlee'),
+        getEnvVar('YODLEE_CREDS', {json: true}),
       ),
   }
 
@@ -80,7 +91,7 @@ if (require.main === module) {
     })
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .transform((key) => clients[key]!)
-    .parse(process.env['CLI'])
+    .parse(getEnvVar('CLI'))
 
   const [client, opts] = R.pipe(clientFactory(), (r) =>
     Array.isArray(r) ? r : [r],
