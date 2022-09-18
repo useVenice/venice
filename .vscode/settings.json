@@ -40,7 +40,8 @@
   "editor.rulers": [80],
   "editor.tabSize": 2,
   "files.associations": {
-    "ledgerSync": "typescript"
+    "ledgerSync": "typescript",
+    ".env.*": "properties"
   },
   "highlight.regexes": {
     "(// ?(?:FIXME|HACK):?)(.*)": [
