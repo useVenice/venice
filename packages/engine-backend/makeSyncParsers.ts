@@ -1,3 +1,5 @@
+import {TRPCError} from '@trpc/server'
+
 import type {
   AnySyncProvider,
   Id,
@@ -15,6 +17,7 @@ import {
   zGuard,
 } from '@ledger-sync/util'
 
+import type {UserInfo} from './auth-utils'
 import type {SyncEngineConfig} from './makeSyncEngine'
 
 // Four different types
@@ -299,4 +302,42 @@ export function makeSyncParsers<
     })
 
   return {zProvider, zInt, zIns, zConn, zPipeline}
+}
+
+type AuthSubject =
+  | ['ledger_id', Id['ldgr'] | null | undefined]
+  | ['connection', Pick<ParsedConn, 'ledgerId' | 'id'> | null | undefined]
+  | [
+      'pipeline',
+      Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
+    ]
+
+/** TODO: Add row level security to fully protect ourselves */
+export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
+  if (ctx.isAdmin) {
+    return true
+  }
+  switch (pair[0]) {
+    case 'ledger_id':
+      return pair[1] === ctx.ledgerId
+    case 'connection':
+      return pair[1] == null || pair[1].ledgerId === ctx.ledgerId
+    case 'pipeline':
+      return (
+        pair[1] == null ||
+        pair[1].source.ledgerId === ctx.ledgerId ||
+        pair[1].destination.ledgerId === ctx.ledgerId
+      )
+  }
+}
+
+export function authorizeOrThrow(ctx: UserInfo, ...pair: AuthSubject) {
+  if (!checkAuthorization(ctx, ...pair)) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: `${ctx.ledgerId} does not have access to ${
+        typeof pair[1] === 'string' ? pair[1] : pair[1]?.id
+      }`,
+    })
+  }
 }

@@ -44,7 +44,9 @@ import type {
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
-  ZInput,
+  ZInput} from './makeSyncParsers';
+import {
+  authorizeOrThrow
 } from './makeSyncParsers'
 import {makeSyncParsers, zSyncOptions} from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
@@ -342,9 +344,7 @@ export const makeSyncEngine = <
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
-            // ...int,
             id: int.id,
-            provider: int.provider.name,
             isSource: !!int.provider.sourceSync,
             isDestination: !!int.provider.destinationSync,
           }))
@@ -386,7 +386,8 @@ export const makeSyncEngine = <
     })
     .query('listConnections', {
       input: z.object({ledgerId: zId('ldgr').nullish()}).optional(),
-      resolve: async ({input: {ledgerId} = {}}) => {
+      resolve: async ({input: {ledgerId} = {}, ctx}) => {
+        authorizeOrThrow(ctx, 'ledger_id', ledgerId)
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
         const connections = await metaService.tables.connection.list({
@@ -462,7 +463,11 @@ export const makeSyncEngine = <
         description: 'Not automatically called, used for debugging for now',
       },
       input: z.tuple([zConn, zCheckConnectionOptions.optional()]),
-      resolve: async ({input: [{settings, integration}, opts]}) => {
+      resolve: async ({
+        input: [{settings, integration, ...conn}, opts],
+        ctx,
+      }) => {
+        authorizeOrThrow(ctx, 'connection', conn)
         if (!integration.provider.checkConnection) {
           return `Not implemented in ${integration.provider.name}`
         }
@@ -490,7 +495,11 @@ export const makeSyncEngine = <
         zConn,
         z.object({revokeOnly: z.boolean().nullish()}).optional(),
       ]),
-      resolve: async ({input: [{id, settings, integration}, opts]}) => {
+      resolve: async ({
+        input: [{settings, integration, ...conn}, opts],
+        ctx,
+      }) => {
+        authorizeOrThrow(ctx, 'connection', conn)
         await integration.provider.revokeConnection?.(
           settings,
           integration.config,
@@ -498,7 +507,7 @@ export const makeSyncEngine = <
         if (opts?.revokeOnly) {
           return
         }
-        await metaService.tables.connection.delete(id)
+        await metaService.tables.connection.delete(conn.id)
       },
     })
     // MARK: - Connect
@@ -514,6 +523,7 @@ export const makeSyncEngine = <
               .get(makeId('conn', int.provider.name, connectionExternalId))
               .then((input) => zConn.parseAsync(input))
           : undefined
+        authorizeOrThrow(ctx, 'connection', conn)
         return int.provider.preConnect?.(int.config, {
           ...connCtxInput,
           ledgerId: ctx.ledgerId,
@@ -546,6 +556,7 @@ export const makeSyncEngine = <
               .get(makeId('conn', int.provider.name, connectionExternalId))
               .then((input) => zConn.parseAsync(input))
           : undefined
+        authorizeOrThrow(ctx, 'connection', conn)
 
         const connUpdate = await int.provider.postConnect(
           int.provider.def.connectOutput.parse(input),
@@ -577,7 +588,8 @@ export const makeSyncEngine = <
     // MARK: - Sync
     .mutation('syncConnection', {
       input: z.tuple([zConn, zSyncOptions.optional()]),
-      resolve: async function syncConnection({input: [conn, opts]}) {
+      resolve: async function syncConnection({input: [conn, opts], ctx}) {
+        authorizeOrThrow(ctx, 'connection', conn)
         console.log('[syncConnection]', conn, opts)
         // No need to checkConnection here as sourceSync should take care of it
 
@@ -588,8 +600,9 @@ export const makeSyncEngine = <
     })
     .mutation('syncPipeline', {
       input: z.tuple([zPipeline, zSyncOptions.optional()]),
-      resolve: async function syncPipeline({input: [pipeline, opts]}) {
+      resolve: async function syncPipeline({input: [pipeline, opts], ctx}) {
         console.log('[syncPipeline]', pipeline)
+        authorizeOrThrow(ctx, 'pipeline', pipeline)
         return _syncPipeline(pipeline, opts)
       },
     })

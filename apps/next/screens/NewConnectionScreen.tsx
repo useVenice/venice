@@ -176,10 +176,10 @@ export function NewConnectionScreen() {
               <div className="flex flex-col space-y-2">
                 {integrationsRes.data?.map((int) => (
                   <button
-                    key={`${int.id}-${int.provider}`}
+                    key={int.id}
                     className="h-12 rounded-lg bg-primary px-5 text-white"
                     onClick={() => connect(int, {})}>
-                    {int.id} {int.provider}
+                    {int.id}
                   </button>
                 ))}
               </div>
