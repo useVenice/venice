@@ -25,7 +25,7 @@ const palette = {
  */
 module.exports = {
   content: [
-    './{components,pages}/**/*.{ts,tsx}',
+    './{components,pages,screens}/**/*.{ts,tsx}',
     '../../packages/{@integrations/*,engine-frontend}/**/*.tsx',
   ],
   theme: {
