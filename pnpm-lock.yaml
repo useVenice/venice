@@ -880,9 +880,12 @@ importers:
       '@radix-ui/react-slot': 1.0.0
       '@radix-ui/react-tabs': 1.0.0
       '@radix-ui/react-toast': 1.0.0
+      '@radix-ui/react-use-controllable-state': 1.0.0
       '@react-hookz/web': '*'
       '@types/react': '*'
       framer-motion: 6.5.1
+      jotai: 1.8.4
+      nanoid: 3.3.4
       phosphor-react: '*'
       react: '*'
       react-dom: '*'
@@ -895,8 +898,11 @@ importers:
       '@radix-ui/react-slot': 1.0.0_react@17.0.2
       '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
       '@radix-ui/react-toast': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
       '@react-hookz/web': 15.1.0_sfoxds7t5ydpegc3knd667wn6m
       framer-motion: 6.5.1_sfoxds7t5ydpegc3knd667wn6m
+      jotai: 1.8.4_react@17.0.2
+      nanoid: 3.3.4
       phosphor-react: 1.4.1_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -8286,6 +8292,43 @@ packages:
 
   /jotai/1.8.3_react@17.0.2:
     resolution: {integrity: sha512-bNAs/DMD6BEB4xxVku33CI+ZIFyCWG82Ms6JnvYunEvGCnviTTDBl+m0HKgijoHmcNM3fxQ5MARdG+wwokNxog==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      '@babel/template': '*'
+      '@tanstack/query-core': '*'
+      '@urql/core': '*'
+      immer: '*'
+      optics-ts: '*'
+      react: '>=16.8'
+      valtio: '*'
+      wonka: '*'
+      xstate: '*'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      '@tanstack/query-core':
+        optional: true
+      '@urql/core':
+        optional: true
+      immer:
+        optional: true
+      optics-ts:
+        optional: true
+      valtio:
+        optional: true
+      wonka:
+        optional: true
+      xstate:
+        optional: true
+    dependencies:
+      react: 17.0.2
+    dev: false
+
+  /jotai/1.8.4_react@17.0.2:
+    resolution: {integrity: sha512-bkHDHNxm7bU4+bJL4z96fTlJYN34UDRTu3ghEajJrDepayON9YEaxPrXr7xhLnIRntoFC6eDYYhMNA/ilbj2RQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@babel/core': '*'
