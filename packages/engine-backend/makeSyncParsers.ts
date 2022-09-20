@@ -218,6 +218,10 @@ export function makeSyncParsers<
         id,
         ...conn,
         ...rest,
+        // For security do not allow ledgerId to ever be automatically changed
+        // once exists. Otherwise one could pass someone else's ledgerId and get access
+        // to their connection via just the `id`
+        ledgerId: conn?.ledgerId ?? rest.ledgerId,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,
