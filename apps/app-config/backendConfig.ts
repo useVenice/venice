@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+ 
 import {logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
@@ -86,14 +86,8 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
     source: conn,
     destination: {
       id: 'conn_postgres',
-      // TODO: Add validation here, and perhaps migration too
-
-      settings: {databaseUrl: process.env['POSTGRES_URL']!},
-      // provider: 'alka',
-      // settings: {
-      //   // authUserJson: getEnv('FIREBASE_AUTH_USER_STAGING'),
-      //   ledgerIds: ['ldgr_default' as Id.ldgr],
-      // },
+      // Add validation here? and perhaps migration too
+      settings: {databaseUrl: env.POSTGRES_URL},
     },
   }),
 })
