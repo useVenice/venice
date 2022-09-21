@@ -32,7 +32,6 @@ import {
   rxjs,
   z,
   zParser,
-  zTrimedString,
 } from '@ledger-sync/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
@@ -44,10 +43,9 @@ import type {
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
-  ZInput} from './makeSyncParsers';
-import {
-  authorizeOrThrow
+  ZInput,
 } from './makeSyncParsers'
+import {authorizeOrThrow} from './makeSyncParsers'
 import {makeSyncParsers, zSyncOptions} from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
 
@@ -357,7 +355,7 @@ export const makeSyncEngine = <
       },
     })
     .query('searchInstitutions', {
-      input: z.object({keywords: zTrimedString.nullish()}).optional(),
+      input: z.object({keywords: z.string().trim().nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) => {
         const ints = await getDefaultIntegrations()
         const institutions = await metaService.searchInstitutions({
@@ -619,7 +617,7 @@ export const makeSyncEngine = <
     })
     // .query('adminDebugEnv', {resolve: () => process.env}) // Temporary...
     .query('adminSearchLedgerIds', {
-      input: z.object({keywords: zTrimedString.nullish()}).optional(),
+      input: z.object({keywords: z.string().trim().nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) =>
         metaService.searchLedgerIds({keywords}),
     })

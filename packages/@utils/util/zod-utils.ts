@@ -24,8 +24,6 @@ export const zJson: z.ZodType<Json> = z.lazy(() =>
   z.union([zLiteral, z.array(zJson), z.record(zJson)]),
 )
 
-export const zTrimedString = z.string().transform((s) => s.trim())
-
 export type JsonObject = z.infer<typeof zJsonObject>
 export const zJsonObject = z.record(zJson)
 

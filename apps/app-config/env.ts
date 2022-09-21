@@ -44,6 +44,7 @@ export const zBackendEnv = zEnvVars({
     .describe('Primary database used for metadata and user data storage'),
   JWT_SECRET_OR_PUBLIC_KEY: z
     .string()
+    .trim()
     .optional()
     .describe('Used for validating authenticity of accessToken'),
 })
