@@ -98,10 +98,6 @@ pnpm run ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --des
 pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
 ```
 
-## What are we working now and next?
-
-@see https://github.com/orgs/alkafinance/projects/2/views/1
-
 ### Key concepts
 
 - Integration
@@ -117,6 +113,15 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 - Why is it called Venice?
     - First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the useVenice pipelines can be used to transport services
+
+- Who owns the relationship with the providers?
+    - We may choose to help with this in the future, but for now, you do. 
+
+- Do you get to see any of the data we pass through?
+    - No. You deploy this within your own infra.
+
+- What are we working now and next?
+    - @see https://github.com/orgs/alkafinance/projects/2/views/1
 
 ## Contribute & Support
 
