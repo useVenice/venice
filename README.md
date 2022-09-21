@@ -132,7 +132,7 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
     - No. You deploy this within your own infra.
 
 - What are we working now and next?
-    - @see https://github.com/orgs/alkafinance/projects/2/views/1
+    - Join the discussion at https://github.com/orgs/usevenice/projects/1
 
 ## Contribute & Support
 
