@@ -1,6 +1,10 @@
 # Venice
 
-Logo here
+<div>
+  <p align="center">
+    <img src="Instagram post - 2.png" width="250"> 
+  </p>
+</div>
 
 Venice is a the fastest way from Plaid to your Postgres DB
 
