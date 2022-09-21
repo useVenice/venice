@@ -12,7 +12,7 @@
     "accounting": "0.4.1",
     "async-sema": "3.1.1",
     "awilix": "7.0.3",
-    "axios": "0.21.1",
+    "axios": "0.21.2",
     "base64url": "3.0.1",
     "bintrees": "1.0.2",
     "chroma-js": "2.4.2",
