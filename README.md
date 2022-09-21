@@ -125,6 +125,7 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 ## Contribute & Support
 
+Join our Slack Community: https://join.slack.com/t/usevenice/signup. 
 If you aren't in Slack already, hit us up and we'll add you.
 
 For integration development, we found the following tools really helpful for generating
