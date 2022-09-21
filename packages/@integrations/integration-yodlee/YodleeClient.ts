@@ -84,6 +84,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
   const loginName =
     creds.role === 'user' ? creds.loginName : config.adminLoginName
   let accessToken = creds.accessToken
+
   const httpsAgent =
     getDefaultProxyAgent() ?? (config.proxy && $makeProxyAgent(config.proxy))
 
@@ -139,15 +140,16 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     },
   })
 
-  const api = new YodleeAPI(
-    {BASE: http.defaults.baseURL},
-    createOpenApiRequestFactory(http, CancelablePromise),
-  )
-
+  // Fetcher to handle new type generated
   const fetcher = createFetcher({
     ...config,
     url: baseUrlFromEnvName(creds.envName),
   })
+
+  const api = new YodleeAPI(
+    {BASE: http.defaults.baseURL},
+    createOpenApiRequestFactory(http, CancelablePromise),
+  )
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
     new AuthService({
@@ -177,6 +179,41 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
   )
 
   const client = {
+    // Methods that handle new type gen
+    getUser2: async () => {
+      const res = await fetcher.getUser(loginName)
+      return res.data.user
+    },
+
+    getTransactions3: async () => {
+      const res = await fetcher.getTransactions(loginName, {})
+      return res.data.transaction
+    },
+
+    getProvider2: zFunction(zYodleeId, async (providerId) => {
+      const res = await fetcher.getProvider(providerId, loginName)
+      return res.data.provider?.[0]
+    }),
+    async *iterateInstitutions2(accessToken: string) {
+      let skip = 0
+      const limit = 500
+
+      while (true) {
+        const res = await fetcher.getInstitutions(accessToken, {
+          skip,
+          top: limit,
+        })
+        if (res.data.institution?.length) {
+          yield res.data.institution
+          skip += res.data.institution.length
+        }
+
+        if ((res.data.institution?.length ?? 0) < limit) {
+          break
+        }
+      }
+    },
+
     get accessToken() {
       return accessToken
     },
@@ -207,20 +244,6 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
           throw err
         }),
 
-    getUser2: async () => {
-      const res = await fetcher.getUser(loginName)
-      return res.data.user
-    },
-
-    getTransactions3: async () => {
-      const res = await fetcher.getTransactions(loginName, {})
-      return res.data.transaction
-    },
-
-    getProvider2: zFunction(zYodleeId, async (providerId) => {
-      const res = await fetcher.getProvider(providerId, loginName)
-      return res.data.provider?.[0]
-    }),
     async updateUser(user: {email?: string; loginName?: string}) {
       return http
         .put<{user: Yodlee.User}>('/user', {user})
@@ -572,26 +595,6 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
           skip += res.institution.length
         }
         if ((res.institution?.length ?? 0) < limit) {
-          break
-        }
-      }
-    },
-
-    async *iterateInstitutions2(accessToken: string) {
-      let skip = 0
-      const limit = 500
-
-      while (true) {
-        const res = await fetcher.getInstitutions(accessToken, {
-          skip,
-          top: limit,
-        })
-        if (res.data.institution?.length) {
-          yield res.data.institution
-          skip += res.data.institution.length
-        }
-
-        if ((res.data.institution?.length ?? 0) < limit) {
           break
         }
       }
