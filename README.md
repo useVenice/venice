@@ -16,7 +16,10 @@ Zero to production in 5 minutes without a single line of code
 ## Table of contents
 
 * [Why We Exist](##Why-We-Exist)
-* [What We Built](#What_We_Built)
+* [What We Built](#What-We-Built)
+* [Architecture](#Architecture)
+* [Environment Variables](#Environment-Variables)
+* [FAQs](#FAQs)
 
 
 ## Why We Exist
@@ -50,9 +53,7 @@ Here are 5 ways you can use Venice, each built on a layer below
 - HTTP API (trpc / OpenAPI) (Alpha)
 
 
-
-
-## Environment variables
+## Environment Variables
 
 | Name                              | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
