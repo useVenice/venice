@@ -2,7 +2,7 @@
 
 <div>
   <p align="center">
-    <img src="Instagram post - 2.png" width="250"> 
+    <img src="logo.png" width="250"> 
   </p>
 </div>
 
