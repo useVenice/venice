@@ -54,7 +54,7 @@ Here are 5 ways you can use Venice, each built on a layer below
 - Embeddable portal (Beta)
 - Theme-able react components (Planned)
 - Headless react components (Planned)
-- HTTP API (trpc / OpenAPI) (Alpha)
+- HTTP API (trpc Alpha, OpenAPI planned)
 
 
 ## Environment Variables
