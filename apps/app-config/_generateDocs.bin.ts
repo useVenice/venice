@@ -71,7 +71,12 @@ const deployButton = makeVercelDeployButton({
   'repository-url': 'https://github.com/alkafinance/ledger-sync',
   'root-directory': 'apps/next',
   'project-name': 'my-ledger-sync',
-  env: envList.map((e) => e.key).join(','),
+  env: [
+    'POSTGRES_URL',
+    'int_plaid__clientId',
+    'int_plaid__secrets__sandbox',
+    'JWT_SECRET_OR_PUBLIC_KEY',
+  ].join(','),
   envDescription: 'Not all values are required. Use empty space to skip values',
   envLink:
     'https://github.com/alkafinance/ledger-sync/blob/main/apps/app-config/README.md',

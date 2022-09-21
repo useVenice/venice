@@ -46,6 +46,7 @@ const _def = makeSyncProvider.def({
     clientName: z
       .string()
       .max(30)
+      .default('This Application')
       .describe(
         `The name of your application, as it should be displayed in Link.
         Maximum length of 30 characters.
@@ -194,7 +195,7 @@ export const plaidProvider = makeSyncProvider({
         ...(!connection?.settings.accessToken && {products: config.products}),
         country_codes: config.countryCodes,
         // Webhook and redirect_uri would be part of the `connection` already.
-        redirect_uri: ctx.redirectUrl,
+        // redirect_uri: ctx.redirectUrl,
         webhook: ctx.webhookBaseUrl,
       })
       .then((res) => {
