@@ -68,7 +68,7 @@ function makeVercelDeployButton(params: {
 }
 
 const deployButton = makeVercelDeployButton({
-  'repository-url': 'https://github.com/alkafinance/ledger-sync',
+  'repository-url': 'https://github.com/useVenice/venice',
   'root-directory': 'apps/next',
   'project-name': 'my-ledger-sync',
   env: [
@@ -79,7 +79,7 @@ const deployButton = makeVercelDeployButton({
   ].join(','),
   envDescription: 'Not all values are required. Use empty space to skip values',
   envLink:
-    'https://github.com/alkafinance/ledger-sync/blob/main/apps/app-config/README.md',
+    'https://github.com/useVenice/venice/blob/main/apps/app-config/README.md',
 })
 
 const readme = `
