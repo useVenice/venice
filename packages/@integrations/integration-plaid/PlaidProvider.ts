@@ -324,6 +324,12 @@ export const plaidProvider = makeSyncProvider({
         access_token: settings.accessToken,
         webhook: context.webhookBaseUrl,
       })
+      return {
+        connectionExternalId: itemId,
+        triggerDefaultSync: true, // to update settings.item.webhook
+        // postgres deepMerge is not implemented yet
+        // settings: {item: {webhook: context.webhookBaseUrl}},
+      }
     }
     if (options.sandboxSimulateUpdate) {
       await client.sandboxItemFireWebhook({
@@ -337,6 +343,10 @@ export const plaidProvider = makeSyncProvider({
     }
     if (options.sandboxSimulateDisconnect) {
       await client.sandboxItemResetLogin({access_token: settings.accessToken})
+      // To immediate get item to be in a loginRequired state, as it is hard for us to
+      // generate an item error and put it inside settings.item.
+      // And because this call does nto appear to trigger any webhook
+      return {connectionExternalId: itemId, triggerDefaultSync: true}
     }
     return {connectionExternalId: itemId}
   },
