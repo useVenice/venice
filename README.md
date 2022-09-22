@@ -16,6 +16,12 @@ Zero to production in 5 minutes without a single line of code:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
 
+<p align="center">
+  <a href="https://link.useVenice.com/demo-video" rel="nofollow">
+    <img src="https://link.useVenice.com/demo-gif" alt="Venice demo" style="max-width: 300px;">
+  </a>
+</p>
+
 
 ## Table of Contents
 
