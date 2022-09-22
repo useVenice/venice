@@ -1,4 +1,4 @@
-# Venice
+
 
 <p align="center">
   <img src="logo.png" width="250"> 
@@ -14,15 +14,20 @@ Zero to production in 5 minutes without a single line of code:
 
 ## One-click Deploy with Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https%3A%2F%2Fgithub.com%2Falkafinance%2Fledger-sync%2Fblob%2Fmain%2Fapps%2Fapp-config%2FREADME.md&project-name=my-ledger-sync&repository-url=https%3A%2F%2Fgithub.com%2Falkafinance%2Fledger-sync&root-directory=apps%2Fnext)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL,int_plaid__clientId,int_plaid__secrets__sandbox,JWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https://github.com/useVenice/venice/blob/main/apps/app-config/README.md&project-name=my-ledger-sync&repository-url=https://github.com/useVenice/venice&root-directory=apps/next)
 
 ## Table of Contents
 
-- [Why We Exist](##Why-We-Exist)
-- [What We Built](#What-We-Built)
-- [Architecture](#Architecture)
-- [Environment Variables](#Environment-Variables)
-- [FAQs](#FAQs)
+- [One-click Deploy with Vercel](#one-click-deploy-with-vercel)
+- [Table of Contents](#table-of-contents)
+- [Why We Exist](#why-we-exist)
+- [What We Built](#what-we-built)
+- [Architecture](#architecture)
+- [Environment Variables](#environment-variables)
+- [Local Development](#local-development)
+  - [Key Concepts](#key-concepts)
+- [FAQs](#faqs)
+- [Contribute & Support](#contribute--support)
 
 ## Why We Exist
 
