@@ -77,7 +77,7 @@
       "libpq"
     ],
     "overrides": {
-      "axios": "0.21.2",
+      "axios": "0.21.1",
       "slonik": "30.3.1"
     },
     "patchedDependencies": {
