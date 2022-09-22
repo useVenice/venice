@@ -307,7 +307,7 @@ export const plaidProvider = makeSyncProvider({
       source$: rxjs.from(
         (meta?.accounts ?? []).map((a) => def._opData('account', a.id, a)),
       ),
-      triggerSync: true,
+      triggerDefaultSync: true,
     }
   },
 
@@ -488,7 +488,7 @@ export const plaidProvider = makeSyncProvider({
           case 'INITIAL_UPDATE':
           case 'HISTORICAL_UPDATE':
             return DEFAULT_SYNC
-          // return [{connectionExternalId, triggerSync: true}] // Incremental false?
+          // return [{connectionExternalId, triggerDefaultSync: true}] // Incremental false?
           case 'DEFAULT_UPDATE':
             return DEFAULT_SYNC
           case 'TRANSACTIONS_REMOVED':
