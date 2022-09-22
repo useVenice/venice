@@ -1,6 +1,6 @@
 
 ## Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=After%20deploy%2C%20you%20can%20add%20other%20optional%20environment%20variables%20to%20configure%20for%20production%20and%20customize%20the%20default%20behavior.%20See%20the%20full%20list%20in%20README&envLink=https%3A%2F%2Fgithub.com%2Fusevenice%2Fvenice%23environment-variables&project-name=my-ledger-sync&redirect-url=https%3A%2F%2Flink.useVenice.com%2Fnext-steps&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fnext)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=After%20deploy%2C%20you%20can%20add%20other%20optional%20environment%20variables%20to%20configure%20for%20production%20and%20customize%20the%20default%20behavior.%20See%20the%20full%20list%20in%20README&envLink=https%3A%2F%2Fgithub.com%2Fusevenice%2Fvenice%23environment-variables&project-name=my-ledger-sync&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fnext)
 
 ## Environment variables
 
