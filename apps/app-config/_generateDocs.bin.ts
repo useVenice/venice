@@ -86,7 +86,7 @@ const deployButton = makeVercelDeployButton({
   envDescription:
     'After deploy, you can add other optional environment variables to configure for production and customize the default behavior. See the full list in README',
   envLink: 'https://github.com/usevenice/venice#environment-variables',
-  'redirect-url': 'https://link.useVenice.com/next-steps',
+  // 'redirect-url': 'https://link.useVenice.com/next-steps',
 })
 console.log(deployButton.url)
 
