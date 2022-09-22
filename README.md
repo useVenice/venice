@@ -1,7 +1,7 @@
 
 
 <p align="center">
-  <img src="logo.png" width="250"> 
+  <img src="https://link.useVenice.com/logo" width="250"> 
 </p>
 
 **Venice** is a the fastest way from Plaid to your Postgres database.
