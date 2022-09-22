@@ -4,24 +4,34 @@
   <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
 </p>
 
-**Venice** is a the fastest way from Plaid to your Postgres database.
+**Venice** is a the fastest way to get financial data from Plaid into your Postgres database.
 
 Zero to production in 5 minutes without a single line of code:
 
 1. Add environment variables (Plaid API key, database credentials, JWT secret).
-2. Embed pre-built UI.
+2. Embed pre-built UI with user-scoped `accessToken`
 3. Voila! Query data in your database.
 
-## One-click Deploy with Vercel
+
+## Quick start
+
+**One click deploy with Vercel**
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
 
-<p align="center">
+<p>
   <a href="https://link.useVenice.com/demo-video" rel="nofollow">
     <img src="https://cdn.loom.com/sessions/thumbnails/a2eda4cd5c764963bd2d6a56fe5a71e5-with-play.gif" alt="Venice demo" style="max-width: 300px;">
   </a>
 </p>
 
+**Questions & support?**
+
+<p>
+  <a href="https://link.usevenice.com/slack" rel="nofollow">
+    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
+  </a>
+</p>
 
 ## Table of Contents
 
@@ -169,3 +179,4 @@ type as well as API clients:
 
 - https://api.openapi-generator.tech/index.html
 - https://transform.tools/
+](https://bookface.ycombinator.com/posts/66228#save)
