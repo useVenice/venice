@@ -1,20 +1,18 @@
 # Venice
 
-<div>
-  <p align="center">
-    <img src="logo.png" width="250"> 
-  </p>
-</div>
+<p align="center">
+  <img src="logo.png" width="250"> 
+</p>
 
-> Venice is a the fastest way from Plaid to your Postgres database
+**Venice** is a the fastest way from Plaid to your Postgres database.
 
 Zero to production in 5 minutes without a single line of code:
 
-1. Add env variables (Plaid API key, database credentials, JWT secret).
+1. Add environment variables (Plaid API key, database credentials, JWT secret).
 2. Embed pre-built UI.
 3. Voila! Query data in your database.
 
-## One-click deploy with Vercel
+## One-click Deploy with Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https%3A%2F%2Fgithub.com%2Falkafinance%2Fledger-sync%2Fblob%2Fmain%2Fapps%2Fapp-config%2FREADME.md&project-name=my-ledger-sync&repository-url=https%3A%2F%2Fgithub.com%2Falkafinance%2Fledger-sync&root-directory=apps%2Fnext)
 
@@ -71,7 +69,7 @@ Here are 5 ways you can use Venice, each built on a layer below:
 | `int_plaid__countryCodes`         | `Array<US \| GB \| ES \| NL \| FR \| IE \| CA \| DE \| IT> = ["US"]`                                                                                                                                                                                                                                                                                                                                            |
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de = "en"`                                                                                                                                                                                                                                                                                                                                                                             |
 
-## Local development
+## Local Development
 
 1. Clone repo `git clone git@github.com:usevenice/venice.git`.
 
@@ -88,7 +86,7 @@ pnpm run dev
 
 4. Visit `http://localhost:3000`.
 
-Couple things you can try
+Couple things you can try:
 
 - Connect via first selecting institution vs. connecting via selecting provider.
 - Venice works fully as a CLI tool as well.
@@ -104,7 +102,7 @@ pnpm run ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --des
 pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
 ```
 
-### Key concepts
+### Key Concepts
 
 - Integration:
   - This is a data source or destination enabled in your application and may optionally contain configurations such as OAuth client ID / secret, API keys to service providers like Plaid and Yodlee.
