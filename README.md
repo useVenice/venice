@@ -128,9 +128,11 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 ## Contribute & Support
 
-<a href="https://link.usevenice.com/slack" rel="nofollow">
-  <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
-</a>
+<p>
+  <a href="https://link.usevenice.com/slack" rel="nofollow">
+    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
+  </a>
+</p>
 
 For integration development, we found the following tools really helpful for generating
 type as well as api clients:
