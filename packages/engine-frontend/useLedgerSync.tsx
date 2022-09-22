@@ -73,6 +73,9 @@ export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
   const deleteConnection = trpc.useMutation('deleteConnection', {
     onSettled: () => queryClient.invalidateQueries(['listConnections']),
   })
+  const checkConnection = trpc.useMutation('checkConnection', {
+    onSettled: () => queryClient.invalidateQueries(['listConnections']),
+  })
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
@@ -86,6 +89,7 @@ export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
     insRes,
     syncConnection,
     deleteConnection,
+    checkConnection,
     isAdmin,
     developerMode,
   }

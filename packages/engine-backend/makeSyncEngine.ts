@@ -443,6 +443,7 @@ export const makeSyncEngine = <
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
+            envName: conn.envName,
             externalId,
             syncInProgress,
             lastSyncCompletedAt,
