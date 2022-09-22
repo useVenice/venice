@@ -4,7 +4,7 @@ neverBuiltDependencies:
   - libpq
 
 overrides:
-  axios: 0.21.2
+  axios: 0.21.1
   slonik: 30.3.1
 
 patchedDependencies:
@@ -695,7 +695,7 @@ importers:
       accounting: 0.4.1
       async-sema: 3.1.1
       awilix: 7.0.3
-      axios: 0.21.2
+      axios: 0.21.1
       base64url: 3.0.1
       bintrees: 1.0.2
       chokidar: 3.5.3
@@ -748,7 +748,7 @@ importers:
       accounting: 0.4.1
       async-sema: 3.1.1
       awilix: 7.0.3
-      axios: 0.21.2
+      axios: 0.21.1
       base64url: 3.0.1
       bintrees: 1.0.2
       chroma-js: 2.4.2
@@ -4221,8 +4221,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios/0.21.2:
-    resolution: {integrity: sha512-87otirqUw3e8CzHTMO+/9kh/FSgXt/eVDvipijwDtEuwbkySWZ9SBm6VEubmJ/kLKEoLQV/POhxXFb66bfekfg==}
+  /axios/0.21.1:
+    resolution: {integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==}
     dependencies:
       follow-redirects: 1.15.1
     transitivePeerDependencies:
@@ -9829,7 +9829,7 @@ packages:
     resolution: {integrity: sha512-8yTW44X+vVBzbCMeYpSwhqig8XyjiLnnPSgKwguxaojs7X7sjVwOscX+JmXYhMgrStekbwOXHhvuyUCmMuOSqw==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      axios: 0.21.2
+      axios: 0.21.1
     transitivePeerDependencies:
       - debug
     dev: false
