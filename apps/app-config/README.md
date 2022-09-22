@@ -1,6 +1,6 @@
 
 ## Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice%2Fblob%2Fmain%2Fapps%2Fapp-config%2FREADME.md&project-name=my-ledger-sync&redirect-url=https%3A%2F%2Flink.useVenice.com%2Fdeploy-success&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fnext)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice%2Fblob%2Fmain%2Fapps%2Fapp-config%2FREADME.md&project-name=my-ledger-sync&redirect-url=https%3A%2F%2Flink.useVenice.com%2Fnext-steps&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fnext)
 
 ## Environment variables
 

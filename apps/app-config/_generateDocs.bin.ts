@@ -86,7 +86,7 @@ const deployButton = makeVercelDeployButton({
   envDescription: 'Not all values are required. Use empty space to skip values',
   envLink:
     'https://github.com/useVenice/venice/blob/main/apps/app-config/README.md',
-  'redirect-url': 'https://link.useVenice.com/deploy-success',
+  'redirect-url': 'https://link.useVenice.com/next-steps',
 })
 console.log(deployButton.url)
 
