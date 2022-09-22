@@ -12,12 +12,6 @@ Zero to production in 5 minutes without a single line of code:
 2. Embed pre-built UI.
 3. Voila! Query data in your database.
 
-<p>
-  <a href="https://link.useVenice.com/demo-video" rel="nofollow">
-    <img src="https://link.useVenice.com/demo-gif" alt="Venice demo" style="max-width: 300px;">
-  </a>
-</p>
-
 ## One-click Deploy with Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
