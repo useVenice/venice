@@ -11,6 +11,6 @@ export function EffectContainer({
   children?: React.ReactNode
 }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(effect, deps)
+  useEffect(effect, deps ?? [])
   return <>{children}</>
 }
