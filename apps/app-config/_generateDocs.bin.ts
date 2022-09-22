@@ -83,9 +83,9 @@ const deployButton = makeVercelDeployButton({
     'int_plaid__secrets__sandbox',
     'JWT_SECRET_OR_PUBLIC_KEY',
   ].join(','),
-  envDescription: 'Not all values are required. Use empty space to skip values',
-  envLink:
-    'https://github.com/useVenice/venice/blob/main/apps/app-config/README.md',
+  envDescription:
+    'After deploy, you can add other optional environment variables to configure for production and customize the default behavior. See the full list in README',
+  envLink: 'https://github.com/usevenice/venice#environment-variables',
   'redirect-url': 'https://link.useVenice.com/next-steps',
 })
 console.log(deployButton.url)
