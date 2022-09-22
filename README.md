@@ -13,8 +13,8 @@ Zero to production in 5 minutes without a single line of code:
 3. Voila! Query data in your database.
 
 <p>
-  <a href="https://www.loom.com/share/31ffac79f7cc4e01ab8bee263b36399a" rel="nofollow">
-    <img src="https://cdn.loom.com/sessions/thumbnails/31ffac79f7cc4e01ab8bee263b36399a-with-play.gif" alt="Venice demo" style="max-width: 300px;">
+  <a href="https://link.useVenice.com/demo-video" rel="nofollow">
+    <img src="https://link.useVenice.com/demo-gif" alt="Venice demo" style="max-width: 300px;">
   </a>
 </p>
 
@@ -22,7 +22,6 @@ Zero to production in 5 minutes without a single line of code:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
 
-[Demo Video](https://link.useVenice.com/demo-video)
 
 ## Table of Contents
 
