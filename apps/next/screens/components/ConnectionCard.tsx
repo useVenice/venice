@@ -2,13 +2,14 @@ import {useAtomValue} from 'jotai'
 import {
   ArrowClockwise,
   Circle,
+  CloudSlash,
   DotsThreeVertical,
   Play,
   Trash,
 } from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import type {ZStandard} from '@ledger-sync/cdk-core'
+import type {EnvName, ZStandard} from '@ledger-sync/cdk-core'
 import {useLedgerSync} from '@ledger-sync/engine-frontend'
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ import {envAtom} from '../../contexts/atoms'
 
 export interface ConnectionCardProps {
   connection: ZStandard['connection'] & {
+    envName: EnvName | null | undefined
     syncInProgress: boolean
     lastSyncCompletedAt: Date | null | undefined
     institution: ZStandard['institution'] | null | undefined
@@ -34,8 +36,13 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is ledgerId...
   // How do we express these situations?
-  const {connect, syncConnection, deleteConnection, developerMode} =
-    useLedgerSync({envName: env})
+  const {
+    connect,
+    syncConnection,
+    deleteConnection,
+    checkConnection,
+    developerMode,
+  } = useLedgerSync({envName: env})
   return (
     <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
       <div className="card-body space-y-4">
@@ -126,6 +133,27 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                 <Trash />
                 Delete
               </DropdownMenuItem>
+
+              {conn.envName === 'sandbox' && (
+                <DropdownMenuItem
+                  className="btn btn-ghost no-animation justify-start gap-2"
+                  onClick={() =>
+                    checkConnection
+                      .mutateAsync([
+                        {id: conn.id},
+                        {sandboxSimulateDisconnect: true},
+                      ])
+                      .then((res) => {
+                        console.log('checkConnection success', res)
+                      })
+                      .catch((err) => {
+                        console.error('checkConnection error', err)
+                      })
+                  }>
+                  <CloudSlash />
+                  Simulate disconnect
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
