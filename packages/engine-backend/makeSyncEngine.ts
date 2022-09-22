@@ -7,6 +7,7 @@ import type {
   AnySyncProvider,
   ConnectionUpdate,
   Destination,
+  EnvName,
   Id,
   Link,
   LinkFactory,
@@ -443,7 +444,8 @@ export const makeSyncEngine = <
           return {
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
-            envName: conn.envName,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            envName: conn.envName as EnvName | null | undefined,
             externalId,
             syncInProgress,
             lastSyncCompletedAt,
