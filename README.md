@@ -12,6 +12,12 @@ Zero to production in 5 minutes without a single line of code:
 2. Embed pre-built UI.
 3. Voila! Query data in your database.
 
+<p>
+  <a href="https://www.loom.com/share/31ffac79f7cc4e01ab8bee263b36399a" rel="nofollow">
+    <img src="https://cdn.loom.com/sessions/thumbnails/31ffac79f7cc4e01ab8bee263b36399a-with-play.gif" alt="Venice demo" style="max-width: 300px;">
+  </a>
+</p>
+
 ## One-click Deploy with Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
@@ -153,7 +159,7 @@ What are we working now and next?
 
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
+    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
   </a>
 </p>
 
