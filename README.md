@@ -1,7 +1,7 @@
 # Venice
 
 <p align="center">
-  <img src="https://link.useVenice.com/logo" width="250"> 
+  <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
 </p>
 
 **Venice** is a the fastest way from Plaid to your Postgres database.
@@ -128,7 +128,9 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 ## Contribute & Support
 
-[Join us on Slack](https://link.useVenice.com/slack)
+<a href="https://link.usevenice.com/slack" rel="nofollow">
+  <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
+</a>
 
 For integration development, we found the following tools really helpful for generating
 type as well as api clients:
