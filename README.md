@@ -18,7 +18,7 @@ Zero to production in 5 minutes without a single line of code:
 
 <p align="center">
   <a href="https://link.useVenice.com/demo-video" rel="nofollow">
-    <img src="https://link.useVenice.com/demo-gif" alt="Venice demo" style="max-width: 300px;">
+    <img src="https://cdn.loom.com/sessions/thumbnails/a2eda4cd5c764963bd2d6a56fe5a71e5-with-play.gif" alt="Venice demo" style="max-width: 300px;">
   </a>
 </p>
 
