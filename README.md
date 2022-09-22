@@ -1,7 +1,7 @@
 # Venice
 
 <p align="center">
-  <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
+  <img src="https://link.useVenice.com/logo" width="250"> 
 </p>
 
 **Venice** is a the fastest way from Plaid to your Postgres database.
@@ -23,7 +23,8 @@ Zero to production in 5 minutes without a single line of code:
 - [Architecture](#architecture)
 - [Environment Variables](#environment-variables)
 - [Local Development](#local-development)
-- [Key Concepts](#key-concepts)
+  - [Key Concepts](#key-concepts)
+- [Instructions](#instructions)
 - [FAQs](#faqs)
 - [Contribute & Support](#contribute--support)
 
@@ -33,13 +34,13 @@ We built Venice after working on multiple fintech products. Setting up banking a
 
 ## What We Built
 
-- **Connection portal**:
+- Connection portal:
   - Repair broken connections, add new ones, or manually trigger a sync.
-- **Webhook handling**:
+- Webhook handling:
   - Get connection updates in real time.
-- **Database sync**:
+- Database sync:
   - Forget HTTP requests. The best API is the one from your database.
-- **Extensible architecture**:
+- Extensible architecture:
   - Based on years spent building data integrations.
 
 ## Architecture
@@ -105,44 +106,48 @@ pnpm run ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --des
 pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
 ```
 
-## Key Concepts
+### Key Concepts
 
-- **Integration**:
+- Integration:
   - This is a data source or destination enabled in your application and may optionally contain configurations such as OAuth client ID / secret, API keys to service providers like Plaid and Yodlee.
   - Once configured, integrations are stateless and do not change between synchronizations.
-- **Connection**:
+- Connection:
   - Connection is always tied to an integration and contains credentials to needed to read or write data. For example, this would be a Plaid item `accessToken`, or a Postgres database connection string.
-- **Pipeline**:
+- Pipeline:
   - Pipelines get data from a source connection to a destination connection, and can contain `state` that is used for incremental synchronization.
+
+## Instructions
+1. Click the "Deploy to Vercel" link
+2. Create a repository on Vercel
+3. Go to Supabase.com and create a new project
+4. On Supabase, go to Settings > Database and scroll down to Connection String and click URI
+5. Copy that link and insert it as your `POSTGRES_URL` in Vercel - Remember to add your password to the URL when you paste it into Vercel
+6. On Supabase, Go to Settings > API and scroll down to get your JWT token. Copy this and paste it into Vercel
+7. Go to Plaid > Team Settings > Keys and copy the Plaid ID and Sandbox Secret key into Vercel
+8. Deploy Vercel
+9. Once Vercel is ready, click to open the domain
+10. Go to jwt.io, enter the same JWT token here as you saw in Supabase. Copy this access token.
+11. Paste the access token into the URL of the Vercel Domain and add the words "?accessToken=[YOUR ACCESS TOKEN]"
+12. Voila! You should see your page. Click new connection and connect using Plaid Link. Visit the database or table in Supabase to see the transactions and accounts!
+
 
 ## FAQs
 
-Why is it called Venice?
-
-> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services
-
-Who owns the relationship with the providers?
-
-> We may choose to help with this in the future, but for now, you do.
-
-Do you get to see any of the data we pass through?
-
-> No. You deploy this within your own infra.
-
-What are we working now and next?
-
-> Join the discussion at our [GitHub Roadmap Project](https://link.useVenice.com/roadmap)
+- Why is it called Venice?
+  > First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services
+- Who owns the relationship with the providers?
+  > We may choose to help with this in the future, but for now, you do.
+- Do you get to see any of the data we pass through?
+  > No. You deploy this within your own infra.
+- What are we working now and next?
+  > Join the discussion at our [Github Roadmap Project](https://link.useVenice.com/roadmap)
 
 ## Contribute & Support
 
-<p>
-  <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
-  </a>
-</p>
+[Join us on Slack](https://link.useVenice.com/slack)
 
 For integration development, we found the following tools really helpful for generating
-type as well as API clients:
+type as well as api clients:
 
 - https://api.openapi-generator.tech/index.html
 - https://transform.tools/
