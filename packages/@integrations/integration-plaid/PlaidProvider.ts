@@ -379,7 +379,15 @@ export const plaidProvider = makeSyncProvider({
       const {item_id: itemId} = item
       yield [
         def._opConn(itemId, {
-          settings: {item, status, itemId, accessToken, institution},
+          settings: {
+            item,
+            status,
+            // Clear previous webhook error since item is now up to date
+            webhookItemError: null,
+            itemId,
+            accessToken,
+            institution,
+          },
           institution: institution && {
             id: institution.institution_id,
             data: institution,
