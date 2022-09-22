@@ -40,6 +40,14 @@ module.exports = withTM(
   /** @type {import('next').NextConfig} */ ({
     env: {VERCEL_URL: process.env['VERCEL_URL']}, // No need for NEXT_PUBLIC because we explicitly define it
     reactStrictMode: true,
+    rewrites: async () => ({
+      beforeFiles: [
+        // Proxy metrics requests to Posthog.
+        {source: '/metrics/:p*', destination: 'https://app.posthog.com/:p*'},
+      ],
+      afterFiles: [],
+      fallback: [],
+    }),
 
     swcMinify: true,
     typescript: {
