@@ -50,6 +50,12 @@ function makeVercelDeployButton(params: {
   /** A link to an explanation of the Required Environment Variables */
   envLink?: string
 
+  /**
+   * The Redirect URL parameter allows you to define a URL, other than the newly created Vercel project, to send the user to after a successful deployment.
+   * This parameter is helpful if you are sending a user from an application, to deploy a project with Vercel, but want the user to continue with your application with a project created and deployed
+   */
+  'redirect-url'?: string
+
   // Demo info
   'demo-title'?: string
   'demo-description'?: string
@@ -80,7 +86,9 @@ const deployButton = makeVercelDeployButton({
   envDescription: 'Not all values are required. Use empty space to skip values',
   envLink:
     'https://github.com/useVenice/venice/blob/main/apps/app-config/README.md',
+  'redirect-url': 'https://link.useVenice.com/deploy-success',
 })
+console.log(deployButton.url)
 
 const readme = `
 ## Deploy

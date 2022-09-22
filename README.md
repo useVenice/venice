@@ -1,4 +1,4 @@
-
+# Venice
 
 <p align="center">
   <img src="https://link.useVenice.com/logo" width="250"> 
@@ -14,12 +14,10 @@ Zero to production in 5 minutes without a single line of code:
 
 ## One-click Deploy with Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL,int_plaid__clientId,int_plaid__secrets__sandbox,JWT_SECRET_OR_PUBLIC_KEY&envDescription=Not%20all%20values%20are%20required.%20Use%20empty%20space%20to%20skip%20values&envLink=https://github.com/useVenice/venice/blob/main/apps/app-config/README.md&project-name=my-ledger-sync&repository-url=https://github.com/useVenice/venice&root-directory=apps/next)
+[![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
 
 ## Table of Contents
 
-- [One-click Deploy with Vercel](#one-click-deploy-with-vercel)
-- [Table of Contents](#table-of-contents)
 - [Why We Exist](#why-we-exist)
 - [What We Built](#what-we-built)
 - [Architecture](#architecture)
@@ -126,12 +124,11 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 - Do you get to see any of the data we pass through?
   > No. You deploy this within your own infra.
 - What are we working now and next?
-  > Join the discussion at https://github.com/orgs/usevenice/projects/1
+  > Join the discussion at our [Github Roadmap Project](https://link.useVenice.com/roadmap)
 
 ## Contribute & Support
 
-Join our Slack Community: https://join.slack.com/t/usevenice/signup.
-If you aren't in Slack already, hit us up and we'll add you.
+[Join us on Slack](https://link.useVenice.com/slack)
 
 For integration development, we found the following tools really helpful for generating
 type as well as api clients:
