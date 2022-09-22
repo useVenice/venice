@@ -22,6 +22,8 @@ Zero to production in 5 minutes without a single line of code:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
 
+[Demo Video](https://link.useVenice.com/demo-video)
+
 ## Table of Contents
 
 - [Why We Exist](#why-we-exist)
