@@ -3,7 +3,7 @@ import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
-import {stringifyQueryParams} from '@ledger-sync/util'
+import {parseQueryParams, shallowOmitUndefined} from '@ledger-sync/util'
 
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
 
@@ -38,12 +38,20 @@ export const searchByAtom = atomWithQueryParam(
 
 export function useRouterPlus() {
   const router = useRouter()
-
   return {
     ...router,
-    pushPathname: (pathname: string) =>
-      // should we use window.location.search.slice(1) instead?
-      // so that we omit path-based query from the searchQuery?
-      router.push({pathname, query: stringifyQueryParams(router.query)}),
+    pushPathname: (pathname: string) => {
+      const query = parseQueryParams(
+        typeof window !== 'undefined' ? window.location.search : '',
+      )
+      return router.push({
+        pathname,
+        // Preserve whitelisted params
+        query: shallowOmitUndefined({
+          [kAccessToken]: query[kAccessToken] as string | undefined,
+          [kEnv]: query[kEnv] as string | undefined,
+        }),
+      })
+    },
   }
 }
