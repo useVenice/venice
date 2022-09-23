@@ -11,9 +11,8 @@ We are LIVE on Hacker News! Check us out at https://news.ycombinator.com/newest 
 Zero to production in 5 minutes without a single line of code:
 
 1. Add environment variables (Plaid API key, database credentials, JWT secret).
-2. Embed pre-built UI with user-scoped `accessToken`
+2. Embed pre-built UI with user-scoped `accessToken`.
 3. Voila! Query data in your database.
-
 
 ## Quick start
 
@@ -154,7 +153,7 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 Why is it called Venice?
 
-> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services
+> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services.
 
 Who owns the relationship with the providers?
 
@@ -166,7 +165,7 @@ Do you get to see any of the data we pass through?
 
 What are we working now and next?
 
-> Join the discussion at our [GitHub Roadmap Project](https://link.useVenice.com/roadmap)
+> Join the discussion at our [GitHub Roadmap Project](https://link.useVenice.com/roadmap).
 
 ## Contribute & Support
 
@@ -181,4 +180,3 @@ type as well as API clients:
 
 - https://api.openapi-generator.tech/index.html
 - https://transform.tools/
-](https://bookface.ycombinator.com/posts/66228#save)
