@@ -48,7 +48,7 @@ Zero to production in 5 minutes without a single line of code:
 
 ## Why We Exist
 
-We built Venice after working on multiple fintech products. Setting up banking aggregators, normalizing data, maintaining pipelines, and building the company proved to be a lot to handle. What if we could handle the plumbing? That way fintech developers can do what they do best — build!
+We built Venice after working on multiple fintech products. Despite the explosion of amazing fintech services like Plaid, setting up a stack still takes a ton of work. Writing integration code, UI to help user manage their connections, maintaining uptime, running data pipelines, and building the company proved to be a lot to handle. There are a ton of undifferentated plumbing here and we think we can build it once as a community and not have everyone re-invent the wheel. That way fintech developers can do what they do best — build fintech, not ETL pipelines!
 
 ## What We Built
 
@@ -59,7 +59,7 @@ We built Venice after working on multiple fintech products. Setting up banking a
 - **Database sync**:
   - Forget HTTP requests. The best API is the one from your database.
 - **Extensible architecture**:
-  - Based on years spent building data integrations.
+  - No code or full code, drop down to any level of abstraction you need. You can easily extend Venice to send data to Firebase, MongoDB, or your internal API for instance.
 
 ## Architecture
 
