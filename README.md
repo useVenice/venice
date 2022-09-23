@@ -42,7 +42,6 @@ Zero to production in 5 minutes without a single line of code:
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Local Development](#local-development)
-- [Key Concepts](#key-concepts)
 - [FAQs](#faqs)
 - [Contribute & Support](#contribute--support)
 
@@ -139,25 +138,11 @@ pnpm run ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --des
 pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
 ```
 
-## Key Concepts
-
-- **Integration**:
-  - This is a data source or destination enabled in your application and may optionally contain configurations such as OAuth client ID / secret, API keys to service providers like Plaid and Yodlee.
-  - Once configured, integrations are stateless and do not change between synchronizations.
-- **Connection**:
-  - Connection is always tied to an integration and contains credentials to needed to read or write data. For example, this would be a Plaid item `accessToken`, or a Postgres database connection string.
-- **Pipeline**:
-  - Pipelines get data from a source connection to a destination connection, and can contain `state` that is used for incremental synchronization.
-
 ## FAQs
 
 Why is it called Venice?
 
 > First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services.
-
-Who owns the relationship with the providers?
-
-> We may choose to help with this in the future, but for now, you do.
 
 Do you get to see any of the data we pass through?
 
