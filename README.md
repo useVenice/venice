@@ -1,5 +1,3 @@
-We are LIVE on Hacker News! Check us out at https://news.ycombinator.com/newest (search for Venice). Appreciate your support!
-
 # Venice
 
 <p align="center">
