@@ -174,9 +174,3 @@ What are we working now and next?
     <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
   </a>
 </p>
-
-For integration development, we found the following tools really helpful for generating
-type as well as API clients:
-
-- https://api.openapi-generator.tech/index.html
-- https://transform.tools/
