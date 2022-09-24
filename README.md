@@ -43,14 +43,16 @@ Zero to production in 5 minutes without a single line of code:
 - [FAQs](#faqs)
 - [Contribute & Support](#contribute--support)
 
-## Why We Exist
+## Why we exist
 
 We built Venice after working on multiple fintech products. Despite the explosion of amazing fintech services like Plaid, setting up a stack still takes a ton of work. Writing integration code, UI to help user manage their connections, maintaining uptime, running data pipelines, and building the company proved to be a lot to handle. There are a ton of undifferentated plumbing here and we think we can build it once as a community and not have everyone re-invent the wheel. That way fintech developers can do what they do best — build fintech, not ETL pipelines!
 
-## What We Built
+## What we built so far
 
 - **Connection portal**:
-  - Repair broken connections, add new ones, or manually trigger a sync.
+  - Repair broken connections, add new ones, or manually trigger a sync. 
+- **Token management**:
+  - Keep track of access tokens and don't pay for the ones you don't use
 - **Webhook handling**:
   - Get connection updates in real time.
 - **Database sync**:
@@ -72,7 +74,7 @@ Here are 5 ways you can use Venice, each built on a layer below:
 - Headless React components (Planned).
 - HTTP API (trpc Alpha, OpenAPI planned).
 
-## Getting Started
+## Getting started
 
 1. Click the "Deploy to Vercel" link.
 2. Create a repository on Vercel.
@@ -87,7 +89,7 @@ Here are 5 ways you can use Venice, each built on a layer below:
 11. Paste the access token into the URL of the Vercel Domain and add the words "?accessToken=[YOUR ACCESS TOKEN]".
 12. Voila! You should see your page. Click new connection and connect using Plaid Link. Visit the database or table in Supabase to see the transactions and accounts!
 
-## Environment Variables
+## Environment variables
 
 | Name                              | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -140,7 +142,7 @@ pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken
 
 Why is it called Venice?
 
-> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like the Venice pipelines can be used to transport services.
+> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like useVenice pipelines are used to transport financial data. 
 
 Do you get to see any of the data we pass through?
 
