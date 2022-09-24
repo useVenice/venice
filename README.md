@@ -50,11 +50,13 @@ We built Venice after working on multiple fintech products. Despite the explosio
 ## What we built so far
 
 - **Connection portal**:
-  - Repair broken connections, add new ones, or manually trigger a sync. 
+  - Ready to use UI for your customers to add financial connections, repair broken ones, or manually trigger a sync. 
 - **Token management**:
   - Keep track of access tokens and don't pay for the ones you don't use
+- **Incremental sync**:
+  - Fast and efficient sync that can be called idempotently
 - **Webhook handling**:
-  - Get connection updates in real time.
+  - Get connection and data updates in real time. 
 - **Database sync**:
   - Forget HTTP requests. The best API is the one from your database.
 - **Extensible architecture**:
