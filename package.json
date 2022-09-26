@@ -1,8 +1,8 @@
 {
-  "name": "usevenice",
+  "name": "venice",
   "version": "0.0.0",
   "private": true,
-  "repository": "git@github.com:alkafinance/usevenice.git",
+  "repository": "git@github.com:usevenice/venice.git",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "pnpm run --filter next dev",
