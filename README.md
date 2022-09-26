@@ -55,6 +55,8 @@ We built Venice after working on multiple fintech products. Despite the explosio
   - Keep track of access tokens and don't pay for the ones you don't use
 - **Incremental sync**:
   - Fast and efficient sync that can be called idempotently
+- **Rate limiting**:
+  - End point specific rate limiting to maximize performance
 - **Webhook handling**:
   - Get connection and data updates in real time. 
 - **Database sync**:
