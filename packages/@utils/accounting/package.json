@@ -1,12 +1,12 @@
 {
-  "name": "@ledger-sync/accounting",
+  "name": "@usevenice/accounting",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*",
     "financejs": "4.1.0",
     "js-combinatorics": "1.5.7"
   },

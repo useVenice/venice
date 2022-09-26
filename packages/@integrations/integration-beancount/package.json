@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/integration-beancount",
+  "name": "@usevenice/integration-beancount",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,11 +7,11 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/id": "*",
-    "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*"
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/id": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*"
   },
   "devDependencies": {}
 }

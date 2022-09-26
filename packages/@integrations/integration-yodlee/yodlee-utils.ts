@@ -1,5 +1,5 @@
-import type {Standard} from '@ledger-sync/standard'
-import {A, DateTime, pick} from '@ledger-sync/util'
+import type {Standard} from '@usevenice/standard'
+import {A, DateTime, pick} from '@usevenice/util'
 
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'
 

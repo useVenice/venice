@@ -13,7 +13,7 @@ import type {
   LinkFactory,
   MetaService,
   Source,
-} from '@ledger-sync/cdk-core'
+} from '@usevenice/cdk-core'
 import {
   extractId,
   handlersLink,
@@ -24,7 +24,7 @@ import {
   zId,
   zStandard,
   zWebhookInput,
-} from '@ledger-sync/cdk-core'
+} from '@usevenice/cdk-core'
 import {
   compact,
   isZodType,
@@ -33,7 +33,7 @@ import {
   rxjs,
   z,
   zParser,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
@@ -62,7 +62,7 @@ export interface SyncEngineConfig<
 > {
   providers: TProviders
   /**
-   * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/ledger-sync`
+   * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
    * This is needed for 1) server side rendering and 2) webhook handling
    */
   apiUrl: string

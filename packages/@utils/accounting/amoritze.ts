@@ -1,6 +1,6 @@
-import type {Standard} from '@ledger-sync/standard'
-import type {Amount, Interval} from '@ledger-sync/util'
-import {A, formatDate, iterateSubintervals, math} from '@ledger-sync/util'
+import type {Standard} from '@usevenice/standard'
+import type {Amount, Interval} from '@usevenice/util'
+import {A, formatDate, iterateSubintervals, math} from '@usevenice/util'
 
 // Should we support AmountMap?
 export function computeAmortization(

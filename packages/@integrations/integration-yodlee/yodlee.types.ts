@@ -1,7 +1,7 @@
 import type {Schema} from '@cfworker/json-schema'
 import {Validator} from '@cfworker/json-schema'
 
-import {z, zCast} from '@ledger-sync/util'
+import {z, zCast} from '@usevenice/util'
 
 import type {Institution, ProviderDetail, UserDetail} from './yodlee.generated'
 import {$UserDetail} from './yodlee.generated'

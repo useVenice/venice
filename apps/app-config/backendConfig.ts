@@ -1,15 +1,15 @@
-import {logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
+import {logLink, makeId, swapPrefix} from '@usevenice/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
   renameAccountLink,
-} from '@ledger-sync/cdk-ledger'
-import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
-import {makeSyncEngine} from '@ledger-sync/engine-backend'
+} from '@usevenice/cdk-ledger'
+import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
+import {makeSyncEngine} from '@usevenice/engine-backend'
 // console.log('Using config', veniceConfig) // Too verbose...
-import {type inferProcedureInput} from '@ledger-sync/engine-backend'
-import {identity, joinPath, Rx, zParser} from '@ledger-sync/util'
+import {type inferProcedureInput} from '@usevenice/engine-backend'
+import {identity, joinPath, Rx, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'

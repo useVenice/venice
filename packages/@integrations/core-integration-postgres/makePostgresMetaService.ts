@@ -3,8 +3,8 @@ import type {
   MetaService,
   MetaTable,
   ZRaw,
-} from '@ledger-sync/cdk-core'
-import {compact, memoize, zFunction} from '@ledger-sync/util'
+} from '@usevenice/cdk-core'
+import {compact, memoize, zFunction} from '@usevenice/util'
 
 import {
   applyLimitOffset,

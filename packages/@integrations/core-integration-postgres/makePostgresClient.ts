@@ -4,7 +4,7 @@ import type {
   TaggedTemplateLiteralInvocation,
 } from 'slonik/dist/src/types'
 
-import type {MaybeArray} from '@ledger-sync/util'
+import type {MaybeArray} from '@usevenice/util'
 import {
   defineProxyFn,
   fromMaybeArray,
@@ -15,7 +15,7 @@ import {
   snakeCase,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
 export const $slonikMigrator =

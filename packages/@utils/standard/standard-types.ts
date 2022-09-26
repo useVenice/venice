@@ -1,4 +1,4 @@
-import type {Amount, AmountMap, Split, z} from '@ledger-sync/util'
+import type {Amount, AmountMap, Split, z} from '@usevenice/util'
 
 import type {
   zAccountType,

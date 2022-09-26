@@ -6,15 +6,15 @@ import type {
   MetaTable,
   OpHandlers,
   ZRaw,
-} from '@ledger-sync/cdk-core'
+} from '@usevenice/cdk-core'
 import {
   extractId,
   handlersLink,
   IDS_INVERTED,
   makeId,
-} from '@ledger-sync/cdk-core'
-import type {ObjectPartialDeep} from '@ledger-sync/util'
-import {deepMerge, infer, R} from '@ledger-sync/util'
+} from '@usevenice/cdk-core'
+import type {ObjectPartialDeep} from '@usevenice/util'
+import {deepMerge, infer, R} from '@usevenice/util'
 
 // TODO: Validate connection before saving...
 // metaStore and syncHelpers appear to be a bit circular relationship...

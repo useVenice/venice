@@ -45,7 +45,7 @@ index d28e37f..8808e36 100644
      set<T>(
        documentRef: DocumentReference<T>,
 -      data: Partial<T>,
-+      data: import('@ledger-sync/util').ObjectPartialDeep<T>,
++      data: import('@usevenice/util').ObjectPartialDeep<T>,
        options: SetOptions
      ): Transaction;
  
@@ -63,7 +63,7 @@ index d28e37f..8808e36 100644
      set<T>(
        documentRef: DocumentReference<T>,
 -      data: Partial<T>,
-+      data: import('@ledger-sync/util').ObjectPartialDeep<T>,
++      data: import('@usevenice/util').ObjectPartialDeep<T>,
        options: SetOptions
      ): WriteBatch;
  
@@ -90,7 +90,7 @@ index d28e37f..8808e36 100644
       * to the backend (Note that it won't resolve while you're offline).
       */
 -    set(data: Partial<T>, options: SetOptions): Promise<void>;
-+    set(data: import('@ledger-sync/util').ObjectPartialDeep<T>, options: SetOptions): Promise<void>;
++    set(data: import('@usevenice/util').ObjectPartialDeep<T>, options: SetOptions): Promise<void>;
  
      /**
       * Writes to the document referred to by this `DocumentReference`. If the

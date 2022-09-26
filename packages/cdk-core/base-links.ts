@@ -1,5 +1,5 @@
-import type {WritableDraft} from '@ledger-sync/util'
-import {compact, produce, R, Rx, rxjs} from '@ledger-sync/util'
+import type {WritableDraft} from '@usevenice/util'
+import {compact, produce, R, Rx, rxjs} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,

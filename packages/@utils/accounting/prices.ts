@@ -1,5 +1,5 @@
-import type {Standard} from '@ledger-sync/standard'
-import type {Amount, AmountMap, MultiAmount} from '@ledger-sync/util'
+import type {Standard} from '@usevenice/standard'
+import type {Amount, AmountMap, MultiAmount} from '@usevenice/util'
 import {
   A,
   Balances,
@@ -8,7 +8,7 @@ import {
   setAt,
   sortedIndexBy,
   toMultiAmount,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 // MARK: - buildPriceMap
 

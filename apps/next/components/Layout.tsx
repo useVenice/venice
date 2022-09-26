@@ -2,13 +2,13 @@ import {useAtom} from 'jotai'
 import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import {useVeniceAdmin} from '@ledger-sync/engine-frontend'
+import {useVeniceAdmin} from '@usevenice/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@ledger-sync/ui'
+} from '@usevenice/ui'
 
 import {Container} from '../../../packages/ui/components/Container'
 import {developerModeAtom} from '../contexts/atoms'

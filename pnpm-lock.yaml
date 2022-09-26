@@ -21,7 +21,7 @@ patchedDependencies:
     hash: qbdhvjs7sktehqpuch2x3qhd4y
     path: patches/esbuild-jest@0.5.0.patch
   firebase@9.8.1:
-    hash: aomntd2rr2pjqb3xckma554tlm
+    hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
   js-combinatorics@1.5.7:
     hash: fqihcm6lpeq35d73hsop2ef5vu
@@ -50,14 +50,14 @@ importers:
   .:
     specifiers:
       '@ianvs/prettier-plugin-sort-imports': 3.4.2
-      '@ledger-sync/cli': '*'
-      '@ledger-sync/util': '*'
       '@roarr/cli': 5.7.0
       '@types/jest': 29.0.0
       '@types/node': 16.11.12
       '@types/prettier': 2.7.0
       '@typescript-eslint/eslint-plugin': 5.36.1
       '@typescript-eslint/parser': 5.36.1
+      '@usevenice/cli': '*'
+      '@usevenice/util': '*'
       esbuild: 0.15.6
       esbuild-jest: 0.5.0
       eslint: 8.23.0
@@ -83,14 +83,14 @@ importers:
       typescript: 4.8.2
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports': 3.4.2_prettier@2.7.1
-      '@ledger-sync/cli': link:apps/cli
-      '@ledger-sync/util': link:packages/@utils/util
       '@roarr/cli': 5.7.0
       '@types/jest': 29.0.0
       '@types/node': 16.11.12
       '@types/prettier': 2.7.0
       '@typescript-eslint/eslint-plugin': 5.36.1_lbwfnm54o3pmr3ypeqp3btnera
       '@typescript-eslint/parser': 5.36.1_yqf6kl63nyoq5megxukfnom5rm
+      '@usevenice/cli': link:apps/cli
+      '@usevenice/util': link:packages/@utils/util
       esbuild: 0.15.6
       esbuild-jest: 0.5.0_qbdhvjs7sktehqpuch2x3qhd4y_esbuild@0.15.6
       eslint: 8.23.0
@@ -117,33 +117,33 @@ importers:
 
   apps/app-config:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/core-integration-airtable': '*'
-      '@ledger-sync/core-integration-firebase': '*'
-      '@ledger-sync/core-integration-fs': '*'
-      '@ledger-sync/core-integration-mongodb': '*'
-      '@ledger-sync/core-integration-postgres': '*'
-      '@ledger-sync/core-integration-redis': '*'
-      '@ledger-sync/engine-backend': '*'
-      '@ledger-sync/engine-frontend': '*'
-      '@ledger-sync/integration-beancount': '*'
-      '@ledger-sync/integration-foreceipt': '*'
-      '@ledger-sync/integration-import': '*'
-      '@ledger-sync/integration-onebrick': '*'
-      '@ledger-sync/integration-plaid': '*'
-      '@ledger-sync/integration-postgres': '*'
-      '@ledger-sync/integration-ramp': '*'
-      '@ledger-sync/integration-splitwise': '*'
-      '@ledger-sync/integration-stripe': '*'
-      '@ledger-sync/integration-teller': '*'
-      '@ledger-sync/integration-toggl': '*'
-      '@ledger-sync/integration-wise': '*'
-      '@ledger-sync/integration-yodlee': '*'
-      '@ledger-sync/util': '*'
       '@next/env': 12.2.5
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/core-integration-airtable': '*'
+      '@usevenice/core-integration-firebase': '*'
+      '@usevenice/core-integration-fs': '*'
+      '@usevenice/core-integration-mongodb': '*'
+      '@usevenice/core-integration-postgres': '*'
+      '@usevenice/core-integration-redis': '*'
+      '@usevenice/engine-backend': '*'
+      '@usevenice/engine-frontend': '*'
+      '@usevenice/integration-beancount': '*'
+      '@usevenice/integration-foreceipt': '*'
+      '@usevenice/integration-import': '*'
+      '@usevenice/integration-onebrick': '*'
+      '@usevenice/integration-plaid': '*'
+      '@usevenice/integration-postgres': '*'
+      '@usevenice/integration-ramp': '*'
+      '@usevenice/integration-splitwise': '*'
+      '@usevenice/integration-stripe': '*'
+      '@usevenice/integration-teller': '*'
+      '@usevenice/integration-toggl': '*'
+      '@usevenice/integration-wise': '*'
+      '@usevenice/integration-yodlee': '*'
+      '@usevenice/util': '*'
       chokidar: 3.5.3
       execa: 6.1.0
       find-config: 1.0.0
@@ -153,31 +153,31 @@ importers:
       write-file-safe: 1.3.1
       zod: 3.19.0
     dependencies:
-      '@ledger-sync/cdk-core': link:../../packages/cdk-core
-      '@ledger-sync/cdk-ledger': link:../../packages/cdk-ledger
-      '@ledger-sync/core-integration-airtable': link:../../packages/@integrations/core-integration-airtable
-      '@ledger-sync/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
-      '@ledger-sync/core-integration-fs': link:../../packages/@integrations/core-integration-fs
-      '@ledger-sync/core-integration-mongodb': link:../../packages/@integrations/core-integration-mongodb
-      '@ledger-sync/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
-      '@ledger-sync/core-integration-redis': link:../../packages/@integrations/core-integration-redis
-      '@ledger-sync/engine-backend': link:../../packages/engine-backend
-      '@ledger-sync/engine-frontend': link:../../packages/engine-frontend
-      '@ledger-sync/integration-beancount': link:../../packages/@integrations/integration-beancount
-      '@ledger-sync/integration-foreceipt': link:../../packages/@integrations/integration-foreceipt
-      '@ledger-sync/integration-import': link:../../packages/@integrations/integration-import
-      '@ledger-sync/integration-onebrick': link:../../packages/@integrations/integration-onebrick
-      '@ledger-sync/integration-plaid': link:../../packages/@integrations/integration-plaid
-      '@ledger-sync/integration-postgres': link:../../packages/@integrations/integration-postgres
-      '@ledger-sync/integration-ramp': link:../../packages/@integrations/integration-ramp
-      '@ledger-sync/integration-splitwise': link:../../packages/@integrations/integration-splitwise
-      '@ledger-sync/integration-stripe': link:../../packages/@integrations/integration-stripe
-      '@ledger-sync/integration-teller': link:../../packages/@integrations/integration-teller
-      '@ledger-sync/integration-toggl': link:../../packages/@integrations/integration-toggl
-      '@ledger-sync/integration-wise': link:../../packages/@integrations/integration-wise
-      '@ledger-sync/integration-yodlee': link:../../packages/@integrations/integration-yodlee
-      '@ledger-sync/util': link:../../packages/@utils/util
       '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/core-integration-airtable': link:../../packages/@integrations/core-integration-airtable
+      '@usevenice/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
+      '@usevenice/core-integration-fs': link:../../packages/@integrations/core-integration-fs
+      '@usevenice/core-integration-mongodb': link:../../packages/@integrations/core-integration-mongodb
+      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
+      '@usevenice/core-integration-redis': link:../../packages/@integrations/core-integration-redis
+      '@usevenice/engine-backend': link:../../packages/engine-backend
+      '@usevenice/engine-frontend': link:../../packages/engine-frontend
+      '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
+      '@usevenice/integration-foreceipt': link:../../packages/@integrations/integration-foreceipt
+      '@usevenice/integration-import': link:../../packages/@integrations/integration-import
+      '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
+      '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
+      '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
+      '@usevenice/integration-ramp': link:../../packages/@integrations/integration-ramp
+      '@usevenice/integration-splitwise': link:../../packages/@integrations/integration-splitwise
+      '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
+      '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
+      '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
+      '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
+      '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
+      '@usevenice/util': link:../../packages/@utils/util
       chokidar: 3.5.3
       execa: 6.1.0
       find-config: 1.0.0
@@ -192,49 +192,49 @@ importers:
 
   apps/cli:
     specifiers:
-      '@ledger-sync/app-config': '*'
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/core-integration-firebase': '*'
-      '@ledger-sync/core-integration-postgres': '*'
-      '@ledger-sync/engine-backend': '*'
-      '@ledger-sync/id': '*'
-      '@ledger-sync/integration-beancount': '*'
-      '@ledger-sync/integration-onebrick': '*'
-      '@ledger-sync/integration-plaid': '*'
-      '@ledger-sync/integration-postgres': '*'
-      '@ledger-sync/integration-ramp': '*'
-      '@ledger-sync/integration-stripe': '*'
-      '@ledger-sync/integration-teller': '*'
-      '@ledger-sync/integration-toggl': '*'
-      '@ledger-sync/integration-wise': '*'
-      '@ledger-sync/integration-yodlee': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
+      '@usevenice/app-config': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/core-integration-firebase': '*'
+      '@usevenice/core-integration-postgres': '*'
+      '@usevenice/engine-backend': '*'
+      '@usevenice/id': '*'
+      '@usevenice/integration-beancount': '*'
+      '@usevenice/integration-onebrick': '*'
+      '@usevenice/integration-plaid': '*'
+      '@usevenice/integration-postgres': '*'
+      '@usevenice/integration-ramp': '*'
+      '@usevenice/integration-stripe': '*'
+      '@usevenice/integration-teller': '*'
+      '@usevenice/integration-toggl': '*'
+      '@usevenice/integration-wise': '*'
+      '@usevenice/integration-yodlee': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       cac: 6.7.12
       keytar: 7.9.0
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
     dependencies:
-      '@ledger-sync/app-config': link:../app-config
-      '@ledger-sync/cdk-core': link:../../packages/cdk-core
-      '@ledger-sync/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
-      '@ledger-sync/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
-      '@ledger-sync/engine-backend': link:../../packages/engine-backend
-      '@ledger-sync/id': link:../../packages/@utils/id
-      '@ledger-sync/integration-beancount': link:../../packages/@integrations/integration-beancount
-      '@ledger-sync/integration-onebrick': link:../../packages/@integrations/integration-onebrick
-      '@ledger-sync/integration-plaid': link:../../packages/@integrations/integration-plaid
-      '@ledger-sync/integration-postgres': link:../../packages/@integrations/integration-postgres
-      '@ledger-sync/integration-ramp': link:../../packages/@integrations/integration-ramp
-      '@ledger-sync/integration-stripe': link:../../packages/@integrations/integration-stripe
-      '@ledger-sync/integration-teller': link:../../packages/@integrations/integration-teller
-      '@ledger-sync/integration-toggl': link:../../packages/@integrations/integration-toggl
-      '@ledger-sync/integration-wise': link:../../packages/@integrations/integration-wise
-      '@ledger-sync/integration-yodlee': link:../../packages/@integrations/integration-yodlee
-      '@ledger-sync/standard': link:../../packages/@utils/standard
-      '@ledger-sync/util': link:../../packages/@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/app-config': link:../app-config
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
+      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
+      '@usevenice/engine-backend': link:../../packages/engine-backend
+      '@usevenice/id': link:../../packages/@utils/id
+      '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
+      '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
+      '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
+      '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
+      '@usevenice/integration-ramp': link:../../packages/@integrations/integration-ramp
+      '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
+      '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
+      '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
+      '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
+      '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
+      '@usevenice/standard': link:../../packages/@utils/standard
+      '@usevenice/util': link:../../packages/@utils/util
       cac: 6.7.12_nsfmzcycabp3f3q7kw2uyer77u
       keytar: 7.9.0
       micro: 9.3.5-canary.3
@@ -242,15 +242,15 @@ importers:
 
   apps/next:
     specifiers:
-      '@ledger-sync/app-config': '*'
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/engine-backend': '*'
-      '@ledger-sync/engine-frontend': '*'
-      '@ledger-sync/ui': '*'
-      '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.13
+      '@usevenice/app-config': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/engine-backend': '*'
+      '@usevenice/engine-frontend': '*'
+      '@usevenice/ui': '*'
+      '@usevenice/util': '*'
       autoprefixer: '*'
       cookies-next: 2.1.1
       csstype: '*'
@@ -275,13 +275,13 @@ importers:
       use-query-params: 2.1.0
       webpack: '*'
     dependencies:
-      '@ledger-sync/app-config': link:../app-config
-      '@ledger-sync/cdk-core': link:../../packages/cdk-core
-      '@ledger-sync/engine-backend': link:../../packages/engine-backend
-      '@ledger-sync/engine-frontend': link:../../packages/engine-frontend
-      '@ledger-sync/ui': link:../../packages/ui
-      '@ledger-sync/util': link:../../packages/@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/app-config': link:../app-config
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/engine-backend': link:../../packages/engine-backend
+      '@usevenice/engine-frontend': link:../../packages/engine-frontend
+      '@usevenice/ui': link:../../packages/ui
+      '@usevenice/util': link:../../packages/@utils/util
       cookies-next: 2.1.1
       jotai: 1.8.3_react@17.0.2
       next: 12.2.5_sfoxds7t5ydpegc3knd667wn6m
@@ -311,12 +311,12 @@ importers:
 
   apps/tests:
     specifiers:
-      '@ledger-sync/app-config': '*'
+      '@usevenice/app-config': '*'
       openapi-typescript: 5.4.1
       remeda: 0.0.32
       tsx: 3.4.2
     dependencies:
-      '@ledger-sync/app-config': link:../app-config
+      '@usevenice/app-config': link:../app-config
       remeda: 0.0.32_h54ufjkapm5h3lgo7ynxsqpg3u
     devDependencies:
       openapi-typescript: 5.4.1
@@ -324,18 +324,18 @@ importers:
 
   packages/@integrations/core-integration-airtable:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       airtable: 0.11.4
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       airtable: 0.11.4
     devDependencies:
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
 
   packages/@integrations/core-integration-firebase:
     specifiers:
@@ -343,8 +343,8 @@ importers:
       '@firebase/app-compat': 0.x
       '@firebase/app-types': 0.x
       '@firebase/auth': '*'
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/util': '*'
       firebase: 9.8.1
       firebase-admin: 10.2.0
     dependencies:
@@ -352,43 +352,43 @@ importers:
       '@firebase/app-compat': 0.1.25
       '@firebase/app-types': 0.7.0
       '@firebase/auth': 0.20.1_@firebase+app@0.7.24
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/util': link:../../@utils/util
-      firebase: 9.8.1_aomntd2rr2pjqb3xckma554tlm
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/util': link:../../@utils/util
+      firebase: 9.8.1_bmwbs4hhuxm5sycev5w2vhohk4
       firebase-admin: 10.2.0_rpd4ipbmnh3eak32lkxgflhihy
 
   packages/@integrations/core-integration-fs:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/util': '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/util': link:../../@utils/util
 
   packages/@integrations/core-integration-mongodb:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/util': '*'
       mongodb: 4.9.1
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/util': link:../../@utils/util
       mongodb: 4.9.1
 
   packages/@integrations/core-integration-postgres:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/util': '*'
       '@slonik/migrator': 0.11.3
       '@types/pg': 8.6.5
+      '@usevenice/cdk-core': '*'
+      '@usevenice/util': '*'
       pg: 8.8.0
       pg-native: 3.0.1
       slonik: 30.3.1
       slonik-interceptor-preset: 1.2.10
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/util': link:../../@utils/util
       '@slonik/migrator': 0.11.3_slonik@30.3.1
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/util': link:../../@utils/util
       pg: 8.8.0_pg-native@3.0.1
       pg-native: 3.0.1
       slonik: 30.3.1_pg-native@3.0.1
@@ -398,69 +398,69 @@ importers:
 
   packages/@integrations/core-integration-redis:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/util': '*'
       handy-redis: 2.3.1
       redis: 3.1.2
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/util': link:../../@utils/util
       handy-redis: 2.3.1
       redis: 3.1.2
 
   packages/@integrations/integration-beancount:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/id': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/id': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/id': link:../../@utils/id
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/id': link:../../@utils/id
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
 
   packages/@integrations/integration-foreceipt:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/core-integration-firebase': '*'
-      '@ledger-sync/id': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/core-integration-firebase': '*'
+      '@usevenice/id': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       firebase: 9.8.1
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/core-integration-firebase': link:../core-integration-firebase
-      '@ledger-sync/id': link:../../@utils/id
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
-      firebase: 9.8.1_aomntd2rr2pjqb3xckma554tlm
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/core-integration-firebase': link:../core-integration-firebase
+      '@usevenice/id': link:../../@utils/id
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
+      firebase: 9.8.1_bmwbs4hhuxm5sycev5w2vhohk4
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/@integrations/integration-import:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/id': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/papaparse': 5.3.5
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/id': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       papaparse: 5.3.2
       xlsx: 0.17.5
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/id': link:../../@utils/id
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/id': link:../../@utils/id
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       papaparse: 5.3.2
       xlsx: 0.17.5
     devDependencies:
@@ -468,16 +468,16 @@ importers:
 
   packages/@integrations/integration-onebrick:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       openapi-typescript: 5.4.1
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
@@ -485,21 +485,21 @@ importers:
 
   packages/@integrations/integration-plaid:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       openapi-typescript: 5.4.1
       plaid: 10.7.0
       react: '*'
       react-dom: '*'
       react-plaid-link: 3.3.2
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       plaid: 10.7.0_dlxtnpp6e63xoartngub3qbkta
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -510,63 +510,63 @@ importers:
 
   packages/@integrations/integration-postgres:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/core-integration-postgres': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/core-integration-postgres': '*'
+      '@usevenice/util': '*'
       zod: 3.19.0
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/core-integration-postgres': link:../core-integration-postgres
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/core-integration-postgres': link:../core-integration-postgres
+      '@usevenice/util': link:../../@utils/util
       zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
     devDependencies:
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
 
   packages/@integrations/integration-ramp:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/@integrations/integration-splitwise:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/@integrations/integration-stripe:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       react: '*'
       stripe: 8.86.0
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
       stripe: 8.86.0
     devDependencies:
@@ -574,47 +574,47 @@ importers:
 
   packages/@integrations/integration-teller:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/@integrations/integration-toggl:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/@integrations/integration-wise:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/util': link:../../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
@@ -622,21 +622,21 @@ importers:
   packages/@integrations/integration-yodlee:
     specifiers:
       '@cfworker/json-schema': 1.12.4
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       csstype: '*'
       openapi-typescript: 5.4.1
       openapi-typescript-codegen: 0.23.0
       react: '*'
       react-dom: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../../cdk-core
-      '@ledger-sync/cdk-ledger': link:../../cdk-ledger
-      '@ledger-sync/standard': link:../../@utils/standard
-      '@ledger-sync/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
       csstype: 3.1.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -648,14 +648,14 @@ importers:
 
   packages/@utils/accounting:
     specifiers:
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
       financejs: 4.1.0
       js-combinatorics: 1.5.7
       timezone-mock: 1.3.4
     dependencies:
-      '@ledger-sync/standard': link:../standard
-      '@ledger-sync/util': link:../util
+      '@usevenice/standard': link:../standard
+      '@usevenice/util': link:../util
       financejs: 4.1.0
       js-combinatorics: 1.5.7_fqihcm6lpeq35d73hsop2ef5vu
     devDependencies:
@@ -663,19 +663,19 @@ importers:
 
   packages/@utils/id:
     specifiers:
-      '@ledger-sync/util': '*'
+      '@usevenice/util': '*'
       nanoid: 3.3.4
     dependencies:
-      '@ledger-sync/util': link:../util
+      '@usevenice/util': link:../util
       nanoid: 3.3.4
 
   packages/@utils/standard:
     specifiers:
-      '@ledger-sync/id': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/id': '*'
+      '@usevenice/util': '*'
     dependencies:
-      '@ledger-sync/id': link:../id
-      '@ledger-sync/util': link:../util
+      '@usevenice/id': link:../id
+      '@usevenice/util': link:../util
 
   packages/@utils/util:
     specifiers:
@@ -806,67 +806,67 @@ importers:
 
   packages/cdk-core:
     specifiers:
-      '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
       '@types/react': '*'
+      '@usevenice/util': '*'
       react: '*'
     dependencies:
-      '@ledger-sync/util': link:../@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/util': link:../@utils/util
       react: 17.0.2
     devDependencies:
       '@types/react': 17.0.39
 
   packages/cdk-ledger:
     specifiers:
-      '@ledger-sync/accounting': '*'
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/standard': '*'
-      '@ledger-sync/util': '*'
+      '@usevenice/accounting': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
     dependencies:
-      '@ledger-sync/accounting': link:../@utils/accounting
-      '@ledger-sync/cdk-core': link:../cdk-core
-      '@ledger-sync/standard': link:../@utils/standard
-      '@ledger-sync/util': link:../@utils/util
+      '@usevenice/accounting': link:../@utils/accounting
+      '@usevenice/cdk-core': link:../cdk-core
+      '@usevenice/standard': link:../@utils/standard
+      '@usevenice/util': link:../@utils/util
 
   packages/engine-backend:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/cdk-ledger': '*'
-      '@ledger-sync/util': '*'
       '@trpc/server': 9.26.0
       '@types/jsonwebtoken': 8.5.9
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/util': '*'
       jsonwebtoken: 8.5.1
     dependencies:
-      '@ledger-sync/cdk-core': link:../cdk-core
-      '@ledger-sync/cdk-ledger': link:../cdk-ledger
-      '@ledger-sync/util': link:../@utils/util
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/cdk-core': link:../cdk-core
+      '@usevenice/cdk-ledger': link:../cdk-ledger
+      '@usevenice/util': link:../@utils/util
       jsonwebtoken: 8.5.1
     devDependencies:
       '@types/jsonwebtoken': 8.5.9
 
   packages/engine-frontend:
     specifiers:
-      '@ledger-sync/cdk-core': '*'
-      '@ledger-sync/engine-backend': '*'
-      '@ledger-sync/ui': '*'
-      '@ledger-sync/util': '*'
       '@trpc/client': 9.26.0
       '@trpc/react': 9.26.0
       '@trpc/server': 9.26.0
       '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/engine-backend': '*'
+      '@usevenice/ui': '*'
+      '@usevenice/util': '*'
       react: '*'
       react-dom: '*'
       react-query: '*'
     dependencies:
-      '@ledger-sync/cdk-core': link:../cdk-core
-      '@ledger-sync/engine-backend': link:../engine-backend
-      '@ledger-sync/ui': link:../ui
-      '@ledger-sync/util': link:../@utils/util
       '@trpc/client': 9.26.0_@trpc+server@9.26.0
       '@trpc/react': 9.26.0_irv66ybkadcialtmo3uz32bymi
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/cdk-core': link:../cdk-core
+      '@usevenice/engine-backend': link:../engine-backend
+      '@usevenice/ui': link:../ui
+      '@usevenice/util': link:../@utils/util
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
@@ -6577,7 +6577,7 @@ packages:
       - supports-color
     dev: false
 
-  /firebase/9.8.1_aomntd2rr2pjqb3xckma554tlm:
+  /firebase/9.8.1_bmwbs4hhuxm5sycev5w2vhohk4:
     resolution: {integrity: sha512-VyM+3ijzB1Q24b9v6HzVOB0bXNy0a/maOZlmv2P8M29VXfrS/npo6zntNiOEtcjrCoItZIuWFH4oDGiYkPHxbg==}
     dependencies:
       '@firebase/analytics': 0.7.9_@firebase+app@0.7.24

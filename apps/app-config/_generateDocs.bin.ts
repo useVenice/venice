@@ -3,7 +3,7 @@ import * as path from 'node:path'
 
 import tablemark from 'tablemark'
 
-import {buildUrl, compact, R, zParser} from '@ledger-sync/util'
+import {buildUrl, compact, R, zParser} from '@usevenice/util'
 
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 import {loadEnv} from './loadEnv.node'
@@ -76,7 +76,7 @@ function makeVercelDeployButton(params: {
 const deployButton = makeVercelDeployButton({
   'repository-url': 'https://github.com/useVenice/venice',
   'root-directory': 'apps/next',
-  'project-name': 'my-ledger-sync',
+  'project-name': 'my-venice',
   env: [
     'POSTGRES_URL',
     'int_plaid__clientId',

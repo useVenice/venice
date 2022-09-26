@@ -1,12 +1,12 @@
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import type {SerializedTimestamp} from '@ledger-sync/core-integration-firebase'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {SerializedTimestamp} from '@usevenice/core-integration-firebase'
 import {
   firebaseProvider,
   serializeTimestamp,
-} from '@ledger-sync/core-integration-firebase'
-import type {Standard} from '@ledger-sync/standard'
-import type {Merge} from '@ledger-sync/util'
+} from '@usevenice/core-integration-firebase'
+import type {Standard} from '@usevenice/standard'
+import type {Merge} from '@usevenice/util'
 import {
   A,
   compact,
@@ -16,7 +16,7 @@ import {
   rxjs,
   z,
   zCast,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {_parseConnectionInfo} from './foreceipt-utils'
 import {_parseAccounts} from './foreceipt-utils'

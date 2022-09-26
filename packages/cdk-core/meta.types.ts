@@ -1,4 +1,4 @@
-import {z, zJsonObject} from '@ledger-sync/util'
+import {z, zJsonObject} from '@usevenice/util'
 
 import {zId} from './id.types'
 

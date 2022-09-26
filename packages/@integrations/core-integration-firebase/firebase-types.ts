@@ -134,8 +134,8 @@ interface DeletedDoc {
 
 export type SnapshotData<TRaw> = {_TRaw?: TRaw} & ([TRaw] extends [Doc]
   ?
-      | import('@ledger-sync/util').Merge<TRaw, {id?: TRaw['id']}>
-      | import('@ledger-sync/util').Merge<
+      | import('@usevenice/util').Merge<TRaw, {id?: TRaw['id']}>
+      | import('@usevenice/util').Merge<
           {
             [K in keyof TRaw]?: never
           },

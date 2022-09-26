@@ -1,5 +1,5 @@
 /// <reference path="./beancount.d.ts"/>
-import type {Standard} from '@ledger-sync/standard'
+import type {Standard} from '@usevenice/standard'
 import {
   formatAccountType,
   makePostingsMap,
@@ -7,8 +7,8 @@ import {
   splitAccountType,
   stdTypeAndEntity,
   TRANSACTION_LABELS,
-} from '@ledger-sync/standard'
-import type {Amount, NonEmptyArray} from '@ledger-sync/util'
+} from '@usevenice/standard'
+import type {Amount, NonEmptyArray} from '@usevenice/util'
 import {
   $execCommand,
   A,
@@ -32,7 +32,7 @@ import {
   temp_makeId,
   uniq,
   upperCaseFirst,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 // @see https://beancount.github.io/docs/beancount_language_syntax.html
 // The general format of a Transaction directive is:

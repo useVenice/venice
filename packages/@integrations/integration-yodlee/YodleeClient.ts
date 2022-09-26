@@ -10,7 +10,7 @@ import {
   uniq,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'

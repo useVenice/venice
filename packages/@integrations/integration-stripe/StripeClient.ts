@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 
-import {memoize, z, zFunction} from '@ledger-sync/util'
+import {memoize, z, zFunction} from '@usevenice/util'
 
 import {inferStripeModeFromToken} from './stripe-utils'
 

@@ -1,7 +1,7 @@
-import type {SyncOperation} from '@ledger-sync/cdk-core'
-import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import {A, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
+import type {SyncOperation} from '@usevenice/cdk-core'
+import {makeSyncProvider, useScript} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import {A, identity, parseMoney, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   accountTellerSchema,

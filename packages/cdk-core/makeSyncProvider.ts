@@ -1,6 +1,6 @@
-import type {MaybePromise} from '@ledger-sync/util'
-import {identity} from '@ledger-sync/util'
-import {castIs, z} from '@ledger-sync/util'
+import type {MaybePromise} from '@usevenice/util'
+import {identity} from '@usevenice/util'
+import {castIs, z} from '@usevenice/util'
 
 import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'

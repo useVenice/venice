@@ -1,8 +1,8 @@
 import type plaid from 'plaid'
 import type {PlaidAccount as PlaidLinkAccount} from 'react-plaid-link'
 
-import type {Standard} from '@ledger-sync/standard'
-import {A} from '@ledger-sync/util'
+import type {Standard} from '@usevenice/standard'
+import {A} from '@usevenice/util'
 
 // This should be consolidated except two different plaid versions are used
 // So we should copy for now until we are ready...

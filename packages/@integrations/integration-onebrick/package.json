@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/integration-onebrick",
+  "name": "@usevenice/integration-onebrick",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -11,9 +11,9 @@
     "codegen:next": "openapi-typescript https://dash.readme.com/api/v1/api-registry/rwkfe1gl7puob14 --output onebrick.gen.ts"
   },
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/util": "*",
     "react": "*"
   },
   "devDependencies": {

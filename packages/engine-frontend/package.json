@@ -1,17 +1,17 @@
 {
-  "name": "@ledger-sync/engine-frontend",
+  "name": "@usevenice/engine-frontend",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/engine-backend": "*",
-    "@ledger-sync/ui": "*",
-    "@ledger-sync/util": "*",
     "@trpc/client": "9.26.0",
     "@trpc/react": "9.26.0",
     "@trpc/server": "9.26.0",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/engine-backend": "*",
+    "@usevenice/ui": "*",
+    "@usevenice/util": "*",
     "react": "*",
     "react-dom": "*",
     "react-query": "*"

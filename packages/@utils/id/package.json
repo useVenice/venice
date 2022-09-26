@@ -1,11 +1,11 @@
 {
-  "name": "@ledger-sync/id",
+  "name": "@usevenice/id",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
+    "@usevenice/util": "*",
     "nanoid": "3.3.4"
   },
   "devDependencies": {}

@@ -1,7 +1,7 @@
 import {useAtomValue} from 'jotai'
 import Head from 'next/head'
 
-import {VeniceProvider} from '@ledger-sync/engine-frontend'
+import {VeniceProvider} from '@usevenice/engine-frontend'
 
 import {Layout} from '../../components/Layout'
 import {modeAtom} from '../../contexts/atoms'

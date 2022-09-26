@@ -1,6 +1,6 @@
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {Standard} from '@usevenice/standard'
 import {
   A,
   DateTime,
@@ -11,7 +11,7 @@ import {
   Rx,
   rxjs,
   z,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {zUser} from './splitwise-schema'
 import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'

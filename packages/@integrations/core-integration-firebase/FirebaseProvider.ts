@@ -1,7 +1,7 @@
 import firebase from 'firebase/compat/app'
 
-import type {AnyEntityPayload, Link, SyncOperation} from '@ledger-sync/cdk-core'
-import {handlersLink, makeSyncProvider, mergeReady} from '@ledger-sync/cdk-core'
+import type {AnyEntityPayload, Link, SyncOperation} from '@usevenice/cdk-core'
+import {handlersLink, makeSyncProvider, mergeReady} from '@usevenice/cdk-core'
 import {
   compact,
   defineProxyFn,
@@ -15,7 +15,7 @@ import {
   z,
   zCast,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {AnyQuery} from './firebase-types'
 import {

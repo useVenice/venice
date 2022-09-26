@@ -1,4 +1,4 @@
-import {objectFromArray} from '@ledger-sync/util'
+import {objectFromArray} from '@usevenice/util'
 
 export const _parseAccounts = (
   connData: {_id: string},

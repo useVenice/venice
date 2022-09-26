@@ -1,4 +1,4 @@
-import {zKVStore} from '@ledger-sync/cdk-core'
+import {zKVStore} from '@usevenice/cdk-core'
 import {
   $path,
   joinPath,
@@ -8,7 +8,7 @@ import {
   writeJson,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 export const _pathFromId = (basePath: string, id: string) =>
   joinPath(basePath, `${id}.json`)

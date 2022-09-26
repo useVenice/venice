@@ -1,6 +1,6 @@
-import type {AnyEntityPayload} from '@ledger-sync/cdk-core'
-import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
-import {z, zCast} from '@ledger-sync/util'
+import type {AnyEntityPayload} from '@usevenice/cdk-core'
+import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
+import {z, zCast} from '@usevenice/util'
 
 import {makePostgresClient, zPgConfig} from './makePostgresClient'
 

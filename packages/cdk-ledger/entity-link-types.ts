@@ -1,6 +1,6 @@
-import type {SyncOperation} from '@ledger-sync/cdk-core'
-import type {Standard} from '@ledger-sync/standard'
-import {z, zCast} from '@ledger-sync/util'
+import type {SyncOperation} from '@usevenice/cdk-core'
+import type {Standard} from '@usevenice/standard'
+import {z, zCast} from '@usevenice/util'
 
 export type EntityPayload =
   | {entityName: 'account'; entity: Standard.Account | null; id: string}

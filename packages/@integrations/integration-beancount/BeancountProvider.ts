@@ -1,7 +1,7 @@
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import type {StdCache} from '@ledger-sync/cdk-ledger'
-import {cachingLink, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import type {StdCache} from '@usevenice/cdk-ledger'
+import {cachingLink, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {Standard} from '@usevenice/standard'
 import {
   $writeFile,
   fromCompletion,
@@ -9,7 +9,7 @@ import {
   objectEntries,
   stableStringify,
   z,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {beanJsonToDir} from './bean-fs-utils'
 import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'

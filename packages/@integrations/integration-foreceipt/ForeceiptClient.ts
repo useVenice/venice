@@ -5,16 +5,9 @@ import {
   initFirebase,
   zFirebaseUserConfig,
   zServiceAccount,
-} from '@ledger-sync/core-integration-firebase'
-import type {HTTPError} from '@ledger-sync/util'
-import {
-  createHTTPClient,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-  zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/core-integration-firebase'
+import type {HTTPError} from '@usevenice/util'
+import {createHTTPClient, Rx, rxjs, z, zCast, zFunction} from '@usevenice/util'
 
 import {_parseConnectionInfo} from './foreceipt-utils'
 

@@ -1,7 +1,7 @@
-import '@ledger-sync/core-integration-airtable/register.node'
-import '@ledger-sync/core-integration-mongodb/register.node'
-import '@ledger-sync/core-integration-postgres/register.node'
-import '@ledger-sync/core-integration-redis/register.node'
+import '@usevenice/core-integration-airtable/register.node'
+import '@usevenice/core-integration-mongodb/register.node'
+import '@usevenice/core-integration-postgres/register.node'
+import '@usevenice/core-integration-redis/register.node'
 
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
@@ -24,7 +24,7 @@ import {
   $writeFile,
   implementProxyFn,
   memoize,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {loadEnv} from './loadEnv.node'
 

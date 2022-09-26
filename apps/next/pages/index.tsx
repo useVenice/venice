@@ -1,5 +1,5 @@
-import {VeniceProvider} from '@ledger-sync/engine-frontend'
-import {Container, EffectContainer, Loading} from '@ledger-sync/ui'
+import {VeniceProvider} from '@usevenice/engine-frontend'
+import {Container, EffectContainer, Loading} from '@usevenice/ui'
 
 import {Layout} from '../components/Layout'
 import {useRouterPlus} from '../contexts/atoms'

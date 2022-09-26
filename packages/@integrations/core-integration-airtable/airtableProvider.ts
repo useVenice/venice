@@ -1,7 +1,7 @@
-import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
-import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
-import {fromCompletion, z, zCast} from '@ledger-sync/util'
+import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
+import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {Standard} from '@usevenice/standard'
+import {fromCompletion, z, zCast} from '@usevenice/util'
 
 import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
 

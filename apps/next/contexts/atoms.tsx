@@ -1,9 +1,9 @@
 import {useRouter} from 'next/router'
 import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 
-import type {EnvName} from '@ledger-sync/cdk-core'
-import {zEnvName} from '@ledger-sync/cdk-core'
-import {parseQueryParams, shallowOmitUndefined} from '@ledger-sync/util'
+import type {EnvName} from '@usevenice/cdk-core'
+import {zEnvName} from '@usevenice/cdk-core'
+import {parseQueryParams, shallowOmitUndefined} from '@usevenice/util'
 
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
 

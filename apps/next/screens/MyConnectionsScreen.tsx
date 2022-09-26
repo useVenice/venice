@@ -1,8 +1,8 @@
 import {useAtomValue} from 'jotai'
 import {match} from 'ts-pattern'
 
-import {useVenice} from '@ledger-sync/engine-frontend'
-import {Container, Loading} from '@ledger-sync/ui'
+import {useVenice} from '@usevenice/engine-frontend'
+import {Container, Loading} from '@usevenice/ui'
 
 import {envAtom} from '../contexts/atoms'
 import {ConnectionCard} from './components/ConnectionCard'

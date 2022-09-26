@@ -1,1 +1,1 @@
-import '@ledger-sync/core-integration-firebase/register.node'
+import '@usevenice/core-integration-firebase/register.node'

@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/next",
+  "name": "@usevenice/next",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -14,13 +14,13 @@
     "start": "next start"
   },
   "dependencies": {
-    "@ledger-sync/app-config": "*",
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/engine-backend": "*",
-    "@ledger-sync/engine-frontend": "*",
-    "@ledger-sync/ui": "*",
-    "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
+    "@usevenice/app-config": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/engine-backend": "*",
+    "@usevenice/engine-frontend": "*",
+    "@usevenice/ui": "*",
+    "@usevenice/util": "*",
     "cookies-next": "2.1.1",
     "jotai": "1.8.3",
     "next": "12.2.5",

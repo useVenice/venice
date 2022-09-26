@@ -1,10 +1,5 @@
-import type {
-  Amount,
-  DisplayOf,
-  DistributiveOmit,
-  EnumOf,
-} from '@ledger-sync/util'
-import {objectFromArray, startCase, temp_makeId, z} from '@ledger-sync/util'
+import type {Amount, DisplayOf, DistributiveOmit, EnumOf} from '@usevenice/util'
+import {objectFromArray, startCase, temp_makeId, z} from '@usevenice/util'
 
 import type * as Standard from './standard-types'
 

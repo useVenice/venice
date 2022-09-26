@@ -1,9 +1,9 @@
 import React from 'react'
 
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import type {Standard} from '@ledger-sync/standard'
-import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {Standard} from '@usevenice/standard'
+import {A, Deferred, identity, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   itemProjectResponseSchema,

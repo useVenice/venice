@@ -1,9 +1,9 @@
 import React from 'react'
 import type Stripe from 'stripe'
 
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {makeStripeClient, zStripeConfig} from './StripeClient'
 

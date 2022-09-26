@@ -1,12 +1,12 @@
 {
-  "name": "@ledger-sync/cdk-core",
+  "name": "@usevenice/cdk-core",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
+    "@usevenice/util": "*",
     "react": "*"
   },
   "devDependencies": {

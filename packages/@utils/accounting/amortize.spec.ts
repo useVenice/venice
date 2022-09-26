@@ -10,7 +10,7 @@ import {
   math,
   omit,
   Settings,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {computeAmortization} from './amoritze'
 

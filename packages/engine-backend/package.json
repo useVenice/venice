@@ -1,14 +1,14 @@
 {
-  "name": "@ledger-sync/engine-backend",
+  "name": "@usevenice/engine-backend",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/util": "*",
     "@trpc/server": "9.26.0",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/util": "*",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {

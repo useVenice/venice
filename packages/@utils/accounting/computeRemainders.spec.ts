@@ -1,4 +1,4 @@
-import {A} from '@ledger-sync/util'
+import {A} from '@usevenice/util'
 
 import {computeRemainders} from './computeRemainders'
 

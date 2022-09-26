@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {Deferred} from '@ledger-sync/util'
+import {Deferred} from '@usevenice/util'
 
 export function loadScriptOnce(src: string) {
   const cachedScript = loadScriptOnce.cache.get(src)

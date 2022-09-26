@@ -127,8 +127,7 @@ declare namespace Id {
   type SimpleBrandMap = {
     [TRepoName in keyof Simple]: Simple[TRepoName]['__brand__']
   }
-  type SimpleBrandMapInverse =
-    import('@ledger-sync/util').Invert<SimpleBrandMap>
+  type SimpleBrandMapInverse = import('@usevenice/util').Invert<SimpleBrandMap>
   type RepoNameForSimple<TId> = TId extends AnySimple
     ? SimpleBrandMapInverse[TId['__brand__']]
     : string
@@ -137,7 +136,7 @@ declare namespace Id {
     [TRepoName in keyof Compound]: Compound[TRepoName]['__brand__']
   }
   type CompoundBrandMapInverse =
-    import('@ledger-sync/util').Invert<CompoundBrandMap>
+    import('@usevenice/util').Invert<CompoundBrandMap>
   type RepoNameForCompound<TId> = TId extends AnyCompound
     ? CompoundBrandMapInverse[TId['__brand__']]
     : string
@@ -145,8 +144,7 @@ declare namespace Id {
   type GlobalBrandMap = {
     [TRepoName in keyof Global]: Global[TRepoName]['__brand__']
   }
-  type GlobalBrandMapInverse =
-    import('@ledger-sync/util').Invert<GlobalBrandMap>
+  type GlobalBrandMapInverse = import('@usevenice/util').Invert<GlobalBrandMap>
   type RepoNameForGlobal<TId> = TId extends AnyGlobal
     ? GlobalBrandMapInverse[TId['__brand__']]
     : string

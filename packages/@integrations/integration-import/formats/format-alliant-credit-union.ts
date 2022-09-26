@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 
-import {A, DateTime, zCast} from '@ledger-sync/util'
+import {A, DateTime, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'

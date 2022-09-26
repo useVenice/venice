@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import {match} from 'ts-pattern'
 
-import {useVeniceAdmin} from '@ledger-sync/engine-frontend'
-import {Container, Loading} from '@ledger-sync/ui'
+import {useVeniceAdmin} from '@usevenice/engine-frontend'
+import {Container, Loading} from '@usevenice/ui'
 
 import {useRouterPlus} from '../contexts/atoms'
 import {LedgerCard} from './components/LedgerCard'

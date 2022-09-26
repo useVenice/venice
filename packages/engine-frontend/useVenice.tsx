@@ -2,14 +2,14 @@ import React from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 import type {UseQueryResult} from 'react-query'
 
-import type {ConnectOptions, Id} from '@ledger-sync/cdk-core'
-import {CANCELLATION_TOKEN, extractId, zEnvName} from '@ledger-sync/cdk-core'
+import type {ConnectOptions, Id} from '@usevenice/cdk-core'
+import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
 import type {
   AnySyncMutationInput,
   AnySyncQueryOutput,
   IntegrationInput,
-} from '@ledger-sync/engine-backend'
-import {z} from '@ledger-sync/util'
+} from '@usevenice/engine-backend'
+import {z} from '@usevenice/util'
 
 import {VeniceProvider} from './VeniceProvider'
 

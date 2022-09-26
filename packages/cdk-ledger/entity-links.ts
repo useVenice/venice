@@ -1,13 +1,13 @@
-import {computeTrialBalance} from '@ledger-sync/accounting'
+import {computeTrialBalance} from '@usevenice/accounting'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
   Id,
   Link,
-} from '@ledger-sync/cdk-core'
-import {handlersLink, transformLink} from '@ledger-sync/cdk-core'
-import type {Standard} from '@ledger-sync/standard'
-import type {AmountMap, WritableDraft} from '@ledger-sync/util'
+} from '@usevenice/cdk-core'
+import {handlersLink, transformLink} from '@usevenice/cdk-core'
+import type {Standard} from '@usevenice/standard'
+import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
   AM,
@@ -20,7 +20,7 @@ import {
   setDefault,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {
   EntityPayload,
@@ -137,7 +137,7 @@ export const cachingTransformLink = (
     ]),
   )
 
-// TODO: Move this entire file into @ledger-sync/cdk-ledger package
+// TODO: Move this entire file into @usevenice/cdk-ledger package
 
 /**
  * Used to workaround beancount limitation https://groups.google.com/g/beancount/c/PmkPVgLNKgg
