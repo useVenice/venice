@@ -594,6 +594,17 @@ export const makeSyncEngine = <
         console.log('[syncConnection]', conn, opts)
         // No need to checkConnection here as sourceSync should take care of it
 
+        // TODO: Figure how to handle situations where connection does not exist yet
+        // but pipeline is already being persisted properly. This current solution
+        // is vulnerable to race condition and feels brittle. Though syncConnection is only
+        // called from the UI so we are fine for now.
+        const {id, settings, integrationId} = conn
+        const {ledgerId} = ctx
+        // Among other issues we would be missing `envName` in this current approach
+        await metaLinks
+          .handlers({connection: {id, integrationId, ledgerId}})
+          .connUpdate({type: 'connUpdate', id, settings})
+
         /** Every ParsedConn also conforms to connectionInput  */
         const pipelines = await getPipelinesForConnection(conn)
         await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
