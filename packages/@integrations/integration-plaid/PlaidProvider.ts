@@ -18,7 +18,13 @@ import {
   makeStandardId,
   veniceProviderBase,
 } from '@usevenice/cdk-ledger'
-import type {IAxiosError, RequiredOnly} from '@usevenice/util'
+import type {
+  DurationObjectUnits,
+  IAxiosError,
+  RequiredOnly} from '@usevenice/util';
+import {
+  DateTime
+} from '@usevenice/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {
@@ -80,6 +86,8 @@ const _def = makeSyncProvider.def({
     .removeDefault()
     .extend({
       transactionSyncCursor: z.string().nullish(),
+      /** ISO8601 */
+      investmentTransactionEndDate: z.string().nullish(),
     })
     .default({}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -91,7 +99,7 @@ const _def = makeSyncProvider.def({
     z.object({
       id: z.string(),
       entityName: z.literal('transaction'),
-      entity: zCast<plaid.Transaction>(),
+      entity: zCast<plaid.Transaction | plaid.InvestmentTransaction>(),
     }),
   ]),
   webhookInput: zWebhookInput,
@@ -123,6 +131,15 @@ export const plaidProvider = makeSyncProvider({
         const curr = plaidUnitForCurrency(t)
         const currencyAmount = A(-1 * (t.amount ?? 0), curr)
         const accountExternalId = t.account_id as Id.external
+        if (isInvestmentTransaction(t)) {
+          return {
+            id: t.investment_transaction_id,
+            entityName: 'transaction',
+            // TODO: Finish the mapper
+            entity: {date: t.date, description: t.name},
+          }
+        }
+
         const externalCategory = t.category?.join('/')
         return {
           id: t.transaction_id,
@@ -412,6 +429,39 @@ export const plaidProvider = makeSyncProvider({
       })
       yield accounts.map((a) => def._opData('account', a.account_id, a))
 
+      await invHoldingsGetLimit()
+      const holdingsRes = await client
+        .investmentsHoldingsGet({
+          access_token: accessToken,
+          options: {...(accountIds && {account_ids: accountIds})},
+        })
+        // TODO: Centralize me inside PlaidClient...
+        .catch((err: IAxiosError) => {
+          const code =
+            err.isAxiosError &&
+            (err.response?.data as PlaidError | undefined)?.error_code
+          // Do not crash in case we run into this.
+          if (
+            // client is not authorized to access the following products: ["investments"]
+            code !== 'INVALID_PRODUCT' &&
+            // "error_message": "the following products are not supported by this institution: [\"investments\"]",
+            code !== 'PRODUCTS_NOT_SUPPORTED'
+          ) {
+            return null
+          }
+          throw err
+        })
+
+      if (holdingsRes) {
+        const {holdings, securities, accounts: investmentAccounts} = holdingsRes
+        console.log('investmentsHoldingsGet', {
+          holdings,
+          securities,
+          investmentAccounts,
+          accounts,
+        })
+      }
+
       // Sync transactions
       let cursor = state.transactionSyncCursor ?? undefined
       while (true) {
@@ -436,6 +486,58 @@ export const plaidProvider = makeSyncProvider({
         ]
         if (!res.has_more) {
           break
+        }
+      }
+
+      // Sync investment transactions
+      if (holdingsRes) {
+        // TODO: QA the incremental sync logic given that we are syncing
+        // from the most recent to the least recent. Most of the time it should
+        // be the other way around. Maybe combine responsiveness along with
+        const sinceDate =
+          (state.investmentTransactionEndDate &&
+            DateTime.fromISO(state.investmentTransactionEndDate, {
+              zone: 'UTC',
+            })) ||
+          DateTime.fromMillis(0)
+        // Eliminate any effect of timezones by just adding a day
+        let end = DateTime.utc().plus({days: 1})
+        // Fetch 100 transactions over last 90 days only on the first request to optimize
+        // for incremental sync scenarios
+        let count = 100
+        let dur: DurationObjectUnits = {days: 90}
+
+        while (end > sinceDate) {
+          // Specifying epoch zero seems to cause Plaid to freeze... So here's
+          // our workaround
+          const start = end.minus(dur)
+
+          let offset = 0
+          while (true) {
+            await invTxnGetLimit()
+            const invTxnRes = await client.investmentsTransactionsGet({
+              access_token: accessToken,
+              start_date: start.toISODate(),
+              end_date: end.toISODate(),
+              options: {
+                ...(accountIds && {account_ids: accountIds}),
+                count,
+                offset,
+              },
+            })
+            yield invTxnRes.investment_transactions.map((t) =>
+              def._opData('transaction', t.investment_transaction_id, t),
+            )
+
+            offset += invTxnRes.investment_transactions.length
+            // Now we can fetch more
+            count = 500
+            dur = {years: 1}
+            if (offset >= invTxnRes.total_investment_transactions) {
+              break
+            }
+          }
+          end = start
         }
       }
     }
@@ -538,6 +640,16 @@ export const plaidProvider = makeSyncProvider({
   },
 })
 
+function isInvestmentTransaction(
+  txn: plaid.Transaction | plaid.InvestmentTransaction,
+): txn is plaid.InvestmentTransaction {
+  return 'investment_transaction_id' in txn
+}
+
+// Per client limit.
+// TODO: Account for different rate limits for sandbox vs development & prduction
+// TODO: Use a distributed rate limiter (maybe airbyte has one?) to go across more than
+// a single process
 /**
  * Institution get rate limit.. Not accounting for per item or per client yet...
  * https://plaid.com/docs/errors/rate-limit-exceeded/#production-and-development-rate-limits
@@ -546,3 +658,11 @@ export const plaidProvider = makeSyncProvider({
  * All of plaid's rate limits are per-minute...
  */
 const insGetLimit = RateLimit(7, {timeUnit: 60 * 1000})
+
+// Per item limits.
+// TODO: Make these per item
+
+/** 15 req / item / min. We do 10 to be safe */
+const invHoldingsGetLimit = RateLimit(10, {timeUnit: 60 * 1000})
+/** 30 req / item / min. We do 20 to be safe */
+const invTxnGetLimit = RateLimit(20, {timeUnit: 60 * 1000})

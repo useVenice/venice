@@ -2,6 +2,8 @@ import type {
   AccountsGetRequest,
   InstitutionsGetByIdRequest,
   InstitutionsGetRequest,
+  InvestmentsHoldingsGetRequest,
+  InvestmentsTransactionsGetRequest,
   ItemPublicTokenExchangeRequest,
   ItemWebhookUpdateRequest,
   LinkTokenCreateRequest,
@@ -101,6 +103,18 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
     ),
     transactionsSync: zFunction(zCast<TransactionsSyncRequest>(), (opts) =>
       fromToken(opts.access_token).transactionsSync(opts).then(getData),
+    ),
+    investmentsTransactionsGet: zFunction(
+      zCast<InvestmentsTransactionsGetRequest>(),
+      (opts) =>
+        fromToken(opts.access_token)
+          .investmentsTransactionsGet(opts)
+          .then(getData),
+    ),
+    investmentsHoldingsGet: zFunction(
+      zCast<InvestmentsHoldingsGetRequest>(),
+      (opts) =>
+        fromToken(opts.access_token).investmentsHoldingsGet(opts).then(getData),
     ),
     institutionsGetById: zFunction(
       [zEnvName, zCast<InstitutionsGetByIdRequest>()],
