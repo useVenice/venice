@@ -81,7 +81,7 @@ export const PROVIDERS = [
 const separator = '__'
 const getPrefix = (name: string) => makeId('int', name, '')
 
-export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
+export const zFlatConfigByProvider = R.mapToObj(PROVIDERS, (p) => [
   p.name,
   zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
     prefix: getPrefix(p.name),

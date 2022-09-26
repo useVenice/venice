@@ -5,12 +5,17 @@ import tablemark from 'tablemark'
 
 import {buildUrl, compact, R, zParser} from '@usevenice/util'
 
-import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
+import {DOCUMENTED_PROVIDERS, parseIntConfigsFromRawEnv, zAllEnv} from './env'
 import {loadEnv} from './loadEnv.node'
 
 const envList = R.pipe(
   zAllEnv.shape,
   R.toPairs,
+  R.filter(
+    ([key]) =>
+      !key.startsWith('int') ||
+      DOCUMENTED_PROVIDERS.some((p) => key.startsWith(`int_${p.name}`)),
+  ),
   R.map(([key, schema]) => {
     const cmtLines = R.pipe(
       // ${schema.isOptional() ? '[Optional]' : '<Required>'}
