@@ -11,10 +11,10 @@ import {createWebStoragePersistor} from 'react-query/createWebStoragePersistor-e
 import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
 import {QueryParamProvider} from 'use-query-params'
 
-import {veniceCommonConfig} from '@ledger-sync/app-config/commonConfig'
-import type {Id} from '@ledger-sync/cdk-core'
-import {VeniceProvider} from '@ledger-sync/engine-frontend'
-import {UIProvider} from '@ledger-sync/ui'
+import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
+import type {Id} from '@usevenice/cdk-core'
+import {VeniceProvider} from '@usevenice/engine-frontend'
+import {UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 

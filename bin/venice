@@ -1,2 +1,2 @@
 #!/usr/bin/env tsx
-require('@ledger-sync/cli/venice-cli').default.help().parse()
+require('@usevenice/cli/venice-cli').default.help().parse()

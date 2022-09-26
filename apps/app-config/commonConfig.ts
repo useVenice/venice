@@ -1,5 +1,5 @@
-import {VeniceProvider} from '@ledger-sync/engine-frontend'
-import {joinPath, zParser} from '@ledger-sync/util'
+import {VeniceProvider} from '@usevenice/engine-frontend'
+import {joinPath, zParser} from '@usevenice/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
 

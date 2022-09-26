@@ -8,7 +8,7 @@ import {
   produce,
   R,
   stableStringify,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {
   convBeanFile,

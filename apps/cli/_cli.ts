@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import type {PROVIDERS} from '@ledger-sync/app-config/env'
-import {parseIntConfigsFromRawEnv, zAllEnv} from '@ledger-sync/app-config/env'
+import type {PROVIDERS} from '@usevenice/app-config/env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
 
-import '@ledger-sync/app-config/register.node'
+import '@usevenice/app-config/register.node'
 
-import {loadedEnv} from '@ledger-sync/app-config/register.node'
+import {loadedEnv} from '@usevenice/app-config/register.node'
 import {
   makePostgresClient,
   makePostgresMetaService,
-} from '@ledger-sync/core-integration-postgres'
-import {makeJwtClient} from '@ledger-sync/engine-backend'
-import {makeOneBrickClient} from '@ledger-sync/integration-onebrick'
+} from '@usevenice/core-integration-postgres'
+import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
 // OBJ=$pathToPlaid dynamic-cli whatever...
 // Or perhaps we can make it into a register and/or loader for nodejs
 // much like tsx and others
-import {makePlaidClient} from '@ledger-sync/integration-plaid'
-import {makeRampClient} from '@ledger-sync/integration-ramp'
-import {makeStripeClient} from '@ledger-sync/integration-stripe'
-import {makeTellerClient} from '@ledger-sync/integration-teller'
-import {makeTogglClient} from '@ledger-sync/integration-toggl'
-import {makeWiseClient} from '@ledger-sync/integration-wise'
-import {makeYodleeClient} from '@ledger-sync/integration-yodlee'
-import type {ZFunctionMap} from '@ledger-sync/util'
-import {getEnvVar, R, z, zodInsecureDebug, zParser} from '@ledger-sync/util'
+import {makePlaidClient} from '@usevenice/integration-plaid'
+import {makeRampClient} from '@usevenice/integration-ramp'
+import {makeStripeClient} from '@usevenice/integration-stripe'
+import {makeTellerClient} from '@usevenice/integration-teller'
+import {makeTogglClient} from '@usevenice/integration-toggl'
+import {makeWiseClient} from '@usevenice/integration-wise'
+import {makeYodleeClient} from '@usevenice/integration-yodlee'
+import type {ZFunctionMap} from '@usevenice/util'
+import {getEnvVar, R, z, zodInsecureDebug, zParser} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'

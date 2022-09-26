@@ -1,6 +1,6 @@
-import type {AnyProviderDef, AnySyncProvider} from '@ledger-sync/cdk-core'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {z} from '@ledger-sync/util'
+import type {AnyProviderDef, AnySyncProvider} from '@usevenice/cdk-core'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {z} from '@usevenice/util'
 
 import type {EntityPayload} from './entity-link-types'
 import {zEntityPayload} from './entity-link-types'

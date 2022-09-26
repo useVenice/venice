@@ -1,6 +1,6 @@
 import * as mongodb from 'mongodb'
 
-import {implementProxyFn} from '@ledger-sync/util'
+import {implementProxyFn} from '@usevenice/util'
 
 import {$mongodb} from './mongoDBProvider'
 

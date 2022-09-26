@@ -1,4 +1,4 @@
-import {makeUlid, md5Hash, stableStringify} from '@ledger-sync/util'
+import {makeUlid, md5Hash, stableStringify} from '@usevenice/util'
 
 import {extractExternalId} from './import-format-utils'
 

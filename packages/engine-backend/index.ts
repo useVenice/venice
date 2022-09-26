@@ -1,4 +1,4 @@
-// import {zodInsecureDebug} from '@ledger-sync/util'
+// import {zodInsecureDebug} from '@usevenice/util'
 
 // Make error message more understandable. But security risk... so turn me off unless debugging
 // if (process.env['NODE_ENV'] === 'development') {

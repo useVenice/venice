@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/core-integration-postgres",
+  "name": "@usevenice/core-integration-postgres",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,9 +7,9 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/util": "*",
     "@slonik/migrator": "0.11.3",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/util": "*",
     "pg": "8.8.0",
     "pg-native": "3.0.1",
     "slonik": "30.3.1",

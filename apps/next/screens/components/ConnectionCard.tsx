@@ -9,15 +9,15 @@ import {
 } from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import type {EnvName, ZStandard} from '@ledger-sync/cdk-core'
-import {useVenice} from '@ledger-sync/engine-frontend'
+import type {EnvName, ZStandard} from '@usevenice/cdk-core'
+import {useVenice} from '@usevenice/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@ledger-sync/ui'
-import {formatDate, sentenceCase} from '@ledger-sync/util'
+} from '@usevenice/ui'
+import {formatDate, sentenceCase} from '@usevenice/util'
 
 import {InstitutionLogo} from '../../components/InstitutionLogo'
 import {envAtom} from '../../contexts/atoms'

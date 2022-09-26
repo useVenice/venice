@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/integration-plaid",
+  "name": "@usevenice/integration-plaid",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -10,10 +10,10 @@
     "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
   },
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*",
     "plaid": "10.7.0",
     "react": "*",
     "react-dom": "*",

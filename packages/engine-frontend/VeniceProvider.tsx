@@ -8,12 +8,12 @@ import type {
   Id,
   LinkFactory,
   UseConnectHook,
-} from '@ledger-sync/cdk-core'
-import type {AnySyncRouter, SyncEngineConfig} from '@ledger-sync/engine-backend'
-import {_zContext, kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
-import type {DialogInstance} from '@ledger-sync/ui'
-import {Dialog} from '@ledger-sync/ui'
-import {R} from '@ledger-sync/util'
+} from '@usevenice/cdk-core'
+import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
+import {_zContext, kXLedgerId} from '@usevenice/engine-backend/auth-utils'
+import type {DialogInstance} from '@usevenice/ui'
+import {Dialog} from '@usevenice/ui'
+import {R} from '@usevenice/util'
 
 export type SyncEngineCommonConfig<
   TProviders extends readonly AnySyncProvider[],

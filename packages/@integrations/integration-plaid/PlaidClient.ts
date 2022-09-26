@@ -24,7 +24,7 @@ import {
   z,
   zCast,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {WebhookShape} from './plaid.types'

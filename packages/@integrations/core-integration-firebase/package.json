@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/core-integration-firebase",
+  "name": "@usevenice/core-integration-firebase",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -11,8 +11,8 @@
     "@firebase/app-compat": "0.x",
     "@firebase/app-types": "0.x",
     "@firebase/auth": "*",
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/util": "*",
     "firebase": "9.8.1",
     "firebase-admin": "10.2.0"
   },

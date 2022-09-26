@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 // This import line gets frequently moved by vscode organize imports
 // and thus causing runtime failure... Therefore we moved it to the venice bin
-import '@ledger-sync/app-config/register.node'
+import '@usevenice/app-config/register.node'
 
 import http from 'node:http'
 
@@ -9,11 +9,11 @@ import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
 
-import {syncEngine, veniceRouter} from '@ledger-sync/app-config/backendConfig'
-import type {Id} from '@ledger-sync/cdk-core'
-import {parseWebhookRequest} from '@ledger-sync/engine-backend'
-import {kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
-import type {NonEmptyArray} from '@ledger-sync/util'
+import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
+import type {Id} from '@usevenice/cdk-core'
+import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
+import type {NonEmptyArray} from '@usevenice/util'
 import {
   compact,
   fromMaybeArray,
@@ -22,7 +22,7 @@ import {
   z,
   zFunction,
   zodInsecureDebug,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {cliFromRouter} from './cli-utils'
 

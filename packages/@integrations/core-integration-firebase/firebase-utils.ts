@@ -1,13 +1,13 @@
 import type admin from 'firebase-admin'
 import type firebase from 'firebase/compat'
 
-import type {InjectionToken, PossibleDate} from '@ledger-sync/util'
+import type {InjectionToken, PossibleDate} from '@usevenice/util'
 import {
   objectKeys,
   parseOptionalDateTime,
   resolveDependency,
   rxjs,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {
   AnyDocumentReference,

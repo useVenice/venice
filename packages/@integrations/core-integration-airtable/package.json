@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/core-integration-airtable",
+  "name": "@usevenice/core-integration-airtable",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,12 +7,12 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*",
     "airtable": "0.11.4"
   },
   "devDependencies": {
-    "@ledger-sync/cdk-ledger": "*"
+    "@usevenice/cdk-ledger": "*"
   }
 }

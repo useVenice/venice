@@ -1,6 +1,6 @@
-import type {EntityPayload} from '@ledger-sync/cdk-ledger'
-import type {ValueOf} from '@ledger-sync/util'
-import {R, z} from '@ledger-sync/util'
+import type {EntityPayload} from '@usevenice/cdk-ledger'
+import type {ValueOf} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 
 /**
  * Can be reused by in places such as Google Sheets / Excel. CSV is a starting

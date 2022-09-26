@@ -1,6 +1,6 @@
 import {createNodeRedisClient} from 'handy-redis'
 
-import {implementProxyFn} from '@ledger-sync/util'
+import {implementProxyFn} from '@usevenice/util'
 
 import {$createNodeRedisClient} from './redisKvStore'
 

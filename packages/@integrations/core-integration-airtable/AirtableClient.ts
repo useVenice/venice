@@ -1,6 +1,6 @@
 import type {Base, FieldSet, Records} from 'airtable'
 
-import {defineProxyFn, z, zFunction} from '@ledger-sync/util'
+import {defineProxyFn, z, zFunction} from '@usevenice/util'
 
 export const $airtable =
   defineProxyFn<() => typeof import('airtable')>('$airtable')

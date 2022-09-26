@@ -3,8 +3,8 @@ import type {
   MaybePromise,
   NoInfer,
   ObjectPartialDeep,
-} from '@ledger-sync/util'
-import {R, zCast} from '@ledger-sync/util'
+} from '@usevenice/util'
+import {R, zCast} from '@usevenice/util'
 
 /** @deprecated. See metaService. */
 export interface KVStore<T = Json> {

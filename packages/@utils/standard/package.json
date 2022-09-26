@@ -1,12 +1,12 @@
 {
-  "name": "@ledger-sync/standard",
+  "name": "@usevenice/standard",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/id": "*",
-    "@ledger-sync/util": "*"
+    "@usevenice/id": "*",
+    "@usevenice/util": "*"
   },
   "devDependencies": {}
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/core-integration-mongodb",
+  "name": "@usevenice/core-integration-mongodb",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,8 +7,8 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/util": "*",
     "mongodb": "4.9.1"
   }
 }

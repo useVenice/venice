@@ -1,4 +1,4 @@
-import {compact, invert, z} from '@ledger-sync/util'
+import {compact, invert, z} from '@usevenice/util'
 
 export type ExternalId = z.infer<typeof zExternalId>
 export const zExternalId = z.union([z.string(), z.number()])

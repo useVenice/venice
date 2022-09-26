@@ -1,7 +1,7 @@
 import * as slonikMigrator from '@slonik/migrator'
 import * as slonik from 'slonik'
 
-import {implementProxyFn} from '@ledger-sync/util'
+import {implementProxyFn} from '@usevenice/util'
 
 import {$slonik, $slonikMigrator} from './makePostgresClient'
 

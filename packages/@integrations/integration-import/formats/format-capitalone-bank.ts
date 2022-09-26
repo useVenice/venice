@@ -1,13 +1,7 @@
 import Papa from 'papaparse'
 
-import {makePostingsMap} from '@ledger-sync/standard'
-import {
-  A,
-  arrayFromObject,
-  DateTime,
-  parseMoney,
-  zCast,
-} from '@ledger-sync/util'
+import {makePostingsMap} from '@usevenice/standard'
+import {A, arrayFromObject, DateTime, parseMoney, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'

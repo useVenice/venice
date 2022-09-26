@@ -1,4 +1,4 @@
-import {identity, Rx, toCompletion} from '@ledger-sync/util'
+import {identity, Rx, toCompletion} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,

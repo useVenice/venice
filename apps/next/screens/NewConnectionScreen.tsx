@@ -3,9 +3,9 @@ import {Plus} from 'phosphor-react'
 import React from 'react'
 import {match} from 'ts-pattern'
 
-import type {EnvName} from '@ledger-sync/cdk-core'
-import {zEnvName} from '@ledger-sync/cdk-core'
-import {useVenice} from '@ledger-sync/engine-frontend'
+import type {EnvName} from '@usevenice/cdk-core'
+import {zEnvName} from '@usevenice/cdk-core'
+import {useVenice} from '@usevenice/engine-frontend'
 import {
   Container,
   Loading,
@@ -15,8 +15,8 @@ import {
   TabContent,
   TabList,
   Tabs,
-} from '@ledger-sync/ui'
-import {compact} from '@ledger-sync/util'
+} from '@usevenice/ui'
+import {compact} from '@usevenice/util'
 
 import {InstitutionLogo} from '../components/InstitutionLogo'
 import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'

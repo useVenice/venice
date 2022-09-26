@@ -42,6 +42,6 @@ declare type OrderedMap<T, TKey extends string = string> = Record<TKey, T>
 
 declare namespace jest {
   interface Matchers<R> {
-    toEqualBalances(expected: import('@ledger-sync/util').Balances): R
+    toEqualBalances(expected: import('@usevenice/util').Balances): R
   }
 }

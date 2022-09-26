@@ -1,14 +1,14 @@
 {
-  "name": "@ledger-sync/cdk-ledger",
+  "name": "@usevenice/cdk-ledger",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/accounting": "*",
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/standard": "*",
-    "@ledger-sync/util": "*"
+    "@usevenice/accounting": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*"
   },
   "devDependencies": {}
 }

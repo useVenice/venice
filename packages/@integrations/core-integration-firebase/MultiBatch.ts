@@ -1,13 +1,13 @@
 import type firebase from 'firebase/compat'
 
-import type {NoInfer, ObjectPartialDeep, PathsOf} from '@ledger-sync/util'
+import type {NoInfer, ObjectPartialDeep, PathsOf} from '@usevenice/util'
 import {
   deepOmitUndefined,
   getAt,
   makeChunks,
   operateForEach,
   rxjs,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {
   AnyDocumentReference,

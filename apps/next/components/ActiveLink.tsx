@@ -2,8 +2,8 @@ import type {LinkProps} from 'next/link'
 import Link from 'next/link'
 import React from 'react'
 
-import type {Merge} from '@ledger-sync/util'
-import {parseQueryParams, stringifyQueryParams} from '@ledger-sync/util'
+import type {Merge} from '@usevenice/util'
+import {parseQueryParams, stringifyQueryParams} from '@usevenice/util'
 
 export interface ActiveLinkProps
   extends Merge<React.ComponentPropsWithoutRef<'a'>, LinkProps> {

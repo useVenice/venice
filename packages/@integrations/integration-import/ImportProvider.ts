@@ -1,8 +1,8 @@
-import type {SyncOperation} from '@ledger-sync/cdk-core'
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {veniceProviderBase} from '@ledger-sync/cdk-ledger'
-import type {UnionToIntersection} from '@ledger-sync/util'
-import {Rx, rxjs, z} from '@ledger-sync/util'
+import type {SyncOperation} from '@usevenice/cdk-core'
+import {makeSyncProvider} from '@usevenice/cdk-core'
+import {veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {UnionToIntersection} from '@usevenice/util'
+import {Rx, rxjs, z} from '@usevenice/util'
 
 import {
   formatAlliantCreditUnion,

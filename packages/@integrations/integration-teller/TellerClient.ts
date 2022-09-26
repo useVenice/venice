@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
+import {createHTTPClient, memoize, z, zFunction} from '@usevenice/util'
 
 import institutionsWsResponse from './institutionWsResponse.json'
 

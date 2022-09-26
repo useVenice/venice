@@ -1,1 +1,1 @@
-import '@ledger-sync/core-integration-postgres/register.node'
+import '@usevenice/core-integration-postgres/register.node'

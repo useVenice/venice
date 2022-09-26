@@ -1,6 +1,6 @@
 import {CaretRight} from 'phosphor-react'
 
-import type {LedgerIdResultRow} from '@ledger-sync/cdk-core'
+import type {LedgerIdResultRow} from '@usevenice/cdk-core'
 
 import {useRouterPlus} from '../../contexts/atoms'
 

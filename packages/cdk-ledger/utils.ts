@@ -1,4 +1,4 @@
-import {makePrefixedId, nonEmpty, objectKeys, R, z} from '@ledger-sync/util'
+import {makePrefixedId, nonEmpty, objectKeys, R, z} from '@usevenice/util'
 
 // TODO: Merge this into cdk-core for ease of use...
 

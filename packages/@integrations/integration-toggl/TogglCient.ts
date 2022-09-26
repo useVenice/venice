@@ -1,4 +1,4 @@
-import {createHTTPClient, memoize, z, zFunction} from '@ledger-sync/util'
+import {createHTTPClient, memoize, z, zFunction} from '@usevenice/util'
 
 export const zTogglConfig = z.object({
   email: z.string().nullish(),

@@ -12,14 +12,14 @@ import {
   CANCELLATION_TOKEN,
   makeSyncProvider,
   zWebhookInput,
-} from '@ledger-sync/cdk-core'
+} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   makeStandardId,
   veniceProviderBase,
-} from '@ledger-sync/cdk-ledger'
-import type {IAxiosError, RequiredOnly} from '@ledger-sync/util'
-import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
+} from '@usevenice/cdk-ledger'
+import type {IAxiosError, RequiredOnly} from '@usevenice/util'
+import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {
   getPlaidAccountBalance,

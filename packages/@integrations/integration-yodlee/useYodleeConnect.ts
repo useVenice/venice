@@ -1,10 +1,6 @@
-import type {UseConnectHook} from '@ledger-sync/cdk-core'
-import {
-  CANCELLATION_TOKEN,
-  DivContainer,
-  useScript,
-} from '@ledger-sync/cdk-core'
-import type {MergeUnion} from '@ledger-sync/util'
+import type {UseConnectHook} from '@usevenice/cdk-core'
+import {CANCELLATION_TOKEN, DivContainer, useScript} from '@usevenice/cdk-core'
+import type {MergeUnion} from '@usevenice/util'
 
 import type {FastLinkOpenOptions} from './fastlink'
 import type {yodleeProviderDef} from './YodleeProvider'

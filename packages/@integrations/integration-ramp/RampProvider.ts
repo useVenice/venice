@@ -1,11 +1,11 @@
 import React from 'react'
 
-import {makeSyncProvider} from '@ledger-sync/cdk-core'
+import {makeSyncProvider} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   makeStandardId,
   veniceProviderBase,
-} from '@ledger-sync/cdk-ledger'
+} from '@usevenice/cdk-ledger'
 import {
   A,
   compact,
@@ -15,7 +15,7 @@ import {
   Rx,
   rxjs,
   z,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {
   businessResponseSchema,

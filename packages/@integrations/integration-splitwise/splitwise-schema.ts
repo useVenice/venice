@@ -1,4 +1,4 @@
-import {z} from '@ledger-sync/util'
+import {z} from '@usevenice/util'
 
 const zImage = z.object({
   original: z.string().nullish(),

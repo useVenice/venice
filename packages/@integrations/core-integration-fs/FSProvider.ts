@@ -1,5 +1,5 @@
-import type {AnyEntityPayload, SyncOperation} from '@ledger-sync/cdk-core'
-import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
+import type {AnyEntityPayload, SyncOperation} from '@usevenice/cdk-core'
+import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
 import {
   $chokidar,
   $path,
@@ -14,7 +14,7 @@ import {
   writeJson,
   z,
   zCast,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {_pathFromId} from './makeFsKVStore'
 

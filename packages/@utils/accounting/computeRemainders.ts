@@ -1,6 +1,6 @@
-import type {Standard} from '@ledger-sync/standard'
-import type {Amount, AmountMap, NonNullableOnly} from '@ledger-sync/util'
-import {AM} from '@ledger-sync/util'
+import type {Standard} from '@usevenice/standard'
+import type {Amount, AmountMap, NonNullableOnly} from '@usevenice/util'
+import {AM} from '@usevenice/util'
 
 // TODO: Should we refactor the
 export function computeRemainders({

@@ -1,8 +1,8 @@
 import React from 'react'
 
-import type {SyncOperation} from '@ledger-sync/cdk-core'
-import {makeSyncProvider, zId, zWebhookInput} from '@ledger-sync/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
+import type {SyncOperation} from '@usevenice/cdk-core'
+import {makeSyncProvider, zId, zWebhookInput} from '@usevenice/cdk-core'
+import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import {
   A,
   Deferred,
@@ -12,7 +12,7 @@ import {
   Rx,
   rxjs,
   z,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import {
   accountItemSchema,

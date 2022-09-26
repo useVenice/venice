@@ -1,11 +1,11 @@
-import {handlersLink, makeSyncProvider} from '@ledger-sync/cdk-core'
-import type {EntityPayloadWithExternal} from '@ledger-sync/cdk-ledger'
+import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
+import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
   makePostgresClient,
   upsertByIdQuery,
   zPgConfig,
-} from '@ledger-sync/core-integration-postgres'
-import {R, rxjs, z, zCast} from '@ledger-sync/util'
+} from '@usevenice/core-integration-postgres'
+import {R, rxjs, z, zCast} from '@usevenice/util'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,

@@ -1,4 +1,4 @@
-import type {Balances} from '@ledger-sync/util'
+import type {Balances} from '@usevenice/util'
 
 /**
  * Workaround for jest limitations of lack of custom matcher

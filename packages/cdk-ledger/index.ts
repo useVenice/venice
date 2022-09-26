@@ -5,5 +5,5 @@ export * from './utils'
 export * from './veniceProviderBase'
 // codegen:end
 
-// TODO: Fold @ledger-sync/standard into here...
-export {makePostingsMap} from '@ledger-sync/standard'
+// TODO: Fold @usevenice/standard into here...
+export {makePostingsMap} from '@usevenice/standard'

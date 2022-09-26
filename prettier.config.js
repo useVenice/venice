@@ -8,12 +8,12 @@ module.exports = {
   importOrder: [
     '^node:(.+)$',
     '<THIRD_PARTY_MODULES>',
-    '^@ledger-sync/(.+)$',
+    '^@usevenice/(.+)$',
     '^[./]',
   ],
   importOrderCaseInsensitive: true,
   importOrderGroupNamespaceSpecifiers: true,
-  // For now until vscode organize imports supports remove only mode. https://github.com/alkafinance/ledger-sync/commit/8ef518158278f595e605ac077f9289cd918c448c#r83502651
+  // For now until vscode organize imports supports remove only mode. https://github.com/alkafinance/usevenice/commit/8ef518158278f595e605ac077f9289cd918c448c#r83502651
   // or until vscode organize imports does not move lines with side effects around...
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,

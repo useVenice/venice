@@ -1,6 +1,6 @@
 import {Bank} from 'phosphor-react'
 
-import type {ZStandard} from '@ledger-sync/cdk-core'
+import type {ZStandard} from '@usevenice/cdk-core'
 
 export function InstitutionLogo({
   institution,

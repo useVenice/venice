@@ -4,7 +4,7 @@ import type {
   NoInfer,
   ObjectPartialDeep,
   rxjs,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {ExternalId, Id} from './id.types'
 

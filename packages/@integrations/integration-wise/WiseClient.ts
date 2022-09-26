@@ -4,7 +4,7 @@ import {
   OAuth2Client,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 export type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'live'])

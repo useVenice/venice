@@ -4,7 +4,7 @@ import {
   OAuth2Client,
   z,
   zFunction,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 export const zRampConfig = z.object({
   clientId: z.string(),

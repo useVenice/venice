@@ -1,5 +1,5 @@
-import type {Id, WebhookInput} from '@ledger-sync/cdk-core'
-import type {NonEmptyArray} from '@ledger-sync/util'
+import type {Id, WebhookInput} from '@usevenice/cdk-core'
+import type {NonEmptyArray} from '@usevenice/util'
 
 import type {AnySyncMutationInput} from './makeSyncEngine'
 

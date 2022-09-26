@@ -5,8 +5,8 @@ import type {
   Id,
   LinkFactory,
   MetaService,
-} from '@ledger-sync/cdk-core'
-import {extractId, makeId, zRaw} from '@ledger-sync/cdk-core'
+} from '@usevenice/cdk-core'
+import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
 import {
   castInput,
   deepMerge,
@@ -15,7 +15,7 @@ import {
   R,
   z,
   zGuard,
-} from '@ledger-sync/util'
+} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
 import type {SyncEngineConfig} from './makeSyncEngine'

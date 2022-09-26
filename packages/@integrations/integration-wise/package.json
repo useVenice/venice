@@ -1,5 +1,5 @@
 {
-  "name": "@ledger-sync/integration-wise",
+  "name": "@usevenice/integration-wise",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,9 +7,9 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@ledger-sync/cdk-core": "*",
-    "@ledger-sync/cdk-ledger": "*",
-    "@ledger-sync/util": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/util": "*",
     "react": "*"
   },
   "devDependencies": {

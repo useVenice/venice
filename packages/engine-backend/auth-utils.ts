@@ -1,8 +1,8 @@
 import * as jwt from 'jsonwebtoken'
 import {TRPCError} from '@trpc/server'
 
-import {zId} from '@ledger-sync/cdk-core'
-import {z, zFunction, zGuard} from '@ledger-sync/util'
+import {zId} from '@usevenice/cdk-core'
+import {z, zFunction, zGuard} from '@usevenice/util'
 
 /** Header key */
 export const kXLedgerId = 'X-Ledger-Id'.toLowerCase()
