@@ -1,5 +1,5 @@
-## Deploy
 
+## Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=After%20deploy%2C%20you%20can%20add%20other%20optional%20environment%20variables%20to%20configure%20for%20production%20and%20customize%20the%20default%20behavior.%20See%20the%20full%20list%20in%20README&envLink=https%3A%2F%2Fgithub.com%2Fusevenice%2Fvenice%23environment-variables&project-name=my-venice&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fnext)
 
 ## Environment variables
@@ -17,3 +17,4 @@
 | `int_plaid__products`             | `Array<assets \| auth \| balance \| identity \| investments \| liabilities \| payment_initiation \| transactions \| credit_details \| income \| income_verification \| deposit_switch \| standing_orders \| transfer \| employment \| recurring_transactions> = ["transactions"]`                                                                                                                               |
 | `int_plaid__countryCodes`         | `Array<US \| GB \| ES \| NL \| FR \| IE \| CA \| DE \| IT> = ["US"]`                                                                                                                                                                                                                                                                                                                                            |
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de = "en"`                                                                                                                                                                                                                                                                                                                                                                             |
+
