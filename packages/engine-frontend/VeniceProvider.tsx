@@ -33,7 +33,7 @@ interface DialogConfig {
 
 const trpc = createReactQueryHooks<AnySyncRouter>()
 
-export const LSContext = React.createContext<{
+export const VeniceContext = React.createContext<{
   trpc: typeof trpc
   trpcClient: ReturnType<typeof trpc.createClient>
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
@@ -44,7 +44,7 @@ export const LSContext = React.createContext<{
   developerMode: boolean
 } | null>(null)
 
-export function LSProvider<
+export function VeniceProvider<
   T extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
@@ -78,7 +78,7 @@ export function LSProvider<
   })
   const developerMode = (isAdmin && _developerMode) || false
 
-  console.log('[LSProvider]', {
+  console.log('[VeniceProvider]', {
     ledgerId,
     isAdmin,
     accessToken,
@@ -121,7 +121,7 @@ export function LSProvider<
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <LSContext.Provider
+      <VeniceContext.Provider
         value={React.useMemo(
           () => ({
             trpc,
@@ -151,15 +151,15 @@ export function LSProvider<
             <dialogConfig.Component close={() => dialogRef.current?.close()} />
           </Dialog>
         )}
-      </LSContext.Provider>
+      </VeniceContext.Provider>
     </trpc.Provider>
   )
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-LSProvider.useContext = () => React.useContext(LSContext)!
+VeniceProvider.useContext = () => React.useContext(VeniceContext)!
 
-LSProvider.config = <
+VeniceProvider.config = <
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >(
@@ -168,7 +168,7 @@ LSProvider.config = <
 
 // TODO: Figure out how to work with NextJS SSR here
 // adding typeof withTRPC<Router> breaks prettier, let's figure it out...
-// const withLedgerSync = (options: Parameters<typeof withTRPC>[0]) =>
+// const withVenice = (options: Parameters<typeof withTRPC>[0]) =>
 //   withTRPC({
 //     ...options,
 //     // Improve typing to omit options.config.url, it is a noop

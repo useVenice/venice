@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
 
 import {
@@ -14,7 +14,7 @@ import {
 type WiseSyncOperation = typeof def['_opType']
 
 const def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('wise'),
   // integrationConfig: zWiseConfig,
   connectionSettings: z.object({
@@ -45,7 +45,7 @@ const def = makeSyncProvider.def({
 })
 
 export const wiseProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity

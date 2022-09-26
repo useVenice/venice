@@ -11,9 +11,9 @@ type _opt<T> = T | undefined
 
 /**
  * TODO: Narrow the type of AnyProviderDef to only those whose `sourceState`
- * and `destinationInputEntity` match the type needed for ledgerSync
+ * and `destinationInputEntity` match the type needed for venice
  */
-export const ledgerSyncProviderBase = <
+export const veniceProviderBase = <
   T extends AnyProviderDef,
   TSourceMapEntity extends _opt<
     // Simpler
@@ -34,7 +34,7 @@ export const ledgerSyncProviderBase = <
   extension: {sourceMapEntity: TSourceMapEntity},
 ) => makeSyncProvider({...makeSyncProvider.defaults, def, extension})
 
-ledgerSyncProviderBase.def = makeSyncProvider.def({
+veniceProviderBase.def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   sourceState: z
     .object({
@@ -48,11 +48,11 @@ ledgerSyncProviderBase.def = makeSyncProvider.def({
   destinationInputEntity: zEntityPayload,
 })
 
-export type LedgerSyncProvider = ReturnType<typeof ledgerSyncProviderBase>
+export type VeniceProvider = ReturnType<typeof veniceProviderBase>
 
-export function isLedgerSyncProvider(
+export function isVeniceProvider(
   provider: AnySyncProvider,
-): provider is LedgerSyncProvider {
+): provider is VeniceProvider {
   return typeof provider.extension === 'object' && provider.extension
     ? 'sourceMapEntity' in provider.extension
     : false

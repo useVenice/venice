@@ -1,5 +1,5 @@
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {
   A,
@@ -18,7 +18,7 @@ import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
 import {makeSplitwiseClient} from './SplitwiseClientNext'
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('splitwise'),
   connectionSettings: z.object({
     currentUser: zCurrentUser.nullish(),
@@ -41,7 +41,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const splitwiseProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,

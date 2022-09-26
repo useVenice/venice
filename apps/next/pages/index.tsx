@@ -1,4 +1,4 @@
-import {LSProvider} from '@ledger-sync/engine-frontend'
+import {VeniceProvider} from '@ledger-sync/engine-frontend'
 import {Container, EffectContainer, Loading} from '@ledger-sync/ui'
 
 import {Layout} from '../components/Layout'
@@ -7,7 +7,7 @@ import {AdminHomeScreen} from '../screens/AdminHomeScreen'
 
 export default function HomeScreen() {
   const router = useRouterPlus()
-  const {ledgerId, isAdmin} = LSProvider.useContext()
+  const {ledgerId, isAdmin} = VeniceProvider.useContext()
   if (isAdmin) {
     return (
       <Layout>

@@ -2,7 +2,7 @@ import React from 'react'
 import type Stripe from 'stripe'
 
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@ledger-sync/util'
 
 import {makeStripeClient, zStripeConfig} from './StripeClient'
@@ -12,7 +12,7 @@ type StripeEntity = z.infer<typeof def['sourceOutputEntity']>
 type StripeSyncOperation = typeof def['_opType']
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('stripe'),
   integrationConfig: zStripeConfig,
   connectionSettings: z.object({
@@ -40,7 +40,7 @@ const _def = makeSyncProvider.def({
       entity: zCast<Stripe.BalanceTransaction>(),
     }),
   ]),
-  sourceState: ledgerSyncProviderBase.def.sourceState
+  sourceState: veniceProviderBase.def.sourceState
     .removeDefault()
     .extend({
       transactionSyncCursor: z.string().nullish(),
@@ -50,7 +50,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const stripeProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: a.id,

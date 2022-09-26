@@ -46,7 +46,7 @@ jobs:
         run: pnpm run typecheck
 
       - name: Run health check
-        run: POSTGRES_URL=noop node --loader tsx ./bin/ledgerSync health
+        run: POSTGRES_URL=noop node --loader tsx ./bin/venice health
 
       - name: Generate assets required for lint
         run: pnpm --dir ./apps/next/ run generate:css

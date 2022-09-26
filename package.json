@@ -17,7 +17,7 @@
     "prepare": "husky install",
     "typecheck": "tsc --project . --noEmit",
     "validate": "run-s --silent typecheck lint test",
-    "ledgerSync": "tsx ./bin/ledgerSync",
+    "venice": "tsx ./bin/venice",
     "migration": "tsx ./apps/cli/pgMigrator-cli",
     "env:pull": "vercel env pull --environment production .env && vercel env pull --environment development .env.development"
   },

@@ -11,10 +11,10 @@ import type {
 } from '@ledger-sync/engine-backend'
 import {z} from '@ledger-sync/util'
 
-import {LSProvider} from './LSProvider'
+import {VeniceProvider} from './VeniceProvider'
 
-export type UseLedgerSyncOptions = z.infer<typeof zUseLedgerSyncOptions>
-export const zUseLedgerSyncOptions = z.object({
+export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
+export const zUseVeniceOptions = z.object({
   envName: zEnvName,
   /**
    * Wait to create concept of user / customer in service providers
@@ -28,14 +28,14 @@ export const zUseLedgerSyncOptions = z.object({
 })
 
 /** Non ledger-specific */
-export function useLedgerSyncAdmin({
+export function useVeniceAdmin({
   ledgerIdKeywords,
 }: {
   ledgerIdKeywords?: string
 }) {
   // Add a context for if user is in developer mode...
 
-  const {trpc, isAdmin, developerMode} = LSProvider.useContext()
+  const {trpc, isAdmin, developerMode} = VeniceProvider.useContext()
 
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
@@ -54,9 +54,9 @@ export function useLedgerSyncAdmin({
 /**
  * Ledger-specific
  */
-export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
+export function useVenice({envName, keywords}: UseVeniceOptions) {
   const {trpc, ledgerId, isAdmin, developerMode, queryClient} =
-    LSProvider.useContext()
+    VeniceProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
@@ -79,7 +79,7 @@ export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
-  const connect = useLedgerSyncConnect({envName})
+  const connect = useVeniceConnect({envName})
 
   return {
     ledgerId,
@@ -96,17 +96,17 @@ export function useLedgerSync({envName, keywords}: UseLedgerSyncOptions) {
 }
 
 /** Also ledger-specific */
-export function useLedgerSyncConnect({
+export function useVeniceConnect({
   envName,
   lazyUserCreation,
-}: UseLedgerSyncOptions) {
+}: UseVeniceOptions) {
   const {
     connectFnMapRef,
     trpcClient: client,
     trpc,
     queryClient,
     ledgerId,
-  } = LSProvider.useContext()
+  } = VeniceProvider.useContext()
   const integrationsRes = trpc.useQuery([
     'listIntegrations',
     {},
@@ -184,35 +184,26 @@ export function useLedgerSyncConnect({
         envName,
       }
       try {
-        console.log(`[useLedgerSyncConnect] ${int.id} Will connect`)
+        console.log(`[useVeniceConnect] ${int.id} Will connect`)
         const preConnRes = await queryClient.fetchQuery(preConnOpts([int, opt]))
-        console.log(
-          `[useLedgerSyncConnect] ${int.id} preConnnectRes`,
-          preConnRes,
-        )
+        console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const res = await connectFnMapRef.current?.[provider]?.(preConnRes, opt)
-        console.log(`[useLedgerSyncConnect] ${int.id} innerConnectRes`, res)
+        console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.mutation('postConnect', [res, int, opt])
-        console.log(
-          `[useLedgerSyncConnect] ${int.id} postConnectRes`,
-          postConRes,
-        )
+        console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
 
         void queryClient.invalidateQueries(['listConnections'])
 
-        console.log(`[useLedgerSyncConnect] ${int.id} Did connect`)
+        console.log(`[useVeniceConnect] ${int.id} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
-          console.log(`[useLedgerSyncConnect] ${int.id} Cancelled`)
+          console.log(`[useVeniceConnect] ${int.id} Cancelled`)
         } else {
-          console.error(
-            `[useLedgerSyncConnect] ${int.id} Connection failed`,
-            err,
-          )
+          console.error(`[useVeniceConnect] ${int.id} Connection failed`, err)
         }
       }
     },

@@ -1,6 +1,6 @@
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import type {StdCache} from '@ledger-sync/cdk-ledger'
-import {cachingLink, ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
+import {cachingLink, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {
   $writeFile,
@@ -24,13 +24,13 @@ export const zBeancountDestOptions = z.object({
 })
 
 const def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('beancount'),
   destinationState: zBeancountDestOptions,
 })
 
 export const beancountProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {sourceMapEntity: undefined}),
+  ...veniceProviderBase(def, {sourceMapEntity: undefined}),
   destinationSync: ({state: options}) =>
     cachingLink((cache) => fromCompletion(outputBeanFiles(cache, options))),
   sourceSync: undefined,

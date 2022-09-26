@@ -1,5 +1,5 @@
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {
   A,
@@ -43,7 +43,7 @@ const zSettings = zUserCreds.extend({
 })
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('yodlee'),
   integrationConfig: zConfig,
   connectionSettings: zSettings,
@@ -77,7 +77,7 @@ const _def = makeSyncProvider.def({
 export const yodleeProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const yodleeProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(yodleeProviderDef, {
+  ...veniceProviderBase(yodleeProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({
         id: `${a.id}`,
@@ -229,7 +229,7 @@ export const yodleeProvider = makeSyncProvider({
     }).generateAccessToken(loginName)
     return {accessToken}
   },
-  // Without closure we get type issues in ledgerSync.config.ts, not sure why
+  // Without closure we get type issues in venice.config.ts, not sure why
   // https://share.cleanshot.com/X3cQDA
   useConnectHook: (scope) => useYodleeConnect(scope),
   postConnect: async (

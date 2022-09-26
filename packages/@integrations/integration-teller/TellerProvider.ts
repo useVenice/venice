@@ -1,6 +1,6 @@
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, useScript} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import {A, identity, parseMoney, Rx, rxjs, z} from '@ledger-sync/util'
 
 import {
@@ -15,7 +15,7 @@ type TellerEntity = z.infer<typeof def['sourceOutputEntity']>
 type TellerSyncOperation = SyncOperation<TellerEntity>
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('teller'),
   integrationConfig: zTellerConfig,
   connectionSettings: z.object({
@@ -50,7 +50,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const tellerProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity

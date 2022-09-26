@@ -1,6 +1,6 @@
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase} from '@ledger-sync/cdk-ledger'
+import {veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {UnionToIntersection} from '@ledger-sync/util'
 import {Rx, rxjs, z} from '@ledger-sync/util'
 
@@ -63,7 +63,7 @@ const zConfig = z
   .nullish()
 
 const def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('import'),
   connectionSettings: z.object({
     preset: zPreset,
@@ -79,7 +79,7 @@ const def = makeSyncProvider.def({
 })
 
 export const importProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     // what do we do with the fact that conn has preset and entity itself has preset?
     sourceMapEntity: ({entity}, conn) =>
       formats[entity.preset].mapEntity(

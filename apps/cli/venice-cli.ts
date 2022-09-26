@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 // This import line gets frequently moved by vscode organize imports
-// and thus causing runtime failure... Therefore we moved it to the ledgerSync bin
+// and thus causing runtime failure... Therefore we moved it to the venice bin
 import '@ledger-sync/app-config/register.node'
 
 import http from 'node:http'
@@ -9,15 +9,11 @@ import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
 
-import {
-  ledgerSyncRouter,
-  syncEngine,
-} from '@ledger-sync/app-config/backendConfig'
+import {syncEngine, veniceRouter} from '@ledger-sync/app-config/backendConfig'
 import type {Id} from '@ledger-sync/cdk-core'
 import {parseWebhookRequest} from '@ledger-sync/engine-backend'
 import {kXLedgerId} from '@ledger-sync/engine-backend/auth-utils'
-import type {
-  NonEmptyArray} from '@ledger-sync/util';
+import type {NonEmptyArray} from '@ledger-sync/util'
 import {
   compact,
   fromMaybeArray,
@@ -37,7 +33,7 @@ if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
-export const cli = cliFromRouter(ledgerSyncRouter, {
+export const cli = cliFromRouter(veniceRouter, {
   cleanup: () => {}, // metaService.shutdown?
   context: syncEngine.zContext.parse<'typed'>({
     accessToken: process.env['ACCESS_TOKEN'],
@@ -75,7 +71,7 @@ cli
             req.body = ret.body // Still need this even for GET since we exhausted the stream otherwise handler will hang
           }
           return nodeHTTPRequestHandler({
-            router: ledgerSyncRouter,
+            router: veniceRouter,
             path: procedure,
             req,
             res,

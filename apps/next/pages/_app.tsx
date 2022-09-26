@@ -11,9 +11,9 @@ import {createWebStoragePersistor} from 'react-query/createWebStoragePersistor-e
 import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
 import {QueryParamProvider} from 'use-query-params'
 
-import {ledgerSyncCommonConfig} from '@ledger-sync/app-config/commonConfig'
+import {veniceCommonConfig} from '@ledger-sync/app-config/commonConfig'
 import type {Id} from '@ledger-sync/cdk-core'
-import {LSProvider} from '@ledger-sync/engine-frontend'
+import {VeniceProvider} from '@ledger-sync/engine-frontend'
 import {UIProvider} from '@ledger-sync/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
@@ -48,18 +48,18 @@ if (
 }
 
 /** Need this to be a separate function so we can have hooks... */
-function _LSProvider({children}: {children: React.ReactNode}) {
+function _VeniceProvider({children}: {children: React.ReactNode}) {
   const accessToken = useAtomValue(accessTokenAtom)
   const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr'] | undefined}
   return (
-    <LSProvider
+    <VeniceProvider
       queryClient={queryClient}
-      config={ledgerSyncCommonConfig}
+      config={veniceCommonConfig}
       accessToken={accessToken}
       developerMode={useAtomValue(developerModeAtom)}
       ledgerId={ledgerId}>
       {children}
-    </LSProvider>
+    </VeniceProvider>
   )
 }
 
@@ -68,15 +68,15 @@ export default function MyApp({Component, pageProps}: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>LedgerSync</title>
+        <title>Venice</title>
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
           <UIProvider>
-            <_LSProvider>
+            <_VeniceProvider>
               <Component {...pageProps} />
-            </_LSProvider>
+            </_VeniceProvider>
           </UIProvider>
         </QueryClientProvider>
       </QueryParamProvider>
