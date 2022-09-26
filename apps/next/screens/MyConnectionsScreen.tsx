@@ -1,7 +1,7 @@
 import {useAtomValue} from 'jotai'
 import {match} from 'ts-pattern'
 
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {useVenice} from '@ledger-sync/engine-frontend'
 import {Container, Loading} from '@ledger-sync/ui'
 
 import {envAtom} from '../contexts/atoms'
@@ -9,7 +9,7 @@ import {ConnectionCard} from './components/ConnectionCard'
 
 export function MyConnectionsScreen() {
   const env = useAtomValue(envAtom)
-  const {connectionsRes} = useLedgerSync({envName: env})
+  const {connectionsRes} = useVenice({envName: env})
   return (
     <Container className="flex-1 overflow-y-auto">
       {match(connectionsRes)

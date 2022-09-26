@@ -1,5 +1,5 @@
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {SerializedTimestamp} from '@ledger-sync/core-integration-firebase'
 import {
   firebaseProvider,
@@ -25,7 +25,7 @@ import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('foreceipt'),
   // integrationConfig: zForeceiptConfig,
   connectionSettings: z.object({
@@ -65,7 +65,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const foreceiptProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,

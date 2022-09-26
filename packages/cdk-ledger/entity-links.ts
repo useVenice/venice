@@ -27,8 +27,8 @@ import type {
   EntityPayloadWithExternal,
   StdSyncOperation,
 } from './entity-link-types'
-import {isLedgerSyncProvider} from './ledgerSyncProviderBase'
 import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
+import {isVeniceProvider} from './veniceProviderBase'
 
 // TODO: Can we use the `parsedConn` type here?
 export const mapStandardEntityLink = ({
@@ -40,8 +40,8 @@ export const mapStandardEntityLink = ({
   settings: any
   id: Id['conn'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> => {
-  if (!isLedgerSyncProvider(provider)) {
-    throw new Error('Expecting LedgerSyncProvider in mapStandardEntityLink')
+  if (!isVeniceProvider(provider)) {
+    throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
   }
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
@@ -141,7 +141,7 @@ export const cachingTransformLink = (
 
 /**
  * Used to workaround beancount limitation https://groups.google.com/g/beancount/c/PmkPVgLNKgg
- * Not ideal that we have to use LedgerSync link to workaround
+ * Not ideal that we have to use Venice link to workaround
  * beancount quirk. Maybe this should actually be a beancount plugin in python?
  * @see https://share.cleanshot.com/8AVFxc
  * We have two options instead

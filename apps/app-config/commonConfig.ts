@@ -1,4 +1,4 @@
-import {LSProvider} from '@ledger-sync/engine-frontend'
+import {VeniceProvider} from '@ledger-sync/engine-frontend'
 import {joinPath, zParser} from '@ledger-sync/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
@@ -14,7 +14,7 @@ const env = zParser(zCommonEnv).parse({
 // TODO: Removing providers we are not using so we don't have nearly as much code, at least on the frontend!
 // Further perhaps code from supported providers can be loaded dynamically based on
 // listIntegrations output.
-export const ledgerSyncCommonConfig = LSProvider.config({
+export const veniceCommonConfig = VeniceProvider.config({
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: PROVIDERS,
@@ -25,4 +25,4 @@ export const ledgerSyncCommonConfig = LSProvider.config({
   // parseJwtPayload // use default here
 })
 
-// console.log('Using config', ledgerSyncConfig) // Too verbose...
+// console.log('Using config', veniceConfig) // Too verbose...

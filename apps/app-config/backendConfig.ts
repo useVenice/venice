@@ -1,4 +1,3 @@
- 
 import {logLink, makeId, swapPrefix} from '@ledger-sync/cdk-core'
 import {
   addRemainderByDateLink,
@@ -8,11 +7,11 @@ import {
 } from '@ledger-sync/cdk-ledger'
 import {makePostgresMetaService} from '@ledger-sync/core-integration-postgres'
 import {makeSyncEngine} from '@ledger-sync/engine-backend'
-// console.log('Using config', ledgerSyncConfig) // Too verbose...
+// console.log('Using config', veniceConfig) // Too verbose...
 import {type inferProcedureInput} from '@ledger-sync/engine-backend'
 import {identity, joinPath, Rx, zParser} from '@ledger-sync/util'
 
-import {ledgerSyncCommonConfig} from './commonConfig'
+import {veniceCommonConfig} from './commonConfig'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
@@ -22,8 +21,8 @@ const env = zParser(zAllEnv).parseUnknown(process.env)
  * TODO: Separate it so that the entire config isn't constructed client side
  * and only the minimal needed methods are...
  */
-export const ledgerSyncBackendConfig = makeSyncEngine.config({
-  ...ledgerSyncCommonConfig,
+export const veniceBackendConfig = makeSyncEngine.config({
+  ...veniceCommonConfig,
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, ctx) =>
     joinPath(env.NEXT_PUBLIC_SERVER_URL, `ledgers/${ctx.ledgerId}`),
@@ -92,10 +91,9 @@ export const ledgerSyncBackendConfig = makeSyncEngine.config({
   }),
 })
 
-export const {router: ledgerSyncRouter, ...syncEngine} = makeSyncEngine(
-  ledgerSyncBackendConfig,
-)
-export type LedgerSyncRouter = typeof ledgerSyncRouter
-export type LedgerSyncInput = inferProcedureInput<
-  LedgerSyncRouter['_def']['mutations']['syncPipeline']
+export const {router: veniceRouter, ...syncEngine} =
+  makeSyncEngine(veniceBackendConfig)
+export type VeniceRouter = typeof veniceRouter
+export type VeniceInput = inferProcedureInput<
+  VeniceRouter['_def']['mutations']['syncPipeline']
 >[0]

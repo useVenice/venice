@@ -2,7 +2,7 @@ import {useAtom} from 'jotai'
 import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
-import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
+import {useVeniceAdmin} from '@ledger-sync/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,13 +28,9 @@ export interface LayoutProps {
   children: React.ReactNode
 }
 
-export function Layout({
-  title = 'LedgerSync',
-  links = [],
-  children,
-}: LayoutProps) {
+export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
   const [developerMode, setDeveloperMode] = useAtom(developerModeAtom)
-  const {adminSyncMeta, isAdmin, integrationsRes} = useLedgerSyncAdmin({})
+  const {adminSyncMeta, isAdmin, integrationsRes} = useVeniceAdmin({})
   // TODO: deduplicate me...
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined

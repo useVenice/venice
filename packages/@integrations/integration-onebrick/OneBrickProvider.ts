@@ -2,7 +2,7 @@ import React from 'react'
 
 import type {SyncOperation} from '@ledger-sync/cdk-core'
 import {makeSyncProvider, zId, zWebhookInput} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import {
   A,
   Deferred,
@@ -36,7 +36,7 @@ const zOneBrickWebhookBody = z.object({
 })
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('onebrick'),
   integrationConfig: zOneBrickConfig,
   connectionSettings: z.object({accessToken: z.string()}),
@@ -61,7 +61,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const oneBrickProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
-import {ledgerSyncProviderBase, makePostingsMap} from '@ledger-sync/cdk-ledger'
+import {makePostingsMap, veniceProviderBase} from '@ledger-sync/cdk-ledger'
 import type {Standard} from '@ledger-sync/standard'
 import {A, Deferred, identity, Rx, rxjs, z} from '@ledger-sync/util'
 
@@ -14,7 +14,7 @@ import {
 type TogglSyncOperation = typeof def['_opType']
 
 const def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('toggl'),
   // integrationConfig: zTogglConfig,
   connectInput: z.object({
@@ -45,7 +45,7 @@ const def = makeSyncProvider.def({
 })
 
 export const togglProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity

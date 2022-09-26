@@ -14,9 +14,9 @@ import {
   zWebhookInput,
 } from '@ledger-sync/cdk-core'
 import {
-  ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
+  veniceProviderBase,
 } from '@ledger-sync/cdk-ledger'
 import type {IAxiosError, RequiredOnly} from '@ledger-sync/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@ledger-sync/util'
@@ -39,7 +39,7 @@ import {
 } from './PlaidClient'
 
 const _def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
   integrationConfig: zPlaidClientConfig.extend({
@@ -76,7 +76,7 @@ const _def = makeSyncProvider.def({
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
   }),
   /** "Manually" extending for now, this will get better / safer */
-  sourceState: ledgerSyncProviderBase.def.sourceState
+  sourceState: veniceProviderBase.def.sourceState
     .removeDefault()
     .extend({
       transactionSyncCursor: z.string().nullish(),
@@ -99,7 +99,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const plaidProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({
         id: 'account_id' in a ? a.account_id : a.id,

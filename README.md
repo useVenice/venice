@@ -131,13 +131,13 @@ Couple things you can try:
 
 ```bash
 # Sync a connection
-pnpm run ledgerSync syncConnection --id $connectionId
+pnpm run venice syncConnection --id $connectionId
 
 # Sync pipeline
-pnpm run ledgerSync syncPipeline --src.id $connectionId --dest.provider fs --dest.settings.basePath ./data
+pnpm run venice syncPipeline --src.id $connectionId --dest.provider fs --dest.settings.basePath ./data
 
 # Sync pipeline by fully specifying all source & destination settings
-pnpm run ledgerSync syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
+pnpm run venice syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
 ```
 
 ## FAQs

@@ -420,8 +420,8 @@ export function makeSyncProvider<
   // MARK: - Synchronization
 
   /**
-   * Can be either provider initiated or ledgerSync initiated
-   * LedgerSync initiated (may not explicitly complete)
+   * Can be either provider initiated or venice initiated
+   * Venice initiated (may not explicitly complete)
    *   - Previusly iterateEntities. Filter for `ready` event to complete initial sync
    *     in case the sync is listen based rather than poll based (e.g. watchChanges)
    * Provider initiated (always completes)
@@ -431,7 +431,7 @@ export function makeSyncProvider<
   sourceSync: TSrcSync
 
   /**
-   * Always ledgerSync initiated. Handles a list of operations and may also emit
+   * Always venice initiated. Handles a list of operations and may also emit
    * progress events. `ready` event lets engine know that it may terminate if needed
    */
   destinationSync: TDestSync

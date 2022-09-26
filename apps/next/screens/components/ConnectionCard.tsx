@@ -10,7 +10,7 @@ import {
 import {twMerge} from 'tailwind-merge'
 
 import type {EnvName, ZStandard} from '@ledger-sync/cdk-core'
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {useVenice} from '@ledger-sync/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +42,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     deleteConnection,
     checkConnection,
     developerMode,
-  } = useLedgerSync({envName: env})
+  } = useVenice({envName: env})
   return (
     <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
       <div className="card-body space-y-4">

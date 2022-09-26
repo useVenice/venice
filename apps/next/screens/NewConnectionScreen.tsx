@@ -5,7 +5,7 @@ import {match} from 'ts-pattern'
 
 import type {EnvName} from '@ledger-sync/cdk-core'
 import {zEnvName} from '@ledger-sync/cdk-core'
-import {useLedgerSync} from '@ledger-sync/engine-frontend'
+import {useVenice} from '@ledger-sync/engine-frontend'
 import {
   Container,
   Loading,
@@ -34,7 +34,7 @@ export function NewConnectionScreen() {
     connect: _connect,
     developerMode,
     ...ls
-  } = useLedgerSync({envName, keywords})
+  } = useVenice({envName, keywords})
 
   const connect = React.useCallback(
     (...args: Parameters<typeof _connect>) => {

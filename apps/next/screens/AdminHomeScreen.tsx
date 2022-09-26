@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {match} from 'ts-pattern'
 
-import {useLedgerSyncAdmin} from '@ledger-sync/engine-frontend'
+import {useVeniceAdmin} from '@ledger-sync/engine-frontend'
 import {Container, Loading} from '@ledger-sync/ui'
 
 import {useRouterPlus} from '../contexts/atoms'
@@ -10,7 +10,7 @@ import {LedgerCard} from './components/LedgerCard'
 export function AdminHomeScreen() {
   const router = useRouterPlus()
   const [ledgerId, setLedgerId] = useState('')
-  const {ledgerIdsRes} = useLedgerSyncAdmin({ledgerIdKeywords: ledgerId})
+  const {ledgerIdsRes} = useVeniceAdmin({ledgerIdKeywords: ledgerId})
   return (
     <Container className="flex-1 overflow-y-auto">
       <div className="mx-auto flex w-full max-w-3xl flex-col">

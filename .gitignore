@@ -29,7 +29,7 @@ yarn-error.log*
 .env*
 !.env.example
 
-# symlinked for working with ledgerSyncFS
+# symlinked for working with veniceFS
 /data
 
 # vercel

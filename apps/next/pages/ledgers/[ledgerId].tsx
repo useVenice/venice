@@ -1,7 +1,7 @@
 import {useAtomValue} from 'jotai'
 import Head from 'next/head'
 
-import {LSProvider} from '@ledger-sync/engine-frontend'
+import {VeniceProvider} from '@ledger-sync/engine-frontend'
 
 import {Layout} from '../../components/Layout'
 import {modeAtom} from '../../contexts/atoms'
@@ -10,11 +10,11 @@ import {NewConnectionScreen} from '../../screens/NewConnectionScreen'
 
 export default function LedgerPage() {
   const mode = useAtomValue(modeAtom)
-  const {ledgerId} = LSProvider.useContext()
+  const {ledgerId} = VeniceProvider.useContext()
   return (
     <>
       <Head>
-        <title>LedgerSync | {ledgerId}</title>
+        <title>Venice | {ledgerId}</title>
       </Head>
 
       <Layout

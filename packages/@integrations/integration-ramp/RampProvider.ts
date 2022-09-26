@@ -2,9 +2,9 @@ import React from 'react'
 
 import {makeSyncProvider} from '@ledger-sync/cdk-core'
 import {
-  ledgerSyncProviderBase,
   makePostingsMap,
   makeStandardId,
+  veniceProviderBase,
 } from '@ledger-sync/cdk-ledger'
 import {
   A,
@@ -29,7 +29,7 @@ type RampSrcSyncOptions = z.infer<typeof def['sourceState']>
 type RampSyncOperation = typeof def['_opType']
 
 const def = makeSyncProvider.def({
-  ...ledgerSyncProviderBase.def,
+  ...veniceProviderBase.def,
   name: z.literal('ramp'),
   connectionSettings: z.object({
     accessToken: z.string().nullish(),
@@ -66,7 +66,7 @@ const def = makeSyncProvider.def({
 })
 
 export const rampProvider = makeSyncProvider({
-  ...ledgerSyncProviderBase(def, {
+  ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: a.id,
