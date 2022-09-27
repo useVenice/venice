@@ -243,7 +243,8 @@ export const makeSyncEngine = <
         settings: src.settings,
         // Maybe we should rename `options` to `state`?
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
-        state: opts.fullResync ? undefined : rest.sourceState,
+        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
+        state: opts.fullResync ? {} : rest.sourceState,
       })
 
     const source$ = opts.source$
@@ -257,7 +258,8 @@ export const makeSyncEngine = <
       dest.integration.provider.destinationSync?.({
         config: dest.integration.config,
         settings: dest.settings,
-        state: opts.fullResync ? undefined : rest.destinationState,
+        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
+        state: opts.fullResync ? {} : rest.destinationState,
       })
 
     if (!source$) {
