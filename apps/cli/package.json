@@ -10,6 +10,7 @@
     "@usevenice/core-integration-postgres": "*",
     "@usevenice/engine-backend": "*",
     "@usevenice/integration-beancount": "*",
+    "@usevenice/integration-lunchmoney": "*",
     "@usevenice/integration-onebrick": "*",
     "@usevenice/integration-plaid": "*",
     "@usevenice/integration-postgres": "*",

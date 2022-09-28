@@ -8,6 +8,7 @@ import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {importProvider} from '@usevenice/integration-import'
+import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {oneBrickProvider} from '@usevenice/integration-onebrick'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
@@ -68,6 +69,7 @@ export const PROVIDERS = [
   // Ledger
   beancountProvider,
   importProvider,
+  lunchmoneyProvider,
   oneBrickProvider,
   tellerProvider,
   stripeProvider,

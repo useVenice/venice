@@ -13,6 +13,7 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../packages/@integrations/integration-beancount'),
   path.resolve(__dirname, '../../packages/@integrations/integration-foreceipt'),
   path.resolve(__dirname, '../../packages/@integrations/integration-import'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-lunchmoney'),
   path.resolve(__dirname, '../../packages/@integrations/integration-onebrick'),
   path.resolve(__dirname, '../../packages/@integrations/integration-plaid'),
   path.resolve(__dirname, '../../packages/@integrations/integration-postgres'),

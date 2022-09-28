@@ -131,6 +131,7 @@ importers:
       '@usevenice/integration-beancount': '*'
       '@usevenice/integration-foreceipt': '*'
       '@usevenice/integration-import': '*'
+      '@usevenice/integration-lunchmoney': '*'
       '@usevenice/integration-onebrick': '*'
       '@usevenice/integration-plaid': '*'
       '@usevenice/integration-postgres': '*'
@@ -167,6 +168,7 @@ importers:
       '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
       '@usevenice/integration-foreceipt': link:../../packages/@integrations/integration-foreceipt
       '@usevenice/integration-import': link:../../packages/@integrations/integration-import
+      '@usevenice/integration-lunchmoney': link:../../packages/@integrations/integration-lunchmoney
       '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
       '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
       '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
@@ -200,6 +202,7 @@ importers:
       '@usevenice/core-integration-postgres': '*'
       '@usevenice/engine-backend': '*'
       '@usevenice/integration-beancount': '*'
+      '@usevenice/integration-lunchmoney': '*'
       '@usevenice/integration-onebrick': '*'
       '@usevenice/integration-plaid': '*'
       '@usevenice/integration-postgres': '*'
@@ -224,6 +227,7 @@ importers:
       '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
       '@usevenice/engine-backend': link:../../packages/engine-backend
       '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
+      '@usevenice/integration-lunchmoney': link:../../packages/@integrations/integration-lunchmoney
       '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
       '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
       '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
@@ -468,6 +472,23 @@ importers:
       xlsx: 0.17.5
     devDependencies:
       '@types/papaparse': 5.3.5
+
+  packages/@integrations/integration-lunchmoney:
+    specifiers:
+      '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
+      react: '*'
+    dependencies:
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
+      react: 17.0.2
+    devDependencies:
+      '@types/react': 17.0.39
 
   packages/@integrations/integration-onebrick:
     specifiers:
