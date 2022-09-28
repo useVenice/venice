@@ -21,6 +21,7 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../packages/@integrations/integration-stripe'),
   path.resolve(__dirname, '../../packages/@integrations/integration-teller'),
   path.resolve(__dirname, '../../packages/@integrations/integration-toggl'),
+  path.resolve(__dirname, '../../packages/@integrations/integration-venmo'),
   path.resolve(__dirname, '../../packages/@integrations/integration-wise'),
   path.resolve(__dirname, '../../packages/@integrations/integration-yodlee'),
   path.resolve(__dirname, '../../packages/@utils/accounting'),

@@ -139,6 +139,7 @@ importers:
       '@usevenice/integration-stripe': '*'
       '@usevenice/integration-teller': '*'
       '@usevenice/integration-toggl': '*'
+      '@usevenice/integration-venmo': '*'
       '@usevenice/integration-wise': '*'
       '@usevenice/integration-yodlee': '*'
       '@usevenice/util': '*'
@@ -174,6 +175,7 @@ importers:
       '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
       '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
       '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
+      '@usevenice/integration-venmo': link:../../packages/@integrations/integration-venmo
       '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
       '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
       '@usevenice/util': link:../../packages/@utils/util
@@ -205,6 +207,7 @@ importers:
       '@usevenice/integration-stripe': '*'
       '@usevenice/integration-teller': '*'
       '@usevenice/integration-toggl': '*'
+      '@usevenice/integration-venmo': '*'
       '@usevenice/integration-wise': '*'
       '@usevenice/integration-yodlee': '*'
       '@usevenice/standard': '*'
@@ -228,6 +231,7 @@ importers:
       '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
       '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
       '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
+      '@usevenice/integration-venmo': link:../../packages/@integrations/integration-venmo
       '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
       '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
       '@usevenice/standard': link:../../packages/@utils/standard
@@ -594,6 +598,23 @@ importers:
       '@usevenice/standard': '*'
       '@usevenice/util': '*'
       react: 17.0.2
+    dependencies:
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
+      react: 17.0.2
+    devDependencies:
+      '@types/react': 17.0.39
+
+  packages/@integrations/integration-venmo:
+    specifiers:
+      '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
+      react: '*'
     dependencies:
       '@usevenice/cdk-core': link:../../cdk-core
       '@usevenice/cdk-ledger': link:../../cdk-ledger

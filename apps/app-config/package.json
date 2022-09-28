@@ -32,6 +32,7 @@
     "@usevenice/integration-stripe": "*",
     "@usevenice/integration-teller": "*",
     "@usevenice/integration-toggl": "*",
+    "@usevenice/integration-venmo": "*",
     "@usevenice/integration-wise": "*",
     "@usevenice/integration-yodlee": "*",
     "@usevenice/util": "*",

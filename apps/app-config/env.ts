@@ -16,6 +16,7 @@ import {splitwiseProvider} from '@usevenice/integration-splitwise'
 import {stripeProvider} from '@usevenice/integration-stripe'
 import {tellerProvider} from '@usevenice/integration-teller'
 import {togglProvider} from '@usevenice/integration-toggl'
+import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
@@ -77,6 +78,7 @@ export const PROVIDERS = [
 
   splitwiseProvider,
   postgresProvider,
+  venmoProvider,
 ] as const
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
