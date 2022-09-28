@@ -76,7 +76,9 @@ Here are 5 ways you can use Venice, each built on a layer below:
 - Embeddable portal (Beta).
 - Theme-able React components (Planned).
 - Headless React components (Planned).
-- HTTP API (trpc Alpha, OpenAPI planned).
+- Stateful HTTP API (trpc Alpha, OpenAPI planned).
+- Stateless HTTP API where you handle your own persistence (Planned)
+- TypeScript core library that runs on every platform that JS does (Planned)
 
 ## Getting started
 
