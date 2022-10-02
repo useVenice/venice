@@ -646,6 +646,23 @@ importers:
     devDependencies:
       '@types/react': 17.0.39
 
+  packages/@integrations/integration-saltedge:
+    specifiers:
+      '@types/react': '*'
+      '@usevenice/cdk-core': '*'
+      '@usevenice/cdk-ledger': '*'
+      '@usevenice/standard': '*'
+      '@usevenice/util': '*'
+      react: '*'
+    dependencies:
+      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/standard': link:../../@utils/standard
+      '@usevenice/util': link:../../@utils/util
+      react: 17.0.2
+    devDependencies:
+      '@types/react': 17.0.39
+
   packages/@integrations/integration-splitwise:
     specifiers:
       '@types/react': 17.0.39
