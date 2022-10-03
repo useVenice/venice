@@ -1,7 +1,7 @@
 import type {NoInfer, ObjectPartialDeep} from '@usevenice/util'
 
 import type {Id, IDS} from './id.types'
-import type {ZRaw, zRaw} from './meta.types'
+import type {ZRaw} from './meta.types'
 
 export interface MetaTable<
   TID extends string = string,
@@ -23,7 +23,7 @@ export interface MetaTable<
   delete(id: TID): Promise<void>
 }
 
-interface LedgerIdResultRow {
+export interface LedgerIdResultRow {
   id: Id['ldgr']
   connectionCount?: number
   firstCreatedAt?: unknown
@@ -34,6 +34,10 @@ export interface MetaService {
   tables: {
     [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
   }
+  // TODO: Make the following methods optional
+  // and default to dumb listing all rows from table and in memory filter
+  // if the corresponding methods are not implemented
+  // This is useful for things like memory
   searchLedgerIds: (options: {
     keywords?: string | null
     limit?: number

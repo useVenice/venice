@@ -42,7 +42,8 @@ export const zCommonEnv = zEnvVars({
 export const zBackendEnv = zEnvVars({
   POSTGRES_URL: z
     .string()
-    .describe('Primary database used for metadata and user data storage'),
+    .describe('Primary database used for metadata and user data storage')
+    .optional(),
   JWT_SECRET_OR_PUBLIC_KEY: z
     .string()
     .trim()

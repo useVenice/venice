@@ -1,4 +1,4 @@
-import {logLink, makeId, swapPrefix} from '@usevenice/cdk-core'
+import {logLink, makeId, noopMetaService, swapPrefix} from '@usevenice/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -26,7 +26,9 @@ export const veniceBackendConfig = makeSyncEngine.config({
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, ctx) =>
     joinPath(env.NEXT_PUBLIC_SERVER_URL, `ledgers/${ctx.ledgerId}`),
-  metaService: makePostgresMetaService({databaseUrl: env.POSTGRES_URL}),
+  metaService: env.POSTGRES_URL
+    ? makePostgresMetaService({databaseUrl: env.POSTGRES_URL})
+    : noopMetaService,
   // TODO: support other config service such as fs later...
   linkMap: {renameAccount: renameAccountLink, log: logLink},
   // Integrations shall include `config`.
@@ -83,6 +85,7 @@ export const veniceBackendConfig = makeSyncEngine.config({
   getDefaultPipeline: (conn) => ({
     id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),
     source: conn,
+    // TODO: Support non-postgres default destination here...
     destination: {
       id: 'conn_postgres',
       // Add validation here? and perhaps migration too
