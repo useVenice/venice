@@ -39,8 +39,8 @@ export const zInput = (() => {
     institution: institution.optional(),
   })
   const pipeline = zRaw.pipeline.extend({
-    source: connection.optional(),
-    destination: connection.optional(),
+    source: connection.partial().optional(),
+    destination: connection.partial().optional(),
     watch: z.boolean().optional(),
   })
   return {provider, institution, integration, connection, pipeline}
