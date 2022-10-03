@@ -1,6 +1,6 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, compact, parseMoney, Rx, rxjs, z} from '@usevenice/util'
+import {A, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   assetSchema,
@@ -42,7 +42,7 @@ export const lunchmoneyProvider = makeSyncProvider({
         entity:
           a._type === 'asset'
             ? {
-                name: compact([a.display_name, a.name]).join(' '),
+                name: R.compact([a.display_name, a.name]).join(' '),
                 institutionName: a.institution_name,
                 informationalBalances: {
                   current: A(parseMoney(a.balance), a.currency.toUpperCase()),
@@ -77,11 +77,11 @@ export const lunchmoneyProvider = makeSyncProvider({
             main: {
               accountExternalId: `${
                 t.asset_id ?? t.plaid_account_id
-              }` as Id.external,
+              }` as ExternalId,
               amount: A(parseMoney(t.amount), t.currency.toUpperCase()),
             },
             remainder: {
-              accountExternalId: `${t.category_id}` as Id.external,
+              accountExternalId: `${t.category_id}` as ExternalId,
               // TODO: Make this logic better, shouldn't infer something is `main` just because it has external id
               type: 'category',
             },

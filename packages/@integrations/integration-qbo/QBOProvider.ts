@@ -63,7 +63,7 @@ function mapQboAccountType(a: QBO.Account) {
 }
 /** Prefix id with realmId to get id global within QBO provider */
 function globalId(realmId: string, entityId: string) {
-  return `${realmId}_${entityId}` as Id.external
+  return `${realmId}_${entityId}` as ExternalId
 }
 
 export const QBOProvider = makeSyncProvider({

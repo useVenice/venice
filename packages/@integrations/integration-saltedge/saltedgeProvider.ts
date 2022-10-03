@@ -5,7 +5,7 @@ import {
   A,
   DateTime,
   objectFromObject,
-  pick,
+  R,
   Rx,
   rxjs,
   startCase,
@@ -23,7 +23,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('saltedge'),
   integrationConfig: zConfig,
-  connectionSettings: zCast<SaltEdge.Connection & {_id: Id.external}>(),
+  connectionSettings: zCast<SaltEdge.Connection & {_id: ExternalId}>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -113,7 +113,7 @@ export const saltedgeProvider = makeSyncProvider({
             CACHED_CATEGORIES_MAP.personal[t.category] ?? startCase(t.category),
           postingsMap: makePostingsMap({
             main: {
-              accountExternalId: t.account_id as Id.external,
+              accountExternalId: t.account_id as ExternalId,
               amount: A(t.amount, t.currency_code),
             },
           }),
@@ -134,7 +134,7 @@ export const saltedgeProvider = makeSyncProvider({
           saltedgeProviderDef._opData('account', a.id, {
             ...a,
             _balancesMap: {
-              [DateTime.utc().toISODate()]: pick(a, [
+              [DateTime.utc().toISODate()]: R.pick(a, [
                 'balance',
                 'currency_code',
               ]),

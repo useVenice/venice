@@ -1,5 +1,6 @@
 import type {Standard} from '@usevenice/standard'
-import {A} from '@usevenice/util'
+import type {DateTime} from '@usevenice/util'
+import {A, parseDateTime} from '@usevenice/util'
 
 export function signFromTransaction(
   txn: Venmo.Transaction,
@@ -91,7 +92,7 @@ export function postingsFromTransaction(
   const sign = signFromTransaction(txn, currentUserId)
   const txnAmount = A(txn.amount * sign, 'USD')
 
-  const accountExternalId = currentUserId as Id.external
+  const accountExternalId = currentUserId as ExternalId
   const postings: Standard.PostingsMap = {
     main: {
       amount: txnAmount,
@@ -168,3 +169,23 @@ export function postingsFromTransaction(
 export function formatFundingSource(src: Venmo.FundingSource) {
   return src.last_four ? `${src.name} ·· ${src.last_four}` : src.name
 }
+
+export function catchAsNull<T>(fn: () => T | null) {
+  try {
+    return fn()
+  } catch {
+    return null
+  }
+}
+
+export function parseOptionalDateTime(value: PossibleDate | null | undefined) {
+  return catchAsNull(() => (value ? parseDateTime(value) : null))
+}
+
+export type PossibleDate =
+  | string // Assume ISO
+  | Date // JS Date
+  | DateTime // Luxon Date
+// TODO: Need to check two types below since it's from old code
+// | number // Assume millis since epoch
+// | {seconds: number; nanoseconds: number} // Firestore timestamp

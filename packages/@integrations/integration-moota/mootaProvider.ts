@@ -61,7 +61,7 @@ export const mootaProvider = makeSyncProvider({
           ),
           postingsMap: makePostingsMap({
             main: {
-              accountExternalId: t.bank_id as Id.external,
+              accountExternalId: t.bank_id as ExternalId,
               amount:
                 t.type === 'CR'
                   ? A(Number.parseFloat(t.amount), 'IDR')

@@ -1,14 +1,15 @@
-import type {HTTPError, HTTPRequestConfig} from '@usevenice/util'
+import type {HTTPError, HTTPRequestConfig, MPDate} from '@usevenice/util'
 import {
   $makeProxyAgent,
   createHTTPClient,
   DateTime,
   getDefaultProxyAgent,
   parseDateTime,
-  parseOptionalDateTime,
   z,
   zFunction,
 } from '@usevenice/util'
+
+import {parseOptionalDateTime} from './venmo-helpers'
 
 export const zConfig = z.object({
   v1BaseURL: z.string().nullish(),
@@ -165,7 +166,7 @@ export const makeVenmoClient = zFunction([zConfig, zCreds], (config, creds) => {
         earliestDate = parseDateTime(currentUser.user.date_joined)
       }
       // Eliminate any effect of timezones by expanding the date range by 1 day
-      earliestDate = earliestDate.minus({days: 1}).startOf('day')
+      earliestDate = earliestDate?.minus({days: 1}).startOf('day') as MPDate
       // A transaction that happened at 7:30pm Feb 9 PT is actually considered 2/10
       // by Venmo in the statement API because of UTC, which handles dates differently
       // compare to feeds
