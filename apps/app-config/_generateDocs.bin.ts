@@ -83,7 +83,7 @@ const deployButton = makeVercelDeployButton({
   'root-directory': 'apps/next',
   'project-name': 'my-venice',
   env: [
-    'POSTGRES_URL',
+    'POSTGRES_OR_WEBHOOK_URL',
     'int_plaid__clientId',
     'int_plaid__secrets__sandbox',
     'JWT_SECRET_OR_PUBLIC_KEY',

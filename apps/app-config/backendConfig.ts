@@ -16,6 +16,8 @@ import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
+const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
+
 /**
  * This requires the env vars to exist...
  * TODO: Separate it so that the entire config isn't constructed client side
@@ -26,8 +28,8 @@ export const veniceBackendConfig = makeSyncEngine.config({
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, ctx) =>
     joinPath(env.NEXT_PUBLIC_SERVER_URL, `ledgers/${ctx.ledgerId}`),
-  metaService: env.POSTGRES_URL
-    ? makePostgresMetaService({databaseUrl: env.POSTGRES_URL})
+  metaService: usePg
+    ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
     : noopMetaService,
   // TODO: support other config service such as fs later...
   linkMap: {renameAccount: renameAccountLink, log: logLink},
@@ -79,18 +81,20 @@ export const veniceBackendConfig = makeSyncEngine.config({
           ),
           logLink({prefix: 'preDest'}),
         ],
-  // Default destination connection, may contain integration data
-  // Default destination will have to be computed at runtime based on the current
-  // user id for example. Will sort this later
+  // When do we perform migration?
   getDefaultPipeline: (conn) => ({
     id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),
     source: conn,
-    // TODO: Support non-postgres default destination here...
-    destination: {
-      id: 'conn_postgres',
-      // Add validation here? and perhaps migration too
-      settings: {databaseUrl: env.POSTGRES_URL},
-    },
+    // TODO: Make me parsable from env vars
+    destination: usePg
+      ? {
+          id: 'conn_postgres',
+          settings: {databaseUrl: env.POSTGRES_OR_WEBHOOK_URL},
+        }
+      : {
+          id: 'conn_webhook',
+          settings: {destinationUrl: env.POSTGRES_OR_WEBHOOK_URL},
+        },
   }),
 })
 

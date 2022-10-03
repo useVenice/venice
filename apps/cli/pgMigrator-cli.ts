@@ -4,5 +4,5 @@ import {makePostgresClient} from '@usevenice/core-integration-postgres'
 import {z} from '@usevenice/util'
 
 void makePostgresClient({
-  databaseUrl: z.string().parse(process.env['POSTGRES_URL']),
+  databaseUrl: z.string().parse(process.env['POSTGRES_OR_WEBHOOK_URL']),
 }).runMigratorCli()
