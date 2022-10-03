@@ -1,5 +1,6 @@
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture}.{ts,tsx}"}
 export * from './base-links'
+export * from './DebugProvider'
 export * from './frontend-utils'
 export * from './id.types'
 export * from './kvStore'

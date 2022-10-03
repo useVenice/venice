@@ -9,6 +9,7 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../packages/@integrations/core-integration-mongodb'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-postgres'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-redis'),
+  path.resolve(__dirname, '../../packages/@integrations/core-integration-webhook'),
   path.resolve(__dirname, '../../packages/@integrations/integration-beancount'),
   path.resolve(__dirname, '../../packages/@integrations/integration-foreceipt'),
   path.resolve(__dirname, '../../packages/@integrations/integration-import'),

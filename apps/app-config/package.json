@@ -18,6 +18,7 @@
     "@usevenice/core-integration-mongodb": "*",
     "@usevenice/core-integration-postgres": "*",
     "@usevenice/core-integration-redis": "*",
+    "@usevenice/core-integration-webhook": "*",
     "@usevenice/engine-backend": "*",
     "@usevenice/engine-frontend": "*",
     "@usevenice/integration-beancount": "*",
