@@ -201,7 +201,11 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
         ),
     ),
 
-    /** Teller does not seem to have an institution endpoint. So we will do this for now */
+    /**
+     * Teller institution endpoint does not seem to be documented AND doesn't return
+     * any logo urls of the institutions as of Sep 28, 2022. https://api.teller.io/institutions
+     * So we will do this for now
+     */
     getInstitutions: zFunction([], z.array(zInstitution), () => {
       const list = institutionsWsResponse.response.diff[6][0][0].d as Array<
         [string, string, string, string]
