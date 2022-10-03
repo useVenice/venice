@@ -57,9 +57,11 @@ if (require.main === module) {
     }),
     jwt: () =>
       makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY!}),
-    pg: () => makePostgresClient({databaseUrl: env().POSTGRES_URL}),
+    pg: () => makePostgresClient({databaseUrl: env().POSTGRES_OR_WEBHOOK_URL}),
     pgMeta: () =>
-      makePostgresMetaService({databaseUrl: env().POSTGRES_URL}) as {},
+      makePostgresMetaService({
+        databaseUrl: env().POSTGRES_OR_WEBHOOK_URL,
+      }) as {},
     plaid: () => makePlaidClient(intConfig('plaid')),
     onebrick: () => makeOneBrickClient(intConfig('onebrick')),
     teller: () => makeTellerClient(intConfig('teller')),
