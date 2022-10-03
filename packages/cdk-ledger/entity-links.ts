@@ -172,7 +172,7 @@ export const mapAccountNameAndTypeLink = () =>
       for (const post of R.pipe(txn.postingsMap ?? {}, R.values, R.compact)) {
         const acct =
           post.accountId &&
-          draft.account[post.accountId as unknown as Id.external]
+          draft.account[post.accountId as unknown as ExternalId]
         post.accountName = acct?.name ?? post.accountName
         post.accountType = acct?.type ?? post.accountType
       }
@@ -214,9 +214,9 @@ export const addRemainderByDateLink = transformTransactionLink((txn) => {
     for (const amount of AM.toAmounts(AM.omitZeros(am))) {
       const sAmounts = A.splitNearEqually(amount, 1) // For now
       for (const [i, amt] of sAmounts.entries()) {
-        const postKey = `remainder___${date}___${amount.unit}_${i}` as Id.post
+        const postKey = `remainder___${date}___${amount.unit}_${i}` as PostingId
         postingsMap[postKey] = {
-          accountId: '_acct_transfer_in_transit' as Id.acct,
+          accountId: '_acct_transfer_in_transit' as AccountId,
           amount: A.invert(amt),
           date,
         }
@@ -255,13 +255,13 @@ export function _makeMergedTransactions(
 ) {
   return objectEntries(txnsByTransferId).map(
     // TODO: Make SetRequired type work
-    ([transferId, txns]): Standard.Transaction & {id: Id.txn} => {
+    ([transferId, txns]): Standard.Transaction & {id: TransactionId} => {
       const postings = txns.flatMap((t, i) =>
         R.toPairs(t.postingsMap ?? {}).map(([key, post]) => ({
           ...post,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           accountId: post.accountId!,
-          key: `${i}-${key}` as Id.post,
+          key: `${i}-${key}` as PostingId,
           custom: {...post.custom, transaction_id: t.id},
         })),
       )
@@ -278,7 +278,7 @@ export function _makeMergedTransactions(
 
       // Not technically correct, but for heck for now.
       // We are ignoring impact of dates and not merging metadata for instance...
-      const mergedId = `txn_${transferId}` as Id.txn
+      const mergedId = `txn_${transferId}` as TransactionId
       return {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         ...txns[0]!,

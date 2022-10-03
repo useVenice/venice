@@ -376,10 +376,10 @@ export const convTransaction = conv<
   Standard.Transaction
 >({
   forward: ([beanTxn]) => ({
-    // Rethink whether this should be Id.external in the case of beancount as a source
+    // Rethink whether this should be ExternalId in the case of beancount as a source
     id: beanTxn.meta?.['id']
-      ? (`${beanTxn.meta['id']}` as Id.txn)
-      : (temp_makeId('txn', beanTxn.hash) as Id.txn),
+      ? (`${beanTxn.meta['id']}` as TransactionId)
+      : (temp_makeId('txn', beanTxn.hash) as TransactionId),
     date: beanTxn.date, // Parse time component?
     description: beanTxn.narration,
     payee: beanTxn.payee,
@@ -475,14 +475,14 @@ const convWrappedEntry = conv<
           ...convAccountFullName(w.entry.account),
           openDate: w.entry.date,
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta['id']}` as Id.acct)
+            ? (`${w.entry.meta['id']}` as AccountId)
             : undefined,
         })
       case 'Commodity':
         return stdTypeAndEntity('commodity', {
           unit: convCurrency(w.entry.currency),
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta['id']}` as Id.comm)
+            ? (`${w.entry.meta['id']}` as CommodityId)
             : undefined,
         })
       case 'Price': {

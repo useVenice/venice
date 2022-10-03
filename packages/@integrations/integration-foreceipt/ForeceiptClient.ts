@@ -36,7 +36,7 @@ const zSettings = z.discriminatedUnion('role', [
 export const zForeceiptConfig = z.object({
   credentials: zCast<Readonly<Foreceipt.Credentials>>(),
   options: zCast<ForeceiptClientOptions>(),
-  _id: zCast<Id.external>(),
+  _id: zCast<ExternalId>(),
   envName: z.enum(['staging', 'production']),
 })
 

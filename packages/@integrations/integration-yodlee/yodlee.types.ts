@@ -101,7 +101,7 @@ export const zYodleeTransaction = z.object({
 })
 
 export type YodleeAccount = z.infer<typeof zYodleeAccount> & {
-  _id: Id.external
+  _id: ExternalId
   _balancesMap?: Record<
     ISODate,
     {

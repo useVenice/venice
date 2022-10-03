@@ -12,7 +12,7 @@ export const _parseAccounts = (
     | undefined
   return (
     accountSettings?.accounts.map((a) => ({
-      _id: `${connData._id}-${a.id}` as Id.external,
+      _id: `${connData._id}-${a.id}` as ExternalId,
       data: a,
     })) ?? []
   )

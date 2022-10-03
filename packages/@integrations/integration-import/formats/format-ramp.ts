@@ -92,7 +92,7 @@ export const rampFormat = makeImportFormat({
     // Confirmed that Ramp is UTC
     const clearingDate = row['Clearing Time']
     return {
-      id: row['External ID'] as Id.external,
+      id: row['External ID'] as ExternalId,
       entityName: 'transaction',
       entity: {
         // Defaulting to transactionDate could break the logic for balance assertions

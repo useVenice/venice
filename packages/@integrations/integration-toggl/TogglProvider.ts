@@ -67,7 +67,7 @@ export const togglProvider = makeSyncProvider({
             description: data.entity.description ?? '',
             postingsMap: makePostingsMap({
               main: {
-                accountExternalId: `${data.entity.workspace_id}` as Id.external,
+                accountExternalId: `${data.entity.workspace_id}` as ExternalId,
                 amount: A(data.entity.duration ?? 0, 'Second' as Unit),
               },
             }),

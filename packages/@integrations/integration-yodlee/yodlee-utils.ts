@@ -72,7 +72,7 @@ export function parseAccountData(
 ): YodleeAccount {
   return {
     ...a,
-    _id: `${a.id}` as Id.external,
+    _id: `${a.id}` as ExternalId,
     _balancesMap: {
       [DateTime.utc().toISODate()]: {
         balances: pick(a, [

@@ -94,7 +94,7 @@ export const oneBrickProvider = makeSyncProvider({
             // TODO: Check how merchant_id maps to payee
             postingsMap: makePostingsMap({
               main: {
-                accountExternalId: data.entity.account_id as Id.external,
+                accountExternalId: data.entity.account_id as ExternalId,
                 amount: A(
                   data.entity.amount * (t.direction === 'in' ? 1 : -1),
                   (data.entity.account_currency ?? 'IDR') as Unit,

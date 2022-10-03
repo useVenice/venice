@@ -21,10 +21,9 @@ import {
 import type {
   DurationObjectUnits,
   IAxiosError,
-  RequiredOnly} from '@usevenice/util';
-import {
-  DateTime
+  RequiredOnly,
 } from '@usevenice/util'
+import {DateTime} from '@usevenice/util'
 import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {
@@ -130,7 +129,7 @@ export const plaidProvider = makeSyncProvider({
       transaction: ({entity: t}) => {
         const curr = plaidUnitForCurrency(t)
         const currencyAmount = A(-1 * (t.amount ?? 0), curr)
-        const accountExternalId = t.account_id as Id.external
+        const accountExternalId = t.account_id as ExternalId
         if (isInvestmentTransaction(t)) {
           return {
             id: t.investment_transaction_id,
@@ -147,7 +146,7 @@ export const plaidProvider = makeSyncProvider({
           entity: {
             date: t.date,
             pendingTransactionExternalId:
-              t.pending_transaction_id as Id.external | null,
+              t.pending_transaction_id as ExternalId | null,
             description: t.name || '',
             payee: t.merchant_name ?? undefined,
             postingsMap: makePostingsMap({
@@ -156,7 +155,7 @@ export const plaidProvider = makeSyncProvider({
                   'acct',
                   def.name.value,
                   accountExternalId,
-                ) as Id.acct,
+                ) as AccountId,
                 accountExternalId,
                 amount: currencyAmount,
               },

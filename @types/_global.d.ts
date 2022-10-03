@@ -13,6 +13,14 @@ declare type MathExpression = BrandedString<'MathExpression'>
 declare type MixedPrecisionDateExpression =
   BrandedString<'MixedPrecisionDateExpression'>
 
+declare type ExternalId = BrandedString<'ExternalId'>
+declare type UserId = BrandedString<'UserId'>
+declare type LedgerId = BrandedString<'LedgerId'>
+declare type AccountId = BrandedString<'AccountId'>
+declare type CommodityId = BrandedString<'CommodityId'>
+declare type TransactionId = BrandedString<'TransactionId'>
+declare type PostingId = BrandedString<'PostingId'>
+
 // MARK: - Utility types
 
 // TODO: Revise once https://github.com/microsoft/TypeScript/pull/33290 lands

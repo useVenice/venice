@@ -31,7 +31,7 @@ const _def = makeSyncProvider.def({
   connectionSettings: z.object({
     credentials: zCast<Readonly<Foreceipt.Credentials>>(),
     options: zCast<ForeceiptClientOptions>(),
-    _id: zCast<Id.external>(),
+    _id: zCast<ExternalId>(),
     envName: z.enum(['staging', 'production']),
   }),
   connectInput: zForeceiptConfig,
@@ -56,7 +56,7 @@ const _def = makeSyncProvider.def({
         >
       >(),
       info: zCast<
-        | ({_id?: Id.external} & ReturnType<typeof _parseConnectionInfo>)
+        | ({_id?: ExternalId} & ReturnType<typeof _parseConnectionInfo>)
         | undefined
       >(),
     }),
@@ -107,7 +107,7 @@ export const foreceiptProvider = makeSyncProvider({
             removed: t.status === 'Deleted',
             postingsMap: makePostingsMap({
               main: {
-                accountExternalId: `${c?._id}-${t.account_id}` as Id.external,
+                accountExternalId: `${c?._id}-${t.account_id}` as ExternalId,
                 amount: A(
                   (t.type === makeForeceiptClient(_extConn).EXPENSE_TYPE ||
                   t.type === makeForeceiptClient(_extConn).TRANSFER_TYPE
@@ -119,7 +119,7 @@ export const foreceiptProvider = makeSyncProvider({
               remainder: {
                 accountExternalId:
                   t.type === makeForeceiptClient(_extConn).TRANSFER_TYPE
-                    ? (`${c?._id}-${t.account1_id}` as Id.external)
+                    ? (`${c?._id}-${t.account1_id}` as ExternalId)
                     : undefined,
                 accountType: ((): Standard.AccountType => {
                   switch (t.type) {

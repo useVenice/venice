@@ -14,6 +14,12 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+  },
   "[tailwindcss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -26,12 +32,6 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "[sql]": {
-    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
-  },
   "css.validate": false,
   "editor.insertSpaces": true,
   "editor.quickSuggestions": {
@@ -40,8 +40,8 @@
   "editor.rulers": [80],
   "editor.tabSize": 2,
   "files.associations": {
-    "venice": "typescript",
-    ".env.*": "properties"
+    ".env.*": "properties",
+    "venice": "typescript"
   },
   "highlight.regexes": {
     "(// ?(?:FIXME|HACK):?)(.*)": [
@@ -69,12 +69,13 @@
       }
     ]
   },
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "js/ts.implicitProjectConfig.checkJs": true,
   "markJump.strictLimit": "disable",
-  "tailwindCSS.experimental.configFile": "apps/next/tailwind.config.js",
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
-  "typescript.tsdk": "./node_modules/typescript/lib",
   "search.exclude": {
     "**/*.generated": true
-  }
+  },
+  "tailwindCSS.experimental.configFile": "apps/next/tailwind.config.js",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }

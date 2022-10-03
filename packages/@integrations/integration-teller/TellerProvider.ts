@@ -86,7 +86,7 @@ export const tellerProvider = makeSyncProvider({
             payee: data.entity.details.counterparty.name,
             postingsMap: makePostingsMap({
               main: {
-                accountExternalId: data.entity.account_id as Id.external,
+                accountExternalId: data.entity.account_id as ExternalId,
                 // TODO: Need to store `accounts` within `connection` so that
                 // we can look up the proper currency as transactions themselves
                 // do not contain currency.

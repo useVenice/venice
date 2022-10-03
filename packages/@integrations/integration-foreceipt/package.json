@@ -10,7 +10,6 @@
     "@usevenice/cdk-core": "*",
     "@usevenice/cdk-ledger": "*",
     "@usevenice/core-integration-firebase": "*",
-    "@usevenice/id": "*",
     "@usevenice/standard": "*",
     "@usevenice/util": "*",
     "firebase": "9.8.1",

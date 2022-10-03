@@ -46,7 +46,7 @@ export type AccountSubtype =
 export type Icon = {emoji: string; url?: never} | {emoji?: never; url: string}
 
 export interface Account<TBalance extends Balance = Balance> {
-  id?: Id.acct | null
+  id?: AccountId | null
   /** e.g. `Chase Checking` */
   name: string
   icon?: Icon | null
@@ -87,7 +87,7 @@ export interface Account<TBalance extends Balance = Balance> {
 
 export interface Transaction<TPosting extends Posting = Posting> {
   /** May not have prefix in practice... */
-  id?: Id.txn | null
+  id?: TransactionId | null
   // TODO: Move `date` to be optional fields on postings rather
   // than on transactions
   // TODO: Evaluate using different dates for `is` posting vs `bs` posting
@@ -122,7 +122,7 @@ export interface Transaction<TPosting extends Posting = Posting> {
   externalStatus?: 'pending' | 'cancelled' | BrandedString<'externalStatus'>
   postingsMap?: PostingsMap<TPosting> | null
   /** https://support.plaid.com/hc/en-us/articles/360008271814-Pending-transaction-overview */
-  pendingTransactionExternalId?: Id.external | null
+  pendingTransactionExternalId?: ExternalId | null
 
   labelsMap?: LabelsMap | null
   attachmentsMap?: AttachmentsMap | null
@@ -154,7 +154,7 @@ export type CommodityType =
   | BrandedString<'CommodityType'>
 
 export interface Commodity<TPrice = Price> {
-  id?: Id.comm | null
+  id?: CommodityId | null
   /** symbol. `USD` */
   unit: Unit
   /** `US Dollar` */
@@ -241,11 +241,11 @@ export interface Posting<
   // This should technically be called `acountId` however
   // that would conflict with Raw.Posting, oh well...
   /** Not sure to me whether we really should be using this, but oh well. */
-  accountId?: Id.acct | null
+  accountId?: AccountId | null
   // TODO: Should we turn these into an actual
   // `Account` field?
-  /** Maps to accountId?: Id.acct */
-  accountExternalId?: Id.external | null
+  /** Maps to accountId?: AccountId */
+  accountExternalId?: ExternalId | null
   /** Chase Checking */
   accountName?: string | null
   accountType?: AccountType | null
@@ -410,9 +410,9 @@ export interface JSONExport {
     defaultUnit?: Unit | null
   }
   entities: TypeAndEntity[]
-  // account: Record<Id.external, Standard.Account>
-  // transaction: Record<Id.external, Standard.Transaction>
-  // commodity: Record<Id.external, Standard.Commodity>
+  // account: Record<ExternalId, Standard.Account>
+  // transaction: Record<ExternalId, Standard.Transaction>
+  // commodity: Record<ExternalId, Standard.Commodity>
 }
 
 export type TypeAndEntity =

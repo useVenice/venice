@@ -19,7 +19,7 @@ export function makeImportFormat<
   // TODO: Figure out where to get accountExternalId from
   mapEntity: (
     row: z.infer<ZRowSchema>,
-    accountExternalId: Id.external,
+    accountExternalId: ExternalId,
   ) => EntityPayload
 }) {
   return format
