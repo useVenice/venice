@@ -138,11 +138,14 @@ Couple things you can try:
 pnpm run venice syncConnection --id $connectionId
 
 # Sync pipeline
-pnpm run venice syncPipeline --src.id $connectionId --dest.provider fs --dest.settings.basePath ./data
+pnpm run venice syncPipeline --source.id $connectionId --destination.id conn_fs --destination.settings.basePath ./data
 
 # Sync pipeline by fully specifying all source & destination settings
-pnpm run venice syncPipeline --src.provider plaid --src.settings.accessToken $accessToken --dest.provider fs --dest.settings.basePath ./data
+pnpm run venice syncPipeline --source.id conn_plaid --source.settings.accessToken $accessToken --destination.id conn_fs --destination.settings.basePath ./data
 ```
+
+Tips
+- Use [`shdotenv`](https://github.com/ko1nksm/shdotenv) to load env vars from .env files
 
 ## FAQs
 
