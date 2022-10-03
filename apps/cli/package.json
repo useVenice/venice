@@ -9,7 +9,6 @@
     "@usevenice/core-integration-firebase": "*",
     "@usevenice/core-integration-postgres": "*",
     "@usevenice/engine-backend": "*",
-    "@usevenice/id": "*",
     "@usevenice/integration-beancount": "*",
     "@usevenice/integration-onebrick": "*",
     "@usevenice/integration-plaid": "*",

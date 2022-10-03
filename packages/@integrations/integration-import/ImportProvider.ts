@@ -85,7 +85,7 @@ export const importProvider = makeSyncProvider({
       formats[entity.preset].mapEntity(
         // A bit of a type hack... but needed
         entity.row as UnionToIntersection<typeof entity['row']>,
-        conn.accountExternalId as Id.external,
+        conn.accountExternalId as ExternalId,
       ),
   }),
   sourceSync: ({settings, state}) =>

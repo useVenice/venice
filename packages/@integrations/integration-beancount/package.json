@@ -9,7 +9,6 @@
   "dependencies": {
     "@usevenice/cdk-core": "*",
     "@usevenice/cdk-ledger": "*",
-    "@usevenice/id": "*",
     "@usevenice/standard": "*",
     "@usevenice/util": "*"
   },

@@ -144,7 +144,7 @@ export const yodleeProvider = makeSyncProvider({
         },
       }),
       transaction: ({entity: t}) => {
-        const accountExternalId = `${t.accountId}` as Id.external
+        const accountExternalId = `${t.accountId}` as ExternalId
         const sign = t.baseType === 'DEBIT' ? -1 : 1
         const currAmount = A(t.amount.amount * sign, t.amount.currency)
 

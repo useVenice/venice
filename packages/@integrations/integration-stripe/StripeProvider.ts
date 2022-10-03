@@ -76,7 +76,7 @@ export const stripeProvider = makeSyncProvider({
           description: t.description ?? '',
           postingsMap: makePostingsMap({
             main: {
-              accountExternalId: t.source as Id.external,
+              accountExternalId: t.source as ExternalId,
               amount: A(t.amount, t.currency as Unit),
             },
           }),

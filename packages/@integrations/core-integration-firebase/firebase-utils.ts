@@ -226,32 +226,32 @@ export function unwrapDocumentSnapshot<T>(snap: AnyDocumentSnapshot<T>) {
 }
 
 export function idsForRef(ref: AnyDocumentReference) {
-  // .parent = `/ledgers/<Id.ldgr>/<collectionName>` or `/users/<Id.usr>/<collectionName>`
-  // .parent.parent = `/ledgers/<Id.ldgr>` or `/users/<Id.usr>`
+  // .parent = `/ledgers/<LedgerId>/<collectionName>` or `/users/<UserId>/<collectionName>`
+  // .parent.parent = `/ledgers/<LedgerId>` or `/users/<UserId>`
   // .parent.parent.parent = `/ledgers` or `/users`
   const ledgerOrUserRef = ref.parent.parent
   if (ledgerOrUserRef?.parent.id === 'users') {
     return {
-      id: ref.id as Id.AnySimple,
-      userId: ledgerOrUserRef.id as Id.usr,
+      id: ref.id,
+      userId: ledgerOrUserRef.id as UserId,
     }
   }
   if (ledgerOrUserRef?.parent.id === 'ledgers') {
     return {
-      id: ref.id as Id.AnySimple,
-      ledgerId: ledgerOrUserRef.id as Id.ldgr,
+      id: ref.id,
+      ledgerId: ledgerOrUserRef.id as LedgerId,
     }
   }
-  return {id: ref.id as Id.AnySimple}
+  return {id: ref.id}
 }
 
 export function idsForPath(path: string) {
   const segments = path.split('/')
   if (segments.length > 2 && segments[0] === 'users' && segments[1]) {
-    return {userId: segments[1] as Id.usr}
+    return {userId: segments[1] as UserId}
   }
   if (segments.length > 2 && segments[0] === 'ledgers' && segments[1]) {
-    return {ledgerId: segments[1] as Id.ldgr}
+    return {ledgerId: segments[1] as LedgerId}
   }
   return {}
 }

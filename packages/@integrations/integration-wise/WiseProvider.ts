@@ -68,7 +68,7 @@ export const wiseProvider = makeSyncProvider({
             description: t.details.reference ?? '',
             postingsMap: makePostingsMap({
               main: {
-                accountExternalId: (data.entity.quoteUuid ?? '') as Id.external,
+                accountExternalId: (data.entity.quoteUuid ?? '') as ExternalId,
                 amount: A(
                   data.entity.sourceValue ?? 0,
                   (data.entity.sourceCurrency ?? 'USD') as Unit,

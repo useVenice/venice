@@ -14,7 +14,7 @@ export class RowIdMaker {
       prefix++
     }
     this.ids.add(id)
-    return id as Id.external
+    return id as ExternalId
   }
 
   // Hashing json of the row is not a reliable way to determine duplicate transactions
@@ -25,20 +25,17 @@ export class RowIdMaker {
       const row = _row as Record<string, unknown>
       const id = row['id'] ?? row['Id'] ?? row['ID']
       if (id) {
-        return id as Id.external
+        return id as ExternalId
       }
     }
     return makeUlid()
   }
   // Use this for Coin Keeper Format
   static uniqueIdForAccount(
-    accountExternalId: Id.external,
+    accountExternalId: ExternalId,
     name: string | null,
   ) {
-    let id = extractExternalId(
-      accountExternalId as unknown as Id.AnySimple,
-      'csv',
-    )
+    let id = extractExternalId(accountExternalId, 'csv')
     if (id) {
       console.warn('Unexpected accountExternalId', accountExternalId)
     } else {
@@ -47,6 +44,6 @@ export class RowIdMaker {
     if (name == null) {
       return id
     }
-    return md5Hash(`${id}_${name}`) as Id.external
+    return md5Hash(`${id}_${name}`) as ExternalId
   }
 }
