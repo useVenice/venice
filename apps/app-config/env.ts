@@ -4,6 +4,7 @@ import {firebaseProvider} from '@usevenice/core-integration-firebase'
 import {fsProvider} from '@usevenice/core-integration-fs'
 import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
+import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {importProvider} from '@usevenice/integration-import'
@@ -62,6 +63,7 @@ export const PROVIDERS = [
   mongodbProvider,
   corePostgresProvider,
   airtableProvider,
+  webhookProvider,
   // Ledger
   beancountProvider,
   importProvider,
