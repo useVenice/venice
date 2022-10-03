@@ -1,8 +1,6 @@
 import type {MaybePromise} from '@usevenice/util'
-import {identity} from '@usevenice/util'
-import {castIs, z} from '@usevenice/util'
+import {castIs, identity, z} from '@usevenice/util'
 
-import {logLink} from './base-links'
 import type {ExternalId, Id} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {EnvName, ZStandard} from './meta.types'
