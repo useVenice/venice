@@ -16,20 +16,32 @@ export const webhookProvider = makeSyncProvider({
   def: webhookProviderDef,
   destinationSync: ({settings: {destinationUrl}}) => {
     const http = createHTTPClient({baseURL: destinationUrl})
-    let entities: Array<
-      typeof webhookProviderDef['_types']['destinationInputEntity']
-    > = []
+    let batch = {
+      connUpdates: [] as unknown[],
+      stateUpdates: [] as unknown[],
+      entities: [] as Array<
+        typeof webhookProviderDef['_types']['destinationInputEntity']
+      >,
+    }
 
     return handlersLink({
       data: (op) => {
-        entities.push(op.data)
+        batch.entities.push(op.data)
+        return rxjs.of(op)
+      },
+      connUpdate: (op) => {
+        batch.connUpdates.push(op)
+        return rxjs.of(op)
+      },
+      stateUpdate: (op) => {
+        batch.stateUpdates.push(op)
         return rxjs.of(op)
       },
       commit: async (op) => {
-        if (entities.length > 0) {
-          await http.post('', {entities})
-          // Add retries here...
-          entities = []
+        if (Object.values(batch).some((arr) => arr.length > 0)) {
+          await http.post('', batch)
+          // Add queuing and retries here...
+          batch = {connUpdates: [], stateUpdates: [], entities: []}
         }
         return op
       },
