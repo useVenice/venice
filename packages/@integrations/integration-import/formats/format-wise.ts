@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 
 import {makePostingsMap} from '@usevenice/standard'
-import {A, compact, DateTime, parseMoney, zCast} from '@usevenice/util'
+import {A, DateTime, parseMoney, R, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'
 import {RowIdMaker} from '../RowIdMaker'
@@ -71,7 +71,7 @@ export const formatWise = makeImportFormat({
       entityName: 'transaction',
       entity: {
         date: DateTime.fromFormat(row.Date, 'dd-MM-yy').toISODate(),
-        description: compact([
+        description: R.compact([
           // feeQuantity > 0 && '[Reversal]',
           row['Payment Reference'],
           row.Description,
@@ -80,7 +80,7 @@ export const formatWise = makeImportFormat({
           row['Payee Name'] ?? row['Payer Name'],
           row['Payee Account Number'] && `(${row['Payee Account Number']})`,
         ].join(' '),
-        notes: compact([
+        notes: R.compact([
           row['Exchange From'] &&
             row['Exchange To'] &&
             row['Exchange Rate'] &&

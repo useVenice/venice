@@ -16,7 +16,7 @@ import {
   TabList,
   Tabs,
 } from '@usevenice/ui'
-import {compact} from '@usevenice/util'
+import {R} from '@usevenice/util'
 
 import {InstitutionLogo} from '../components/InstitutionLogo'
 import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
@@ -138,9 +138,11 @@ export function NewConnectionScreen() {
                                 </span>
 
                                 <span className="text-sm">
-                                  {compact([ins.id, int.id, ins.envName]).join(
-                                    ':',
-                                  )}
+                                  {R.compact([
+                                    ins.id,
+                                    int.id,
+                                    ins.envName,
+                                  ]).join(':')}
                                 </span>
                               </div>
 

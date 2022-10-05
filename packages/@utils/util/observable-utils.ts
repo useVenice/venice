@@ -2,7 +2,6 @@ import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
 
 import {Deferred, withConcurrency} from './promise-utils'
-import type {NonVoid} from './type-utils'
 
 export {rxjs, Rx}
 
@@ -34,7 +33,6 @@ export function operateForEach<T, U>(
  * Inspiration from
  * https://stackoverflow.com/questions/57045892/rxjs-mergemap-with-original-order
  */
-
 export function mapAsync<T, U>(
   fn: (value: T, index: number) => Promise<U>,
   concurrency?: number,
@@ -111,10 +109,10 @@ export const fromCompletion = <T = never>(
 
 export const fromNonVoid = <T>(
   promise: Promise<T>,
-): rxjs.Observable<NonVoid<T>> =>
+): rxjs.Observable<Exclude<T, undefined>> =>
   rxjs
     .from(promise) // void returns as undefined
-    .pipe(Rx.filter((v): v is NonVoid<typeof v> => v !== undefined))
+    .pipe(Rx.filter((v): v is Exclude<typeof v, undefined> => v !== undefined))
 
 // Not clear to me why the observable equivalent does not work
 // https://share.cleanshot.com/SICrdY. Oh well...

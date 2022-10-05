@@ -1,7 +1,7 @@
 import type {SyncOperation} from '@usevenice/cdk-core'
 import {makeSyncProvider, useScript} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, identity, parseMoney, Rx, rxjs, z} from '@usevenice/util'
+import {A, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   accountTellerSchema,
@@ -201,4 +201,4 @@ export const tellerProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<TellerSyncOperation> = identity
+const _op: typeof R.identity<TellerSyncOperation> = R.identity

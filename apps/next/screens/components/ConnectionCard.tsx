@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@usevenice/ui'
-import {formatDate, sentenceCase} from '@usevenice/util'
+import {formatDateTime, sentenceCase} from '@usevenice/util'
 
 import {InstitutionLogo} from '../../components/InstitutionLogo'
 import {envAtom} from '../../contexts/atoms'
@@ -183,7 +183,10 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
               {conn.syncInProgress
                 ? 'Syncing…'
                 : conn.lastSyncCompletedAt
-                ? `Synced ${formatDate(conn.lastSyncCompletedAt, 'relative')}`
+                ? `Synced ${
+                    formatDateTime(conn.lastSyncCompletedAt, 'relative') ??
+                    'recently'
+                  }`
                 : 'Never synced yet'}
             </span>
           </div>

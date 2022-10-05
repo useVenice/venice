@@ -1,16 +1,29 @@
-import {createCustomEqual, deepEqual, shallowEqual} from 'fast-equals'
+import * as R from 'remeda'
+import type {DeepMergeLeafURI} from 'deepmerge-ts'
+import {deepmergeCustom} from 'deepmerge-ts'
+import {createCustomEqual, deepEqual} from 'fast-equals'
 import {
+  invert as _invert,
   isEmpty as _isEmpty,
   isPlainObject as _isPlainObject,
-  pickBy as _pickBy,
 } from 'lodash'
-import {invert as _invert} from 'lodash'
-import {omit as _omit, pick as _pick, compact} from 'remeda'
-import {mergeDeep as _deepMerge} from 'timm'
 
-import {R} from './data-utils'
 import {math} from './math-utils'
 import type {AnyRecord, Invert, ObjectPartialDeep} from './type-utils'
+
+export {
+  circularDeepEqual,
+  deepEqual,
+  sameValueZeroEqual,
+  shallowEqual,
+} from 'fast-equals'
+export {get as getAt, set as setAt} from 'shvl'
+
+export const deepMerge = deepmergeCustom<{
+  DeepMergeArraysURI: DeepMergeLeafURI
+}>({
+  mergeArrays: false,
+})
 
 export const floatingDeepEqual = createCustomEqual(
   (_deepEqual) => (a, b, meta) => {
@@ -20,16 +33,6 @@ export const floatingDeepEqual = createCustomEqual(
     return _deepEqual(a, b, meta)
   },
 )
-
-/** Shallow partial */
-export function shallowPartialDeepEqual<T extends Record<string, unknown>>(
-  _obj: T,
-  _matching: Partial<T>,
-): boolean {
-  const obj = shallowOmitUndefined(_obj)
-  const matching = shallowOmitUndefined(_matching)
-  return deepEqual(pick(obj, Object.keys(matching)), matching)
-}
 
 /**
  * Works *mostly* like https://jestjs.io/docs/expect#tomatchobjectobject
@@ -87,127 +90,22 @@ export function deepPartialDeepEqual<
   return true
 }
 
-// export const partialDeepEqual = createCustomEqual(
-//   (_deepEqual) => (a, b, meta) => {
-//     if (typeof a === 'number' && typeof b === 'number') {
-//       return math.equals(a, b)
-//     }
-//     return _deepEqual(a, b, meta)
-//   },
-// )
-
-export type DiffComparator =
-  | ((a: unknown, b: unknown) => boolean)
-  | 'shallowEqual'
-  | 'deepEqual'
-
-type ChangeOf<T> =
-  | {
-      type: 'added'
-      key: keyof T
-      value: T[keyof T]
-      prevValue?: undefined
-    }
-  | {
-      type: 'updated'
-      key: keyof T
-      value: T[keyof T]
-      prevValue: T[keyof T]
-    }
-  | {
-      type: 'removed'
-      key: keyof T
-      value?: undefined
-      prevValue: T[keyof T]
-    }
-export interface DiffOf<T> {
-  // Keys
-  added: Array<keyof T>
-  updated: Array<keyof T>
-  removed: Array<keyof T>
-  unchanged: Array<keyof T>
-
-  // Good stuff
-  changes: Array<ChangeOf<T>>
-}
-
-export function shallowDiff<T extends Record<string, unknown>>(
-  a: T,
-  b: T,
-  _compare?: DiffComparator,
-) {
-  const diff: DiffOf<T> = {
-    added: [],
-    updated: [],
-    removed: [],
-    unchanged: [],
-    changes: [],
-  }
-
-  const compare =
-    _compare === 'shallowEqual'
-      ? shallowEqual
-      : _compare === 'deepEqual'
-      ? deepEqual
-      : !_compare
-      ? (a1: unknown, b1: unknown) => a1 === b1
-      : _compare
-
-  for (const key of new Set([...objectKeys(a), ...objectKeys(b)])) {
-    if (key in b && !(key in a)) {
-      diff.added.push(key)
-      diff.changes.push({type: 'added', key, value: b[key] as T[keyof T]})
-    } else if (key in a && !(key in b)) {
-      diff.removed.push(key)
-      diff.changes.push({type: 'removed', key, prevValue: a[key] as T[keyof T]})
-    } else if (!compare(a[key], b[key])) {
-      diff.updated.push(key)
-      diff.changes.push({
-        type: 'updated',
-        key,
-        prevValue: a[key] as T[keyof T],
-        value: b[key] as T[keyof T],
-      })
-    } else {
-      diff.unchanged.push(key)
-    }
-  }
-  return diff
-}
-
 export function isPlainObject<T extends Record<string, unknown>>(
   value: unknown | T,
 ): value is T {
   return _isPlainObject(value)
 }
 
-export function deepMerge<T extends AnyRecord>(
-  ...args: [(T | null)?, ...Array<Partial<T> | null | undefined>]
-): T {
-  const objs = compact(args) as [T, ...Array<Partial<T>>]
-  return objs.length === 0
-    ? (undefined as unknown as T) // Not technically correct...
-    : (_deepMerge(...objs) as T)
+/** Mostly safe workaround. @see https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript */
+export function objectKeys<T extends object>(obj: T): Array<keyof T> {
+  return Object.keys(obj) as Array<keyof T>
 }
 
-/** Strictly typed version of lodash/omit */
-export function omit<T extends AnyRecord, K extends keyof T>(
-  obj: T | null | undefined,
-  keys: K[],
-) {
-  return _omit((obj ?? {}) as T, keys)
-}
-
-/** Strictly typed version of lodash/pick */
-export function pick<T extends AnyRecord, K extends keyof T>(
-  obj: T | null | undefined,
-  keys: K[],
-) {
-  return _pick((obj ?? {}) as T, keys)
-}
-
-export function pickNonNull<T extends AnyRecord>(obj: T) {
-  return _pickBy(obj, (val): val is NonNullable<typeof val> => val != null) as T
+/** Mostly safe workaround. @see https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript */
+export function objectEntries<T extends object>(
+  obj: T,
+): Array<[keyof T, T[keyof T]]> {
+  return Object.entries(obj) as Array<[keyof T, T[keyof T]]>
 }
 
 export function shallowOmitUndefined<T extends AnyRecord>(input: T): T {
@@ -355,44 +253,6 @@ export function arrayFromObject<T, U = T>(
   return items
 }
 
-/** Mostly safe workaround. @see https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript */
-export function objectKeys<T extends object>(obj: T): Array<keyof T> {
-  return Object.keys(obj) as Array<keyof T>
-}
-
-/** Mostly safe workaround. @see https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript */
-export function objectEntries<T extends object>(
-  obj: T,
-): Array<[keyof T, T[keyof T]]> {
-  return Object.entries(obj) as Array<[keyof T, T[keyof T]]>
-}
-
-/**
- * @returns Technically Partial<T> but that makes it hard to use in practice.
- * So we will let it slide
- */
-export function filterObject<T extends object>(
-  obj: T,
-  fn: (key: keyof T, value: T[keyof T]) => boolean,
-): T {
-  const out = {} as T
-  for (const [key, value] of objectEntries(obj)) {
-    if (fn(key, value)) {
-      out[key] = value
-    }
-  }
-  return out
-}
-
-type Falsy = null | undefined | false | '' | 0
-
-// items: readonly (T | null | undefined | false | '' | 0)[]
-export function compactObject<T extends object>(obj: T) {
-  return filterObject(obj, (_, value) => !!value) as {
-    [k in keyof T]: Exclude<T[k], Falsy>
-  }
-}
-
 /** Very useful together wth immer and optional values */
 export function setDefault<T extends object, K extends keyof T>(
   obj: T,
@@ -405,22 +265,6 @@ export function setDefault<T extends object, K extends keyof T>(
   obj[key] = value
   return value
 }
-
-export {default as deepClone} from 'fast-copy'
-export {
-  circularDeepEqual,
-  circularShallowEqual,
-  createCustomEqual,
-  deepEqual,
-  sameValueZeroEqual,
-  shallowEqual,
-} from 'fast-equals'
-export {flattie} from 'flattie'
-export {isEmpty, omitBy, pickBy, setWith as setAtWith} from 'lodash'
-export {default as diff} from 'microdiff'
-export {nestie} from 'nestie'
-export {mapKeys, mapValues, mergeAll} from 'remeda'
-export {get as getAt, set as setAt} from 'shvl'
 
 export function invert<T extends Record<keyof T, keyof any>>(obj: T) {
   return _invert(obj) as Invert<T>

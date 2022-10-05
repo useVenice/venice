@@ -1,5 +1,5 @@
 import type {WritableDraft} from '@usevenice/util'
-import {compact, produce, R, Rx, rxjs} from '@usevenice/util'
+import {produce, R, Rx, rxjs} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
@@ -59,7 +59,7 @@ export const logLink = <T extends Data>(
   let i = 0
   return Rx.tap((op) => {
     console.log(
-      compact([
+      R.compact([
         `[logLink #${i}]`,
         opts.prefix && `${opts.prefix}:`,
         `type=${op.type}`,

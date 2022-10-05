@@ -1,13 +1,8 @@
 import type admin from 'firebase-admin'
 import type firebase from 'firebase/compat'
 
-import type {InjectionToken, PossibleDate} from '@usevenice/util'
-import {
-  objectKeys,
-  parseOptionalDateTime,
-  resolveDependency,
-  rxjs,
-} from '@usevenice/util'
+import type {InjectionToken} from '@usevenice/util'
+import {objectKeys, resolveDependency, rxjs} from '@usevenice/util'
 
 import type {
   AnyDocumentReference,
@@ -89,16 +84,6 @@ export function timestampToMillis(ts: SerializedTimestamp) {
     return ts.toMillis()
   }
   return ts.seconds * 1e3 + ts.nanoseconds / 1e6
-}
-
-export function toTimestamp(date: PossibleDate | null | undefined) {
-  // Special case as millisecond precision isn't sufficient
-  if (date && typeof date === 'object' && 'nanoseconds' in date) {
-    const Timestamp = timestamp()
-    return new Timestamp(date.seconds, date.nanoseconds)
-  }
-  const dt = parseOptionalDateTime(date)
-  return dt ? timestamp().fromMillis(dt.toMillis()) : undefined
 }
 
 export function serializeTimestamp(ts: AnyTimestamp): SerializedTimestamp {

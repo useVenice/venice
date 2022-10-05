@@ -3,7 +3,6 @@ import firebase from 'firebase/compat/app'
 import type {AnyEntityPayload, Link, SyncOperation} from '@usevenice/cdk-core'
 import {handlersLink, makeSyncProvider, mergeReady} from '@usevenice/cdk-core'
 import {
-  compact,
   defineProxyFn,
   fromCompletion,
   getDefaultProxyAgent,
@@ -70,7 +69,7 @@ function fromQuery(query: AnyQuery) {
         (ops) => [
           ...ops,
           _op({type: 'commit'}),
-          ...compact([i === 0 && _op({type: 'ready'})]),
+          ...R.compact([i === 0 && _op({type: 'ready'})]),
         ],
         // Should we fire `commit?`
         (ops) => rxjs.from(ops),

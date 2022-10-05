@@ -3,8 +3,6 @@ import {Sema} from 'async-sema'
 
 export {RateLimit} from 'async-sema'
 
-export type MaybePromise<T> = T | Promise<T>
-
 /** Aka sleep */
 export async function delay<T>(delayTimeMs: number, value: T): Promise<T>
 export async function delay<T>(delayTimeMs: number): Promise<void>
@@ -12,22 +10,6 @@ export async function delay<T>(delayTimeMs: number): Promise<void>
 export async function delay<T>(delayTimeMs: any, value?: T): Promise<void | T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), delayTimeMs))
 }
-
-export async function delayUntil(predicate: () => boolean, timeoutMs: number) {
-  let elapsedMs = 0
-  while (elapsedMs < timeoutMs) {
-    const ok = predicate()
-    if (ok) {
-      return true
-    }
-
-    await delay(DEFAULT_INTERVAL_MS)
-    elapsedMs += DEFAULT_INTERVAL_MS
-  }
-  return false
-}
-
-const DEFAULT_INTERVAL_MS = 10
 
 export class Deferred<T> {
   resolve!: (ret: T | PromiseLike<T>) => void

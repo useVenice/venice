@@ -9,7 +9,6 @@ import {
   defineProxyFn,
   fromMaybeArray,
   isPlainObject,
-  mapValues,
   memoize,
   R,
   snakeCase,
@@ -133,7 +132,7 @@ export function upsertByIdQuery(
   const keys = R.keys(firstVMap).filter(
     (k) => k !== kUpdatedAt && k !== kCreatedAt && firstVMap[k] !== undefined,
   )
-  const typeMap = mapValues(firstVMap, (v) =>
+  const typeMap = R.mapValues(firstVMap, (v) =>
     v instanceof Date
       ? 'date'
       : isPlainObject(v) || Array.isArray(v)

@@ -3,7 +3,7 @@ import * as path from 'node:path'
 
 import tablemark from 'tablemark'
 
-import {buildUrl, compact, R, zParser} from '@usevenice/util'
+import {buildUrl, R, zParser} from '@usevenice/util'
 
 import {DOCUMENTED_PROVIDERS, parseIntConfigsFromRawEnv, zAllEnv} from './env'
 import {loadEnv} from './loadEnv.node'
@@ -29,7 +29,7 @@ const envList = R.pipe(
       Name: '`' + key + '`',
       Description: cmtLines.join('</br>'),
       dotEnvLine: R.pipe(cmtLines.map((c) => `# ${c}`).join('\n'), (cmts) =>
-        compact([
+        R.compact([
           `${cmts}\n`, // cmtLines.length > 1 && `${cmts}\n`,
           `${key}=""`,
           // comment on same line is not supported by @next/env due to using old version of dotenv.

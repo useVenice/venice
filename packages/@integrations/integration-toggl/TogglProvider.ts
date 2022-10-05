@@ -3,7 +3,7 @@ import React from 'react'
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
-import {A, Deferred, identity, Rx, rxjs, z} from '@usevenice/util'
+import {A, Deferred, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   itemProjectResponseSchema,
@@ -52,7 +52,7 @@ export const togglProvider = makeSyncProvider({
         return {
           id: `${a.id}`,
           entityName: 'account',
-          entity: identity<Standard.Account>({
+          entity: R.identity<Standard.Account>({
             name: data.entity.name ?? '',
             type: 'expense',
           }),
@@ -62,7 +62,7 @@ export const togglProvider = makeSyncProvider({
         return {
           id: `${t.id}`,
           entityName: 'transaction',
-          entity: identity<Standard.Transaction>({
+          entity: R.identity<Standard.Transaction>({
             date: data.entity.at ?? '',
             description: data.entity.description ?? '',
             postingsMap: makePostingsMap({
@@ -140,4 +140,4 @@ export const togglProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<TogglSyncOperation> = identity
+const _op: typeof R.identity<TogglSyncOperation> = R.identity

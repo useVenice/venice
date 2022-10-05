@@ -1,26 +1,10 @@
 import * as tzMock from 'timezone-mock'
-import {Settings} from 'luxon'
-
-import {DateTime, maxDateTime, minDateTime} from './date-utils'
+import {DateTime, Settings} from 'luxon'
 
 // Warning: How would this behave if timezone is involved? Gah :(
 
 // TODO: It would be really nice to have a function to simulate across all timezones
 // to make sure a set of tests is true regardless of what timezone the system is in.
-
-test('minDate', () => {
-  expect(minDateTime(['2020-01-01', null])?.toISODate()).toBe('2020-01-01')
-  expect(minDateTime(['2020-01-01', '2020-05-01', null])?.toISODate()).toBe(
-    '2020-01-01',
-  )
-})
-
-test('maxDate', () => {
-  expect(maxDateTime(['2020-01-01', null])?.toISODate()).toBe('2020-01-01')
-  expect(maxDateTime(['2020-01-01', '2020-05-01', null])?.toISODate()).toBe(
-    '2020-05-01',
-  )
-})
 
 test('comparison between ISODate and ISODateTime', () => {
   // These are fine

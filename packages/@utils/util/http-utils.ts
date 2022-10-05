@@ -13,6 +13,7 @@ import _Axios from 'axios'
 import {defineProxyFn} from './di-utils'
 import {stringifyQueryParams} from './url-utils'
 
+export {default as Axios} from 'axios'
 export type {AxiosError as IAxiosError} from 'axios'
 
 // MARK: - Proxy Agent
@@ -233,8 +234,6 @@ export function createHTTPClient({
   )
   return axios
 }
-
-export {default as Axios} from 'axios'
 
 // MARK: - OpenAPI codegen
 

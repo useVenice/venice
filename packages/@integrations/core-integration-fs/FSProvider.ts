@@ -5,7 +5,6 @@ import {
   $path,
   $readFile,
   fromCompletion,
-  identity,
   mapAsync,
   R,
   Rx,
@@ -136,7 +135,7 @@ function _readPathData() {
             console.error(`Invalid json at ${e.data.path}`, data)
             return undefined
           }
-          return identity<FSDataEvent>({
+          return R.identity<FSDataEvent>({
             type: 'data',
             data: {entity: data, id: e.data.id, entityName: e.data.entityName},
           })

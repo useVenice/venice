@@ -113,9 +113,8 @@ export const yodleeProvider = makeSyncProvider({
                             lastQuote: h.price
                               ? A(h.price.amount, h.price.currency)
                               : null,
-                            lastQuoteDate: parseDateTime(
-                              h.lastUpdated,
-                            ).toISODate(),
+                            lastQuoteDate:
+                              parseDateTime(h.lastUpdated)?.toISODate() ?? null,
                           }
                         : null,
                     ),

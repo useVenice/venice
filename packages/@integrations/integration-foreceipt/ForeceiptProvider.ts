@@ -7,19 +7,9 @@ import {
 } from '@usevenice/core-integration-firebase'
 import type {Standard} from '@usevenice/standard'
 import type {Merge} from '@usevenice/util'
-import {
-  A,
-  compact,
-  identity,
-  objectFromArray,
-  Rx,
-  rxjs,
-  z,
-  zCast,
-} from '@usevenice/util'
+import {A, objectFromArray, R, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import type {_parseConnectionInfo} from './foreceipt-utils'
-import {_parseAccounts} from './foreceipt-utils'
 import type {ForeceiptClientOptions} from './ForeceiptClient'
 import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
@@ -70,7 +60,7 @@ export const foreceiptProvider = makeSyncProvider({
       account: ({entity: a}) => ({
         id: `${a.id}`,
         entityName: 'account',
-        entity: identity<Standard.Account>({
+        entity: R.identity<Standard.Account>({
           name: `FR ${a.name ?? ''}`,
           type: ((): Standard.AccountType => {
             switch (a.type) {
@@ -99,7 +89,7 @@ export const foreceiptProvider = makeSyncProvider({
         return {
           id,
           entityName: 'transaction',
-          entity: identity<Standard.Transaction>({
+          entity: R.identity<Standard.Transaction>({
             date: t.receipt_date,
             payee: t.merchant,
             description: t.notes ?? '',
@@ -151,7 +141,7 @@ export const foreceiptProvider = makeSyncProvider({
             },
             custom: {
               ...(c?.team && {
-                created_by: compact([
+                created_by: R.compact([
                   creator?.first_name,
                   creator?.last_name,
                 ]).join(' '),
@@ -159,7 +149,7 @@ export const foreceiptProvider = makeSyncProvider({
             },
             externalCategory:
               c?.categoryNameById[
-                compact([t.category_id, t.sub_category_id]).join('/')
+                R.compact([t.category_id, t.sub_category_id]).join('/')
               ],
           }),
         }

@@ -1,4 +1,4 @@
-import * as jestDateMock from 'jest-date-mock'
+import * as dateMock from 'jest-date-mock'
 import * as tzMock from 'timezone-mock'
 import {DateTime, Settings} from 'luxon'
 
@@ -11,13 +11,13 @@ const now = DateTime.fromISO('2021-03-15', {zone: 'utc'})
 beforeAll(() => {
   Settings.defaultZone = 'US/Pacific'
   tzMock.register('US/Pacific')
-  jestDateMock.advanceTo(now.toJSDate())
+  dateMock.advanceTo(now.toJSDate())
 })
 
 afterAll(() => {
   Settings.defaultZone = DEFAULT_ZONE
   tzMock.unregister()
-  jestDateMock.clear()
+  dateMock.clear()
 })
 
 test('sanity check mocking', () => {

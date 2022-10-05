@@ -1,6 +1,6 @@
 import type {Base, FieldSet, Records} from 'airtable'
 
-import {defineProxyFn, z, zFunction} from '@usevenice/util'
+import {defineProxyFn, titleCase, z, zFunction} from '@usevenice/util'
 
 export const $airtable =
   defineProxyFn<() => typeof import('airtable')>('$airtable')
@@ -81,7 +81,3 @@ export const makeAirtableClient = zFunction(
     }
   },
 )
-
-function titleCase(str: string): string {
-  return str.toLowerCase().replace(/\b\w/g, (s) => s.toUpperCase())
-}

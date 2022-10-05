@@ -11,7 +11,6 @@ import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
   AM,
-  identity,
   objectEntries,
   produce,
   R,
@@ -133,7 +132,7 @@ export const cachingTransformLink = (
   cachingLink((cache) =>
     rxjs.from([
       ..._opsFromCache(produce(cache, transform)),
-      identity<StdSyncOperation>({type: 'commit'}),
+      R.identity<StdSyncOperation>({type: 'commit'}),
     ]),
   )
 

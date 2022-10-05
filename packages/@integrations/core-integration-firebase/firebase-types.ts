@@ -2,6 +2,8 @@ import type firestoreAdmin from '@google-cloud/firestore'
 import type firebaseAdmin from 'firebase-admin'
 import type firebase from 'firebase/compat'
 
+import type {Merge} from '@usevenice/util'
+
 export {firebase, firebaseAdmin, firestoreAdmin}
 
 export type FirebaseApp = firebase.app.App
@@ -134,8 +136,8 @@ interface DeletedDoc {
 
 export type SnapshotData<TRaw> = {_TRaw?: TRaw} & ([TRaw] extends [Doc]
   ?
-      | import('@usevenice/util').Merge<TRaw, {id?: TRaw['id']}>
-      | import('@usevenice/util').Merge<
+      | Merge<TRaw, {id?: TRaw['id']}>
+      | Merge<
           {
             [K in keyof TRaw]?: never
           },

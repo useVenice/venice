@@ -1,6 +1,6 @@
 import type {Standard} from '@usevenice/standard'
 import type {Amount, Interval} from '@usevenice/util'
-import {A, formatDate, iterateSubintervals, math} from '@usevenice/util'
+import {A, formatDateTime, iterateSubintervals, math} from '@usevenice/util'
 
 // Should we support AmountMap?
 export function computeAmortization(
@@ -34,9 +34,9 @@ export function computeAmortization(
     return {
       date: interval.start.toISODate(),
       amount,
-      memo: `For ${formatDate(interval.start)} - ${formatDate(
-        interval.end,
-      )} (${durQuantity} ${durUnit}). Period ${index + 1}/${
+      memo: `For ${formatDateTime(interval.start) ?? '???'} - ${
+        formatDateTime(interval.end) ?? '???'
+      } (${durQuantity} ${durUnit}). Period ${index + 1}/${
         segments.length
       } ${percent}`,
       extra: {

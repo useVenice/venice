@@ -6,8 +6,8 @@ import {
   DateTime,
   getDefaultProxyAgent,
   type HTTPError,
-  parseOptionalDateTime,
-  uniq,
+  parseDateTime,
+  R,
   z,
   zFunction,
 } from '@usevenice/util'
@@ -234,7 +234,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
           return pas
         }
         const providers = await Promise.all(
-          uniq(pas.map((pa) => pa.providerId)).map((id) =>
+          R.uniq(pas.map((pa) => pa.providerId)).map((id) =>
             getProvider(id).catch((err) => {
               // Can happen if provider is removed from yodlee
               console.warn(`Error getting provider id=${id}`, err)
@@ -464,12 +464,10 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       } = {},
     ) {
       // Eliminate any effect of timezones by just adding a day
-      const end =
-        parseOptionalDateTime(options.end) ?? DateTime.local().plus({days: 1})
+      const end = parseDateTime(options.end) ?? DateTime.local().plus({days: 1})
       // Should be nothing since before epoch zero.
       // This turns out to be 1969-12-31 but who cares
-      const start =
-        parseOptionalDateTime(options.start) ?? DateTime.fromMillis(0)
+      const start = parseDateTime(options.start) ?? DateTime.fromMillis(0)
 
       let offset = 0
       // Fetch 100 transactions only on the first request to optimize for incremental

@@ -1,7 +1,7 @@
 import type {
   JsonLiteral,
-  MergeUnion,
   NoInfer,
+  NonDiscriminatedUnion,
   ObjectPartialDeep,
   rxjs,
 } from '@usevenice/util'
@@ -65,7 +65,7 @@ export type SyncOperation<
   | {type: 'commit'} // Should this be a separate type of StateUpdate
   | {type: 'ready'} // Should this be a separate type of StateUpdate
 
-export type AnySyncOperation = MergeUnion<SyncOperation>
+export type AnySyncOperation = NonDiscriminatedUnion<SyncOperation>
 
 export type Source<
   T extends AnyEntityPayload,

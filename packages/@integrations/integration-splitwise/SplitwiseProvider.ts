@@ -4,7 +4,7 @@ import type {Standard} from '@usevenice/standard'
 import {
   A,
   DateTime,
-  legacy_formatAmount,
+  formatAmount,
   math,
   objectFromArray,
   parseMoney,
@@ -79,7 +79,7 @@ export const splitwiseProvider = makeSyncProvider({
               ...partialTxn,
               description: `${formatUser(from)} paid ${formatUser(
                 to,
-              )} ${legacy_formatAmount(cost)}`,
+              )} ${formatAmount(cost)}`,
               postingsMap: makePostingsMap(
                 {},
                 {

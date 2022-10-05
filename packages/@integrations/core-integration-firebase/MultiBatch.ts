@@ -4,8 +4,8 @@ import type {NoInfer, ObjectPartialDeep, PathsOf} from '@usevenice/util'
 import {
   deepOmitUndefined,
   getAt,
-  makeChunks,
   operateForEach,
+  R,
   rxjs,
 } from '@usevenice/util'
 
@@ -220,7 +220,7 @@ export class MultiBatch {
       return
     }
 
-    const chunks = makeChunks(this.instructions, this.maxBatchSize)
+    const chunks = R.chunk(this.instructions, this.maxBatchSize)
     await operateForEach(
       rxjs.from(chunks),
       async (chunk) => {

@@ -1,5 +1,5 @@
 import type {MaybePromise} from '@usevenice/util'
-import {castIs, identity, z} from '@usevenice/util'
+import {castIs, R, z} from '@usevenice/util'
 
 import type {ExternalId, Id} from './id.types'
 import {makeId, zExternalId} from './id.types'
@@ -211,7 +211,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
     _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>) =>
-      identity<Op>({
+      R.identity<Op>({
         // We don't prefix in `_opData`, should we actually prefix here?
         ...rest,
         // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
@@ -222,7 +222,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
       sourceState?: OpState['sourceState'],
       destinationState?: OpState['destinationState'],
     ) =>
-      identity<Op>({
+      R.identity<Op>({
         sourceState,
         destinationState,
         type: 'stateUpdate',
@@ -232,7 +232,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
       id: string,
       entity: Extract<OpData['data'], {entityName: K}>['entity'] | null,
     ) =>
-      identity<Op>({
+      R.identity<Op>({
         // TODO: Figure out why we need an `unknown` cast here
         data: {entityName, id, entity} as unknown as OpData['data'],
         type: 'data',

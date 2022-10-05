@@ -4,7 +4,6 @@ import {
   $readFile,
   $writeFile,
   catchENOENT,
-  compact,
   produce,
   R,
   stableStringify,
@@ -96,7 +95,7 @@ export async function beanJsonToDir({
     await R.pipe(`${outPath}/index.bean`, (p) =>
       $writeFile(
         p,
-        compact([
+        R.compact([
           `${defaultOptions(operatingCurrency)}`,
           ...Object.keys(entriesByPeriod).map(
             (month) => `include "./${month}.bean"`,

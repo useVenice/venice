@@ -1,14 +1,10 @@
+import * as R from 'remeda'
 import accounting from 'accounting'
+import {sort} from 'fast-sort'
 import invariant from 'tiny-invariant'
 
-import {sort, zip} from './array-utils'
 import {math} from './math-utils'
-import {
-  isPlainObject,
-  objectFromIterable,
-  objectFromObject,
-} from './object-utils'
-import {slugify} from './string-utils'
+import {objectFromIterable, objectFromObject} from './object-utils'
 
 export type AnyAmount = Amount | AmountMap | MultiAmount | Amount[]
 
@@ -138,7 +134,7 @@ A.equals = (a: Amount, b: Amount) =>
   a.unit === b.unit && math.isZero(a.quantity - b.quantity)
 
 A.multiEquals = (a1: MultiAmount, a2: MultiAmount) => {
-  const hasUnequalAmount = zip(
+  const hasUnequalAmount = R.zip(
     sort(a1.amounts).asc('unit'),
     sort(a2.amounts).asc('unit'),
   ).some(([a1a, a2a]) => (a1a && a2a ? !A.equals(a1a, a2a) : true))
@@ -197,17 +193,6 @@ A.omitZeros = (amount: MultiAmount): MultiAmount => ({
 })
 
 // MARK: - Helpers
-
-export function isAmountOrMultiAmount(
-  value: unknown,
-): value is Amount | MultiAmount {
-  return (
-    isPlainObject(value) &&
-    ((typeof value['quantity'] === 'number' &&
-      typeof value['unit'] === 'string') ||
-      Array.isArray(value['amounts']))
-  )
-}
 
 export function isSimpleAmount(amount: AnyAmount): amount is Amount {
   return 'unit' in amount && typeof amount.unit === 'string'
@@ -279,34 +264,6 @@ export function toAmountOrMultiAmount(a: AnyAmount): Amount | MultiAmount {
   return a
 }
 
-export function amountType(
-  amt: unknown,
-): 'simple' | 'multi' | 'map' | 'array' | null {
-  if (!amt) {
-    return null
-  }
-  if (Array.isArray(amt)) {
-    return amt.length === 0 || amountType(amt[0]) === 'simple' ? 'array' : null
-  }
-  if (typeof amt !== 'object') {
-    return null
-  }
-  if (
-    Object.entries(amt).every(
-      ([key, value]) => typeof key === 'string' && typeof value === 'number',
-    )
-  ) {
-    return 'map'
-  }
-  if ('unit' in amt && 'quantity' in amt) {
-    return 'simple'
-  }
-  if ('amounts' in amt) {
-    return 'multi'
-  }
-  return null
-}
-
 export function toAmounts(amt: AnyAmount | null | undefined) {
   if (!amt) {
     return []
@@ -322,6 +279,8 @@ export function toAmounts(amt: AnyAmount | null | undefined) {
   }
   return AM.toAmounts(amt)
 }
+
+export const parseMoney = accounting.unformat
 
 /**
  * TODO: Support shorthands such as 12k and 33m
@@ -350,32 +309,6 @@ export function parseAmount(
 }
 
 const AMOUNT_REGEX = /^(-?\d+(,\d{3})*(\.\d*)?)(?:\s+(\S+))?$/
-
-export function parseMultiAmount(
-  input: string,
-  {separator = ';', ...restOpts}: {defaultUnit?: Unit; separator?: string} = {},
-): MultiAmount {
-  const amounts = input
-    .split(separator)
-    .map((substr) => parseAmount(substr, restOpts))
-    .filter((a): a is Amount => a != null)
-  return {amounts}
-}
-
-export function parseAmountMap(
-  input: string,
-  options: {defaultUnit?: Unit; separator?: string} = {},
-): AmountMap {
-  const amount = parseMultiAmount(input, options)
-  return toAmountMap(amount)
-}
-
-export const parseMoney = accounting.unformat
-
-export function parseUnit(raw: string) {
-  const slug = slugify(raw, {separator: '_'})
-  return slug == null ? null : (slug.toUpperCase() as Unit)
-}
 
 export function isAmountUnit(str: string): str is Unit {
   return (

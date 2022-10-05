@@ -193,7 +193,6 @@ export const makeOneBrickClient = zFunction(zOneBrickConfig, (cfg) => {
     if (!envName || !secret) {
       throw new Error(`Unable to get client envName=${envName}`)
     }
-
     return createHTTPClient({
       baseURL: defaultUrl(envName ?? 'sandbox'), // For testing with mock data
       headers: {

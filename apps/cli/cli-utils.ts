@@ -15,13 +15,11 @@ import cac from 'cac'
 
 import type {AnyZFunction, z} from '@usevenice/util'
 import {
-  compact,
   deepMerge,
   isAsyncIterable,
   isIterable,
   isZodType,
   parseIf,
-  pick,
   preprocessArgsTuple,
   R,
   routerFromZFunctionMap,
@@ -86,7 +84,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
 ) {
   const cli = cac()
   R.pipe(
-    pick(router._def, ['queries', 'mutations', 'subscriptions']),
+    R.pick(router._def, ['queries', 'mutations', 'subscriptions']),
     R.toPairs,
     R.flatMap(([type, map]) =>
       R.toPairs(map).map(
@@ -136,7 +134,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
         const input = R.pipe(
           await readStdin().then(safeJSONParse),
           (stdin) => deepMerge(stdin ?? {}, options),
-          (opts) => compact([...args, Object.keys(opts).length > 0 && opts]),
+          (opts) => R.compact([...args, Object.keys(opts).length > 0 && opts]),
           (arr) => (arr.length <= 1 ? arr[0] : arr),
           // Hacking supporting for tuple of options via --1.name value
           // for up to 4 argments total

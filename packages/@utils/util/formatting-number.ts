@@ -1,6 +1,28 @@
 import {memoizeBy} from './function-utils'
 import {shallowEqual} from './object-utils'
 
+export function formatDecimal(
+  value: number,
+  options: StrictIntlNumberFormatOptions & {
+    locales?: string | string[] | undefined
+  } = {},
+) {
+  const {locales, ...formatOptions} = options
+  const formatter = getIntlNumberFormat(locales, {
+    style: 'decimal',
+    ...formatOptions,
+  })
+  return formatter.format(value)
+}
+
+export function parseDecimal(text: string) {
+  const num = Number(text)
+  if (Number.isNaN(num)) {
+    return undefined
+  }
+  return num
+}
+
 /**
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
  */
@@ -37,25 +59,3 @@ export const getIntlNumberFormat = memoizeBy(
   (prev, next) =>
     shallowEqual(prev[0], next[0]) && shallowEqual(prev[1], next[1]),
 )
-
-export function formatDecimal(
-  value: number,
-  options: StrictIntlNumberFormatOptions & {
-    locales?: string | string[] | undefined
-  } = {},
-) {
-  const {locales, ...formatOptions} = options
-  const formatter = getIntlNumberFormat(locales, {
-    style: 'decimal',
-    ...formatOptions,
-  })
-  return formatter.format(value)
-}
-
-export function parseDecimal(text: string) {
-  const num = Number(text)
-  if (Number.isNaN(num)) {
-    return undefined
-  }
-  return num
-}

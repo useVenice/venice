@@ -8,7 +8,7 @@ import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
 import type {Id} from '@usevenice/cdk-core'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
-import {fromMaybeArray, identity, R, safeJSONParse} from '@usevenice/util'
+import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 
 import {kAccessToken, kLedgerId} from '../../contexts/atoms'
 
@@ -49,7 +49,7 @@ const handler = trpcNext.createNextApiHandler({
 // perhaps the cli package
 // - [ ] Remove RouterContext no longer needed
 // - [ ] Do the same logic for veniceCli httpServer that does not use next
-export default identity<NextApiHandler>((req, res) => {
+export default R.identity<NextApiHandler>((req, res) => {
   // https://vercel.com/support/articles/how-to-enable-cors
   res.setHeader('Access-Control-Allow-Credentials', 'true')
   res.setHeader('Access-Control-Allow-Origin', '*')

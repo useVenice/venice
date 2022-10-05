@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+import * as R from 'remeda'
 import * as z from 'zod'
-import {compact} from 'remeda'
-
-import {R} from './data-utils'
 
 export {z}
 
@@ -143,7 +138,7 @@ type Rest1<T extends [any, ...any[]]> = T extends [any, ...infer U] ? U : []
 export function catchZodError(err: unknown, opts?: {rootTypeName?: string}) {
   if (err instanceof z.ZodError && err.issues[0]) {
     const issue = err.issues[0]
-    const paths = compact([opts?.rootTypeName, ...issue.path])
+    const paths = R.compact([opts?.rootTypeName, ...issue.path])
     throw new Error(`${issue.code} at ${paths.join('.')}: ${issue.message}`)
   }
   throw err
