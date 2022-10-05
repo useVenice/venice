@@ -52,7 +52,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 
 // MARK: - Integration env vars
 
-export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
+export const DOCUMENTED_PROVIDERS = [yodleeProvider, plaidProvider] as const
 
 export const PROVIDERS = [
   ...DOCUMENTED_PROVIDERS,
@@ -74,7 +74,7 @@ export const PROVIDERS = [
   wiseProvider,
   togglProvider,
   foreceiptProvider,
-  yodleeProvider,
+
   splitwiseProvider,
   postgresProvider,
 ] as const
