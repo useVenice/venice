@@ -18,7 +18,7 @@ import {tellerProvider} from '@usevenice/integration-teller'
 import {togglProvider} from '@usevenice/integration-toggl'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
-import {filterObject, R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
+import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
 // MARK: - Env vars
 
@@ -114,7 +114,7 @@ export function parseIntConfigsFromRawEnv(
   return R.pipe(
     R.mapValues(zFlatConfigByProvider, (zFlatConfig, name) => {
       const subEnv = R.pipe(
-        filterObject(env, (k) => k.startsWith(getPrefix(name))),
+        R.pickBy(env, (_v, k) => k.startsWith(getPrefix(name))),
         (e) => (R.keys(e).length ? e : undefined), // To get .optional() to work
       )
       try {
@@ -133,7 +133,7 @@ export function parseIntConfigsFromRawEnv(
         }
       }
     }),
-    (configMap) => filterObject(configMap, (_, val) => val !== undefined),
+    (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
     [k in typeof PROVIDERS[number]['name']]?: Extract<
       typeof PROVIDERS[number],

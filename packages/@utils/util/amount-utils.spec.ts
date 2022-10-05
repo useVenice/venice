@@ -1,4 +1,4 @@
-import {AM, parseAmountMap, parseMoney} from './amount-utils'
+import {AM, parseMoney} from './amount-utils'
 
 test('AmountMap equals', () => {
   expect(AM.equals({}, {})).toBe(true)
@@ -18,13 +18,4 @@ test.each([
   ['AU$12000.00', 12000],
 ])('parseMoney("%s") -> %o', (input, output) => {
   expect(parseMoney(input)).toEqual(output)
-})
-
-test.each([
-  ['', {}, {}],
-  ['100 USD', {}, {USD: 100}],
-  ['100 USD; 50000 IDR', {}, {USD: 100, IDR: 50000}],
-  ['100 USD | 50000 IDR', {separator: '|'}, {USD: 100, IDR: 50000}],
-])('parseAmountMap("%s") -> %o', (input, options, output) => {
-  expect(parseAmountMap(input, options)).toEqual(output)
 })

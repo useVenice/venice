@@ -6,16 +6,7 @@ import {
   makeStandardId,
   veniceProviderBase,
 } from '@usevenice/cdk-ledger'
-import {
-  A,
-  compact,
-  Deferred,
-  identity,
-  md5Hash,
-  Rx,
-  rxjs,
-  z,
-} from '@usevenice/util'
+import {A, Deferred, md5Hash, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   businessResponseSchema,
@@ -90,7 +81,7 @@ export const rampProvider = makeSyncProvider({
               amount: A(-1 * t.amount, 'USD' as Unit),
               memo:
                 t.memo ??
-                compact([
+                R.compact([
                   `${t.card_holder.first_name} ${t.card_holder.last_name}`,
                   t.merchant_category_code,
                 ]).join('/'),
@@ -211,7 +202,7 @@ export const rampProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<RampSyncOperation> = identity
+const _op: typeof R.identity<RampSyncOperation> = R.identity
 
 const opData = <K extends RampEntity['entityName']>(
   entityName: K,

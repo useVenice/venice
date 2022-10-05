@@ -15,7 +15,6 @@ import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
 import type {NonEmptyArray} from '@usevenice/util'
 import {
-  compact,
   fromMaybeArray,
   parseUrl,
   R,
@@ -52,7 +51,7 @@ cli
           const {query, segments} = R.pipe(parseUrl(req.url ?? ''), (url) => ({
             query: url.query,
             // compact will remove leading `/`
-            segments: compact(url.url.split('/')) as NonEmptyArray<string>,
+            segments: R.compact(url.url.split('/')) as NonEmptyArray<string>,
           }))
           let procedure = segments[0]
 

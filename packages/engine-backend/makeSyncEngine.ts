@@ -25,15 +25,7 @@ import {
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
-import {
-  compact,
-  isZodType,
-  joinPath,
-  R,
-  rxjs,
-  z,
-  zParser,
-} from '@usevenice/util'
+import {isZodType, joinPath, R, rxjs, z, zParser} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
@@ -46,8 +38,11 @@ import type {
   PipelineInput,
   ZInput,
 } from './makeSyncParsers'
-import {authorizeOrThrow} from './makeSyncParsers'
-import {makeSyncParsers, zSyncOptions} from './makeSyncParsers'
+import {
+  authorizeOrThrow,
+  makeSyncParsers,
+  zSyncOptions,
+} from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
 
 export {type inferProcedureInput} from '@trpc/server'
@@ -172,7 +167,7 @@ export const makeSyncEngine = <
     // Otherwise we will result in outdated settings...
     return metaService
       .findPipelines({connectionIds: [connInput.id]})
-      .then((pipes) => (pipes.length ? pipes : compact([defaultPipeline()])))
+      .then((pipes) => (pipes.length ? pipes : R.compact([defaultPipeline()])))
       .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
   }
 
@@ -396,7 +391,7 @@ export const makeSyncEngine = <
         })
         const insById = R.pipe(
           await metaService.tables.institution.list({
-            ids: compact(connections.map((c) => c.institutionId)),
+            ids: R.compact(connections.map((c) => c.institutionId)),
           }),
           (insList) => R.mapToObj(insList, (ins) => [ins.id, ins]),
         )

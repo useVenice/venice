@@ -1,12 +1,3 @@
-/** Useful for typechecking, among other things. */
-export function identity<T>(input: T): T {
-  return input
-}
-
-export function infer<T>() {
-  return <U extends T>(input: U) => input
-}
-
 export interface Converter<T, U, TAlt = never, UAlt = never> {
   forward: (input: T | TAlt) => U
   reverse: (input: U | UAlt) => T

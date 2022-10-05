@@ -4,7 +4,7 @@ import type {
   MetaTable,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {compact, memoize, zFunction} from '@usevenice/util'
+import {memoize, R, zFunction} from '@usevenice/util'
 
 import {
   applyLimitOffset,
@@ -29,7 +29,7 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
   return {
     list: ({ids, ledgerId, keywords, ...rest}) =>
       getPool().then((pool) => {
-        const conditions = compact([
+        const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
           ledgerId && sql`ledger_id = ${ledgerId}`,
           // Temp solution, shall use fts and make this work for any table...
@@ -94,7 +94,7 @@ export const makePostgresMetaService = zFunction(
       },
       searchInstitutions: ({keywords, providerNames, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
-        const conditions = compact([
+        const conditions = R.compact([
           providerNames &&
             sql`provider_name = ANY(${sql.array(providerNames, 'varchar')})`,
           keywords && sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,

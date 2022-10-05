@@ -34,16 +34,6 @@ export function resolveDependencyIfRegistered<T>(token: InjectionToken<T>) {
   return undefined
 }
 
-export function resolveOrRegisterDependency<T>(
-  token: InjectionToken<T>,
-  registration: Resolver<T>,
-) {
-  if (!isDependencyRegistered(token)) {
-    registerDependency(token, registration)
-  }
-  return resolveDependency(token)
-}
-
 // Special handling for dependency injecting callable functions
 
 export function implementProxyFn<TFn extends AnyFunction, TImpl extends TFn>(
@@ -54,9 +44,10 @@ export function implementProxyFn<TFn extends AnyFunction, TImpl extends TFn>(
   if (!fn.token) {
     throw new Error(`Expect function to have token when registering ${fn}`)
   }
-
   if (isDependencyRegistered(fn.token) && !opts.replaceExisting) {
-    console.error(`Function ${fn.token.toString()} has already been registered`)
+    console.error(
+      `[di] Function ${fn.token.toString()} has already been registered`,
+    )
     // Was throwing before, but let's be kinder
   }
   registerDependency(fn.token, asValue(impl))
@@ -88,5 +79,3 @@ export function resolveFnIfRegistered<TFn extends AnyFunction>(
 ): TFn | undefined {
   return resolveDependencyIfRegistered(fn.token)
 }
-
-export {asClass, asFunction, asValue} from 'awilix'

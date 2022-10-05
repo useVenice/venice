@@ -1,4 +1,4 @@
-import * as jestDateMock from 'jest-date-mock'
+import * as dateMock from 'jest-date-mock'
 import {DateTime} from 'luxon'
 
 import {MPInterval} from './MPInterval'
@@ -6,11 +6,11 @@ import {MPInterval} from './MPInterval'
 const now = DateTime.fromISO('2020-04-13', {zone: 'utc'})
 
 beforeAll(() => {
-  jestDateMock.advanceTo(now.toJSDate())
+  dateMock.advanceTo(now.toJSDate())
 })
 
 afterAll(() => {
-  jestDateMock.clear()
+  dateMock.clear()
 })
 
 test.each([

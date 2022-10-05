@@ -1,8 +1,7 @@
+import * as R from 'remeda'
 import {sort} from 'fast-sort'
-import {compact} from 'remeda'
 import {z} from 'zod'
 
-import {R} from './data-utils'
 import {
   javascriptStringify,
   safeJSONParse,
@@ -114,7 +113,7 @@ function flattenShapeForEnv<T extends z.ZodTypeAny>(
       // Handle things like array etc.
       .transform((str) => safeJSONParse(str) ?? str)
       .describe(
-        compact([
+        R.compact([
           hint && '`',
           hint,
           hint && '`',

@@ -7,15 +7,7 @@ import type {
   MetaService,
 } from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
-import {
-  castInput,
-  deepMerge,
-  identity,
-  mapDeep,
-  R,
-  z,
-  zGuard,
-} from '@usevenice/util'
+import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
 import type {SyncEngineConfig} from './makeSyncEngine'
@@ -192,7 +184,7 @@ export function makeSyncParsers<
       const conn = await m.tables.connection.get(id)
       const [integration, institution] = await Promise.all([
         zInt.parseAsync(
-          identity<z.infer<typeof zInput['integration']>>({
+          R.identity<z.infer<typeof zInput['integration']>>({
             id:
               conn?.integrationId ??
               rest.integrationId ??
@@ -201,7 +193,7 @@ export function makeSyncParsers<
           }),
         ),
         zIns.optional().parseAsync(
-          identity<z.infer<typeof zInput['institution']>>({
+          R.identity<z.infer<typeof zInput['institution']>>({
             id:
               conn?.institutionId ??
               rest.institutionId ??

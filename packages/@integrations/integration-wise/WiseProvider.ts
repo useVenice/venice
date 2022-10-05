@@ -2,7 +2,7 @@ import React from 'react'
 
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, Deferred, identity, Rx, rxjs, z} from '@usevenice/util'
+import {A, Deferred, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   makeWiseClient,
@@ -170,4 +170,4 @@ export const wiseProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<WiseSyncOperation> = identity
+const _op: typeof R.identity<WiseSyncOperation> = R.identity

@@ -12,6 +12,8 @@ import {
   populateParsingComponents,
 } from './chrono-parser-utils'
 
+export {default as BaseRelativeDateFormatParser} from 'chrono-node/dist/locales/en/parsers/ENRelativeDateFormatParser'
+
 // Parser for expressions like "next week", "last month", "past year", "this year"
 export class RelativeDateFormatParser extends _BaseRelativeDateFormatParser {
   override extract(
@@ -49,5 +51,3 @@ export class RelativeDateFormatParser extends _BaseRelativeDateFormatParser {
     }
   }
 }
-
-export {default as BaseRelativeDateFormatParser} from 'chrono-node/dist/locales/en/parsers/ENRelativeDateFormatParser'

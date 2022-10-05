@@ -3,16 +3,7 @@ import React from 'react'
 import type {SyncOperation} from '@usevenice/cdk-core'
 import {makeSyncProvider, zId, zWebhookInput} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {
-  A,
-  Deferred,
-  identity,
-  md5Hash,
-  parseMoney,
-  Rx,
-  rxjs,
-  z,
-} from '@usevenice/util'
+import {A, Deferred, md5Hash, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   accountItemSchema,
@@ -182,4 +173,4 @@ export const oneBrickProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<OnebrickSyncOperation> = identity
+const _op: typeof R.identity<OnebrickSyncOperation> = R.identity

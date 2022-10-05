@@ -8,11 +8,11 @@ import {
   Interval,
   iterateSubintervals,
   math,
-  omit,
+  R,
   Settings,
 } from '@usevenice/util'
 
-import {computeAmortization} from './amoritze'
+import {computeAmortization} from './amortize'
 
 const DEFAULT_ZONE = Settings.defaultZone
 
@@ -118,5 +118,5 @@ test.each([
   const postSum = math.sum(posts.map((p) => p.amount.quantity))
   expect(math.equals(postSum, amount.quantity)).toBe(true)
 
-  expect(posts.map((p) => omit(p, ['extra']))).toMatchSnapshot()
+  expect(posts.map((p) => R.omit(p, ['extra']))).toMatchSnapshot()
 })

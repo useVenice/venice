@@ -6,10 +6,11 @@ import {
   renameAccountLink,
 } from '@usevenice/cdk-ledger'
 import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
-import {makeSyncEngine} from '@usevenice/engine-backend'
-// console.log('Using config', veniceConfig) // Too verbose...
-import {type inferProcedureInput} from '@usevenice/engine-backend'
-import {identity, joinPath, Rx, zParser} from '@usevenice/util'
+import {
+  type inferProcedureInput,
+  makeSyncEngine,
+} from '@usevenice/engine-backend'
+import {joinPath, R, Rx, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
@@ -67,7 +68,7 @@ export const veniceBackendConfig = makeSyncEngine.config({
           Rx.map((op) =>
             op.type === 'data' &&
             destination.integration.provider.name !== 'postgres'
-              ? identity<typeof op>({
+              ? R.identity<typeof op>({
                   ...op,
                   data: {
                     ...op.data,

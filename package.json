@@ -86,11 +86,9 @@
       "cac@6.7.12": "patches/cac@6.7.12.patch",
       "esbuild-jest@0.5.0": "patches/esbuild-jest@0.5.0.patch",
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",
-      "js-combinatorics@1.5.7": "patches/js-combinatorics@1.5.7.patch",
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@0.0.32": "patches/remeda@0.0.32.patch",
-      "timm@1.7.1": "patches/timm@1.7.1.patch",
       "typescript@4.8.2": "patches/typescript@4.8.2.patch",
       "zod@3.19.0": "patches/zod@3.19.0.patch"
     },

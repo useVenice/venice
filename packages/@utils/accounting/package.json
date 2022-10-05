@@ -7,8 +7,7 @@
   "dependencies": {
     "@usevenice/standard": "*",
     "@usevenice/util": "*",
-    "financejs": "4.1.0",
-    "js-combinatorics": "1.5.7"
+    "financejs": "4.1.0"
   },
   "devDependencies": {
     "timezone-mock": "1.3.4"

@@ -10,6 +10,8 @@ import {
   makeRelativeParsingComponents,
 } from './chrono-parser-utils'
 
+export {default as BaseTimeUnitCasualRelativeFormatParser} from 'chrono-node/dist/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser'
+
 // Parser for expressions like "next 2 weeks", "last 3 months", "past 4 years"
 export class TimeUnitCasualRelativeFormatParser extends _BaseTimeUnitCasualRelativeFormatParser {
   override extract(
@@ -33,5 +35,3 @@ export class TimeUnitCasualRelativeFormatParser extends _BaseTimeUnitCasualRelat
     return makeRelativeParsingComponents(ctx, match, fragments)
   }
 }
-
-export {default as BaseTimeUnitCasualRelativeFormatParser} from 'chrono-node/dist/locales/en/parsers/ENTimeUnitCasualRelativeFormatParser'

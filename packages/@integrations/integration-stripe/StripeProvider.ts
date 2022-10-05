@@ -3,7 +3,7 @@ import type Stripe from 'stripe'
 
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, Deferred, identity, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {A, Deferred, R, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {makeStripeClient, zStripeConfig} from './StripeClient'
 
@@ -184,7 +184,7 @@ export const stripeProvider = makeSyncProvider({
   },
 })
 
-const _op: typeof identity<StripeSyncOperation> = identity
+const _op: typeof R.identity<StripeSyncOperation> = R.identity
 
 const opData = <K extends StripeEntity['entityName']>(
   entityName: K,

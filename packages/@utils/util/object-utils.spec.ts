@@ -2,8 +2,6 @@ import {
   deepMerge,
   deepOmitUndefined,
   deepPartialDeepEqual,
-  omitBy,
-  shallowDiff,
   shallowEqual,
 } from './object-utils'
 
@@ -36,7 +34,7 @@ const recursiveTestObject = {
 test('deepMerge() does not alter original objects', () => {
   const a = {a: 1}
   const b = {b: 2}
-  const c = deepMerge<object>(a, b)
+  const c = deepMerge(a, b)
   expect(c).toEqual({a: 1, b: 2})
   expect(a).toEqual({a: 1})
   expect(b).toEqual({b: 2})
@@ -45,10 +43,10 @@ test('deepMerge() does not alter original objects', () => {
 test('deepMerge() does not merge arrays', () => {
   const a = {a: 1, key: {inner: 1}}
   const b = {b: 2, key: ['array_ele']}
-  const c = deepMerge<object>(a, b)
+  const c = deepMerge(a, b)
   expect(c).toEqual({a: 1, b: 2, key: ['array_ele']})
 
-  expect(deepMerge<object>({a: 1}, [2])).toEqual([2])
+  expect(deepMerge({a: 1}, [2])).toEqual([2])
 })
 
 test('deepOmitUndefined() filters special keys', () => {
@@ -136,36 +134,6 @@ test('deepOmitUndefined() array should replace undefined with null (pruneUndefin
     deepOmitUndefined(['1', undefined], {pruneUndefinedArrayElements: false}),
   ).toStrictEqual(['1', null])
 })
-
-const EMPTY_OBJ = new Error('TEST')
-
-test.each([
-  [{}, {b: 1}, undefined, {added: ['b']}],
-  [{a: 1}, {}, undefined, {removed: ['a']}],
-  [{a: 1}, {b: 2}, undefined, {added: ['b'], removed: ['a']}],
-  [{a: 1}, {a: 1, b: 2}, undefined, {added: ['b'], unchanged: ['a']}],
-  [{a: 1}, {a: 2, b: 2}, undefined, {added: ['b'], updated: ['a']}],
-  [{a: {}}, {a: {}}, undefined, {updated: ['a']}],
-  [{ref: EMPTY_OBJ}, {ref: EMPTY_OBJ}, undefined, {unchanged: ['ref']}],
-  [{a: {}}, {a: {}}, 'shallowEqual' as const, {unchanged: ['a']}],
-  [{a: []}, {a: []}, 'shallowEqual' as const, {unchanged: ['a']}],
-  [{a: [{}]}, {a: [{}]}, 'shallowEqual' as const, {updated: ['a']}],
-  [{a: [{}]}, {a: [{}]}, 'deepEqual' as const, {unchanged: ['a']}],
-  [{a: [{v: 1}]}, {a: [{v: 1}]}, 'deepEqual' as const, {unchanged: ['a']}],
-])(
-  'shallowDiff(%j, %j, %p) -> %j',
-  (
-    a: Record<string, unknown>,
-    b: Record<string, unknown>,
-    compare,
-    diffPartial,
-  ) => {
-    const diff = shallowDiff(a, b, compare)
-    expect(omitBy(diff, (v, k) => v.length === 0 || k === 'changes')).toEqual(
-      diffPartial,
-    )
-  },
-)
 
 test.each<
   [

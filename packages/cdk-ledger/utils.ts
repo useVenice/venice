@@ -1,4 +1,4 @@
-import {makePrefixedId, nonEmpty, objectKeys, R, z} from '@usevenice/util'
+import {nonEmpty, objectKeys, R, z} from '@usevenice/util'
 
 // TODO: Merge this into cdk-core for ease of use...
 
@@ -29,5 +29,11 @@ export function makeStandardId<
   T extends string,
   P extends StandardEntityPrefix,
 >(prefix: P, providerName: T, externalId: string) {
-  return makePrefixedId(prefix, providerName, externalId)
+  return `${prefix}_${providerName}_${externalId}` as const
+}
+
+export function splitStandardId(id: string) {
+  const [prefix, providerName, ...rest] = id.split('_')
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return [prefix!, providerName!, rest.join('_')] as const
 }

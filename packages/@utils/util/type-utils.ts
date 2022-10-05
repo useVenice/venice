@@ -1,6 +1,14 @@
-import type {JsonValue, Primitive, UnionToIntersection} from 'type-fest'
+import type {Primitive, UnionToIntersection} from 'type-fest'
 
-import type {rxjs} from './observable-utils'
+export type {
+  Merge,
+  SetNonNullable,
+  SetOptional,
+  SetRequired,
+  Split,
+  UnionToIntersection,
+  ValueOf,
+} from 'type-fest'
 
 export type AnyArray<T> = T[] | readonly T[]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,11 +16,7 @@ export type AnyFunction<T = any> = (...args: any[]) => T
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyRecord = Record<string, any>
 export type NonEmptyArray<T> = [T, ...T[]]
-export interface NonFunction {
-  apply?: never
-}
 export type Builtin = Primitive | AnyFunction | Date | Error | RegExp
-export type Serializable = JsonValue | (object & NonFunction)
 
 /**
  * Make a runtime mapping type for a literal union
@@ -25,51 +29,14 @@ export type EnumOf<E extends string | number | symbol> = {[K in E]: K}
 export type DisplayOf<E extends string | number | symbol> = {[K in E]: string}
 
 /**
- * Check whether a type is a tuple type
- */
-export type IsTuple<T extends {length: number}> = number extends T['length']
-  ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    T extends NonEmptyArray<any>
-    ? T
-    : never
-  : T
-
-/**
- * Returns tuple types that include every string in union
- * > TupleOf<keyof {bar: string; leet: number}>
- * ['bar', 'leet'] | ['leet', 'bar']
- * @see https://github.com/microsoft/TypeScript/issues/13298#issuecomment-692864087
- */
-export type TupleOf<U extends string, R extends string[] = []> = {
-  [S in U]: Exclude<U, S> extends never
-    ? [...R, S]
-    : TupleOf<Exclude<U, S>, [...R, S]>
-}[U] &
-  string[]
-
-/**
- * Identical to `SetStateAction` from React
- */
-export type SetStateAction<TInput, TOutput = TInput> =
-  | TInput
-  | ((prevState: TOutput) => TInput)
-
-/**
- * Like `SetStateAction` but the input is allowed to be partial
- */
-export type PatchStateAction<TInput, TOutput = TInput> =
-  | ObjectPartialDeep<TInput>
-  | ((prevState: TOutput) => ObjectPartialDeep<TInput>)
-
-/**
  * Create a type that represents either the value or an array of the value type
  */
 export type MaybeArray<T> = T | T[]
 
 /**
- * Like an intersection but only the common keys are required
+ * Create a type that represents either the value or a promise of the value type
  */
-export type OneOfTwo<T, U> = RequiredOnly<T & U, Extract<keyof T, keyof U>>
+export type MaybePromise<T> = T | Promise<T>
 
 /**
  * Like `Partial` but recursive
@@ -132,21 +99,14 @@ export declare type ObjectPartialDeep<T> = T extends Builtin
   : Partial<T>
 
 /**
- * Extract from `T` those types that are assignable to `U`, where `U` must exist
- * in `T`. Similar to `Extract` but requires the extraction list to be composed
- * of valid members of `T`.
- * @see https://github.com/pelotom/type-zoo/issues/37
+ * Check whether a type is a tuple type
  */
-export type ExtractStrict<T, U extends T> = T extends U ? T : never
-
-/**
- * Exclude from `T` those types that are assignable to `U`, where `U` must exist
- * in `T`. Similar to `Exclude` but requires the exclusion list to be composed
- * of valid members of `T`.
- *
- * @see https://github.com/pelotom/type-zoo/issues/37
- */
-export type ExcludeStrict<T, U extends T> = T extends U ? never : T
+export type IsTuple<T extends {length: number}> = number extends T['length']
+  ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    T extends NonEmptyArray<any>
+    ? T
+    : never
+  : T
 
 /**
  * Prevent usage of type `T` from being inferred in other generics
@@ -187,56 +147,6 @@ export type DistributivePick<T, K extends keyof T> = T extends any
   : never
 
 /**
- * Remove index signature from an object
- */
-export type PickKnownKeys<T extends object> = Pick<T, KnownKeys<T>>
-
-/**
- * Extract known keys from an object -- i.e. ignore index signature
- * @see https://stackoverflow.com/a/54568976
- */
-export type KnownKeys<T extends object> = {
-  [K in keyof T]: string extends K ? never : number extends K ? never : K
-} extends {[_ in keyof T]: infer U}
-  ? {} extends U
-    ? never
-    : U
-  : never
-
-/**
- * Remove keys with `never` value from an object
- */
-export type PickNonNeverKeys<T extends object> = Pick<T, NonNeverKeys<T>>
-
-/**
- * Extract keys that map to a non-never (non-undefined) value
- */
-export type NonNeverKeys<T extends object> = Exclude<
-  {[K in keyof T]: [T[K]] extends [undefined] ? never : K}[keyof T],
-  undefined
->
-
-/**
- * Extract optional property keys
- */
-export type OptionalKeys<T extends object> = Exclude<
-  {
-    [K in keyof T]: T extends Record<K, T[K]> ? never : K
-  }[keyof T],
-  undefined
->
-
-/**
- * Extract non-optional property keys
- */
-export type NonOptionalKeys<T extends object> = Exclude<
-  {
-    [K in keyof T]: T extends Record<K, T[K]> ? K : never
-  }[keyof T],
-  undefined
->
-
-/**
  * Remove keys with possibly undefined value from an object
  */
 export type PickRequiredKeys<T extends object> = Pick<T, RequiredKeys<T>>
@@ -262,32 +172,6 @@ export type Invert<T extends Record<PropertyKey, PropertyKey>> = {
 export type KeyFromValue<V, T extends Record<PropertyKey, PropertyKey>> = {
   [K in keyof T]: V extends T[K] ? K : never
 }[keyof T]
-
-/**
- * Returns the type that is wrapped inside an `Observable` type
- */
-export type ObservableValue<TObservable> = TObservable extends rxjs.Observable<
-  infer T
->
-  ? T
-  : never
-
-/**
- * Like `PathsOf` but doesn't include number of string interpolations at the root
- */
-export type MappablePathsOf<T, TMaxDepth extends number = 2> = NonNullable<
-  {
-    [P in keyof T]: T[P] extends infer V | null | undefined
-      ? // Array
-        number extends keyof V
-        ? `${string & P}` | `${string & P}.length`
-        : // Map
-        string extends keyof V
-        ? `${string & P}`
-        : PathsOfProp<P, V, T, TMaxDepth>
-      : never
-  }[keyof T]
->
 
 /**
  * Generates a union of "dotted paths" for the given type.
@@ -364,32 +248,12 @@ interface IncrementMap {
   9: 10
 }
 
-/**
- *  Access property using "dotted path"
- */
-export type ValueAtPath<T, TPath extends string> = string extends TPath
-  ? unknown
-  : string extends keyof T
-  ? TPath extends `${infer K}.${infer R}`
-    ? K extends keyof T
-      ? ValueAtPath<UnionToIntersectionIfNeeded<NonNullable<T[K]>>, R>
-      : unknown
-    : unknown
-  : TPath extends keyof T
-  ? T[TPath]
-  : TPath extends `${infer K}.${infer R}`
-  ? K extends keyof T
-    ? ValueAtPath<UnionToIntersectionIfNeeded<NonNullable<T[K]>>, R>
-    : unknown
-  : unknown
+export type NonDiscriminatedUnion<T> = {
+  [K in AllUnionKeys<T> & string]: Indexify<T>[K]
+}
 
-type UnionToIntersectionIfNeeded<T> = keyof T extends never
-  ? UnionToIntersection<T>
-  : T
-
-export type RecordValue<T> = T extends Record<string | number | symbol, infer U>
-  ? U
-  : never
+type AllUnionKeys<T> = keyof UnionToIntersection<{[K in keyof T]: undefined}>
+type Indexify<T> = T & Record<string, undefined>
 
 /**
  * Inspired by https://github.com/krzkaczor/ts-essentials#exhaustive-switch-cases
@@ -403,45 +267,6 @@ export class UnreachableCaseError extends Error {
   }
 }
 
-export type NonVoid<T> = T extends undefined ? never : T
-
-/**
- * Courtesy of https://dev.to/lucianbc/union-type-merging-in-typescript-9al
- * Not sure maybe it can be implemented with MergeUnion?
- * Also what's the diff between this vs. UnionToIntersection?
- */
-export type MergeUnion<T extends object> = {
-  [k in CommonKeys<T>]: PickTypeOf<T, k>
-} & {
-  [k in NonCommonKeys<T>]?: PickTypeOf<T, k>
+export function infer<T>() {
+  return <U extends T>(input: U) => input
 }
-
-/** Need to figure out the diff between this vs. MergeUnion */
-export type MergeUnion2<T extends object> = {
-  [k in AllKeys<T>]: PickType<T, k>
-}
-
-type CommonKeys<T extends object> = keyof T
-type Subtract<A, C> = A extends C ? never : A
-type NonCommonKeys<T extends object> = Subtract<AllKeys<T>, CommonKeys<T>>
-type AllKeys<T> = T extends any ? keyof T : never
-type PickType<T, K extends AllKeys<T>> = T extends {[k in K]?: any}
-  ? T[K]
-  : undefined
-type PickTypeOf<T, K extends string | number | symbol> = K extends AllKeys<T>
-  ? PickType<T, K>
-  : never
-
-export type {
-  Class,
-  Merge,
-  Primitive,
-  Promisable,
-  PromiseValue,
-  SetOptional,
-  SetRequired,
-  Simplify,
-  Split,
-  UnionToIntersection,
-  ValueOf,
-} from 'type-fest'

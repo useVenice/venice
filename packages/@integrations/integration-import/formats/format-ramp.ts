@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 
 import {makePostingsMap} from '@usevenice/standard'
-import {A, compact, DateTime, leftPad, parseMoney, zCast} from '@usevenice/util'
+import {A, DateTime, leftPad, parseMoney, R, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'
 
@@ -114,7 +114,7 @@ export const rampFormat = makeImportFormat({
             accountExternalId,
             // We could really use some custom attribute shere...
             // Hack for now. We really need custom fields
-            memo: compact([
+            memo: R.compact([
               // !clearingDate ? 'Pending' : '',
               row.User ?? row['Cardholder Name'],
               last4Padded,

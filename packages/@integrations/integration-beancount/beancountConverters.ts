@@ -13,24 +13,19 @@ import {
   $execCommand,
   A,
   asyncConv,
-  compact,
   conv,
   createHTTPClient,
   DateTime,
-  filterObject,
   formatDecimal,
   getEnvVar,
   inPlaceSort,
-  mapValues,
   math,
   objectFromArray,
   objectFromObject,
-  omit,
   R,
   resolveFnIfRegistered,
   shallowOmitUndefined,
   temp_makeId,
-  uniq,
   upperCaseFirst,
 } from '@usevenice/util'
 
@@ -72,7 +67,7 @@ function metaFromStandard(
       )),
     ...(opts.includeLabels && partial.labelsMap),
     ...objectFromArray(
-      inPlaceSort(compact(Object.values(partial.attachmentsMap ?? {}))).asc(
+      inPlaceSort(R.compact(Object.values(partial.attachmentsMap ?? {}))).asc(
         (att) => att.url,
       ),
       (_, index) => (index === 0 ? 'attachment' : `attachment_${index + 1}`),
@@ -242,7 +237,7 @@ const convPostingLabelsMap = conv<
 >({
   forward: (meta) =>
     objectFromObject(
-      omit(meta ?? {}, ['filename', 'lineno', '__automatic__']), // Omit standard beancount meta that is not useful for us as labels
+      R.omit(meta ?? {}, ['filename', 'lineno', '__automatic__']), // Omit standard beancount meta that is not useful for us as labels
       (_, v) => `${v}`,
     ),
   reverse: (map) =>
@@ -338,7 +333,8 @@ const convPostingsMap = conv<
       .map(convPosting)
       .map((p, i) => ({...p, sortKey: p.sortKey ?? i}))
     if (rest.length === 1 && rest[0]?.amount.unit === main?.amount.unit) {
-      return makePostingsMap({main, remainder: omit(rest[0], ['amount'])})
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return makePostingsMap({main, remainder: R.omit(rest[0]!, ['amount'])})
     }
     return makePostingsMap(
       {main},
@@ -347,7 +343,7 @@ const convPostingsMap = conv<
   },
   reverse: (map) => {
     const {main, remainder, ...others} = map ?? {}
-    const postings = compact([
+    const postings = R.compact([
       main && convPosting.reverse(main),
       ...inPlaceSort(Object.entries(others))
         .asc([([, post]) => post.sortKey, ([key]) => key])
@@ -357,13 +353,13 @@ const convPostingsMap = conv<
       // TODO: Fix me
       remainder &&
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        convPosting.reverse(omit(remainder, ['amount' as any]) as any),
+        convPosting.reverse(R.omit(remainder, ['amount' as any]) as any),
     ])
     // TODO: Move this functionality into its own plugin would be good
     // Sort by currency in order of appearance to make sure the generated posting order
     // is stable through beancount parser roundtrip
     const currOrder = objectFromArray(
-      uniq(postings.map((p) => p.units?.currency ?? '')),
+      R.uniq(postings.map((p) => p.units?.currency ?? '')),
       (curr) => curr,
       (_, index) => index,
     )
@@ -395,10 +391,10 @@ export const convTransaction = conv<
     // in those situations it is obviously useless to have notes...
     const notes =
       stdTxn.notes !== stdTxn.description && cleanValue(stdTxn.notes)
-    const postingsMap = mapValues(stdTxn.postingsMap ?? {}, (posting) =>
-      omit(
+    const postingsMap = R.mapValues(stdTxn.postingsMap ?? {}, (posting) =>
+      R.omit(
         posting,
-        compact([
+        R.compact([
           posting.date === stdTxn.date && 'date',
           // as well as posting memo
           posting.memo === stdTxn.description && 'memo',
@@ -413,7 +409,7 @@ export const convTransaction = conv<
             .minus({day: 1})
             [hasTime(stdTxn.date) ? 'toISO' : 'toISODate']()
         : stdTxn.date
-    const dates = uniq([
+    const dates = R.uniq([
       ...Object.values(postingsMap ?? {}).map((p) => p.date ?? txnDate),
       txnDate,
     ])
@@ -431,7 +427,7 @@ export const convTransaction = conv<
       // Equivalent to `*` flag, since it gets set by default. See
       // https://beancount.github.io/docs/beancount_language_syntax.html
       tags: convLabelsMap.reverse(stdTxn.labelsMap),
-      links: compact([stdTxn.transferId, dates.length > 1 && stdTxn.id]),
+      links: R.compact([stdTxn.transferId, dates.length > 1 && stdTxn.id]),
     }
     return dates.map(
       (date): Beancount.Transaction => ({
@@ -439,10 +435,7 @@ export const convTransaction = conv<
         meta: {...txn.meta, ...(hasTime(date) && {date})}, // Incorrect...
         date,
         postings: convPostingsMap.reverse(
-          filterObject(
-            postingsMap ?? {},
-            (_, p) => (p.date ?? txnDate) === date,
-          ),
+          R.pickBy(postingsMap ?? {}, (p) => (p.date ?? txnDate) === date),
         ),
       }),
     ) as NonEmptyArray<Beancount.Transaction>
@@ -541,7 +534,7 @@ const convWrappedEntry = conv<
 
               return (balance?.holdings ?? []).flatMap(
                 (holding): Beancount.WrappedEntry[] =>
-                  compact([
+                  R.compact([
                     math.isNonZero(
                       balance?.custom?.paddingAmount?.[holding.unit] ?? 0,
                     ) && {
@@ -755,7 +748,7 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
           ).then((r) => r.stdout)
         : axios.post<string>('/json_to_bean', beanJson).then((r) => r.data))
       const curr = beanJson.options.operating_currency?.[0]
-      return compact([
+      return R.compact([
         // This is really not ideal. we should refactor the converter to
         // be one that can take some options... or at least clean this up
         curr && defaultOptions(curr),

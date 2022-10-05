@@ -1,4 +1,4 @@
-import {identity, Rx, toCompletion} from '@usevenice/util'
+import {R, Rx, toCompletion} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
@@ -42,7 +42,9 @@ export async function sync<
       // Destination
       .pipe(input.destination)
       // Progress & flow controlß
-      .pipe(!input.watch ? Rx.takeWhile((e) => e.type !== 'ready') : identity),
+      .pipe(
+        !input.watch ? Rx.takeWhile((e) => e.type !== 'ready') : R.identity,
+      ),
     (e) => {
       count++
       if (ready) {

@@ -177,7 +177,7 @@ export function makeMetaLinks(metaBase: MetaService) {
     } else {
       const data = await table.get(id)
       // console.log(`[patch] Will merge patch and data`, {_patch, data})
-      await table.set(id, deepMerge(data, _patch))
+      await table.set(id, deepMerge(data ?? {}, _patch))
     }
   }
 

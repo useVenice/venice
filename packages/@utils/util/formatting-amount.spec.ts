@@ -8,70 +8,8 @@ import {
   _customFormatAmount,
   _formatSingleAmount,
   formatAmount,
-  legacy_formatAmount,
-  legacy_parsableFormatAmount,
 } from './formatting-amount'
 import type {StrictIntlNumberFormatOptions} from './formatting-number'
-
-test.each([
-  [{Session: 323, USD: 3232}, '323.00 Session; 3232.00 USD'],
-  [{Session: 323}, '323.00 Session'],
-  [A(100, 'USD'), '100.00 USD'],
-])('legacy_parsableFormatAmount(%p) -> %p', (input, output) => {
-  expect(legacy_parsableFormatAmount(input, {separator: ';'})).toEqual(output)
-})
-
-test('format positive amount', () => {
-  expect(legacy_formatAmount(A(100, 'USD'))).toBe('100.00 USD')
-  expect(legacy_formatAmount(A(100, 'USD'), {omitUnit: true})).toBe('100.00')
-})
-
-test('format negative amount', () => {
-  // TODO: Support `($100.00)` format
-  expect(legacy_formatAmount(A(-100, 'USD'))).toBe('(100.00 USD)')
-  expect(legacy_formatAmount(A(-100, 'USD'), {omitUnit: true})).toBe('(100.00)')
-})
-
-test('format multi amount', () => {
-  expect(legacy_formatAmount({amounts: [A(100, 'USD'), A(100, 'EUR')]})).toBe(
-    '100.00 USD; 100.00 EUR',
-  )
-  // Do not omitUnit when it would otherwies be ambiguous
-  expect(
-    legacy_formatAmount(
-      {amounts: [A(100, 'USD'), A(100, 'EUR')]},
-      {omitUnit: true},
-    ),
-  ).toBe('100.00 USD; 100.00 EUR')
-})
-
-test('format amount with non-symbol currency', () => {
-  expect(legacy_formatAmount(A(100, 'KZT'))).toBe('100.00 KZT')
-})
-
-test('format small <1 amount', () => {
-  expect(legacy_formatAmount(A(0.0024, 'USD'))).toBe('0.0024 USD')
-  expect(legacy_formatAmount(A(0.000024, 'USD'))).toBe('0.000024 USD')
-  expect(legacy_formatAmount(A(0.00000024, 'USD'))).toBe('0.00000024 USD')
-  expect(legacy_formatAmount(A(0.000000024, 'USD'))).toBe('0.000000024 USD')
-  expect(legacy_formatAmount(A(0.0000000024, 'USD'))).toBe('0.00 USD')
-})
-
-test('format small >1 amount', () => {
-  expect(legacy_formatAmount(A(1.0024, 'USD'))).toBe('1.00 USD')
-})
-
-test('format floating point amount', () => {
-  expect(legacy_formatAmount(A(-399.99999999356993, 'USD'))).toBe(
-    '(400.00 USD)',
-  )
-})
-
-test('format almost zero amount', () => {
-  expect(legacy_formatAmount(A(-2.1103119252074976e-12, 'USD'))).toBe(
-    '(0.00 USD)',
-  )
-})
 
 // Reason we have our custom number format is that there are no style that appends unit at the end
 // prettier-ignore

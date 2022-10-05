@@ -1,5 +1,5 @@
 import type {Standard} from '@usevenice/standard'
-import {A, DateTime, pick} from '@usevenice/util'
+import {A, DateTime, R} from '@usevenice/util'
 
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'
 
@@ -75,7 +75,7 @@ export function parseAccountData(
     _id: `${a.id}` as ExternalId,
     _balancesMap: {
       [DateTime.utc().toISODate()]: {
-        balances: pick(a, [
+        balances: R.pick(a, [
           'balance',
           'remainingBalance',
           'currentBalance',

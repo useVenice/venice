@@ -8,127 +8,10 @@ import {
 } from '@blossomfinance/iso-4217-currencies'
 import pluralize from 'pluralize'
 
-import type {Amount, AmountMap, AnyAmount, MultiAmount} from './amount-utils'
-import {A, toAmountOrMultiAmount, toAmounts} from './amount-utils'
+import type {Amount, AnyAmount} from './amount-utils'
+import {toAmounts} from './amount-utils'
 import type {StrictIntlNumberFormatOptions} from './formatting-number'
 import {formatDecimal, getIntlNumberFormat} from './formatting-number'
-import {DBL_EPSILON} from './math-utils'
-
-/** Will format into an unambiguous format */
-export function legacy_parsableFormatAmount(
-  amount?: Amount | MultiAmount | AmountMap | null,
-  {separator}: {separator?: string} = {},
-) {
-  return amount == null
-    ? ''
-    : legacy_formatAmount(amount, {
-        separator,
-        useGrouping: false,
-        currencySign: 'standard',
-      })
-}
-
-export type Legacy_FormatAmountOptions = StrictIntlNumberFormatOptions & {
-  omitUnit?: boolean
-  locales?: string | string[] | undefined
-  invert?: boolean
-  separator?: string
-}
-
-export function legacy_formatAmount(
-  amountOrQuantity: AnyAmount | number,
-  {separator = ';', ...restOpts}: Legacy_FormatAmountOptions = {},
-): string {
-  const amount =
-    typeof amountOrQuantity === 'number'
-      ? A(amountOrQuantity, '')
-      : toAmountOrMultiAmount(amountOrQuantity)
-
-  if ('amounts' in amount) {
-    return amount.amounts.length === 0
-      ? // Do not use decimal here. Better to format as empty
-        ''
-      : amount.amounts
-          .map((a) => _legacy_formatAmount(a, {...restOpts, omitUnit: false}))
-          .join(`${separator.trim()} `)
-  }
-
-  return _legacy_formatAmount(amount, restOpts)
-}
-
-export function _legacy_formatAmount(
-  _amount: Amount,
-  opts: Omit<Legacy_FormatAmountOptions, 'separator'> = {},
-) {
-  const amount = fixFloatingPointError(_amount)
-  let ret = formatDecimal(amount.quantity * (opts.invert ? -1 : 1), {
-    ...opts,
-    minimumFractionDigits:
-      opts.minimumFractionDigits ??
-      minPrecisionForAmountQuantity(amount.quantity),
-    maximumFractionDigits:
-      opts.maximumFractionDigits ??
-      maxPrecisionForAmountQuantity(amount.quantity),
-  })
-  if (amount.unit !== '' && !opts.omitUnit) {
-    ret += ` ${amount.unit}`
-  }
-  const currencySign = opts.currencySign ?? 'accounting'
-  if (currencySign === 'accounting' && ret.startsWith('-')) {
-    ret = `(${ret.slice(1)})`
-  }
-  return ret
-}
-
-export function minPrecisionForAmountQuantity(quantity: number) {
-  if (Math.abs(quantity) > 1 || quantity === 0) {
-    return 2
-  }
-
-  const fracDigits = quantity.toFixed(10).split('.')[1]?.split('') ?? []
-  let padding = 0
-  for (const [index, digit] of fracDigits.entries()) {
-    if (digit !== '0') {
-      padding = index + 1
-      break
-    }
-  }
-
-  return Math.min(10, padding)
-}
-
-export function maxPrecisionForAmountQuantity(quantity: number) {
-  return Math.abs(quantity) > 1 || quantity === 0 ? 2 : 10
-}
-
-// Fixes floating point errors in numbers like -399.99999999356993
-export function fixFloatingPointError(amount: Amount) {
-  const quantity = amount.quantity
-  if (
-    Math.floor(quantity + DBL_EPSILON) !== Math.floor(quantity) ||
-    Math.floor(quantity - DBL_EPSILON) !== Math.floor(quantity)
-  ) {
-    return {
-      ...amount,
-      quantity: Number.parseFloat(
-        Number.parseFloat(String(quantity)).toFixed(4),
-      ),
-    }
-  }
-  return amount
-}
-
-// MARK: - New amount formatting module used in Tabs to be moved back to Alka
-
-export interface _IntlFormatAmountOptions
-  extends StrictIntlNumberFormatOptions {
-  locales?: string | string[]
-}
-
-export interface _CustomFormatAmountOptions extends _IntlFormatAmountOptions {
-  formatCommodity?: (unit: Unit) => string
-  pluralize?: boolean
-}
 
 export interface FormatAmountOptions extends _CustomFormatAmountOptions {
   separator?: string
@@ -165,6 +48,11 @@ export function _formatSingleAmount(
   }
 }
 
+export interface _IntlFormatAmountOptions
+  extends StrictIntlNumberFormatOptions {
+  locales?: string | string[]
+}
+
 export function _intlFormatAmount(
   amount: Amount,
   {locales, ...opts}: _IntlFormatAmountOptions = {},
@@ -184,6 +72,11 @@ export function _intlFormatAmount(
       opts.minimumFractionDigits ?? getMinimumFractionDigits(amount.unit),
   })
   return fmt.format(amount.quantity)
+}
+
+export interface _CustomFormatAmountOptions extends _IntlFormatAmountOptions {
+  formatCommodity?: (unit: Unit) => string
+  pluralize?: boolean
 }
 
 /** Commodity will be suffixed */

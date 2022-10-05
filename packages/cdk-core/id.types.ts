@@ -1,4 +1,4 @@
-import {compact, invert, z} from '@usevenice/util'
+import {invert, R, z} from '@usevenice/util'
 
 export type ExternalId = z.infer<typeof zExternalId>
 export const zExternalId = z.union([z.string(), z.number()])
@@ -57,7 +57,7 @@ export function makeId<TPrefix extends IdPrefix, TPName extends string>(
     ? [TPrefix, ExternalId]
     : [TPrefix, TPName, ExternalId]
 ) {
-  return compact(args).join('_') as Id<TPName>[TPrefix]
+  return R.compact(args).join('_') as Id<TPName>[TPrefix]
 }
 
 export function extractId(id: Id[keyof Id]) {

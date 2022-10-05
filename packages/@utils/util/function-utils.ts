@@ -23,6 +23,4 @@ export function catchAsNull<T>(fn: () => T | null) {
   }
 }
 
-export {debounce, throttle} from '@github/mini-throttle'
 export {default as memoize} from 'micro-memoize'
-export type {MicroMemoize as Memoize} from 'micro-memoize'

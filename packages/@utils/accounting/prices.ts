@@ -2,11 +2,11 @@ import type {Standard} from '@usevenice/standard'
 import type {Amount, AmountMap, MultiAmount} from '@usevenice/util'
 import {
   A,
-  Balances,
   inPlaceSort,
   objectKeys,
   setAt,
   sortedIndexBy,
+  toAmountMap,
   toMultiAmount,
 } from '@usevenice/util'
 
@@ -178,7 +178,7 @@ export function _getPriceAt(sortedPrices: Standard.Price[], date?: ISODate) {
     {date} as Standard.Price,
     (p) => p.date,
   )
-  // after range, use last value
+  // After range, use last value
   if (index === sortedPrices.length) {
     return sortedPrices[sortedPrices.length - 1]
   }
@@ -186,7 +186,7 @@ export function _getPriceAt(sortedPrices: Standard.Price[], date?: ISODate) {
   if (index === 0) {
     return sortedPrices[0]
   }
-  // On exact value, well use exact value...
+  // On exact value, we'll use exact value
   if (sortedPrices[index]?.date === date) {
     return sortedPrices[index]
   }
@@ -221,16 +221,17 @@ export function convertAmountMap(
   targetUnit: Unit,
   date?: ISODate,
 ): AmountMap {
+  const amounts = toAmountMap(
+    toMultiAmount(amount).amounts.map(({unit, quantity}) => {
+      if (unit === targetUnit) {
+        return {unit, quantity}
+      }
+      return _convertAmount(priceMap, A(quantity, unit), targetUnit, date)
+    }),
+  )
   return {
     [targetUnit]: 0, // Always ensure we have a target unit is better
-    ...Balances.fromAmounts(
-      toMultiAmount(amount).amounts.map(({unit, quantity}) => {
-        if (unit === targetUnit) {
-          return {unit, quantity}
-        }
-        return _convertAmount(priceMap, A(quantity, unit), targetUnit, date)
-      }),
-    ).data,
+    ...amounts,
   }
 }
 

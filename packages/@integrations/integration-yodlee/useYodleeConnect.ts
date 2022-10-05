@@ -1,6 +1,6 @@
 import type {UseConnectHook} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, DivContainer, useScript} from '@usevenice/cdk-core'
-import type {MergeUnion} from '@usevenice/util'
+import type {NonDiscriminatedUnion} from '@usevenice/util'
 
 import type {FastLinkOpenOptions} from './fastlink'
 import type {yodleeProviderDef} from './YodleeProvider'
@@ -62,7 +62,7 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
           },
           onError: (_data) => {
             console.warn('[yodlee] Did receive an error', _data)
-            const data = _data as MergeUnion<typeof _data>
+            const data = _data as NonDiscriminatedUnion<typeof _data>
             close()
             reject(new Error(data.reason ?? data.message))
           },

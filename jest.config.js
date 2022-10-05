@@ -3,7 +3,6 @@
  */
 module.exports = {
   setupFiles: ['jest-date-mock'],
-  setupFilesAfterEnv: ['<rootDir>/jest-setupAfterEnv.ts'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/apps/next/.next/'],
   watchPathIgnorePatterns: [
