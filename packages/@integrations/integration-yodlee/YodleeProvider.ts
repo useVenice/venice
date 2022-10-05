@@ -31,11 +31,12 @@ import {
   zAccessToken,
   zConfig,
   zUserCreds,
+  zYodleeId,
 } from './YodleeClient'
 
 const zSettings = zUserCreds.extend({
   /** Used to be _id */
-  providerAccountId: z.number(),
+  providerAccountId: zYodleeId,
   // Cache
   user: zUser.nullish(),
   provider: zYodleeProvider.nullish(),
@@ -51,8 +52,8 @@ const _def = makeSyncProvider.def({
   // Should accessToken be cached based on provider / ledgerId?
   connectInput: z.object({accessToken: zAccessToken}),
   connectOutput: z.object({
-    providerAccountId: z.number(),
-    providerId: z.number(), // Technically optional
+    providerAccountId: zYodleeId,
+    providerId: zYodleeId, // Technically optional
   }),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
@@ -316,4 +317,4 @@ export const yodleeProvider = makeSyncProvider({
 })
 
 const SHOULD_SYNC_HOLDINGS = false
-const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = false
+const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = true
