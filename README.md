@@ -18,7 +18,9 @@ Zero to production in 5 minutes without a single line of code:
 
 **One click deploy with Vercel**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
+<a href="https://link.useVenice.com/deploy" rel="nofollow">
+  <img src="https://vercel.com/button" alt="Deploy with Vercel">
+</a>
 
 <p>
   <a href="https://link.useVenice.com/demo-video" rel="nofollow">
