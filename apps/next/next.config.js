@@ -24,7 +24,6 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../packages/@integrations/integration-wise'),
   path.resolve(__dirname, '../../packages/@integrations/integration-yodlee'),
   path.resolve(__dirname, '../../packages/@utils/accounting'),
-  path.resolve(__dirname, '../../packages/@utils/id'),
   path.resolve(__dirname, '../../packages/@utils/standard'),
   path.resolve(__dirname, '../../packages/@utils/util'),
   path.resolve(__dirname, '../../packages/cdk-core'),
