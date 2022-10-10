@@ -19,7 +19,11 @@ export {
 } from 'fast-equals'
 export {get as getAt, set as setAt} from 'shvl'
 
-export const deepMerge = deepmergeCustom<{
+/** Defaulting null / undefined to empty object */
+export const deepMerge: typeof _deepMerge = (...args) =>
+  _deepMerge(...(args.map((a) => a ?? {}) as unknown as typeof args))
+
+const _deepMerge = deepmergeCustom<{
   DeepMergeArraysURI: DeepMergeLeafURI
 }>({
   mergeArrays: false,
