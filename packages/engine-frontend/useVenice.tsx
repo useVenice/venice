@@ -35,12 +35,11 @@ export function useVeniceAdmin({
 }) {
   // Add a context for if user is in developer mode...
 
-  const {trpc, isAdmin, developerMode} = VeniceProvider.useContext()
+  const {trpc, isAdmin, ledgerId, developerMode} = VeniceProvider.useContext()
 
-  const integrationsRes = trpc.useQuery([
-    'listIntegrations',
-    {},
-  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
+    enabled: !!ledgerId,
+  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const ledgerIdsRes = trpc.useQuery(
     ['adminSearchLedgerIds', {keywords: ledgerIdKeywords}],
@@ -57,10 +56,9 @@ export function useVeniceAdmin({
 export function useVenice({envName, keywords}: UseVeniceOptions) {
   const {trpc, ledgerId, isAdmin, developerMode, queryClient} =
     VeniceProvider.useContext()
-  const integrationsRes = trpc.useQuery([
-    'listIntegrations',
-    {},
-  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
+    enabled: !!ledgerId,
+  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
   const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
     enabled: !!ledgerId,
     refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
