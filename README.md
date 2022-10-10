@@ -1,4 +1,5 @@
 # Venice
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 
 <p align="center">
   <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
