@@ -40,6 +40,15 @@ test('deepMerge() does not alter original objects', () => {
   expect(b).toEqual({b: 2})
 })
 
+test('deepMerge() defaults null / undefined to emtpy object', () => {
+  expect(deepMerge({}, undefined)).toEqual({})
+  expect(deepMerge(undefined, {})).toEqual({})
+  expect(deepMerge(undefined, {}, null)).toEqual({})
+  expect(deepMerge(undefined)).toEqual({})
+  expect(deepMerge()).toEqual(undefined)
+  expect(deepMerge(undefined, {}, '5')).toEqual('5')
+})
+
 test('deepMerge() does not merge arrays', () => {
   const a = {a: 1, key: {inner: 1}}
   const b = {b: 2, key: ['array_ele']}
