@@ -1,0 +1,12 @@
+# Used by Airplane to identify your view. Do not change.
+slug: demo_customer_dashboard_getting_started
+
+# A human-readable name for your view.
+name: '[DEMO] Customer dashboard - getting started'
+
+# A human-readable description for your view.
+# description: "My Airplane view"
+
+# The path to the .view.tsx file containing the logic for this view. This
+# can be absolute or relative to the location of the definition file.
+entrypoint: ledger_dashboard.view.tsx
