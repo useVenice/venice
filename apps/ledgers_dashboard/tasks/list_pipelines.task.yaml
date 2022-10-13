@@ -1,0 +1,79 @@
+# Full reference: https://docs.airplane.dev/tasks/task-definition
+
+# Used by Airplane to identify your task. Do not change.
+slug: list_pipelines
+
+# A human-readable name for your task.
+name: list_pipelines
+
+# A human-readable description for your task.
+# description: "My Airplane task"
+
+# A list of inputs to your task.
+# parameters:
+# -
+#   # An identifier for the parameter, which can be used in JavaScript
+#   # templates (https://docs.airplane.dev/runbooks/javascript-templates).
+#   slug: name
+#   # A human-readable name for the parameter.
+#   name: Name
+#   # The type of parameter. Valid values: shorttext, longtext, sql, boolean,
+#   # upload, integer, float, date, datetime, configvar.
+#   type: shorttext
+#   # A human-readable description of the parameter.
+#   description: The user's name.
+#   # The default value of the parameter.
+#   default: Alfred Pennyworth
+#   # Set to false to indicate that this parameter. is optional. Default: true.
+#   required: false
+#   # A list of options to constrain the parameter values. For configvar types,
+#   # each option needs to be an object with a label (value to show to user) and
+#   # a config (name of the config var). For all other types, each option can be
+#   # a single value or an object with a label and a value.
+#   options:
+#   - Alfred Pennyworth
+#   - label: Batman
+#     value: Bruce Wayne
+#   # A regular expression with which to validate parameter values.
+#   regex: "^[a-zA-Z ]+$"
+
+# Configuration for a SQL task.
+sql:
+  # The slug of a database resource.
+  resource: 'postgres'
+
+  # The path to the .sql file containing the logic for this task. This can be
+  # absolute or relative to the location of the definition file. The contents
+  # of the .sql file support JavaScript templates
+  # (https://docs.airplane.dev/runbooks/javascript-templates).
+  entrypoint: list_pipelines.sql
+
+  # A map of query arguments that can be used to safely pass parameter inputs
+  # to your query. Supports JavaScript templates
+  # (https://docs.airplane.dev/runbooks/javascript-templates).
+  # queryArgs:
+  #   name: "{{params.name}}"
+
+  # The transaction mode to use. Valid values: auto, readOnly, readWrite, none.
+  # Default: auto.
+  # transactionMode: readWrite
+
+  # A list of config variables that this task can access.
+  # configs:
+  #   - API_KEY
+  #   - DB_PASSWORD
+# Set label constraints to restrict this task to run only on agents with
+# matching labels.
+# constraints:
+#   aws-region: us-west-2
+
+# Set to true to disable direct execution of this task. Default: false.
+# requireRequests: true
+
+# Set to false to disallow requesters from approving their own requests for
+# this task. Default: true.
+# allowSelfApprovals: false
+
+# The maximum number of seconds the task should take before being timed out.
+# Default: 3600.
+# timeout: 1800
