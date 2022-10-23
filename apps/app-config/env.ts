@@ -8,14 +8,19 @@ import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {importProvider} from '@usevenice/integration-import'
+import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
+import {mootaProvider} from '@usevenice/integration-moota'
 import {oneBrickProvider} from '@usevenice/integration-onebrick'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
+import {QBOProvider} from '@usevenice/integration-qbo'
 import {rampProvider} from '@usevenice/integration-ramp'
+import {saltedgeProvider} from '@usevenice/integration-saltedge'
 import {splitwiseProvider} from '@usevenice/integration-splitwise'
 import {stripeProvider} from '@usevenice/integration-stripe'
 import {tellerProvider} from '@usevenice/integration-teller'
 import {togglProvider} from '@usevenice/integration-toggl'
+import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
@@ -67,6 +72,7 @@ export const PROVIDERS = [
   // Ledger
   beancountProvider,
   importProvider,
+  lunchmoneyProvider,
   oneBrickProvider,
   tellerProvider,
   stripeProvider,
@@ -77,6 +83,10 @@ export const PROVIDERS = [
 
   splitwiseProvider,
   postgresProvider,
+  mootaProvider,
+  QBOProvider,
+  saltedgeProvider,
+  venmoProvider,
 ] as const
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */

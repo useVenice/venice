@@ -10,6 +10,9 @@ import {
   makePostgresMetaService,
 } from '@usevenice/core-integration-postgres'
 import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
+import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
+import {makeMootaClient} from '@usevenice/integration-moota'
 import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
 // dynamic-cli plaid ......  or
@@ -18,6 +21,7 @@ import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // much like tsx and others
 import {makePlaidClient} from '@usevenice/integration-plaid'
 import {makeRampClient} from '@usevenice/integration-ramp'
+import {makeSaltedgeClient} from '@usevenice/integration-saltedge'
 import {makeStripeClient} from '@usevenice/integration-stripe'
 import {makeTellerClient} from '@usevenice/integration-teller'
 import {makeTogglClient} from '@usevenice/integration-toggl'
@@ -74,6 +78,12 @@ if (require.main === module) {
         intConfig('yodlee'),
         getEnvVar('YODLEE_CREDS', {json: true}),
       ),
+    alphavantage: () => makeAlphavantageClient({apikey: ''}),
+    // asana: () => makeAsanaClient({baseURL: ''}),
+    lunchmoney: () => makeLunchmoneyClient(intConfig('lunchmoney')),
+    moota: () => makeMootaClient(intConfig('moota')),
+    // qbo: () => makeQBOClient(intConfig('qbo')),
+    saltedge: () => makeSaltedgeClient(intConfig('saltedge')),
   }
 
   const clientFactory = z

@@ -1,0 +1,19 @@
+{
+  "name": "@usevenice/integration-venmo",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk-ledger": "*",
+    "@usevenice/standard": "*",
+    "@usevenice/util": "*",
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "*"
+  }
+}
