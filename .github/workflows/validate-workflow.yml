@@ -1,9 +1,6 @@
 name: Validate
 
-on:
-  push:
-  pull_request:
-    types: [opened, reopened, synchronize]
+on: [push, pull_request]
 
 jobs:
   main:
@@ -67,4 +64,4 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLATIFY_SLACK_WEBHOOK_URL }} # required
-        if: ${{ secrets.SLATIFY_SLACK_WEBHOOK_URL != '' && always() }} # Pick up events even if the job fails or is canceled.
+        if: ${{ env.SLACK_WEBHOOK_URL != '' && always() }} # Pick up events even if the job fails or is canceled.
