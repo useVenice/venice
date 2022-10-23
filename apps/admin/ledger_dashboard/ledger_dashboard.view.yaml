@@ -1,8 +1,8 @@
 # Used by Airplane to identify your view. Do not change.
-slug: demo_customer_dashboard_getting_started
+slug: ledger_dashboard
 
 # A human-readable name for your view.
-name: '[DEMO] Customer dashboard - getting started'
+name: 'Ledger Dashboard'
 
 # A human-readable description for your view.
 # description: "My Airplane view"
