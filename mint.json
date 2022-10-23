@@ -1,0 +1,43 @@
+{
+  "name": "Venice",
+  "logo": {
+    "light": "/docs/logo/light.png",
+    "dark": "/docs/logo/dark.png"
+  },
+  "favicon": "/docs/favicon.png",
+  "colors": {
+    "primary": "#424054",
+    "light": "#E9E8EC",
+    "dark": "#2B2B2F",
+    "ultraLight": "#F9F9F9",
+    "ultraDark": "#1C1F23"
+  },
+  "topbarCtaButton": {
+    "type": "github",
+    "url": "https://github.com/usevenice/venice"
+  },
+  "anchors": [
+    {
+      "name": "Slack",
+      "icon": "slack",
+      "url": "https://link.usevenice.com/slack"
+    },
+    {
+      "name": "Product Roadmap",
+      "icon": "map",
+      "url": "https://github.com/orgs/usevenice/projects/1"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Home",
+      "pages": ["README", "docs/next-steps"]
+    }
+  ],
+  "backgroundImage": "/docs/background.png",
+  "footerSocials": {
+    "github": "https://github.com/usevenice",
+    "slack": "https://link.usevenice.com/slack",
+    "twitter": "https://twitter.com/use_venice"
+  }
+}

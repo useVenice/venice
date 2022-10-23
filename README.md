@@ -1,11 +1,12 @@
-# Venice
+---
+title: Venice
+description: Venice is a the fastest way to get financial data from Plaid into your Postgres database.
+---
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
-
 <p align="center">
   <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
 </p>
 
-**Venice** is a the fastest way to get financial data from Plaid into your Postgres database.
 
 Zero to production in 5 minutes without a single line of code:
 
@@ -17,7 +18,9 @@ Zero to production in 5 minutes without a single line of code:
 
 **One click deploy with Vercel**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://link.useVenice.com/deploy)
+<a href="https://link.useVenice.com/deploy" rel="nofollow">
+  <img src="https://vercel.com/button" alt="Deploy with Vercel">
+</a>
 
 <p>
   <a href="https://link.useVenice.com/demo-video" rel="nofollow">
@@ -32,17 +35,6 @@ Zero to production in 5 minutes without a single line of code:
     <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
   </a>
 </p>
-
-## Table of Contents
-
-- [Why We Exist](#why-we-exist)
-- [What We Built](#what-we-built)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Local Development](#local-development)
-- [FAQs](#faqs)
-- [Contribute & Support](#contribute--support)
 
 ## Why we exist
 
