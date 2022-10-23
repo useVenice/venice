@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "run-s --silent build:*",
+    "build": "run-s build:*",
     "build:css": "pnpm run generate:css --minify",
-    "build:migration": "pnpm --dir ../../ migration up",
+    "build:migration": "if [ \"$VERCEL_ENV\" = production ]; then pnpm --dir ../../ migration up; else echo 'Skip non-production migration'; fi",
     "build:next": "next build",
     "dev": "run-p --silent dev:*",
     "dev:css": "pnpm run generate:css --watch",
