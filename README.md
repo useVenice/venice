@@ -85,8 +85,19 @@ Here are 5 ways you can use Venice, each built on a layer below:
 8. Deploy Vercel.
 9. Once Vercel is ready, click to open the domain.
 10. Go to jwt.io, enter the same JWT token here as you saw in Supabase. Copy this access token.
-11. Paste the access token into the URL of the Vercel Domain and add the words "?accessToken=[YOUR ACCESS TOKEN]".
+11. Paste the access token into the URL of the Vercel Domain and add the words `?accessToken=$YOUR_ACCESS_TOKEN`.
 12. Voila! You should see your page. Click new connection and connect using Plaid Link. Visit the database or table in Supabase to see the transactions and accounts!
+
+## Non-sandbox environment
+
+There are three environments venice operates in when creating new connections, and they correspond to the same envs in Plaid.
+- sandbox
+- development
+- production
+
+The default is `sandbox`. To change the environment when creating new connections, append `&env=development|production` to the end of the url (where you normally add access token).
+
+This setting only affects new connections. Existing connections store which environment they are part of and automatically use the correct environment-specific keys from environment variables when communicating with Plaid.
 
 ## Environment variables
 
@@ -103,7 +114,6 @@ Here are 5 ways you can use Venice, each built on a layer below:
 | `int_plaid__products`             | `Array<assets \| auth \| balance \| identity \| investments \| liabilities \| payment_initiation \| transactions \| credit_details \| income \| income_verification \| deposit_switch \| standing_orders \| transfer \| employment \| recurring_transactions> = ["transactions"]`                                                                                                                               |
 | `int_plaid__countryCodes`         | `Array<US \| GB \| ES \| NL \| FR \| IE \| CA \| DE \| IT> = ["US"]`                                                                                                                                                                                                                                                                                                                                            |
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de = "en"`                                                                                                                                                                                                                                                                                                                                                                             |
-
 ## Local Development
 
 1. Clone repo `git clone git@github.com:usevenice/venice.git`.
