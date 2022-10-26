@@ -20,7 +20,7 @@ export const veniceCommonConfig = VeniceProvider.config({
   providers: PROVIDERS,
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  apiUrl: joinPath(env.NEXT_PUBLIC_SERVER_URL, '/api'),
+  apiUrl: joinPath(env.NEXT_PUBLIC_SERVER_URL, '/api/trpc'),
 
   // parseJwtPayload // use default here
 })
