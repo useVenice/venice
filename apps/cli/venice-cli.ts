@@ -22,7 +22,7 @@ import {
   zFunction,
   zodInsecureDebug,
 } from '@usevenice/util'
-import {runWorker, startWorkerLoop} from '@usevenice/worker/worker'
+import {runWorker, setupWorkerLoop} from '@usevenice/worker/worker'
 
 import {cliFromRouter} from './cli-utils'
 
@@ -42,10 +42,13 @@ export const cli = cliFromRouter(veniceRouter, {
 })
 
 cli
-  .command('startWorkerLoop', 'Start event loop for the worker via pg_cron')
-  .action(async () => {
-    await startWorkerLoop()
-  })
+  .command('setupWorkerLoop', 'Setup event loop for the worker via pg_cron')
+  .option('--syncHttp', 'Use "http" extension instead of "pg_net"')
+  .action(
+    zFunction([z.object({syncHttp: z.boolean().optional()})], async (opts) => {
+      await setupWorkerLoop(opts)
+    }),
+  )
 
 cli
   .command('worker', 'Start the worker')
