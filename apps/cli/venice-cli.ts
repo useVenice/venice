@@ -22,6 +22,7 @@ import {
   zFunction,
   zodInsecureDebug,
 } from '@usevenice/util'
+import {runWorker} from '@usevenice/worker/worker'
 
 import {cliFromRouter} from './cli-utils'
 
@@ -39,6 +40,15 @@ export const cli = cliFromRouter(veniceRouter, {
     ledgerId: process.env['LEDGER_ID'] as Id['ldgr'] | undefined,
   }),
 })
+
+cli
+  .command('worker', 'Start the worker')
+  .option('--timeout', 'Timeout in ms before worker exits')
+  .action(
+    zFunction([z.object({timeout: z.number().nullish()})], async (opts) => {
+      await runWorker({timeout: opts.timeout ?? undefined})
+    }),
+  )
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')

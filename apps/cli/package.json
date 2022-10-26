@@ -28,6 +28,7 @@
     "@usevenice/integration-yodlee": "*",
     "@usevenice/standard": "*",
     "@usevenice/util": "*",
+    "@usevenice/worker": "*",
     "cac": "6.7.12",
     "keytar": "7.9.0",
     "micro": "9.3.5-canary.3",

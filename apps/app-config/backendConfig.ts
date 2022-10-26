@@ -17,6 +17,8 @@ import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
+export const backendEnv = env
+
 const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 
 /**

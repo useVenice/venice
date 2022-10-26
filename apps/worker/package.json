@@ -1,0 +1,9 @@
+{
+  "name": "@usevenice/worker",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@usevenice/app-config": "*",
+    "graphile-worker": "0.13.0"
+  }
+}
