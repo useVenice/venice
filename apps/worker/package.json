@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@usevenice/app-config": "*",
+    "@usevenice/core-integration-postgres": "*",
     "graphile-worker": "0.13.0"
   }
 }

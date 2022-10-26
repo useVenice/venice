@@ -1,9 +1,48 @@
  
 
- 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {run} from 'graphile-worker'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {makePostgresClient} from '@usevenice/core-integration-postgres'
+
+export async function startWorkerLoop() {
+  if (!backendEnv.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')) {
+    console.warn('Worker exit: env.POSTGRES_OR_WEBHOOK_URL not postgres')
+    return
+  }
+  const {sql, getPool} = makePostgresClient({
+    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
+  })
+
+  // Not sure why `literalValue` here is necessary, but without which postgres will fail
+  // with bind message supplies 2 parameters, but prepared statement "" requires 0 error
+  // @see related https://github.com/gajus/slonik/issues/138
+  // TODO: Turn these into real values
+  const workerUrl = sql.literalValue(
+    'https://webhook.site/c62353a0-ebab-486f-860c-0db3f525c2df',
+  )
+  const secret = sql.literalValue('secret_' + new Date().toString())
+
+  const pool = await getPool()
+  // NOTE: Only database named `postgres` works with pg_cron by default
+  await pool.query(sql`
+    CREATE EXTENSION IF NOT EXISTS http;
+    CREATE EXTENSION IF NOT EXISTS pg_cron;
+  `)
+  await pool.query(sql`
+    SELECT
+      cron.schedule('runWorkerEveryMinute', '* * * * *', -- every minute
+        $$
+        SELECT status
+        FROM http_post(${workerUrl},
+          json_build_object('secret', ${secret})::text,
+          'application/json'
+        )
+        $$
+      );
+  `)
+}
 
 export async function runWorker(opts: {timeout?: number}) {
   if (!backendEnv.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')) {
@@ -11,7 +50,7 @@ export async function runWorker(opts: {timeout?: number}) {
     return
   }
   // Run a worker to execute jobs:
-   
+
   const runner = await run({
     connectionString: backendEnv.POSTGRES_OR_WEBHOOK_URL,
     concurrency: 5,
@@ -19,9 +58,9 @@ export async function runWorker(opts: {timeout?: number}) {
     noHandleSignals: false,
     pollInterval: 1000,
     // you can set the taskList or taskDirectory but not both
-    crontab: '* * * * * scheduler ?fill=1m',
+    crontab: '* * * * * scheduleTasks ?fill=1m',
     taskList: {
-      scheduler: (payload, helpers) => {
+      scheduleTasks: (payload, helpers) => {
         console.log('ha', payload)
         helpers.logger.info('Scheduling')
       },

@@ -22,7 +22,7 @@ import {
   zFunction,
   zodInsecureDebug,
 } from '@usevenice/util'
-import {runWorker} from '@usevenice/worker/worker'
+import {runWorker, startWorkerLoop} from '@usevenice/worker/worker'
 
 import {cliFromRouter} from './cli-utils'
 
@@ -40,6 +40,12 @@ export const cli = cliFromRouter(veniceRouter, {
     ledgerId: process.env['LEDGER_ID'] as Id['ldgr'] | undefined,
   }),
 })
+
+cli
+  .command('startWorkerLoop', 'Start event loop for the worker via pg_cron')
+  .action(async () => {
+    await startWorkerLoop()
+  })
 
 cli
   .command('worker', 'Start the worker')

@@ -354,9 +354,11 @@ importers:
   apps/worker:
     specifiers:
       '@usevenice/app-config': '*'
+      '@usevenice/core-integration-postgres': '*'
       graphile-worker: 0.13.0
     dependencies:
       '@usevenice/app-config': link:../app-config
+      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
       graphile-worker: 0.13.0
 
   packages/@integrations/core-integration-airtable:
