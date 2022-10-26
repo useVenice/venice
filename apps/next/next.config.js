@@ -3,6 +3,7 @@ const webpack = require('webpack')
 // prettier-ignore
 const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../app-config'),
+  path.resolve(__dirname, '../worker'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-airtable'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-firebase'),
   path.resolve(__dirname, '../../packages/@integrations/core-integration-fs'),

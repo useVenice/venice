@@ -3,6 +3,7 @@ import {run, runMigrations} from 'graphile-worker'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {makePostgresClient} from '@usevenice/core-integration-postgres'
+import {joinPath} from '@usevenice/util'
 
 export async function setupWorkerLoop(opts: {syncHttp?: boolean}) {
   if (!backendEnv.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')) {
@@ -16,11 +17,11 @@ export async function setupWorkerLoop(opts: {syncHttp?: boolean}) {
   // Not sure why `literalValue` here is necessary, but without which postgres will fail
   // with bind message supplies 2 parameters, but prepared statement "" requires 0 error
   // @see related https://github.com/gajus/slonik/issues/138
-  // TODO: Turn these into real values
   const workerUrl = sql.literalValue(
-    'https://webhook.site/c62353a0-ebab-486f-860c-0db3f525c2df',
+    joinPath(backendEnv.NEXT_PUBLIC_SERVER_URL, '/api/worker'),
+    // 'https://webhook.site/c62353a0-ebab-486f-860c-0db3f525c2df',
   )
-  const secret = sql.literalValue('secret_' + new Date().toString())
+  const secret = sql.literalValue(backendEnv.WORKER_INVOCATION_SECRET)
   const pool = await getPool()
 
   // MARK: - Setup pg_cron

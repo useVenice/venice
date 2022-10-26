@@ -53,6 +53,11 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     .trim()
     .optional()
     .describe('Used for validating authenticity of accessToken'),
+
+  WORKER_INVOCATION_SECRET: z
+    .string()
+    .default('')
+    .describe('Used to invote the /api/worker endpoint'),
 })
 
 // MARK: - Integration env vars
