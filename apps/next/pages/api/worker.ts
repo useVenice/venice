@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 import type {NextApiHandler} from 'next'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
-import {R} from '@usevenice/util'
+import {memoEnsureDir, R} from '@usevenice/util'
 import {runWorker} from '@usevenice/worker'
 
 export default R.identity<NextApiHandler>(async (req, res) => {
@@ -24,6 +24,9 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     res.status(401).send('WORKER_INVOCATION_SECRET required')
     return
   }
+
+  // Workaround for https://github.com/graphile/worker/issues/299
+  await memoEnsureDir('../sql')
 
   // 10 seconds for vercel personal plan and 60 seconds for team plan
   // So we default to 9 seconds (for idle anyways). This makes all forms of incremental sync super important.
