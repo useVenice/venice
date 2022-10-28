@@ -106,29 +106,35 @@ export async function runWorker(opts: {timeout?: number}) {
         helpers.logger.info(`syncPipeline, ${pipelineId}`)
       },
     },
-    // or:
-    //   taskDirectory: `${__dirname}/tasks`,
+  })
+
+  // How do we solve this in an `rxjs` way?
+
+  let idleTimeout: NodeJS.Timeout | undefined = undefined
+
+  runner.events.addListener('job:start', () => {
+    if (idleTimeout) {
+      console.log('Starting job and clearing idleTimeout')
+      clearTimeout(idleTimeout)
+      idleTimeout = undefined
+    }
+  })
+
+  runner.events.addListener('worker:getJob:empty', () => {
+    if (!opts.timeout || idleTimeout) {
+      return
+    }
+    console.log(`No job, will wait ${opts.timeout}ms then quit`)
+    idleTimeout = setTimeout(async () => {
+      console.log('Runner timeout, exiting...')
+      await runner.stop()
+    }, opts.timeout)
   })
 
   // Immediately await (or otherwise handled) the resulting promise, to avoid
   // "unhandled rejection" errors causing a process crash in the event of
   // something going wrong.
-
-  await (!opts.timeout
-    ? runner.promise
-    : Promise.race([
-        runner.promise,
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            console.log('Runner timeout, exiting...')
-            runner
-              .stop()
-              .then(() => resolve(undefined))
-              .catch((err) => reject(err))
-          }, opts.timeout)
-        }),
-      ]))
-
+  await runner.promise
   // If the worker exits (whether through fatal error or otherwise), the above
   // promise will resolve/reject.
 }
