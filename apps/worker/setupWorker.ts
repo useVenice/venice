@@ -75,7 +75,12 @@ export async function setupWorker(opts: {syncHttp?: boolean}) {
       CREATE OR REPLACE TRIGGER "run_worker_on_new_job"
       AFTER INSERT ON graphile_worker.jobs
       FOR EACH ROW
-      EXECUTE FUNCTION supabase_functions.http_request(${workerUrl}, 'POST', '{"Content-type":"application/json"}', '{}', '1000');
+      EXECUTE FUNCTION supabase_functions.http_request(${workerUrl}, 'POST', '{"Content-type":"application/json"}',
+        ${sql.literalValue(
+          JSON.stringify({secret: backendEnv.WORKER_INVOCATION_SECRET}),
+        )}, '1000');
     `)
+    // We pass the JSON.stringified version here because calling multiple functions (.e.g jsonb_build_object) inside
+    // EVOKE_FUNCTION does not work very well...
   }
 }
