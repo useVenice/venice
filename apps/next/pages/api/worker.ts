@@ -1,7 +1,5 @@
 import '@usevenice/app-config/register.node'
 
-import * as fs from 'node:fs'
-
 import type {NextApiHandler} from 'next'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
@@ -26,7 +24,6 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     res.status(401).send('WORKER_INVOCATION_SECRET required')
     return
   }
-  console.log('readDirSync', fs.readdirSync('./'))
   // 10 seconds for vercel personal plan and 60 seconds for team plan
   // So we default to 9 seconds (for idle anyways). This makes all forms of incremental sync super important.
 
