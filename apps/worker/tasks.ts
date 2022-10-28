@@ -27,6 +27,9 @@ export const scheduleTasks: Task = async (_, helpers) => {
     rxjs.from(pipelines).pipe(
       mapAsync(
         (pipe) =>
+          // TODO: it would be nice if addJob function could be typesafe
+          // And thus support refactoring relative to the
+          // current list of jobs in the codebase...
           helpers.addJob(
             'syncPipeline',
             {pipelineId: pipe.id},
