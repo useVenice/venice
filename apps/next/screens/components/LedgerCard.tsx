@@ -15,8 +15,12 @@ export function LedgerCard({ledger: l}: {ledger: LedgerIdResultRow}) {
           <div className="flex flex-col space-y-1">
             <span className="card-title text-base text-black">{l.id}</span>
             <span className="text-sm"># Connections: {l.connectionCount}</span>
-            <span className="text-sm">First connected: {l.firstCreatedAt}</span>
-            <span className="text-sm">Last updated: {l.lastUpdatedAt}</span>
+            <span className="text-sm">
+              First connected: {l.firstCreatedAt as string}
+            </span>
+            <span className="text-sm">
+              Last updated: {l.lastUpdatedAt as string}
+            </span>
           </div>
 
           <div className="flex flex-1 justify-end">
