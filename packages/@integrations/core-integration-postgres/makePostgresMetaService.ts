@@ -116,7 +116,7 @@ export const makePostgresMetaService = zFunction(
         const conditions = R.compact([
           ids && sql`(source_id = ANY(${ids}) OR destination_id = ANY(${ids}))`,
           secondsSinceLastSync &&
-            sql`(now() - last_sync_completed_at) < (interval '1 second' * ${secondsSinceLastSync})`,
+            sql`(now() - last_sync_completed_at) >= (interval '1 second' * ${secondsSinceLastSync})`,
         ])
         const where =
           conditions.length > 0

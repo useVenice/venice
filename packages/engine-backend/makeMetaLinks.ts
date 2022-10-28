@@ -142,6 +142,8 @@ export function makeMetaLinks(metaBase: MetaService) {
             id: pipeline.id,
             linkOptions: pipeline.linkOptions,
             lastSyncStartedAt: op.subtype === 'init' ? new Date() : undefined,
+            // Idealy this should use the database timestamp if possible (e.g. postgres)
+            // However we don't always know if db supports it (e.g. local files...)
             lastSyncCompletedAt:
               op.subtype === 'complete' ? new Date() : undefined,
           })
