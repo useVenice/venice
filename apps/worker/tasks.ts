@@ -1,9 +1,12 @@
 import type {JobHelpers, Task} from 'graphile-worker'
 
-import {veniceRouter} from '@usevenice/app-config/backendConfig'
+import {
+  veniceBackendConfig,
+  veniceRouter,
+} from '@usevenice/app-config/backendConfig'
 import {zId} from '@usevenice/cdk-core'
 import type {MaybePromise} from '@usevenice/util'
-import {z} from '@usevenice/util'
+import {mapAsync, rxjs, toCompletion, z} from '@usevenice/util'
 
 const makeTask = <T extends z.ZodTypeAny>(
   schema: T,
@@ -12,6 +15,28 @@ const makeTask = <T extends z.ZodTypeAny>(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const taskFn: Task = (payload, helpers) => fn(schema.parse(payload), helpers)
   return taskFn
+}
+
+export const scheduleTasks: Task = async (_, helpers) => {
+  // We shall sync once per day. May not always be at same time each day
+  console.log('Scheduling...')
+  const pipelines = await veniceBackendConfig.metaService.findPipelines({
+    secondsSinceLastSync: 24 * 60 * 60,
+  })
+  await toCompletion(
+    rxjs.from(pipelines).pipe(
+      mapAsync(
+        (pipe) =>
+          helpers.addJob(
+            'syncPipeline',
+            {pipelineId: pipe.id},
+            {jobKey: `syncPipeline-${pipe.id}`}, // At most one at a time...
+          ),
+        25, // Limit how many jobs we add at a time
+      ),
+    ),
+  )
+  console.log(`Scheduled ${pipelines.length} pipeline syncs`)
 }
 
 export const syncPipeline: Task = makeTask(
@@ -25,14 +50,6 @@ export const syncPipeline: Task = makeTask(
       .mutation('syncPipeline', [{id: pipelineId}, {}])
   },
 )
-
-export const scheduleTasks: Task = async (_, helpers) => {
-  console.log('Scheduling...')
-  for (let i = 0; i < 5; i++) {
-    await helpers.addJob('echo', {i})
-  }
-  console.log('Scheduled')
-}
 
 /** Task for debugging purposes... */
 export const echo: Task = (payload) => {
