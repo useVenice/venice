@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 import type {NextApiHandler} from 'next'
 
 import {R} from '@usevenice/util'
-import {runWorker} from '@usevenice/worker/worker'
+import {runWorker} from '@usevenice/worker'
 
 export default R.identity<NextApiHandler>(async (req, res) => {
   // Is this necessary? Can be useful for admin console though

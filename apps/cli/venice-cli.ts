@@ -22,7 +22,7 @@ import {
   zFunction,
   zodInsecureDebug,
 } from '@usevenice/util'
-import {runWorker, setupWorkerLoop} from '@usevenice/worker/worker'
+import {runWorker, setupWorker} from '@usevenice/worker'
 
 import {cliFromRouter} from './cli-utils'
 
@@ -46,7 +46,7 @@ cli
   .option('--syncHttp', 'Use "http" extension instead of "pg_net"')
   .action(
     zFunction([z.object({syncHttp: z.boolean().optional()})], async (opts) => {
-      await setupWorkerLoop(opts)
+      await setupWorker(opts)
     }),
   )
 
