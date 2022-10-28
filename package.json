@@ -19,6 +19,8 @@
     "validate": "run-s --silent typecheck lint test",
     "venice": "tsx ./bin/venice",
     "migration": "tsx ./apps/cli/pgMigrator-cli",
+    "worker:setup": "tsx ./bin/venice setupWorker",
+    "worker:run": "tsx ./bin/venice runWorker",
     "env:pull": "vercel env pull --environment production .env && vercel env pull --environment development .env.development"
   },
   "lint-staged": {

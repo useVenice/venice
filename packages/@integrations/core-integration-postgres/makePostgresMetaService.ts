@@ -110,14 +110,20 @@ export const makePostgresMetaService = zFunction(
         )
       },
 
-      findPipelines: ({connectionIds}) => {
+      findPipelines: ({connectionIds, secondsSinceLastSync}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
-        const ids = sql.array(connectionIds, 'varchar')
+        const ids = connectionIds && sql.array(connectionIds, 'varchar')
+        const conditions = R.compact([
+          ids && sql`(source_id = ANY(${ids}) OR destination_id = ANY(${ids}))`,
+          secondsSinceLastSync &&
+            sql`(now() - last_sync_completed_at) >= (interval '1 second' * ${secondsSinceLastSync})`,
+        ])
+        const where =
+          conditions.length > 0
+            ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
+            : sql``
         return getPool().then((pool) =>
-          pool.any(sql`
-            SELECT * FROM pipeline
-            WHERE source_id = ANY(${ids}) OR destination_id = ANY(${ids})
-          `),
+          pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },
     }

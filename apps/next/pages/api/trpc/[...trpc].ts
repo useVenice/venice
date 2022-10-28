@@ -10,7 +10,7 @@ import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
 import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 
-import {kAccessToken, kLedgerId} from '../../contexts/atoms'
+import {kAccessToken, kLedgerId} from '../../../contexts/atoms'
 
 export function getAccessToken(req: NextApiRequest) {
   return (

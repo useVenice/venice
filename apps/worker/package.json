@@ -1,0 +1,11 @@
+{
+  "name": "@usevenice/worker",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@usevenice/app-config": "*",
+    "@usevenice/cdk-core": "*",
+    "@usevenice/core-integration-postgres": "*",
+    "graphile-worker": "0.13.0"
+  }
+}

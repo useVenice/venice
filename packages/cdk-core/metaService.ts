@@ -52,6 +52,7 @@ export interface MetaService {
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
   findPipelines: (options: {
-    connectionIds: Array<Id['conn']>
+    connectionIds?: Array<Id['conn']>
+    secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
 }
