@@ -42,7 +42,7 @@ export const cli = cliFromRouter(veniceRouter, {
 })
 
 cli
-  .command('setupWorkerLoop', 'Setup event loop for the worker via pg_cron')
+  .command('setupWorker', 'Setup event loop for the worker via pg_cron')
   .option('--syncHttp', 'Use "http" extension instead of "pg_net"')
   .action(
     zFunction([z.object({syncHttp: z.boolean().optional()})], async (opts) => {
@@ -51,7 +51,7 @@ cli
   )
 
 cli
-  .command('worker', 'Start the worker')
+  .command('runWorker', 'Start the worker')
   .option('--timeout', 'Timeout in ms before worker exits')
   .action(
     zFunction([z.object({timeout: z.number().nullish()})], async (opts) => {
