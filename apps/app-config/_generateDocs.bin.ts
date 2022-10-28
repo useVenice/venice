@@ -55,6 +55,9 @@ function makeVercelDeployButton(params: {
   /** A link to an explanation of the Required Environment Variables */
   envLink?: string
 
+  // Build settings
+  'install-command'?: string
+
   /**
    * The Redirect URL parameter allows you to define a URL, other than the newly created Vercel project, to send the user to after a successful deployment.
    * This parameter is helpful if you are sending a user from an application, to deploy a project with Vercel, but want the user to continue with your application with a project created and deployed
@@ -88,6 +91,9 @@ const deployButton = makeVercelDeployButton({
     'int_plaid__secrets__sandbox',
     'JWT_SECRET_OR_PUBLIC_KEY',
   ].join(','),
+  // Workaround for https://github.com/vercel/vercel/issues/8044
+  // Remember to change `"packageManager": "pnpm@7.14.0",` setting to keep stuff in sync
+  'install-command': 'npm i pnpm@7.14.0 -g && pnpm install',
   envDescription:
     'After deploy, you can add other optional environment variables to configure for production and customize the default behavior. See the full list in README',
   envLink: 'https://github.com/usevenice/venice#environment-variables',

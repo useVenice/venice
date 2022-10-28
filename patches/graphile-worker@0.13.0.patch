@@ -1,0 +1,14 @@
+diff --git a/dist/lib.js b/dist/lib.js
+index ddc3553b93e965b429521efa4f651fbd2613899c..269f4bd34d40ec729fc0c06ce4296618ca3314f5 100644
+--- a/dist/lib.js
++++ b/dist/lib.js
+@@ -148,7 +148,8 @@ const getUtilsAndReleasersFromOptions = async (options, settings = {}) => {
+         }
+         const withPgClient = helpers_1.makeWithPgClientFromPool(pgPool);
+         // Migrate
+-        await withPgClient((client) => migrate_1.migrate(options, client));
++        // PATCHED: Workaround for https://github.com/graphile/worker/issues/299
++        // await withPgClient((client) => migrate_1.migrate(options, client));
+         const addJob = helpers_1.makeAddJob(options, withPgClient);
+         return {
+             ...shared,

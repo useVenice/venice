@@ -61,6 +61,7 @@
     "tsx": "3.9.0",
     "typescript": "4.8.2"
   },
+  "packageManager": "pnpm@7.14.0",
   "engines": {
     "node": "16",
     "pnpm": "7"
@@ -95,7 +96,8 @@
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@1.1.0": "patches/remeda@1.1.0.patch",
       "typescript@4.8.2": "patches/typescript@4.8.2.patch",
-      "zod@3.19.0": "patches/zod@3.19.0.patch"
+      "zod@3.19.0": "patches/zod@3.19.0.patch",
+      "graphile-worker@0.13.0": "patches/graphile-worker@0.13.0.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {
