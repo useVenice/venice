@@ -1,4 +1,3 @@
- 
 import {run, runMigrations} from 'graphile-worker'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
@@ -99,6 +98,8 @@ export async function runWorker(opts: {timeout?: number}) {
     // you can set the taskList or taskDirectory but not both
     crontab: '* * * * * scheduleTasks ?fill=1m',
     taskList: tasks,
+    // We tend ot use pgBouncer on Supabase
+    noPreparedStatements: true,
   })
 
   // How do we solve this in an `rxjs` way?
