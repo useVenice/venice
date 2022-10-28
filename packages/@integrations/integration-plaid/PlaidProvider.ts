@@ -420,6 +420,10 @@ export const plaidProvider = makeSyncProvider({
           },
         }),
       ]
+      if (item.error) {
+        console.log('Exiting sourceSync early due to itemError', item.error)
+        return
+      }
 
       // Sync accounts
       const {accounts} = await client.accountsGet({
