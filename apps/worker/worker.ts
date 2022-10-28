@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 import {run, runMigrations} from 'graphile-worker'
 
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {makePostgresClient} from '@usevenice/core-integration-postgres'
 import {joinPath} from '@usevenice/util'
+
+import * as tasks from './tasks'
 
 export async function setupWorkerLoop(opts: {syncHttp?: boolean}) {
   if (!backendEnv.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')) {
@@ -96,16 +98,7 @@ export async function runWorker(opts: {timeout?: number}) {
     pollInterval: 1000,
     // you can set the taskList or taskDirectory but not both
     crontab: '* * * * * scheduleTasks ?fill=1m',
-    taskList: {
-      scheduleTasks: (payload, helpers) => {
-        console.log('ha', payload)
-        helpers.logger.info('Scheduling')
-      },
-      syncPipeline: (payload, helpers) => {
-        const {pipelineId} = payload as any
-        helpers.logger.info(`syncPipeline, ${pipelineId}`)
-      },
-    },
+    taskList: tasks,
   })
 
   // How do we solve this in an `rxjs` way?

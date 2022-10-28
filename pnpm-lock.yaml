@@ -354,10 +354,12 @@ importers:
   apps/worker:
     specifiers:
       '@usevenice/app-config': '*'
+      '@usevenice/cdk-core': '*'
       '@usevenice/core-integration-postgres': '*'
       graphile-worker: 0.13.0
     dependencies:
       '@usevenice/app-config': link:../app-config
+      '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
       graphile-worker: 0.13.0
 
