@@ -2,7 +2,7 @@
 
 Venice will now automatically sync in the background in addition addition to listening for webhook.
 
-This is particularly useful for situations where webhooks aren't always available or if your server was offline / encountered a problem during webhook handling
+This is particularly useful for situations where webhooks aren't always available (e.g. sync current portfolio value due to price updating) or if your server was offline / encountered a problem during webhook handling
 
 By default we will look for all connections that have not been sync'ed in the last 24 hours. 
 
