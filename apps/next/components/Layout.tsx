@@ -55,10 +55,11 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
                     href={l.href}
                     className={twMerge(
                       'btn btn-sm',
-                      l.primary ? 'btn-primary' : 'btn-ghost',
+                      l.primary
+                        ? 'btn-primary link-exact-active:btn-disabled'
+                        : 'btn-ghost link-exact-active:text-black',
                       !l.fixed && 'hidden md:inline-flex',
-                    )}
-                    activeClassName={l.primary ? 'btn-disabled' : 'text-black'}>
+                    )}>
                     {l.label}
                   </ActiveLink>
                 ))}
@@ -77,11 +78,10 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
                             href={l.href}
                             className={twMerge(
                               'btn no-animation justify-start',
-                              l.primary ? 'btn-primary' : 'btn-ghost',
-                            )}
-                            activeClassName={
-                              l.primary ? 'btn-disabled' : 'text-black'
-                            }>
+                              l.primary
+                                ? 'btn-primary link-exact-active:btn-disabled'
+                                : 'btn-ghost link-exact-active:text-black',
+                            )}>
                             {l.label}
                           </ActiveLink>
                         </DropdownMenuItem>

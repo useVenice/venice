@@ -1,5 +1,6 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
+const plugin = require('tailwindcss/plugin')
 
 const palette = {
   'kashmir-blue': {
@@ -111,5 +112,13 @@ module.exports = {
       },
     ],
   },
-  plugins: [require('tailwindcss-radix')(), require('daisyui')],
+  plugins: [
+    require('tailwindcss-radix')(),
+    require('daisyui'),
+    // ActiveLink
+    plugin(({addVariant}) => {
+      addVariant('link-active', '&[data-link-active]')
+      addVariant('link-exact-active', '&[data-link-exact-active]')
+    }),
+  ],
 }
