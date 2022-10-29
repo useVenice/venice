@@ -5,7 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/util": "*"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {}
 }

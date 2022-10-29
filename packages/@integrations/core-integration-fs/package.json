@@ -7,8 +7,8 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/util": "*"
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {}
 }

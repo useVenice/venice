@@ -7,11 +7,11 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/cdk-ledger": "*",
-    "@usevenice/core-integration-firebase": "*",
-    "@usevenice/standard": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/core-integration-firebase": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "firebase": "9.8.1",
     "react": "*"
   },

@@ -5,8 +5,8 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/standard": "*",
-    "@usevenice/util": "*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "financejs": "4.1.0"
   },
   "devDependencies": {

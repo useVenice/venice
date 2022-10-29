@@ -220,7 +220,6 @@ export const plaidProvider = makeSyncProvider({
       }),
 
   useConnectHook: (_) => {
-    console.log('[plaid] useConnectHook')
     const [state, setState] = React.useState<{
       options: RequiredOnly<PlaidLinkOptions, 'token'>
       res$: Deferred<typeof def['_types']['connectOutput']>

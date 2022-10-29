@@ -7,12 +7,12 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/core-integration-postgres": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/core-integration-postgres": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "zod": "3.19.0"
   },
   "devDependencies": {
-    "@usevenice/cdk-ledger": "*"
+    "@usevenice/cdk-ledger": "workspace:*"
   }
 }

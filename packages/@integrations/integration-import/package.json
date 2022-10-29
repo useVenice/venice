@@ -7,10 +7,10 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/cdk-ledger": "*",
-    "@usevenice/standard": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "papaparse": "5.3.2",
     "xlsx": "0.17.5"
   },

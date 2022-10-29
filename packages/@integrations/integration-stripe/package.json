@@ -7,9 +7,9 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/cdk-ledger": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "react": "*",
     "stripe": "8.86.0"
   },

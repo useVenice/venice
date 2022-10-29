@@ -11,8 +11,6 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
   scope,
 ) => {
   const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
-  console.log('[yodlee] useConnectHook')
-
   return async (
     {accessToken},
     {

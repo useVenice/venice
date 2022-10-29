@@ -10,10 +10,10 @@
     "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "*",
-    "@usevenice/cdk-ledger": "*",
-    "@usevenice/standard": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "plaid": "10.7.0",
     "react": "*",
     "react-dom": "*",

@@ -5,10 +5,10 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/accounting": "*",
-    "@usevenice/cdk-core": "*",
-    "@usevenice/standard": "*",
-    "@usevenice/util": "*"
+    "@usevenice/accounting": "workspace:*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {}
 }

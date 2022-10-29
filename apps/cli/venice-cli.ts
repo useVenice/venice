@@ -1,6 +1,4 @@
 #!/usr/bin/env tsx
-// This import line gets frequently moved by vscode organize imports
-// and thus causing runtime failure... Therefore we moved it to the venice bin
 import '@usevenice/app-config/register.node'
 
 import http from 'node:http'

@@ -6,9 +6,9 @@
   "module": "./index.ts",
   "dependencies": {
     "@trpc/server": "9.26.0",
-    "@usevenice/cdk-core": "*",
-    "@usevenice/cdk-ledger": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {

@@ -8,8 +8,8 @@
   "module": "./index.ts",
   "dependencies": {
     "@slonik/migrator": "0.11.3",
-    "@usevenice/cdk-core": "*",
-    "@usevenice/util": "*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/util": "workspace:*",
     "pg": "8.8.0",
     "pg-native": "3.0.1",
     "slonik": "30.3.1",
