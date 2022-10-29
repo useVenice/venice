@@ -1,6 +1,8 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
+import type {
+  Brand} from '@usevenice/util';
 import {
   A,
   DateTime,
@@ -117,7 +119,7 @@ export const saltedgeProvider = makeSyncProvider({
               amount: A(t.amount, t.currency_code),
             },
           }),
-          externalStatus: t.status as BrandedString<'externalStatus'>,
+          externalStatus: t.status as Brand<string, 'externalStatus'>,
           custom: {possible_duplicate: true},
         },
       }),

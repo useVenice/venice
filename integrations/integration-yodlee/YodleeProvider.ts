@@ -1,6 +1,8 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
+import type {
+  Brand} from '@usevenice/util';
 import {
   A,
   objectFromObject,
@@ -168,8 +170,10 @@ export const yodleeProvider = makeSyncProvider({
 
             labelsMap: {},
             externalCategory: t.category,
-            externalStatus:
-              t.status.toLowerCase() as BrandedString<'externalStatus'>,
+            externalStatus: t.status.toLowerCase() as Brand<
+              string,
+              'externalStatus'
+            >,
             postingsMap: makePostingsMap(
               {main: {accountExternalId, amount: currAmount}},
               // https://stackoverflow.com/questions/38578339/no-way-to-get-per-transaction-commission-fee-in-new-yodlee-api-ysl-restserver

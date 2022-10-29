@@ -1,5 +1,6 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {veniceProviderBase} from '@usevenice/cdk-ledger'
+import type { Brand} from '@usevenice/util';
 import {A, DateTime, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {
@@ -67,7 +68,7 @@ export const venmoProvider = makeSyncProvider({
             t,
             extConn.me.user.id ?? t._currentUserId,
           ),
-          externalStatus: t.transfer?.status as BrandedString<'externalStatus'>,
+          externalStatus: t.transfer?.status as Brand<string, 'externalStatus'>,
         },
       }),
     },

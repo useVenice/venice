@@ -1,13 +1,13 @@
 import type {Resolver} from 'awilix'
 import {asValue, createContainer} from 'awilix'
 
-import type {AnyFunction} from './type-utils'
+import type {AnyFunction, Brand} from './type-utils'
 
 export const container = createContainer()
 
 export type InjectionToken<T> =
-  | (symbol & Brand<T>)
-  | (string & Brand<T>)
+  | Brand<symbol, T>
+  | Brand<string, T>
   | symbol
   | string
 

@@ -1,5 +1,7 @@
+import type {Brand} from 'ts-brand'
 import type {Primitive, UnionToIntersection} from 'type-fest'
 
+export type {Brand} from 'ts-brand'
 export type {
   Merge,
   SetNonNullable,
@@ -61,8 +63,8 @@ export declare type PartialDeep<T> = T extends Builtin
     : Array<PartialDeep<U>>
   : T extends Promise<infer U>
   ? Promise<PartialDeep<U>>
-  : T extends Branded<infer U, infer B>
-  ? Branded<U, B>
+  : T extends Brand<infer U, infer B>
+  ? Brand<U, B>
   : T extends {}
   ? {[K in keyof T]?: PartialDeep<T[K]>}
   : Partial<T>
@@ -90,8 +92,8 @@ export declare type ObjectPartialDeep<T> = T extends Builtin
     : U[]
   : T extends Promise<infer U>
   ? Promise<U>
-  : T extends Branded<infer U, infer B>
-  ? Branded<U, B>
+  : T extends Brand<infer U, infer B>
+  ? Brand<U, B>
   : T extends {}
   ? {[K in keyof T]?: ObjectPartialDeep<T[K]>}
   : T extends unknown

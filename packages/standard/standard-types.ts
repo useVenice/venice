@@ -1,4 +1,4 @@
-import type {Amount, AmountMap, Split, z} from '@usevenice/util'
+import type {Amount, AmountMap, Brand, Split, z} from '@usevenice/util'
 
 import type {
   zAccountType,
@@ -41,7 +41,7 @@ export interface Connection {
 export type AccountSupertype = Split<AccountType, '/'>[0]
 export type AccountSubtype =
   | NonNullable<Split<AccountType, '/'>[1]>
-  | BrandedString<'AccountSubtype'>
+  | Brand<string, 'AccountSubtype'>
 
 export type Icon = {emoji: string; url?: never} | {emoji?: never; url: string}
 
@@ -119,7 +119,7 @@ export interface Transaction<TPosting extends Posting = Posting> {
    */
   externalCategory?: string | null
   /** Status from provider / bank */
-  externalStatus?: 'pending' | 'cancelled' | BrandedString<'externalStatus'>
+  externalStatus?: 'pending' | 'cancelled' | Brand<string, 'externalStatus'>
   postingsMap?: PostingsMap<TPosting> | null
   /** https://support.plaid.com/hc/en-us/articles/360008271814-Pending-transaction-overview */
   pendingTransactionExternalId?: ExternalId | null
@@ -151,7 +151,7 @@ export type CommodityType =
   | 'item_request'
   | 'item_payment'
   // real_estate, etc.
-  | BrandedString<'CommodityType'>
+  | Brand<string, 'CommodityType'>
 
 export interface Commodity<TPrice = Price> {
   id?: CommodityId | null

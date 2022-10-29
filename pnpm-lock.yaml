@@ -81,6 +81,7 @@ importers:
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18
       prettier-plugin-sql: 0.12.1
+      ts-brand: 0.0.2
       tsx: 3.9.0
       typescript: 4.8.2
     devDependencies:
@@ -115,6 +116,7 @@ importers:
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18_prettier@2.7.1
       prettier-plugin-sql: 0.12.1_prettier@2.7.1
+      ts-brand: 0.0.2
       tsx: 3.9.0
       typescript: 4.8.2_5eymtkfhh4duhys6jj5r56cgu4
 
@@ -964,6 +966,7 @@ importers:
       timeago.js: 4.0.2
       timezone-mock: 1.3.4
       tiny-invariant: 1.2.0
+      ts-brand: 0.0.2
       type-fest: 2.19.0
       ulidx: 0.3.0
       write-file-safe: 1.3.1
@@ -996,6 +999,7 @@ importers:
       shvl: 2.0.3
       timeago.js: 4.0.2
       tiny-invariant: 1.2.0
+      ts-brand: 0.0.2
       type-fest: 2.19.0
       ulidx: 0.3.0
       zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
@@ -12134,6 +12138,9 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: false
+
+  /ts-brand/0.0.2:
+    resolution: {integrity: sha512-UhSzWY4On9ZHIj6DKkRYVN/8OaprbLAZ3b/Y2AJwdl6oozSABsQ0PvwDh4vOVdkvOtWQOkIrjctZ1kj8YfF3jA==}
 
   /ts-error/1.0.6:
     resolution: {integrity: sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==}

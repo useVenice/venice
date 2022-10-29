@@ -1,4 +1,10 @@
-import type {Amount, DisplayOf, DistributiveOmit, EnumOf} from '@usevenice/util'
+import type {
+  Amount,
+  Brand,
+  DisplayOf,
+  DistributiveOmit,
+  EnumOf,
+} from '@usevenice/util'
 import {objectFromArray, startCase, temp_makeId, z} from '@usevenice/util'
 
 import type * as Standard from './standard-types'
@@ -178,7 +184,7 @@ export const ACCOUNT_LABELS = {
 }
 
 export const COMMODITY_TYPE_DISPLAY: {
-  [K in Exclude<Standard.CommodityType, BrandedString<'CommodityType'>>]: string
+  [K in Exclude<Standard.CommodityType, Brand<string, 'CommodityType'>>]: string
 } = {
   stock: 'Public Stock',
   currency: 'Currency',
