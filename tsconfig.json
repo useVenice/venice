@@ -1,9 +1,18 @@
 {
-  "extends": "./tsconfig-base.json",
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": false,
+    "importsNotUsedAsValues": "remove",
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "noEmit": true,
+    "target": "ES2020"
   },
-  "include": ["/apps/next/next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["**/node_modules"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

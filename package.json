@@ -28,8 +28,9 @@
     "**/*.{js,ts,tsx}": "eslint --ext .js,.ts,.tsx --cache --fix"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "3.4.2",
     "@roarr/cli": "5.7.0",
+    "@trivago/prettier-plugin-sort-imports": "3.4.0",
+    "@tsconfig/strictest": "1.0.2",
     "@types/jest": "29.0.0",
     "@types/node": "16.11.12",
     "@types/prettier": "2.7.0",
