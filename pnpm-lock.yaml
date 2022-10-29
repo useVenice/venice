@@ -814,19 +814,6 @@ importers:
       openapi-typescript: 5.4.1
       openapi-typescript-codegen: 0.23.0
 
-  packages/accounting:
-    specifiers:
-      '@usevenice/standard': workspace:*
-      '@usevenice/util': workspace:*
-      financejs: 4.1.0
-      timezone-mock: 1.3.4
-    dependencies:
-      '@usevenice/standard': link:../standard
-      '@usevenice/util': link:../util
-      financejs: 4.1.0
-    devDependencies:
-      timezone-mock: 1.3.4
-
   packages/cdk-core:
     specifiers:
       '@trpc/server': 9.26.0
@@ -842,12 +829,10 @@ importers:
 
   packages/cdk-ledger:
     specifiers:
-      '@usevenice/accounting': workspace:*
       '@usevenice/cdk-core': workspace:*
       '@usevenice/standard': workspace:*
       '@usevenice/util': workspace:*
     dependencies:
-      '@usevenice/accounting': link:../accounting
       '@usevenice/cdk-core': link:../cdk-core
       '@usevenice/standard': link:../standard
       '@usevenice/util': link:../util
@@ -6939,10 +6924,6 @@ packages:
   /filter-obj/1.1.0:
     resolution: {integrity: sha512-8rXg1ZnX7xzy2NGDVkBVaAy+lSlPNwad13BtgSlLuxfIslyt5Vg64U7tFcCt4WS1R0hvtnQybT/IyCkGZ3DpXQ==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /financejs/4.1.0:
-    resolution: {integrity: sha512-IE/SpTfCRsdl4TZWCGLo6/NNeg0q0QjU9eOoIxy7BWPCAH2truL3uqK+Kwu3f3kLd1trJK5vRKO+KGRNwNIzfg==}
     dev: false
 
   /find-config/1.0.0:

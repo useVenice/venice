@@ -1,4 +1,3 @@
-import {computeTrialBalance} from '@usevenice/accounting'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
@@ -11,6 +10,7 @@ import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
   AM,
+  computeTrialBalance,
   objectEntries,
   produce,
   R,
