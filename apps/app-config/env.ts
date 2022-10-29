@@ -37,7 +37,7 @@ export const zCommonEnv = zEnvVars({
     // Should we default to request url?
     // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
     .describe(
-      `Fully qualified url your venice next.js app used for redirects, webhooks and server-side rendering.
+      `Fully qualified url your venice next.js app used for redirects, webhooks, background tasks and server-side rendering.
       e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$VERCEL_URL if not provided
       @see https://vercel.com/docs/concepts/projects/environment-variables
       Providing this explicitly is still preferrred as $VERCEL_URL does not account for custom domain`,
