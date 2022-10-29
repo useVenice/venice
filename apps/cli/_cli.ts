@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import type {PROVIDERS} from '@usevenice/app-config/env'
-import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
-
 import '@usevenice/app-config/register.node'
 
+import type {PROVIDERS} from '@usevenice/app-config/env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
 import {loadedEnv} from '@usevenice/app-config/register.node'
 import {
   makePostgresClient,

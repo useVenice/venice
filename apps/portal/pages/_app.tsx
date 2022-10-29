@@ -1,3 +1,5 @@
+import '../__generated__/tailwind.css'
+
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import {useRouterQuery} from 'next-router-query'
@@ -14,7 +16,6 @@ import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {UIProvider} from '@usevenice/ui'
 
-import '../__generated__/tailwind.css'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 
 const queryClient = new QueryClient({

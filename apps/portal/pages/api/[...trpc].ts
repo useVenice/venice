@@ -1,9 +1,10 @@
+import '@usevenice/app-config/register.node'
+
 import * as trpcNext from '@trpc/server/adapters/next'
 import {getCookie} from 'cookies-next'
 import type {NextApiHandler, NextApiRequest} from 'next'
 
 import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import '@usevenice/app-config/register.node'
 import type {Id} from '@usevenice/cdk-core'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
