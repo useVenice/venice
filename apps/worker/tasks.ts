@@ -33,7 +33,7 @@ export const scheduleTasks: Task = async (_, helpers) => {
           helpers.addJob(
             'syncPipeline',
             {pipelineId: pipe.id},
-            {jobKey: `syncPipeline-${pipe.id}`}, // At most one at a time...
+            {jobKey: `syncPipeline-${pipe.id}`, maxAttempts: 3}, // At most one at a time... And 3 tries that's it.
           ),
         25, // Limit how many jobs we add at a time
       ),
