@@ -5,8 +5,8 @@
   "repository": "git@github.com:usevenice/venice.git",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "pnpm run --filter next dev",
-    "docs": " --filter app-config dev",
+    "portal": "pnpm run --filter portal dev",
+    "docs": "pnpm run --filter app-config dev",
     "lint": "eslint --ext .js,.ts,.tsx --cache .",
     "mitm": "mitmweb --listen-port 3010 --web-port 3011 --mode reverse:http://localhost:3000",
     "preinstall": "npx only-allow pnpm",

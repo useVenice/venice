@@ -16,7 +16,7 @@
 *.snap
 
 # next.js
-/apps/next/.next/
-/apps/next/out/
+/apps/portal/.next/
+/apps/portal/out/
 
 # vim: set filetype=ignore:

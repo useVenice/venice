@@ -273,7 +273,7 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
-  apps/next:
+  apps/portal:
     specifiers:
       '@trpc/server': 9.26.0
       '@types/react': 18.0.24
@@ -9611,7 +9611,7 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /next-query-params/4.0.0_qh5aht6bephuvbkxtadklsmwb4:
+  /portal-query-params/4.0.0_qh5aht6bephuvbkxtadklsmwb4:
     resolution: {integrity: sha512-u4PV4fA1Nb6CFZYnW+0s01YbHMJVhCmmnIZ11Dvma4rn8wUdjPPMuMlv2VMWziHD8DWE2+z3Y0475HfjdcT4MQ==}
     peerDependencies:
       next: ^10.0.0 || ^11.0.0 || ^12.0.0
@@ -9624,7 +9624,7 @@ packages:
       use-query-params: 2.1.0_biqbaboplfbrettd7655fr4n2y
     dev: false
 
-  /next-router-query/0.1.3_next@12.2.5+react@18.2.0:
+  /portal-router-query/0.1.3_next@12.2.5+react@18.2.0:
     resolution: {integrity: sha512-IvIX+JWidA0MybYBMp7h/D3Ok0ZkgrK2j73spj+UJemq3on8LD3U4eDZQ1FPPulSp07y9qlx1VThac8b6SMb+w==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -9635,14 +9635,14 @@ packages:
       react: 18.2.0
     dev: false
 
-  /next-transpile-modules/9.0.0:
+  /portal-transpile-modules/9.0.0:
     resolution: {integrity: sha512-VCNFOazIAnXn1hvgYYSTYMnoWgKgwlYh4lm1pKbSfiB3kj5ZYLcKVhfh3jkPOg1cnd9DP+pte9yCUocdPEUBTQ==}
     dependencies:
       enhanced-resolve: 5.10.0
       escalade: 3.1.1
     dev: true
 
-  /next/12.2.5_biqbaboplfbrettd7655fr4n2y:
+  /portal/12.2.5_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-tBdjqX5XC/oFs/6gxrZhjmiq90YWizUYU6qOWAfat7zJwrwapJ+BYgX2PmiacunXMaRpeVT4vz5MSPSLgNkrpA==}
     engines: {node: '>=12.22.0'}
     hasBin: true

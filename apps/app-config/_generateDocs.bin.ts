@@ -83,7 +83,7 @@ function makeVercelDeployButton(params: {
 
 const deployButton = makeVercelDeployButton({
   'repository-url': 'https://github.com/useVenice/venice',
-  'root-directory': 'apps/next',
+  'root-directory': 'apps/portal',
   'project-name': 'my-venice',
   env: [
     'POSTGRES_OR_WEBHOOK_URL',

@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@usevenice/ui'
+import {Container} from '@usevenice/ui/components/Container'
 
-import {Container} from '../../../packages/ui/components/Container'
 import {developerModeAtom} from '../contexts/atoms'
 import {ActiveLink} from './ActiveLink'
 
