@@ -61,7 +61,19 @@ export async function setupWorker(opts: {syncHttp?: boolean}) {
   await runMigrations({
     connectionString: backendEnv.POSTGRES_OR_WEBHOOK_URL,
   })
+  await pool.query(sql`
+    CREATE TABLE IF NOT EXISTS graphile_worker.jobs_completed (LIKE graphile_worker.jobs INCLUDING ALL);
 
+    CREATE OR REPLACE FUNCTION archive_completed_jobs() RETURNS trigger AS $$
+        BEGIN
+           INSERT INTO graphile_worker.jobs_completed VALUES (OLD.*);
+           RETURN OLD;
+        END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE OR REPLACE TRIGGER archive_completed_jobs BEFORE DELETE ON graphile_worker.jobs
+    	FOR EACH ROW EXECUTE PROCEDURE archive_completed_jobs ();
+  `)
   // Supabase only, allow us to scale background tasks to much more than just
   // the default one request per minute and reduce latency of responding to new jobs to be near instant
   // scheduler will still run once per minute and that would be sufficient
