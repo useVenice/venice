@@ -31,14 +31,14 @@ const withTM = require('next-transpile-modules')([
   path.resolve(__dirname, '../../integrations/integration-venmo'),
   path.resolve(__dirname, '../../integrations/integration-wise'),
   path.resolve(__dirname, '../../integrations/integration-yodlee'),
-  path.resolve(__dirname, '../../packages/@utils/accounting'),
-  path.resolve(__dirname, '../../packages/@utils/standard'),
-  path.resolve(__dirname, '../../packages/@utils/util'),
+  path.resolve(__dirname, '../../packages/accounting'),
   path.resolve(__dirname, '../../packages/cdk-core'),
   path.resolve(__dirname, '../../packages/cdk-ledger'),
-  path.resolve(__dirname, '../../packages/engine-frontend'),
   path.resolve(__dirname, '../../packages/engine-backend'),
+  path.resolve(__dirname, '../../packages/engine-frontend'),
+  path.resolve(__dirname, '../../packages/standard'),
   path.resolve(__dirname, '../../packages/ui'),
+  path.resolve(__dirname, '../../packages/util'),
 ])
 
 /**
