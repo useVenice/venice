@@ -6,8 +6,8 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/apps/portal/.next/',
-    '/apps/portal/out/',
+    '/apps/web/.next/',
+    '/apps/web/out/',
   ],
   watchPathIgnorePatterns: [
     '\\.gen\\.d\\.ts',

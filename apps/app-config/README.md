@@ -1,6 +1,6 @@
 ## Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_OR_WEBHOOK_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=After%20deploy%2C%20you%20can%20add%20other%20optional%20environment%20variables%20to%20configure%20for%20production%20and%20customize%20the%20default%20behavior.%20See%20the%20full%20list%20in%20README&envLink=https%3A%2F%2Fgithub.com%2Fusevenice%2Fvenice%23environment-variables&install-command=npm%20i%20pnpm%407.14.0%20-g%20%26%26%20pnpm%20install&project-name=my-venice&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fportal)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?env=POSTGRES_OR_WEBHOOK_URL%2Cint_plaid__clientId%2Cint_plaid__secrets__sandbox%2CJWT_SECRET_OR_PUBLIC_KEY&envDescription=After%20deploy%2C%20you%20can%20add%20other%20optional%20environment%20variables%20to%20configure%20for%20production%20and%20customize%20the%20default%20behavior.%20See%20the%20full%20list%20in%20README&envLink=https%3A%2F%2Fgithub.com%2Fusevenice%2Fvenice%23environment-variables&install-command=npm%20i%20pnpm%407.14.0%20-g%20%26%26%20pnpm%20install&project-name=my-venice&repository-url=https%3A%2F%2Fgithub.com%2FuseVenice%2Fvenice&root-directory=apps%2Fweb)
 
 ## Environment variables
 

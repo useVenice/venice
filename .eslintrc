@@ -2,14 +2,14 @@
   "root": true,
   "settings": {
     "next": {
-      "rootDir": "apps/portal/"
+      "rootDir": "apps/web/"
     },
     "react": {
       "version": "17.0.2"
     },
     "tailwindcss": {
       "callees": ["twMerge"],
-      "config": "apps/portal/tailwind.config.js"
+      "config": "apps/web/tailwind.config.js"
     }
   },
   "plugins": [

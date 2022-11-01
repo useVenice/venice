@@ -9,11 +9,11 @@
 /coverage
 
 # next.js
-/apps/portal/.next/
-/apps/portal/out/
+/apps/web/.next/
+/apps/web/out/
 
 # production
-/apps/portal/build
+/apps/web/build
 
 # misc
 .DS_Store
@@ -42,4 +42,4 @@ yarn-error.log*
 .eslintcache
 
 # tailwind
-/apps/portal/__generated__/tailwind.css
+/apps/web/__generated__/tailwind.css

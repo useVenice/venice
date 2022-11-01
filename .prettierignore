@@ -13,8 +13,8 @@
 *.snap
 
 # next.js
-/apps/portal/.next/
-/apps/portal/out/
+/apps/web/.next/
+/apps/web/out/
 
 # pnpm
 pnpm-lock.yaml
