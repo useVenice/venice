@@ -99,6 +99,7 @@ export function combineBehaviorObservables<
   return new MulticastedBehaviorObservable<{
     [K in keyof TSources]: rxjs.ObservedValueOf<TSources[K]>
   }>(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     sources.map((s) => s.value) as {
       [K in keyof TSources]: rxjs.ObservedValueOf<TSources[K]>
     },

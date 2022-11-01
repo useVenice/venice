@@ -4,6 +4,7 @@ import {A, DateTime, R} from '@usevenice/util'
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'
 
 export function getYodleeAccountName(account: YodleeAccount) {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const name = account.nickname || account.accountName || account.displayedName
   const lastFour = account.accountNumber?.slice(-4) ?? null
 

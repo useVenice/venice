@@ -4,6 +4,8 @@
     "target": "ES5",
     "lib": ["DOM", "DOM.Iterable", "ES2021"],
     "allowJs": true,
+    "exactOptionalPropertyTypes": false,
+    "importsNotUsedAsValues": "remove",
     "noEmit": true,
     "incremental": true,
     "module": "ESNext",

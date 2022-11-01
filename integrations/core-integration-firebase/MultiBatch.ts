@@ -80,6 +80,7 @@ export class MultiBatch {
         '[core/@firebase] MultiBatch#enqueue',
         instruction[0],
         instruction[1][0].path,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         ...instruction[1].slice(1),
       )
       this.getWriteBatchForChunk(this.defaultFst, [instruction])
@@ -94,15 +95,15 @@ export class MultiBatch {
   set<T extends object>(
     ref: AnyDocumentReference<T>,
     data: ObjectPartialDeep<NoInfer<RawOf<T>>>,
-    options: {merge: boolean; mergeFields?: never},
-  ): void
-  set<T extends object>(
-    ref: AnyDocumentReference<T>,
-    data: ObjectPartialDeep<NoInfer<RawOf<T>>>,
-    options: {
-      merge?: never
-      mergeFields: Array<PathsOf<RawOf<T>> | string[]>
-    },
+    options:
+      | {
+          merge: boolean
+          mergeFields?: never
+        }
+      | {
+          merge?: never
+          mergeFields: Array<PathsOf<RawOf<T>> | string[]>
+        },
   ): void
   set<T extends object>(
     ref: AnyDocumentReference<T>,
@@ -144,19 +145,9 @@ export class MultiBatch {
     options: {mergeFields?: Array<PathsOf<RawOf<T>> | string[]>} = {},
   ) {
     if (options.mergeFields) {
-      this.set(
-        ref,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data as any,
-        {mergeFields: options.mergeFields as string[][]},
-      )
+      this.set(ref, data, {mergeFields: options.mergeFields as string[][]})
     } else {
-      this.set(
-        ref,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data as any,
-        {merge: true},
-      )
+      this.set(ref, data, {merge: true})
     }
   }
 

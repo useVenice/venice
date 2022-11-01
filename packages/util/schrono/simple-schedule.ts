@@ -63,7 +63,7 @@ export const SIMPLE_SCHEDULE_REGEX =
 export function parseSimpleScheduleExpression(
   input?: string | null,
 ): Accrual | null {
-  return _parseFrequencyAndIntervalExp(input) || _parseDateExp(input)
+  return _parseFrequencyAndIntervalExp(input) ?? _parseDateExp(input)
 }
 
 export function _parseDateExp(input?: string | null) {

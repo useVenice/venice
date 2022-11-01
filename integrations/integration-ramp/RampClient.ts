@@ -171,7 +171,7 @@ export const makeRampClient = zFunction(zRampConfig, (cfg) => {
     ),
     getBusiness: zFunction(z.string(), (token) =>
       createClient(token)
-        .get('/business')
+        .get<unknown>('/business')
         .then((r) => businessResponseSchema.parse(r.data)),
     ),
   }

@@ -104,7 +104,9 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
 
     const currentUser = await login()
     const _idTokenResult = await currentUser.getIdTokenResult()
-    const idTokenResult = JSON.parse(JSON.stringify(_idTokenResult))
+    const idTokenResult = JSON.parse(
+      JSON.stringify(_idTokenResult),
+    ) as typeof _idTokenResult
     patchCredentials({idTokenResult})
 
     return idTokenResult
@@ -114,11 +116,14 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     baseURL: 'https://api.foreceipt.io/v1/',
     requestTransformer: async (req) => {
       const idToken = await ensureIdToken()
-      req.headers = {...req.headers, auth: idToken.token}
+      req.headers = {
+        ...(req.headers as Record<string, unknown>),
+        auth: idToken.token,
+      }
       return req
     },
     errorTransformer: (err) => {
-      if (err.response && err.response.data) {
+      if (err.response?.data) {
         return new ForeceiptError(err.response.data, err)
       }
       return err
@@ -126,7 +131,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   })
   const getUserGuid = async () => {
     const idTokenRes = await ensureIdToken()
-    return idTokenRes.claims.foreceipt_user_id as string
+    return idTokenRes.claims['foreceipt_user_id'] as string
   }
 
   const getCurrentUser = async () =>
@@ -168,6 +173,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
           .where(
             teamGuid ? 'team_guid' : 'user_guid',
             '==',
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             teamGuid || userGuid,
           )
         if (updatedSince) {
@@ -180,13 +186,12 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
   const getQuery$ = (updatedSince?: Date) =>
     rxjs.from(getUserAndTeamGuid()).pipe(
       Rx.mergeMap(({teamGuid, userGuid}) => {
-        let query = fb.fst
-          .collection<Foreceipt.Receipt>('Receipts')
-          .where(
-            teamGuid ? 'team_guid' : 'user_guid',
-            '==',
-            teamGuid || userGuid,
-          )
+        let query = fb.fst.collection<Foreceipt.Receipt>('Receipts').where(
+          teamGuid ? 'team_guid' : 'user_guid',
+          '==',
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          teamGuid || userGuid,
+        )
 
         if (updatedSince) {
           query = query.orderBy('last_update_time').startAt(updatedSince)
@@ -194,6 +199,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
 
         const query2 = fb.fst
           .collection<Foreceipt.UserSetting>('user_setting')
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           .where('owner_guid', '==', teamGuid || userGuid)
 
         return rxjs.forkJoin(
@@ -209,6 +215,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
         getQuerySnapshot$(
           fb.fst
             .collection<Foreceipt.UserSetting>('user_setting')
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             .where('owner_guid', '==', teamGuid || userGuid) as Parameters<
             typeof getQuerySnapshot$
           >,

@@ -19,7 +19,7 @@ export const makeExpensifyClient = zFunction(zConfig, (_cfg) => {
     requestTransformer: (req) => req,
     errorTransformer: (err) => {
       if (err?.response?.data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
         return new ExpensifyError(err.response.data as any, err)
       }
       return err

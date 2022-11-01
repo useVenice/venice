@@ -108,7 +108,9 @@ export function preprocessArgsTuple<
 >(schema: T) {
   return z.preprocess((i) => {
     const ret = R.pipe(Array.isArray(i) ? i : [i], (arr) => [
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       ...arr.slice(0, schema.items.length),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       ...new Array(Math.max(schema.items.length - arr.length, 0)),
     ])
     // console.log('Preprocessed', ret)

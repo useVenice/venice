@@ -18,7 +18,7 @@ export const makeSaltedgeClient = zFunction(zConfig, (config) => {
     },
     errorTransformer: (err) => {
       if (err?.response?.data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
         return new SaltEdgeError(err.response.data as any, err)
       }
       return err

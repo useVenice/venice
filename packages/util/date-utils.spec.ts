@@ -20,7 +20,7 @@ test.each([
   ['2021-06-30T19:57', '2021-06-30T19:57:00.000-07:00'],
   ['2021-06-30', '2021-06-30T00:00:00.000-07:00'],
   ['2021-06-30T19:57:00+08:00', '2021-06-30T19:57:00.000+08:00'],
-])('DateTime.fromISO(%o, {setZone: true})', async (input, output) => {
+])('DateTime.fromISO(%o, {setZone: true})', (input, output) => {
   Settings.defaultZone = 'US/Pacific'
   tzMock.register('US/Pacific')
   expect(DateTime.fromISO(input, {setZone: true}).toISO()).toEqual(output)

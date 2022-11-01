@@ -24,10 +24,10 @@ export const mongodbProvider = makeSyncProvider({
   def,
   destinationSync: ({settings}) => {
     const mongodb = mongoDBConnection(settings)
-    mongodb.initMongoDB()
+    void mongodb.initMongoDB()
     return handlersLink({
       data: ({data}) => {
-        mongodb.insertData(data)
+        void mongodb.insertData(data)
       },
     })
   },
@@ -47,14 +47,13 @@ export const mongoDBConnection = zFunction(
       // For initialize collection of each entity and prevent duplicated document.
       // Consider to use create unique index instead using _id (mongodb's ObjectId) because
       // the ObjectId need to pass strict params/input format https://www.mongodb.com/docs/v5.2/reference/method/ObjectId/
-      db.collection('transaction').createIndex(
+      void db.collection('transaction').createIndex(
         {id: 1, externalId: 1}, // TODO: Need to check the fields the should be unique or just use these fields
         {unique: true},
       )
-      db.collection('account').createIndex(
-        {id: 1, externalId: 1},
-        {unique: true},
-      )
+      void db
+        .collection('account')
+        .createIndex({id: 1, externalId: 1}, {unique: true})
 
       console.log(`Successfully connected to database: ${db.databaseName}`)
     }

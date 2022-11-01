@@ -18,16 +18,19 @@ export const makeRedisKVStore = zFunction(
   zKVStore,
   ({redisUrl}) => {
     const redis = memoize(() => $createNodeRedisClient()({url: redisUrl}))
-
     return {
-      get: async (id) => redis().get(id).then(safeJSONParse),
+      get: (id) =>
+        redis().get(id).then(safeJSONParse) as Promise<Record<string, unknown>>,
       list: async () => {
         const keys = await redis().keys('*')
         return Promise.all(
           keys.map((k) =>
             redis()
               .get(k)
-              .then((v) => [k, safeJSONParse(v)] as const),
+              .then(
+                (v) =>
+                  [k, safeJSONParse(v) as Record<string, unknown>] as const,
+              ),
           ),
         )
       },

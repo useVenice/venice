@@ -90,7 +90,7 @@ export function zodInsecureDebug() {
     // Need to get the `schema` as well.. otherwise very hard to debug
     // which part is failing because we use Zod for almost everything...
     console.error('[zod] Data did not pass validation', {
-      data: ctx.data,
+      data: ctx.data as unknown,
       issue: _issue,
     })
     return {message: ctx.defaultError}
@@ -108,7 +108,7 @@ export function zParser<T extends z.ZodType>(schema: T) {
     ...args: Parameters<typeof schema.parse>
   ): z.output<T> => {
     try {
-      return schema.parse(...args)
+      return schema.parse(...args) as unknown
     } catch (err) {
       return _catchErr(err)
     }
@@ -125,7 +125,9 @@ export function zParser<T extends z.ZodType>(schema: T) {
     parse: (
       input: T['_input'],
       ...rest: Rest1<Parameters<typeof parseUnknown>>
-    ) => parseUnknown(input, ...rest),
+    ) =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      parseUnknown(input, ...rest),
     parseUnknownAsync,
     parseAsync: (
       input: T['_input'],
@@ -133,6 +135,8 @@ export function zParser<T extends z.ZodType>(schema: T) {
     ) => parseUnknownAsync(input, ...reest),
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Rest1<T extends [any, ...any[]]> = T extends [any, ...infer U] ? U : []
 
 export function catchZodError(err: unknown, opts?: {rootTypeName?: string}) {

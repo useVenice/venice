@@ -1,8 +1,7 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
-import type {
-  Brand} from '@usevenice/util';
+import type {Brand} from '@usevenice/util'
 import {
   A,
   objectFromObject,
@@ -207,6 +206,7 @@ export const yodleeProvider = makeSyncProvider({
           case 'FAILED':
             // Venmo refresh seems to run into this issue
             if (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               settings.providerAccount.dataset[0]?.updateEligibility ===
               'ALLOW_UPDATE_WITH_CREDENTIALS'
             ) {

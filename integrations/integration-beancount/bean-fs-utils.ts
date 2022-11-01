@@ -82,7 +82,7 @@ export async function beanJsonToDir({
         // Btw beancount.plugins.auto is auto_accounts + implicit_prices
       )
       if (debuggingBeanJson) {
-        $writeFile(
+        void $writeFile(
           `${filename}.json`,
           stableStringify(monthlyBeanJson, {space: 2}),
         )

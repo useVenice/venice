@@ -1,5 +1,6 @@
 import * as R from 'remeda'
 import {sort} from 'fast-sort'
+import type {JsonValue} from 'type-fest'
 import {z} from 'zod'
 
 import {
@@ -49,8 +50,7 @@ export function zFlattenForEnv<T extends z.ZodTypeAny>(
       const nested: Record<string, unknown> = unflattenEnv(input, {separator})
       // console.log('beforeafter', input, nested, prefix)
       // Notably this does not work with optional...
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return schema.parse(prefix ? nested[prefix] : nested)
+      return schema.parse(prefix ? nested[prefix] : nested) as unknown
     }),
   )
 }
@@ -83,10 +83,9 @@ function flattenShapeForEnv<T extends z.ZodTypeAny>(
     )
   }
   if (schema instanceof z.ZodObject || schema instanceof z.ZodRecord) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const shape: z.ZodRawShape =
       schema instanceof z.ZodObject
-        ? schema.shape
+        ? (schema.shape as z.ZodRawShape)
         : R.pipe(
             schema.keySchema,
             (ks) => (ks instanceof z.ZodEnum ? (ks.options as string[]) : []),
@@ -126,9 +125,9 @@ function flattenShapeForEnv<T extends z.ZodTypeAny>(
 
 function schemaHint(schema: z.ZodTypeAny): string {
   if (schema instanceof z.ZodEnum) {
-    return schema.options.join(' | ')
+    return (schema.options as string[]).join(' | ')
   } else if (schema instanceof z.ZodNativeEnum) {
-    return Object.values(schema.enum).join(' | ')
+    return Object.values(schema.enum as Record<string, string>).join(' | ')
   } else if (schema instanceof z.ZodString) {
     return 'string'
   } else if (schema instanceof z.ZodNumber) {
@@ -136,14 +135,14 @@ function schemaHint(schema: z.ZodTypeAny): string {
   } else if (schema instanceof z.ZodBoolean) {
     return 'boolean'
   } else if (schema instanceof z.ZodOptional) {
-    return schemaHint(schema.unwrap()) + ' | undefined'
+    return schemaHint(schema.unwrap() as z.ZodTypeAny) + ' | undefined'
   } else if (schema instanceof z.ZodNullable) {
-    return schemaHint(schema.unwrap()) + ' | null'
+    return schemaHint(schema.unwrap() as z.ZodTypeAny) + ' | null'
   } else if (schema instanceof z.ZodArray) {
-    return `Array<${schemaHint(schema.element)}>`
+    return `Array<${schemaHint(schema.element as z.ZodTypeAny)}>`
   } else if (schema instanceof z.ZodDefault) {
     return (
-      schemaHint(schema.removeDefault()) +
+      schemaHint(schema.removeDefault() as z.ZodTypeAny) +
       ` = ${
         safeJSONStringify(schema._def.defaultValue()) ??
         javascriptStringify(schema._def.defaultValue())
@@ -185,14 +184,20 @@ export function getEnvVars(): Record<string, string | undefined> {
 }
 
 /** Do not use together with webpack Define plugin (including NEXT_PUBLIC_...) */
-export function getEnvVar<OptJson extends boolean>(
+export function getEnvVar(
   key: string,
-  opts?: {json?: OptJson},
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): OptJson extends true ? any : string | undefined {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return R.pipe(getEnvVars()[key] ?? undefined, (val) =>
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    opts?.json ? safeJSONParse(val) : val,
+  opts?: {json?: false},
+): string | undefined
+export function getEnvVar(
+  key: string,
+  opts: {json: true},
+): JsonValue | undefined
+export function getEnvVar(
+  key: string,
+  opts?: {json?: boolean},
+): JsonValue | undefined {
+  return R.pipe(
+    getEnvVars()[key] ?? undefined,
+    (val) => (opts?.json ? safeJSONParse(val) : val) as JsonValue | undefined,
   )
 }

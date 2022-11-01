@@ -68,7 +68,7 @@ export const makeQBOClient = zFunction([zConfig, zCreds], (config, creds) => {
     headers: {'Content-Type': 'application/json'},
     requestTransformer: (req) => {
       req.headers = {
-        ...req.headers,
+        ...(req.headers as Record<string, unknown>),
         Authorization: `Bearer ${creds.accessToken}`,
       }
       return req
@@ -143,7 +143,7 @@ export const makeQBOClient = zFunction([zConfig, zCreds], (config, creds) => {
     read: zFunction(
       [zCast<QBO.EntityName>(), z.union([z.string(), z.number()])],
       async (entityName, id) =>
-        http.get(`${entityName}/${id}`).then((r) => r.data),
+        http.get<unknown>(`${entityName}/${id}`).then((r) => r.data),
     ),
     count: zFunction(zCast<QBO.EntityName>(), async (entity) =>
       query(`SELECT count(*) FROM ${entity}`).then(
@@ -169,7 +169,7 @@ export const makeQBOClient = zFunction([zConfig, zCreds], (config, creds) => {
         .then((r) => r.data),
     ),
     getPreferences: zFunction(async () =>
-      http.get('preferences').then((r) => r.data),
+      http.get<unknown>('preferences').then((r) => r.data),
     ),
     reportTransactionsList: zFunction(async () =>
       http

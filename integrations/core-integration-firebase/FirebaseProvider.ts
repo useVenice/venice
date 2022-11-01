@@ -40,20 +40,23 @@ const zSettings = z.discriminatedUnion('role', [
 
 type AuthSettings = z.infer<typeof zSettings>
 
-type _query = firebase.firestore.Query<any>
-type _adminQuery = import('firebase-admin').firestore.Query<any>
+type _query<T> = firebase.firestore.Query<T>
+type _adminQuery<T> = import('firebase-admin').firestore.Query<T>
 
 // One challenge - we don't know when the `ready` event should fire
 // because we don't ever have a list of initial snapshots...
-export function fromAdminQuery(query: _adminQuery) {
+export function fromAdminQuery<T extends Record<string, unknown>>(
+  query: _adminQuery<T>,
+) {
   return getQueryDocumentSnapshot$(query).pipe(
-    Rx.map((snap) => opData(snap.ref.parent.path, snap.id, snap.data())),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    Rx.map((snap) => opData(snap.ref.parent.path, snap.id, snap.data()!)),
   )
 }
 
-function fromQuery(query: AnyQuery) {
+function fromQuery<T extends Record<string, unknown>>(query: AnyQuery<T>) {
   const queryPath = getPathForQuery(query)
-  return getQuerySnapshot$(query as _query).pipe(
+  return getQuerySnapshot$(query as _query<T>).pipe(
     Rx.tap((snap) => {
       const meta = R.toPairs(snap.metadata as {})
         .map((kv) => kv.join('='))

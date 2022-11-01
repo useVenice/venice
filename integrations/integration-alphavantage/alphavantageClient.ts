@@ -8,10 +8,11 @@ export const zConfig = z.object({
 
 export const makeAlphavantageClient = zFunction(zConfig, (config) => {
   const http = createHTTPClient({
-    baseURL: config.baseURL ?? 'https://www.alphavantage.co',
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    baseURL: config.baseURL || 'https://www.alphavantage.co',
     requestTransformer: (req) => {
       req.params = {
-        ...req.params,
+        ...(req.params as Record<string, unknown>),
         apikey: config.apikey,
       }
       return req

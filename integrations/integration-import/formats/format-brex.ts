@@ -44,7 +44,10 @@ export const formatBrex = makeImportFormat({
   parseRows: (csvString) =>
     Papa.parse<BrexTransactionRow>(csvString, {
       header: true,
-    }).data.filter((r) => r['Posted Date'] || r['Swipe Date (UTC)']),
+    }).data.filter(
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      (r) => r['Posted Date'] || r['Swipe Date (UTC)'],
+    ),
   mapEntity: (row, accountExternalId) => {
     // https://app.asana.com/0/998123529255805/1163654157352041/f
     // Add leading zeros hack till Brex fixes it on their side.

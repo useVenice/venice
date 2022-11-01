@@ -14,17 +14,18 @@ const zSplitwiseConfig = z.object({
 export const makeSplitwiseClient = zFunction(zSplitwiseConfig, (cfg) => {
   const createClient = () =>
     createHTTPClient({
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       baseURL: cfg.baseURL || 'https://secure.splitwise.com/api/v3.0',
       requestTransformer: (req) => {
         req.headers = {
-          ...req.headers,
+          ...(req.headers as Record<string, unknown>),
           Authorization: `Bearer ${cfg.accessToken}`,
         }
         return req
       },
       errorTransformer: (err) => {
-        if (err.response && err.response.data) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (err.response?.data) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
           return new SplitwiseError(err.response.data as any, err)
         }
         return err

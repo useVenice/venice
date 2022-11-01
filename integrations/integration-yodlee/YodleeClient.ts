@@ -93,12 +93,13 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       'Api-Version': '1.1',
     },
     requestTransformer: (req) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (req.headers.Authorization != null) {
         return req
       }
       if (accessToken) {
         req.headers = {
-          ...req.headers,
+          ...(req.headers as Record<string, unknown>),
           Authorization: `Bearer ${accessToken.accessToken}`,
         }
       }
@@ -107,13 +108,14 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     },
     errorTransformer: (err) => {
       if (err.response?.data) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
         return new YodleeError(err.response.data as any, err)
       }
       return err
     },
     refreshAuth: {
       shouldProactiveRefresh: (req) => {
-        // eslint-disable-next-line @typescript-eslint/dot-notation
+        // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-member-access
         if (req.headers.Authorization != null || req.headers['loginName']) {
           return false
         }
@@ -139,7 +141,8 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
 
   const api = new YodleeAPI(
     {BASE: http.defaults.baseURL},
-    createOpenApiRequestFactory(http, CancelablePromise),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+    createOpenApiRequestFactory(http, CancelablePromise) as any,
   )
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
@@ -328,7 +331,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       // }
       return http
         .get<{holding?: Yodlee.Holding[]}>('/holdings', {params})
-        .then((r) => r.data.holding || [])
+        .then((r) => r.data.holding ?? [])
     },
 
     async getHoldingSecurities(params: {holdingId: YodleeIds}) {
@@ -337,7 +340,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         .get<{holding?: Yodlee.HoldingSecurity[]}>('/holdings/securities', {
           params,
         })
-        .then((r) => r.data.holding || [])
+        .then((r) => r.data.holding ?? [])
     },
 
     async getHoldingTypeList() {

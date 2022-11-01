@@ -153,6 +153,7 @@ export function deepOmitUndefined<T>(
   } = {},
 ): T extends undefined ? null : T {
   if (Array.isArray(input)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return (input as unknown[])
       .filter((item) => !opts.pruneUndefinedArrayElements || item !== undefined)
       .map(
@@ -162,7 +163,7 @@ export function deepOmitUndefined<T>(
   }
   if (input && typeof input === 'object') {
     if (!isPlainObject(input)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       return input as any
     }
 
@@ -187,10 +188,10 @@ export function deepOmitUndefined<T>(
       }
       newObj[key] = newValue
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
     return newObj as any
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
   return (input === undefined ? null : input) as any
 }
 
@@ -270,6 +271,7 @@ export function setDefault<T extends object, K extends keyof T>(
   return value
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function invert<T extends Record<keyof T, keyof any>>(obj: T) {
   return _invert(obj) as Invert<T>
 }

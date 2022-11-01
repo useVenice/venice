@@ -59,6 +59,7 @@ if (require.main === module) {
       '': () => parseIntConfigsFromRawEnv(),
     }),
     jwt: () =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY!}),
     pg: () => makePostgresClient({databaseUrl: env().POSTGRES_OR_WEBHOOK_URL}),
     pgMeta: () =>
@@ -75,7 +76,8 @@ if (require.main === module) {
     yodlee: () =>
       makeYodleeClient(
         intConfig('yodlee'),
-        getEnvVar('YODLEE_CREDS', {json: true}),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getEnvVar('YODLEE_CREDS', {json: true}) as any,
       ),
     alphavantage: () => makeAlphavantageClient({apikey: ''}),
     // asana: () => makeAsanaClient({baseURL: ''}),

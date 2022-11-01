@@ -4,7 +4,11 @@
 module.exports = {
   setupFiles: ['jest-date-mock'],
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', '/apps/portal/.next/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/apps/portal/.next/',
+    '/apps/portal/out/',
+  ],
   watchPathIgnorePatterns: [
     '\\.gen\\.d\\.ts',
     '\\.gen\\.ts',

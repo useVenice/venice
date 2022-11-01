@@ -1,4 +1,6 @@
+import type {Link, LinkFactory} from '@usevenice/cdk-core'
 import {logLink, makeId, noopMetaService, swapPrefix} from '@usevenice/cdk-core'
+import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -7,8 +9,8 @@ import {
 } from '@usevenice/cdk-ledger'
 import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import {
-  type inferProcedureInput,
   makeSyncEngine,
+  type inferProcedureInput,
 } from '@usevenice/engine-backend'
 import {joinPath, R, Rx, zParser} from '@usevenice/util'
 
@@ -34,56 +36,62 @@ export const veniceBackendConfig = makeSyncEngine.config({
   metaService: usePg
     ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
     : noopMetaService,
-  // TODO: support other config service such as fs later...
-  linkMap: {renameAccount: renameAccountLink, log: logLink},
+  // TODO: Support other config service such as fs later...
+  linkMap: {
+    renameAccount: renameAccountLink as LinkFactory,
+    log: logLink,
+  },
   // Integrations shall include `config`.
   // In contrast, connection shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
 
   defaultIntegrations: parseIntConfigsFromRawEnv(),
-  getLinksForPipeline: ({source, links: links, destination}) =>
-    destination.integration.provider.name === 'beancount'
-      ? [
-          ...links,
-          mapStandardEntityLink(source),
-          addRemainderByDateLink, // What about just the addRemainder plugin?
-          // renameAccountLink({
-          //   Ramp: 'Ramp/Posted',
-          //   'Apple Card': 'Apple Card/Posted',
-          // }),
-          mapAccountNameAndTypeLink(),
-          logLink({prefix: 'preDest', verbose: true}),
-        ]
-      : destination.integration.provider.name === 'alka'
-      ? [
-          ...links,
-          // logLink({prefix: 'preMap'}),
-          mapStandardEntityLink(source),
-          // prefixIdLink(src.provider.name),
-          logLink({prefix: 'preDest'}),
-        ]
-      : [
-          ...links,
-          // logLink({prefix: 'preMapStandard', verbose: true}),
-          mapStandardEntityLink(source),
-          Rx.map((op) =>
-            op.type === 'data' &&
-            destination.integration.provider.name !== 'postgres'
-              ? R.identity<typeof op>({
-                  ...op,
-                  data: {
-                    ...op.data,
-                    entity: {
-                      standard: op.data.entity,
-                      external: op.data.external,
-                    },
-                  },
-                })
-              : op,
-          ),
-          logLink({prefix: 'preDest'}),
-        ],
+  getLinksForPipeline: ({source, links, destination}) => {
+    if (destination.integration.provider.name === 'beancount') {
+      return [
+        ...links,
+        mapStandardEntityLink(source),
+        addRemainderByDateLink as Link, // What about just the addRemainder plugin?
+        // renameAccountLink({
+        //   Ramp: 'Ramp/Posted',
+        //   'Apple Card': 'Apple Card/Posted',
+        // }),
+        mapAccountNameAndTypeLink() as Link,
+        logLink({prefix: 'preDest', verbose: true}),
+      ]
+    }
+    if (destination.integration.provider.name === 'alka') {
+      return [
+        ...links,
+        // logLink({prefix: 'preMap'}),
+        mapStandardEntityLink(source),
+        // prefixIdLink(src.provider.name),
+        logLink({prefix: 'preDest'}),
+      ]
+    }
+    return [
+      ...links,
+      // logLink({prefix: 'preMapStandard', verbose: true}),
+      mapStandardEntityLink(source),
+      Rx.map((op) =>
+        op.type === 'data' &&
+        destination.integration.provider.name !== 'postgres'
+          ? R.identity({
+              ...op,
+              data: {
+                ...op.data,
+                entity: {
+                  standard: op.data.entity,
+                  external: (op.data as EntityPayloadWithExternal).external,
+                },
+              },
+            })
+          : op,
+      ),
+      logLink({prefix: 'preDest'}),
+    ]
+  },
   // When do we perform migration?
   getDefaultPipeline: (conn) => ({
     id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),

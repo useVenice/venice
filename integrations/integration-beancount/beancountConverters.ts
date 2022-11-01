@@ -352,7 +352,7 @@ const convPostingsMap = conv<
         .map(([, post]) => convPosting.reverse(post)),
       // TODO: Fix me
       remainder &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
         convPosting.reverse(R.omit(remainder, ['amount' as any]) as any),
     ])
     // TODO: Move this functionality into its own plugin would be good
@@ -374,7 +374,8 @@ export const convTransaction = conv<
   forward: ([beanTxn]) => ({
     // Rethink whether this should be ExternalId in the case of beancount as a source
     id: beanTxn.meta?.['id']
-      ? (`${beanTxn.meta['id']}` as TransactionId)
+      ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        (`${beanTxn.meta['id']}` as TransactionId)
       : (temp_makeId('txn', beanTxn.hash) as TransactionId),
     date: beanTxn.date, // Parse time component?
     description: beanTxn.narration,
@@ -468,14 +469,16 @@ const convWrappedEntry = conv<
           ...convAccountFullName(w.entry.account),
           openDate: w.entry.date,
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta['id']}` as AccountId)
+            ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+              (`${w.entry.meta['id']}` as AccountId)
             : undefined,
         })
       case 'Commodity':
         return stdTypeAndEntity('commodity', {
           unit: convCurrency(w.entry.currency),
           id: w.entry.meta?.['id']
-            ? (`${w.entry.meta['id']}` as CommodityId)
+            ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+              (`${w.entry.meta['id']}` as CommodityId)
             : undefined,
         })
       case 'Price': {
@@ -709,6 +712,7 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
 
   const axios = createHTTPClient({
     baseURL:
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       converterUrl ||
       'https://us-central1-plain-text-accounting.cloudfunctions.net/converter',
   })
@@ -716,8 +720,10 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
   // https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/
   function parseBeanJson(json: unknown): Beancount.JSONExport {
     try {
-      const ret: Beancount.JSONExport =
-        typeof json === 'string' ? JSON.parse(json) : json
+      const ret =
+        typeof json === 'string'
+          ? (JSON.parse(json) as Beancount.JSONExport)
+          : (json as Beancount.JSONExport)
       if (ret && ret.variant !== 'beancount') {
         throw new Error(`Expected variant beancount, got ${ret.variant}`)
       }

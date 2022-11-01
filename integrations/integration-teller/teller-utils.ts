@@ -2,59 +2,33 @@ import React from 'react'
 
 import {loadScriptOnce} from '@usevenice/cdk-core'
 
+import type {TellerConnect, TellerInstance, TellerOptions} from './TellerClient'
+
 function loadTellerConnect() {
-  return new Promise((resolve) => {
+  return new Promise<TellerConnect>((resolve) => {
     function check() {
       if (window.TellerConnect) {
         return resolve(window.TellerConnect)
       }
-      loadScriptOnce('https://cdn.teller.io/connect/connect.js')
+      void loadScriptOnce('https://cdn.teller.io/connect/connect.js')
       setTimeout(check, 100)
     }
-
     check()
   })
 }
 
-interface TellerUserEnrollment {
-  id?: string
-}
-interface TellerInstitutionEnrollment {
-  name?: string
-}
-interface TellerEnrollment {
-  id?: string
-  institution?: TellerInstitutionEnrollment
-}
-export interface HandleSuccessTellerEnrollment {
-  accessToken?: string
-  user?: TellerUserEnrollment
-  enrollment?: TellerEnrollment
-  signatures?: string[]
-}
-
-interface TellerOption {
-  environment?: 'sandbox' | 'development' | 'production'
-  applicationId: string | null
-  institution?: string
-  onInit(): void
-  onSuccess(enrollment: HandleSuccessTellerEnrollment): void
-  onExit(): void
-}
-
-// Todo: Handle any
-export function useTellerAPI(setupArgs: TellerOption) {
-  const [tellerApi, setTellerApi] = React.useState<any>(null)
+export function useTellerAPI(options: TellerOptions) {
+  const [tellerApi, setTellerApi] = React.useState<TellerInstance | null>(null)
   React.useEffect(() => {
     loadTellerConnect()
-      .then((tellerApiRes: any) => {
-        if (!setupArgs.environment) {
+      .then((tellerConnect) => {
+        if (!options.environment) {
           return
         }
-        console.log('setup teller api', setupArgs, tellerApiRes)
-        setTellerApi(tellerApiRes.setup(setupArgs))
+        console.log('setup teller api', options, tellerConnect)
+        setTellerApi(tellerConnect.setup(options))
       })
       .catch(console.log)
-  }, [setupArgs, tellerApi])
+  }, [options, tellerApi])
   return tellerApi
 }

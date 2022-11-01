@@ -129,22 +129,22 @@ export const makeTogglClient = zFunction(zTogglConfig, (cfg) => {
   return {
     getMe: zFunction(() =>
       createClient()
-        .get('/v9/me')
+        .get<unknown>('/v9/me')
         .then((r) => meResponseSchema.parse(r.data)),
     ),
     getTimeEntries: zFunction(() =>
       createClient()
-        .get('/v9/me/time_entries')
+        .get<unknown>('/v9/me/time_entries')
         .then((r) => itemTimeEntriesSchema.array().parse(r.data)),
     ),
     getProjectUsers: zFunction(z.string(), (wsId) =>
       createClient()
-        .get(`/v9/workspaces/${wsId}/project_users`)
+        .get<unknown>(`/v9/workspaces/${wsId}/project_users`)
         .then((r) => itemProjectUserResponseSchema.array().parse(r.data)),
     ),
     getProjects: zFunction(z.string(), (wsId) =>
       createClient()
-        .get(`/v9/workspaces/${wsId}/projects`)
+        .get<unknown>(`/v9/workspaces/${wsId}/projects`)
         .then((r) => itemProjectResponseSchema.array().parse(r.data)),
     ),
   }

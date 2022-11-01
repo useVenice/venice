@@ -117,6 +117,7 @@ export const tellerProvider = makeSyncProvider({
     }),
   },
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   preConnect: async (config) => ({
     userToken: '',
     applicationId: config.applicationId,
@@ -152,6 +153,7 @@ export const tellerProvider = makeSyncProvider({
       })
     }
   },
+  // eslint-disable-next-line @typescript-eslint/require-await
   postConnect: async (input, _config) => ({
     connectionExternalId: input.token, // FIXME
     settings: {token: input.token},

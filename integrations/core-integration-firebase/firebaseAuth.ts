@@ -50,8 +50,7 @@ export const zFirebaseUserConfig = z.object({
 export const makeFirebaseAuth = zFunction(zFirebaseConfig, (config) => {
   const fba = firebase.initializeApp(config, config.projectId)
   const auth = fba.auth()
-
-  const getUser = () => {
+  function getUser() {
     if (!auth.currentUser) {
       throw new Error('auth.currentUser missing')
     }
@@ -92,9 +91,9 @@ export async function authUpdateCurrentUserFromJSON(
     console.error('Invalid user in authUpdateCurrentUserFromJSON', uJson)
     throw new Error('Invalid user')
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
   const user = UserImpl._fromJSON((auth as any)._delegate, uJson)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
   await auth.updateCurrentUser(user as any)
   return {user: auth.currentUser}
 }

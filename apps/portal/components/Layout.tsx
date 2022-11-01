@@ -42,7 +42,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
         <Container className="h-16 flex-row items-center justify-between py-0">
           <ActiveLink
             href="/"
-            className="shrink-1 truncate text-xl font-bold text-primary">
+            className="shrink truncate text-xl font-bold text-primary">
             {title}
           </ActiveLink>
 

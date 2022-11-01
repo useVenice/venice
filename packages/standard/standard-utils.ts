@@ -11,8 +11,10 @@ import type * as Standard from './standard-types'
 
 export function stdTypeAndEntity<T extends Standard.TypeAndEntity[0]>(
   entityName: T,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   entity: Extract<Standard.TypeAndEntity, readonly [T, any]>[1],
-): [T, Extract<Standard.TypeAndEntity, readonly [T, any]>[1]] {
+): // eslint-disable-next-line @typescript-eslint/no-explicit-any
+[T, Extract<Standard.TypeAndEntity, readonly [T, any]>[1]] {
   return [entityName, entity]
 }
 
@@ -370,8 +372,7 @@ export function makePostingsMap<T extends Standard.PostingsMap>(
   special: Pick<T, keyof Standard.SpecialPostingsMap>,
   other?: Partial<DistributiveOmit<T, keyof Standard.SpecialPostingsMap>>,
 ): T {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return {...other, ...special} as any
+  return {...other, ...special} as T
 }
 
 /**
@@ -394,7 +395,7 @@ export function makePostingsMapNext<T extends Standard.PostingsMap>(
     // There may *not* be a main posting. irritatingly
     // Should we insert mutliple transactions to address this?
     {remainder},
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
     {...mainMap, ...other} as any,
   )
 }

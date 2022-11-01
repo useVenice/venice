@@ -6,8 +6,10 @@ export {RateLimit} from 'async-sema'
 /** Aka sleep */
 export async function delay<T>(delayTimeMs: number, value: T): Promise<T>
 export async function delay<T>(delayTimeMs: number): Promise<void>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function delay<T>(delayTimeMs: any, value?: T): Promise<void | T> {
+export async function delay<T>(
+  delayTimeMs: number,
+  value?: T,
+): Promise<void | T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), delayTimeMs))
 }
 
@@ -38,7 +40,7 @@ export function withConcurrency<Args extends unknown[], T>(
     try {
       return await fn(...args)
     } finally {
-      await sema.release()
+      sema.release()
     }
   }
 }

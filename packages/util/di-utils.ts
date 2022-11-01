@@ -58,6 +58,7 @@ export function defineProxyFn<TFn extends AnyFunction>(
   defaultImpl?: TFn,
 ): TFn & {token: InjectionToken<TFn>} {
   const token = _token as InjectionToken<TFn>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument
   const fn = ((...args) => resolveDependency(token)(...args)) as TFn & {
     token: InjectionToken<TFn>
   }

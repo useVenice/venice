@@ -22,7 +22,7 @@ test('sql generation', () => {
   }
   const query = upsertByIdQuery(tableName, valueMap)
 
-  expect(query!.sql).toMatchInlineSnapshot(`
+  expect(query?.sql).toMatchInlineSnapshot(`
     INSERT INTO "transaction" ("id", "provider_name", "connection_id")
     VALUES ($1, $2, $3)
     ON CONFLICT ("id") DO UPDATE SET
@@ -33,7 +33,7 @@ test('sql generation', () => {
     "transaction"."provider_name" IS DISTINCT FROM excluded."provider_name" OR
     "transaction"."connection_id" IS DISTINCT FROM excluded."connection_id";
   `)
-  expect(query!.values).toMatchInlineSnapshot(`
+  expect(query?.values).toMatchInlineSnapshot(`
     [
         txn_test,
         plaid,

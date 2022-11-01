@@ -37,25 +37,27 @@ export function handlersLink<
     TConnUpdate,
     TStateUpdate
   >,
-) {
+): Link<TData> {
   // Order is important by default. mergeMap would result in `ready` being fired before
   // file has been written to disk as an example. Use mergeMap only if perf or a special
   // reason justifies it and order doesn't matter
-  return Rx.concatMap((op: SyncOperation<TData, TConnUpdate, TStateUpdate>) =>
+  return Rx.concatMap((op) =>
     R.pipe(handlers[op.type], (h) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
       h ? h(op as any) ?? rxjs.EMPTY : rxjs.of(op),
     ),
   )
 }
-export const transformLink = <T extends Data>(
+export function transformLink<T extends Data>(
   transform: (op: WritableDraft<SyncOperation<T>>) => SyncOperation<T> | void,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Link<T> => Rx.map((op) => produce(op, transform as any))
+): Link<T> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+  return Rx.map((op) => produce(op, transform as any))
+}
 
-export const logLink = <T extends Data>(
+export function logLink<T extends Data>(
   opts: {prefix?: string; verbose?: boolean | number} = {},
-): Link<T> => {
+): Link<T> {
   let i = 0
   return Rx.tap((op) => {
     console.log(
@@ -75,9 +77,7 @@ export const logLink = <T extends Data>(
   })
 }
 
-export const mergeReady = <T extends AnyEntityPayload>(
-  len: number,
-): Link<T> => {
+export function mergeReady<T extends AnyEntityPayload>(len: number): Link<T> {
   let i = 0
   return Rx.mergeMap((op) => {
     if (op.type === 'ready') {

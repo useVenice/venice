@@ -173,10 +173,12 @@ export const splitwiseProvider = makeSyncProvider({
           // For now it's easiest to get the group name
           // TODO: Need to check for the better way to get the group name
           const group_name =
-            groups.find((a) =>
-              a.name
-                .toLowerCase()
-                .includes(formatUser(t.users[0]?.user).toLowerCase()),
+            groups.find(
+              (a) =>
+                a.name
+                  .toLowerCase()
+                  .includes(formatUser(t.users[0]?.user).toLowerCase()),
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             )?.name || formatUser(t.users[0]?.user)
           return def._opData('transaction', `${t.id}`, {
             ...t,

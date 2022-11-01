@@ -133,7 +133,6 @@ export function parseIntConfigsFromRawEnv(
         (e) => (R.keys(e).length ? e : undefined), // To get .optional() to work
       )
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return zFlatConfig.optional().parse(subEnv)
       } catch (err) {
         if (err instanceof z.ZodError && err.issues[0]) {

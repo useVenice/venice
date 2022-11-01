@@ -239,7 +239,7 @@ export const plaidProvider = makeSyncProvider({
       },
       onSuccess: (publicToken, meta) => {
         console.log('[plaid] onSuccess', {publicToken, meta})
-        state?.res$.resolve({publicToken, meta: meta as any})
+        state?.res$.resolve({publicToken, meta})
         setState(null)
       },
       onExit: (err) => {
@@ -248,7 +248,7 @@ export const plaidProvider = makeSyncProvider({
         setState(null)
       },
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     ;(globalThis as any).plaidLink = plaidLink
 
     React.useEffect(() => {

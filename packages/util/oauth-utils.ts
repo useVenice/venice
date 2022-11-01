@@ -29,7 +29,7 @@ export class OAuth2Client<
   constructor(private readonly config: OAuth2ClientConfig<TError>) {
     this.http = createHTTPClient({
       errorTransformer: (err) => {
-        if (err.response && err.response.data) {
+        if (err.response?.data) {
           const error = err.response.data as TError
           return new OAuth2Error<TError>(
             config.errorToString?.(error) ?? JSON.stringify(error),

@@ -58,11 +58,10 @@ export class HTTPError<
     // Workaround for the axios inconsistency where data would have been serialized
     // by the time it reaches this stage
     // Notably, axios response seems to return `JSON.parse`d data
-    const requestHeaders = lowercaseHeaders(err.config.headers) as Record<
-      string,
-      string
-    >
-    let requestData = err.config.data
+    const requestHeaders = lowercaseHeaders(
+      err.config.headers as Record<string, unknown>,
+    ) as Record<string, string>
+    let requestData = err.config.data as unknown
     if (
       requestHeaders['content-type']?.startsWith('application/json') &&
       typeof requestData === 'string'
@@ -88,11 +87,10 @@ export class HTTPError<
       err.response && {
         status: err.response.status,
         statusText: err.response.statusText,
-        data: err.response.data,
-        headers: lowercaseHeaders(err.response.headers) as Record<
-          string,
-          string
-        >,
+        data: err.response.data as unknown,
+        headers: lowercaseHeaders(
+          err.response.headers as Record<string, unknown>,
+        ) as Record<string, string>,
       },
       err.message,
     )
@@ -174,6 +172,7 @@ export function createHTTPClient({
 
   const axios = _Axios.create({
     // How do we use per request container here?
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     httpsAgent: httpsAgent ?? getDefaultProxyAgent(),
     ...config,
   })
@@ -219,6 +218,7 @@ export function createHTTPClient({
       if (error.code === 401 && refreshAuth && !refreshPromise) {
         refreshPromise = refreshAuth.refresh(error)
         if (refreshPromise) {
+          // eslint-disable-next-line promise/no-promise-in-callback
           return refreshPromise
             .finally(() => (refreshPromise = undefined))
             .then((res) => {
@@ -250,12 +250,12 @@ export type ApiRequestOptions = {
     | 'HEAD'
     | 'PATCH'
   readonly url: string
-  readonly path?: Record<string, any>
-  readonly cookies?: Record<string, any>
-  readonly headers?: Record<string, any>
-  readonly query?: Record<string, any>
-  readonly formData?: Record<string, any>
-  readonly body?: any
+  readonly path?: Record<string, unknown>
+  readonly cookies?: Record<string, unknown>
+  readonly headers?: Record<string, unknown>
+  readonly query?: Record<string, unknown>
+  readonly formData?: Record<string, unknown>
+  readonly body?: unknown
   readonly mediaType?: string
   readonly responseHeader?: string
   readonly errors?: Record<number, string>
@@ -277,7 +277,7 @@ type OpenAPIConfig = {
 }
 
 const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
-  const encoder = config.ENCODE_PATH || encodeURI
+  const encoder = config.ENCODE_PATH ?? encodeURI
 
   const path = options.url
     .replace('{api-version}', config.VERSION)
@@ -297,17 +297,17 @@ const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
  * To be used together with https://github.com/ferdikoomen/openapi-typescript-codegen
  * Adapted from https://gist.github.com/tonyxiao/9df2d9ce50096a1adf96c5437a084d06
  */
-export const createOpenApiRequestFactory = <U extends Promise<any>>(
+export function createOpenApiRequestFactory(
   http: HTTPClient,
-  CancelablePromise: new (
-    fn: (
-      resolve: (value: any | PromiseLike<any>) => void,
-      reject: (reason?: any) => void,
+  CancelablePromise: new <T>(
+    executor: (
+      resolve: (value: T | PromiseLike<T>) => void,
+      reject: (reason?: unknown) => void,
       onCancel: (handleCancel: () => void) => void,
     ) => void,
-  ) => U,
-) =>
-  class OpenApiRequestFactory {
+  ) => Promise<T>,
+) {
+  return class OpenApiRequestFactory {
     constructor(public readonly config: OpenAPIConfig) {}
 
     /**
@@ -316,13 +316,12 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
      * @returns CancelablePromise<T>
      * @throws ApiError
      */
-    request(opts: ApiRequestOptions) {
-      return new CancelablePromise((resolve, reject, onCancel) => {
+    request<T>(opts: ApiRequestOptions) {
+      return new CancelablePromise<T>((resolve, reject, onCancel) => {
         // Get the request URL. Depending on your needs, this might need additional processing,
         // @see ./src/templates/core/functions/getUrl.hbs
         const url = getUrl(this.config, opts)
         // console.log('Will request url', url, opts)
-
         // Optional: Get and link the cancelation token, so the request can be aborted.
         const source = _Axios.CancelToken.source()
         onCancel(() => source.cancel('The user aborted a request.'))
@@ -335,7 +334,7 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
         // you will need to add headers, process form data, etc.
         // @see ./src/templates/core/axios/request.hbs
         http
-          .request({
+          .request<T>({
             url,
             method: opts.method,
             withCredentials: this.config.WITH_CREDENTIALS,
@@ -350,7 +349,7 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
             cancelToken: source.token,
           })
           .then((res) => resolve(res.data))
-          .catch((_err) => {
+          .catch((_err: unknown) => {
             let error = _err
             if (_err instanceof HTTPError && _err.response) {
               const statusText = opts.errors?.[_err.response.status]
@@ -367,3 +366,4 @@ export const createOpenApiRequestFactory = <U extends Promise<any>>(
       })
     }
   }
+}

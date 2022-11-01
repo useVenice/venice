@@ -99,19 +99,19 @@ export const makeWiseClient = zFunction(zWiseConfig, (cfg) => {
     ),
     getProfiles: zFunction(zEnvName, (envName) =>
       fromEnv(envName)
-        .get('/v1/profiles')
+        .get<unknown>('/v1/profiles')
         .then((r) => profileResponseItemSchema.array().parse(r.data)),
     ),
     getBalanceAccount: zFunction(balanceOrTransferAccountSchema, (opts) =>
       fromEnv(opts.envName)
-        .get(`/v4/profiles/${opts.profileId}/balances`, {
+        .get<unknown>(`/v4/profiles/${opts.profileId}/balances`, {
           params: {types: opts.types ?? 'STANDARD'},
         })
         .then((r) => r.data),
     ),
     getTransfers: zFunction(balanceOrTransferAccountSchema, (opts) =>
       fromEnv(opts.envName)
-        .get('/v1/transfers', {
+        .get<unknown>('/v1/transfers', {
           params: {profile: opts.profileId},
         })
         .then((r) => transferResponseItemSchema.array().parse(r.data)),

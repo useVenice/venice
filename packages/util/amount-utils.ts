@@ -247,6 +247,7 @@ export function toMultiAmount(
   if (isAmountMap(amount)) {
     return {
       amounts: Object.entries(amount).map(([u, q]) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
         A(q, u, amount[AM.meta as any] as AmountMeta | undefined),
       ),
     }
@@ -280,7 +281,7 @@ export function toAmounts(amt: AnyAmount | null | undefined) {
   return AM.toAmounts(amt)
 }
 
-export const parseMoney = accounting.unformat
+export const parseMoney = accounting.unformat.bind(accounting)
 
 /**
  * TODO: Support shorthands such as 12k and 33m

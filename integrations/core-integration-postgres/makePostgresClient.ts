@@ -154,7 +154,8 @@ export function upsertByIdQuery(
       const v = vmap[k]
 
       return typeMap[k] === 'jsonb'
-        ? sql.jsonb(v as any)
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+          sql.jsonb(v as any)
         : typeMap[k] === 'date'
         ? sql.timestamp(v as Date)
         : (v as PrimitiveValueExpression)

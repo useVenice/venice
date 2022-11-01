@@ -52,14 +52,14 @@ export const currentTimestamp = () => resolveDependency(kTimestamp).now()
 // fieldValue().serverTimestamp() as AnyTimestamp
 
 export function nullAsDelete<T>(input: T): Exclude<T, null> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
   return input === null ? fieldDelete() : (input as any)
 }
 
 export function emptyAsDelete<T extends string | null | undefined>(
   input: T,
 ): Exclude<T, null> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
   return input === null || input?.trim() === '' ? fieldDelete() : (input as any)
 }
 
@@ -230,17 +230,6 @@ export function idsForRef(ref: AnyDocumentReference) {
   return {id: ref.id}
 }
 
-export function idsForPath(path: string) {
-  const segments = path.split('/')
-  if (segments.length > 2 && segments[0] === 'users' && segments[1]) {
-    return {userId: segments[1] as UserId}
-  }
-  if (segments.length > 2 && segments[0] === 'ledgers' && segments[1]) {
-    return {ledgerId: segments[1] as LedgerId}
-  }
-  return {}
-}
-
 // HACK: This is super hacky but seems to be fairly reliable.
 // What we're trying to access here is the `_delegate` field on the `Query`
 // class (https://github.com/firebase/firebase-js-sdk/blob/375437171961fb369484990c528c6f4a7dd5cdef/packages/firestore/src/api/database.ts#L967).
@@ -259,7 +248,7 @@ export function getPathForQuery(query: AnyQuery) {
           delegateProp &&
           'path' in delegateProp
         ) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
           const pathObj = (delegateProp as any).path as {
             segments: string[]
             offset?: number
@@ -271,20 +260,6 @@ export function getPathForQuery(query: AnyQuery) {
     }
   }
   throw new Error('Unable to extract path from query')
-}
-
-/** Sanitize typical user-facing string */
-export function sanitizeUIString<T extends string | null | undefined>(
-  input: T,
-): T {
-  // Technically does not belong in here. but...for now too lazy
-
-  return input == null
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (input as any)
-    : input.trim()
-    ? input.trim()
-    : fieldDelete()
 }
 
 export function isSameTimestamp(

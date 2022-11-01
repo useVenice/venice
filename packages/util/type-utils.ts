@@ -8,6 +8,7 @@ export type {
   SetOptional,
   SetRequired,
   Split,
+  JsonValue,
   UnionToIntersection,
   ValueOf,
 } from 'type-fest'

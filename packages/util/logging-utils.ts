@@ -1,12 +1,9 @@
 export function makeLogger(tag?: string, data?: Record<string, unknown>) {
   function wrapLogFunction(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn: (message?: any, ...optionalParams: any[]) => void,
+    fn: (message?: unknown, ...optionalParams: unknown[]) => void,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (message?: any, ...optionalParams: any[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const args: any[] = []
+    return (message?: unknown, ...optionalParams: unknown[]) => {
+      const args: unknown[] = []
       if (typeof tag == 'string') {
         args.push(`[${tag}]`)
       }

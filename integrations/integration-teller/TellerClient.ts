@@ -7,7 +7,8 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 // TODO: Move to teller types
 
 // MARK: - Frontend types
-interface TellerOption {
+
+export interface TellerOptions {
   environment?: 'sandbox' | 'development' | 'production'
   applicationId: string
   institution?: string
@@ -31,15 +32,17 @@ interface TellerOption {
   onExit?(): void
 }
 
-interface TellerInstance {
+export interface TellerInstance {
   open: () => void
+}
+
+export interface TellerConnect {
+  setup: (options: TellerOptions) => TellerInstance
 }
 
 declare global {
   interface Window {
-    TellerConnect: {
-      setup: (options: TellerOption) => TellerInstance
-    }
+    TellerConnect: TellerConnect
   }
 }
 
@@ -157,8 +160,8 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
      */
     getAccounts: zFunction(zEnvName.nullish(), (envName) =>
       fromEnv(envName ?? 'sandbox')
-        .get('/accounts')
-        .then((r) => r.data.map((d: unknown) => accountTellerSchema.parse(d))),
+        .get<unknown[]>('/accounts')
+        .then((r) => r.data.map((d) => accountTellerSchema.parse(d))),
     ),
 
     /**
@@ -166,7 +169,7 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
      */
     getAccount: zFunction(inputAccountSchema, (params) =>
       fromEnv(params.envName ?? 'sandbox')
-        .get(`/accounts/${params.id}`)
+        .get<unknown>(`/accounts/${params.id}`)
         .then((r) => {
           accountTellerSchema.parse(r.data)
         }),
@@ -177,7 +180,7 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
      */
     getAccountDetails: zFunction(inputAccountSchema, (params) =>
       fromEnv(params.envName ?? 'sandbox')
-        .get(`/accounts/${params.id}/details`)
+        .get<unknown>(`/accounts/${params.id}/details`)
         .then((r) => accountDetailTellerSchema.parse(r.data)),
     ),
 
@@ -186,7 +189,7 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
      */
     getAccountBalances: zFunction(inputAccountSchema, (params) =>
       fromEnv(params.envName ?? 'sandbox')
-        .get(`/accounts/${params.id}/balances`)
+        .get<unknown>(`/accounts/${params.id}/balances`)
         .then((r) => balancesTellerSchema.parse(r.data)),
     ),
 
@@ -195,10 +198,8 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
      */
     getTransactions: zFunction(inputAccountSchema, (params) =>
       fromEnv(params.envName ?? 'sandbox')
-        .get(`/accounts/${params.id}/transactions`)
-        .then((r) =>
-          r.data.map((d: unknown) => transactionItemSchema.parse(d)),
-        ),
+        .get<unknown[]>(`/accounts/${params.id}/transactions`)
+        .then((r) => r.data.map((d) => transactionItemSchema.parse(d))),
     ),
 
     /**

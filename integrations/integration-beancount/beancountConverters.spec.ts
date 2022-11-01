@@ -14,7 +14,7 @@ import {
 
 const stringSnapshotSerializer: jest.SnapshotSerializerPlugin = {
   serialize(val) {
-    return val
+    return val as string
   },
   test(val) {
     return typeof val === 'string'

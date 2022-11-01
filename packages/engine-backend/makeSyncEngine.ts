@@ -78,8 +78,7 @@ export interface SyncEngineConfig<
 
   /** Used to store metadata */
   metaService: MetaService
-  // Figure out why we have to say `Link<any>` here rather than AnyEntityPayload
-  getLinksForPipeline?: (pipeline: ParsedPipeline) => Array<Link<any>>
+  getLinksForPipeline?: (pipeline: ParsedPipeline) => Link[]
 
   getDefaultPipeline?: (
     connInput?: ConnectionInput<TProviders[number]>,
@@ -134,7 +133,7 @@ export const makeSyncEngine = <
     : R.toPairs(defaultIntegrations ?? {}).map(
         ([name, config]): IntegrationInput => ({
           id: makeId('int', name, ''), // This will end up with an ending `_` is it an issue?
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           config: config as any,
         }),
       )
@@ -311,6 +310,7 @@ export const makeSyncEngine = <
         await Promise.all(
           res.connectionUpdates.map((connUpdate) =>
             // Provider is responsible for providing envName / ledgerId
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             _syncConnectionUpdate(int, connUpdate),
           ),
         )
@@ -470,9 +470,7 @@ export const makeSyncEngine = <
           return `Not implemented in ${integration.provider.name}`
         }
         const connUpdate = await integration.provider.checkConnection?.({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           settings,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           config: integration.config,
           options: opts ?? {},
           context: {
@@ -526,7 +524,8 @@ export const makeSyncEngine = <
           ...connCtxInput,
           ledgerId: ctx.ledgerId,
           connection: conn
-            ? {externalId: connectionExternalId!, settings: conn.settings}
+            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              {externalId: connectionExternalId!, settings: conn.settings}
             : undefined,
           webhookBaseUrl: joinPath(apiUrl, parseWebhookRequest.pathOf(int.id)),
           redirectUrl: getRedirectUrl?.(int, ctx),
@@ -563,7 +562,8 @@ export const makeSyncEngine = <
             ...connCtxInput,
             ledgerId: ctx.ledgerId,
             connection: conn
-              ? {externalId: connectionExternalId!, settings: conn.settings}
+              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                {externalId: connectionExternalId!, settings: conn.settings}
               : undefined,
             webhookBaseUrl: joinPath(
               apiUrl,
@@ -656,7 +656,7 @@ export const makeSyncEngine = <
                         data: {
                           ...op.data,
                           entity: {
-                            external: op.data.entity,
+                            external: op.data.entity as unknown,
                             standard:
                               int.provider.standardMappers?.institution?.(
                                 op.data.entity,
@@ -694,8 +694,10 @@ export const makeSyncEngine = <
   // TODO: Move me into a generic location...
   for (const key of ['queries', 'mutations', 'subscriptions'] as const) {
     for (const [name, val] of Object.entries(router._def[key])) {
-      const inputParser = val.inputParser
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const inputParser: unknown = val.inputParser
       if (isZodType(inputParser)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         val.parseInputFn = zParser(
           inputParser.describe(`${key}.${name}.input`),
         ).parseAsync

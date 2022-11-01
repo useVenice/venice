@@ -18,7 +18,8 @@ export function getAccessToken(req: NextApiRequest) {
     req.headers.authorization?.match(/^Bearer (.+)/)?.[1] ??
     R.pipe(
       getCookie(kAccessToken, {req}),
-      (v) => (typeof v === 'string' ? safeJSONParse(v) : undefined),
+      (v) =>
+        typeof v === 'string' ? (safeJSONParse(v) as unknown) : undefined,
       (v) => (typeof v === 'string' ? v : undefined),
     )
   )

@@ -20,13 +20,17 @@ export const airtableProvider = makeSyncProvider({
     airtable.initBase()
 
     return handlersLink({
+      // eslint-disable-next-line @typescript-eslint/require-await
       data: async (op) => {
         const {
           data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
 
         const transactionData = (
-          entityName === 'transaction' ? (data.entity as any).standard : null
+          entityName === 'transaction'
+            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+              (data.entity as any).standard
+            : null
         ) as Standard.Transaction
         const partialTxn =
           entityName === 'transaction'

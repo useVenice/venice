@@ -21,13 +21,17 @@ export const makeFsKVStore = zFunction(
   z.object({basePath: z.string()}),
   zKVStore,
   ({basePath}) => ({
-    get: async (id) => readJson(_pathFromId(basePath, id)),
+    get: (id) =>
+      readJson(_pathFromId(basePath, id)) as unknown as Record<string, unknown>,
     list: async () => {
       const filenames = await readDir(basePath)
       const results = await Promise.all(
         filenames.map(async (filename) => {
           const data = await readJson(joinPath(basePath, filename))
-          return [_idFromPath(filename), data] as const
+          return [
+            _idFromPath(filename),
+            data as Record<string, unknown>,
+          ] as const
         }),
       )
       return R.compact(results)

@@ -76,6 +76,7 @@ function _fsWatchPaths$({basePath, paths}: z.infer<typeof zWatchPathsInput>) {
       .watch(paths?.map((p) => $path().join(basePath, p)) ?? basePath, {
         awaitWriteFinish: {stabilityThreshold: 1000},
       })
+      // eslint-disable-next-line @typescript-eslint/require-await
       .on('all', async (event, path) => {
         if (event !== 'add' && event !== 'change' && event !== 'unlink') {
           return
@@ -108,7 +109,7 @@ function _fsWatchPaths$({basePath, paths}: z.infer<typeof zWatchPathsInput>) {
       })
     return () => {
       console.log('[fsWatchLedger] Stopped watching', paths)
-      watcher.close()
+      void watcher.close()
     }
   }).pipe(Rx.share())
 }
@@ -137,7 +138,11 @@ function _readPathData() {
           }
           return R.identity<FSDataEvent>({
             type: 'data',
-            data: {entity: data, id: e.data.id, entityName: e.data.entityName},
+            data: {
+              entity: data ?? null,
+              id: e.data.id,
+              entityName: e.data.entityName,
+            },
           })
         })
     }, 100), // 100 concurrent readFiles

@@ -73,5 +73,6 @@ export function swapPrefix<TPrefix extends IdPrefix>(
   newPrefix: TPrefix,
 ) {
   const [, providerName, rest] = extractId(id)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
   return makeId<TPrefix, string>(...([newPrefix, providerName, rest] as any))
 }

@@ -304,7 +304,7 @@ export const QBOProvider = makeSyncProvider({
             }
           }
           default:
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
             throw new Error(`[qbo] Unhandled txn type: ${(t as any).type}`)
         }
       },
