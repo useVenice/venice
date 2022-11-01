@@ -4,7 +4,7 @@ Venice will now automatically sync in the background in addition addition to lis
 
 This is particularly useful for situations where webhooks aren't always available (e.g. sync current portfolio value due to price updating) or if your server was offline / encountered a problem during webhook handling
 
-By default we will look for all connections that have not been sync'ed in the last 24 hours. 
+By default we will look for all connections that have not been sync'ed in the last 24 hours.
 
 ### Upgrade requirements
 
@@ -27,7 +27,7 @@ The main design goal is to keep the infrastructure lean and use the existing too
   - This means that jobs will normally get run once per minute
   - If you are using Supabase, then we added an optimization in the form of a [database webhook](https://supabase.com/blog/supabase-functions-updates#database-webhooks-alpha) that will trigger `/api/worker` anytime new job gets added. This means jobs should run with sub-second latency on supabase.
 - `graphile-worker` normally deletes jobs, we archive them into `graphile_worker.jobs_completed` table for logging / analytics
-- Migrates are required and they are run as part of the `build:worker` command in `apps/next`. This should be automatic if you use `Vercel`
+- Migrates are required and they are run as part of the `build:worker` command in `apps/portal`. This should be automatic if you use `Vercel`
 
 [**Architecture diagram**](https://excalidraw.com/#json=ieN-yfQae4hZxIIyD0qrI,tiCIzHkByX9Z6ZszHLDKnw)
 ![Architecture](./docs/background-sync-architecture.png)
