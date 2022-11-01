@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@usevenice/app-config": "*",
-    "@usevenice/cdk-core": "*",
-    "@usevenice/core-integration-postgres": "*",
+    "@usevenice/app-config": "workspace:*",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/core-integration-postgres": "workspace:*",
     "graphile-worker": "0.13.0"
   }
 }

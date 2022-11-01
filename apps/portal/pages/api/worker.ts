@@ -19,6 +19,7 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     return
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const secret = req.body.secret || req.query['secret']
   if (secret !== backendEnv.WORKER_INVOCATION_SECRET) {
     res.status(401).send('WORKER_INVOCATION_SECRET required')

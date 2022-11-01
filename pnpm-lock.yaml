@@ -348,7 +348,7 @@ importers:
 
   apps/tests:
     specifiers:
-      '@usevenice/app-config': '*'
+      '@usevenice/app-config': workspace:*
       openapi-typescript: 5.4.1
       remeda: 0.0.32
       tsx: 3.4.2
@@ -361,9 +361,9 @@ importers:
 
   apps/worker:
     specifiers:
-      '@usevenice/app-config': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/core-integration-postgres': '*'
+      '@usevenice/app-config': workspace:*
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/core-integration-postgres': workspace:*
       graphile-worker: 0.13.0
     dependencies:
       '@usevenice/app-config': link:../app-config
