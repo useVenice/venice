@@ -12,7 +12,7 @@ import {
 import {Container} from '@usevenice/ui/components/Container'
 
 import {developerModeAtom} from '../contexts/atoms'
-import {ActiveLink} from './ActiveLink'
+import {EnhancedActiveLink} from './EnhancedActiveLink'
 
 export interface LinkInput {
   label: string
@@ -40,17 +40,17 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
       <header className="overflow-x-hidden border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
-          <ActiveLink
+          <EnhancedActiveLink
             href="/"
             className="shrink truncate text-xl font-bold text-primary">
             {title}
-          </ActiveLink>
+          </EnhancedActiveLink>
 
           {links.length > 0 && (
             <div className="flex shrink-0 grow items-center justify-end">
               <nav className="flex space-x-2 text-sm font-medium md:space-x-4">
                 {links.map((l) => (
-                  <ActiveLink
+                  <EnhancedActiveLink
                     key={l.href}
                     href={l.href}
                     className={twMerge(
@@ -61,7 +61,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
                       !l.fixed && 'hidden md:inline-flex',
                     )}>
                     {l.label}
-                  </ActiveLink>
+                  </EnhancedActiveLink>
                 ))}
 
                 <DropdownMenu>
@@ -74,7 +74,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
                       .filter((l) => !l.fixed)
                       .map((l) => (
                         <DropdownMenuItem key={l.href} asChild>
-                          <ActiveLink
+                          <EnhancedActiveLink
                             href={l.href}
                             className={twMerge(
                               'btn no-animation justify-start',
@@ -83,7 +83,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
                                 : 'btn-ghost link-exact-active:text-black',
                             )}>
                             {l.label}
-                          </ActiveLink>
+                          </EnhancedActiveLink>
                         </DropdownMenuItem>
                       ))}
                   </DropdownMenuContent>

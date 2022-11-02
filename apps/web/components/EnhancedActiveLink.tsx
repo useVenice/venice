@@ -1,9 +1,10 @@
 import type {LinkProps} from 'next/link'
-import Link from 'next/link'
 import {useRouter} from 'next/router'
 import React from 'react'
 
-export const ActiveLink = React.forwardRef(function ActiveLink(
+import {EnhancedLink} from './EnhancedLink'
+
+export const EnhancedActiveLink = React.forwardRef(function ActiveLink(
   props: LinkProps &
     React.ComponentPropsWithoutRef<'a'> & {
       href: string
@@ -16,7 +17,7 @@ export const ActiveLink = React.forwardRef(function ActiveLink(
   const active = router.asPath.startsWith(props.as ?? props.href)
   const exactActive = (props.as ?? props.href) === router.asPath
   return (
-    <Link
+    <EnhancedLink
       {...props}
       ref={forwardedRef}
       data-link-active={active || undefined}
