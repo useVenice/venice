@@ -1,5 +1,5 @@
 import type {
-  JsonLiteral,
+  Json,
   NoInfer,
   NonDiscriminatedUnion,
   ObjectPartialDeep,
@@ -23,8 +23,8 @@ import type {ExternalId, Id} from './id.types'
 export interface AnyEntityPayload {
   // typename: string
   entityName: string
+  entity: Json | object
   id: string // ExternalId
-  entity: object | JsonLiteral | null // Record<string, unknown> doesn't work with normal ts interfaces...
 }
 
 export interface ConnUpdateData<
@@ -78,13 +78,23 @@ export type Source<
  * A specialized version of rxjs.OperatorFucntion. Often times stateful.
  */
 export type Link<
-  DataIn extends AnyEntityPayload = AnyEntityPayload,
-  DataOut extends AnyEntityPayload = DataIn,
+  TDataIn extends AnyEntityPayload = AnyEntityPayload,
+  TDataOut extends AnyEntityPayload = TDataIn,
   TConnUpdate extends object = ConnUpdateData,
   TStateUpdate extends object = StateUpdateData,
 > = (
-  obs: rxjs.Observable<SyncOperation<DataIn, TConnUpdate, TStateUpdate>>,
-) => rxjs.Observable<SyncOperation<DataOut, TConnUpdate, TStateUpdate>>
+  obs: rxjs.Observable<SyncOperation<TDataIn, TConnUpdate, TStateUpdate>>,
+) => rxjs.Observable<SyncOperation<TDataOut, TConnUpdate, TStateUpdate>>
+
+export type LinkFactory<
+  TDataIn extends AnyEntityPayload = AnyEntityPayload,
+  TDataOut extends AnyEntityPayload = TDataIn,
+  TConnUpdate extends object = ConnUpdateData,
+  TStateUpdate extends object = StateUpdateData,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TArg = any,
+> = (arg: TArg) => Link<TDataIn, TDataOut, TConnUpdate, TStateUpdate>
+
 /**
  * Terminating link is just a link... It can still emit things like ready event
  * for the engine to listen to. The resulting event may not be the same as the input events
@@ -94,6 +104,3 @@ export type Destination<
   TConnUpdate extends object = ConnUpdateData,
   TStateUpdate extends object = StateUpdateData,
 > = Link<T, AnyEntityPayload, TConnUpdate, TStateUpdate>
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type LinkFactory<TArg = any> = (arg: TArg) => Link<any, any>

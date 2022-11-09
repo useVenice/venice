@@ -2,11 +2,12 @@
 title: Venice
 description: Venice is a the fastest way to get financial data from Plaid into your Postgres database.
 ---
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+
 <p align="center">
   <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
 </p>
-
 
 Zero to production in 5 minutes without a single line of code:
 
@@ -43,7 +44,7 @@ We built Venice after working on multiple fintech products. Despite the explosio
 ## What we built so far
 
 - **Connection portal**:
-  - Ready to use UI for your customers to add financial connections, repair broken ones, or manually trigger a sync. 
+  - Ready to use UI for your customers to add financial connections, repair broken ones, or manually trigger a sync.
 - **Token management**:
   - Keep track of access tokens and don't pay for the ones you don't use
 - **Incremental sync**:
@@ -51,7 +52,7 @@ We built Venice after working on multiple fintech products. Despite the explosio
 - **Rate limiting**:
   - End point specific rate limiting to maximize performance
 - **Webhook handling**:
-  - Get connection and data updates in real time. 
+  - Get connection and data updates in real time.
 - **Database sync**:
   - Forget HTTP requests. The best API is the one from your database.
 - **Extensible architecture**:
@@ -91,6 +92,7 @@ Here are 5 ways you can use Venice, each built on a layer below:
 ## Non-sandbox environment
 
 There are three environments venice operates in when creating new connections, and they correspond to the same envs in Plaid.
+
 - sandbox
 - development
 - production
@@ -114,6 +116,7 @@ This setting only affects new connections. Existing connections store which envi
 | `int_plaid__products`             | `Array<assets \| auth \| balance \| identity \| investments \| liabilities \| payment_initiation \| transactions \| credit_details \| income \| income_verification \| deposit_switch \| standing_orders \| transfer \| employment \| recurring_transactions> = ["transactions"]`                                                                                                                               |
 | `int_plaid__countryCodes`         | `Array<US \| GB \| ES \| NL \| FR \| IE \| CA \| DE \| IT> = ["US"]`                                                                                                                                                                                                                                                                                                                                            |
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de = "en"`                                                                                                                                                                                                                                                                                                                                                                             |
+
 ## Local Development
 
 1. Clone repo `git clone git@github.com:usevenice/venice.git`.
@@ -148,13 +151,14 @@ pnpm run venice syncPipeline --source.id conn_plaid --source.settings.accessToke
 ```
 
 Tips
+
 - Use [`shdotenv`](https://github.com/ko1nksm/shdotenv) to load env vars from .env files
 
 ## FAQs
 
 Why is it called Venice?
 
-> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like useVenice pipelines are used to transport financial data. 
+> First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like useVenice pipelines are used to transport financial data.
 
 Do you get to see any of the data we pass through?
 

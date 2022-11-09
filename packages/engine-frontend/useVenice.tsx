@@ -187,8 +187,10 @@ export function useVeniceConnect({
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const res = await connectFnMapRef.current?.[provider]?.(preConnRes, opt)
+        const res: unknown = await connectFnMapRef.current?.[provider]?.(
+          preConnRes,
+          opt,
+        )
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.mutation('postConnect', [res, int, opt])

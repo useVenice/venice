@@ -1,0 +1,14 @@
+{
+  "name": "@usevenice/core-integration-fs",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@usevenice/integration-foreceipt",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/core-integration-firebase": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
+    "firebase": "9.8.1",
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "*"
+  }
+}

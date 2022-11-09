@@ -5,8 +5,10 @@ import type {
   Id,
   LinkFactory,
   MetaService,
+  ZStandard,
 } from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
+import type {Json} from '@usevenice/util'
 import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
@@ -57,7 +59,7 @@ export type ConnectionInput<T extends AnySyncProvider = AnySyncProvider> =
         id: Id<T['name']>['conn']
         integrationId?: Id<T['name']>['int']
         integration?: IntegrationInput<T>
-        settings?: Partial<_inferInput<T['def']['connectionSettings']>>
+        settings?: Partial<_inferInput<T['def']['connectionSettings']>> & object
       }
     : never
 
@@ -159,7 +161,7 @@ export function makeSyncParsers<
       )
       const config = provider.def.integrationConfig?.parse(_config, {
         path: ['config'],
-      })
+      }) as Record<string, Json>
       // Validated id only
       return {id, ...integration, ...rest, provider, config}
     }),
@@ -172,7 +174,7 @@ export function makeSyncParsers<
       const external = deepMerge(institution?.external, rest.external)
       const standard = provider.def.institutionData?.parse(external, {
         path: ['external'],
-      })
+      }) as ZStandard['institution']
       return {id, ...institution, ...rest, external, standard}
     }),
   )
@@ -205,7 +207,7 @@ export function makeSyncParsers<
       const settings = integration.provider.def.connectionSettings?.parse(
         deepMerge(conn?.settings, rest.settings),
         {path: ['settings']},
-      )
+      ) as Record<string, Json>
       return {
         id,
         ...conn,
@@ -261,13 +263,12 @@ export function makeSyncParsers<
         const sourceState = source.integration.provider.def.sourceState?.parse(
           deepMerge(pipeline?.sourceState, rest.sourceState),
           {path: ['sourceState']},
-        )
-
+        ) as Record<string, unknown>
         const destinationState =
           destination.integration.provider.def.destinationState?.parse(
             deepMerge(pipeline?.destinationState, rest.destinationState),
             {path: ['destinationState']},
-          )
+          ) as Record<string, unknown>
         return {
           id,
           ...pipeline,

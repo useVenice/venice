@@ -1,3 +1,4 @@
+#!/usr/bin/env tsx
 import '@usevenice/app-config/register.node'
 
 import {makePostgresClient} from '@usevenice/core-integration-postgres'

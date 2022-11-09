@@ -1,5 +1,4 @@
 packages:
-  - 'packages/@integrations/*'
-  - 'packages/@utils/*'
   - 'packages/*'
+  - 'integrations/*'
   - 'apps/*'

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-/* eslint-disable @typescript-eslint/await-thenable */
-
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -13,7 +11,7 @@ import path from 'node:path'
 import * as trpc from '@trpc/server'
 import cac from 'cac'
 
-import type {AnyZFunction, z} from '@usevenice/util'
+import type {AnyZFunction, MaybePromise, z} from '@usevenice/util'
 import {
   deepMerge,
   isAsyncIterable,
@@ -72,8 +70,8 @@ type AnyProcedure = trpc.ProcedureRecord[string]
 export interface CliOpts {
   /** Validated methods only... */
   safeMode?: boolean
-  prepare?: () => void
-  cleanup?: () => void
+  prepare?: () => MaybePromise<void>
+  cleanup?: () => MaybePromise<void>
   context?: unknown
   defaultHelpCommand?: boolean
 }
@@ -120,6 +118,7 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
       (t) => (t?._def?.typeName === 'ZodTuple' ? (t as z.ZodTuple) : undefined),
       (tuple) =>
         tuple &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ((_procedure as any).parseInputFn = (input: unknown) =>
           preprocessArgsTuple(tuple).parseAsync(input)),
     )
@@ -195,8 +194,8 @@ export function cliFromZFunctionMap(
           console.log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
           const start = Date.now()
           await cliOpts?.prepare?.()
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const res = (map as any)[name](...args, options)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call
+          const res: unknown = (map as any)[name](...args, options)
           await printResult(res)
           await cliOpts?.cleanup?.()
           console.log(`[cli] ${name} done in ${Date.now() - start}ms`)

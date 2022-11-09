@@ -1,4 +1,3 @@
-import {computeTrialBalance} from '@usevenice/accounting'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
@@ -11,6 +10,7 @@ import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
   AM,
+  computeTrialBalance,
   objectEntries,
   produce,
   R,
@@ -30,15 +30,15 @@ import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 import {isVeniceProvider} from './veniceProviderBase'
 
 // TODO: Can we use the `parsedConn` type here?
-export const mapStandardEntityLink = ({
+export function mapStandardEntityLink({
   integration: {provider},
   settings: initialSettings,
   id: sourceId,
 }: {
   integration: {provider: AnySyncProvider}
-  settings: any
+  settings: unknown
   id: Id['conn'] | undefined
-}): Link<AnyEntityPayload, EntityPayloadWithExternal> => {
+}): Link<AnyEntityPayload, EntityPayloadWithExternal> {
   if (!isVeniceProvider(provider)) {
     throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
   }
@@ -48,7 +48,6 @@ export const mapStandardEntityLink = ({
     }
 
     // TODO: Update the initialConn as we receive connection updates
-
     const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>
       typeof map === 'function'
         ? map(op.data, initialSettings)
@@ -101,9 +100,9 @@ export function _opsFromCache(cache: StdCache) {
 }
 
 /** Performs cumulative transform */
-export const cachingLink = (
+export function cachingLink(
   onCommit: (c: StdCache) => rxjs.Observable<StdSyncOperation>,
-) => {
+) {
   const cache: StdCache = {account: {}, transaction: {}, commodity: {}}
   let numChanges = 0
   return handlersLink({
@@ -111,6 +110,7 @@ export const cachingLink = (
       if (op.data.entity) {
         cache[op.data.entityName][op.data.id] = op.data.entity
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete cache[op.data.entityName][op.data.id]
       }
       numChanges++
@@ -126,15 +126,16 @@ export const cachingLink = (
   })
 }
 
-export const cachingTransformLink = (
+export function cachingTransformLink(
   transform: (c: WritableDraft<StdCache>) => StdCache | void,
-) =>
-  cachingLink((cache) =>
+) {
+  return cachingLink((cache) =>
     rxjs.from([
       ..._opsFromCache(produce(cache, transform)),
       R.identity<StdSyncOperation>({type: 'commit'}),
     ]),
   )
+}
 
 // TODO: Move this entire file into @usevenice/cdk-ledger package
 
@@ -164,8 +165,8 @@ export const renameAccountLink = zFunction(z.record(z.string()), (mapping) =>
 )
 
 /** Link is always a function by Rx.js convention. remeda is looser though */
-export const mapAccountNameAndTypeLink = () =>
-  cachingTransformLink((draft) => {
+export function mapAccountNameAndTypeLink() {
+  return cachingTransformLink((draft) => {
     // console.debug('[mapAccountNameAndTypeLink]', draft.account)
     for (const txn of Object.values(draft.transaction)) {
       for (const post of R.pipe(txn.postingsMap ?? {}, R.values, R.compact)) {
@@ -177,13 +178,14 @@ export const mapAccountNameAndTypeLink = () =>
       }
     }
   })
+}
 
-export const transformTransactionLink = (
+export function transformTransactionLink(
   transform: (
     txn: WritableDraft<Standard.Transaction>,
   ) => Standard.Transaction | void,
-) =>
-  transformLink<EntityPayload>((op) => {
+) {
+  return transformLink<EntityPayload>((op) => {
     if (
       op.type === 'data' &&
       op.data.entityName === 'transaction' &&
@@ -192,6 +194,7 @@ export const transformTransactionLink = (
       op.data.entity = produce(op.data.entity, transform)
     }
   })
+}
 
 // Remaining...
 // - [ ] Add composeLinks to combine multiple links into one
@@ -227,7 +230,6 @@ export const addRemainderByDateLink = transformTransactionLink((txn) => {
 // Very verbose...
 export function mergeTransferLink(): Link<EntityPayload> {
   const txnsByTransferId: Record<string, Standard.Transaction[]> = {}
-
   return handlersLink<EntityPayload>({
     data: (op) => {
       if (op.data.entityName === 'transaction' && op.data.entity?.transferId) {

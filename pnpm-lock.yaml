@@ -4,10 +4,11 @@ neverBuiltDependencies:
   - libpq
 
 overrides:
-  '@types/react': 17.0.39
+  '@types/react': 18.0.24
+  '@types/react-dom': 18.0.8
   axios: 0.21.1
-  react: 17.0.2
-  react-dom: 17.0.2
+  react: 18.2.0
+  react-dom: 18.2.0
   slonik: 30.3.1
 
 patchedDependencies:
@@ -49,15 +50,16 @@ importers:
 
   .:
     specifiers:
-      '@ianvs/prettier-plugin-sort-imports': 3.4.2
+      '@ianvs/prettier-plugin-sort-imports': 3.7.1
       '@roarr/cli': 5.7.0
+      '@tsconfig/strictest': 1.0.2
       '@types/jest': 29.0.0
       '@types/node': 16.11.12
       '@types/prettier': 2.7.0
       '@typescript-eslint/eslint-plugin': 5.36.1
       '@typescript-eslint/parser': 5.36.1
-      '@usevenice/cli': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cli': workspace:*
+      '@usevenice/util': workspace:*
       esbuild: 0.15.6
       esbuild-jest: 0.5.0
       eslint: 8.23.0
@@ -79,18 +81,20 @@ importers:
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18
       prettier-plugin-sql: 0.12.1
+      ts-brand: 0.0.2
       tsx: 3.9.0
       typescript: 4.8.2
     devDependencies:
-      '@ianvs/prettier-plugin-sort-imports': 3.4.2_prettier@2.7.1
+      '@ianvs/prettier-plugin-sort-imports': 3.7.1_prettier@2.7.1
       '@roarr/cli': 5.7.0
+      '@tsconfig/strictest': 1.0.2
       '@types/jest': 29.0.0
       '@types/node': 16.11.12
       '@types/prettier': 2.7.0
       '@typescript-eslint/eslint-plugin': 5.36.1_lbwfnm54o3pmr3ypeqp3btnera
       '@typescript-eslint/parser': 5.36.1_yqf6kl63nyoq5megxukfnom5rm
       '@usevenice/cli': link:apps/cli
-      '@usevenice/util': link:packages/@utils/util
+      '@usevenice/util': link:packages/util
       esbuild: 0.15.6
       esbuild-jest: 0.5.0_qbdhvjs7sktehqpuch2x3qhd4y_esbuild@0.15.6
       eslint: 8.23.0
@@ -112,6 +116,7 @@ importers:
       prettier: 2.7.1
       prettier-plugin-packagejson: 2.2.18_prettier@2.7.1
       prettier-plugin-sql: 0.12.1_prettier@2.7.1
+      ts-brand: 0.0.2
       tsx: 3.9.0
       typescript: 4.8.2_5eymtkfhh4duhys6jj5r56cgu4
 
@@ -120,38 +125,38 @@ importers:
       '@next/env': 12.2.5
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/core-integration-airtable': '*'
-      '@usevenice/core-integration-firebase': '*'
-      '@usevenice/core-integration-fs': '*'
-      '@usevenice/core-integration-mongodb': '*'
-      '@usevenice/core-integration-postgres': '*'
-      '@usevenice/core-integration-redis': '*'
-      '@usevenice/core-integration-webhook': '*'
-      '@usevenice/engine-backend': '*'
-      '@usevenice/engine-frontend': '*'
-      '@usevenice/integration-alphavantage': '*'
-      '@usevenice/integration-beancount': '*'
-      '@usevenice/integration-expensify': '*'
-      '@usevenice/integration-foreceipt': '*'
-      '@usevenice/integration-import': '*'
-      '@usevenice/integration-lunchmoney': '*'
-      '@usevenice/integration-moota': '*'
-      '@usevenice/integration-onebrick': '*'
-      '@usevenice/integration-plaid': '*'
-      '@usevenice/integration-postgres': '*'
-      '@usevenice/integration-qbo': '*'
-      '@usevenice/integration-ramp': '*'
-      '@usevenice/integration-saltedge': '*'
-      '@usevenice/integration-splitwise': '*'
-      '@usevenice/integration-stripe': '*'
-      '@usevenice/integration-teller': '*'
-      '@usevenice/integration-toggl': '*'
-      '@usevenice/integration-venmo': '*'
-      '@usevenice/integration-wise': '*'
-      '@usevenice/integration-yodlee': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/core-integration-airtable': workspace:*
+      '@usevenice/core-integration-firebase': workspace:*
+      '@usevenice/core-integration-fs': workspace:*
+      '@usevenice/core-integration-mongodb': workspace:*
+      '@usevenice/core-integration-postgres': workspace:*
+      '@usevenice/core-integration-redis': workspace:*
+      '@usevenice/core-integration-webhook': workspace:*
+      '@usevenice/engine-backend': workspace:*
+      '@usevenice/engine-frontend': workspace:*
+      '@usevenice/integration-alphavantage': workspace:*
+      '@usevenice/integration-beancount': workspace:*
+      '@usevenice/integration-expensify': workspace:*
+      '@usevenice/integration-foreceipt': workspace:*
+      '@usevenice/integration-import': workspace:*
+      '@usevenice/integration-lunchmoney': workspace:*
+      '@usevenice/integration-moota': workspace:*
+      '@usevenice/integration-onebrick': workspace:*
+      '@usevenice/integration-plaid': workspace:*
+      '@usevenice/integration-postgres': workspace:*
+      '@usevenice/integration-qbo': workspace:*
+      '@usevenice/integration-ramp': workspace:*
+      '@usevenice/integration-saltedge': workspace:*
+      '@usevenice/integration-splitwise': workspace:*
+      '@usevenice/integration-stripe': workspace:*
+      '@usevenice/integration-teller': workspace:*
+      '@usevenice/integration-toggl': workspace:*
+      '@usevenice/integration-venmo': workspace:*
+      '@usevenice/integration-wise': workspace:*
+      '@usevenice/integration-yodlee': workspace:*
+      '@usevenice/util': workspace:*
       chokidar: 3.5.3
       execa: 6.1.0
       find-config: 1.0.0
@@ -164,36 +169,36 @@ importers:
       '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
-      '@usevenice/core-integration-airtable': link:../../packages/@integrations/core-integration-airtable
-      '@usevenice/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
-      '@usevenice/core-integration-fs': link:../../packages/@integrations/core-integration-fs
-      '@usevenice/core-integration-mongodb': link:../../packages/@integrations/core-integration-mongodb
-      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
-      '@usevenice/core-integration-redis': link:../../packages/@integrations/core-integration-redis
-      '@usevenice/core-integration-webhook': link:../../packages/@integrations/core-integration-webhook
+      '@usevenice/core-integration-airtable': link:../../integrations/core-integration-airtable
+      '@usevenice/core-integration-firebase': link:../../integrations/core-integration-firebase
+      '@usevenice/core-integration-fs': link:../../integrations/core-integration-fs
+      '@usevenice/core-integration-mongodb': link:../../integrations/core-integration-mongodb
+      '@usevenice/core-integration-postgres': link:../../integrations/core-integration-postgres
+      '@usevenice/core-integration-redis': link:../../integrations/core-integration-redis
+      '@usevenice/core-integration-webhook': link:../../integrations/core-integration-webhook
       '@usevenice/engine-backend': link:../../packages/engine-backend
       '@usevenice/engine-frontend': link:../../packages/engine-frontend
-      '@usevenice/integration-alphavantage': link:../../packages/@integrations/integration-alphavantage
-      '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
-      '@usevenice/integration-expensify': link:../../packages/@integrations/integration-expensify
-      '@usevenice/integration-foreceipt': link:../../packages/@integrations/integration-foreceipt
-      '@usevenice/integration-import': link:../../packages/@integrations/integration-import
-      '@usevenice/integration-lunchmoney': link:../../packages/@integrations/integration-lunchmoney
-      '@usevenice/integration-moota': link:../../packages/@integrations/integration-moota
-      '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
-      '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
-      '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
-      '@usevenice/integration-qbo': link:../../packages/@integrations/integration-qbo
-      '@usevenice/integration-ramp': link:../../packages/@integrations/integration-ramp
-      '@usevenice/integration-saltedge': link:../../packages/@integrations/integration-saltedge
-      '@usevenice/integration-splitwise': link:../../packages/@integrations/integration-splitwise
-      '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
-      '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
-      '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
-      '@usevenice/integration-venmo': link:../../packages/@integrations/integration-venmo
-      '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
-      '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
-      '@usevenice/util': link:../../packages/@utils/util
+      '@usevenice/integration-alphavantage': link:../../integrations/integration-alphavantage
+      '@usevenice/integration-beancount': link:../../integrations/integration-beancount
+      '@usevenice/integration-expensify': link:../../integrations/integration-expensify
+      '@usevenice/integration-foreceipt': link:../../integrations/integration-foreceipt
+      '@usevenice/integration-import': link:../../integrations/integration-import
+      '@usevenice/integration-lunchmoney': link:../../integrations/integration-lunchmoney
+      '@usevenice/integration-moota': link:../../integrations/integration-moota
+      '@usevenice/integration-onebrick': link:../../integrations/integration-onebrick
+      '@usevenice/integration-plaid': link:../../integrations/integration-plaid
+      '@usevenice/integration-postgres': link:../../integrations/integration-postgres
+      '@usevenice/integration-qbo': link:../../integrations/integration-qbo
+      '@usevenice/integration-ramp': link:../../integrations/integration-ramp
+      '@usevenice/integration-saltedge': link:../../integrations/integration-saltedge
+      '@usevenice/integration-splitwise': link:../../integrations/integration-splitwise
+      '@usevenice/integration-stripe': link:../../integrations/integration-stripe
+      '@usevenice/integration-teller': link:../../integrations/integration-teller
+      '@usevenice/integration-toggl': link:../../integrations/integration-toggl
+      '@usevenice/integration-venmo': link:../../integrations/integration-venmo
+      '@usevenice/integration-wise': link:../../integrations/integration-wise
+      '@usevenice/integration-yodlee': link:../../integrations/integration-yodlee
+      '@usevenice/util': link:../../packages/util
       chokidar: 3.5.3
       execa: 6.1.0
       find-config: 1.0.0
@@ -209,31 +214,31 @@ importers:
   apps/cli:
     specifiers:
       '@trpc/server': 9.26.0
-      '@usevenice/app-config': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/core-integration-firebase': '*'
-      '@usevenice/core-integration-postgres': '*'
-      '@usevenice/engine-backend': '*'
-      '@usevenice/integration-alphavantage': '*'
-      '@usevenice/integration-beancount': '*'
-      '@usevenice/integration-expensify': '*'
-      '@usevenice/integration-lunchmoney': '*'
-      '@usevenice/integration-moota': '*'
-      '@usevenice/integration-onebrick': '*'
-      '@usevenice/integration-plaid': '*'
-      '@usevenice/integration-postgres': '*'
-      '@usevenice/integration-qbo': '*'
-      '@usevenice/integration-ramp': '*'
-      '@usevenice/integration-saltedge': '*'
-      '@usevenice/integration-stripe': '*'
-      '@usevenice/integration-teller': '*'
-      '@usevenice/integration-toggl': '*'
-      '@usevenice/integration-venmo': '*'
-      '@usevenice/integration-wise': '*'
-      '@usevenice/integration-yodlee': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      '@usevenice/worker': '*'
+      '@usevenice/app-config': workspace:*
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/core-integration-firebase': workspace:*
+      '@usevenice/core-integration-postgres': workspace:*
+      '@usevenice/engine-backend': workspace:*
+      '@usevenice/integration-alphavantage': workspace:*
+      '@usevenice/integration-beancount': workspace:*
+      '@usevenice/integration-expensify': workspace:*
+      '@usevenice/integration-lunchmoney': workspace:*
+      '@usevenice/integration-moota': workspace:*
+      '@usevenice/integration-onebrick': workspace:*
+      '@usevenice/integration-plaid': workspace:*
+      '@usevenice/integration-postgres': workspace:*
+      '@usevenice/integration-qbo': workspace:*
+      '@usevenice/integration-ramp': workspace:*
+      '@usevenice/integration-saltedge': workspace:*
+      '@usevenice/integration-stripe': workspace:*
+      '@usevenice/integration-teller': workspace:*
+      '@usevenice/integration-toggl': workspace:*
+      '@usevenice/integration-venmo': workspace:*
+      '@usevenice/integration-wise': workspace:*
+      '@usevenice/integration-yodlee': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      '@usevenice/worker': workspace:*
       cac: 6.7.12
       keytar: 7.9.0
       micro: 9.3.5-canary.3
@@ -242,46 +247,46 @@ importers:
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
-      '@usevenice/core-integration-firebase': link:../../packages/@integrations/core-integration-firebase
-      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
+      '@usevenice/core-integration-firebase': link:../../integrations/core-integration-firebase
+      '@usevenice/core-integration-postgres': link:../../integrations/core-integration-postgres
       '@usevenice/engine-backend': link:../../packages/engine-backend
-      '@usevenice/integration-alphavantage': link:../../packages/@integrations/integration-alphavantage
-      '@usevenice/integration-beancount': link:../../packages/@integrations/integration-beancount
-      '@usevenice/integration-expensify': link:../../packages/@integrations/integration-expensify
-      '@usevenice/integration-lunchmoney': link:../../packages/@integrations/integration-lunchmoney
-      '@usevenice/integration-moota': link:../../packages/@integrations/integration-moota
-      '@usevenice/integration-onebrick': link:../../packages/@integrations/integration-onebrick
-      '@usevenice/integration-plaid': link:../../packages/@integrations/integration-plaid
-      '@usevenice/integration-postgres': link:../../packages/@integrations/integration-postgres
-      '@usevenice/integration-qbo': link:../../packages/@integrations/integration-qbo
-      '@usevenice/integration-ramp': link:../../packages/@integrations/integration-ramp
-      '@usevenice/integration-saltedge': link:../../packages/@integrations/integration-saltedge
-      '@usevenice/integration-stripe': link:../../packages/@integrations/integration-stripe
-      '@usevenice/integration-teller': link:../../packages/@integrations/integration-teller
-      '@usevenice/integration-toggl': link:../../packages/@integrations/integration-toggl
-      '@usevenice/integration-venmo': link:../../packages/@integrations/integration-venmo
-      '@usevenice/integration-wise': link:../../packages/@integrations/integration-wise
-      '@usevenice/integration-yodlee': link:../../packages/@integrations/integration-yodlee
-      '@usevenice/standard': link:../../packages/@utils/standard
-      '@usevenice/util': link:../../packages/@utils/util
+      '@usevenice/integration-alphavantage': link:../../integrations/integration-alphavantage
+      '@usevenice/integration-beancount': link:../../integrations/integration-beancount
+      '@usevenice/integration-expensify': link:../../integrations/integration-expensify
+      '@usevenice/integration-lunchmoney': link:../../integrations/integration-lunchmoney
+      '@usevenice/integration-moota': link:../../integrations/integration-moota
+      '@usevenice/integration-onebrick': link:../../integrations/integration-onebrick
+      '@usevenice/integration-plaid': link:../../integrations/integration-plaid
+      '@usevenice/integration-postgres': link:../../integrations/integration-postgres
+      '@usevenice/integration-qbo': link:../../integrations/integration-qbo
+      '@usevenice/integration-ramp': link:../../integrations/integration-ramp
+      '@usevenice/integration-saltedge': link:../../integrations/integration-saltedge
+      '@usevenice/integration-stripe': link:../../integrations/integration-stripe
+      '@usevenice/integration-teller': link:../../integrations/integration-teller
+      '@usevenice/integration-toggl': link:../../integrations/integration-toggl
+      '@usevenice/integration-venmo': link:../../integrations/integration-venmo
+      '@usevenice/integration-wise': link:../../integrations/integration-wise
+      '@usevenice/integration-yodlee': link:../../integrations/integration-yodlee
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       '@usevenice/worker': link:../worker
       cac: 6.7.12_nsfmzcycabp3f3q7kw2uyer77u
       keytar: 7.9.0
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
-  apps/next:
+  apps/web:
     specifiers:
       '@trpc/server': 9.26.0
-      '@types/react': 17.0.39
-      '@types/react-dom': 17.0.13
-      '@usevenice/app-config': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/engine-backend': '*'
-      '@usevenice/engine-frontend': '*'
-      '@usevenice/ui': '*'
-      '@usevenice/util': '*'
-      '@usevenice/worker': '*'
+      '@types/react': 18.0.24
+      '@types/react-dom': 18.0.8
+      '@usevenice/app-config': workspace:*
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/engine-backend': workspace:*
+      '@usevenice/engine-frontend': workspace:*
+      '@usevenice/ui': workspace:*
+      '@usevenice/util': workspace:*
+      '@usevenice/worker': workspace:*
       autoprefixer: '*'
       cookies-next: 2.1.1
       csstype: '*'
@@ -294,8 +299,8 @@ importers:
       node-loader: 2.0.0
       phosphor-react: 1.4.1
       postcss: '*'
-      react: 17.0.2
-      react-dom: 17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0
       react-query: 3.39.2
       superjson: 1.9.1
       tailwind-merge: 1.6.0
@@ -312,24 +317,24 @@ importers:
       '@usevenice/engine-backend': link:../../packages/engine-backend
       '@usevenice/engine-frontend': link:../../packages/engine-frontend
       '@usevenice/ui': link:../../packages/ui
-      '@usevenice/util': link:../../packages/@utils/util
+      '@usevenice/util': link:../../packages/util
       '@usevenice/worker': link:../worker
       cookies-next: 2.1.1
-      jotai: 1.8.3_react@17.0.2
-      next: 12.2.5_sfoxds7t5ydpegc3knd667wn6m
-      next-query-params: 4.0.0_mwonnkvrsrya76yyxubadwexmy
-      next-router-query: 0.1.3_next@12.2.5+react@17.0.2
-      phosphor-react: 1.4.1_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
+      jotai: 1.8.3_react@18.2.0
+      next: 12.2.5_biqbaboplfbrettd7655fr4n2y
+      next-query-params: 4.0.0_qh5aht6bephuvbkxtadklsmwb4
+      next-router-query: 0.1.3_next@12.2.5+react@18.2.0
+      phosphor-react: 1.4.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
       superjson: 1.9.1
       tailwind-merge: 1.6.0
       ts-pattern: 4.0.5
-      use-query-params: 2.1.0_sfoxds7t5ydpegc3knd667wn6m
+      use-query-params: 2.1.0_biqbaboplfbrettd7655fr4n2y
     devDependencies:
-      '@types/react': 17.0.39
-      '@types/react-dom': 17.0.13
+      '@types/react': 18.0.24
+      '@types/react-dom': 18.0.8
       autoprefixer: 10.4.12_postcss@8.4.17
       csstype: 3.1.1
       daisyui: 2.24.2_5zjlt5w4ir2cay3te66iu3k3ji
@@ -338,12 +343,12 @@ importers:
       postcss: 8.4.17
       tailwindcss: 3.1.8_postcss@8.4.17
       tailwindcss-radix: 2.5.0
-      tilg: 0.1.1_react@17.0.2
+      tilg: 0.1.1_react@18.2.0
       webpack: 5.74.0
 
   apps/tests:
     specifiers:
-      '@usevenice/app-config': '*'
+      '@usevenice/app-config': workspace:*
       openapi-typescript: 5.4.1
       remeda: 0.0.32
       tsx: 3.4.2
@@ -356,39 +361,39 @@ importers:
 
   apps/worker:
     specifiers:
-      '@usevenice/app-config': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/core-integration-postgres': '*'
+      '@usevenice/app-config': workspace:*
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/core-integration-postgres': workspace:*
       graphile-worker: 0.13.0
     dependencies:
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
-      '@usevenice/core-integration-postgres': link:../../packages/@integrations/core-integration-postgres
-      graphile-worker: 0.13.0
+      '@usevenice/core-integration-postgres': link:../../integrations/core-integration-postgres
+      graphile-worker: 0.13.0_c2o6ic5s5i3r6ysvsf4hvve23m
 
-  packages/@integrations/core-integration-airtable:
+  integrations/core-integration-airtable:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
       airtable: 0.11.4
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       airtable: 0.11.4
     devDependencies:
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
 
-  packages/@integrations/core-integration-firebase:
+  integrations/core-integration-firebase:
     specifiers:
       '@firebase/app': 0.x
       '@firebase/app-compat': 0.x
       '@firebase/app-types': 0.x
       '@firebase/auth': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
       firebase: 9.8.1
       firebase-admin: 10.2.0
     dependencies:
@@ -396,43 +401,43 @@ importers:
       '@firebase/app-compat': 0.1.35
       '@firebase/app-types': 0.8.0
       '@firebase/auth': 0.20.8_@firebase+app@0.8.0
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
       firebase: 9.8.1_bmwbs4hhuxm5sycev5w2vhohk4
       firebase-admin: 10.2.0_a5554ufeydbbktwgrgaeheww5y
 
-  packages/@integrations/core-integration-fs:
+  integrations/core-integration-fs:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
 
-  packages/@integrations/core-integration-mongodb:
+  integrations/core-integration-mongodb:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
       mongodb: 4.9.1
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
       mongodb: 4.9.1
 
-  packages/@integrations/core-integration-postgres:
+  integrations/core-integration-postgres:
     specifiers:
       '@slonik/migrator': 0.11.3
       '@types/pg': 8.6.5
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
       pg: 8.8.0
       pg-native: 3.0.1
       slonik: 30.3.1
       slonik-interceptor-preset: 1.2.10
     dependencies:
       '@slonik/migrator': 0.11.3_slonik@30.3.1
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
       pg: 8.8.0_pg-native@3.0.1
       pg-native: 3.0.1
       slonik: 30.3.1_pg-native@3.0.1
@@ -440,397 +445,490 @@ importers:
     devDependencies:
       '@types/pg': 8.6.5
 
-  packages/@integrations/core-integration-redis:
+  integrations/core-integration-redis:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
       handy-redis: 2.3.1
       redis: 3.1.2
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
       handy-redis: 2.3.1
       redis: 3.1.2
 
-  packages/@integrations/core-integration-webhook:
+  integrations/core-integration-webhook:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/util': workspace:*
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/util': link:../../packages/util
 
-  packages/@integrations/integration-alphavantage:
+  integrations/integration-alphavantage:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-beancount:
+  integrations/integration-beancount:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
 
-  packages/@integrations/integration-expensify:
+  integrations/integration-expensify:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-foreceipt:
+  integrations/integration-foreceipt:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/core-integration-firebase': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/core-integration-firebase': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
       firebase: 9.8.1
-      react: 17.0.2
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
       '@usevenice/core-integration-firebase': link:../core-integration-firebase
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       firebase: 9.8.1_bmwbs4hhuxm5sycev5w2vhohk4
-      react: 17.0.2
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-import:
+  integrations/integration-import:
     specifiers:
       '@types/papaparse': 5.3.5
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
       papaparse: 5.3.2
       xlsx: 0.17.5
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       papaparse: 5.3.2
       xlsx: 0.17.5
     devDependencies:
       '@types/papaparse': 5.3.5
 
-  packages/@integrations/integration-lunchmoney:
+  integrations/integration-lunchmoney:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-moota:
+  integrations/integration-moota:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-onebrick:
+  integrations/integration-onebrick:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
       openapi-typescript: 5.4.1
-      react: 17.0.2
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
       openapi-typescript: 5.4.1
 
-  packages/@integrations/integration-plaid:
+  integrations/integration-plaid:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
       openapi-typescript: 5.4.1
       plaid: 10.7.0
-      react: 17.0.2
-      react-dom: 17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0
       react-plaid-link: 3.3.2
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       plaid: 10.7.0_dlxtnpp6e63xoartngub3qbkta
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-plaid-link: 3.3.2_sfoxds7t5ydpegc3knd667wn6m
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-plaid-link: 3.3.2_biqbaboplfbrettd7655fr4n2y
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
       openapi-typescript: 5.4.1
 
-  packages/@integrations/integration-postgres:
+  integrations/integration-postgres:
     specifiers:
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/core-integration-postgres': '*'
-      '@usevenice/util': '*'
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/core-integration-postgres': workspace:*
+      '@usevenice/util': workspace:*
       zod: 3.19.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
+      '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/core-integration-postgres': link:../core-integration-postgres
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/util': link:../../packages/util
       zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
     devDependencies:
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
 
-  packages/@integrations/integration-qbo:
+  integrations/integration-qbo:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-ramp:
+  integrations/integration-ramp:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-saltedge:
+  integrations/integration-saltedge:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-splitwise:
+  integrations/integration-splitwise:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-stripe:
+  integrations/integration-stripe:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
       stripe: 8.86.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
       stripe: 8.86.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-teller:
+  integrations/integration-teller:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-toggl:
+  integrations/integration-toggl:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-venmo:
+  integrations/integration-venmo:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-wise:
+  integrations/integration-wise:
     specifiers:
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/util': link:../../@utils/util
-      react: 17.0.2
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/util': link:../../packages/util
+      react: 18.2.0
     devDependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
 
-  packages/@integrations/integration-yodlee:
+  integrations/integration-yodlee:
     specifiers:
       '@cfworker/json-schema': 1.12.4
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
       csstype: '*'
       openapi-typescript: 5.4.1
       openapi-typescript-codegen: 0.23.0
-      react: 17.0.2
-      react-dom: 17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0
     dependencies:
-      '@usevenice/cdk-core': link:../../cdk-core
-      '@usevenice/cdk-ledger': link:../../cdk-ledger
-      '@usevenice/standard': link:../../@utils/standard
-      '@usevenice/util': link:../../@utils/util
+      '@usevenice/cdk-core': link:../../packages/cdk-core
+      '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
+      '@usevenice/standard': link:../../packages/standard
+      '@usevenice/util': link:../../packages/util
       csstype: 3.1.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     devDependencies:
       '@cfworker/json-schema': 1.12.4
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
       openapi-typescript: 5.4.1
       openapi-typescript-codegen: 0.23.0
 
-  packages/@utils/accounting:
+  packages/cdk-core:
     specifiers:
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-      financejs: 4.1.0
-      timezone-mock: 1.3.4
+      '@trpc/server': 9.26.0
+      '@types/react': 18.0.24
+      '@usevenice/util': workspace:*
+      react: 18.2.0
     dependencies:
+      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/util': link:../util
+      react: 18.2.0
+    devDependencies:
+      '@types/react': 18.0.24
+
+  packages/cdk-ledger:
+    specifiers:
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/standard': workspace:*
+      '@usevenice/util': workspace:*
+    dependencies:
+      '@usevenice/cdk-core': link:../cdk-core
       '@usevenice/standard': link:../standard
       '@usevenice/util': link:../util
-      financejs: 4.1.0
-    devDependencies:
-      timezone-mock: 1.3.4
 
-  packages/@utils/standard:
+  packages/engine-backend:
     specifiers:
-      '@usevenice/util': '*'
+      '@trpc/server': 9.26.0
+      '@types/jsonwebtoken': 8.5.9
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/cdk-ledger': workspace:*
+      '@usevenice/util': workspace:*
+      jsonwebtoken: 8.5.1
+    dependencies:
+      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/cdk-core': link:../cdk-core
+      '@usevenice/cdk-ledger': link:../cdk-ledger
+      '@usevenice/util': link:../util
+      jsonwebtoken: 8.5.1
+    devDependencies:
+      '@types/jsonwebtoken': 8.5.9
+
+  packages/engine-frontend:
+    specifiers:
+      '@trpc/client': 9.26.0
+      '@trpc/react': 9.26.0
+      '@trpc/server': 9.26.0
+      '@types/react': 18.0.24
+      '@usevenice/cdk-core': workspace:*
+      '@usevenice/engine-backend': workspace:*
+      '@usevenice/ui': workspace:*
+      '@usevenice/util': workspace:*
+      react: 18.2.0
+      react-dom: 18.2.0
+      react-query: '*'
+    dependencies:
+      '@trpc/client': 9.26.0_@trpc+server@9.26.0
+      '@trpc/react': 9.26.0_djhsvrj72zaivkfbhig4lanpvq
+      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@usevenice/cdk-core': link:../cdk-core
+      '@usevenice/engine-backend': link:../engine-backend
+      '@usevenice/ui': link:../ui
+      '@usevenice/util': link:../util
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
+    devDependencies:
+      '@types/react': 18.0.24
+
+  packages/standard:
+    specifiers:
+      '@usevenice/util': workspace:*
     dependencies:
       '@usevenice/util': link:../util
 
-  packages/@utils/util:
+  packages/ui:
+    specifiers:
+      '@headlessui/react': 1.7.0
+      '@radix-ui/react-dialog': 1.0.0
+      '@radix-ui/react-dropdown-menu': 1.0.0
+      '@radix-ui/react-radio-group': 1.0.0
+      '@radix-ui/react-slot': 1.0.0
+      '@radix-ui/react-tabs': 1.0.0
+      '@radix-ui/react-toast': 1.0.0
+      '@radix-ui/react-use-controllable-state': 1.0.0
+      '@react-hookz/web': '*'
+      '@types/react': 18.0.24
+      framer-motion: 6.5.1
+      jotai: 1.8.4
+      nanoid: 3.3.4
+      phosphor-react: '*'
+      react: 18.2.0
+      react-dom: 18.2.0
+      tailwind-merge: '*'
+    dependencies:
+      '@headlessui/react': 1.7.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-dialog': 1.0.0_knhnagtyfncgg2hpin7s37uixq
+      '@radix-ui/react-dropdown-menu': 1.0.0_knhnagtyfncgg2hpin7s37uixq
+      '@radix-ui/react-radio-group': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-slot': 1.0.0_react@18.2.0
+      '@radix-ui/react-tabs': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-toast': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      '@react-hookz/web': 16.0.0_biqbaboplfbrettd7655fr4n2y
+      framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
+      jotai: 1.8.4_react@18.2.0
+      nanoid: 3.3.4
+      phosphor-react: 1.4.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      tailwind-merge: 1.6.1
+    devDependencies:
+      '@types/react': 18.0.24
+
+  packages/util:
     specifiers:
       '@blossomfinance/iso-4217-currencies': 0.2.5
       '@types/accounting': 0.4.2
@@ -868,6 +966,7 @@ importers:
       timeago.js: 4.0.2
       timezone-mock: 1.3.4
       tiny-invariant: 1.2.0
+      ts-brand: 0.0.2
       type-fest: 2.19.0
       ulidx: 0.3.0
       write-file-safe: 1.3.1
@@ -900,6 +999,7 @@ importers:
       shvl: 2.0.3
       timeago.js: 4.0.2
       tiny-invariant: 1.2.0
+      ts-brand: 0.0.2
       type-fest: 2.19.0
       ulidx: 0.3.0
       zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
@@ -914,114 +1014,6 @@ importers:
       read-file-safe: 1.0.10
       timezone-mock: 1.3.4
       write-file-safe: 1.3.1
-
-  packages/cdk-core:
-    specifiers:
-      '@trpc/server': 9.26.0
-      '@types/react': 17.0.39
-      '@usevenice/util': '*'
-      react: 17.0.2
-    dependencies:
-      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
-      '@usevenice/util': link:../@utils/util
-      react: 17.0.2
-    devDependencies:
-      '@types/react': 17.0.39
-
-  packages/cdk-ledger:
-    specifiers:
-      '@usevenice/accounting': '*'
-      '@usevenice/cdk-core': '*'
-      '@usevenice/standard': '*'
-      '@usevenice/util': '*'
-    dependencies:
-      '@usevenice/accounting': link:../@utils/accounting
-      '@usevenice/cdk-core': link:../cdk-core
-      '@usevenice/standard': link:../@utils/standard
-      '@usevenice/util': link:../@utils/util
-
-  packages/engine-backend:
-    specifiers:
-      '@trpc/server': 9.26.0
-      '@types/jsonwebtoken': 8.5.9
-      '@usevenice/cdk-core': '*'
-      '@usevenice/cdk-ledger': '*'
-      '@usevenice/util': '*'
-      jsonwebtoken: 8.5.1
-    dependencies:
-      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
-      '@usevenice/cdk-core': link:../cdk-core
-      '@usevenice/cdk-ledger': link:../cdk-ledger
-      '@usevenice/util': link:../@utils/util
-      jsonwebtoken: 8.5.1
-    devDependencies:
-      '@types/jsonwebtoken': 8.5.9
-
-  packages/engine-frontend:
-    specifiers:
-      '@trpc/client': 9.26.0
-      '@trpc/react': 9.26.0
-      '@trpc/server': 9.26.0
-      '@types/react': 17.0.39
-      '@usevenice/cdk-core': '*'
-      '@usevenice/engine-backend': '*'
-      '@usevenice/ui': '*'
-      '@usevenice/util': '*'
-      react: 17.0.2
-      react-dom: 17.0.2
-      react-query: '*'
-    dependencies:
-      '@trpc/client': 9.26.0_@trpc+server@9.26.0
-      '@trpc/react': 9.26.0_irv66ybkadcialtmo3uz32bymi
-      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
-      '@usevenice/cdk-core': link:../cdk-core
-      '@usevenice/engine-backend': link:../engine-backend
-      '@usevenice/ui': link:../ui
-      '@usevenice/util': link:../@utils/util
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
-    devDependencies:
-      '@types/react': 17.0.39
-
-  packages/ui:
-    specifiers:
-      '@headlessui/react': 1.7.0
-      '@radix-ui/react-dialog': 1.0.0
-      '@radix-ui/react-dropdown-menu': 1.0.0
-      '@radix-ui/react-radio-group': 1.0.0
-      '@radix-ui/react-slot': 1.0.0
-      '@radix-ui/react-tabs': 1.0.0
-      '@radix-ui/react-toast': 1.0.0
-      '@radix-ui/react-use-controllable-state': 1.0.0
-      '@react-hookz/web': '*'
-      '@types/react': 17.0.39
-      framer-motion: 6.5.1
-      jotai: 1.8.4
-      nanoid: 3.3.4
-      phosphor-react: '*'
-      react: 17.0.2
-      react-dom: 17.0.2
-      tailwind-merge: '*'
-    dependencies:
-      '@headlessui/react': 1.7.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-dialog': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-dropdown-menu': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-radio-group': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      '@radix-ui/react-tabs': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-toast': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      '@react-hookz/web': 16.0.0_sfoxds7t5ydpegc3knd667wn6m
-      framer-motion: 6.5.1_sfoxds7t5ydpegc3knd667wn6m
-      jotai: 1.8.4_react@17.0.2
-      nanoid: 3.3.4
-      phosphor-react: 1.4.1_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      tailwind-merge: 1.6.1
-    devDependencies:
-      '@types/react': 17.0.39
 
 packages:
 
@@ -2116,16 +2108,16 @@ packages:
       '@floating-ui/core': 0.7.3
     dev: false
 
-  /@floating-ui/react-dom/0.7.2_xd63vgjm47lzoal5ybyqmsdesy:
+  /@floating-ui/react-dom/0.7.2_knhnagtyfncgg2hpin7s37uixq:
     resolution: {integrity: sha512-1T0sJcpHgX/u4I1OzIEhlcrvkUN8ln39nz7fMoE/2HDHrPiMFoOGR7++GYyfUmIQHkkrTinaeQsO3XWubjSvGg==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@floating-ui/dom': 0.5.4
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      use-isomorphic-layout-effect: 1.1.2_udcsdvdzjr5ns727jqoeu7kyda
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-isomorphic-layout-effect: 1.1.2_bbvjflvjoibwhtpmedigb26h6y
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -2245,15 +2237,15 @@ packages:
       yargs: 16.2.0
     dev: false
 
-  /@headlessui/react/1.7.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@headlessui/react/1.7.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-/nDsijOXRwXVLpUBEiYuWguIBSIN3ZbKyah+KPUiD8bdIKtX1U/k+qLYUEr7NCQnSF2e4w1dr8me42ECuG3cvw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
     dependencies:
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -2280,10 +2272,14 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1:
-    resolution: {integrity: sha512-HB2BLfnm3Jee+GiGtK7f5hLcFbF54VbSAoH9UEaWpjMmrbaZCTViJeuXsycA1Adm2colaHCpqhLW5E70umh6ug==}
+  /@ianvs/prettier-plugin-sort-imports/3.7.1_prettier@2.7.1:
+    resolution: {integrity: sha512-XDnBUUruJY9KgNd7T2ZHnVPWo5B9NzVDCLEMm7HjXTA3rTtMg5Q46gYRjLvampDXSmN8+icu54aRE3IIT8U+1w==}
     peerDependencies:
+      '@vue/compiler-sfc': '>=3.0.0'
       prettier: 2.x
+    peerDependenciesMeta:
+      '@vue/compiler-sfc':
+        optional: true
     dependencies:
       '@babel/core': 7.19.3
       '@babel/generator': 7.19.3
@@ -2291,7 +2287,8 @@ packages:
       '@babel/traverse': 7.19.3
       '@babel/types': 7.19.3
       javascript-natural-sort: 0.7.1
-      lodash: 4.17.21
+      lodash.clone: 4.5.0
+      lodash.isequal: 4.5.0
       prettier: 2.7.1
     transitivePeerDependencies:
       - supports-color
@@ -2898,52 +2895,52 @@ packages:
       '@babel/runtime': 7.19.0
     dev: false
 
-  /@radix-ui/react-arrow/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-arrow/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-1MUuv24HCdepi41+qfv125EwMuxgQ+U+h0A9K3BjCO/J8nVRREKHHpkD9clwfnjEDk9hgGzCnff4aUKCPiRepw==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-collection/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-collection/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-8i1pf5dKjnq90Z8udnnXKzdCEV3/FYrfw0n/b6NvB6piXEn3fO1bOh7HBcpG8XrnIXzxlYu2oCcR38QpyLS/mg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-slot': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-compose-refs/1.0.0_react@17.0.2:
+  /@radix-ui/react-compose-refs/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-0KaSv6sx787/hK3eF53iOkiSLwAGlFMx5lotrqD2pTjB18KbybKoEIgkNZTKC60YECDQTKGTRcDBILwZVqVKvA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-context/1.0.0_react@17.0.2:
+  /@radix-ui/react-context/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-1pVM9RfOQ+n/N5PJK33kRSKsr1glNxomxONs5c49MliinBY6Yw2Q995qfBUUo0/Mbg05B/sGA0gkgPI7kmSHBg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-dialog/1.0.0_xd63vgjm47lzoal5ybyqmsdesy:
+  /@radix-ui/react-dialog/1.0.0_knhnagtyfncgg2hpin7s37uixq:
     resolution: {integrity: sha512-Yn9YU+QlHYLWwV1XfKiqnGVpWYWk6MeBVM6x/bcoyPvxgjQGoeT35482viLPctTMWoMw0PoHgqfSox7Ig+957Q==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -2951,35 +2948,35 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-dismissable-layer': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-focus-guards': 1.0.0_react@17.0.2
-      '@radix-ui/react-focus-scope': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-portal': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-presence': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      aria-hidden: 1.2.1_udcsdvdzjr5ns727jqoeu7kyda
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-remove-scroll: 2.5.4_udcsdvdzjr5ns727jqoeu7kyda
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-dismissable-layer': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-focus-guards': 1.0.0_react@18.2.0
+      '@radix-ui/react-focus-scope': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-portal': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-slot': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      aria-hidden: 1.2.1_bbvjflvjoibwhtpmedigb26h6y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-remove-scroll: 2.5.4_bbvjflvjoibwhtpmedigb26h6y
     transitivePeerDependencies:
       - '@types/react'
     dev: false
 
-  /@radix-ui/react-direction/1.0.0_react@17.0.2:
+  /@radix-ui/react-direction/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-2HV05lGUgYcA6xgLQ4BKPDmtL+QbIZYH5fCOTAOOcJ5O0QbWS3i9lKaurLzliYUDhORI2Qr3pyjhJh44lKA3rQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-dismissable-layer/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-dismissable-layer/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-n7kDRfx+LB1zLueRDvZ1Pd0bxdJWDUZNQ/GWoxDn2prnuJKRdxsjulejX/ePkOsLi2tTm6P24mDqlMSgQpsT6g==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -2987,15 +2984,15 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-escape-keydown': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-escape-keydown': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-dropdown-menu/1.0.0_xd63vgjm47lzoal5ybyqmsdesy:
+  /@radix-ui/react-dropdown-menu/1.0.0_knhnagtyfncgg2hpin7s37uixq:
     resolution: {integrity: sha512-Ptben3TxPWrZLbInO7zjAK73kmjYuStsxfg6ujgt+EywJyREoibhZYnsSNqC+UiOtl4PdW/MOHhxVDtew5fouQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3003,67 +3000,67 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-menu': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-menu': 1.0.0_knhnagtyfncgg2hpin7s37uixq
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     transitivePeerDependencies:
       - '@types/react'
     dev: false
 
-  /@radix-ui/react-focus-guards/1.0.0_react@17.0.2:
+  /@radix-ui/react-focus-guards/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-UagjDk4ijOAnGu4WMUPj9ahi7/zJJqNZ9ZAiGPp7waUWJO0O1aWXi/udPphI0IUjvrhBsZJGSN66dR2dsueLWQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-focus-scope/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-focus-scope/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-C4SWtsULLGf/2L4oGeIHlvWQx7Rf+7cX/vKOAD2dXW0A1b5QXwi3wWeaEgW+wn+SEVrraMUk05vLU9fZZz5HbQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-id/1.0.0_react@17.0.2:
+  /@radix-ui/react-id/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-Q6iAB/U7Tq3NTolBBQbHTgclPmGWE3OlktGGqrClPozSw4vkQ1DfQAOtzgRPecKsMdJINE05iaoDUG8tRzCBjw==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      react: 17.0.2
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-label/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-label/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-k+EbxeRaVbSJ4oaR9eUYuC0cDIGRB4TAPhilbFCIMpP9pXFNcyQPQUvRaVOQBrviuArYM80xh0BQR/0y3kjUdQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-menu/1.0.0_xd63vgjm47lzoal5ybyqmsdesy:
+  /@radix-ui/react-menu/1.0.0_knhnagtyfncgg2hpin7s37uixq:
     resolution: {integrity: sha512-icW4C64T6nHh3Z4Q1fxO1RlSShouFF4UpUmPV8FLaJZfphDljannKErDuALDx4ClRLihAPZ9i+PrLNPoWS2DMA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3071,89 +3068,89 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-collection': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-direction': 1.0.0_react@17.0.2
-      '@radix-ui/react-dismissable-layer': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-focus-guards': 1.0.0_react@17.0.2
-      '@radix-ui/react-focus-scope': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-popper': 1.0.0_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-portal': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-presence': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-roving-focus': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      aria-hidden: 1.2.1_udcsdvdzjr5ns727jqoeu7kyda
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-remove-scroll: 2.5.4_udcsdvdzjr5ns727jqoeu7kyda
+      '@radix-ui/react-collection': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-dismissable-layer': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-focus-guards': 1.0.0_react@18.2.0
+      '@radix-ui/react-focus-scope': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-popper': 1.0.0_knhnagtyfncgg2hpin7s37uixq
+      '@radix-ui/react-portal': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-roving-focus': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-slot': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      aria-hidden: 1.2.1_bbvjflvjoibwhtpmedigb26h6y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-remove-scroll: 2.5.4_bbvjflvjoibwhtpmedigb26h6y
     transitivePeerDependencies:
       - '@types/react'
     dev: false
 
-  /@radix-ui/react-popper/1.0.0_xd63vgjm47lzoal5ybyqmsdesy:
+  /@radix-ui/react-popper/1.0.0_knhnagtyfncgg2hpin7s37uixq:
     resolution: {integrity: sha512-k2dDd+1Wl0XWAMs9ZvAxxYsB9sOsEhrFQV4CINd7IUZf0wfdye4OHen9siwxvZImbzhgVeKTJi68OQmPRvVdMg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@floating-ui/react-dom': 0.7.2_xd63vgjm47lzoal5ybyqmsdesy
-      '@radix-ui/react-arrow': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-rect': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-size': 1.0.0_react@17.0.2
+      '@floating-ui/react-dom': 0.7.2_knhnagtyfncgg2hpin7s37uixq
+      '@radix-ui/react-arrow': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-rect': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-size': 1.0.0_react@18.2.0
       '@radix-ui/rect': 1.0.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     transitivePeerDependencies:
       - '@types/react'
     dev: false
 
-  /@radix-ui/react-portal/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-portal/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-a8qyFO/Xb99d8wQdu4o7qnigNjTPG123uADNecz0eX4usnQEj7o+cG4ZX4zkqq98NYekT7UoEQIjxBNWIFuqTA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-presence/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-presence/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-A+6XEvN01NfVWiKu38ybawfHsBjWum42MRPnEuqPsBZ4eV7e/7K321B5VgYMPv3Xx5An6o1/l9ZuDBgmcmWK3w==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-primitive/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-primitive/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-EyXe6mnRlHZ8b6f4ilTDrXmkLShICIuOTTj0GX4w1rp+wSxf3+TD05u1UOITC8VsJ2a9nwHvdXtOXEOl0Cw/zQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-slot': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-slot': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-radio-group/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-radio-group/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-WekhUjLzH6/ZXQNAum2NNww+0zvOIfFu96+AZ1XXxWolq82vNAgqMbPrxyqij2H/sa33wbjqspErybsTLtVTDA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3161,21 +3158,21 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-direction': 1.0.0_react@17.0.2
-      '@radix-ui/react-label': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-presence': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-roving-focus': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-previous': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-size': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-label': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-roving-focus': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-previous': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-size': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-roving-focus/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-roving-focus/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-lHvO4MhvoWpeNbiJAoyDsEtbKqP2jkkdwsMVJ3kfqbkC71J/aXE6Th6gkZA1xHEqSku+t+UgoDjvE7Z3gsBpcg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3183,29 +3180,29 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-collection': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-direction': 1.0.0_react@17.0.2
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-collection': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-slot/1.0.0_react@17.0.2:
+  /@radix-ui/react-slot/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-3mrKauI/tWXo1Ll+gN5dHcxDPdm/Df1ufcDLCecn+pnCIVcdWE7CujXo8QaXOWRJyZyQWWbpB8eFwHzWXlv5mQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      react: 17.0.2
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-tabs/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-tabs/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-oKUwEDsySVC0uuSEH7SHCVt1+ijmiDFAI9p+fHCtuZdqrRDKIFs09zp5nrmu4ggP6xqSx9lj1VSblnDH+n3IBA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3213,18 +3210,18 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-direction': 1.0.0_react@17.0.2
-      '@radix-ui/react-id': 1.0.0_react@17.0.2
-      '@radix-ui/react-presence': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-roving-focus': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-direction': 1.0.0_react@18.2.0
+      '@radix-ui/react-id': 1.0.0_react@18.2.0
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-roving-focus': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-toast/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-toast/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-mdoF6rahgushdev0OX+9a7JKoH0xZAZBo2Ktf/s779S7EnkZeL3/MFiRIV5LpRP5CtASmfdSD3FLnEvG1RHRtQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -3232,98 +3229,98 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-collection': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-compose-refs': 1.0.0_react@17.0.2
-      '@radix-ui/react-context': 1.0.0_react@17.0.2
-      '@radix-ui/react-dismissable-layer': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-portal': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-presence': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@17.0.2
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      '@radix-ui/react-visually-hidden': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-collection': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-dismissable-layer': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-portal': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      '@radix-ui/react-visually-hidden': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-use-callback-ref/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-callback-ref/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-GZtyzoHz95Rhs6S63D2t/eqvdFCm7I+yHMLVQheKM7nBD8mbZIt+ct1jz4536MDnaOGKIxynJ8eHTkVGVVkoTg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-controllable-state/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-controllable-state/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-FohDoZvk3mEXh9AWAVyRTYR4Sq7/gavuofglmiXB2g1aKyboUD4YtgWxKj8O5n+Uak52gXQ4wKz5IFST4vtJHg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      react: 17.0.2
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-escape-keydown/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-escape-keydown/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-JwfBCUIfhXRxKExgIqGa4CQsiMemo1Xt0W/B4ei3fpzpvPENKpMKQ8mZSB6Acj3ebrAEgi2xiQvcI1PAAodvyg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@17.0.2
-      react: 17.0.2
+      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-layout-effect/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-layout-effect/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-6Tpkq+R6LOlmQb1R5NNETLG0B4YP0wc+klfXafpUCj6JGyaUc8il7/kUZ7m59rGbXGczE9Bs+iz2qloqsZBduQ==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-previous/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-previous/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-RG2K8z/K7InnOKpq6YLDmT49HGjNmrK+fr82UCVKT2sW0GYfVnYp4wZWBooT/EYfQ5faA9uIjvsuMMhH61rheg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-rect/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-rect/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-TB7pID8NRMEHxb/qQJpvSt3hQU4sqNPM1VCTjTRjEOa7cEop/QMuq8S6fb/5Tsz64kqSvB9WnwsDHtjnrM9qew==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/rect': 1.0.0
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-use-size/1.0.0_react@17.0.2:
+  /@radix-ui/react-use-size/1.0.0_react@18.2.0:
     resolution: {integrity: sha512-imZ3aYcoYCKhhgNpkNDh/aTiU05qw9hX+HHI1QDBTyIlcFjgeFlKKySNGMwTp7nYFLQg/j0VA2FmCY4WPDDHMg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@17.0.2
-      react: 17.0.2
+      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
+      react: 18.2.0
     dev: false
 
-  /@radix-ui/react-visually-hidden/1.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@radix-ui/react-visually-hidden/1.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-MwAhMdX+n6S4InwRKSnpUsp+lLkYG6izQF56ul6guSX2mBBLOMV9Frx7xJlkEe2GjKLzbNuHhaCS6e5gopmZNA==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
     dependencies:
       '@babel/runtime': 7.19.0
-      '@radix-ui/react-primitive': 1.0.0_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      '@radix-ui/react-primitive': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@radix-ui/rect/1.0.0:
@@ -3336,7 +3333,7 @@ packages:
     resolution: {integrity: sha512-lGZR5l3YRjzeIOHtJhiq96vQKrsq+9lsCyv+0fROMQeSNWtLLzX3R+psHNi6nsoP3XEhspiZ92nsiPmdNo8ztQ==}
     dev: false
 
-  /@react-hookz/web/16.0.0_sfoxds7t5ydpegc3knd667wn6m:
+  /@react-hookz/web/16.0.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-vImvPPfXtj3XtPi0fpoQvcRC3IKcnwgoE/+qbT8gmijEwjxHZ1P15ilCbdCB4Qv1AycE7A4EpIQYLKmS/QItIw==}
     peerDependencies:
       js-cookie: ^3.0.1
@@ -3347,8 +3344,8 @@ packages:
         optional: true
     dependencies:
       '@react-hookz/deep-equal': 1.0.3
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@roarr/cli/5.7.0:
@@ -3444,7 +3441,7 @@ packages:
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
     dev: false
 
-  /@trpc/react/9.26.0_irv66ybkadcialtmo3uz32bymi:
+  /@trpc/react/9.26.0_djhsvrj72zaivkfbhig4lanpvq:
     resolution: {integrity: sha512-1JcfRpRMH2KFvJlm9cXD+RMFe7HtxmKn3HiSY1AVQiRMA7yxxmMnRWvezbnMvQ1LzvmfnlTwC46z6c3+u/MWvA==}
     peerDependencies:
       '@trpc/client': 9.26.0
@@ -3456,15 +3453,19 @@ packages:
       '@babel/runtime': 7.19.0
       '@trpc/client': 9.26.0_@trpc+server@9.26.0
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-query: 3.39.2_sfoxds7t5ydpegc3knd667wn6m
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /@trpc/server/9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm:
     resolution: {integrity: sha512-aQgGkcAln9leq/Ab5X5AOWci0BNiy4oGcEqXCWs5Q7sZ1gd5Y3OzQV5tnY6fPsWSRjuvkb45Syq2AkFpX0q0/w==}
     dev: false
     patched: true
+
+  /@tsconfig/strictest/1.0.2:
+    resolution: {integrity: sha512-IRKlC8cnP7zMz1SDBjyIVyPapkEGWLZ6wkF6Z8T+xU80P9sO5uGXlIUvtzjx+7ehPJRWxkB6CeIDwUfyqNtYkQ==}
+    dev: true
 
   /@types/accounting/0.4.2:
     resolution: {integrity: sha512-M8W6tsLZguGdRaSQMmg58PUM/5HgoDuBGVyMiYNGi0FZkLzJDjUBGGYRYj1J9OWELCTqfux+ogVyKObCzfWJgg==}
@@ -3515,7 +3516,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 8.10.66
+      '@types/node': 18.8.3
       '@types/responselike': 1.0.0
 
   /@types/connect/3.4.35:
@@ -3583,7 +3584,7 @@ packages:
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
-      '@types/node': 16.11.12
+      '@types/node': 18.8.3
     dev: true
 
   /@types/http-cache-semantics/4.0.1:
@@ -3632,7 +3633,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 18.8.3
 
   /@types/lodash/4.14.184:
     resolution: {integrity: sha512-RoZphVtHbxPZizt4IcILciSWiC6dcn+eZ8oX9IWEYfDMcocdd42f7NPI6fQj+6zI8y4E0L7gu2pcZKLGTRaV9Q==}
@@ -3716,14 +3717,14 @@ packages:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
     dev: false
 
-  /@types/react-dom/17.0.13:
-    resolution: {integrity: sha512-wEP+B8hzvy6ORDv1QBhcQia4j6ea4SFIBttHYpXKPFZRviBvknq0FRh3VrIxeXUmsPkwuXVZrVGG7KUVONmXCQ==}
+  /@types/react-dom/18.0.8:
+    resolution: {integrity: sha512-C3GYO0HLaOkk9dDAz3Dl4sbe4AKUGTCfFIZsz3n/82dPNN8Du533HzKatDxeUYWu24wJgMP1xICqkWk1YOLOIw==}
     dependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
     dev: true
 
-  /@types/react/17.0.39:
-    resolution: {integrity: sha512-UVavlfAxDd/AgAacMa60Azl7ygyQNRwC/DsHZmKgNvPmRR5p70AJ5Q9EAmL2NWOJmeV+vVUI4IAP7GZrN8h8Ug==}
+  /@types/react/18.0.24:
+    resolution: {integrity: sha512-wRJWT6ouziGUy+9uX0aW4YOJxAY0bG6/AOk5AW5QSvZqI7dk6VBIbXvcVgIw/W5Jrl24f77df98GEKTJGOLx7Q==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
@@ -3738,7 +3739,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 18.8.3
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
@@ -3791,7 +3792,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 18.8.3
     optional: true
 
   /@typescript-eslint/eslint-plugin/5.36.1_lbwfnm54o3pmr3ypeqp3btnera:
@@ -4295,7 +4296,7 @@ packages:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
     dev: true
 
-  /aria-hidden/1.2.1_udcsdvdzjr5ns727jqoeu7kyda:
+  /aria-hidden/1.2.1_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-PN344VAf9j1EAi+jyVHOJ8XidQdPVssGco39eNcsGdM4wcsILtxrKLkbuiMfLWYROK1FjRQasMWCBttrhjnr6A==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -4305,8 +4306,8 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
-      react: 17.0.2
+      '@types/react': 18.0.24
+      react: 18.2.0
       tslib: 2.4.0
     dev: false
 
@@ -6502,7 +6503,7 @@ packages:
     dependencies:
       fast-glob: 3.2.12
       postcss: 8.4.17
-      tailwindcss: 3.1.8
+      tailwindcss: 3.1.8_postcss@8.4.17
     transitivePeerDependencies:
       - ts-node
     dev: true
@@ -6929,10 +6930,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /financejs/4.1.0:
-    resolution: {integrity: sha512-IE/SpTfCRsdl4TZWCGLo6/NNeg0q0QjU9eOoIxy7BWPCAH2truL3uqK+Kwu3f3kLd1trJK5vRKO+KGRNwNIzfg==}
-    dev: false
-
   /find-config/1.0.0:
     resolution: {integrity: sha512-Z+suHH+7LSE40WfUeZPIxSxypCWvrzdVc60xAjUShZeT5eMWM0/FQUduq3HjluyfAHWvC/aOBkT1pTZktyF/jg==}
     engines: {node: '>= 0.12'}
@@ -7061,7 +7058,7 @@ packages:
       map-cache: 0.2.2
     dev: true
 
-  /framer-motion/6.5.1_sfoxds7t5ydpegc3knd667wn6m:
+  /framer-motion/6.5.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-o1BGqqposwi7cgDrtg0dNONhkmPsUFDaLcKXigzuTFC5x58mE8iyTazxSudFzmT6MEyJKfjjU8ItoMe3W+3fiw==}
     peerDependencies:
       react: '>=16.8 || ^17.0.0 || ^18.0.0'
@@ -7071,8 +7068,8 @@ packages:
       framesync: 6.0.1
       hey-listen: 1.0.8
       popmotion: 11.0.3
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       style-value-types: 5.0.0
       tslib: 2.4.0
     optionalDependencies:
@@ -7419,7 +7416,7 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphile-worker/0.13.0:
+  /graphile-worker/0.13.0_c2o6ic5s5i3r6ysvsf4hvve23m:
     resolution: {integrity: sha512-8Hl5XV6hkabZRhYzvbUfvjJfPFR5EPxYRVWlzQC2rqYHrjULTLBgBYZna5R9ukbnsbWSvn4vVrzOBIOgIC1jjw==}
     engines: {node: '>=10.0.0'}
     hasBin: true
@@ -7436,6 +7433,7 @@ packages:
     transitivePeerDependencies:
       - pg-native
     dev: false
+    patched: true
 
   /gtoken/5.3.2:
     resolution: {integrity: sha512-gkvEKREW7dXWF8NV8pVrKfW7WqReAmjjkMBh6lNCCGOM4ucS0r0YyXXl0r/9Yj8wcW/32ISkfc8h5mPTDbtifQ==}
@@ -8479,7 +8477,7 @@ packages:
     resolution: {integrity: sha512-S5wqyz0DXnNJPd/xfIzZ5Xnp1HrJWBczg8mMfMpN78OJ5eDxXyf+Ygld9wX1DnUWbIbhM1YDY95NjR4CBXkb2g==}
     engines: {node: '>= 10.14.2'}
     dependencies:
-      '@types/node': 16.11.12
+      '@types/node': 18.8.3
       graceful-fs: 4.2.10
     dev: true
 
@@ -8611,7 +8609,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 16.11.12
+      '@types/node': 18.8.3
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -8662,7 +8660,7 @@ packages:
       '@panva/asn1.js': 1.0.0
     dev: false
 
-  /jotai/1.8.3_react@17.0.2:
+  /jotai/1.8.3_react@18.2.0:
     resolution: {integrity: sha512-bNAs/DMD6BEB4xxVku33CI+ZIFyCWG82Ms6JnvYunEvGCnviTTDBl+m0HKgijoHmcNM3fxQ5MARdG+wwokNxog==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -8696,10 +8694,10 @@ packages:
       xstate:
         optional: true
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
-  /jotai/1.8.4_react@17.0.2:
+  /jotai/1.8.4_react@18.2.0:
     resolution: {integrity: sha512-bkHDHNxm7bU4+bJL4z96fTlJYN34UDRTu3ghEajJrDepayON9YEaxPrXr7xhLnIRntoFC6eDYYhMNA/ilbj2RQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -8733,7 +8731,7 @@ packages:
       xstate:
         optional: true
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
   /js-sha3/0.8.0:
@@ -9099,6 +9097,10 @@ packages:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: false
 
+  /lodash.clone/4.5.0:
+    resolution: {integrity: sha512-GhrVeweiTD6uTmmn5hV/lzgCQhccwReIVRLHp7LT4SopOjqEZ5BbX8b5WWEtAKasjmy8hR7ZPwsYlxRCku5odg==}
+    dev: true
+
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
 
@@ -9109,6 +9111,10 @@ packages:
   /lodash.isboolean/3.0.3:
     resolution: {integrity: sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==}
     dev: false
+
+  /lodash.isequal/4.5.0:
+    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    dev: true
 
   /lodash.isinteger/4.0.4:
     resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
@@ -9462,28 +9468,28 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /next-query-params/4.0.0_mwonnkvrsrya76yyxubadwexmy:
+  /next-query-params/4.0.0_qh5aht6bephuvbkxtadklsmwb4:
     resolution: {integrity: sha512-u4PV4fA1Nb6CFZYnW+0s01YbHMJVhCmmnIZ11Dvma4rn8wUdjPPMuMlv2VMWziHD8DWE2+z3Y0475HfjdcT4MQ==}
     peerDependencies:
       next: ^10.0.0 || ^11.0.0 || ^12.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       use-query-params: ^2.0.0
     dependencies:
-      next: 12.2.5_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
+      next: 12.2.5_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
       tslib: 2.4.0
-      use-query-params: 2.1.0_sfoxds7t5ydpegc3knd667wn6m
+      use-query-params: 2.1.0_biqbaboplfbrettd7655fr4n2y
     dev: false
 
-  /next-router-query/0.1.3_next@12.2.5+react@17.0.2:
+  /next-router-query/0.1.3_next@12.2.5+react@18.2.0:
     resolution: {integrity: sha512-IvIX+JWidA0MybYBMp7h/D3Ok0ZkgrK2j73spj+UJemq3on8LD3U4eDZQ1FPPulSp07y9qlx1VThac8b6SMb+w==}
     engines: {node: '>=10'}
     peerDependencies:
       next: '*'
       react: '>=16'
     dependencies:
-      next: 12.2.5_sfoxds7t5ydpegc3knd667wn6m
-      react: 17.0.2
+      next: 12.2.5_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
     dev: false
 
   /next-transpile-modules/9.0.0:
@@ -9493,7 +9499,7 @@ packages:
       escalade: 3.1.1
     dev: true
 
-  /next/12.2.5_sfoxds7t5ydpegc3knd667wn6m:
+  /next/12.2.5_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-tBdjqX5XC/oFs/6gxrZhjmiq90YWizUYU6qOWAfat7zJwrwapJ+BYgX2PmiacunXMaRpeVT4vz5MSPSLgNkrpA==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -9515,10 +9521,10 @@ packages:
       '@swc/helpers': 0.4.3
       caniuse-lite: 1.0.30001418
       postcss: 8.4.14
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      styled-jsx: 5.0.4_react@17.0.2
-      use-sync-external-store: 1.2.0_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      styled-jsx: 5.0.4_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.2.5
       '@next/swc-android-arm64': 12.2.5
@@ -10119,13 +10125,13 @@ packages:
       split2: 4.1.0
     dev: false
 
-  /phosphor-react/1.4.1_react@17.0.2:
+  /phosphor-react/1.4.1_react@18.2.0:
     resolution: {integrity: sha512-gO5j7U0xZrdglTAYDYPACU4xDOFBTJmptrrB/GeR+tHhCZF3nUMyGmV/0hnloKjuTrOmpSFlbfOY78H39rgjUQ==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
   /picocolors/1.0.0:
@@ -10597,15 +10603,14 @@ packages:
       strip-json-comments: 2.0.1
     dev: false
 
-  /react-dom/17.0.2_react@17.0.2:
-    resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
+  /react-dom/18.2.0_react@18.2.0:
+    resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
-      react: 17.0.2
+      react: ^18.2.0
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
-      react: 17.0.2
-      scheduler: 0.20.2
+      react: 18.2.0
+      scheduler: 0.23.0
     dev: false
 
   /react-is/16.13.1:
@@ -10619,19 +10624,19 @@ packages:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
     dev: true
 
-  /react-plaid-link/3.3.2_sfoxds7t5ydpegc3knd667wn6m:
+  /react-plaid-link/3.3.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-W2L9C4RCE/KFFia2SUFFTi8SYRQ1UMUXh4iLE/oo4EQ8UYAT6msKzWvauj8bJirlrkzeiUtY6wgkmWil/okaNg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       prop-types: 15.8.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-script-hook: 1.7.2_sfoxds7t5ydpegc3knd667wn6m
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-script-hook: 1.7.2_biqbaboplfbrettd7655fr4n2y
     dev: false
 
-  /react-query/3.39.2_sfoxds7t5ydpegc3knd667wn6m:
+  /react-query/3.39.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-F6hYDKyNgDQfQOuR1Rsp3VRzJnWHx6aRnnIZHMNGGgbL3SBgpZTDg8MQwmxOgpCAoqZJA+JSNCydF1xGJqKOCA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -10646,11 +10651,11 @@ packages:
       '@babel/runtime': 7.19.0
       broadcast-channel: 3.7.0
       match-sorter: 6.3.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-remove-scroll-bar/2.3.3_udcsdvdzjr5ns727jqoeu7kyda:
+  /react-remove-scroll-bar/2.3.3_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-i9GMNWwpz8XpUpQ6QlevUtFjHGqnPG4Hxs+wlIJntu/xcsZVEpJcIV71K3ZkqNy2q3GfgvkD7y6t/Sv8ofYSbw==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -10660,13 +10665,13 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
-      react: 17.0.2
-      react-style-singleton: 2.2.1_udcsdvdzjr5ns727jqoeu7kyda
+      '@types/react': 18.0.24
+      react: 18.2.0
+      react-style-singleton: 2.2.1_bbvjflvjoibwhtpmedigb26h6y
       tslib: 2.4.0
     dev: false
 
-  /react-remove-scroll/2.5.4_udcsdvdzjr5ns727jqoeu7kyda:
+  /react-remove-scroll/2.5.4_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-xGVKJJr0SJGQVirVFAUZ2k1QLyO6m+2fy0l8Qawbp5Jgrv3DeLalrfMNBFSlmz5kriGGzsVBtGVnf4pTKIhhWA==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -10676,26 +10681,26 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
-      react: 17.0.2
-      react-remove-scroll-bar: 2.3.3_udcsdvdzjr5ns727jqoeu7kyda
-      react-style-singleton: 2.2.1_udcsdvdzjr5ns727jqoeu7kyda
+      '@types/react': 18.0.24
+      react: 18.2.0
+      react-remove-scroll-bar: 2.3.3_bbvjflvjoibwhtpmedigb26h6y
+      react-style-singleton: 2.2.1_bbvjflvjoibwhtpmedigb26h6y
       tslib: 2.4.0
-      use-callback-ref: 1.3.0_udcsdvdzjr5ns727jqoeu7kyda
-      use-sidecar: 1.1.2_udcsdvdzjr5ns727jqoeu7kyda
+      use-callback-ref: 1.3.0_bbvjflvjoibwhtpmedigb26h6y
+      use-sidecar: 1.1.2_bbvjflvjoibwhtpmedigb26h6y
     dev: false
 
-  /react-script-hook/1.7.2_sfoxds7t5ydpegc3knd667wn6m:
+  /react-script-hook/1.7.2_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-fhyCEfXb94fag34UPRF0zry1XGwmVY+79iibWwTqAoOiCzYJQOYTiWJ7CnqglA9tMSV8g45cQpHCMcBwr7dwhA==}
     peerDependencies:
       react: ^16.8.6 || 17 - 18
       react-dom: ^16.8.6 || 17 - 18
     dependencies:
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-style-singleton/2.2.1_udcsdvdzjr5ns727jqoeu7kyda:
+  /react-style-singleton/2.2.1_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -10705,19 +10710,18 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
       get-nonce: 1.0.1
       invariant: 2.2.4
-      react: 17.0.2
+      react: 18.2.0
       tslib: 2.4.0
     dev: false
 
-  /react/17.0.2:
-    resolution: {integrity: sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==}
+  /react/18.2.0:
+    resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
 
   /read-cache/1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
@@ -11075,11 +11079,10 @@ packages:
     dev: false
     optional: true
 
-  /scheduler/0.20.2:
-    resolution: {integrity: sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==}
+  /scheduler/0.23.0:
+    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
     dev: false
 
   /schema-utils/3.1.1:
@@ -11802,7 +11805,7 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /styled-jsx/5.0.4_react@17.0.2:
+  /styled-jsx/5.0.4_react@18.2.0:
     resolution: {integrity: sha512-sDFWLbg4zR+UkNzfk5lPilyIgtpddfxXEULxhujorr5jtePTUqiPDc5BC0v1NRqTr/WaFBGQQUoYToGlF4B2KQ==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -11815,7 +11818,7 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
   /superjson/1.9.1:
@@ -11886,37 +11889,6 @@ packages:
 
   /tailwindcss-radix/2.5.0:
     resolution: {integrity: sha512-vPIvolTmb0L6DlvIKBJRVGo+gB7ZU2jZbO8EpZw/5gBSTHx6PezRgQhR68kOuteh3F1q2PV3oBQgaIN4FxVmrw==}
-    dev: true
-
-  /tailwindcss/3.1.8:
-    resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
-    engines: {node: '>=12.13.0'}
-    hasBin: true
-    dependencies:
-      arg: 5.0.2
-      chokidar: 3.5.3
-      color-name: 1.1.4
-      detective: 5.2.1
-      didyoumean: 1.2.2
-      dlv: 1.1.3
-      fast-glob: 3.2.12
-      glob-parent: 6.0.2
-      is-glob: 4.0.3
-      lilconfig: 2.0.6
-      normalize-path: 3.0.0
-      object-hash: 3.0.0
-      picocolors: 1.0.0
-      postcss: 8.4.17
-      postcss-import: 14.1.0_postcss@8.4.17
-      postcss-js: 4.0.0_postcss@8.4.17
-      postcss-load-config: 3.1.4_postcss@8.4.17
-      postcss-nested: 5.0.6_postcss@8.4.17
-      postcss-selector-parser: 6.0.10
-      postcss-value-parser: 4.2.0
-      quick-lru: 5.1.1
-      resolve: 1.22.1
-    transitivePeerDependencies:
-      - ts-node
     dev: true
 
   /tailwindcss/3.1.8_postcss@8.4.17:
@@ -12071,12 +12043,12 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  /tilg/0.1.1_react@17.0.2:
+  /tilg/0.1.1_react@18.2.0:
     resolution: {integrity: sha512-0uHyTAUM0tJL792LeviRPFkJtCbF6Za3/hbbnRmWGUaicOhbJ0IpvBViXiXTF7nk6R0L6vve2XLesQzn5jEVng==}
     peerDependencies:
       react: ^18.0.0 || ^17.0.0
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: true
 
   /timeago.js/4.0.2:
@@ -12166,6 +12138,9 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: false
+
+  /ts-brand/0.0.2:
+    resolution: {integrity: sha512-UhSzWY4On9ZHIj6DKkRYVN/8OaprbLAZ3b/Y2AJwdl6oozSABsQ0PvwDh4vOVdkvOtWQOkIrjctZ1kj8YfF3jA==}
 
   /ts-error/1.0.6:
     resolution: {integrity: sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==}
@@ -12402,7 +12377,7 @@ packages:
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
 
-  /use-callback-ref/1.3.0_udcsdvdzjr5ns727jqoeu7kyda:
+  /use-callback-ref/1.3.0_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-3FT9PRuRdbB9HfXhEq35u4oZkvpJ5kuYbpqhCfmiZyReuRgpnhDlbr2ZEnnuS0RrJAPn6l23xjFg9kpDM+Ms7w==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -12412,12 +12387,12 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
-      react: 17.0.2
+      '@types/react': 18.0.24
+      react: 18.2.0
       tslib: 2.4.0
     dev: false
 
-  /use-isomorphic-layout-effect/1.1.2_udcsdvdzjr5ns727jqoeu7kyda:
+  /use-isomorphic-layout-effect/1.1.2_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
     peerDependencies:
       '@types/react': '*'
@@ -12426,22 +12401,22 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
-      react: 17.0.2
+      '@types/react': 18.0.24
+      react: 18.2.0
     dev: false
 
-  /use-query-params/2.1.0_sfoxds7t5ydpegc3knd667wn6m:
+  /use-query-params/2.1.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-CMxIQWoPeeQfvXy8FwO6IKBhgOQrtLTgR2oBDdExaayK9RIDEuMgMZmxUOmdi3AatBJb6GJz6NbDT4HJm5mSVw==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       serialize-query-params: 2.0.1
     dev: false
 
-  /use-sidecar/1.1.2_udcsdvdzjr5ns727jqoeu7kyda:
+  /use-sidecar/1.1.2_bbvjflvjoibwhtpmedigb26h6y:
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -12451,18 +12426,18 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 17.0.39
+      '@types/react': 18.0.24
       detect-node-es: 1.1.0
-      react: 17.0.2
+      react: 18.2.0
       tslib: 2.4.0
     dev: false
 
-  /use-sync-external-store/1.2.0_react@17.0.2:
+  /use-sync-external-store/1.2.0_react@18.2.0:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 17.0.2
+      react: 18.2.0
     dev: false
 
   /use/3.1.1:

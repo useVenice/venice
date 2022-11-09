@@ -2,7 +2,6 @@
 
 Take a look at the next steps you can take to dive deeper into the possibilities of Venice.
 
-
 <p align="center">
   <img src="https://link.usevenice.com/success-image" width="250"> 
 </p>
@@ -23,4 +22,3 @@ Doc is still work in progress, in the mean time, hit us up on slack for help
 - [ ] Describe admin user (`user_metadata.isAdmin: true`)
 - [ ] Describe how to setup for production (add required env var and set `?envName=production`)
 - [ ] Describe how to set up proxies for debugging http requests
-

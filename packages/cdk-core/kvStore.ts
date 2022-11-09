@@ -27,13 +27,13 @@ export const zKVStore = zCast<KVStore<Record<string, unknown>>>()
 
 /** Technically does not belong in FS, but we also don't have a good place for it for now... */
 export function makeMemoryKVStore<T>(): KVStore<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const cache: Record<string, any> = {}
+  const cache: Record<string, T> = {}
   return {
     get: (id) => cache[id],
     list: () => R.toPairs(cache),
     set: (id, data) => {
       if (!data) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete cache[id]
       } else {
         cache[id] = data

@@ -1,0 +1,20 @@
+{
+  "name": "@usevenice/integration-import",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
+    "papaparse": "5.3.2",
+    "xlsx": "0.17.5"
+  },
+  "devDependencies": {
+    "@types/papaparse": "5.3.5"
+  }
+}

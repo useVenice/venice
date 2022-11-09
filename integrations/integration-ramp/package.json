@@ -1,0 +1,18 @@
+{
+  "name": "@usevenice/integration-ramp",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/util": "workspace:*",
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "*"
+  }
+}
