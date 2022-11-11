@@ -33,7 +33,15 @@ export const scheduleTasks: Task = async (_, helpers) => {
           helpers.addJob(
             'syncPipeline',
             {pipelineId: pipe.id},
-            {jobKey: `syncPipeline-${pipe.id}`, maxAttempts: 3}, // At most one at a time... And 3 tries that's it.
+            {
+              jobKey: `syncPipeline-${pipe.id}`,
+              maxAttempts: 3,
+              // Perhaps `replace` jobKeyMode is a better fit, but we need to workaround
+              // dupe job issue in graphile_worker @see https://github.com/graphile/worker/issues/303
+              // TODO: Confirm stuck / stale jobs either get cleared or otherwise do not
+              // permanently prevent new jobs with same key from executing.
+              jobKeyMode: 'unsafe_dedupe',
+            }, // At most one at a time... And 3 tries that's it.
           ),
         25, // Limit how many jobs we add at a time
       ),
