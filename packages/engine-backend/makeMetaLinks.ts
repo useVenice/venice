@@ -112,7 +112,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           institutionId,
           // maybe we should distinguish between setDefaults (from existingConnection) vs. actually
           // updating the values...
-          envName: connection.envName,
+          envName: op.envName ?? connection.envName,
           ledgerId: connection.ledgerId,
         })
       },

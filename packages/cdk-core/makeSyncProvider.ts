@@ -3,7 +3,7 @@ import {castIs, R, z} from '@usevenice/util'
 
 import type {ExternalId, Id} from './id.types'
 import {makeId, zExternalId} from './id.types'
-import type {EnvName, ZStandard} from './meta.types'
+import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
@@ -78,7 +78,6 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   connectionExternalId: ExternalId
   // Can we inherit types used by metaLinks?
   ledgerId?: Id['ldgr']
-  envName?: EnvName
 
   // Extra props not on ConnUpdateData
   source$?: Source<TEntity>

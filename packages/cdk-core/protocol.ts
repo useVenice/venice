@@ -7,6 +7,7 @@ import type {
 } from '@usevenice/util'
 
 import type {ExternalId, Id} from './id.types'
+import type {EnvName} from './meta.types'
 
 /**
  * This will be standardized over time into either
@@ -41,6 +42,7 @@ export interface ConnUpdateData<
     id: ExternalId
     data: TInsData
   }
+  envName?: EnvName
 }
 export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {
   sourceState?: ObjectPartialDeep<NoInfer<TSrcOptions>>

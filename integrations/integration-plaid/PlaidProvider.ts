@@ -408,6 +408,9 @@ export const plaidProvider = makeSyncProvider({
       const {item_id: itemId} = item
       yield [
         def._opConn(itemId, {
+          envName:
+            shouldSync(state, 'connection') &&
+            inferPlaidEnvFromToken(settings.accessToken),
           settings: shouldSync(state, 'connection') && {
             item,
             status,
@@ -429,7 +432,7 @@ export const plaidProvider = makeSyncProvider({
       }
 
       // Sync accounts
-      let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined
+      let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined | null
       if (shouldSync(state, 'account')) {
         const {accounts} = await client.accountsGet({
           access_token: accessToken,
