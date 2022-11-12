@@ -456,6 +456,8 @@ export const makeSyncEngine = <
         })
       },
     })
+    // TODO: Do we need this method at all? Or should we simply add params to args
+    // to syncConnection instead? For example, skipPipelines?
     .mutation('checkConnection', {
       meta: {
         description: 'Not automatically called, used for debugging for now',
@@ -466,9 +468,7 @@ export const makeSyncEngine = <
         ctx,
       }) => {
         authorizeOrThrow(ctx, 'connection', conn)
-        if (!integration.provider.checkConnection) {
-          return `Not implemented in ${integration.provider.name}`
-        }
+        // console.log('checkConnection', {settings, integration, ...conn}, opts)
         const connUpdate = await integration.provider.checkConnection?.({
           settings,
           config: integration.config,
@@ -480,8 +480,23 @@ export const makeSyncEngine = <
             ),
           },
         })
-        /** Do not update the `ledgerId` here... */
-        await _syncConnectionUpdate(integration, connUpdate)
+        if (connUpdate || opts?.import) {
+          /** Do not update the `ledgerId` here... */
+          await _syncConnectionUpdate(integration, {
+            ...(opts?.import && {
+              ledgerId: conn.ledgerId ?? undefined,
+              envName: conn.envName ?? undefined,
+            }),
+            ...connUpdate,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            settings: {...(opts?.import && settings), ...connUpdate?.settings},
+            connectionExternalId:
+              connUpdate?.connectionExternalId ?? extractId(conn.id)[2],
+          })
+        }
+        if (!integration.provider.checkConnection) {
+          return `Not implemented in ${integration.provider.name}`
+        }
         return 'Ok'
       },
     })

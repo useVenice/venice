@@ -59,6 +59,8 @@ export interface ConnectContext<TSettings>
 
 export type CheckConnectionOptions = z.infer<typeof zCheckConnectionOptions>
 export const zCheckConnectionOptions = z.object({
+  /** Persist input into connection storage */
+  import: z.boolean().nullish(),
   /**
    * Update the webhook associated with this connection to based on webhookBaseUrl
    */

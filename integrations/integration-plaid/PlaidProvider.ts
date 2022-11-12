@@ -329,10 +329,12 @@ export const plaidProvider = makeSyncProvider({
   checkConnection: async ({config, settings, options, context}) => {
     console.log('[Plaid] checkConnection', options, context)
     const client = makePlaidClient(config)
+    const envName = inferPlaidEnvFromToken(settings.accessToken)
     const itemId: string =
       settings.itemId ??
       settings.item?.item_id ??
       (await client.itemGet(settings.accessToken).then((r) => r.item.item_id))
+    const connUpdate = {envName, connectionExternalId: itemId}
 
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
@@ -340,7 +342,7 @@ export const plaidProvider = makeSyncProvider({
         webhook: context.webhookBaseUrl,
       })
       return {
-        connectionExternalId: itemId,
+        ...connUpdate,
         triggerDefaultSync: true, // to update settings.item.webhook
         // postgres deepMerge is not implemented yet
         // settings: {item: {webhook: context.webhookBaseUrl}},
@@ -361,9 +363,9 @@ export const plaidProvider = makeSyncProvider({
       // To immediate get item to be in a loginRequired state, as it is hard for us to
       // generate an item error and put it inside settings.item.
       // And because this call does nto appear to trigger any webhook
-      return {connectionExternalId: itemId, triggerDefaultSync: true}
+      return {...connUpdate, triggerDefaultSync: true}
     }
-    return {connectionExternalId: itemId}
+    return connUpdate
   },
 
   revokeConnection: (settings, config) =>
