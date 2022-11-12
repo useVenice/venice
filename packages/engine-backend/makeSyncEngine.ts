@@ -229,7 +229,7 @@ export const makeSyncEngine = <
     } = {},
   ) => {
     console.log('[syncPipeline]', pipeline)
-    const {source: src, links, destination: dest, watch, ...rest} = pipeline
+    const {source: src, links, destination: dest, watch, ...pipe} = pipeline
 
     const defaultSource$ = () =>
       src.integration.provider.sourceSync?.({
@@ -238,7 +238,7 @@ export const makeSyncEngine = <
         // Maybe we should rename `options` to `state`?
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-        state: opts.fullResync ? {} : rest.sourceState,
+        state: opts.fullResync ? {} : pipe.sourceState,
       })
 
     const source$ = opts.source$
@@ -253,7 +253,7 @@ export const makeSyncEngine = <
         config: dest.integration.config,
         settings: dest.settings,
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-        state: opts.fullResync ? {} : rest.destinationState,
+        state: opts.fullResync ? {} : pipe.destinationState,
       })
 
     if (!source$) {
@@ -610,16 +610,16 @@ export const makeSyncEngine = <
         // but pipeline is already being persisted properly. This current solution
         // is vulnerable to race condition and feels brittle. Though syncConnection is only
         // called from the UI so we are fine for now.
-        const {id, settings, integrationId} = conn
-        const {ledgerId} = ctx
-        // Among other issues we would be missing `envName` in this current approach
-        await metaLinks
-          .handlers({connection: {id, integrationId, ledgerId}})
-          .connUpdate({type: 'connUpdate', id, settings})
-
-        /** Every ParsedConn also conforms to connectionInput  */
-        const pipelines = await getPipelinesForConnection(conn)
-        await Promise.all(pipelines.map((pipe) => _syncPipeline(pipe, opts)))
+        await _syncConnectionUpdate(conn.integration, {
+          ledgerId: ctx.ledgerId,
+          settings: conn.settings,
+          // What about envName
+          connectionExternalId: extractId(conn.id)[2],
+          institution: conn.institution && {
+            id: conn.institution.id,
+            data: conn.institution.external ?? {},
+          },
+        })
       },
     })
     .mutation('syncPipeline', {
