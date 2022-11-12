@@ -98,6 +98,8 @@ export type ParsedPipeline = z.infer<
 >
 
 export const zSyncOptions = z.object({
+  /** Only sync connection metadata and skip pipelines */
+  metaOnly: z.boolean().nullish(),
   /**
    * Remove `state` of connection and trigger a full resync
    */

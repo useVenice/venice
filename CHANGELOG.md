@@ -1,3 +1,12 @@
+
+## WIP
+- Introduce stream abstraction
+  - meta only mode for sync
+- Importing existing connections
+- Complete stream abstraction
+  - API only stateless mode mode
+  - stream specific sync
+
 ## 2022-10-29 Background sync
 
 Venice will now automatically sync in the background in addition addition to listening for webhook.

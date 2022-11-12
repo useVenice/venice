@@ -25,6 +25,7 @@ import {
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
+import type {VeniceSourceState} from '@usevenice/cdk-ledger'
 import {isZodType, joinPath, R, rxjs, z, zParser} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
@@ -605,6 +606,24 @@ export const makeSyncEngine = <
         authorizeOrThrow(ctx, 'connection', conn)
         console.log('[syncConnection]', conn, opts)
         // No need to checkConnection here as sourceSync should take care of it
+
+        if (opts?.metaOnly) {
+          await sync({
+            source:
+              conn.integration.provider.sourceSync?.({
+                config: conn.integration.config,
+                settings: conn.settings,
+                // Maybe we should rename `options` to `state`?
+                // Should also make the distinction between `config`, `settings` and `state` much more clear.
+                // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
+                state: R.identity<VeniceSourceState>({
+                  streams: ['connection', 'institution'],
+                }),
+              }) ?? rxjs.EMPTY,
+            destination: metaLinks.postSource({src: conn}),
+          })
+          return
+        }
 
         // TODO: Figure how to handle situations where connection does not exist yet
         // but pipeline is already being persisted properly. This current solution

@@ -16,6 +16,7 @@ import {
 import {
   makePostingsMap,
   makeStandardId,
+  shouldSync,
   veniceProviderBase,
 } from '@usevenice/cdk-ledger'
 import type {
@@ -393,20 +394,21 @@ export const plaidProvider = makeSyncProvider({
       const accountIds = state.accountIds?.length ? state.accountIds : null
       const {item, status} = await client.itemGet(accessToken)
 
-      const institution = item.institution_id
-        ? await client
-            .institutionsGetById(inferPlaidEnvFromToken(accessToken), {
-              institution_id: item.institution_id,
-              country_codes: config.countryCodes,
-              options: {include_optional_metadata: true},
-            })
-            .then((r) => r.institution)
-        : undefined
+      const institution =
+        item.institution_id && shouldSync(state, 'institution')
+          ? await client
+              .institutionsGetById(inferPlaidEnvFromToken(accessToken), {
+                institution_id: item.institution_id,
+                country_codes: config.countryCodes,
+                options: {include_optional_metadata: true},
+              })
+              .then((r) => r.institution)
+          : undefined
 
       const {item_id: itemId} = item
       yield [
         def._opConn(itemId, {
-          settings: {
+          settings: shouldSync(state, 'connection') && {
             item,
             status,
             // Clear previous webhook error since item is now up to date
@@ -427,43 +429,54 @@ export const plaidProvider = makeSyncProvider({
       }
 
       // Sync accounts
-      const {accounts} = await client.accountsGet({
-        access_token: accessToken,
-        options: {...(accountIds && {account_ids: accountIds})},
-      })
-      yield accounts.map((a) => def._opData('account', a.account_id, a))
-
-      await invHoldingsGetLimit()
-      const holdingsRes = await client
-        .investmentsHoldingsGet({
+      let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined
+      if (shouldSync(state, 'account')) {
+        const {accounts} = await client.accountsGet({
           access_token: accessToken,
           options: {...(accountIds && {account_ids: accountIds})},
         })
-        // TODO: Centralize me inside PlaidClient...
-        .catch((err: IAxiosError) => {
-          const code =
-            err.isAxiosError &&
-            (err.response?.data as PlaidError | undefined)?.error_code
-          // Do not crash in case we run into this.
-          if (
-            // client is not authorized to access the following products: ["investments"]
-            code !== 'INVALID_PRODUCT' &&
-            // "error_message": "the following products are not supported by this institution: [\"investments\"]",
-            code !== 'PRODUCTS_NOT_SUPPORTED'
-          ) {
-            return null
-          }
-          throw err
-        })
+        yield accounts.map((a) => def._opData('account', a.account_id, a))
 
-      if (holdingsRes) {
-        const {holdings, securities, accounts: investmentAccounts} = holdingsRes
-        console.log('investmentsHoldingsGet', {
-          holdings,
-          securities,
-          investmentAccounts,
-          accounts,
-        })
+        await invHoldingsGetLimit()
+        holdingsRes = await client
+          .investmentsHoldingsGet({
+            access_token: accessToken,
+            options: {...(accountIds && {account_ids: accountIds})},
+          })
+          // TODO: Centralize me inside PlaidClient...
+          .catch((err: IAxiosError) => {
+            const code =
+              err.isAxiosError &&
+              (err.response?.data as PlaidError | undefined)?.error_code
+            // Do not crash in case we run into this.
+            if (
+              // client is not authorized to access the following products: ["investments"]
+              code !== 'INVALID_PRODUCT' &&
+              // "error_message": "the following products are not supported by this institution: [\"investments\"]",
+              code !== 'PRODUCTS_NOT_SUPPORTED'
+            ) {
+              return null
+            }
+            throw err
+          })
+
+        if (holdingsRes) {
+          const {
+            holdings,
+            securities,
+            accounts: investmentAccounts,
+          } = holdingsRes
+          console.log('investmentsHoldingsGet', {
+            holdings,
+            securities,
+            investmentAccounts,
+            accounts,
+          })
+        }
+      }
+
+      if (!shouldSync(state, 'transaction')) {
+        return
       }
 
       // Sync transactions
@@ -545,6 +558,7 @@ export const plaidProvider = makeSyncProvider({
         }
       }
     }
+
     return rxjs
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
