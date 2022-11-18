@@ -1,0 +1,11 @@
+{
+  "siteId": "8d4979b6fbab8e0bb6ef0361883f3417",
+  "host": "publish-01.obsidian.md",
+  "included": [],
+  "excluded": [
+    "node_modules",
+    "apps/app-config/node_modules",
+    "integrations/core-integration-postgres/node_modules",
+    "apps/tests/node_modules"
+  ]
+}
