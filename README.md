@@ -33,7 +33,7 @@ Zero to production in 5 minutes without a single line of code:
 
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
+    <img src="/docs/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
   </a>
 </p>
 
@@ -172,6 +172,6 @@ What are we working now and next?
 
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
+    <img src="/docs/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
   </a>
 </p>

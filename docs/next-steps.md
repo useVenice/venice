@@ -11,9 +11,11 @@ https://github.com/usevenice/venice#environment-variables
 
 Doc is still work in progress, in the mean time, hit us up on slack for help
 
+[![[slack-cta.png|150]]](https://link.usevenice.com/slack)
+
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
+    <img src="/docs/slack-cta.png" alt="Join us on Slack" style="width: 10rem">
   </a>
 </p>
 
