@@ -18,7 +18,7 @@
 - [x] Try out Dendron's import & export ✅ 2022-11-18
     - Importing from github does not dedupe based on `id`, but creates duplicates if issue name changes
     - Publishing to github only works for metadata. The title / body are not updated for existing issues so those are one-time upload
-- [ ] Setup shared Obsidian proper in Venice repo
+- [x] Setup shared Obsidian proper in Venice repo ✅ 2022-11-18
 
 # Comparison table
 | Name                                               | Pros                                                         | Cons                                                         |

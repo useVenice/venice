@@ -20,3 +20,5 @@
 pnpm-lock.yaml
 
 # vim: set filetype=ignore:
+
+.obsidian/

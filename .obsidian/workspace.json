@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "71bc0b9631f697ae",
+        "id": "39ac7b687ad6d218",
         "type": "tabs",
         "children": [
           {
-            "id": "0bb5e10b33d0a714",
+            "id": "62e44e1a49bf3e91",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "docs/2022-11-18_0602 Docs & Roadmap publishing options research.md",
-                "mode": "source",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -136,6 +136,15 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "0bb5e10b33d0a714",
-  "lastOpenFiles": ["logo.png"]
+  "active": "62e44e1a49bf3e91",
+  "lastOpenFiles": [
+    "integrations/README.md",
+    "docs/Status Kanban.md",
+    "README.md",
+    "integrations/integration-plaid/README.md",
+    "integrations/integration-yodlee/README.md",
+    "apps/app-config/node_modules/human-signals/README.md",
+    "docs/2022-11-18_0602 Docs & Roadmap publishing options research.md",
+    "logo.png"
+  ]
 }
