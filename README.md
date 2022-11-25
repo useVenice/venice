@@ -129,7 +129,7 @@ This setting only affects new connections. Existing connections store which envi
 nvm use 16 # Optional, we recommend node 16.x
 pnpm install
 pnpm run migration up # Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
-pnpm run dev
+pnpm run web
 ```
 
 4. Visit `http://localhost:3000`.
