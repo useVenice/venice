@@ -15,6 +15,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.2.1",
     "@trpc/server": "9.26.0",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
