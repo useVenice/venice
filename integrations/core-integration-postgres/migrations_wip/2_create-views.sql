@@ -1,4 +1,4 @@
-DROP VIEW v_transaction;
+DROP VIEW IF EXISTS v_transaction;
 CREATE VIEW v_transaction AS SELECT
 	id -- standard->>'_id' as id
 	,standard->>'date' as date
@@ -13,7 +13,7 @@ CREATE VIEW v_transaction AS SELECT
 FROM
 	TRANSACTION;
 
-DROP VIEW v_posting;
+DROP VIEW IF EXISTS v_posting;
 CREATE VIEW v_posting AS SELECT
 	id
 	,p.key
@@ -24,12 +24,15 @@ CREATE VIEW v_posting AS SELECT
 	from transaction, jsonb_each(transaction.standard->'postingsMap') as p;
 
 
+CREATE OR REPLACE FUNCTION jsonb_array_to_text_array(_js jsonb)
+  RETURNS text[]
+  LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+'SELECT ARRAY(SELECT jsonb_array_elements_text(_js))';
 
-alter table "transaction" add column "account_ids" character varying
-NOT NULL GENERATED ALWAYS AS (ARRAY (
-		SELECT DISTINCT kv.value ->> 'accountId'
-		FROM
-			jsonb_each(standard -> 'postingsMap') AS kv)) STORED,
+ALTER TABLE "transaction"
+	ADD COLUMN "account_ids" text [] NOT NULL GENERATED ALWAYS AS (
+jsonb_array_to_text_array (jsonb_path_query_array (standard, '$.postingsMap.*.accountId'))) STORED;
+
 
 SELECT
 	id,
