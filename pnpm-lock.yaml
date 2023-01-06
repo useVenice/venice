@@ -291,6 +291,7 @@ importers:
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
+      '@supabase/auth-ui-react': 0.2.6
       '@supabase/supabase-js': 2.2.1
       '@trpc/server': 9.26.0
       '@types/react': 18.0.24
@@ -330,6 +331,7 @@ importers:
       webpack: '*'
     dependencies:
       '@glideapps/glide-data-grid': 5.2.1_qqgdla4ljul3xmvjycg6ibkvsu
+      '@supabase/auth-ui-react': 0.2.6_biqbaboplfbrettd7655fr4n2y
       '@supabase/supabase-js': 2.2.1
       '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
       '@usevenice/app-config': link:../app-config
@@ -3441,6 +3443,33 @@ packages:
   /@socket.io/component-emitter/3.1.0:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
     dev: true
+
+  /@stitches/core/1.2.8:
+    resolution: {integrity: sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==}
+    dev: false
+
+  /@stitches/react/1.2.8_react@18.2.0:
+    resolution: {integrity: sha512-9g9dWI4gsSVe8bNLlb+lMkBYsnIKCZTmvqvDG+Avnn69XfmHZKiaMrx7cgTaddq7aTPPmXiTsbFcUy0xgI4+wA==}
+    peerDependencies:
+      react: '>= 16.3.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@supabase/auth-ui-react/0.2.6_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-N2qxgsjxPQZPdDotVumzruj4RHaKNFb9ZRecttMeGOvrYFbMWRQVpWT/rYkTPsRW2phKiGXQlMwha6YxUE+t6Q==}
+    peerDependencies:
+      react: ^16.13.1 || ^17.0.1 || ^18.0.0
+      react-dom: ^16.13.1 || ^17.0.1 || ^18.0.0
+    dependencies:
+      '@stitches/core': 1.2.8
+      '@stitches/react': 1.2.8_react@18.2.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
 
   /@supabase/functions-js/2.0.0:
     resolution: {integrity: sha512-ozb7bds2yvf5k7NM2ZzUkxvsx4S4i2eRKFSJetdTADV91T65g4gCzEs9L3LUXSrghcGIkUaon03VPzOrFredqg==}
