@@ -61,7 +61,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
   }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
   const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
     enabled: !!ledgerId,
-    refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
+    // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
   const insRes = trpc.useQuery([
     'searchInstitutions',
