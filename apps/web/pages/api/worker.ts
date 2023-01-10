@@ -6,16 +6,11 @@ import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {R} from '@usevenice/util'
 import {runWorker} from '@usevenice/worker'
 
+import {respondToCORS} from './trpc/[...trpc]'
+
 export default R.identity<NextApiHandler>(async (req, res) => {
   // Is this necessary? Can be useful for admin console though
-  // https://vercel.com/support/articles/how-to-enable-cors
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
-  if (req.method === 'OPTIONS') {
-    console.log('Respond to OPTIONS request')
-    res.status(200).end()
+  if (respondToCORS(req, res)) {
     return
   }
 

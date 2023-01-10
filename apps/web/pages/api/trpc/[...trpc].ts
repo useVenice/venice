@@ -2,7 +2,7 @@ import '@usevenice/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
 import {getCookie} from 'cookies-next'
-import type {NextApiHandler, NextApiRequest} from 'next'
+import type {NextApiHandler, NextApiRequest, NextApiResponse} from 'next'
 
 import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
 import type {Id} from '@usevenice/cdk-core'
@@ -23,6 +23,24 @@ export function getAccessToken(req: NextApiRequest) {
       (v) => (typeof v === 'string' ? v : undefined),
     )
   )
+}
+
+export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
+  // https://vercel.com/support/articles/how-to-enable-cors
+
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  // Need to use the request origin for credentials-mode "include" to work
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin ?? '*')
+  // prettier-ignore
+  res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method'] ?? '*')
+  // prettier-ignore
+  res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] ?? '*')
+  if (req.method === 'OPTIONS') {
+    console.log('Respond to OPTIONS request', req.headers.origin)
+    res.status(200).end()
+    return true
+  }
+  return false
 }
 
 const handler = trpcNext.createNextApiHandler({
@@ -51,14 +69,7 @@ const handler = trpcNext.createNextApiHandler({
 // - [ ] Remove RouterContext no longer needed
 // - [ ] Do the same logic for veniceCli httpServer that does not use next
 export default R.identity<NextApiHandler>((req, res) => {
-  // https://vercel.com/support/articles/how-to-enable-cors
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
-  if (req.method === 'OPTIONS') {
-    console.log('Respond to OPTIONS request')
-    res.status(200).end()
+  if (respondToCORS(req, res)) {
     return
   }
 
