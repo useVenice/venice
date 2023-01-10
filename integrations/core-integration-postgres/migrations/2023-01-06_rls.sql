@@ -5,27 +5,33 @@
 
 -- TODO: Do things like easy mustache template for SQL exist? So we can avoid the duplication without needing to go into a full programming language?
 
+
+-- Unfortunately we cannot do this because of of 1) uuid <> varchar mismatch
+-- 2) OSS where users are managed outside of supabase
+
 -- ALTER TABLE "public"."connection" DROP COLUMN "ledger_id"; -- Not yet, but soon
-ALTER TABLE "public"."connection" ADD COLUMN "creator_id" uuid; -- TODO: Make me not null
--- So this is now supabase dependent...
-ALTER TABLE "public"."connection" ADD CONSTRAINT "fk_connection_creator_id"
-  FOREIGN KEY ("creator_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+-- ALTER TABLE "public"."connection" ADD COLUMN "creator_id" uuid; -- TODO: Make me not null
+-- ALTER TABLE "public"."connection" ADD CONSTRAINT "fk_connection_creator_id"
+--   FOREIGN KEY ("creator_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+ALTER TABLE "public"."connection" RENAME COLUMN "ledger_id" to "creator_id";
+CREATE INDEX IF NOT EXISTS connection_creator_id ON connection (creator_id);
 
 ALTER TABLE "public"."connection" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "creator_access" on "public"."connection";
 CREATE POLICY "creator_access" ON "public"."connection"
-  USING (creator_id = auth.uid())
-  WITH CHECK (creator_id = auth.uid());
+  USING (creator_id = auth.uid()::varchar)
+  WITH CHECK (creator_id = auth.uid()::varchar);
 
 
 ALTER TABLE "public"."pipeline" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "connection_creator_access" on "public"."pipeline";
 CREATE POLICY "connection_creator_access" ON "public"."pipeline"
   USING (EXISTS (
-    SELECT 1 FROM "connection" WHERE ("pipeline"."source_id" = "connection"."id" OR "pipeline"."destination_id" = "connection"."id") AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE ("pipeline"."source_id" = "connection"."id" OR "pipeline"."destination_id" = "connection"."id") AND "connection"."creator_id" = auth.uid()::varchar
   ))
   WITH CHECK (EXISTS (
-    SELECT 1 FROM "connection" WHERE ("pipeline"."source_id" = "connection"."id" OR "pipeline"."destination_id" = "connection"."id") AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE ("pipeline"."source_id" = "connection"."id" OR "pipeline"."destination_id" = "connection"."id") AND "connection"."creator_id" = auth.uid()::varchar
   ));
 
 
@@ -47,10 +53,10 @@ ALTER TABLE "public"."transaction" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "ledger_connection_creator_access" on "public"."transaction";
 CREATE POLICY "ledger_connection_creator_access" ON "public"."transaction"
   USING (EXISTS (
-    SELECT 1 FROM "connection" WHERE "transaction"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "transaction"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ))
   WITH CHECK (EXISTS (
-    SELECT 1 FROM "connection" WHERE "transaction"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "transaction"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ));
 
 --| Account |--
@@ -64,10 +70,10 @@ ALTER TABLE "public"."account" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "ledger_connection_creator_access" on "public"."account";
 CREATE POLICY "ledger_connection_creator_access" ON "public"."account"
   USING (EXISTS (
-    SELECT 1 FROM "connection" WHERE "account"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "account"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ))
   WITH CHECK (EXISTS (
-    SELECT 1 FROM "connection" WHERE "account"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "account"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ));
 
 --| Commodity |--
@@ -79,10 +85,10 @@ ALTER TABLE "public"."commodity" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "ledger_connection_creator_access" on "public"."commodity";
 CREATE POLICY "ledger_connection_creator_access" ON "public"."commodity"
   USING (EXISTS (
-    SELECT 1 FROM "connection" WHERE "commodity"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "commodity"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ))
   WITH CHECK (EXISTS (
-    SELECT 1 FROM "connection" WHERE "commodity"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()
+    SELECT 1 FROM "connection" WHERE "commodity"."ledger_connection_id" = "connection"."id" AND "connection"."creator_id" = auth.uid()::varchar
   ));
 
 
