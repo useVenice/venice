@@ -58,14 +58,23 @@ if (
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
-  const accessToken = useAtomValue(accessTokenAtom)
+  const accessTokenQueryParam = useAtomValue(accessTokenAtom)
+  const {session} = Auth.useUser()
+  // console.log('session.accessToken', session?.access_token)
+  const accessToken = session?.access_token ?? accessTokenQueryParam
+  const developerMode = useAtomValue(developerModeAtom)
+
   const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr'] | undefined}
+  // if (!session) {
+  //   console.log('Forceful early exit....')
+  //   return null
+  // }
   return (
     <VeniceProvider
       queryClient={queryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
-      developerMode={useAtomValue(developerModeAtom)}
+      developerMode={developerMode}
       ledgerId={ledgerId}>
       {children}
     </VeniceProvider>
@@ -73,7 +82,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
 }
 
 export function MyApp({Component, pageProps}: AppProps) {
-  // console.log('MyApp re-render', Component, pageProps)
+  // console.log('MyApp re-render', pageProps)
   return (
     <>
       <Head>
@@ -84,13 +93,13 @@ export function MyApp({Component, pageProps}: AppProps) {
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
           <UIProvider>
-            <_VeniceProvider>
-              <Auth.UserContextProvider supabaseClient={supabase}>
+            <Auth.UserContextProvider supabaseClient={supabase}>
+              <_VeniceProvider>
                 <Provider value={supabase}>
                   <Component {...pageProps} />
                 </Provider>
-              </Auth.UserContextProvider>
-            </_VeniceProvider>
+              </_VeniceProvider>
+            </Auth.UserContextProvider>
           </UIProvider>
         </QueryClientProvider>
       </QueryParamProvider>

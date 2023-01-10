@@ -105,10 +105,9 @@ export function useVeniceConnect({
     queryClient,
     ledgerId,
   } = VeniceProvider.useContext()
-  const integrationsRes = trpc.useQuery([
-    'listIntegrations',
-    {},
-  ]) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
+  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
+    enabled: !!ledgerId,
+  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const preConnOpts = React.useCallback(
     (
