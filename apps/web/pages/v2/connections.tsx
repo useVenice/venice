@@ -19,12 +19,12 @@ export default function ConnectionsScreen() {
         links={[
           {label: 'Connections', href: '/v2/connections'},
           {label: 'Data explorer', href: '/v2/data-explorer'},
-          // {
-          //   label: 'New connection',
-          //   href: `/users/${userId}?mode=connect`,
-          //   primary: true,
-          //   fixed: true,
-          // },
+          {
+            label: 'New connection',
+            href: '/v2/connections?mode=connect',
+            primary: true,
+            fixed: true,
+          },
         ]}>
         {mode === 'connect' ? <NewConnectionScreen /> : <MyConnectionsScreen />}
       </Layout>
