@@ -1,10 +1,10 @@
 import {Auth} from '@supabase/auth-ui-react'
 import {createClient} from '@supabase/supabase-js'
-import React from 'react'
 
-import {Container} from '@usevenice/ui'
+import {Container, EffectContainer} from '@usevenice/ui'
 
-import {Layout} from '../components/Layout'
+import {Layout} from '../../components/Layout'
+import {useRouterPlus} from '../../contexts/atoms'
 
 // https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
 const supabase = createClient(
@@ -15,10 +15,12 @@ const supabase = createClient(
 function AuthComponent() {
   const {user, session} = Auth.useUser()
   console.log('AuthComp', {user, session})
-
+  const router = useRouterPlus()
   if (user) {
     return (
       <div>
+        <EffectContainer
+          effect={() => void router.pushPathname('/v2')}></EffectContainer>
         <div>
           You are logged in as {user.email} id: {user.id}
         </div>
@@ -40,12 +42,10 @@ function AuthComponent() {
 
 export default function AuthScreen() {
   return (
-    <Auth.UserContextProvider supabaseClient={supabase}>
-      <Layout>
-        <Container className="flex-1">
-          <AuthComponent />
-        </Container>
-      </Layout>
-    </Auth.UserContextProvider>
+    <Layout>
+      <Container className="flex-1">
+        <AuthComponent />
+      </Container>
+    </Layout>
   )
 }

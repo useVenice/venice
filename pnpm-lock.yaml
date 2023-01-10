@@ -321,6 +321,7 @@ importers:
       react-dom: 18.2.0
       react-query: 3.39.2
       react-responsive-carousel: 3.2.23
+      react-supabase: 0.2.0
       superjson: 1.9.1
       tailwind-merge: 1.6.0
       tailwindcss: 3.1.8
@@ -353,6 +354,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
       react-responsive-carousel: 3.2.23
+      react-supabase: 0.2.0_2renqsam4otk4ue2xfide2aiae
       superjson: 1.9.1
       tailwind-merge: 1.6.0
       ts-pattern: 4.0.5
@@ -10932,6 +10934,16 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.4.0
+    dev: false
+
+  /react-supabase/0.2.0_2renqsam4otk4ue2xfide2aiae:
+    resolution: {integrity: sha512-dlAOhkFaWr8ZqHUkWflGvDpFUT69DbWE7+LxmH/a56ma/qS1EinsIKcxskPcPlaWO70QI7hxu9y8imp8qxDCLw==}
+    peerDependencies:
+      '@supabase/supabase-js': ^1.11.6
+      react: ^17.0.0
+    dependencies:
+      '@supabase/supabase-js': 2.2.1
+      react: 18.2.0
     dev: false
 
   /react/18.2.0:

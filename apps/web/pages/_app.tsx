@@ -1,5 +1,7 @@
 import '../__generated__/tailwind.css'
 
+import {Auth} from '@supabase/auth-ui-react'
+import {createClient} from '@supabase/supabase-js'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import {useRouterQuery} from 'next-router-query'
@@ -9,6 +11,7 @@ import React from 'react'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import {createWebStoragePersistor} from 'react-query/createWebStoragePersistor-experimental'
 import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
+import {Provider} from 'react-supabase'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
@@ -30,6 +33,12 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+// https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
+export const supabase = createClient(
+  'https://hhnxsazpojeczkeeifli.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhobnhzYXpwb2plY3prZWVpZmxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjAyNjgwOTIsImV4cCI6MTk3NTg0NDA5Mn0.ZDmf1sjsr-UxW2bPgdj3uaqJNUSqkZh8vCB1phn3qqs',
+)
 
 if (
   typeof window !== 'undefined' &&
@@ -75,7 +84,11 @@ export default function MyApp({Component, pageProps}: AppProps) {
         <QueryClientProvider client={queryClient}>
           <UIProvider>
             <_VeniceProvider>
-              <Component {...pageProps} />
+              <Auth.UserContextProvider supabaseClient={supabase}>
+                <Provider value={supabase}>
+                  <Component {...pageProps} />
+                </Provider>
+              </Auth.UserContextProvider>
             </_VeniceProvider>
           </UIProvider>
         </QueryClientProvider>

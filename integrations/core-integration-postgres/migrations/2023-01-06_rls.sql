@@ -35,6 +35,8 @@ CREATE POLICY "public_readable" ON public.integration FOR SELECT USING (true);
 ALTER TABLE "public"."institution" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "public_readable" ON public.institution FOR SELECT USING (true);
 
+ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
+
 --| Transaction |--
 
 ALTER TABLE "public"."transaction" ADD COLUMN "ledger_connection_id" VARCHAR; -- How do we make this non-null?
