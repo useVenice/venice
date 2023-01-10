@@ -72,7 +72,8 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   )
 }
 
-export default function MyApp({Component, pageProps}: AppProps) {
+export function MyApp({Component, pageProps}: AppProps) {
+  // console.log('MyApp re-render', Component, pageProps)
   return (
     <>
       <Head>
@@ -96,3 +97,7 @@ export default function MyApp({Component, pageProps}: AppProps) {
     </>
   )
 }
+
+// Workaround for usage of `rewrites` cause app to render twice unconditionally...
+// https://github.com/vercel/next.js/discussions/27985
+export default React.memo(MyApp)
