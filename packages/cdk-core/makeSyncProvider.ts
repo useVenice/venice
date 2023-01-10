@@ -1,7 +1,7 @@
 import type {MaybePromise} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
-import type {ExternalId, Id} from './id.types'
+import type {ExternalId, UserId} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
@@ -18,7 +18,7 @@ import type {
 
 export type ConnectOptions = z.input<typeof zConnectOptions>
 export const zConnectOptions = z.object({
-  // ledgerId: zId('ldgr'),
+  // userId: UserId,
   envName: zEnvName,
   /** Noop if `connectionId` is specified */
   institutionExternalId: zExternalId.nullish(),
@@ -28,7 +28,7 @@ export const zConnectOptions = z.object({
 // MARK: - Client side connect types
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
-  ledgerId: Id['ldgr'] | undefined
+  userId: UserId | undefined
   openDialog: (
     Component: React.ComponentType<{close: () => void}>,
     options?: {onClose?: () => void},
@@ -48,7 +48,7 @@ export interface CheckConnectionContext {
 export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'connectionExternalId'>,
     CheckConnectionContext {
-  ledgerId: Id['ldgr']
+  userId: UserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
   redirectUrl?: string
   connection?: {
@@ -77,7 +77,7 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // Subset of connUpdate
   connectionExternalId: ExternalId
   // Can we inherit types used by metaLinks?
-  ledgerId?: Id['ldgr']
+  userId?: UserId
 
   // Extra props not on ConnUpdateData
   source$?: Source<TEntity>
@@ -343,7 +343,7 @@ export function makeSyncProvider<
           T['_types']['sourceOutputEntity'],
           T['_types']['connectionSettings']
         >,
-        'ledgerId'
+        'creatorId'
       >
     >
   >,
@@ -361,7 +361,7 @@ export function makeSyncProvider<
           T['_types']['sourceOutputEntity'],
           T['_types']['connectionSettings']
         >,
-        'ledgerId'
+        'creatorId'
       >
     >
   >,

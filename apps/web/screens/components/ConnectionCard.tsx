@@ -34,7 +34,7 @@ export interface ConnectionCardProps {
 export function ConnectionCard({connection: conn}: ConnectionCardProps) {
   const env = useAtomValue(envAtom)
   // NOTE: envName is not relevant when reconnecting,
-  // and honestly neither is ledgerId...
+  // and honestly neither is userId...
   // How do we express these situations?
   const {
     connect,

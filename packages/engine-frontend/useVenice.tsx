@@ -29,38 +29,38 @@ export const zUseVeniceOptions = z.object({
 
 /** Non ledger-specific */
 export function useVeniceAdmin({
-  ledgerIdKeywords,
+  creatorIdKeywords,
 }: {
-  ledgerIdKeywords?: string
+  creatorIdKeywords?: string
 }) {
   // Add a context for if user is in developer mode...
 
-  const {trpc, isAdmin, ledgerId, developerMode} = VeniceProvider.useContext()
+  const {trpc, isAdmin, userId, developerMode} = VeniceProvider.useContext()
 
   const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!ledgerId,
+    enabled: !!userId,
   }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
-  const ledgerIdsRes = trpc.useQuery(
-    ['adminSearchLedgerIds', {keywords: ledgerIdKeywords}],
+  const creatorIdsRes = trpc.useQuery(
+    ['adminSearchCreatorIds', {keywords: creatorIdKeywords}],
     {enabled: isAdmin},
-  ) as UseQueryResult<AnySyncQueryOutput<'adminSearchLedgerIds'>>
+  ) as UseQueryResult<AnySyncQueryOutput<'adminSearchCreatorIds'>>
   const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
 
-  return {integrationsRes, ledgerIdsRes, adminSyncMeta, isAdmin, developerMode}
+  return {integrationsRes, creatorIdsRes, adminSyncMeta, isAdmin, developerMode}
 }
 
 /**
  * Ledger-specific
  */
 export function useVenice({envName, keywords}: UseVeniceOptions) {
-  const {trpc, ledgerId, isAdmin, developerMode, queryClient} =
+  const {trpc, userId, isAdmin, developerMode, queryClient} =
     VeniceProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!ledgerId,
+    enabled: !!userId,
   }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
-  const connectionsRes = trpc.useQuery(['listConnections', {ledgerId}], {
-    enabled: !!ledgerId,
+  const connectionsRes = trpc.useQuery(['listConnections', {}], {
+    enabled: !!userId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
   const insRes = trpc.useQuery([
@@ -80,7 +80,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
   const connect = useVeniceConnect({envName})
 
   return {
-    ledgerId,
+    userId,
     connect,
     integrationsRes,
     connectionsRes,
@@ -103,10 +103,10 @@ export function useVeniceConnect({
     trpcClient: client,
     trpc,
     queryClient,
-    ledgerId,
+    userId,
   } = VeniceProvider.useContext()
   const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!ledgerId,
+    enabled: !!userId,
   }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
 
   const preConnOpts = React.useCallback(
@@ -130,9 +130,9 @@ export function useVeniceConnect({
   )
 
   React.useEffect(() => {
-    // TODO: we dont actually need ledgerId anymore
+    // TODO: we dont actually need userId anymore
     // Maybe we can make trpcClient change ref when accessToken changes instead?
-    if (!ledgerId || !envName || lazyUserCreation) {
+    if (!userId || !envName || lazyUserCreation) {
       return
     }
     integrationsRes.data
@@ -142,7 +142,7 @@ export function useVeniceConnect({
       .forEach((options) => queryClient.prefetchQuery(options))
   }, [
     envName,
-    ledgerId,
+    userId,
     integrationsRes.data,
     preConnOpts,
     queryClient,
@@ -153,7 +153,7 @@ export function useVeniceConnect({
   // @yenbekbay is prefetch better or useQueries better?
   // useQueries(
   //   (integrationsRes.data ?? []).map((int) =>
-  //     preConnFetchOpts([{id: int.id}, {envName, ledgerId}]),
+  //     preConnFetchOpts([{id: int.id}, {envName, userId}]),
   //   ),
   // )
 
@@ -166,8 +166,8 @@ export function useVeniceConnect({
       int: IntegrationInput,
       _opts: {institutionId?: Id['ins']; connectionId?: Id['conn']},
     ) {
-      if (!envName || !ledgerId) {
-        console.log('Connect missing params, noop', {envName, ledgerId})
+      if (!envName || !userId) {
+        console.log('Connect missing params, noop', {envName, userId})
         return
       }
 
@@ -206,7 +206,7 @@ export function useVeniceConnect({
         }
       }
     },
-    [envName, ledgerId, connectFnMapRef, preConnOpts, queryClient, client],
+    [envName, userId, connectFnMapRef, preConnOpts, queryClient, client],
   )
   return connect
 }

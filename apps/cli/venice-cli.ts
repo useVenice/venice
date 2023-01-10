@@ -8,18 +8,9 @@ import {json} from 'micro'
 import ngrok from 'ngrok'
 
 import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import type {Id} from '@usevenice/cdk-core'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
-import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
 import type {NonEmptyArray} from '@usevenice/util'
-import {
-  fromMaybeArray,
-  parseUrl,
-  R,
-  z,
-  zFunction,
-  zodInsecureDebug,
-} from '@usevenice/util'
+import {parseUrl, R, z, zFunction, zodInsecureDebug} from '@usevenice/util'
 import {runWorker, setupWorker} from '@usevenice/worker'
 
 import {cliFromRouter} from './cli-utils'
@@ -35,7 +26,6 @@ export const cli = cliFromRouter(veniceRouter, {
   cleanup: () => {}, // metaService.shutdown?
   context: syncEngine.zContext.parse<'typed'>({
     accessToken: process.env['ACCESS_TOKEN'],
-    ledgerId: process.env['LEDGER_ID'] as Id['ldgr'] | undefined,
   }),
 })
 
@@ -91,14 +81,13 @@ cli
             path: procedure,
             req,
             res,
-            createContext: ({req}) =>
-              syncEngine.zContext.parse<'typed'>({
+            createContext: ({req}) => {
+              const a = syncEngine.zContext.parse<'typed'>({
                 accessToken:
                   req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
-                ledgerId: fromMaybeArray(req.headers[kXLedgerId] ?? [])[0] as
-                  | Id['ldgr']
-                  | undefined,
-              }),
+              })
+              return a
+            },
             // onError: ({error}) => {
             //   // error.message = 'new message...'
             // },

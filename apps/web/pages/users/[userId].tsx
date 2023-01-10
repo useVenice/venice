@@ -10,20 +10,20 @@ import {NewConnectionScreen} from '../../screens/NewConnectionScreen'
 
 export default function LedgerPage() {
   const mode = useAtomValue(modeAtom)
-  const {ledgerId} = VeniceProvider.useContext()
+  const {userId} = VeniceProvider.useContext()
   return (
     <>
       <Head>
-        <title>Venice | {ledgerId}</title>
+        <title>Venice | {userId}</title>
       </Head>
 
       <Layout
-        title={ledgerId}
+        title={userId}
         links={[
-          {label: 'My connections', href: `/ledgers/${ledgerId}`},
+          {label: 'My connections', href: `/users/${userId}`},
           {
             label: 'New connection',
-            href: `/ledgers/${ledgerId}?mode=connect`,
+            href: `/users/${userId}?mode=connect`,
             primary: true,
             fixed: true,
           },

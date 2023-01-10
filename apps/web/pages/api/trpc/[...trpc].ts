@@ -5,12 +5,10 @@ import {getCookie} from 'cookies-next'
 import type {NextApiHandler, NextApiRequest, NextApiResponse} from 'next'
 
 import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import type {Id} from '@usevenice/cdk-core'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
-import {kXLedgerId} from '@usevenice/engine-backend/auth-utils'
 import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 
-import {kAccessToken, kLedgerId} from '../../../contexts/atoms'
+import {kAccessToken} from '../../../contexts/atoms'
 
 export function getAccessToken(req: NextApiRequest) {
   return (
@@ -46,15 +44,12 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
 const handler = trpcNext.createNextApiHandler({
   router: veniceRouter,
   createContext: ({req}) => {
-    console.log('[createContext] Got ledgerId', {
+    console.log('[createContext]', {
       query: req.query,
       headers: req.headers,
     })
     const ctx = syncEngine.zContext.parse<'typed'>({
       accessToken: getAccessToken(req),
-      ledgerId: fromMaybeArray(
-        req.query[kLedgerId] ?? req.headers[kXLedgerId] ?? [],
-      )[0] as Id['ldgr'] | undefined,
     })
     console.log('[createContext] Got ctx', ctx)
     return ctx

@@ -5,12 +5,12 @@ import React from 'react'
 import type {
   AnyProviderDef,
   AnySyncProvider,
-  Id,
   LinkFactory,
   UseConnectHook,
+  UserId,
 } from '@usevenice/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
-import {_zContext, kXLedgerId} from '@usevenice/engine-backend/auth-utils'
+import {_zContext} from '@usevenice/engine-backend/auth-utils'
 import type {DialogInstance} from '@usevenice/ui'
 import {Dialog} from '@usevenice/ui'
 import {R} from '@usevenice/util'
@@ -39,7 +39,7 @@ export const VeniceContext = React.createContext<{
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   connectFnMapRef: React.RefObject<Record<string, ConnectFn | undefined>>
 
-  ledgerId: Id['ldgr'] | undefined
+  userId: UserId | undefined
   isAdmin: boolean
   developerMode: boolean
 } | null>(null)
@@ -62,7 +62,6 @@ export function VeniceProvider<
    */
   accessToken: string | undefined
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
-  ledgerId: Id['ldgr'] | undefined
   developerMode?: boolean
 }) {
   // @yenbekbay what's the way way to have a global debug confi?
@@ -71,18 +70,13 @@ export function VeniceProvider<
 
   const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
 
-  const {ledgerId: _ledgerId, developerMode: _developerMode} = options
-  const {ledgerId, isAdmin = false} = zAuthContext.parse<'typed'>({
+  const {developerMode: _developerMode} = options
+  const {userId, isAdmin = false} = zAuthContext.parse<'typed'>({
     accessToken,
-    ledgerId: _ledgerId,
   })
   const developerMode = (isAdmin && _developerMode) || false
 
-  console.log('[VeniceProvider]', {
-    ledgerId,
-    isAdmin,
-    accessToken,
-  })
+  console.log('[VeniceProvider]', {userId, isAdmin, accessToken})
 
   const url = config.apiUrl
   const trpcClient = React.useMemo(
@@ -90,18 +84,17 @@ export function VeniceProvider<
       trpc.createClient({
         headers: () => ({
           ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
-          ...(_ledgerId ? {[kXLedgerId]: _ledgerId} : {}),
         }),
         // Disable reqeuest batching in DEBUG mode for easier debugging
         ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
       }),
-    [__DEBUG__, _ledgerId, accessToken, url],
+    [__DEBUG__, accessToken, url],
   )
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
     p.useConnectHook?.({
-      ledgerId,
+      userId,
       openDialog: (render, options) => {
         setDialogConfig({Component: render, options})
         dialogRef.current?.open()
@@ -128,11 +121,11 @@ export function VeniceProvider<
             connectFnMapRef,
             trpcClient,
             queryClient,
-            ledgerId,
+            userId,
             isAdmin,
             developerMode,
           }),
-          [trpcClient, queryClient, ledgerId, isAdmin, developerMode],
+          [trpcClient, queryClient, userId, isAdmin, developerMode],
         )}>
         {children}
 

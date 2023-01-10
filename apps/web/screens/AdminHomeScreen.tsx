@@ -9,19 +9,19 @@ import {LedgerCard} from './components/LedgerCard'
 
 export function AdminHomeScreen() {
   const router = useRouterPlus()
-  const [ledgerId, setLedgerId] = useState('')
-  const {ledgerIdsRes} = useVeniceAdmin({ledgerIdKeywords: ledgerId})
+  const [creatorId, setCreatorId] = useState('')
+  const {creatorIdsRes} = useVeniceAdmin({creatorIdKeywords: creatorId})
   return (
     <Container className="flex-1 overflow-y-auto">
       <div className="mx-auto flex w-full max-w-3xl flex-col">
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            void router.pushPathname(`/ledgers/${ledgerId}`)
+            void router.pushPathname(`/users/${creatorId}`)
           }}>
           <div className="form-control">
-            <label htmlFor="ledgerId" className="label">
-              <span className="label-text">Ledger ID</span>
+            <label htmlFor="userId" className="label">
+              <span className="label-text">User ID</span>
             </label>
 
             <div className="flex flex-row items-center space-x-2">
@@ -30,9 +30,9 @@ export function AdminHomeScreen() {
                 required
                 minLength={1}
                 placeholder="e.g. 00214199232302"
-                id="ledgerId"
-                value={ledgerId}
-                onChange={(event) => setLedgerId(event.currentTarget.value)}
+                id="userId"
+                value={creatorId}
+                onChange={(event) => setCreatorId(event.currentTarget.value)}
                 className="input-bordered input w-full"
               />
 
@@ -44,7 +44,7 @@ export function AdminHomeScreen() {
         </form>
 
         <div className="py-8">
-          {match(ledgerIdsRes)
+          {match(creatorIdsRes)
             .with({status: 'idle'}, () => null)
             .with({status: 'loading'}, () => <Loading />)
             .with({status: 'error'}, () => (

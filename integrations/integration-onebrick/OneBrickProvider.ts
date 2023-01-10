@@ -1,7 +1,7 @@
 import React from 'react'
 
 import type {SyncOperation} from '@usevenice/cdk-core'
-import {makeSyncProvider, zId, zWebhookInput} from '@usevenice/cdk-core'
+import {makeSyncProvider, zUserId, zWebhookInput} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import {A, Deferred, md5Hash, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
 
@@ -167,7 +167,7 @@ export const oneBrickProvider = makeSyncProvider({
     // onebrick connection, and whether they could be rotated...
     return def._webhookReturn(md5Hash(accessToken), {
       settings: def.connectionSettings.parse({accessToken}),
-      ledgerId: zId('ldgr').parse(userId),
+      userId: zUserId.parse(userId),
       triggerDefaultSync: true,
     })
   },

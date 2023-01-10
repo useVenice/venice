@@ -211,9 +211,9 @@ export function unwrapDocumentSnapshot<T>(snap: AnyDocumentSnapshot<T>) {
 }
 
 export function idsForRef(ref: AnyDocumentReference) {
-  // .parent = `/ledgers/<LedgerId>/<collectionName>` or `/users/<UserId>/<collectionName>`
-  // .parent.parent = `/ledgers/<LedgerId>` or `/users/<UserId>`
-  // .parent.parent.parent = `/ledgers` or `/users`
+  // .parent = `/users/<LedgerId>/<collectionName>` or `/users/<UserId>/<collectionName>`
+  // .parent.parent = `/users/<LedgerId>` or `/users/<UserId>`
+  // .parent.parent.parent = `/users` or `/users`
   const ledgerOrUserRef = ref.parent.parent
   if (ledgerOrUserRef?.parent.id === 'users') {
     return {

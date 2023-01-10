@@ -198,7 +198,7 @@ export const plaidProvider = makeSyncProvider({
   },
   preConnect: (
     config,
-    {envName, ledgerId, connection, institutionExternalId, ...ctx},
+    {envName, userId, connection, institutionExternalId, ...ctx},
   ) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
@@ -206,7 +206,7 @@ export const plaidProvider = makeSyncProvider({
         institution_id: institutionExternalId
           ? `${institutionExternalId}`
           : undefined, // Probably doesn't work, but we wish it does...
-        user: {client_user_id: ledgerId},
+        user: {client_user_id: userId},
         client_name: config.clientName,
         language: config.language,
         ...(!connection?.settings.accessToken && {products: config.products}),

@@ -7,7 +7,7 @@ import {AdminHomeScreen} from '../screens/AdminHomeScreen'
 
 export default function HomeScreen() {
   const router = useRouterPlus()
-  const {ledgerId, isAdmin} = VeniceProvider.useContext()
+  const {userId: userId, isAdmin} = VeniceProvider.useContext()
   if (isAdmin) {
     return (
       <Layout>
@@ -15,10 +15,10 @@ export default function HomeScreen() {
       </Layout>
     )
   }
-  if (ledgerId) {
+  if (userId) {
     return (
       <EffectContainer
-        effect={() => void router.pushPathname(`/ledgers/${ledgerId}`)}>
+        effect={() => void router.pushPathname(`/users/${userId}`)}>
         <Layout>
           <Container className="flex-1">
             <Loading />

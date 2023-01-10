@@ -4,7 +4,8 @@ import {
   veniceBackendConfig,
   veniceRouter,
 } from '@usevenice/app-config/backendConfig'
-import {zId} from '@usevenice/cdk-core'
+import type {UserId} from '@usevenice/cdk-core';
+import { zId} from '@usevenice/cdk-core'
 import type {MaybePromise} from '@usevenice/util'
 import {mapAsync, rxjs, toCompletion, z} from '@usevenice/util'
 
@@ -54,10 +55,10 @@ export const syncPipeline: Task = makeTask(
   z.object({pipelineId: zId('pipe')}),
   async ({pipelineId}) => {
     console.log('Shall sync pipeline id', pipelineId)
-    // TODO: need to figure out how to deal with missing ledgerId when running
-    // in service-worker mode without ledgerId (e.g. background sync)
+    // TODO: need to figure out how to deal with missing creatorId when running
+    // in service-worker mode without creatorId (e.g. background sync)
     await veniceRouter
-      .createCaller({isAdmin: true, ledgerId: 'ldgr_TASK_NOOP'})
+      .createCaller({isAdmin: true, userId: 'usr_TASK_NOOP' as UserId})
       .mutation('syncPipeline', [{id: pipelineId}, {}])
   },
 )

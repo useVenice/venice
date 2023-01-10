@@ -1,15 +1,15 @@
 import {CaretRight} from 'phosphor-react'
 
-import type {LedgerIdResultRow} from '@usevenice/cdk-core'
+import type {CreatorIdResultRow} from '@usevenice/cdk-core'
 
 import {useRouterPlus} from '../../contexts/atoms'
 
-export function LedgerCard({ledger: l}: {ledger: LedgerIdResultRow}) {
+export function LedgerCard({ledger: l}: {ledger: CreatorIdResultRow}) {
   const router = useRouterPlus()
   return (
     <div
       className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg"
-      onClick={() => router.pushPathname(`/ledgers/${l.id}`)}>
+      onClick={() => router.pushPathname(`/users/${l.id}`)}>
       <div className="card-body">
         <div className="flex items-center space-x-4">
           <div className="flex flex-col space-y-1">

@@ -24,7 +24,7 @@ export type ZInput = {
 }
 export const zInput = (() => {
   const provider = z.string().brand<'provider'>()
-  // zRaw also have a bunch of things such as ledgerId, envName, etc.
+  // zRaw also have a bunch of things such as userId, envName, etc.
   // Do we want to worry about those?
   const integration = zRaw.integration
   const institution = zRaw.institution
@@ -214,10 +214,10 @@ export function makeSyncParsers<
         id,
         ...conn,
         ...rest,
-        // For security do not allow ledgerId to ever be automatically changed
-        // once exists. Otherwise one could pass someone else's ledgerId and get access
+        // For security do not allow userId to ever be automatically changed
+        // once exists. Otherwise one could pass someone else's userId and get access
         // to their connection via just the `id`
-        ledgerId: conn?.ledgerId ?? rest.ledgerId,
+        creatorId: conn?.creatorId ?? rest.creatorId,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,
@@ -304,8 +304,7 @@ export function makeSyncParsers<
 }
 
 type AuthSubject =
-  | ['ledger_id', Id['ldgr'] | null | undefined]
-  | ['connection', Pick<ParsedConn, 'ledgerId' | 'id'> | null | undefined]
+  | ['connection', Pick<ParsedConn, 'creatorId' | 'id'> | null | undefined]
   | [
       'pipeline',
       Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
@@ -317,15 +316,13 @@ export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
     return true
   }
   switch (pair[0]) {
-    case 'ledger_id':
-      return pair[1] === ctx.ledgerId
     case 'connection':
-      return pair[1] == null || pair[1].ledgerId === ctx.ledgerId
+      return pair[1] == null || pair[1].creatorId === ctx.userId
     case 'pipeline':
       return (
         pair[1] == null ||
-        pair[1].source.ledgerId === ctx.ledgerId ||
-        pair[1].destination.ledgerId === ctx.ledgerId
+        pair[1].source.creatorId === ctx.userId ||
+        pair[1].destination.creatorId === ctx.userId
       )
   }
 }
@@ -334,7 +331,7 @@ export function authorizeOrThrow(ctx: UserInfo, ...pair: AuthSubject) {
   if (!checkAuthorization(ctx, ...pair)) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
-      message: `${ctx.ledgerId} does not have access to ${
+      message: `${ctx.userId} does not have access to ${
         typeof pair[1] === 'string' ? pair[1] : pair[1]?.id
       }`,
     })

@@ -1,15 +1,12 @@
 import * as jwt from 'jsonwebtoken'
 import {TRPCError} from '@trpc/server'
 
-import {zId} from '@usevenice/cdk-core'
+import {zUserId} from '@usevenice/cdk-core'
 import {z, zFunction, zGuard} from '@usevenice/util'
-
-/** Header key */
-export const kXLedgerId = 'X-Ledger-Id'.toLowerCase()
 
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
-  ledgerId: zId('ldgr').nullish(),
+  userId: zUserId.nullish(), // Is this right?
   isAdmin: z.boolean().nullish(),
 })
 
@@ -20,13 +17,9 @@ export type EngineContext = z.infer<ReturnType<typeof _zContext>>
 export const _zContext = (...args: Parameters<typeof _zUserInfo>) => {
   const zUserInfo = _zUserInfo(...args)
   return z
-    .object({
-      ledgerId: zId('ldgr').nullish(),
-      accessToken: zUserInfo,
-    })
-    .transform(({ledgerId, accessToken: userInfo}) => ({
-      ledgerId:
-        (userInfo.isAdmin && ledgerId) || userInfo.ledgerId || undefined,
+    .object({accessToken: zUserInfo})
+    .transform(({accessToken: userInfo}) => ({
+      userId: userInfo.userId ?? undefined,
       isAdmin: userInfo.isAdmin ?? false,
       userInfo,
     }))
@@ -43,7 +36,7 @@ export const _zUserInfo = (options: {
   const parseJwtPayload =
     options.parseJwtPayload ??
     ((jwt) => ({
-      ledgerId: jwt.sub,
+      userId: jwt.sub,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
       isAdmin: jwt['user_metadata']?.['isAdmin'] === true,
     }))

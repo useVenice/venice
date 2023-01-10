@@ -1,5 +1,5 @@
 import type {
-  LedgerIdResultRow,
+  CreatorIdResultRow,
   MetaService,
   MetaTable,
   ZRaw,
@@ -27,11 +27,11 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
   // TODO: Convert case from snake_case to camelCase
   return {
-    list: ({ids, ledgerId, keywords, ...rest}) =>
+    list: ({ids, creatorId, keywords, ...rest}) =>
       getPool().then((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
-          ledgerId && sql`ledger_id = ${ledgerId}`,
+          creatorId && sql`creator_id = ${creatorId}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&
             tableName === 'institution' &&
@@ -71,26 +71,26 @@ export const makePostgresMetaService = zFunction(
     }
     return {
       tables,
-      searchLedgerIds: ({keywords, ...rest}) => {
+      searchCreatorIds: ({keywords, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
         const where = keywords
-          ? sql`WHERE ledger_id ILIKE ${'%' + keywords + '%'}`
+          ? sql`WHERE creator_id ILIKE ${'%' + keywords + '%'}`
           : sql``
         const query = applyLimitOffset(
           sql`
             SELECT
-              ledger_id as id,
+              creator_id as id,
               count(*) AS connection_count,
               min(created_at) AS first_created_at,
               max(updated_at) AS last_updated_at
             FROM
               connection
             ${where}
-            GROUP BY ledger_id
+            GROUP BY creator_id
           `,
           rest,
         )
-        return getPool().then((pool) => pool.any<LedgerIdResultRow>(query))
+        return getPool().then((pool) => pool.any<CreatorIdResultRow>(query))
       },
       searchInstitutions: ({keywords, providerNames, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)

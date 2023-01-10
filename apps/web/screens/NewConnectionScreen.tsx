@@ -29,7 +29,7 @@ export function NewConnectionScreen() {
   const [envName, setEnvName] = useAtom(envAtom)
   const [keywords, setKeywords] = React.useState('')
   const {
-    ledgerId,
+    userId,
     integrationsRes,
     connect: _connect,
     developerMode,

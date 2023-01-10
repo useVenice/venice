@@ -41,6 +41,10 @@ export type Id<TName extends string = string> = {
     : `${k}_${TName}${string}` // 3rd segment is not guaranteed to exist
 }
 
+/** Unfortunately userId is mostly *not* prefixed */
+export const zUserId = z.string().min(1).brand<'usr'>()
+export type UserId = z.infer<typeof zUserId>
+
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...

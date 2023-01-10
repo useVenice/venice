@@ -1,6 +1,6 @@
 import {z, zJsonObject} from '@usevenice/util'
 
-import {zId} from './id.types'
+import {zId, zUserId} from './id.types'
 
 // Utility types
 
@@ -60,7 +60,7 @@ export const zRaw = {
   }),
   connection: z.object({
     id: zId('conn'),
-    ledgerId: zId('ldgr').nullish(),
+    creatorId: zUserId.nullish(),
     integrationId: zId('int').nullish(),
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),

@@ -8,7 +8,6 @@ import {parseQueryParams, shallowOmitUndefined} from '@usevenice/util'
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
 
 export const kAccessToken = 'accessToken' as const
-export const kLedgerId = 'ledgerId' as const
 export const kEnv = 'env' as const
 
 export const accessTokenAtom = atomWithQueryParam(kAccessToken, '', StringParam)

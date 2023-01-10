@@ -4,7 +4,6 @@ import {Auth} from '@supabase/auth-ui-react'
 import {createClient} from '@supabase/supabase-js'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
-import {useRouterQuery} from 'next-router-query'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import React from 'react'
@@ -15,7 +14,6 @@ import {Provider} from 'react-supabase'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
-import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {UIProvider} from '@usevenice/ui'
 
@@ -64,7 +62,6 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   const accessToken = session?.access_token ?? accessTokenQueryParam
   const developerMode = useAtomValue(developerModeAtom)
 
-  const {ledgerId} = useRouterQuery() as {ledgerId: Id['ldgr'] | undefined}
   // if (!session) {
   //   console.log('Forceful early exit....')
   //   return null
@@ -74,8 +71,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
       queryClient={queryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
-      developerMode={developerMode}
-      ledgerId={ledgerId}>
+      developerMode={developerMode}>
       {children}
     </VeniceProvider>
   )

@@ -22,18 +22,18 @@ export const supabase = createClient(
 )
 
 export default function DataPage() {
-  const {ledgerId} = VeniceProvider.useContext()
+  const {userId: userId} = VeniceProvider.useContext()
   const [items, setItems] = React.useState([] as any[])
   React.useEffect(() => {
     void supabase
       .from('connection')
       .select('*')
-      .eq('ledger_id', ledgerId)
+      .eq('creator_id', userId)
       .then((res) => {
         console.log('res', res)
         setItems(res.data ?? [])
       })
-  }, [ledgerId])
+  }, [userId])
 
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
   const [columns, setColumns] = React.useState([

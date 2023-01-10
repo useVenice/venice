@@ -8,11 +8,11 @@ import type {
   ConnectionUpdate,
   Destination,
   EnvName,
-  Id,
   Link,
   LinkFactory,
   MetaService,
   Source,
+  UserId,
 } from '@usevenice/cdk-core'
 import {
   extractId,
@@ -21,7 +21,6 @@ import {
   sync,
   zCheckConnectionOptions,
   zConnectOptions,
-  zId,
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
@@ -64,10 +63,7 @@ export interface SyncEngineConfig<
   apiUrl: string
 
   /** Used for oauth based connections */
-  getRedirectUrl?: (
-    integration: ParsedInt,
-    ctx: {ledgerId: Id['ldgr']},
-  ) => string
+  getRedirectUrl?: (integration: ParsedInt, ctx: {userId: UserId}) => string
 
   parseJwtPayload?: ParseJwtPayload
 
@@ -174,7 +170,7 @@ export const makeSyncEngine = <
   const _syncConnectionUpdate = async (
     int: ParsedInt,
     {
-      ledgerId,
+      userId: userId,
       envName,
       settings,
       institution,
@@ -182,7 +178,7 @@ export const makeSyncEngine = <
     }: ConnectionUpdate<AnyEntityPayload, {}>,
   ) => {
     console.log('[_syncConnectionUpdate]', int.id, {
-      ledgerId,
+      userId,
       envName,
       settings,
       institution,
@@ -194,7 +190,9 @@ export const makeSyncEngine = <
       connUpdate.connectionExternalId,
     )
     await metaLinks
-      .handlers({connection: {id, integrationId: int.id, ledgerId, envName}})
+      .handlers({
+        connection: {id, integrationId: int.id, creatorId: userId, envName},
+      })
       .connUpdate({type: 'connUpdate', id, settings, institution})
 
     if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
@@ -205,7 +203,7 @@ export const makeSyncEngine = <
       id,
       // Should we spread connUpdate into it?
       settings,
-      ledgerId,
+      creatorId: userId,
       // institution: connUpdate.institution,
     })
 
@@ -310,7 +308,7 @@ export const makeSyncEngine = <
         )
         await Promise.all(
           res.connectionUpdates.map((connUpdate) =>
-            // Provider is responsible for providing envName / ledgerId
+            // Provider is responsible for providing envName / userId
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             _syncConnectionUpdate(int, connUpdate),
           ),
@@ -322,7 +320,7 @@ export const makeSyncEngine = <
 
   const authenticatedRouter = baseRouter()
     .middleware(({next, ctx, path}) => {
-      if (!ctx.ledgerId) {
+      if (!ctx.userId) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: `Auth required: ${path}`,
@@ -332,7 +330,7 @@ export const makeSyncEngine = <
       // check user has access to connection pipline etc in a single place...
       // Also we probably don't want non-admin user to be able to provider anything
       // other than the `id` for integration, connection and pipeline
-      return next({ctx: {...ctx, ledgerId: ctx.ledgerId}})
+      return next({ctx: {...ctx, userId: ctx.userId}})
     })
     // MARK: - Metadata  etc
     .query('listIntegrations', {
@@ -382,13 +380,12 @@ export const makeSyncEngine = <
       },
     })
     .query('listConnections', {
-      input: z.object({ledgerId: zId('ldgr').nullish()}).optional(),
-      resolve: async ({input: {ledgerId} = {}, ctx}) => {
-        authorizeOrThrow(ctx, 'ledger_id', ledgerId)
+      input: z.object({}).optional(),
+      resolve: async ({ctx}) => {
         // Add info about what it takes to `reconnect` here for connections which
         // has disconnected
         const connections = await metaService.tables.connection.list({
-          ledgerId,
+          creatorId: ctx.userId,
         })
         const insById = R.pipe(
           await metaService.tables.institution.list({
@@ -482,10 +479,10 @@ export const makeSyncEngine = <
           },
         })
         if (connUpdate || opts?.import) {
-          /** Do not update the `ledgerId` here... */
+          /** Do not update the `creatorId` here... */
           await _syncConnectionUpdate(integration, {
             ...(opts?.import && {
-              ledgerId: conn.ledgerId ?? undefined,
+              userId: conn.creatorId ?? undefined,
               envName: conn.envName ?? undefined,
             }),
             ...connUpdate,
@@ -538,7 +535,7 @@ export const makeSyncEngine = <
         authorizeOrThrow(ctx, 'connection', conn)
         return int.provider.preConnect?.(int.config, {
           ...connCtxInput,
-          ledgerId: ctx.ledgerId,
+          userId: ctx.userId,
           connection: conn
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               {externalId: connectionExternalId!, settings: conn.settings}
@@ -555,7 +552,7 @@ export const makeSyncEngine = <
       // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
       // needed
       input: z.tuple([z.unknown(), zInt, zConnectOptions]),
-      // How do we verify that the ledgerId here is the same as the ledgerId from preConnectOption?
+      // How do we verify that the userId here is the same as the userId from preConnectOption?
       resolve: async ({
         input: [input, int, {connectionExternalId, ...connCtxInput}],
         ctx,
@@ -576,7 +573,7 @@ export const makeSyncEngine = <
           int.config,
           {
             ...connCtxInput,
-            ledgerId: ctx.ledgerId,
+            userId: ctx.userId,
             connection: conn
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: connectionExternalId!, settings: conn.settings}
@@ -591,7 +588,7 @@ export const makeSyncEngine = <
         await _syncConnectionUpdate(int, {
           ...connUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          ledgerId: ctx.ledgerId,
+          userId: ctx.userId,
           envName: connCtxInput.envName,
         })
         console.log('didConnect finish', int.provider.name, input)
@@ -630,7 +627,7 @@ export const makeSyncEngine = <
         // is vulnerable to race condition and feels brittle. Though syncConnection is only
         // called from the UI so we are fine for now.
         await _syncConnectionUpdate(conn.integration, {
-          ledgerId: ctx.ledgerId,
+          userId: ctx.userId,
           settings: conn.settings,
           // What about envName
           connectionExternalId: extractId(conn.id)[2],
@@ -661,10 +658,10 @@ export const makeSyncEngine = <
       return next({ctx: {...ctx, isAdmin: true as const}})
     })
     // .query('adminDebugEnv', {resolve: () => process.env}) // Temporary...
-    .query('adminSearchLedgerIds', {
+    .query('adminSearchCreatorIds', {
       input: z.object({keywords: z.string().trim().nullish()}).optional(),
       resolve: async ({input: {keywords} = {}}) =>
-        metaService.searchLedgerIds({keywords}),
+        metaService.searchCreatorIds({keywords}),
     })
     .query('adminGetIntegration', {
       input: zInt,

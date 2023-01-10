@@ -50,7 +50,7 @@ const _def = makeSyncProvider.def({
   integrationConfig: zConfig,
   connectionSettings: zSettings,
   institutionData: zYodleeInstitution,
-  // Should accessToken be cached based on provider / ledgerId?
+  // Should accessToken be cached based on provider / userId?
   connectInput: z.object({accessToken: zAccessToken}),
   connectOutput: z.object({
     providerAccountId: zYodleeId,
@@ -225,8 +225,8 @@ export const yodleeProvider = makeSyncProvider({
     }),
   },
   // TODO: handle reconnecting scenario
-  preConnect: async (config, {envName, ledgerId}) => {
-    const loginName = ledgerId
+  preConnect: async (config, {envName, userId}) => {
+    const loginName = userId
     const accessToken = await makeYodleeClient(config, {
       role: 'admin',
       envName,
@@ -239,7 +239,7 @@ export const yodleeProvider = makeSyncProvider({
   postConnect: async (
     {providerAccountId, providerId},
     config,
-    {envName, ledgerId: loginName},
+    {envName, userId: loginName},
   ) => {
     const yodlee = makeYodleeClient(config, {role: 'user', envName, loginName})
     const [providerAccount, provider, user] = await Promise.all([
