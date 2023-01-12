@@ -5,7 +5,9 @@ import type {
   Id,
   LinkFactory,
   MetaService,
-  ZStandard,
+  ZStandard} from '@usevenice/cdk-core';
+import {
+  zConnectWith
 } from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
 import type {Json} from '@usevenice/util'
@@ -116,6 +118,8 @@ export const zSyncOptions = z.object({
   // See coda's implmementation. Requires adding a new message to the sync protocol
   // to remove all data from a particular source_id
   todo_removeUnsyncedData: z.boolean().nullish(),
+
+  connectWith: zConnectWith.nullish(),
 })
 
 export function makeSyncParsers<

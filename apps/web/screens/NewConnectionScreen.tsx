@@ -3,7 +3,7 @@ import {Plus} from 'phosphor-react'
 import React from 'react'
 import {match} from 'ts-pattern'
 
-import type {EnvName} from '@usevenice/cdk-core'
+import type {ConnectWith, EnvName} from '@usevenice/cdk-core'
 import {zEnvName} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 import {
@@ -23,7 +23,7 @@ import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
 
 type ConnectMode = 'institution' | 'provider'
 
-export function NewConnectionScreen() {
+export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
   const [, setMode] = useAtom(modeAtom)
   const [searchBy, setSearchBy] = useAtom(searchByAtom)
   const [envName, setEnvName] = useAtom(envAtom)
@@ -37,8 +37,8 @@ export function NewConnectionScreen() {
   } = useVenice({envName, keywords})
 
   const connect = React.useCallback(
-    (...args: Parameters<typeof _connect>) => {
-      _connect(...args)
+    (...[int, opts]: Parameters<typeof _connect>) => {
+      _connect(int, {...opts, connectWith: props.connectWith})
         .finally(() => {
           setMode('manage')
         })
@@ -49,7 +49,7 @@ export function NewConnectionScreen() {
           console.error('connect error', err)
         })
     },
-    [_connect, setMode],
+    [_connect, props.connectWith, setMode],
   )
 
   const onlyIntegrationId =

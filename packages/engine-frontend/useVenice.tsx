@@ -2,7 +2,7 @@ import React from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 import type {UseQueryResult} from 'react-query'
 
-import type {ConnectOptions, Id} from '@usevenice/cdk-core'
+import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
 import type {
   AnySyncMutationInput,
@@ -164,7 +164,14 @@ export function useVeniceConnect({
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
-      _opts: {institutionId?: Id['ins']; connectionId?: Id['conn']},
+      _opts: {
+        connectionId?: Id['conn']
+        /** For exsting Existing connection Id */
+        /** Optional for new connection */
+        institutionId?: Id['ins']
+        /** For creating initial pipeline in new connection */
+        connectWith?: ConnectWith
+      },
     ) {
       if (!envName || !userId) {
         console.log('Connect missing params, noop', {envName, userId})
@@ -192,7 +199,11 @@ export function useVeniceConnect({
         )
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.mutation('postConnect', [res, int, opt])
+        const postConRes = await client.mutation('postConnect', [
+          res,
+          int,
+          {...opt, connectWith: _opts.connectWith},
+        ])
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
 
         void queryClient.invalidateQueries(['listConnections'])

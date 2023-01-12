@@ -2,7 +2,7 @@ import type {MaybePromise} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
 import type {ExternalId, UserId} from './id.types'
-import {makeId, zExternalId} from './id.types'
+import {makeId, zExternalId, zId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
@@ -16,6 +16,14 @@ import type {
 
 // MARK: - Shared connect types
 
+export const zConnectWith = z.object({
+  sourceId: zId('conn').nullish(),
+  destinationId: zId('conn').nullish(),
+})
+
+/** Useful for establishing the initial pipeline when creating a connection for the first time */
+export type ConnectWith = z.infer<typeof zConnectWith>
+
 export type ConnectOptions = z.input<typeof zConnectOptions>
 export const zConnectOptions = z.object({
   // userId: UserId,
@@ -23,6 +31,10 @@ export const zConnectOptions = z.object({
   /** Noop if `connectionId` is specified */
   institutionExternalId: zExternalId.nullish(),
   connectionExternalId: zExternalId.nullish(),
+})
+
+export const zPostConnectOptions = zConnectOptions.extend({
+  connectWith: zConnectWith.nullish(),
 })
 
 // MARK: - Client side connect types
@@ -69,8 +81,11 @@ export const zCheckConnectionOptions = z.object({
   sandboxSimulateUpdate: z.boolean().nullish(),
   /** For testing out disconnection handling */
   sandboxSimulateDisconnect: z.boolean().nullish(),
+
+  connectWith: zConnectWith.nullish(),
 })
 
+/** Extra props not on ConnUpdateData */
 export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // make `ConnUpdateData.id` not prefixed so we can have better inheritance
   extends Omit<ConnUpdateData<TSettings>, 'id'> {
@@ -79,9 +94,11 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // Can we inherit types used by metaLinks?
   userId?: UserId
 
-  // Extra props not on ConnUpdateData
   source$?: Source<TEntity>
   triggerDefaultSync?: boolean
+
+  /** Used for ledgerConnectionId */
+  connectWith?: ConnectWith | null
 }
 
 export type WebhookInput = z.infer<typeof zWebhookInput>

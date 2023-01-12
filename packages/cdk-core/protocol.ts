@@ -42,6 +42,7 @@ export interface ConnUpdateData<
     id: ExternalId
     data: TInsData
   }
+  /** Should this be an inherent part of the data? */
   envName?: EnvName
 }
 export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {

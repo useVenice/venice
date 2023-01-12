@@ -11,13 +11,13 @@ import {ledgerIdAtom} from '../../contexts/atoms'
 
 export default function HomePage() {
   const {userId} = VeniceProvider.useContext()
-  const [ledgerId, setLedgerId] = useAtom(ledgerIdAtom)
 
   const [insertLedgerRes, insertLedger] = useInsert('connection')
   const [deleteLedgerRes, deleteLedger] = useDelete('connection')
 
   // Unfortunately useRealtime does not work at the moment
   // @see https://github.com/tmm/react-supabase/issues/67
+  const [ledgerId, setLedgerId] = useAtom(ledgerIdAtom)
   const [ledgersRes, refetchLedgers] = useSelect('connection', {
     filter: useFilter((query) => query.eq('provider_name', 'postgres'), []),
   })

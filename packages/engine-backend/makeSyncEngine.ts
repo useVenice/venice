@@ -6,6 +6,7 @@ import type {
   AnyEntityPayload,
   AnySyncProvider,
   ConnectionUpdate,
+  ConnectWith,
   Destination,
   EnvName,
   Link,
@@ -21,6 +22,7 @@ import {
   sync,
   zCheckConnectionOptions,
   zConnectOptions,
+  zPostConnectOptions,
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
@@ -79,6 +81,7 @@ export interface SyncEngineConfig<
 
   getDefaultPipeline?: (
     connInput?: ConnectionInput<TProviders[number]>,
+    connectWith?: ConnectWith,
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
   defaultIntegrations?:
     | Array<IntegrationInput<TProviders[number]>>
@@ -155,9 +158,15 @@ export const makeSyncEngine = <
       ),
     )
 
-  const getPipelinesForConnection = (connInput: ZInput['connection']) => {
+  const getPipelinesForConnection = (
+    connInput: ZInput['connection'],
+    connectWith: ConnectWith | undefined,
+  ) => {
     const defaultPipeline = () =>
-      getDefaultPipeline?.(connInput as ConnectionInput<TProviders[number]>)
+      getDefaultPipeline?.(
+        connInput as ConnectionInput<TProviders[number]>,
+        connectWith,
+      )
 
     // TODO: In the case of an existing `conn`, how do we update conn.settings too?
     // Otherwise we will result in outdated settings...
@@ -199,13 +208,16 @@ export const makeSyncEngine = <
       return
     }
 
-    const pipelines = await getPipelinesForConnection({
-      id,
-      // Should we spread connUpdate into it?
-      settings,
-      creatorId: userId,
-      // institution: connUpdate.institution,
-    })
+    const pipelines = await getPipelinesForConnection(
+      {
+        id,
+        // Should we spread connUpdate into it?
+        settings,
+        creatorId: userId,
+        // institution: connUpdate.institution,
+      },
+      connUpdate.connectWith ?? undefined,
+    )
 
     console.log('_syncConnectionUpdate existingPipes.len', pipelines.length)
     await Promise.all(
@@ -309,6 +321,8 @@ export const makeSyncEngine = <
         await Promise.all(
           res.connectionUpdates.map((connUpdate) =>
             // Provider is responsible for providing envName / userId
+            // TODO: Should provider be responsible for providing connectWith?
+            // This may be relevant for OneBrick connections for example
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             _syncConnectionUpdate(int, connUpdate),
           ),
@@ -465,25 +479,25 @@ export const makeSyncEngine = <
       },
       input: z.tuple([zConn, zCheckConnectionOptions.optional()]),
       resolve: async ({
-        input: [{settings, integration, ...conn}, opts],
+        input: [{settings, integration: int, ...conn}, opts],
         ctx,
       }) => {
         authorizeOrThrow(ctx, 'connection', conn)
         // console.log('checkConnection', {settings, integration, ...conn}, opts)
-        const connUpdate = await integration.provider.checkConnection?.({
+        const connUpdate = await int.provider.checkConnection?.({
           settings,
-          config: integration.config,
+          config: int.config,
           options: opts ?? {},
           context: {
             webhookBaseUrl: joinPath(
               apiUrl,
-              parseWebhookRequest.pathOf(integration.id),
+              parseWebhookRequest.pathOf(int.id),
             ),
           },
         })
         if (connUpdate || opts?.import) {
           /** Do not update the `creatorId` here... */
-          await _syncConnectionUpdate(integration, {
+          await _syncConnectionUpdate(int, {
             ...(opts?.import && {
               userId: conn.creatorId ?? undefined,
               envName: conn.envName ?? undefined,
@@ -493,10 +507,11 @@ export const makeSyncEngine = <
             settings: {...(opts?.import && settings), ...connUpdate?.settings},
             connectionExternalId:
               connUpdate?.connectionExternalId ?? extractId(conn.id)[2],
+            connectWith: opts?.connectWith,
           })
         }
-        if (!integration.provider.checkConnection) {
-          return `Not implemented in ${integration.provider.name}`
+        if (!int.provider.checkConnection) {
+          return `Not implemented in ${int.provider.name}`
         }
         return 'Ok'
       },
@@ -554,7 +569,7 @@ export const makeSyncEngine = <
     .mutation('postConnect', {
       // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
       // needed
-      input: z.tuple([z.unknown(), zInt, zConnectOptions]),
+      input: z.tuple([z.unknown(), zInt, zPostConnectOptions]),
       // How do we verify that the userId here is the same as the userId from preConnectOption?
       resolve: async ({
         input: [input, int, {connectionExternalId, ...connCtxInput}],
@@ -593,6 +608,7 @@ export const makeSyncEngine = <
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
           userId: ctx.userId,
           envName: connCtxInput.envName,
+          connectWith: connCtxInput.connectWith,
         })
         console.log('didConnect finish', int.provider.name, input)
         return 'Connection Success'
@@ -638,6 +654,7 @@ export const makeSyncEngine = <
             id: conn.institution.id,
             data: conn.institution.external ?? {},
           },
+          connectWith: opts?.connectWith,
         })
       },
     })
