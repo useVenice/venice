@@ -454,9 +454,9 @@ export const plaidProvider = makeSyncProvider({
             // Do not crash in case we run into this.
             if (
               // client is not authorized to access the following products: ["investments"]
-              code !== 'INVALID_PRODUCT' &&
+              code === 'INVALID_PRODUCT' ||
               // "error_message": "the following products are not supported by this institution: [\"investments\"]",
-              code !== 'PRODUCTS_NOT_SUPPORTED'
+              code === 'PRODUCTS_NOT_SUPPORTED'
             ) {
               return null
             }
