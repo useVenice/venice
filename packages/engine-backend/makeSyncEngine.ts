@@ -170,7 +170,7 @@ export const makeSyncEngine = <
   const _syncConnectionUpdate = async (
     int: ParsedInt,
     {
-      userId: userId,
+      userId,
       envName,
       settings,
       institution,
