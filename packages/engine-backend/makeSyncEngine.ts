@@ -244,6 +244,7 @@ export const makeSyncEngine = <
 
     const defaultSource$ = () =>
       src.integration.provider.sourceSync?.({
+        id: src.id,
         config: src.integration.config,
         settings: src.settings,
         // Maybe we should rename `options` to `state`?
@@ -261,6 +262,7 @@ export const makeSyncEngine = <
     const destination$$ =
       opts.destination$$ ??
       dest.integration.provider.destinationSync?.({
+        id: dest.id,
         config: dest.integration.config,
         settings: dest.settings,
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
@@ -627,6 +629,7 @@ export const makeSyncEngine = <
           await sync({
             source:
               conn.integration.provider.sourceSync?.({
+                id: conn.id,
                 config: conn.integration.config,
                 settings: conn.settings,
                 // Maybe we should rename `options` to `state`?

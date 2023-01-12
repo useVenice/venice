@@ -23,10 +23,11 @@ export const postgresProvider = makeSyncProvider({
       status: 'healthy',
     }),
   },
-  destinationSync: ({settings: {databaseUrl}}) => {
-    console.log('Will makePostgresClient', {
+  destinationSync: ({id: ledgerId, settings: {databaseUrl}}) => {
+    console.log('[destinationSync] Will makePostgresClient', {
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
+      ledgerId,
     })
     const {getPool} = makePostgresClient({
       databaseUrl,
@@ -44,6 +45,7 @@ export const postgresProvider = makeSyncProvider({
         batches[entityName] = batch
         batch.push({
           id,
+          ledger_connection_id: ledgerId,
           standard: data.entity,
           external: data.external,
           source_id: sourceId,

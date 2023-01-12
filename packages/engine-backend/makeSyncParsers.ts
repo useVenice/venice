@@ -5,10 +5,9 @@ import type {
   Id,
   LinkFactory,
   MetaService,
-  ZStandard} from '@usevenice/cdk-core';
-import {
-  zConnectWith
+  ZStandard,
 } from '@usevenice/cdk-core'
+import {zConnectWith} from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
 import type {Json} from '@usevenice/util'
 import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
@@ -245,14 +244,21 @@ export function makeSyncParsers<
         const pipeline = await m.tables.pipeline.get(id)
         const [source, destination] = await Promise.all([
           zConn.parseAsync(
-            deepMerge({id: rest.sourceId ?? pipeline?.sourceId}, rest.source),
+            deepMerge(rest.source, {
+              id: rest.sourceId ?? rest.source?.id ?? pipeline?.sourceId,
+            }),
             {path: ['source']},
           ),
+          // TODO: Re-think how deepMerge works here
+          // especially relative to id vs content of the merge...
+          // could it be a better idea to have a fully normalized API?
           zConn.parseAsync(
-            deepMerge(
-              {id: rest.destinationId ?? pipeline?.destinationId},
-              rest.destination,
-            ),
+            deepMerge(rest.destination, {
+              id:
+                rest.destinationId ??
+                rest.destination?.id ??
+                pipeline?.destinationId,
+            }),
             {path: ['destination']},
           ),
         ])
