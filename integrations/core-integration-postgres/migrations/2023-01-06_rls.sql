@@ -35,13 +35,12 @@ CREATE POLICY "connection_creator_access" ON "public"."pipeline"
   ));
 
 
+-- Contains secrets that shouldn't be publicly available
 ALTER TABLE "public"."integration" ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "public_readable" ON public.integration FOR SELECT USING (true);
-
-ALTER TABLE "public"."institution" ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "public_readable" ON public.institution FOR SELECT USING (true);
-
 ALTER TABLE "public"."migrations" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."institution" ENABLE ROW LEVEL SECURITY;
+-- Should this be allowed?
+CREATE POLICY "public_readable" ON public.institution FOR SELECT USING (true);
 
 --| Transaction |--
 
