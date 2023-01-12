@@ -63,10 +63,9 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
     enabled: !!userId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
   }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
-  const insRes = trpc.useQuery([
-    'searchInstitutions',
-    {keywords},
-  ]) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
+  const insRes = trpc.useQuery(['searchInstitutions', {keywords}], {
+    enabled: !!userId,
+  }) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
   const syncConnection = trpc.useMutation('syncConnection')
   const deleteConnection = trpc.useMutation('deleteConnection', {
     onSettled: () => queryClient.invalidateQueries(['listConnections']),
