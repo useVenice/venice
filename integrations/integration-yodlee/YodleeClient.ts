@@ -22,6 +22,9 @@ export const zEnvConfig = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
   adminLoginName: z.string(),
+
+  /** Really only valid for the sandbox environment, TODO Support array */
+  sandboxLoginName: z.string().nullish(), // z.array(z.string()).nullish(),
   /**
    * Yodlee production environment requires IP address whitelisting.
    * Run a proxy with a static IP address that you whitelisted to get it working

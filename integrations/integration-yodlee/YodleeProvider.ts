@@ -226,7 +226,11 @@ export const yodleeProvider = makeSyncProvider({
   },
   // TODO: handle reconnecting scenario
   preConnect: async (config, {envName, userId}) => {
-    const loginName = userId
+    const loginName =
+      envName === 'sandbox' ? config.sandbox?.sandboxLoginName : userId
+    if (!loginName) {
+      throw new Error('[Yodlee] Snadbox login name not configured')
+    }
     const accessToken = await makeYodleeClient(config, {
       role: 'admin',
       envName,
@@ -239,8 +243,14 @@ export const yodleeProvider = makeSyncProvider({
   postConnect: async (
     {providerAccountId, providerId},
     config,
-    {envName, userId: loginName},
+    {envName, userId},
   ) => {
+    // Should we get accessToken & loginName from the preConnect phase?
+    const loginName =
+      envName === 'sandbox' ? config.sandbox?.sandboxLoginName : userId
+    if (!loginName) {
+      throw new Error('[Yodlee] Snadbox login name not configured')
+    }
     const yodlee = makeYodleeClient(config, {role: 'user', envName, loginName})
     const [providerAccount, provider, user] = await Promise.all([
       yodlee.getProviderAccount(providerAccountId),
