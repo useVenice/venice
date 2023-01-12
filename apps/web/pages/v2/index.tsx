@@ -12,8 +12,8 @@ import {ledgerIdAtom} from '../../contexts/atoms'
 export default function HomePage() {
   const {userId} = VeniceProvider.useContext()
 
-  const [insertLedgerRes, insertLedger] = useInsert('connection')
-  const [deleteLedgerRes, deleteLedger] = useDelete('connection')
+  const [_insertLedgerRes, insertLedger] = useInsert('connection')
+  const [_deleteLedgerRes, deleteLedger] = useDelete('connection')
 
   // Unfortunately useRealtime does not work at the moment
   // @see https://github.com/tmm/react-supabase/issues/67

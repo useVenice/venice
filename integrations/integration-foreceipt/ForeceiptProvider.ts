@@ -174,7 +174,7 @@ export const foreceiptProvider = makeSyncProvider({
   //   }
   // },
 
-  sourceSync: ({settings}) => {
+  sourceSync: ({id, settings}) => {
     const client = makeForeceiptClient({...settings})
     const getInfo = client.getInfo
     let info: Awaited<ReturnType<typeof getInfo>>
@@ -187,6 +187,7 @@ export const foreceiptProvider = makeSyncProvider({
             Rx.mergeMap(([q, res]) => {
               info = res
               return firebaseProvider.sourceSync({
+                id,
                 settings: client.fbSettings,
                 state: {_fb: fb, _queries: Object.values(q)},
               })
