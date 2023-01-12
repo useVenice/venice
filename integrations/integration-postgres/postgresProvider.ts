@@ -17,6 +17,12 @@ const def = makeSyncProvider.def({
 export const postgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
+  standardMappers: {
+    connection: (_settings) => ({
+      displayName: 'Postgres',
+      status: 'healthy',
+    }),
+  },
   destinationSync: ({settings: {databaseUrl}}) => {
     console.log('Will makePostgresClient', {
       databaseUrl,

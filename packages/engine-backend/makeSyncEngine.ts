@@ -437,6 +437,9 @@ export const makeSyncEngine = <
           // })
 
           return {
+            // TODO: How do we get zod to report which specific object has failed parsing?
+            // This error for example is cryptic, https://share.cleanshot.com/t1QY1mnG
+            // I would really like to know that it is zStandard.connection that has failed parsing
             ...zStandard.connection.omit({id: true}).parse(standardConn),
             id: conn.id,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
