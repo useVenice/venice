@@ -9,12 +9,12 @@ import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
-import {Auth} from '@supabase/auth-ui-react'
 import {Database} from 'phosphor-react'
 
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
 import {PageContainer} from '../components/common-components'
+import {copyToClipboard} from '../contexts/common-contexts'
 
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
@@ -75,6 +75,8 @@ export default function DataExplorerScreen() {
 
   // @ts-expect-error
   const userInfoRes = trpc.useQuery(['userInfo', {}])
+  // @ts-expect-error
+  const databaseUrl = userInfoRes.data?.databaseUrl
 
   const [sql, setSql] = useState('SELECT * FROM account')
   const [result, setResult] = useState('[\n  {\n    "count": 21\n  }\n]')
@@ -87,10 +89,15 @@ export default function DataExplorerScreen() {
           <div className="mb-3 flex flex-row justify-between">
             <input
               className="mr-3 flex-1 border p-3"
-              // @ts-expect-error
-              value={userInfoRes.data?.databaseUrl}
+              value={databaseUrl}
               disabled></input>
-            <button className="btn">Copy</button>
+            <button
+              className="btn"
+              onClick={() => {
+                copyToClipboard(databaseUrl)
+              }}>
+              Copy
+            </button>
           </div>
           <p>
             <Database className="inline" />
@@ -142,7 +149,7 @@ export default function DataExplorerScreen() {
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
           {/* Result */}
-          <div className="max-h-96 overflow-scroll">
+          <div className="h-96 overflow-scroll">
             <pre>{result}</pre>
           </div>
         </div>
