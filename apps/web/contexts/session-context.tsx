@@ -3,9 +3,14 @@ import React from 'react'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'initial' | 'loading' | 'success' | 'error'
-export const SessionContext = React.createContext<
-  [session: Session | null | undefined, info: {status: AsyncStatus}]
->([undefined, {status: 'initial'}])
+type SessionContextValue = [
+  session: Session | null | undefined,
+  info: {status: AsyncStatus; error: unknown; loading: boolean},
+]
+export const SessionContext = React.createContext<SessionContextValue>([
+  undefined,
+  {status: 'initial', error: null, loading: true},
+])
 
 export interface Props {
   supabaseClient: SupabaseClient
@@ -15,38 +20,36 @@ export interface Props {
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
 export function SessionContextProvider({supabaseClient, ...props}: Props) {
-  const [session, setSession] = React.useState<Session | null | undefined>(
+  const [value, setValue] = React.useState<SessionContextValue>([
     undefined,
-  )
-  const [status, setStatus] = React.useState<AsyncStatus>('initial')
-
+    {status: 'initial', error: null, loading: true},
+  ])
   React.useEffect(() => {
     supabaseClient.auth
       .getSession()
       .then(({data}) => {
-        setSession(data.session)
-        setStatus('success')
+        setValue([
+          data.session ?? null,
+          {error: null, status: 'success', loading: false},
+        ])
       })
-      .catch(() => {
-        setSession(null)
-        setStatus('error')
+      .catch((err) => {
+        setValue([null, {error: err, status: 'error', loading: false}])
       })
 
     const {data: authListener} = supabaseClient.auth.onAuthStateChange(
       (_event, session) => {
-        setSession(session)
+        setValue([
+          session ?? null,
+          {error: null, status: 'success', loading: false},
+        ])
       },
     )
     return () => authListener?.subscription.unsubscribe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return (
-    <SessionContext.Provider
-      {...props}
-      value={React.useMemo(() => [session, {status}], [session, status])}
-    />
-  )
+  return <SessionContext.Provider {...props} value={value} />
 }
 
 export function useSession() {

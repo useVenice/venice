@@ -23,10 +23,11 @@ export default function ConnectionsScreen() {
 
   React.useEffect(() => {
     if (
+      ledgersRes.data?.length &&
       !ledgersRes.fetching &&
       !ledgersRes.data?.find((l) => l.id === ledgerId)
     ) {
-      setLedgerId(ledgersRes.data?.[0].id)
+      setLedgerId(ledgersRes.data?.[0]?.id)
     }
   }, [ledgerId, ledgersRes.data, ledgersRes.fetching, setLedgerId])
 
@@ -37,6 +38,7 @@ export default function ConnectionsScreen() {
 
   return (
     <PageContainer
+      authenticated
       flex
       links={[
         {
