@@ -56,7 +56,8 @@ async function createDbUser(userId: string) {
   const sql = pgClient.sql
   const pool = await pgClient.getPool()
 
-  const existing = await pool.maybeOneFirst(sql`
+  const username = `usr_${userId}`
+  let apiKey = await pool.maybeOneFirst(sql`
     SELECT
       raw_user_meta_data ->> 'apiKey'
     FROM
@@ -65,13 +66,18 @@ async function createDbUser(userId: string) {
       id = ${userId}
       AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
   `)
-  if (existing) {
-    return {usr: `usr_${userId}`, apiKey: existing}
+
+  const getUrl = () => {
+    const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
+    return `${adminUrl.protocol}//${username}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
+  }
+  if (apiKey) {
+    return {usr: username, apiKey, databaseUrl: getUrl()}
   }
 
-  const usr = sql.identifier([`usr_${userId}`])
-  const apiKey = `key_${makeUlid()}`
+  apiKey = `key_${makeUlid()}`
 
+  const usr = sql.identifier([username])
   await pool.query(sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`)
   await pool.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
   await pool.query(
@@ -85,7 +91,7 @@ async function createDbUser(userId: string) {
     )} WHERE id = ${userId}`,
   )
 
-  return {usr, apiKey}
+  return {usr, apiKey, databaseUrl: getUrl()}
 }
 
 const customRouter = baseRouter()
@@ -110,17 +116,18 @@ const customRouter = baseRouter()
     input: z.object({sql: z.string()}),
     output: z.any(),
     resolve: async ({input, ctx}) => {
-      const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
-      const {usr, apiKey} = await createDbUser(ctx.userId)
-      const userUrl = `${adminUrl.protocol}//${usr}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
-      const pgClient = makePostgresClient({databaseUrl: userUrl})
-
+      const {databaseUrl} = await createDbUser(ctx.userId)
+      const pgClient = makePostgresClient({databaseUrl})
       const pool = await pgClient.getPool()
       // @ts-expect-error
       const query = pgClient.sql([input.sql])
       const res = await pool.query(query)
       return res.rows
     },
+  })
+  .query('userInfo', {
+    input: z.object({}).nullish(),
+    resolve: ({ctx}) => createDbUser(ctx.userId),
   })
 
 export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {

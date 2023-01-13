@@ -9,6 +9,7 @@ import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
+import {Auth} from '@supabase/auth-ui-react'
 import {Database} from 'phosphor-react'
 
 import {VeniceProvider} from '@usevenice/engine-frontend'
@@ -70,7 +71,10 @@ export function ResultTableView() {
 }
 
 export default function DataExplorerScreen() {
-  const {trpcClient} = VeniceProvider.useContext()
+  const {trpcClient, trpc} = VeniceProvider.useContext()
+
+  // @ts-expect-error
+  const userInfoRes = trpc.useQuery(['userInfo', {}])
 
   const [sql, setSql] = useState('SELECT * FROM account')
   const [result, setResult] = useState('[\n  {\n    "count": 21\n  }\n]')
@@ -83,7 +87,9 @@ export default function DataExplorerScreen() {
           <div className="mb-3 flex flex-row justify-between">
             <input
               className="mr-3 flex-1 border p-3"
-              value="postgres://..."></input>
+              // @ts-expect-error
+              value={userInfoRes.data?.databaseUrl}
+              disabled></input>
             <button className="btn">Copy</button>
           </div>
           <p>
