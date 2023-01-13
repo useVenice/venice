@@ -1,7 +1,6 @@
 import '../__generated__/tailwind.css'
 
 import {Auth} from '@supabase/auth-ui-react'
-import {createClient} from '@supabase/supabase-js'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
@@ -18,6 +17,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import {UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
+import {supabase} from '../contexts/common-contexts'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,12 +31,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
-// https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
-export const supabase = createClient(
-  'https://hhnxsazpojeczkeeifli.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhobnhzYXpwb2plY3prZWVpZmxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjAyNjgwOTIsImV4cCI6MTk3NTg0NDA5Mn0.ZDmf1sjsr-UxW2bPgdj3uaqJNUSqkZh8vCB1phn3qqs',
-)
 
 if (
   typeof window !== 'undefined' &&
