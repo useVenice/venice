@@ -37,7 +37,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
 
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
-      <header className="overflow-x-hidden border-b border-gray-100">
+      <header className="shrink-0 overflow-x-hidden border-b border-gray-100">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
           <EnhancedActiveLink
@@ -94,7 +94,7 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
         </Container>
       </header>
 
-      {children}
+      <div className="flex-1 overflow-y-scroll">{children}</div>
 
       {isAdmin && (
         <footer className="flex flex-col space-y-4 border-t border-gray-100 p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
