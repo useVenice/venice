@@ -1,40 +1,42 @@
 import {useAtom, useAtomValue} from 'jotai'
+import {Database} from 'phosphor-react'
 import React from 'react'
-import {useFilter, useSelect} from 'react-supabase'
 import {twMerge} from 'tailwind-merge'
 
-import type {Id} from '@usevenice/cdk-core'
-import {VeniceProvider} from '@usevenice/engine-frontend'
-import {Container, Tab, TabContent, TabList, Tabs} from '@usevenice/ui'
+import {useVenice} from '@usevenice/engine-frontend'
 
 import {PageContainer} from '../components/common-components'
-import {ledgerIdAtom, modeAtom, pipelineTypeAtom} from '../contexts/atoms'
-import {MyConnectionsScreen} from '../screens/MyConnectionsScreen'
-import {NewConnectionScreen} from '../screens/NewConnectionScreen'
+import {envAtom, ledgerIdAtom, pipelineTypeAtom} from '../contexts/atoms'
+import {ConnectionCard} from '../screens/components/ConnectionCard'
 
 export default function ConnectionsScreen() {
   const [pipelineType, setPipelineType] = useAtom(pipelineTypeAtom)
-  const {userId} = VeniceProvider.useContext()
+
+  const env = useAtomValue(envAtom)
+  const {connectionsRes} = useVenice({envName: env})
+  const connections = connectionsRes.data ?? []
+
+  // List the pipelines for sure...
+  const sources = connections.filter(
+    (conn) => !conn.id.startsWith('conn_postgres'),
+  )
+  const ledgers = connections.filter((conn) =>
+    conn.id.startsWith('conn_postgres'),
+  )
+  const destinations: typeof sources = []
 
   const [ledgerId, setLedgerId] = useAtom(ledgerIdAtom)
-  const [ledgersRes] = useSelect('connection', {
-    filter: useFilter((query) => query.eq('provider_name', 'postgres'), []),
-  })
 
   React.useEffect(() => {
-    if (
-      ledgersRes.data?.length &&
-      !ledgersRes.fetching &&
-      !ledgersRes.data?.find((l) => l.id === ledgerId)
-    ) {
-      setLedgerId(ledgersRes.data?.[0]?.id)
+    if (!connectionsRes.isLoading && !ledgers.some((l) => l.id === ledgerId)) {
+      setLedgerId(ledgers[0]?.id ?? '')
     }
-  }, [ledgerId, ledgersRes.data, ledgersRes.fetching, setLedgerId])
+  }, [connectionsRes.isLoading, ledgerId, ledgers, setLedgerId])
 
-  const connectWith = React.useMemo(
-    () => ({destinationId: ledgerId as Id['conn']}),
-    [ledgerId],
-  )
+  // const connectWith = React.useMemo(
+  //   () => ({destinationId: ledgerId as Id['conn']}),
+  //   [ledgerId],
+  // )
 
   return (
     <PageContainer
@@ -63,37 +65,43 @@ export default function ConnectionsScreen() {
       </div>
 
       {/* Tab contents */}
-      <div className="flex flex-1 flex-row items-stretch">
+      <div className="flex flex-1 flex-row items-stretch gap-4 p-4">
         <div
           className={twMerge(
-            'flex-1',
+            'flex flex-1 flex-col gap-4',
             pipelineType !== 'sources' && 'hidden md:block',
           )}>
-          <h2 className="hidden flex-1 p-3 text-lg font-bold md:block">
+          <h2 className="hidden p-3 text-lg font-bold md:block">
             Pipelines in
           </h2>
-          Sources...
+          {sources.map((conn) => (
+            <ConnectionCard key={conn.id} connection={conn} />
+          ))}
         </div>
-        <div className="hidden self-center md:block">Venice logo</div>
+        <ul className="hidden shrink self-center md:block">
+          {ledgers.map((conn) => (
+            <li key={conn.id}>
+              <Database
+                onClick={() => setLedgerId(conn.id)}
+                className="inline cursor-pointer"
+                alt={conn.id}
+              />
+            </li>
+          ))}
+        </ul>
         <div
           className={twMerge(
-            'flex-1',
+            'flex flex-1 flex-col gap-4',
             pipelineType !== 'destinations' && 'hidden md:block',
           )}>
-          <h2 className="hidden flex-1 p-3 text-lg font-bold md:block">
+          <h2 className="hidden p-3 text-lg font-bold md:block">
             Pipelines out
           </h2>
-          Destinations...
+          {destinations.map((conn) => (
+            <ConnectionCard key={conn.id} connection={conn} />
+          ))}
         </div>
       </div>
-      {/* <Tabs defaultValue="sources">
-        <TabList className="border-b border-gray-100">
-          <Tab value="sources">Pipelines in</Tab>
-          <Tab value="destinations">Pipelines out</Tab>
-        </TabList>
-        <TabContent value="sources">Sources...</TabContent>
-        <TabContent value="destinations">Destinations</TabContent>
-      </Tabs> */}
     </PageContainer>
   )
 }

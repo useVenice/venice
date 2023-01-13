@@ -2,14 +2,14 @@ import type {Session, SupabaseClient} from '@supabase/supabase-js'
 import React from 'react'
 
 /** TODO This ought to be a bit more generic... */
-type AsyncStatus = 'initial' | 'loading' | 'success' | 'error'
+type AsyncStatus = 'idle' | 'loading' | 'success' | 'error'
 type SessionContextValue = [
   session: Session | null | undefined,
   info: {status: AsyncStatus; error: unknown; loading: boolean},
 ]
 export const SessionContext = React.createContext<SessionContextValue>([
   undefined,
-  {status: 'initial', error: null, loading: true},
+  {status: 'idle', error: null, loading: true},
 ])
 
 export interface Props {
@@ -22,7 +22,7 @@ export interface Props {
 export function SessionContextProvider({supabaseClient, ...props}: Props) {
   const [value, setValue] = React.useState<SessionContextValue>([
     undefined,
-    {status: 'initial', error: null, loading: true},
+    {status: 'idle', error: null, loading: true},
   ])
   React.useEffect(() => {
     supabaseClient.auth
