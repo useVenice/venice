@@ -1,15 +1,26 @@
 import {useAtom, useAtomValue} from 'jotai'
-import {Database} from 'phosphor-react'
+import {Database, PlusCircle} from 'phosphor-react'
 import React from 'react'
+import {useDelete, useInsert} from 'react-supabase'
 import {twMerge} from 'tailwind-merge'
 
+import {makeId} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@usevenice/ui'
+import {makeUlid} from '@usevenice/util'
 
 import {PageContainer} from '../components/common-components'
 import {envAtom, ledgerIdAtom, pipelineTypeAtom} from '../contexts/atoms'
+import {useUser} from '../contexts/session-context'
 import {ConnectionCard} from '../screens/components/ConnectionCard'
 
 export default function ConnectionsScreen() {
+  const [user] = useUser()
   const [pipelineType, setPipelineType] = useAtom(pipelineTypeAtom)
 
   const env = useAtomValue(envAtom)
@@ -37,6 +48,9 @@ export default function ConnectionsScreen() {
   //   () => ({destinationId: ledgerId as Id['conn']}),
   //   [ledgerId],
   // )
+
+  const [_insertLedgerRes, insertLedger] = useInsert('connection')
+  const [_deleteLedgerRes, deleteLedger] = useDelete('connection')
 
   return (
     <PageContainer
@@ -81,13 +95,40 @@ export default function ConnectionsScreen() {
         <ul className="hidden shrink self-center md:block">
           {ledgers.map((conn) => (
             <li key={conn.id}>
-              <Database
-                onClick={() => setLedgerId(conn.id)}
-                className="inline cursor-pointer"
-                alt={conn.id}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Database className="inline cursor-pointer" alt={conn.id} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => setLedgerId(conn.id)}>
+                    Switch to
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={async () => {
+                      await deleteLedger((query) => query.eq('id', conn.id))
+                      await connectionsRes.refetch()
+                    }}>
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </li>
           ))}
+          <li>
+            <PlusCircle
+              onClick={async () => {
+                const newId = makeId('conn', 'postgres', makeUlid())
+                await insertLedger({id: newId, creator_id: user?.id})
+                await connectionsRes.refetch()
+                setLedgerId(newId)
+              }}
+              className="inline cursor-pointer"
+              alt="Create ledger"
+            />
+          </li>
         </ul>
         <div
           className={twMerge(
