@@ -21,39 +21,37 @@ const DataEditor = dynamic(
   {ssr: false},
 )
 
-export function ResultTableView() {
-  const [accountsRes] = useSelect('account')
-  console.log('accounts', accountsRes.data)
-
-  // const [transactionsRes] = useSelect('transaction')
-  // console.log('transactions', transactionsRes.data)
-
+export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
-  const [columns, setColumns] = React.useState([
-    {id: 'id', title: 'Id', width: 100},
-    {id: 'provider_name', title: 'Provider Name', width: 100},
-  ] as GridColumn[])
+
+  const [columns, setColumns] = React.useState<GridColumn[]>([])
+  React.useEffect(() => {
+    setColumns(
+      Object.keys(rows[0] ?? {}).map(
+        (key): GridColumn => ({id: key, title: key}),
+      ),
+    )
+  }, [rows])
 
   // If fetching data is slow you can use the DataEditor ref to send updates for cells
   // once data is loaded.
 
-  const items = accountsRes.data ?? []
   function getData([colIdx, rowIdx]: Item): GridCell {
     const col = columns[colIdx]!
-    const row = items[rowIdx]!
+    const row = rows[rowIdx]!
     return {
       kind: GridCellKind.Text,
-      data: row[col.id!] ?? '<empty>',
       allowOverlay: false,
+      data: row[col.id!] ?? '<empty>',
       displayData: row[col.id!] ?? '<empty>',
     }
   }
 
-  return (
+  return !columns.length ? null : (
     <DataEditor
       getCellContent={getData}
       columns={columns}
-      rows={items.length}
+      rows={rows.length}
       onColumnResize={(col, newSize) => {
         console.log('col resize', col, newSize)
         setColumns((existing) =>
@@ -79,7 +77,7 @@ export default function DataExplorerScreen() {
   const databaseUrl = userInfoRes.data?.databaseUrl
 
   const [sql, setSql] = useState('SELECT * FROM account')
-  const [result, setResult] = useState('[\n  {\n    "count": 21\n  }\n]')
+  const [resultRows, setResultRows] = useState([])
 
   return (
     <PageContainer authenticated>
@@ -118,7 +116,7 @@ export default function DataExplorerScreen() {
                 // @ts-expect-error
                 const res = await trpcClient.mutation('executeSql', {sql})
                 console.log('executeSql result', res)
-                setResult(JSON.stringify(res, null, 2))
+                setResultRows(res)
               }}>
               Execute SQL
             </button>
@@ -128,7 +126,7 @@ export default function DataExplorerScreen() {
                 // @ts-expect-error
                 const res = await trpcClient.mutation('createDbUser', {})
                 console.log('createDbUser result', res)
-                setResult(JSON.stringify(res, null, 2))
+                setResultRows(res)
               }}>
               create db user
             </button>
@@ -149,9 +147,10 @@ export default function DataExplorerScreen() {
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
           {/* Result */}
-          <div className="h-96 overflow-scroll">
+          {/* <div className="h-96 overflow-scroll">
             <pre>{result}</pre>
-          </div>
+          </div> */}
+          <ResultTableView rows={resultRows} />
         </div>
       </Container>
     </PageContainer>
