@@ -18,6 +18,7 @@ import {UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {supabase} from '../contexts/common-contexts'
+import {SessionContextProvider, useSession} from '../contexts/session-context'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,7 +52,7 @@ if (
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
-  const {session} = Auth.useUser()
+  const [session] = useSession()
   // console.log('session.accessToken', session?.access_token)
   const accessToken = session?.access_token ?? accessTokenQueryParam
   const developerMode = useAtomValue(developerModeAtom)
@@ -83,13 +84,13 @@ export function MyApp({Component, pageProps}: AppProps) {
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
           <UIProvider>
-            <Auth.UserContextProvider supabaseClient={supabase}>
+            <SessionContextProvider supabaseClient={supabase}>
               <_VeniceProvider>
                 <Provider value={supabase}>
                   <Component {...pageProps} />
                 </Provider>
               </_VeniceProvider>
-            </Auth.UserContextProvider>
+            </SessionContextProvider>
           </UIProvider>
         </QueryClientProvider>
       </QueryParamProvider>

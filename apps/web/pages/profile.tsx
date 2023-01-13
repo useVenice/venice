@@ -1,17 +1,18 @@
-import {Auth} from '@supabase/auth-ui-react'
-
 import {Container} from '@usevenice/ui'
 
 import {PageContainer} from '../components/common-components'
 import {supabase} from '../contexts/common-contexts'
+import {useSession} from '../contexts/session-context'
 
 export default function ProfileScreen() {
-  const {user} = Auth.useUser()
+  const [session] = useSession()
 
   return (
     <PageContainer authenticated>
       <Container className="flex-1">
-        <span className="text-xs">You are logged in as {user?.email}</span>
+        <span className="text-xs">
+          You are logged in as {session?.user?.email}
+        </span>
         <button
           className="btn-outline btn"
           onClick={() => supabase.auth.signOut()}>
