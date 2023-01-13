@@ -34,6 +34,7 @@ export function getAccessToken(req: NextApiRequest) {
 async function dropDbUser(userId: string) {
   const pgClient = makePostgresClient({
     databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
+    transformFieldNames: false,
   })
   const sql = pgClient.sql
   const pool = await pgClient.getPool()
@@ -52,6 +53,7 @@ async function dropDbUser(userId: string) {
 async function createDbUser(userId: string) {
   const pgClient = makePostgresClient({
     databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
+    transformFieldNames: false,
   })
   const sql = pgClient.sql
   const pool = await pgClient.getPool()
@@ -117,7 +119,10 @@ const customRouter = baseRouter()
     output: z.any(),
     resolve: async ({input, ctx}) => {
       const {databaseUrl} = await createDbUser(ctx.userId)
-      const pgClient = makePostgresClient({databaseUrl})
+      const pgClient = makePostgresClient({
+        databaseUrl,
+        transformFieldNames: false,
+      })
       const pool = await pgClient.getPool()
       // @ts-expect-error
       const query = pgClient.sql([input.sql])
@@ -127,7 +132,18 @@ const customRouter = baseRouter()
   })
   .query('userInfo', {
     input: z.object({}).nullish(),
-    resolve: ({ctx}) => createDbUser(ctx.userId),
+    resolve: async ({ctx}) => {
+      const info = await createDbUser(ctx.userId)
+      const pgClient = makePostgresClient({
+        databaseUrl: info.databaseUrl,
+        transformFieldNames: false,
+      })
+      const pool = await pgClient.getPool()
+      const tableNames = await pool.anyFirst(
+        pgClient.sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';`,
+      )
+      return {...info, tableNames}
+    },
   })
 
 export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {

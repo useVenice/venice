@@ -39,10 +39,12 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
   function getData([colIdx, rowIdx]: Item): GridCell {
     const col = columns[colIdx]!
     const row = rows[rowIdx]!
-    const data =
-      typeof row[col.id!] === 'string'
-        ? row[col.id!]
-        : JSON.stringify(row[col.id!])
+    const cell = row[col.id!]
+    const data = !cell
+      ? ''
+      : typeof cell === 'string'
+      ? cell
+      : JSON.stringify(cell)
 
     // Unfortunately copying of JSON value is really not going to work well
     // as they are escaped poorly for our purposes...
@@ -87,6 +89,8 @@ export default function DataExplorerScreen() {
   const userInfoRes = trpc.useQuery(['userInfo', {}])
   // @ts-expect-error
   const databaseUrl = userInfoRes.data?.databaseUrl
+  // @ts-expect-error
+  const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
   const [sql, setSql] = useState('SELECT * FROM account LIMIT 3')
   const [resultRows, setResultRows] = useState([])
@@ -148,9 +152,22 @@ export default function DataExplorerScreen() {
             <div>
               <h3 className="font-bold">Tables</h3>
               <ul>
-                <li>Accounts</li>
-                <li>Transactions</li>
-                <li>Commodities</li>
+                {tableNames.map((name) => (
+                  <li
+                    key={name}
+                    onClick={async () => {
+                      const newSql = `SELECT * FROM ${name} LIMIT 10`
+                      setSql(newSql)
+                      // @ts-expect-error
+                      const res = await trpcClient.mutation('executeSql', {
+                        sql: newSql,
+                      })
+                      console.log('executeSql result', res)
+                      setResultRows(res)
+                    }}>
+                    {name}
+                  </li>
+                ))}
               </ul>
             </div>
             <textarea

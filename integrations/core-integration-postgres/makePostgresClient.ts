@@ -24,11 +24,12 @@ export const zPgConfig = z.object({
   databaseUrl: z.string(),
   migrationsPath: z.string().optional(),
   migrationTableName: z.string().optional(),
+  transformFieldNames: z.boolean().optional(),
 })
 
 export const makePostgresClient = zFunction(
   zPgConfig,
-  ({databaseUrl, migrationsPath, migrationTableName}) => {
+  ({databaseUrl, migrationsPath, migrationTableName, ...opts}) => {
     const {createPool, sql, createTypeParserPreset} = $slonik()
     const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
@@ -40,7 +41,7 @@ export const makePostgresClient = zFunction(
             // Inverse of what we are doing in `upsertByIdQuery` method
             // This is not guaranteed to work so very important to have extra validation on top of
             // the field values returned
-            transformFieldNames: true,
+            transformFieldNames: opts.transformFieldNames ?? true,
             benchmarkQueries: false,
           }),
           statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
