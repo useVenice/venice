@@ -50,6 +50,7 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
   return !columns.length ? null : (
     <DataEditor
       getCellContent={getData}
+      getCellsForSelection={true} // Enables copy
       columns={columns}
       rows={rows.length}
       onColumnResize={(col, newSize) => {
