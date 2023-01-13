@@ -5,10 +5,10 @@ import {useFilter, useSelect} from 'react-supabase'
 import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
-import {Layout} from '../../components/Layout'
-import {ledgerIdAtom, modeAtom} from '../../contexts/atoms'
-import {MyConnectionsScreen} from '../../screens/MyConnectionsScreen'
-import {NewConnectionScreen} from '../../screens/NewConnectionScreen'
+import {PageContainer} from '../components/common-components'
+import {ledgerIdAtom, modeAtom} from '../contexts/atoms'
+import {MyConnectionsScreen} from '../screens/MyConnectionsScreen'
+import {NewConnectionScreen} from '../screens/NewConnectionScreen'
 
 export default function ConnectionsScreen() {
   const mode = useAtomValue(modeAtom)
@@ -36,11 +36,8 @@ export default function ConnectionsScreen() {
   return (
     <>
       <title>Venice | {userId}</title>
-      <Layout
-        title={userId}
+      <PageContainer
         links={[
-          {label: 'Connections', href: '/v2/connections'},
-          {label: 'Data explorer', href: '/v2/data-explorer'},
           {
             label: 'New connection',
             href: '/v2/connections?mode=connect',
@@ -53,7 +50,7 @@ export default function ConnectionsScreen() {
         ) : (
           <MyConnectionsScreen />
         )}
-      </Layout>
+      </PageContainer>
     </>
   )
 }
