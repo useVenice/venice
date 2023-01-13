@@ -32,6 +32,12 @@ export const modeAtom = atomWithQueryParam(
   createEnumParam(['connect' as const, 'manage' as const]),
 )
 
+export const pipelineTypeAtom = atomWithQueryParam(
+  'type',
+  'sources',
+  createEnumParam(['sources' as const, 'destinations' as const]),
+)
+
 export const searchByAtom = atomWithQueryParam(
   'searchBy',
   'institution',

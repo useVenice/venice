@@ -26,9 +26,15 @@ export interface LayoutProps {
   title?: string
   links?: LinkInput[]
   children: React.ReactNode
+  flex?: boolean
 }
 
-export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
+export function Layout({
+  title = 'Venice',
+  links = [],
+  children,
+  ...props
+}: LayoutProps) {
   const [developerMode, setDeveloperMode] = useAtom(developerModeAtom)
   const {adminSyncMeta, isAdmin, integrationsRes} = useVeniceAdmin({})
   // TODO: deduplicate me...
@@ -94,7 +100,13 @@ export function Layout({title = 'Venice', links = [], children}: LayoutProps) {
         </Container>
       </header>
 
-      <div className="flex-1 overflow-y-scroll">{children}</div>
+      <div
+        className={twMerge(
+          'flex-1 overflow-y-scroll',
+          props.flex && 'flex flex-col',
+        )}>
+        {children}
+      </div>
 
       {isAdmin && (
         <footer className="flex flex-col space-y-4 border-t border-gray-100 p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
