@@ -2,7 +2,6 @@ import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
 import {GridCellKind} from '@glideapps/glide-data-grid'
 import dynamic from 'next/dynamic'
 import React, {useState} from 'react'
-import {useSelect} from 'react-supabase'
 
 import {Container} from '@usevenice/ui'
 import {produce} from '@usevenice/util'
@@ -25,7 +24,7 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
 
   const [columns, setColumns] = React.useState<GridColumn[]>([])
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     setColumns(
       Object.keys(rows[0] ?? {}).map(
         (key): GridColumn => ({id: key, title: key}),
@@ -38,6 +37,10 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
 
   function getData([colIdx, rowIdx]: Item): GridCell {
     const col = columns[colIdx]!
+    // if (!col) {
+    //   debugger
+    //   console.error('missing column', colIdx)
+    // }
     const row = rows[rowIdx]!
     const cell = row[col.id!]
     const data = !cell
@@ -92,7 +95,7 @@ export default function DataExplorerScreen() {
   // @ts-expect-error
   const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
-  const [sql, setSql] = useState('SELECT * FROM account LIMIT 3')
+  const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
   const [resultRows, setResultRows] = useState([])
 
   return (
@@ -179,7 +182,9 @@ export default function DataExplorerScreen() {
           {/* <div className="h-96 overflow-scroll">
             <pre>{result}</pre>
           </div> */}
-          <ResultTableView rows={resultRows} />
+          <div className="max-h-[80vh] overflow-scroll">
+            <ResultTableView rows={resultRows} />
+          </div>
         </div>
       </Container>
     </PageContainer>
