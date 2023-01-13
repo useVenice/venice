@@ -39,11 +39,19 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
   function getData([colIdx, rowIdx]: Item): GridCell {
     const col = columns[colIdx]!
     const row = rows[rowIdx]!
+    const data =
+      typeof row[col.id!] === 'string'
+        ? row[col.id!]
+        : JSON.stringify(row[col.id!])
+
+    // Unfortunately copying of JSON value is really not going to work well
+    // as they are escaped poorly for our purposes...
+    // @see https://github.com/glideapps/glide-data-grid/blob/main/packages/core/src/data-editor/data-editor-fns.ts#L232-L263
     return {
       kind: GridCellKind.Text,
       allowOverlay: false,
-      data: row[col.id!] ?? '<empty>',
-      displayData: row[col.id!] ?? '<empty>',
+      data,
+      displayData: data,
     }
   }
 
@@ -51,8 +59,11 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
     <DataEditor
       getCellContent={getData}
       getCellsForSelection={true} // Enables copy
+      copyHeaders
       columns={columns}
       rows={rows.length}
+      smoothScrollX
+      smoothScrollY
       onColumnResize={(col, newSize) => {
         console.log('col resize', col, newSize)
         setColumns((existing) =>
@@ -77,7 +88,7 @@ export default function DataExplorerScreen() {
   // @ts-expect-error
   const databaseUrl = userInfoRes.data?.databaseUrl
 
-  const [sql, setSql] = useState('SELECT * FROM account')
+  const [sql, setSql] = useState('SELECT * FROM account LIMIT 3')
   const [resultRows, setResultRows] = useState([])
 
   return (
