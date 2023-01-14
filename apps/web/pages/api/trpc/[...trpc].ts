@@ -50,7 +50,7 @@ async function dropDbUser(userId: string) {
   )
 }
 
-async function createDbUser(userId: string) {
+export async function createDbUser(userId: string) {
   const pgClient = makePostgresClient({
     databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
     transformFieldNames: false,

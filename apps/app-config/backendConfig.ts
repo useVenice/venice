@@ -18,6 +18,7 @@ import {veniceCommonConfig} from './commonConfig'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 export {makePostgresClient} from '@usevenice/integration-postgres'
+export {Papa} from '@usevenice/integration-import'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 

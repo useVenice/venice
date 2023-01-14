@@ -86,10 +86,12 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
 }
 
 export default function DataExplorerScreen() {
-  const {trpcClient, trpc} = VeniceProvider.useContext()
+  const {trpcClient, trpc, userId} = VeniceProvider.useContext()
 
   // @ts-expect-error
-  const userInfoRes = trpc.useQuery(['userInfo', {}])
+  const userInfoRes = trpc.useQuery(['userInfo', {}], {
+    enabled: !!userId,
+  })
   // @ts-expect-error
   const databaseUrl = userInfoRes.data?.databaseUrl
   // @ts-expect-error
