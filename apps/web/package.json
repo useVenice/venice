@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
+    "@sentry/nextjs": "7.30.0",
     "@supabase/auth-ui-react": "0.2.6",
     "@supabase/supabase-js": "2.2.1",
     "@trpc/server": "9.26.0",

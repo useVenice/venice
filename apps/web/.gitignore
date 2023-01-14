@@ -34,3 +34,6 @@ yarn-error.log*
 
 # tailwind
 /__generated__/tailwind.css
+
+# Sentry
+.sentryclirc
