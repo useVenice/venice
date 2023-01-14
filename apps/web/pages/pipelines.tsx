@@ -4,6 +4,7 @@ import React from 'react'
 import {useDelete, useInsert} from 'react-supabase'
 import {twMerge} from 'tailwind-merge'
 
+import type {Id} from '@usevenice/cdk-core'
 import {makeId} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 import {
@@ -15,13 +16,20 @@ import {
 import {makeUlid} from '@usevenice/util'
 
 import {PageContainer} from '../components/common-components'
-import {envAtom, ledgerIdAtom, pipelineTypeAtom} from '../contexts/atoms'
+import {
+  envAtom,
+  ledgerIdAtom,
+  modeAtom,
+  pipelineTypeAtom,
+} from '../contexts/atoms'
 import {useUser} from '../contexts/session-context'
 import {ConnectionCard} from '../screens/components/ConnectionCard'
+import {NewConnectionScreen} from '../screens/NewConnectionScreen'
 
 export default function ConnectionsScreen() {
   const [user] = useUser()
   const [pipelineType, setPipelineType] = useAtom(pipelineTypeAtom)
+  const mode = useAtomValue(modeAtom)
 
   const env = useAtomValue(envAtom)
   const {connectionsRes} = useVenice({envName: env})
@@ -44,26 +52,16 @@ export default function ConnectionsScreen() {
     }
   }, [connectionsRes.isLoading, ledgerId, ledgers, setLedgerId])
 
-  // const connectWith = React.useMemo(
-  //   () => ({destinationId: ledgerId as Id['conn']}),
-  //   [ledgerId],
-  // )
+  const connectWith = React.useMemo(
+    () => ({destinationId: ledgerId as Id['conn']}),
+    [ledgerId],
+  )
 
   const [_insertLedgerRes, insertLedger] = useInsert('connection')
   const [_deleteLedgerRes, deleteLedger] = useDelete('connection')
 
-  return (
-    <PageContainer
-      authenticated
-      flex
-      links={[
-        {
-          label: 'New connection',
-          href: '/v2/connections?mode=connect',
-          primary: true,
-          fixed: true,
-        },
-      ]}>
+  const myConnections = (
+    <>
       {/* TabList, visible on mobile only */}
       <div className="flex flex-row md:hidden">
         <h2
@@ -143,6 +141,26 @@ export default function ConnectionsScreen() {
           ))}
         </div>
       </div>
+    </>
+  )
+
+  return (
+    <PageContainer
+      authenticated
+      flex
+      links={[
+        {
+          label: 'New connection',
+          href: '/pipelines?mode=connect',
+          primary: true,
+          fixed: true,
+        },
+      ]}>
+      {mode === 'connect' ? (
+        <NewConnectionScreen connectWith={connectWith} />
+      ) : (
+        myConnections
+      )}
     </PageContainer>
   )
 }
