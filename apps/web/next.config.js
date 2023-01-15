@@ -52,6 +52,7 @@ const withTMExports = withTM(
     rewrites: async () => ({
       beforeFiles: [
         // Proxy metrics requests to Posthog.
+        // TODO: Where is this used? and rename to _posthog to be consistent with _sentry
         {source: '/metrics/:p*', destination: 'https://app.posthog.com/:p*'},
       ],
       afterFiles: [],
@@ -112,6 +113,7 @@ module.exports = withSentryConfig(
       // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#use-hidden-source-map
       // for more information.
       hideSourceMaps: true,
+      tunnelRoute: '/_sentry',
     },
   },
   {
