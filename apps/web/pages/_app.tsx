@@ -1,6 +1,5 @@
 import '../__generated__/tailwind.css'
 
-import {Auth} from '@supabase/auth-ui-react'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
