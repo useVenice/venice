@@ -100,7 +100,11 @@ export default function DataExplorerScreen() {
   const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
-  const csvUrl = typeof window != undefined ? `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}` : null
+
+  const csvUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}`
+      : null
   const [resultRows, setResultRows] = useState([])
 
   return (
@@ -189,7 +193,7 @@ export default function DataExplorerScreen() {
           </div> */}
           <div className="max-h-[80vh] overflow-scroll">
             <div>
-              <a href={csvUrl} className="link">
+              <a href={csvUrl ?? ''} className="link">
                 CSV Link to result
               </a>
               <span className="ml-2">
