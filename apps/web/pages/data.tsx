@@ -100,7 +100,7 @@ export default function DataExplorerScreen() {
   const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
-  const csvUrl = `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}`
+  const csvUrl = typeof window != undefined ? `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}` : null
   const [resultRows, setResultRows] = useState([])
 
   return (
