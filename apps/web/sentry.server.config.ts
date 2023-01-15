@@ -16,9 +16,12 @@ Sentry.init({
   // `release` value here - use the environment variable `SENTRY_RELEASE`, so
   // that it will also get attached to your source maps
 })
-Sentry.setTag(
-  'vercel_env',
-  process.env['VERCEL_ENV'] || process.env['NEXT_PUBLIC_VERCEL_ENV'],
-)
+Sentry.setTags({
+  vercel_env:
+    process.env['VERCEL_ENV'] || process.env['NEXT_PUBLIC_VERCEL_ENV'],
+  git_branch:
+    process.env['VERCEL_GIT_COMMIT_REF'] ||
+    process.env['NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF'],
+})
 
 console.log('sentry server config')
