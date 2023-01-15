@@ -193,7 +193,11 @@ export default function DataExplorerScreen() {
           </div> */}
           <div className="max-h-[80vh] overflow-scroll">
             <div>
-              <a href={csvUrl ?? ''} className="link">
+              <a
+                href={csvUrl ?? ''}
+                className="link"
+                target="_blank"
+                rel="noreferrer">
                 CSV Link to result
               </a>
               <span className="ml-2">
