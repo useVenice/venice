@@ -93,11 +93,14 @@ export default function DataExplorerScreen() {
     enabled: !!userId,
   })
   // @ts-expect-error
+  const apiKey = userInfoRes.data?.apiKey
+  // @ts-expect-error
   const databaseUrl = userInfoRes.data?.databaseUrl
   // @ts-expect-error
   const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
+  const csvUrl = `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}`
   const [resultRows, setResultRows] = useState([])
 
   return (
@@ -185,6 +188,15 @@ export default function DataExplorerScreen() {
             <pre>{result}</pre>
           </div> */}
           <div className="max-h-[80vh] overflow-scroll">
+            <div>
+              <a href={csvUrl} className="link">
+                CSV Link to result
+              </a>
+              <span className="ml-2">
+                (Tip: Use with Google Sheet IMPORTDATA function to data from
+                Venice live in your spreadsheets)
+              </span>
+            </div>
             <ResultTableView rows={resultRows} />
           </div>
         </div>
