@@ -17,9 +17,9 @@ Sentry.init({
   // that it will also get attached to your source maps
 })
 Sentry.setTags({
-  vercel_env:
+  'vercel.env':
     process.env['VERCEL_ENV'] || process.env['NEXT_PUBLIC_VERCEL_ENV'],
-  git_branch:
+  'git.branch':
     process.env['VERCEL_GIT_COMMIT_REF'] ||
     process.env['NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF'],
 })
