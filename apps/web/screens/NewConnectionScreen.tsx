@@ -38,6 +38,8 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
 
   console.log('[NewConnectionScreen] connectWith', props.connectWith)
 
+  // TODO: Tear down connect dialog if we are passed new connectWith prop
+  // or find a better way to pass this data all together / consider using refs to not capture value
   const connect = React.useCallback(
     (...[int, opts]: Parameters<typeof _connect>) => {
       _connect(int, {...opts, connectWith: props.connectWith})

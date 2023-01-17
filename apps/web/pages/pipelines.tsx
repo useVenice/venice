@@ -156,7 +156,11 @@ export default function ConnectionsScreen() {
           fixed: true,
         },
       ]}>
-      {mode === 'connect' ? (
+      {/*
+        We need this workaround so connect does not capture the wrong scope
+        TODO: Figure out a better way when ledgerId is still being loaded
+       */}
+      {mode === 'connect' && connectWith.destinationId ? (
         <NewConnectionScreen connectWith={connectWith} />
       ) : (
         myConnections
