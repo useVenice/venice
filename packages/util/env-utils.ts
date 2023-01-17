@@ -31,6 +31,7 @@ export function zEnvVars<T extends z.ZodRawShape>(shape: T) {
 }
 
 /** Flatten a zod schema for loading from env... */
+// TODO: How do we handle array values?
 export function zFlattenForEnv<T extends z.ZodTypeAny>(
   schema: T,
   {

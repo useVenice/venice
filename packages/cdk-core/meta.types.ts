@@ -22,8 +22,18 @@ export const zStandard = {
   institution: z.object({
     id: zId('ins'),
     name: z.string(),
+    // No http prefix preprocessing for logo url as they can be data urls
     logoUrl: z.string().url().optional(),
-    loginUrl: z.string().url().optional(),
+    loginUrl: z.preprocess(
+      // Sometimes url get returned without http prefix...
+      // Is there a way to "catch" invalid url error then retry with prefix?
+      // Would be better than just prefixing semi-blindly.
+      (url) =>
+        typeof url === 'string' && !url.toLowerCase().startsWith('http')
+          ? `https://${url}`
+          : url,
+      z.string().url().optional(),
+    ),
     /** Environment specific providers */
     envName: zEnvName.optional(),
   }),

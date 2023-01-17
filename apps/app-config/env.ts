@@ -99,6 +99,8 @@ export const PROVIDERS = [
 const separator = '__'
 const getPrefix = (name: string) => makeId('int', name, '')
 
+// Should this be all providers or only dcoumented ones?
+
 export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
   p.name,
   zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
