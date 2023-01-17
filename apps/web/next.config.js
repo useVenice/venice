@@ -47,7 +47,10 @@ const withTM = require('next-transpile-modules')([
  */
 const withTMExports = withTM(
   /** @type {import('next').NextConfig} */ ({
-    env: {VERCEL_URL: process.env['VERCEL_URL']}, // No need for NEXT_PUBLIC because we explicitly define it
+    env: {
+      VERCEL_URL: process.env['VERCEL_URL'], // TODO: Remove as NEXT_PUBLIC_VERCEL_URL already exposed by Vercel https://share.cleanshot.com/CnfTkCHp
+      NEXT_PUBLIC_NODE_ENV: process.env['NODE_ENV'],
+    },
     reactStrictMode: true,
     rewrites: async () => ({
       beforeFiles: [

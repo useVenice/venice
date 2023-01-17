@@ -7,7 +7,12 @@ import * as Sentry from '@sentry/nextjs'
 const SENTRY_DSN =
   process.env['SENTRY_DSN'] || process.env['NEXT_PUBLIC_SENTRY_DSN']
 
+const NODE_ENV = process.env.NODE_ENV || process.env['NEXT_PUBLIC_NODE_ENV']
+
+;(globalThis as any).NODE_ENV = NODE_ENV
+
 Sentry.init({
+  enabled: NODE_ENV === 'production',
   dsn: SENTRY_DSN,
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1.0,
@@ -24,4 +29,4 @@ Sentry.setTags({
     process.env['NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF'],
 })
 
-console.log('sentry client config')
+console.log('sentry initialized')
