@@ -36,6 +36,8 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
     ...ls
   } = useVenice({envName, keywords})
 
+  console.log('[NewConnectionScreen] connectWith', props.connectWith)
+
   const connect = React.useCallback(
     (...[int, opts]: Parameters<typeof _connect>) => {
       _connect(int, {...opts, connectWith: props.connectWith})
