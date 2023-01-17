@@ -62,7 +62,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 
 // MARK: - Integration env vars
 
-export const DOCUMENTED_PROVIDERS = [yodleeProvider, plaidProvider] as const
+export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
 
 export const PROVIDERS = [
   ...DOCUMENTED_PROVIDERS,
@@ -75,6 +75,7 @@ export const PROVIDERS = [
   airtableProvider,
   webhookProvider,
   // Ledger
+  yodleeProvider,
   beancountProvider,
   importProvider,
   lunchmoneyProvider,
@@ -98,7 +99,7 @@ export const PROVIDERS = [
 const separator = '__'
 const getPrefix = (name: string) => makeId('int', name, '')
 
-export const zFlatConfigByProvider = R.mapToObj(PROVIDERS, (p) => [
+export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
   p.name,
   zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
     prefix: getPrefix(p.name),
