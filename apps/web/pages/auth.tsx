@@ -9,9 +9,7 @@ export default function AuthScreen() {
   return (
     <PageContainer authenticated={false}>
       <Container className="flex-1">
-        <Auth
-          supabaseClient={supabase}
-          providers={['apple', 'google', 'facebook', 'github']}></Auth>
+        <Auth supabaseClient={supabase} providers={['google', 'github']}></Auth>
       </Container>
     </PageContainer>
   )
