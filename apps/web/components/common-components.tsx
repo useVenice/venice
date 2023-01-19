@@ -22,6 +22,7 @@ export function PageContainer({
   }
   return (
     <Layout
+      authenticated={authenticated}
       links={[
         ...(links ?? []),
         ...(session

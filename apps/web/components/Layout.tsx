@@ -1,6 +1,7 @@
 import {useAtom} from 'jotai'
 import {List} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
+import Image from 'next/image'
 
 import {useVeniceAdmin} from '@usevenice/engine-frontend'
 import {
@@ -23,6 +24,7 @@ export interface LinkInput {
 }
 
 export interface LayoutProps {
+  authenticated?: Boolean
   title?: string
   links?: LinkInput[]
   children: React.ReactNode
@@ -30,6 +32,7 @@ export interface LayoutProps {
 }
 
 export function Layout({
+  authenticated,
   title = 'Venice',
   links = [],
   children,
@@ -40,17 +43,21 @@ export function Layout({
   // TODO: deduplicate me...
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
-
   return (
     <div className="relative flex h-screen flex-col overflow-y-hidden">
-      <header className="shrink-0 overflow-x-hidden border-b border-gray-100">
+      <header className="shrink-0 overflow-x-hidden">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
         <Container className="h-16 flex-row items-center justify-between py-0">
-          <EnhancedActiveLink
-            href="/"
-            className="shrink truncate text-xl font-bold text-primary">
-            {title}
-          </EnhancedActiveLink>
+          {authenticated && (
+            <EnhancedActiveLink href="/">
+              <Image
+                src="/venice-logo.svg"
+                alt="Venice Logo"
+                width={102}
+                height={32}
+              />
+            </EnhancedActiveLink>
+          )}
 
           {links.length > 0 && (
             <div className="flex shrink-0 grow items-center justify-end">
