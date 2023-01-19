@@ -2,12 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@layer base {
-  html {
-    background-color: rgba(30, 30, 30, 1);
-  }
-}
-
 @layer utilities {
   @supports (height: 100dvh) {
     .h-screen {

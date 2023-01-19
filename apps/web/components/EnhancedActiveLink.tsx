@@ -15,7 +15,7 @@ export const EnhancedActiveLink = React.forwardRef(function ActiveLink(
 ) {
   const router = useRouter()
   const active = router.asPath.startsWith(props.as ?? props.href)
-  const exactActive = (props.as ?? props.href) === router.asPath
+  const exactActive = (props.as ?? props.href) === router.pathname
   return (
     <EnhancedLink
       {...props}

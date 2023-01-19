@@ -44,7 +44,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     developerMode,
   } = useVenice({envName: env})
   return (
-    <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+    <div className="card max-w-md border border-base-content/25 bg-tableRow p-10">
       <div className="card-body space-y-4">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
@@ -159,7 +159,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
         </div>
 
         <div className="flex justify-between space-x-4">
-          <span className="card-title text-xl text-black">
+          <span className="card-title text-xl text-offwhite">
             {conn.displayName}
           </span>
 
@@ -169,9 +169,9 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                 className={twMerge(
                   'flex items-center space-x-1',
                   {
-                    healthy: 'text-green-600',
+                    healthy: 'text-green',
                     disconnected: 'text-orange-600',
-                    error: 'text-red-600',
+                    error: 'text-red',
                   }[conn.status],
                 )}>
                 <Circle weight="fill" />
@@ -179,7 +179,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
               </div>
             )}
 
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray">
               {conn.syncInProgress
                 ? 'Syncing…'
                 : conn.lastSyncCompletedAt

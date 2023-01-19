@@ -44,10 +44,10 @@ export function Layout({
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
   return (
-    <div className="relative flex h-screen flex-col overflow-y-hidden">
+    <div className="relative mx-auto flex h-screen max-w-screen-xl flex-col overflow-y-hidden">
       <header className="shrink-0 overflow-x-hidden">
         {/* TODO: Add global control for envName as well as currentUserId in developer mode */}
-        <Container className="h-16 flex-row items-center justify-between py-0">
+        <Container className="mt-4 h-16 flex-row items-center justify-between py-0">
           {authenticated && (
             <EnhancedActiveLink href="/">
               <Image
@@ -66,13 +66,7 @@ export function Layout({
                   <EnhancedActiveLink
                     key={l.href}
                     href={l.href}
-                    className={twMerge(
-                      'btn btn-sm',
-                      l.primary
-                        ? 'btn-primary link-exact-active:btn-disabled'
-                        : 'btn-ghost link-exact-active:text-black',
-                      !l.fixed && 'hidden md:inline-flex',
-                    )}>
+                    className="btn btn-ghost btn-sm link-exact-active:text-green">
                     {l.label}
                   </EnhancedActiveLink>
                 ))}
@@ -116,7 +110,7 @@ export function Layout({
       </div>
 
       {isAdmin && (
-        <footer className="border-gray-100 flex flex-col space-y-4 border-t p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
+        <footer className="flex flex-col space-y-4 border-t p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
           <div className="form-control">
             <label className="label cursor-pointer">
               <input

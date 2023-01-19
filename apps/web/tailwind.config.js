@@ -16,6 +16,7 @@ const veniceTheme = {
   offwhite: 'rgba(233, 233, 233, 1)',
   primary: 'rgba(233, 233, 233, 1)',
   secondary: 'rgba(18, 184, 134, 1)',
+  tableRow: 'rgba(255, 255, 255, 0.08)',
   white: 'rgba(255, 255, 255, 1)',
 }
 
@@ -41,7 +42,7 @@ module.exports = {
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
-      textColor: veniceTheme.offwhite,
+      textColor: veniceTheme,
     },
     fontFamily: {
       montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
@@ -99,8 +100,8 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: veniceTheme.offWhite,
-          'primary-content': veniceTheme.black,
+          primary: veniceTheme.green,
+          'primary-content': veniceTheme.offwhite,
           secondary: veniceTheme.green,
           'secondary-content': veniceTheme.offwhite,
           accent: veniceTheme.green,
