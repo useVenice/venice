@@ -10,14 +10,14 @@ export default function ProfileScreen() {
   return (
     <PageContainer authenticated>
       <Container className="flex-1">
-        <span className="text-xs">
-          You are logged in as {session?.user?.email}
-        </span>
-        <button
-          className="btn-outline btn"
-          onClick={() => supabase.auth.signOut()}>
-          Log out
-        </button>
+        <div className="mx-auto mt-5 grid max-w-md grid-cols-1 p-4">
+          <span className="text-sm">Logged in as {session?.user?.email}</span>
+          <button
+            className="btn btn-primary mt-10"
+            onClick={() => supabase.auth.signOut()}>
+            Log out
+          </button>
+        </div>
       </Container>
     </PageContainer>
   )
