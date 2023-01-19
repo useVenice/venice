@@ -2,23 +2,21 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
-const palette = {
-  'kashmir-blue': {
-    DEFAULT: '#5166A0',
-    50: '#C6CEE2',
-    100: '#B9C2DB',
-    200: '#9EAACE',
-    300: '#8393C0',
-    400: '#677BB2',
-    500: '#5166A0',
-    600: '#3E4E7B',
-    700: '#2B3756',
-    800: '#181F30',
-    900: '#06070B',
-  },
-  primary: colors.black,
-  secondary: '#5166a0',
-  background: colors.white,
+const veniceTheme = {
+  background: 'rgba(30, 30, 30, 1)',
+  black: 'rgba(30, 30, 30, 1)',
+  footerBlack: 'rgba(25, 25, 25, 1)',
+  githubGray: 'rgba(238, 241, 245, 1)',
+  gray: 'rgba(125, 125, 125, 1)',
+  green: 'rgba(18, 184, 134, 1)',
+  greenGlow: 'rgba(18,184,134,0.15)',
+  innerBevel: 'rgba(0, 0, 0, 0.102)',
+  inputBackground: 'rgba(41, 41, 41, 1)',
+  inputBorder: 'rgba(0, 0, 0, 0.5)',
+  offwhite: 'rgba(233, 233, 233, 1)',
+  primary: 'rgba(233, 233, 233, 1)',
+  secondary: 'rgba(18, 184, 134, 1)',
+  white: 'rgba(255, 255, 255, 1)',
 }
 
 /**
@@ -31,11 +29,22 @@ module.exports = {
     '../../packages/engine-frontend/**/*.tsx',
   ],
   theme: {
+    boxShadow: {
+      'venice-green-glow': '0px 0px 8px 4px rgba(18,184,134,0.15)',
+      'venice-black-drop-shadow': '0px 2px 4px 0px rgba(0,0,0,0.15)',
+    },
     extend: {
-      colors: palette,
-      fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      backgroundColor: {
+        'venice-black': veniceTheme.black,
       },
+      colors: veniceTheme,
+      fontFamily: {
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+      },
+      textColor: veniceTheme.offwhite,
+    },
+    fontFamily: {
+      montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
     },
     keyframes: {
       // Dropdown menu
@@ -90,12 +99,12 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: palette.primary,
-          'primary-content': colors.white,
-          secondary: palette.secondary,
-          'secondary-content': colors.white,
-          accent: palette.primary,
-          'accent-content': colors.white,
+          primary: veniceTheme.offWhite,
+          'primary-content': veniceTheme.black,
+          secondary: veniceTheme.green,
+          'secondary-content': veniceTheme.offwhite,
+          accent: veniceTheme.green,
+          'accent-content': veniceTheme.white,
           neutral: colors.gray[700],
           'neutral-content': colors.white,
           'base-100': colors.white,

@@ -116,7 +116,7 @@ export function Layout({
       </div>
 
       {isAdmin && (
-        <footer className="flex flex-col space-y-4 border-t border-gray-100 p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
+        <footer className="border-gray-100 flex flex-col space-y-4 border-t p-8 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
           <div className="form-control">
             <label className="label cursor-pointer">
               <input
