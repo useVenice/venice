@@ -8,8 +8,6 @@ import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
-import {Database} from 'phosphor-react'
-
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
 import {PageContainer} from '../components/common-components'
@@ -114,7 +112,7 @@ export default function DataExplorerScreen() {
           <h2 className="mb-3 text-lg font-bold">Database</h2>
           <div className="mb-3 flex flex-row justify-between">
             <input
-              className="mr-3 flex-1 border p-3"
+              className="mr-3 flex-1 rounded-lg border border-base-content/25 bg-tableRow p-3 text-offwhite"
               value={databaseUrl}
               disabled></input>
             <button
@@ -126,7 +124,6 @@ export default function DataExplorerScreen() {
             </button>
           </div>
           <p>
-            <Database className="inline" />
             Venice is your unified financial database. Pipe data in from
             thousands of sources, and then perform custom analyses or build an
             entire app on top of it.
@@ -134,7 +131,7 @@ export default function DataExplorerScreen() {
         </div>
 
         {/* Data explorer */}
-        <div className="mt-4 flex flex-col gap-4">
+        <div className="mt-12 flex flex-col gap-4">
           {/* Header */}
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
@@ -183,7 +180,7 @@ export default function DataExplorerScreen() {
               </ul>
             </div>
             <textarea
-              className="ml-4 flex-1 border"
+              className="ml-4 flex-1 rounded-lg border border-base-content/25 bg-tableRow p-3 text-offwhite"
               value={sql}
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
