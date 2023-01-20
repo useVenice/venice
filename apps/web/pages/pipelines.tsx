@@ -107,7 +107,7 @@ export default function PipelinesScreen() {
 
 function EmptySourcesView() {
   return (
-    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl p-10">
+    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl p-6">
       <p className="max-w-sm text-center text-sm">
         Venice has over 10,000 financial data sources to choose from (e.g. your
         bank)
