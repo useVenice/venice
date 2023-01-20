@@ -45,6 +45,7 @@ export default function DataExplorerScreen() {
       <Container className="flex-1">
         <div>
           <TextFieldToCopy
+            className="mt-2"
             title="Database URI"
             value={databaseUrl}
             description="Build custom queries and connect to your favorite
@@ -127,16 +128,21 @@ export default function DataExplorerScreen() {
 
 /* Text Field w/ Copy Button */
 
-interface TextFieldToCopyProps {
+interface TextFieldToCopyProps extends React.ComponentPropsWithoutRef<'div'> {
   title: string
   value: string
   description: string
 }
 
-function TextFieldToCopy({title, value, description}: TextFieldToCopyProps) {
+function TextFieldToCopy({
+  className = 'mt-8',
+  title,
+  value,
+  description,
+}: TextFieldToCopyProps) {
   return (
-    <>
-      <h2 className="mt-8 text-lg font-bold">{title}</h2>
+    <div className={className}>
+      <h2 className="text-lg font-bold">{title}</h2>
       <div className="relative mt-2 flex flex-row justify-between">
         <input
           className="mr-3 w-full flex-1 rounded-lg border border-base-content/50 bg-tableRow p-2 text-sm text-offwhite/50"
@@ -167,7 +173,7 @@ function TextFieldToCopy({title, value, description}: TextFieldToCopyProps) {
         </div>
       </div>
       <p className="mt-2 text-sm">{description}</p>
-    </>
+    </div>
   )
 }
 
