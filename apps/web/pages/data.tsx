@@ -1,6 +1,7 @@
 import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
 import {GridCellKind} from '@glideapps/glide-data-grid'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import React, {useState} from 'react'
 
 import {Container} from '@usevenice/ui'
@@ -46,7 +47,7 @@ export default function DataExplorerScreen() {
       <Container className="flex-1">
         <div>
           <TextFieldToCopy
-            className="mt-2"
+            className="mt-0"
             title="Database URI"
             value={databaseUrl}
             description="Build custom queries and connect to your favorite
@@ -67,7 +68,7 @@ export default function DataExplorerScreen() {
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
             <button
-              className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-sm font-medium"
+              className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs hover:bg-green/90 active:bg-green/75"
               onClick={async () => {
                 // @ts-expect-error
                 const res = await trpcClient.mutation('executeSql', {sql})
@@ -85,7 +86,7 @@ export default function DataExplorerScreen() {
               <ul>
                 {tableNames.map((name) => (
                   <li
-                    className="mt-1 cursor-pointer pl-4 text-sm text-offwhite/75"
+                    className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
                     key={name}
                     onClick={async () => {
                       const newSql = `SELECT * FROM ${name} LIMIT 10`
@@ -103,7 +104,7 @@ export default function DataExplorerScreen() {
               </ul>
             </div>
             <textarea
-              className="ml-12 flex-1 resize-none rounded-lg border border-base-content/50 bg-primaryUIControl p-3 text-offwhite"
+              className="ml-12 flex-1 resize-none rounded-lg border border-base-content/50 bg-primaryUIControl p-3 font-mono text-offwhite"
               value={sql}
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
@@ -137,29 +138,22 @@ function TextFieldToCopy({
       <h2 className="text-lg font-bold">{title}</h2>
       <div className="relative mt-2 flex flex-row justify-between">
         <input
-          className="mr-3 w-full flex-1 rounded-lg border border-base-content/50 bg-primaryUIControl p-2 text-sm text-offwhite/50"
+          className="mr-3 w-full flex-1 rounded-lg border border-base-content/50 bg-primaryUIControl p-2 font-mono text-sm text-offwhite/50"
           value={value}
           disabled></input>
         <div className="absolute inset-y-0 right-0 mr-3 flex items-center space-x-1 pl-3 pr-1">
           <button
-            className="relative inline-flex cursor-pointer items-center space-x-2 rounded bg-venice-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition-all duration-200 ease-out focus-visible:outline-4 focus-visible:outline-offset-1"
+            className="relative inline-flex cursor-pointer items-center space-x-2 rounded border border-[#FFF]/10  bg-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition hover:bg-[#222] active:bg-black"
             type="button"
             onClick={() => {
               copyToClipboard(value)
             }}>
-            {/* Todo: replace this with our own */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
+            <Image
+              src="/copy-icon.svg"
+              alt="Copy text"
               width={14}
               height={14}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round">
-              <rect x={9} y={9} width={13} height={13} rx={2} ry={2} />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
+            />
             <span className="truncate">Copy</span>
           </button>
         </div>

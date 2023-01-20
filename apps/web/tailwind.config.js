@@ -25,11 +25,13 @@ module.exports = {
       colors: VeniceTheme,
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       },
       textColor: VeniceTheme,
     },
     fontFamily: {
       montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
+      sourceCode: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
     },
     keyframes: {
       // Dropdown menu
