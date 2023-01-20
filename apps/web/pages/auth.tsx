@@ -7,7 +7,7 @@ import {supabase} from '../contexts/common-contexts'
 
 export default function AuthScreen() {
   return (
-    <PageContainer authenticated={false}>
+    <PageContainer requiresAuthentication={false}>
       <Container className="mt-20 flex-1">
         <div className="mx-auto grid w-80 grid-cols-1 ">
           <Image

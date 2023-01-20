@@ -8,7 +8,7 @@ export default function ProfileScreen() {
   const [session] = useSession()
 
   return (
-    <PageContainer authenticated>
+    <PageContainer title="Profile">
       <Container className="flex-1">
         <div className="mx-auto mt-5 grid max-w-md grid-cols-1 p-4">
           <span className="text-sm">Logged in as {session?.user?.email}</span>

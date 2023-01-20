@@ -6,29 +6,29 @@ import type {LayoutProps} from './Layout'
 import {Layout} from './Layout'
 
 export function PageContainer({
-  authenticated = true,
+  requiresAuthentication = true,
   links,
   ...props
-}: LayoutProps & {authenticated?: boolean}) {
+}: LayoutProps) {
   // TODO: How do know if Auth.useUser is actually just loading?
   const [session] = useSession()
 
   if (
-    authenticated !== undefined &&
+    requiresAuthentication !== undefined &&
     session !== undefined &&
-    !!session !== authenticated
+    !!session !== requiresAuthentication
   ) {
-    return <RedirectTo url={authenticated ? '/auth' : '/'} />
+    return <RedirectTo url={requiresAuthentication ? '/auth' : '/'} />
   }
   return (
     <Layout
-      authenticated={authenticated}
+      requiresAuthentication={requiresAuthentication}
       links={[
         ...(links ?? []),
         ...(session
           ? [
               {label: 'Pipelines', href: '/pipelines'},
-              {label: 'Data explorer', href: '/data'},
+              {label: 'Data Explorer', href: '/data'},
               {label: 'Profile', href: '/profile'},
             ]
           : []),

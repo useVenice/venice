@@ -94,7 +94,7 @@ export default function PipelinesScreen() {
 
   return (
     // TODO: Figure out a better way when ledgerId is still being loaded
-    <PageContainer authenticated flex>
+    <PageContainer title="Pipelines" flex>
       {/* We need this workaround so connect does not capture the wrong scope */}
       {mode === 'connect' && connectWith.destinationId ? (
         <NewConnectionScreen connectWith={connectWith} />
