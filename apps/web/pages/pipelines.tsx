@@ -107,7 +107,7 @@ export default function PipelinesScreen() {
 
 function EmptySourcesView() {
   return (
-    <div className="card max-w-md border border-base-content/25 bg-tableRow p-10">
+    <div className="bg-primaryUIControl card max-w-md border border-base-content/25 p-10">
       <p className="max-w-sm text-center text-sm">
         Venice has over 10,000 financial data sources to choose from (e.g. your
         bank)
@@ -127,7 +127,7 @@ function EmptySourcesView() {
 
 function EmptyDestinationsView() {
   return (
-    <div className="card max-w-md border border-base-content/25 bg-tableRow p-10">
+    <div className="bg-primaryUIControl card max-w-md border border-base-content/25 p-10">
       <p className="max-w-sm text-center text-sm">
         Your data is safe on Venice, but soon you&apos;ll be able to pipe it
         into other destinations like Coda or Excel.

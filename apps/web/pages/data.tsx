@@ -61,12 +61,12 @@ export default function DataExplorerScreen() {
         </div>
 
         {/* Data Explorer */}
-        <div className="mt-12 flex flex-col gap-4">
+        <div className="mt-12 flex flex-col gap-2">
           {/* Header */}
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
             <button
-              className="btn"
+              className="text-medium rounded-lg border border-base-content/50 bg-green p-2 text-sm"
               onClick={async () => {
                 // @ts-expect-error
                 const res = await trpcClient.mutation('executeSql', {sql})
@@ -75,25 +75,16 @@ export default function DataExplorerScreen() {
               }}>
               Execute SQL
             </button>
-            <button
-              className="btn"
-              onClick={async () => {
-                // @ts-expect-error
-                const res = await trpcClient.mutation('createDbUser', {})
-                console.log('createDbUser result', res)
-                setResultRows(res)
-              }}>
-              create db user
-            </button>
           </div>
 
           {/* SQL Editor Area */}
           <div className="flex flex-row">
             <div>
-              <h3 className="font-bold">Tables</h3>
+              <h3 className="text-sm font-light text-offwhite/50">{`Tables (${tableNames.length})`}</h3>
               <ul>
                 {tableNames.map((name) => (
                   <li
+                    className="mt-1 cursor-pointer pl-4 text-sm text-offwhite/75"
                     key={name}
                     onClick={async () => {
                       const newSql = `SELECT * FROM ${name} LIMIT 10`
@@ -111,13 +102,13 @@ export default function DataExplorerScreen() {
               </ul>
             </div>
             <textarea
-              className="ml-4 flex-1 rounded-lg border border-base-content/25 bg-tableRow p-3 text-offwhite"
+              className="bg-primaryUIControl ml-12 flex-1 resize-none rounded-lg border border-base-content/50 p-3 text-offwhite"
               value={sql}
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
 
           {/* SQL Results */}
-          <div className="max-h-[80vh] overflow-scroll">
+          <div className="mt-2 max-h-[80vh] overflow-scroll">
             <ResultTableView rows={resultRows} />
           </div>
         </div>
@@ -145,7 +136,7 @@ function TextFieldToCopy({
       <h2 className="text-lg font-bold">{title}</h2>
       <div className="relative mt-2 flex flex-row justify-between">
         <input
-          className="mr-3 w-full flex-1 rounded-lg border border-base-content/50 bg-tableRow p-2 text-sm text-offwhite/50"
+          className="bg-primaryUIControl mr-3 w-full flex-1 rounded-lg border border-base-content/50 p-2 text-sm text-offwhite/50"
           value={value}
           disabled></input>
         <div className="absolute inset-y-0 right-0 mr-3 flex items-center space-x-1 pl-3 pr-1">

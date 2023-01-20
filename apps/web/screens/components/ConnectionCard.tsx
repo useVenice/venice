@@ -44,7 +44,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     developerMode,
   } = useVenice({envName: env})
   return (
-    <div className="card max-w-md border border-base-content/25 bg-tableRow">
+    <div className="bg-primaryUIControl card max-w-md border border-base-content/25">
       <div className="card-body">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
