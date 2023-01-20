@@ -1,16 +1,14 @@
 {
   "name": "Venice",
   "logo": {
-    "light": "/docs/logo/light.png",
-    "dark": "/docs/logo/dark.png"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
   },
-  "favicon": "/docs/favicon.png",
+  "favicon": "/favicon.png",
   "colors": {
     "primary": "#424054",
     "light": "#E9E8EC",
-    "dark": "#2B2B2F",
-    "ultraLight": "#F9F9F9",
-    "ultraDark": "#1C1F23"
+    "dark": "#2B2B2F"
   },
   "topbarCtaButton": {
     "type": "github",
@@ -31,10 +29,10 @@
   "navigation": [
     {
       "group": "Home",
-      "pages": ["README", "docs/next-steps"]
+      "pages": ["introduction", "next-steps"]
     }
   ],
-  "backgroundImage": "/docs/background.png",
+  "backgroundImage": "/background.png",
   "footerSocials": {
     "github": "https://github.com/usevenice",
     "slack": "https://link.usevenice.com/slack",

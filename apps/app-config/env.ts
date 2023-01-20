@@ -57,7 +57,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
   WORKER_INVOCATION_SECRET: z
     .string()
     .default('')
-    .describe('Used to invote the /api/worker endpoint'),
+    .describe('Used to invoke the /api/worker endpoint'),
 })
 
 // MARK: - Integration env vars
