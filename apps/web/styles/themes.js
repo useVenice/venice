@@ -14,6 +14,7 @@ const VeniceTheme = {
   inputBorder: 'rgba(0, 0, 0, 0.5)',
   offwhite: 'rgba(233, 233, 233, 1)',
   primary: 'rgba(233, 233, 233, 1)',
+  red: '#DB3E5A',
   secondary: 'rgba(18, 184, 134, 1)',
   primaryUIControl: 'rgba(255, 255, 255, 0.08)',
   white: 'rgba(255, 255, 255, 1)',

@@ -1,12 +1,5 @@
 import {useAtomValue} from 'jotai'
-import {
-  ArrowClockwise,
-  Circle,
-  CloudSlash,
-  DotsThreeVertical,
-  Play,
-  Trash,
-} from 'phosphor-react'
+import {Circle, DotsThreeVertical} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {EnvName, ZStandard} from '@usevenice/cdk-core'
@@ -43,6 +36,10 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     checkConnection,
     developerMode,
   } = useVenice({envName: env})
+
+  const dropdownItemClass =
+    'cursor-pointer text-offwhite/75 p-2 hover:outline-0 outline-none hover:bg-offwhite/5 rounded-lg'
+
   return (
     <div className="card max-w-md border border-base-content/25 bg-primaryUIControl">
       <div className="card-body p-4">
@@ -78,16 +75,16 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
           <DropdownMenu>
             <DropdownMenuTrigger
               className={twMerge(
-                'btn-outline btn btn-sm btn-circle border-base-content/25 text-lg',
+                'text-xl outline-none hover:outline-0',
                 (syncConnection.isLoading || deleteConnection.isLoading) &&
-                  'btn-disabled loading',
+                  'loading cursor-not-allowed',
               )}>
               <DotsThreeVertical />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-screen md:w-52">
+            <DropdownMenuContent className="border border-base-content/25 bg-black text-sm">
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={dropdownItemClass}
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {}])
@@ -98,12 +95,11 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('syncConnection error', err)
                     })
                 }>
-                <ArrowClockwise />
                 Sync
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={dropdownItemClass}
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {fullResync: true}])
@@ -114,12 +110,12 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('syncConnection error', err)
                     })
                 }>
-                <Play />
                 Full sync
               </DropdownMenuItem>
 
+              {/* TODO: Add a confirmation dialog */}
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={twMerge(dropdownItemClass, 'text-red')}
                 onClick={() =>
                   deleteConnection
                     .mutateAsync([{id: conn.id}, {}])
@@ -130,13 +126,12 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('deleteConnection error', err)
                     })
                 }>
-                <Trash />
                 Delete
               </DropdownMenuItem>
 
               {conn.envName === 'sandbox' && (
                 <DropdownMenuItem
-                  className="btn btn-ghost no-animation justify-start gap-2"
+                  className={dropdownItemClass}
                   onClick={() =>
                     checkConnection
                       .mutateAsync([
@@ -150,7 +145,6 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                         console.error('checkConnection error', err)
                       })
                   }>
-                  <CloudSlash />
                   Simulate disconnect
                 </DropdownMenuItem>
               )}
