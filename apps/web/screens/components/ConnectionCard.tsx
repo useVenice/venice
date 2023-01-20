@@ -44,8 +44,8 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     developerMode,
   } = useVenice({envName: env})
   return (
-    <div className="bg-primaryUIControl card max-w-md border border-base-content/25">
-      <div className="card-body">
+    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl">
+      <div className="card-body p-4">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
             <InstitutionLogo institution={conn.institution} />
@@ -159,7 +159,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
         </div>
 
         <div className="flex justify-between space-x-4">
-          <span className="card-title text-xl text-offwhite">
+          <span className="card-title text-lg text-offwhite">
             {conn.displayName}
           </span>
 

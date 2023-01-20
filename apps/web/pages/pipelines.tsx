@@ -41,8 +41,8 @@ export default function PipelinesScreen() {
 
   const pipelinesInAndOut = (
     <>
-      <div className="mt-5 grid grid-cols-2 p-4">
-        <div className="col-span-1">
+      <div className="mt-5 grid grid-cols-2 gap-10 p-4">
+        <div className="col-span-1 border-r border-base-content/25">
           <div className="flex justify-start">
             <Image
               src="/pipeline-in.svg"
@@ -54,11 +54,11 @@ export default function PipelinesScreen() {
             <EnhancedActiveLink
               key="/pipelines?mode=connect"
               href="/pipelines?mode=connect"
-              className="btn btn-primary btn-sm mt-2 ml-4 rounded-xl">
+              className="btn btn-sm mt-3 ml-4 rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs font-normal hover:bg-green/90 active:bg-green/75">
               Add
             </EnhancedActiveLink>
           </div>
-          <div className="mt-4 flex flex-1 flex-col gap-4 pr-10">
+          <div className="mt-4 ml-11 flex flex-1 flex-col gap-4 pr-10">
             {sources.length == 0 ? (
               <EmptySourcesView />
             ) : (
@@ -78,8 +78,8 @@ export default function PipelinesScreen() {
             />
             <h2 className="p-3 text-lg font-medium">Pipelines out</h2>
           </div>
-          <div className="mt-4 flex flex-1 flex-col gap-4 pr-10">
-            {sources.length == 0 ? (
+          <div className="mt-4 ml-11 flex flex-1 flex-col gap-4 pr-10">
+            {destinations.length == 0 ? (
               <EmptyDestinationsView />
             ) : (
               destinations.map((conn) => (
@@ -107,7 +107,7 @@ export default function PipelinesScreen() {
 
 function EmptySourcesView() {
   return (
-    <div className="bg-primaryUIControl card max-w-md border border-base-content/25 p-10">
+    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl p-10">
       <p className="max-w-sm text-center text-sm">
         Venice has over 10,000 financial data sources to choose from (e.g. your
         bank)
@@ -127,7 +127,7 @@ function EmptySourcesView() {
 
 function EmptyDestinationsView() {
   return (
-    <div className="bg-primaryUIControl card max-w-md border border-base-content/25 p-10">
+    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl p-6">
       <p className="max-w-sm text-center text-sm">
         Your data is safe on Venice, but soon you&apos;ll be able to pipe it
         into other destinations like Coda or Excel.
