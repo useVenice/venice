@@ -21,12 +21,14 @@ module.exports = {
   plugins: [
     require.resolve('@ianvs/prettier-plugin-sort-imports'),
     require.resolve('prettier-plugin-packagejson'),
+    require.resolve('prettier-plugin-tailwindcss'), // needs to come last
   ],
   printWidth: 80,
   quoteProps: 'as-needed',
   semi: false,
   singleQuote: true,
   tabWidth: 2,
+  tailwindConfig: './apps/web/tailwind.config.js',
   trailingComma: 'all',
   useTabs: false,
 }

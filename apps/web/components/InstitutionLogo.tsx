@@ -15,7 +15,7 @@ export function InstitutionLogo({
       className="h-12 w-12 shrink-0 overflow-hidden object-contain"
     />
   ) : (
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100">
+    <div className="flex h-12 shrink-0 items-center justify-center rounded-lg">
       <Bank />
     </div>
   )

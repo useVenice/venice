@@ -1,23 +1,23 @@
 import {Head, Html, Main, NextScript} from 'next/document'
 
-export default function MyDocument() {
+export default function VeniceDocument() {
   return (
-    <Html>
+    <Html className="bg-black text-offwhite">
       <Head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-          rel="preload"
-          href="/fonts/Inter-roman.var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
         />
         <link
-          rel="preload"
-          href="/fonts/Inter-italic.var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+          rel="stylesheet"
         />
       </Head>
 

@@ -1,12 +1,5 @@
 import {useAtomValue} from 'jotai'
-import {
-  ArrowClockwise,
-  Circle,
-  CloudSlash,
-  DotsThreeVertical,
-  Play,
-  Trash,
-} from 'phosphor-react'
+import {Circle, DotsThreeVertical} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {EnvName, ZStandard} from '@usevenice/cdk-core'
@@ -43,9 +36,13 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
     checkConnection,
     developerMode,
   } = useVenice({envName: env})
+
+  const dropdownItemClass =
+    'cursor-pointer text-offwhite/75 p-2 hover:outline-0 outline-none hover:bg-offwhite/5 rounded-lg'
+
   return (
-    <div className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
-      <div className="card-body space-y-4">
+    <div className="card max-w-md border border-base-content/25 bg-primaryUIControl">
+      <div className="card-body p-4">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
             <InstitutionLogo institution={conn.institution} />
@@ -78,16 +75,16 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
           <DropdownMenu>
             <DropdownMenuTrigger
               className={twMerge(
-                'btn-outline btn btn-sm btn-circle border-base-content/25 text-lg',
+                'text-xl outline-none hover:outline-0',
                 (syncConnection.isLoading || deleteConnection.isLoading) &&
-                  'btn-disabled loading',
+                  'loading cursor-not-allowed',
               )}>
               <DotsThreeVertical />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-screen md:w-52">
+            <DropdownMenuContent className="border border-base-content/25 bg-black text-sm">
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={dropdownItemClass}
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {}])
@@ -98,12 +95,11 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('syncConnection error', err)
                     })
                 }>
-                <ArrowClockwise />
                 Sync
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={dropdownItemClass}
                 onClick={() =>
                   syncConnection
                     .mutateAsync([{id: conn.id}, {fullResync: true}])
@@ -114,12 +110,12 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('syncConnection error', err)
                     })
                 }>
-                <Play />
                 Full sync
               </DropdownMenuItem>
 
+              {/* TODO: Add a confirmation dialog */}
               <DropdownMenuItem
-                className="btn btn-ghost no-animation justify-start gap-2"
+                className={twMerge(dropdownItemClass, 'text-red')}
                 onClick={() =>
                   deleteConnection
                     .mutateAsync([{id: conn.id}, {}])
@@ -130,13 +126,12 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                       console.error('deleteConnection error', err)
                     })
                 }>
-                <Trash />
                 Delete
               </DropdownMenuItem>
 
               {conn.envName === 'sandbox' && (
                 <DropdownMenuItem
-                  className="btn btn-ghost no-animation justify-start gap-2"
+                  className={dropdownItemClass}
                   onClick={() =>
                     checkConnection
                       .mutateAsync([
@@ -150,7 +145,6 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                         console.error('checkConnection error', err)
                       })
                   }>
-                  <CloudSlash />
                   Simulate disconnect
                 </DropdownMenuItem>
               )}
@@ -159,7 +153,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
         </div>
 
         <div className="flex justify-between space-x-4">
-          <span className="card-title text-xl text-black">
+          <span className="card-title text-lg text-offwhite">
             {conn.displayName}
           </span>
 
@@ -169,9 +163,9 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                 className={twMerge(
                   'flex items-center space-x-1',
                   {
-                    healthy: 'text-green-600',
+                    healthy: 'text-green',
                     disconnected: 'text-orange-600',
-                    error: 'text-red-600',
+                    error: 'text-red',
                   }[conn.status],
                 )}>
                 <Circle weight="fill" />
@@ -179,7 +173,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
               </div>
             )}
 
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray">
               {conn.syncInProgress
                 ? 'Syncing…'
                 : conn.lastSyncCompletedAt

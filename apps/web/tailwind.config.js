@@ -2,24 +2,7 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
-const palette = {
-  'kashmir-blue': {
-    DEFAULT: '#5166A0',
-    50: '#C6CEE2',
-    100: '#B9C2DB',
-    200: '#9EAACE',
-    300: '#8393C0',
-    400: '#677BB2',
-    500: '#5166A0',
-    600: '#3E4E7B',
-    700: '#2B3756',
-    800: '#181F30',
-    900: '#06070B',
-  },
-  primary: colors.black,
-  secondary: '#5166a0',
-  background: colors.white,
-}
+const {VeniceTheme} = require('./styles/themes')
 
 /**
  * @type {import('tailwindcss').Config}
@@ -31,11 +14,24 @@ module.exports = {
     '../../packages/engine-frontend/**/*.tsx',
   ],
   theme: {
+    boxShadow: {
+      'venice-green-glow': `0px 0px 8px 4px ${VeniceTheme.greenGlow}`,
+      'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
+    },
     extend: {
-      colors: palette,
-      fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      backgroundColor: {
+        'venice-black': VeniceTheme.black,
       },
+      colors: VeniceTheme,
+      fontFamily: {
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
+      },
+      textColor: VeniceTheme,
+    },
+    fontFamily: {
+      montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
+      sourceCode: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
     },
     keyframes: {
       // Dropdown menu
@@ -90,12 +86,12 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: palette.primary,
-          'primary-content': colors.white,
-          secondary: palette.secondary,
-          'secondary-content': colors.white,
-          accent: palette.primary,
-          'accent-content': colors.white,
+          primary: VeniceTheme.green,
+          'primary-content': VeniceTheme.offwhite,
+          secondary: VeniceTheme.green,
+          'secondary-content': VeniceTheme.offwhite,
+          accent: VeniceTheme.green,
+          'accent-content': VeniceTheme.white,
           neutral: colors.gray[700],
           'neutral-content': colors.white,
           'base-100': colors.white,

@@ -19,10 +19,7 @@ export function DropdownMenuContent({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={6}
-        className={twMerge(
-          'flex flex-col rounded-lg bg-white px-1.5 py-1 shadow-lg radix-side-bottom:animate-slide-down radix-side-top:animate-slide-up',
-          className,
-        )}
+        className={twMerge('flex flex-col rounded-lg p-1', className)}
         {...restProps}
       />
     </DropdownMenuPrimitive.Portal>

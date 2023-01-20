@@ -77,7 +77,7 @@ export function MyApp({Component, pageProps}: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Venice</title>
+        <title>Venice — Financial data, fast.</title>
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>

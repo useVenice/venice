@@ -91,7 +91,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
         <Tabs
           value={searchBy}
           onValueChange={(newMode) => setSearchBy(newMode as ConnectMode)}>
-          <TabList className="border-b border-gray-100">
+          <TabList className="border-gray-100 border-b">
             <Tab value="institution">By institution</Tab>
             <Tab value="provider">By provider (Developer mode)</Tab>
           </TabList>
@@ -131,7 +131,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
                       {res.data.map(({ins, int}) => (
                         <div
                           key={`${ins.id}`}
-                          className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105 hover:shadow-lg">
+                          className="hover:shadow-lg card border border-base-content/25 transition-[transform,shadow] hover:scale-105">
                           <div className="card-body space-y-4">
                             <div className="flex items-center space-x-4">
                               <InstitutionLogo institution={ins} />
@@ -189,7 +189,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
                 {integrationsRes.data?.map((int) => (
                   <button
                     key={int.id}
-                    className="h-12 rounded-lg bg-primary px-5 text-white"
+                    className="h-12 rounded-lg px-5 text-white"
                     onClick={() => connect(int, {})}>
                     {int.id}
                   </button>
