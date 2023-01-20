@@ -21,27 +21,31 @@ const VeniceTheme = {
 
 /* Data Grid Theme */
 
+/* *** IMPORTANT *** */
+/* Glide's data grid DOES NOT SUPPORT RGBA VALUES */
+/* You must use HEX values for the data grid theme */
+/* See https://github.com/glideapps/glide-data-grid/discussions/612 */
 const dataGridThemeColors = {
-  cellBackground: VeniceTheme.black,
-  accent: VeniceTheme.green,
-  accentLight: VeniceTheme.greenGlow,
+  cellBackground: '#1E1E1E',
+  accent: '#12B886',
+  accentLight: '#031C14',
 
-  cellText: 'rgba(255, 255, 255, 0.6)',
-  textMedium: VeniceTheme.offwhite,
-  textLight: VeniceTheme.offwhite,
+  cellText: '#ffffff99',
+  textMedium: '#ffffff99',
+  textLight: '#ffffff99',
 
-  groupHeader: VeniceTheme.primaryUIControl,
+  groupHeader: '#ffffff14',
 
-  bgCellMedium: VeniceTheme.footerBlack,
-  bgHeader: VeniceTheme.primaryUIControl,
-  bgHeaderHasFocus: 'rgba(18, 184, 134, 0.3)',
-  bgHeaderHovered: VeniceTheme.primaryUIControl,
+  bgCellMedium: '#191919',
+  bgHeader: '#262626',
+  bgHeaderHovered: '#3D3D3D',
+  bgHeaderHasFocus: '#4E4E4E',
 
-  bgBubble: VeniceTheme.footerBlack,
-  bgSearchResult: VeniceTheme.greenGlow,
+  bgBubble: '#ffffff14',
+  bgSearchResult: '#031C14',
 
-  borderColor: 'rgba(255, 255, 255, 0.05)',
-  drillDownBorder: 'rgba(0, 0, 0, 0)',
+  borderColor: '#ffffff14',
+  drillDownBorder: '#00000000',
 }
 
 const VeniceDataGridTheme = {

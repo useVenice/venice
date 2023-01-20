@@ -67,7 +67,7 @@ export default function DataExplorerScreen() {
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
             <button
-              className="text-medium rounded-lg border border-base-content/50 bg-green p-2 text-sm"
+              className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-sm font-medium"
               onClick={async () => {
                 // @ts-expect-error
                 const res = await trpcClient.mutation('executeSql', {sql})
