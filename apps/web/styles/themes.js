@@ -1,0 +1,96 @@
+/* Venice's Core Theme */
+
+const VeniceTheme = {
+  background: 'rgba(30, 30, 30, 1)',
+  black: 'rgba(30, 30, 30, 1)',
+  dropShadow: 'rgba(0,0,0,0.15)',
+  footerBlack: 'rgba(25, 25, 25, 1)',
+  githubGray: 'rgba(238, 241, 245, 1)',
+  gray: 'rgba(125, 125, 125, 1)',
+  green: 'rgba(18, 184, 134, 1)',
+  greenGlow: 'rgba(18,184,134,0.15)',
+  innerBevel: 'rgba(0, 0, 0, 0.102)',
+  inputBackground: 'rgba(41, 41, 41, 1)',
+  inputBorder: 'rgba(0, 0, 0, 0.5)',
+  offwhite: 'rgba(233, 233, 233, 1)',
+  primary: 'rgba(233, 233, 233, 1)',
+  secondary: 'rgba(18, 184, 134, 1)',
+  primaryUIControl: 'rgba(255, 255, 255, 0.08)',
+  white: 'rgba(255, 255, 255, 1)',
+}
+
+/* Data Grid Theme */
+
+const dataGridThemeColors = {
+  cellBackground: VeniceTheme.black,
+  accent: VeniceTheme.green,
+  accentLight: VeniceTheme.greenGlow,
+
+  cellText: 'rgba(255, 255, 255, 0.6)',
+  textMedium: VeniceTheme.offwhite,
+  textLight: VeniceTheme.offwhite,
+
+  groupHeader: VeniceTheme.primaryUIControl,
+
+  bgCellMedium: VeniceTheme.footerBlack,
+  bgHeader: VeniceTheme.primaryUIControl,
+  bgHeaderHasFocus: 'rgba(18, 184, 134, 0.3)',
+  bgHeaderHovered: VeniceTheme.primaryUIControl,
+
+  bgBubble: VeniceTheme.footerBlack,
+  bgSearchResult: VeniceTheme.greenGlow,
+
+  borderColor: 'rgba(255, 255, 255, 0.05)',
+  drillDownBorder: 'rgba(0, 0, 0, 0)',
+}
+
+const VeniceDataGridTheme = {
+  accentColor: dataGridThemeColors.accent,
+  accentFg: dataGridThemeColors.cellBackground,
+  accentLight: dataGridThemeColors.accentLight,
+
+  textDark: dataGridThemeColors.cellText,
+  textMedium: dataGridThemeColors.textMedium,
+  textLight: dataGridThemeColors.textLight,
+  textBubble: dataGridThemeColors.cellText,
+
+  bgIconHeader: dataGridThemeColors.textMedium,
+  fgIconHeader: dataGridThemeColors.cellBackground,
+
+  textHeader: dataGridThemeColors.cellText,
+  textGroupHeader: dataGridThemeColors.groupHeader,
+  textHeaderSelected: dataGridThemeColors.cellBackground,
+
+  bgCell: dataGridThemeColors.cellBackground,
+  bgCellMedium: dataGridThemeColors.bgCellMedium,
+  bgHeader: dataGridThemeColors.bgHeader,
+  bgHeaderHasFocus: dataGridThemeColors.bgHeaderHasFocus,
+  bgHeaderHovered: dataGridThemeColors.bgHeaderHovered,
+
+  bgBubble: dataGridThemeColors.bgBubble,
+  bgBubbleSelected: dataGridThemeColors.cellBackground,
+
+  bgSearchResult: dataGridThemeColors.bgSearchResult,
+
+  borderColor: dataGridThemeColors.borderColor,
+  drilldownBorder: dataGridThemeColors.drillDownBorder,
+
+  linkColor: dataGridThemeColors.accent,
+
+  cellHorizontalPadding: 8,
+  cellVerticalPadding: 3,
+
+  headerIconSize: 18,
+
+  headerFontStyle: '500 13px',
+  baseFontStyle: '13px',
+  fontFamily:
+    'Inter, Roboto, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, noto, arial, sans-serif',
+  editorFontSize: '13px',
+  lineHeight: 1.4, // unitless scaler, depends on your font
+}
+
+module.exports = {
+  VeniceTheme,
+  VeniceDataGridTheme,
+}

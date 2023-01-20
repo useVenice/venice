@@ -13,6 +13,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import {PageContainer} from '../components/common-components'
 import {copyToClipboard} from '../contexts/common-contexts'
 
+import {VeniceDataGridTheme} from '../styles/themes'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},
@@ -102,7 +103,7 @@ export default function DataExplorerScreen() {
               </ul>
             </div>
             <textarea
-              className="bg-primaryUIControl ml-12 flex-1 resize-none rounded-lg border border-base-content/50 p-3 text-offwhite"
+              className="ml-12 flex-1 resize-none rounded-lg border border-base-content/50 bg-primaryUIControl p-3 text-offwhite"
               value={sql}
               onChange={(e) => setSql(e.target.value)}></textarea>
           </div>
@@ -136,7 +137,7 @@ function TextFieldToCopy({
       <h2 className="text-lg font-bold">{title}</h2>
       <div className="relative mt-2 flex flex-row justify-between">
         <input
-          className="bg-primaryUIControl mr-3 w-full flex-1 rounded-lg border border-base-content/50 p-2 text-sm text-offwhite/50"
+          className="mr-3 w-full flex-1 rounded-lg border border-base-content/50 bg-primaryUIControl p-2 text-sm text-offwhite/50"
           value={value}
           disabled></input>
         <div className="absolute inset-y-0 right-0 mr-3 flex items-center space-x-1 pl-3 pr-1">
@@ -231,6 +232,7 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
           }),
         )
       }}
+      theme={VeniceDataGridTheme}
     />
   )
 }
