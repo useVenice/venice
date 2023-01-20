@@ -1,8 +1,7 @@
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
-
-<p align="center">
-  <img src="https://link.useVenice.com/logo" alt="Venice logo" width="250"> 
-</p>
+---
+title: Introduction
+description: Venice is a the fastest way to get financial data from Plaid into your Postgres database.
+---
 
 Zero to production in 5 minutes without a single line of code:
 
@@ -12,23 +11,23 @@ Zero to production in 5 minutes without a single line of code:
 
 ## Quick start
 
-**One click deploy with Vercel**
+### One click deploy with Vercel
 
 <a href="https://link.useVenice.com/deploy" rel="nofollow">
-  <img src="https://vercel.com/button" alt="Deploy with Vercel">
+  <img src="https://vercel.com/button" alt="Deploy with Vercel" />
 </a>
 
 <p>
   <a href="https://link.useVenice.com/demo-video" rel="nofollow">
-    <img src="https://cdn.loom.com/sessions/thumbnails/a2eda4cd5c764963bd2d6a56fe5a71e5-with-play.gif" alt="Venice demo" style="max-width: 300px;">
+    <img src="https://cdn.loom.com/sessions/thumbnails/a2eda4cd5c764963bd2d6a56fe5a71e5-with-play.gif" alt="Venice demo" />
   </a>
 </p>
 
-**Questions & support?**
+### Questions & support?
 
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/docs/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
+    <img src="/slack-cta.png" alt="Join us on Slack" style={{"width": "10rem"}} />
   </a>
 </p>
 
@@ -38,20 +37,29 @@ We built Venice after working on multiple fintech products. Despite the explosio
 
 ## What we built so far
 
-- **Connection portal**:
-  - Ready to use UI for your customers to add financial connections, repair broken ones, or manually trigger a sync.
-- **Token management**:
-  - Keep track of access tokens and don't pay for the ones you don't use
-- **Incremental sync**:
-  - Fast and efficient sync that can be called idempotently
-- **Rate limiting**:
-  - End point specific rate limiting to maximize performance
-- **Webhook handling**:
-  - Get connection and data updates in real time.
-- **Database sync**:
-  - Forget HTTP requests. The best API is the one from your database.
-- **Extensible architecture**:
-  - No code or full code, drop down to any level of abstraction you need. You can easily extend Venice to send data to Firebase, MongoDB, or your internal API for instance.
+<CardGroup>
+  <Card title="Connection portal" icon="browser">
+    Ready to use UI for your customers to add financial connections, repair broken ones, or manually trigger a sync.
+  </Card>
+  <Card title="Token management" icon="key">
+    Keep track of access tokens and don't pay for the ones you don't use
+  </Card>
+  <Card title="Incremental sync" icon="rotate">
+    Fast and efficient sync that can be called idempotently
+  </Card>
+  <Card title="Rate limiting" icon="server">
+    End point specific rate limiting to maximize performance
+  </Card>
+  <Card title="Webhook handling" icon="circle-nodes">
+    Get connection and data updates in real time.
+  </Card>
+  <Card title="Database sync" icon="database">
+    Forget HTTP requests. The best API is the one from your database.
+  </Card>
+  <Card title="Extensible architecture" icon="sitemap">
+    No code or full code, drop down to any level of abstraction you need. You can easily extend Venice to send data to Firebase, MongoDB, or your internal API for instance.
+  </Card>
+</CardGroup>
 
 ## Architecture
 
@@ -100,14 +108,14 @@ This setting only affects new connections. Existing connections store which envi
 
 | Name                              | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SERVER_URL`          | Fully qualified url your venice next.js app used for redirects, webhooks and server-side rendering.</br>e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$VERCEL_URL if not provided</br>@see https://vercel.com/docs/concepts/projects/environment-variables</br>Providing this explicitly is still preferrred as $VERCEL_URL does not account for custom domain |
-| `POSTGRES_OR_WEBHOOK_URL`         | Pass a valid postgres(ql):// url for stateful mode. Will be used Primary database used for metadata and user data storage</br>Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent to provided URL and you are responsible for your own persistence                                                                                                                                   |
+| `NEXT_PUBLIC_SERVER_URL`          | Fully qualified url your venice next.js app used for redirects, webhooks and server-side rendering.<br />e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$VERCEL_URL if not provided<br />@see https://vercel.com/docs/concepts/projects/environment-variables<br />Providing this explicitly is still preferrred as $VERCEL_URL does not account for custom domain |
+| `POSTGRES_OR_WEBHOOK_URL`         | Pass a valid postgres(ql):// url for stateful mode. Will be used Primary database used for metadata and user data storage<br />Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent to provided URL and you are responsible for your own persistence                                                                                                                                   |
 | `JWT_SECRET_OR_PUBLIC_KEY`        | Used for validating authenticity of accessToken                                                                                                                                                                                                                                                                                                                                                                 |
 | `int_plaid__clientId`             | `string`                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `int_plaid__secrets__sandbox`     | `string` - (Optional)                                                                                                                                                                                                                                                                                                                                                                                           |
 | `int_plaid__secrets__development` | `string` - (Optional)                                                                                                                                                                                                                                                                                                                                                                                           |
 | `int_plaid__secrets__production`  | `string` - (Optional)                                                                                                                                                                                                                                                                                                                                                                                           |
-| `int_plaid__clientName`           | `string = "This Application"` - The name of your application, as it should be displayed in Link.</br>Maximum length of 30 characters.</br>If a value longer than 30 characters is provided, Link will display "This Application" instead.                                                                                                                                                                       |
+| `int_plaid__clientName`           | `string = "This Application"` - The name of your application, as it should be displayed in Link.<br />Maximum length of 30 characters.<br />If a value longer than 30 characters is provided, Link will display "This Application" instead.                                                                                                                                                                       |
 | `int_plaid__products`             | `Array<assets \| auth \| balance \| identity \| investments \| liabilities \| payment_initiation \| transactions \| credit_details \| income \| income_verification \| deposit_switch \| standing_orders \| transfer \| employment \| recurring_transactions> = ["transactions"]`                                                                                                                               |
 | `int_plaid__countryCodes`         | `Array<US \| GB \| ES \| NL \| FR \| IE \| CA \| DE \| IT> = ["US"]`                                                                                                                                                                                                                                                                                                                                            |
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de = "en"`                                                                                                                                                                                                                                                                                                                                                                             |
@@ -124,7 +132,7 @@ This setting only affects new connections. Existing connections store which envi
 nvm use 16 # Optional, we recommend node 16.x
 pnpm install
 pnpm run migration up # Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
-pnpm run web
+pnpm run dev
 ```
 
 4. Visit `http://localhost:3000`.
@@ -167,6 +175,6 @@ What are we working now and next?
 
 <p>
   <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/docs/slack-cta.png" alt="Join us on Slack" style="width: 10rem;">
+    <img src="/slack-cta.png" alt="Join us on Slack" style={{"width": "10rem"}} />
   </a>
 </p>
