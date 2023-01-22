@@ -34,7 +34,7 @@ export interface LayoutProps {
 
 export function Layout({
   requiresAuthentication,
-  title = 'Venice - Financial data, fast.',
+  title = 'Financial data, fast.',
   links = [],
   children,
   ...props

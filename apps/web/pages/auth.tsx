@@ -4,6 +4,7 @@ import Image from 'next/image'
 
 import {PageContainer} from '../components/common-components'
 import {supabase} from '../contexts/common-contexts'
+import {VeniceTheme} from '../styles/themes'
 
 export default function AuthScreen() {
   return (
@@ -36,9 +37,9 @@ export default function AuthScreen() {
 const veniceThemeTweaks = {
   default: {
     colors: {
-      brand: '#12B886',
-      brandAccent: '#12B886',
-      brandButtonText: 'white',
+      brand: VeniceTheme.green,
+      brandAccent: VeniceTheme.green,
+      brandButtonText: VeniceTheme.offwhite,
       defaultButtonBackground: '#2e2e2e',
       defaultButtonBackgroundHover: '#3e3e3e',
     },
