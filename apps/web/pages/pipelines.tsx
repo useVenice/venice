@@ -9,8 +9,8 @@ import {useVenice} from '@usevenice/engine-frontend'
 import {PageContainer} from '../components/common-components'
 import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
-import {ConnectionCard} from '../screens/components/ConnectionCard'
-import {NewConnectionScreen} from '../screens/NewConnectionScreen'
+import {ConnectionCard} from '../components/ConnectionCard'
+import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
 export default function PipelinesScreen() {
   const mode = useAtomValue(modeAtom)
@@ -97,7 +97,7 @@ export default function PipelinesScreen() {
     <PageContainer title="Pipelines" flex>
       {/* We need this workaround so connect does not capture the wrong scope */}
       {mode === 'connect' && connectWith.destinationId ? (
-        <NewConnectionScreen connectWith={connectWith} />
+        <NewPipelineInScreen connectWith={connectWith} />
       ) : (
         pipelinesInAndOut
       )}

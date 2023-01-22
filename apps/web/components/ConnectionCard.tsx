@@ -12,8 +12,8 @@ import {
 } from '@usevenice/ui'
 import {formatDateTime, sentenceCase} from '@usevenice/util'
 
-import {InstitutionLogo} from '../../components/InstitutionLogo'
-import {envAtom} from '../../contexts/atoms'
+import {InstitutionLogo} from './InstitutionLogo'
+import {envAtom} from '../contexts/atoms'
 
 export interface ConnectionCardProps {
   connection: ZStandard['connection'] & {

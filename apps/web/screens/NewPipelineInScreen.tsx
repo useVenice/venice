@@ -8,7 +8,6 @@ import {zEnvName} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 import {
   Container,
-  Loading,
   Radio,
   RadioGroup,
   Tab,
@@ -20,10 +19,11 @@ import {R} from '@usevenice/util'
 
 import {InstitutionLogo} from '../components/InstitutionLogo'
 import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
+import {LoadingIndicator} from '../components/loading-indicators'
 
 type ConnectMode = 'institution' | 'provider'
 
-export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
+export function NewPipelineInScreen(props: {connectWith?: ConnectWith}) {
   const [, setMode] = useAtom(modeAtom)
   const [searchBy, setSearchBy] = useAtom(searchByAtom)
   const [envName, setEnvName] = useAtom(envAtom)
@@ -36,7 +36,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
     ...ls
   } = useVenice({envName, keywords})
 
-  console.log('[NewConnectionScreen] connectWith', props.connectWith)
+  console.log('[NewPipelineInScreen] connectWith', props.connectWith)
 
   // TODO: Tear down connect dialog if we are passed new connectWith prop
   // or find a better way to pass this data all together / consider using refs to not capture value
@@ -71,7 +71,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
     .with({status: 'idle'}, () => null)
     .with({status: 'loading'}, () => (
       <Container className="flex-1">
-        <Loading />
+        <LoadingIndicator />
       </Container>
     ))
     .with({status: 'error'}, () => (
@@ -83,7 +83,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
       if (onlyIntegrationId) {
         return (
           <Container className="flex-1">
-            <Loading />
+            <LoadingIndicator />
           </Container>
         )
       }
@@ -91,7 +91,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
         <Tabs
           value={searchBy}
           onValueChange={(newMode) => setSearchBy(newMode as ConnectMode)}>
-          <TabList className="border-gray-100 border-b">
+          <TabList className="border-b border-base-content/25">
             <Tab value="institution">By institution</Tab>
             <Tab value="provider">By provider (Developer mode)</Tab>
           </TabList>
@@ -119,7 +119,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
 
               {match(ls.insRes)
                 .with({status: 'idle'}, () => null)
-                .with({status: 'loading'}, () => <Loading />)
+                .with({status: 'loading'}, () => <LoadingIndicator />)
                 .with({status: 'error'}, () => (
                   <span className="text-xs">Something went wrong</span>
                 ))
@@ -131,7 +131,7 @@ export function NewConnectionScreen(props: {connectWith?: ConnectWith}) {
                       {res.data.map(({ins, int}) => (
                         <div
                           key={`${ins.id}`}
-                          className="hover:shadow-lg card border border-base-content/25 transition-[transform,shadow] hover:scale-105">
+                          className="card border border-base-content/25 transition-[transform,shadow] hover:scale-105">
                           <div className="card-body space-y-4">
                             <div className="flex items-center space-x-4">
                               <InstitutionLogo institution={ins} />

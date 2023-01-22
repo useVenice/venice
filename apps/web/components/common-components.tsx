@@ -4,7 +4,7 @@ import {useRouterPlus} from '../contexts/atoms'
 import {useSession} from '../contexts/session-context'
 import type {LayoutProps} from './Layout'
 import {Layout} from './Layout'
-import {LoadingIndicatorOverlay} from './LoadingIndicatorOverlay'
+import {LoadingIndicatorOverlay} from './loading-indicators'
 
 export function PageContainer({
   requiresAuthentication = true,
