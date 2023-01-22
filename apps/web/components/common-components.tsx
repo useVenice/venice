@@ -1,9 +1,10 @@
-import {EffectContainer, Loading} from '@usevenice/ui'
+import {EffectContainer} from '@usevenice/ui'
 
 import {useRouterPlus} from '../contexts/atoms'
 import {useSession} from '../contexts/session-context'
 import type {LayoutProps} from './Layout'
 import {Layout} from './Layout'
+import {LoadingIndicatorOverlay} from './LoadingIndicatorOverlay'
 
 export function PageContainer({
   requiresAuthentication = true,
@@ -43,7 +44,7 @@ export function RedirectTo(props: {url: string}) {
 
   return (
     <EffectContainer effect={() => void router.pushPathname(props.url)}>
-      <Loading />
+      <LoadingIndicatorOverlay />
     </EffectContainer>
   )
 }
