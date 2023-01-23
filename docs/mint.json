@@ -35,11 +35,15 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["quickstart", "use-cases", "features", "faq"]
+      "pages": ["quickstart", "use-cases", "features"]
     },
     {
       "group": "Technical",
-      "pages": ["open-source", "pipelines", "deploy-locally"]
+      "pages": ["architecture", "open-source", "pipelines", "deploy-locally"]
+    },
+    {
+      "group": "Support",
+      "pages": ["faq", "custom-integration", "contact-us"]
     }
   ],
   "backgroundImage": "/background.png",
