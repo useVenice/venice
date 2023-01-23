@@ -1,6 +1,6 @@
 ---
-title: Introduction
-description: Venice is a the fastest way to get financial data from Plaid into your Postgres database.
+title: Add pipelines
+description: Easily create new data pipelines into and out of Venice 
 ---
 
 Zero to production in 5 minutes without a single line of code:
@@ -67,16 +67,6 @@ Venice scales up and down based on your needs. Get started with no-code, call AP
 
 Venice is designed to be modular and extensible. Drop down to the level of abstraction that best fits your need.
 
-Here are 5 ways you can use Venice, each built on a layer below:
-
-- No code self-service portal (Beta).
-- Embeddable portal (Beta).
-- Theme-able React components (Planned).
-- Headless React components (Planned).
-- Stateful HTTP API (trpc Alpha, OpenAPI planned).
-- Stateless HTTP API where you handle your own persistence (Planned)
-- TypeScript core library that runs on every platform that JS does (Planned)
-
 ## Getting started
 
 1. Click the "Deploy to Vercel" link.
@@ -130,6 +120,7 @@ This setting only affects new connections. Existing connections store which envi
 
 ```bash
 nvm use 16 # Optional, we recommend node 16.x
+
 pnpm install
 pnpm run migration up # Other databases such as Mongo / Redis / Firebase will be supported later. Let us know if you would like to contribute
 pnpm run dev
@@ -162,19 +153,3 @@ Tips
 Why is it called Venice?
 
 > First to pay homage to Venice as the birth place of modern accounting. Second, the Venetian canals were used to transport goods, much like useVenice pipelines are used to transport financial data.
-
-Do you get to see any of the data we pass through?
-
-> No. You deploy this within your own infra.
-
-What are we working now and next?
-
-> Join the discussion at our [GitHub Roadmap Project](https://link.useVenice.com/roadmap).
-
-## Contribute & Support
-
-<p>
-  <a href="https://link.usevenice.com/slack" rel="nofollow">
-    <img src="/slack-cta.png" alt="Join us on Slack" style={{"width": "10rem"}} />
-  </a>
-</p>

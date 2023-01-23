@@ -1,41 +1,51 @@
 {
   "name": "Venice",
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/venice-black-logo.svg",
+    "dark": "/logo/venice-white-logo.svg"
   },
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#424054",
-    "light": "#E9E8EC",
-    "dark": "#2B2B2F"
+    "primary": "#12B886",
+    "light": "#12B886",
+    "dark": "#12B886"
   },
+  "topbarLinks": [
+    {
+      "name": "Contact us",
+      "url": "mailto:hi@venice.is"
+    }
+  ],
   "topbarCtaButton": {
-    "type": "github",
-    "url": "https://github.com/usevenice/venice"
+    "name": "Early access",
+    "url": "https://venice.is/early-access/apply"
   },
   "anchors": [
     {
-      "name": "Slack",
-      "icon": "slack",
-      "url": "https://link.usevenice.com/slack"
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/gTMch6Gn2u"
     },
     {
-      "name": "Product Roadmap",
-      "icon": "map",
-      "url": "https://github.com/orgs/usevenice/projects/1"
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/usevenice/venice"
     }
   ],
   "navigation": [
     {
-      "group": "Home",
-      "pages": ["introduction", "next-steps"]
+      "group": "Getting Started",
+      "pages": ["quickstart", "use-cases", "features"]
+    },
+    {
+      "group": "Technical",
+      "pages": ["pipelines", "open-source"]
     }
   ],
   "backgroundImage": "/background.png",
   "footerSocials": {
-    "github": "https://github.com/usevenice",
-    "slack": "https://link.usevenice.com/slack",
+    "github": "https://github.com/usevenice/venice",
+    "discord": "https://discord.gg/gTMch6Gn2u",
     "twitter": "https://twitter.com/use_venice"
   }
 }
