@@ -1,10 +1,10 @@
 {
   "name": "Venice",
   "logo": {
-    "light": "/logo/venice-black-logo.svg",
-    "dark": "/logo/venice-white-logo.svg"
+    "light": "/images/logo/venice-black-logo.svg",
+    "dark": "/images/logo/venice-white-logo.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/images/favicon.png",
   "colors": {
     "primary": "#12B886",
     "light": "#12B886",
@@ -35,18 +35,32 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["quickstart", "use-cases", "features"]
+      "pages": [
+        "quickstart/quickstart",
+        "quickstart/use-cases",
+        "quickstart/features"
+      ]
     },
     {
       "group": "Technical",
-      "pages": ["architecture", "open-source", "pipelines", "deploy-locally"]
+      "pages": [
+        "technical/architecture",
+        "technical/open-source",
+        "technical/pipelines",
+        "technical/deploy-locally"
+      ]
     },
     {
       "group": "Support",
-      "pages": ["faq", "custom-integration", "contact-us"]
+      "pages": [
+        "support/faq",
+        "support/custom-integration",
+        "support/contact-us",
+        "support/attribution"
+      ]
     }
   ],
-  "backgroundImage": "/background.png",
+  "backgroundImage": "/images/background.png",
   "footerSocials": {
     "github": "https://github.com/usevenice/venice",
     "discord": "https://discord.gg/gTMch6Gn2u",
