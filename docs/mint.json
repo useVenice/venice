@@ -65,5 +65,10 @@
     "github": "https://github.com/usevenice/venice",
     "discord": "https://discord.gg/gTMch6Gn2u",
     "twitter": "https://twitter.com/use_venice"
+  },
+  "analytics": {
+    "posthog": {
+      "apiKey": "phc_T3BM4neZzi3z2ruDiN0pYpGHIYjd5AjZw0rSkhzAKSo"
+    }
   }
 }
