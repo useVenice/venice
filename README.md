@@ -14,7 +14,7 @@
 Get early access & the chance to use Venice for free for now.
 
 <p>
-  <a href="[https://discord.gg/gTMch6Gn2u](https://venice.is/early-access/apply)" rel="nofollow">
+  <a href="https://venice.is/early-access/apply" rel="nofollow">
     <img src="/github/early-access.png" alt="Request early access" width="200">
   </a>
 </p>
