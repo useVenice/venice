@@ -12,3 +12,12 @@ export default inngest.createStepFunction(
     return {event, body: 'hello!'}
   },
 )
+
+export const scheduleSyncs = inngest.createScheduledFunction(
+  'schedule syncs',
+  '* * * * *',
+  () => {
+    console.log('Scheduling sync...')
+    return {now: new Date().toISOString()}
+  },
+)
