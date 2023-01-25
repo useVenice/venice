@@ -6,7 +6,7 @@ import Link from 'next/link'
 import type {Id} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {PageContainer} from '../components/common-components'
+import {PageLayout} from 'layouts/PageLayout'
 import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
 import {ConnectionCard} from '../components/ConnectionCard'
@@ -93,15 +93,14 @@ export default function PipelinesScreen() {
   )
 
   return (
-    // TODO: Figure out a better way when ledgerId is still being loaded
-    <PageContainer title="Pipelines" flex>
+    <PageLayout title="Pipelines">
       {/* We need this workaround so connect does not capture the wrong scope */}
       {mode === 'connect' && connectWith.destinationId ? (
         <NewPipelineInScreen connectWith={connectWith} />
       ) : (
         pipelinesInAndOut
       )}
-    </PageContainer>
+    </PageLayout>
   )
 }
 

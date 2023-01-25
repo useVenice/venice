@@ -2,15 +2,23 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {PageContainer} from '../components/common-components'
+import {RedirectTo} from 'components/common-components'
+import {useSession} from 'contexts/session-context'
+import {PageLayout} from 'layouts/PageLayout'
 import {supabase} from '../contexts/common-contexts'
 import {VeniceTheme} from '../styles/themes'
 
 export default function AuthScreen() {
+  const [session] = useSession()
+
+  if (session) {
+    return <RedirectTo url="/pipelines" />
+  }
+
   return (
-    <PageContainer requiresAuthentication={false}>
-      <Container className="mt-20 flex-1">
-        <div className="mx-auto grid w-80 grid-cols-1 ">
+    <PageLayout title="Login" requiresAuthentication={false}>
+      <Container className="min-h-screen justify-center">
+        <div className="mx-auto grid w-80 grid-cols-1">
           <Image
             src="/venice-logo.svg"
             alt="Venice Logo"
@@ -18,7 +26,7 @@ export default function AuthScreen() {
             height={32}
           />
           <p className="mt-6 text-center text-green">
-            Youll be up and running in 2 minutes!
+            You&apos;ll be up and running in 2 minutes!
           </p>
           <Auth
             supabaseClient={supabase}
@@ -30,7 +38,7 @@ export default function AuthScreen() {
             theme="dark"></Auth>
         </div>
       </Container>
-    </PageContainer>
+    </PageLayout>
   )
 }
 

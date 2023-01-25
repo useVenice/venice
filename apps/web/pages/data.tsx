@@ -11,7 +11,7 @@ import '@glideapps/glide-data-grid/dist/index.css'
 
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
-import {PageContainer} from '../components/common-components'
+import {PageLayout} from 'layouts/PageLayout'
 import {copyToClipboard} from '../contexts/common-contexts'
 
 import {VeniceDataGridTheme} from '../styles/themes'
@@ -43,7 +43,7 @@ export default function DataExplorerScreen() {
   const [resultRows, setResultRows] = useState([])
 
   return (
-    <PageContainer title="Data Explorer">
+    <PageLayout title="Data Explorer">
       <Container className="flex-1">
         <div>
           <TextFieldToCopy
@@ -115,7 +115,7 @@ export default function DataExplorerScreen() {
           </div>
         </div>
       </Container>
-    </PageContainer>
+    </PageLayout>
   )
 }
 
