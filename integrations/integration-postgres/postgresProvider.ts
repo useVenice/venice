@@ -43,8 +43,9 @@ export const postgresProvider = makeSyncProvider({
         const {
           data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
-        const batch = batches[entityName] ?? []
-        batches[entityName] = batch
+        const tableName = `raw_${entityName}`
+        const batch = batches[tableName] ?? []
+        batches[tableName] = batch
         batch.push({
           id,
           ledger_connection_id: ledgerId,

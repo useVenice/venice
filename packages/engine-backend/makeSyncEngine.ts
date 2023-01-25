@@ -207,6 +207,9 @@ export const makeSyncEngine = <
       .connUpdate({type: 'connUpdate', id, settings, institution})
 
     if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
+      console.log(
+        '[_syncConnectionUpdate] Returning early skip syncing pipelines',
+      )
       return
     }
 
@@ -658,6 +661,7 @@ export const makeSyncEngine = <
             data: conn.institution.external ?? {},
           },
           connectWith: opts?.connectWith,
+          triggerDefaultSync: true,
         })
       },
     })
