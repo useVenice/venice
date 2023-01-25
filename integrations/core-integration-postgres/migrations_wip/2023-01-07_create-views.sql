@@ -1,5 +1,7 @@
+-- Note once we drop view we will have to re-grant them to everyone in `public`, which is a bit annoying...
+
 DROP VIEW IF EXISTS v_transaction;
-CREATE VIEW v_transaction AS SELECT
+CREATE VIEW v_transaction WITH (security_invoker) AS SELECT
 	id -- standard->>'_id' as id
 	,standard->>'date' as date
 	,standard->> 'description' as description
@@ -14,7 +16,7 @@ FROM
 	TRANSACTION;
 
 DROP VIEW IF EXISTS v_posting;
-CREATE VIEW v_posting AS SELECT
+CREATE VIEW v_posting WITH (security_invoker) AS SELECT
 	id
 	,p.key
 	,p.value #>>'{amount,quantity}' as amount_quantity
@@ -23,6 +25,26 @@ CREATE VIEW v_posting AS SELECT
 	,p.value as data
 	from transaction, jsonb_each(transaction.standard->'postingsMap') as p;
 
+
+-- Needed to re-grant permission to all users to access the view whenever we re-construct it
+DO $$
+DECLARE
+	ele record;
+BEGIN
+	FOR ele IN
+		SELECT
+			usename
+		FROM
+			pg_user
+		WHERE
+			starts_with (usename, 'usr_')
+	LOOP
+		EXECUTE format('GRANT SELECT, UPDATE, DELETE ON public.v_transaction, public.v_posting TO %I', ele.usename);
+	END LOOP;
+END;
+$$;
+
+---
 
 CREATE OR REPLACE FUNCTION jsonb_array_to_text_array(_js jsonb)
   RETURNS text[]
