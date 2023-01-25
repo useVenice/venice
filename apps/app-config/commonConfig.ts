@@ -4,10 +4,12 @@ import {joinPath, zParser} from '@usevenice/util'
 import {PROVIDERS, zCommonEnv} from './env'
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-const env = zParser(zCommonEnv).parse({
+export const commonEnv = zParser(zCommonEnv).parse({
   // Need to use fully qualified form of process.env.$VAR for
   // webpack DefineEnv that next.js uses to work
   NEXT_PUBLIC_SERVER_URL: process.env['NEXT_PUBLIC_SERVER_URL']!,
+  NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
 })
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
@@ -20,7 +22,7 @@ export const veniceCommonConfig = VeniceProvider.config({
   providers: PROVIDERS,
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  apiUrl: joinPath(env.NEXT_PUBLIC_SERVER_URL, '/api/trpc'),
+  apiUrl: joinPath(commonEnv.NEXT_PUBLIC_SERVER_URL, '/api/trpc'),
 
   // parseJwtPayload // use default here
 })

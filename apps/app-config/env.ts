@@ -42,6 +42,8 @@ export const zCommonEnv = zEnvVars({
       @see https://vercel.com/docs/concepts/projects/environment-variables
       Providing this explicitly is still preferrred as $VERCEL_URL does not account for custom domain`,
     ),
+  NEXT_PUBLIC_SUPABASE_URL: z.string(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
 })
 
 export const zBackendEnv = zEnvVars({
