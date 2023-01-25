@@ -46,6 +46,13 @@ $$;
 
 ---
 
+REVOKE ALL ON pg_catalog.pg_user FROM public;
+-- This will prevent user from being able to query for the existance of other users.
+-- TODO: What other permissions does the `public` role have that they shouldn't have in this context?
+
+---
+
+
 CREATE OR REPLACE FUNCTION jsonb_array_to_text_array(_js jsonb)
   RETURNS text[]
   LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
