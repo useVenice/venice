@@ -28,6 +28,7 @@
     "@usevenice/util": "workspace:*",
     "@usevenice/worker": "workspace:*",
     "cookies-next": "2.1.1",
+    "inngest": "0.9.3",
     "jotai": "1.8.3",
     "lodash": "4.17.21",
     "marked": "4.2.4",
