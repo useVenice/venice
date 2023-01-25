@@ -12,8 +12,9 @@ import {
 } from '@usevenice/ui'
 import {formatDateTime, sentenceCase} from '@usevenice/util'
 
-import {InstitutionLogo} from './InstitutionLogo'
 import {envAtom} from '../contexts/atoms'
+import {copyToClipboard} from '../contexts/common-contexts'
+import {InstitutionLogo} from './InstitutionLogo'
 
 export interface ConnectionCardProps {
   connection: ZStandard['connection'] & {
@@ -83,6 +84,11 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="border border-base-content/25 bg-black text-sm">
+              <DropdownMenuItem
+                className={dropdownItemClass}
+                onClick={() => copyToClipboard(conn.id)}>
+                Copy id
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className={dropdownItemClass}
                 onClick={() =>
