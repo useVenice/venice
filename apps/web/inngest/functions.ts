@@ -1,8 +1,6 @@
-import {Inngest} from 'inngest'
+import {inngest} from './events'
 
-const inngest = new Inngest({name: 'Venice'})
-
-export default inngest.createStepFunction(
+export const demoFn = inngest.createStepFunction(
   'My first function',
   'test/demo',
   ({event, tools}) => {
@@ -14,10 +12,10 @@ export default inngest.createStepFunction(
 )
 
 export const scheduleSyncs = inngest.createScheduledFunction(
-  'schedule syncs',
+  'Schedule syncs',
   '* * * * *',
   () => {
     console.log('Scheduling sync...')
-    return {now: new Date().toISOString()}
+    return {now: new Date().toISOString(), another: 123}
   },
 )

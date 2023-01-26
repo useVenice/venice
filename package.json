@@ -62,7 +62,7 @@
     "prettier-plugin-tailwindcss": "^0.2.1",
     "ts-brand": "0.0.2",
     "tsx": "3.9.0",
-    "typescript": "4.8.2"
+    "typescript": "4.9.4"
   },
   "packageManager": "pnpm@7.14.0",
   "engines": {
@@ -99,7 +99,6 @@
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@1.1.0": "patches/remeda@1.1.0.patch",
-      "typescript@4.8.2": "patches/typescript@4.8.2.patch",
       "zod@3.19.0": "patches/zod@3.19.0.patch",
       "graphile-worker@0.13.0": "patches/graphile-worker@0.13.0.patch"
     },
