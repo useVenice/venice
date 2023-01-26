@@ -31,6 +31,7 @@
     "prefer-const": "warn",
     "quotes": ["warn", "single", {"avoidEscape": true}],
     "codegen/codegen": "warn",
+    "import/no-unresolved": "error",
     "eslint-comments/disable-enable-pair": "off",
     "eslint-comments/no-unlimited-disable": "off",
     "eslint-comments/no-unused-disable": "warn",

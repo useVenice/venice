@@ -4,8 +4,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@usevenice/ui'
-import {supabase} from 'contexts/common-contexts'
-import {useSession} from 'contexts/session-context'
+import {supabase} from '../../contexts/common-contexts'
+import {useSession} from '../../contexts/session-context'
 import type {ComponentPropsWithoutRef} from 'react'
 
 export function AccountMenu() {

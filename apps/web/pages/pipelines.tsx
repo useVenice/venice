@@ -6,10 +6,10 @@ import Link from 'next/link'
 import type {Id} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {PageLayout} from 'layouts/PageLayout'
 import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
 import {ConnectionCard} from '../components/ConnectionCard'
+import {PageLayout} from '../layouts/PageLayout'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
 export default function PipelinesScreen() {

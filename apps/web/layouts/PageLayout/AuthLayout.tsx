@@ -1,10 +1,11 @@
-import {RedirectTo} from 'components/common-components'
-import {EnhancedActiveLink} from 'components/EnhancedActiveLink'
-import {LoadingIndicatorOverlay} from 'components/loading-indicators'
-import {useSession} from 'contexts/session-context'
 import Image from 'next/image'
 import Link from 'next/link'
 import type {PropsWithChildren} from 'react'
+
+import {RedirectTo} from '../../components/common-components'
+import {EnhancedActiveLink} from '../../components/EnhancedActiveLink'
+import {LoadingIndicatorOverlay} from '../../components/loading-indicators'
+import {useSession} from '../../contexts/session-context'
 import {AccountMenu} from './AccountMenu'
 
 interface AuthLayoutProps extends PropsWithChildren {}
