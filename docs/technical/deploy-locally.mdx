@@ -134,7 +134,7 @@ to our [open source codebase](https://github.com/usevenice/venice).
 
 2. Make a copy of the [.env.example](https://github.com/useVenice/venice/blob/main/.env.example) file named `.env` and populate your own values
 
-3. Install [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) and then run:
+3. Install [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) & [pnpm](https://pnpm.io/installation) and then run:
 
 ```bash
 nvm use 16 # Optional, we recommend node 16.x
@@ -160,7 +160,7 @@ pnpm run migration up # (optional) we support Postgres for now, but feel free to
 shdotenv -e .env.prod pnpm run web
 ```
 
-- If you have an existing Vercel setup, you can pull your environment keys using:
+- If you have an existing [Vercel CLI](https://vercel.com/docs/cli) setup, you can pull your environment keys using:
 
 ```bash
 vercel env pull --environment production .env.prod
