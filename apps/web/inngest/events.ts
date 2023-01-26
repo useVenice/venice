@@ -1,3 +1,4 @@
+import type {Id} from '@usevenice/cdk-core'
 import {Inngest} from 'inngest'
 
 type ToEvents<T extends Record<string, unknown>> = {
@@ -5,7 +6,7 @@ type ToEvents<T extends Record<string, unknown>> = {
 }
 
 export type Events = ToEvents<{
-  'sync/requested': {}
+  'sync/requested': {pipelineId: Id['pipe']}
   'test/demo': {mydata: string}
 }>
 
