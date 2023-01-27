@@ -668,7 +668,7 @@ export const makeSyncEngine = <
           // What about envName
           connectionExternalId: extractId(conn.id)[2],
           institution: conn.institution && {
-            id: conn.institution.id,
+            externalId: extractId(conn.institution.id)[2],
             data: conn.institution.external ?? {},
           },
           connectWith: opts?.connectWith,

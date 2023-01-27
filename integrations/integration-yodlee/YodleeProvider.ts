@@ -270,7 +270,7 @@ export const yodleeProvider = makeSyncProvider({
         accessToken: yodlee.accessToken,
       },
       institution: provider
-        ? {id: providerId, data: {...provider, _envName: envName}}
+        ? {externalId: providerId, data: {...provider, _envName: envName}}
         : undefined,
     }
   },

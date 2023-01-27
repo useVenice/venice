@@ -80,7 +80,7 @@ export function makeMetaLinks(metaBase: MetaService) {
         })
 
         const institutionId = institution
-          ? makeId('ins', providerName, institution.id)
+          ? makeId('ins', providerName, institution.externalId)
           : undefined
 
         // Can we run this in one transaction?
@@ -167,7 +167,7 @@ export function makeMetaLinks(metaBase: MetaService) {
 
   const patch = async <TTable extends keyof ZRaw>(
     tableName: TTable,
-    id: Id[typeof IDS[TTable]],
+    id: Id[(typeof IDS)[TTable]],
     _patch: ObjectPartialDeep<ZRaw[TTable]>,
   ) => {
     if (Object.keys(_patch).length === 0) {

@@ -317,7 +317,7 @@ export const plaidProvider = makeSyncProvider({
       connectionExternalId: res.item_id,
       settings,
       institution: insRes?.institution && {
-        id: insRes.institution.institution_id,
+        externalId: insRes.institution.institution_id,
         data: insRes.institution,
       },
       source$: rxjs.from(
@@ -421,7 +421,7 @@ export const plaidProvider = makeSyncProvider({
             institution,
           },
           institution: institution && {
-            id: institution.institution_id,
+            externalId: institution.institution_id,
             data: institution,
           },
         }),

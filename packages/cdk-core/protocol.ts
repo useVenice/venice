@@ -39,7 +39,7 @@ export interface ConnUpdateData<
     ? ObjectPartialDeep<NoInfer<TSettings>> | undefined
     : TSettings
   institution?: {
-    id: ExternalId
+    externalId: ExternalId
     data: TInsData
   }
   /** Should this be an inherent part of the data? */
