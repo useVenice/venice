@@ -25,6 +25,8 @@ export const scheduleSyncs = inngest.createScheduledFunction(
         'pipeline/sync-requested',
         pipelines.map((pipe) => ({data: {pipelineId: pipe.id}})),
       )
+      // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
+      // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
       console.log(`Scheduled ${pipelines.length} pipeline syncs`)
       return {scheduledCount: pipelines.length}
     }),
