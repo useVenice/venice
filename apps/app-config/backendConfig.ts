@@ -34,8 +34,7 @@ const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 export const veniceBackendConfig = makeSyncEngine.config({
   ...veniceCommonConfig,
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
-  getRedirectUrl: (_, ctx) =>
-    joinPath(env.NEXT_PUBLIC_SERVER_URL, `ledgers/${ctx.userId}`),
+  getRedirectUrl: (_, _ctx) => joinPath(env.NEXT_PUBLIC_SERVER_URL, '/'),
   metaService: usePg
     ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
     : noopMetaService,

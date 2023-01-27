@@ -92,7 +92,8 @@ export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
   // Subset of connUpdate
   connectionExternalId: ExternalId
   // Can we inherit types used by metaLinks?
-  userId?: UserId
+  /** If missing it means do not change the userId... */
+  userId?: UserId | null
 
   source$?: Source<TEntity>
   triggerDefaultSync?: boolean

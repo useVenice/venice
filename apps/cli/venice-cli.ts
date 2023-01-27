@@ -23,9 +23,12 @@ if (process.env['DEBUG_ZOD']) {
 
 export const cli = cliFromRouter(veniceRouter, {
   cleanup: () => {}, // metaService.shutdown?
-  context: syncEngine.zContext.parse<'typed'>({
-    accessToken: process.env['ACCESS_TOKEN'],
-  }),
+  // Bypass auth when running sync from CLI
+  // We should improve this for usage on single machines
+  context: {isAdmin: true},
+  // syncEngine.zContext.parse<'typed'>({
+  //   accessToken: process.env['ACCESS_TOKEN'],
+  // })
 })
 
 cli

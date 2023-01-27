@@ -67,18 +67,18 @@ type AnyProcedure = trpc.ProcedureRecord[string]
 // TODO Take router._defs and add options based on it so that docs can be shown
 // on the command line.
 
-export interface CliOpts {
+export interface CliOpts<TContext = unknown> {
   /** Validated methods only... */
   safeMode?: boolean
   prepare?: () => MaybePromise<void>
   cleanup?: () => MaybePromise<void>
-  context?: unknown
+  context?: TContext
   defaultHelpCommand?: boolean
 }
 const globalStart = Date.now() // Not entirely accurate...
 export function cliFromRouter<T extends trpc.AnyRouter>(
   router: T,
-  cliOpts?: CliOpts,
+  cliOpts?: CliOpts<Parameters<T['createCaller']>[0]>,
 ) {
   const cli = cac()
   R.pipe(

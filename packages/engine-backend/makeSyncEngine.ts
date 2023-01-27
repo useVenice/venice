@@ -65,7 +65,10 @@ export interface SyncEngineConfig<
   apiUrl: string
 
   /** Used for oauth based connections */
-  getRedirectUrl?: (integration: ParsedInt, ctx: {userId: UserId}) => string
+  getRedirectUrl?: (
+    integration: ParsedInt,
+    ctx: {userId?: UserId | null},
+  ) => string
 
   parseJwtPayload?: ParseJwtPayload
 
@@ -109,6 +112,14 @@ export type AnySyncMutationOutput<
 > = inferProcedureOutput<AnySyncRouter['_def']['mutations'][K]>
 
 export const baseRouter: typeof trpc.router<UserInfo, EngineMeta> = trpc.router
+
+// TODO: Figure out how to support both syncing on the command line via CLI without auth
+// as well as syncing via API which has auth...
+// Some methods require userId in context (preConnect / postConnect)
+// while other methods (sometimes) does not require userId (syncConnection)
+// We should also be careful that during upserts we never change the `creatorId` and thus
+// the permission structure...
+const ADMIN_UID = 'admin' as UserId
 
 export const makeSyncEngine = <
   TProviders extends readonly AnySyncProvider[],
@@ -339,7 +350,7 @@ export const makeSyncEngine = <
 
   const authenticatedRouter = baseRouter()
     .middleware(({next, ctx, path}) => {
-      if (!ctx.userId) {
+      if (!ctx.userId && !ctx.isAdmin) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: `Auth required: ${path}`,
@@ -558,7 +569,7 @@ export const makeSyncEngine = <
         authorizeOrThrow(ctx, 'connection', conn)
         return int.provider.preConnect?.(int.config, {
           ...connCtxInput,
-          userId: ctx.userId,
+          userId: ctx.userId ?? ADMIN_UID,
           connection: conn
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               {externalId: connectionExternalId!, settings: conn.settings}
@@ -596,7 +607,7 @@ export const makeSyncEngine = <
           int.config,
           {
             ...connCtxInput,
-            userId: ctx.userId,
+            userId: ctx.userId ?? ADMIN_UID,
             connection: conn
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: connectionExternalId!, settings: conn.settings}
@@ -611,7 +622,7 @@ export const makeSyncEngine = <
         await _syncConnectionUpdate(int, {
           ...connUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          userId: ctx.userId,
+          userId: ctx.userId ?? ADMIN_UID,
           envName: connCtxInput.envName,
           connectWith: connCtxInput.connectWith,
         })
