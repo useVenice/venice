@@ -1,7 +1,5 @@
-import type {NextApiHandler} from 'next'
+import {NextApiHandler} from 'next'
 
-import {R} from '@usevenice/util'
-
-export default R.identity<NextApiHandler>((_req, _res) => {
+export default ((_req, _res) => {
   throw new Error('Sentry Backend Error')
-})
+}) satisfies NextApiHandler
