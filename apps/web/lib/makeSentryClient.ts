@@ -41,7 +41,7 @@ export function makeSentryClient(opts: {dsn: string}) {
       fn: (checkinId: string | undefined) => T | Promise<T>,
     ): Promise<T> => {
       if (!monitorId) {
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env['VERCEL_ENV'] === 'production') {
           throw new Error('monitorId missing for withCheckin')
         }
         return fn(undefined)
