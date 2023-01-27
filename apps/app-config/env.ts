@@ -48,13 +48,19 @@ export const zCommonEnv = zEnvVars({
 
 export const zBackendEnv = zEnvVars({
   POSTGRES_OR_WEBHOOK_URL: z.string().describe(`
-Pass a valid postgres(ql):// url for stateful mode. Will be used Primary database used for metadata and user data storage
-Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent to provided URL and you are responsible for your own persistence`),
+  Pass a valid postgres(ql):// url for stateful mode. Will be used Primary database used for metadata and user data storage
+  Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent to provided URL and you are responsible for your own persistence`),
   JWT_SECRET_OR_PUBLIC_KEY: z
     .string()
     .trim()
     .optional()
     .describe('Used for validating authenticity of accessToken'),
+
+  SENTRY_DSN: z.string().optional(),
+  SENTRY_CRON_MONITOR_ID: z
+    .string()
+    .optional()
+    .describe('Used to monitor the schedule syncs cron job'),
 })
 
 // MARK: - Integration env vars
