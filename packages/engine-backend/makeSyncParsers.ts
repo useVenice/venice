@@ -21,7 +21,7 @@ import type {SyncEngineConfig} from './makeSyncEngine'
 // We implement all except Generic Output
 
 export type ZInput = {
-  [k in keyof typeof zInput]: z.infer<typeof zInput[k]>
+  [k in keyof typeof zInput]: z.infer<(typeof zInput)[k]>
 }
 export const zInput = (() => {
   const provider = z.string().brand<'provider'>()
@@ -191,7 +191,7 @@ export function makeSyncParsers<
       const conn = await m.tables.connection.get(id)
       const [integration, institution] = await Promise.all([
         zInt.parseAsync(
-          R.identity<z.infer<typeof zInput['integration']>>({
+          R.identity<z.infer<(typeof zInput)['integration']>>({
             id:
               conn?.integrationId ??
               rest.integrationId ??
@@ -200,13 +200,16 @@ export function makeSyncParsers<
           }),
         ),
         zIns.optional().parseAsync(
-          R.identity<z.infer<typeof zInput['institution']>>({
-            id:
-              conn?.institutionId ??
-              rest.institutionId ??
-              makeId('ins', extractId(id)[1], ''),
-            external: rest.institution?.external,
-          }),
+          R.pipe(conn?.institutionId ?? rest.institutionId, (insId) =>
+            // Unlike integration, we do not have default institution for provider
+            // ins_plaid just makes no sense. Although ins_quickbooks does... so what gives?
+            !insId
+              ? undefined
+              : R.identity<z.infer<(typeof zInput)['institution']>>({
+                  id: insId,
+                  external: rest.institution?.external,
+                }),
+          ),
         ),
       ])
       const settings = integration.provider.def.connectionSettings?.parse(
