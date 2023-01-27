@@ -1,4 +1,4 @@
-import '../__generated__/tailwind.css'
+import './global.css'
 
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
