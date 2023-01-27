@@ -6,8 +6,7 @@ type ToEvents<T extends Record<string, unknown>> = {
 }
 
 export type Events = ToEvents<{
-  'sync/requested': {pipelineId: Id['pipe']; forReal?: boolean}
-  'test/demo': {mydata: string}
+  'pipeline/sync-requested': {pipelineId: Id['pipe']; forReal?: boolean}
 }>
 
 export const inngest = new Inngest<Events>({name: 'Venice'})
