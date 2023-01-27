@@ -45,8 +45,10 @@ jobs:
       - name: Run type checks
         run: pnpm run typecheck
 
+        # TODO: Figure out a pattern to make environment variables parsed / required on demand rather than on startup time
+        # Ideally have a way to switch between the two... Where we can also choose proactive parsing for sanity checking...
       - name: Run health check
-        run: POSTGRES_OR_WEBHOOK_URL=noop node --loader tsx ./bin/venice health
+        run: POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=nnop node --loader tsx ./bin/venice health
 
       - name: Generate assets required for lint
         run: pnpm --dir ./apps/web/ run generate:css
