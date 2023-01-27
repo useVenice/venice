@@ -4,13 +4,9 @@
   "private": true,
   "scripts": {
     "build": "run-s build:*",
-    "build:css": "pnpm run generate:css --minify",
     "build:migration": "if [ \"$VERCEL_ENV\" = production ]; then pnpm --dir ../../ migration up; else echo 'Skip non-production migration'; fi",
     "build:next": "next build",
-    "dev": "run-p --silent dev:*",
-    "dev:css": "pnpm run generate:css --watch",
-    "dev:next": "next dev",
-    "generate:css": "tailwindcss -i ./global.css -o ./__generated__/tailwind.css",
+    "dev": "next dev",
     "start": "next start"
   },
   "dependencies": {
@@ -53,7 +49,7 @@
     "daisyui": "2.24.2",
     "node-loader": "2.0.0",
     "postcss": "*",
-    "tailwindcss": "3.1.8",
+    "tailwindcss": "3.2.4",
     "tailwindcss-radix": "2.5.0",
     "tilg": "0.1.1",
     "webpack": "*"

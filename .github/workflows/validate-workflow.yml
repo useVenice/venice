@@ -50,9 +50,6 @@ jobs:
       - name: Run health check
         run: POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=nnop node --loader tsx ./bin/venice health
 
-      - name: Generate assets required for lint
-        run: pnpm --dir ./apps/web/ run generate:css
-
       - name: Run lint
         run: pnpm run lint
 

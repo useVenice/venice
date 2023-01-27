@@ -9,8 +9,8 @@ const {VeniceTheme} = require('./styles/themes')
  */
 module.exports = {
   content: [
-    './{components,pages,screens}/**/*.{ts,tsx}',
-    '../../integrations/*/**/*.tsx',
+    './**/*.tsx',
+    '../../integrations/**/*.tsx',
     '../../packages/engine-frontend/**/*.tsx',
   ],
   theme: {
