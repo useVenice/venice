@@ -223,7 +223,7 @@ export const plaidProvider = makeSyncProvider({
   useConnectHook: (_) => {
     const [state, setState] = React.useState<{
       options: RequiredOnly<PlaidLinkOptions, 'token'>
-      res$: Deferred<typeof def['_types']['connectOutput']>
+      res$: Deferred<(typeof def)['_types']['connectOutput']>
     } | null>(null)
 
     const plaidLink = usePlaidLink({
@@ -276,7 +276,7 @@ export const plaidProvider = makeSyncProvider({
       console.warn('[plaid] institutionExternalId not handled', {
         institutionExternalId,
       })
-      const res$ = new Deferred<typeof def['_types']['connectOutput']>()
+      const res$ = new Deferred<(typeof def)['_types']['connectOutput']>()
       setState({options: {token: opts.link_token}, res$})
       return res$.promise
     }
@@ -485,11 +485,31 @@ export const plaidProvider = makeSyncProvider({
       // Sync transactions
       let cursor = state.transactionSyncCursor ?? undefined
       while (true) {
-        const res = await client.transactionsSync({
-          access_token: accessToken,
-          cursor,
-          options: {include_personal_finance_category: true},
-        })
+        const res = await client
+          .transactionsSync({
+            access_token: accessToken,
+            cursor,
+            options: {include_personal_finance_category: true},
+          })
+          .catch((err: IAxiosError) => {
+            const code =
+              err.isAxiosError &&
+              (err.response?.data as PlaidError | undefined)?.error_code
+            // Do not crash in case we run into this.
+            if (
+              code === 'TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION' &&
+              cursor !== undefined
+            ) {
+              cursor = undefined // Restart from scratch
+              return null
+            }
+            throw err
+          })
+        // Only reason it would be null is if TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION
+        // Gotta be careful of running into an infinite loop though. However it would eventually time out
+        if (!res) {
+          continue
+        }
 
         cursor = res.next_cursor
         yield [
