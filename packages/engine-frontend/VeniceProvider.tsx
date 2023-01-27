@@ -76,7 +76,9 @@ export function VeniceProvider<
   })
   const developerMode = (isAdmin && _developerMode) || false
 
-  console.log('[VeniceProvider]', {userId, isAdmin, accessToken})
+  if (typeof window !== 'undefined') {
+    console.log('[VeniceProvider]', {userId, isAdmin, accessToken})
+  }
 
   const url = config.apiUrl
   const trpcClient = React.useMemo(
