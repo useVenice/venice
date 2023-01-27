@@ -13,7 +13,7 @@ import {
 } from '@usevenice/ui'
 import {Container} from '@usevenice/ui/components/Container'
 
-import {developerModeAtom} from '../contexts/atoms'
+import {developerModeAtom} from '@usevenice/web/contexts/atoms'
 import {EnhancedActiveLink} from './EnhancedActiveLink'
 
 export interface LinkInput {

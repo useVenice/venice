@@ -1,4 +1,4 @@
-import '../__generated__/tailwind.css'
+import '@usevenice/web/__generated__/tailwind.css'
 
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
@@ -15,9 +15,12 @@ import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {UIProvider} from '@usevenice/ui'
 
-import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
-import {supabase} from '../contexts/common-contexts'
-import {SessionContextProvider, useSession} from '../contexts/session-context'
+import {accessTokenAtom, developerModeAtom} from '@usevenice/web/contexts/atoms'
+import {supabase} from '@usevenice/web/contexts/common-contexts'
+import {
+  SessionContextProvider,
+  useSession,
+} from '@usevenice/web/contexts/session-context'
 
 const queryClient = new QueryClient({
   defaultOptions: {

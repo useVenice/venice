@@ -12,8 +12,8 @@ import {
 } from '@usevenice/ui'
 import {formatDateTime, sentenceCase} from '@usevenice/util'
 
-import {envAtom} from '../contexts/atoms'
-import {copyToClipboard} from '../contexts/common-contexts'
+import {envAtom} from '@usevenice/web/contexts/atoms'
+import {copyToClipboard} from '@usevenice/web/contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
 
 export interface ConnectionCardProps {

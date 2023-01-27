@@ -14,7 +14,7 @@ import {
 import {baseRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {fromMaybeArray, makeUlid, R, safeJSONParse, z} from '@usevenice/util'
 
-import {kAccessToken} from '../../../contexts/atoms'
+import {kAccessToken} from '@usevenice/web/contexts/atoms'
 
 export function getAccessToken(req: NextApiRequest) {
   return (
@@ -200,7 +200,7 @@ export default R.identity<NextApiHandler>((req, res) => {
       query: req.query,
       body: req.body,
     })
-    req.query = ret.query as typeof req['query']
+    req.query = ret.query as (typeof req)['query']
     req.query['trpc'] = procedure
     req.body = ret.body
   }

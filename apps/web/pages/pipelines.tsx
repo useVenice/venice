@@ -6,11 +6,11 @@ import Link from 'next/link'
 import type {Id} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
-import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
-import {ConnectionCard} from '../components/ConnectionCard'
-import {PageLayout} from '../layouts/PageLayout'
-import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
+import {EnhancedActiveLink} from '@usevenice/web/components/EnhancedActiveLink'
+import {envAtom, ledgerIdAtom, modeAtom} from '@usevenice/web/contexts/atoms'
+import {ConnectionCard} from '@usevenice/web/components/ConnectionCard'
+import {PageLayout} from '@usevenice/web/layouts/PageLayout'
+import {NewPipelineInScreen} from '@usevenice/web/screens/NewPipelineInScreen'
 
 export default function PipelinesScreen() {
   const mode = useAtomValue(modeAtom)

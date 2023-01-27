@@ -11,10 +11,10 @@ import '@glideapps/glide-data-grid/dist/index.css'
 
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
-import {copyToClipboard} from '../contexts/common-contexts'
-import {PageLayout} from '../layouts/PageLayout'
+import {copyToClipboard} from '@usevenice/web/contexts/common-contexts'
+import {PageLayout} from '@usevenice/web/layouts/PageLayout'
 
-import {VeniceDataGridTheme} from '../styles/themes'
+import {VeniceDataGridTheme} from '@usevenice/web/styles/themes'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},

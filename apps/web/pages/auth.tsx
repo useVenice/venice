@@ -2,11 +2,11 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {RedirectTo} from '../components/common-components'
-import {supabase} from '../contexts/common-contexts'
-import {useSession} from '../contexts/session-context'
-import {PageLayout} from '../layouts/PageLayout'
-import {VeniceTheme} from '../styles/themes'
+import {RedirectTo} from '@usevenice/web/components/common-components'
+import {supabase} from '@usevenice/web/contexts/common-contexts'
+import {useSession} from '@usevenice/web/contexts/session-context'
+import {PageLayout} from '@usevenice/web/layouts/PageLayout'
+import {VeniceTheme} from '@usevenice/web/styles/themes'
 
 export default function AuthScreen() {
   const [session] = useSession()

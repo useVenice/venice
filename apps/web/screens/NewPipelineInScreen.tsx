@@ -17,9 +17,9 @@ import {
 } from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
-import {InstitutionLogo} from '../components/InstitutionLogo'
-import {envAtom, modeAtom, searchByAtom} from '../contexts/atoms'
-import {LoadingIndicator} from '../components/loading-indicators'
+import {InstitutionLogo} from '@usevenice/web/components/InstitutionLogo'
+import {envAtom, modeAtom, searchByAtom} from '@usevenice/web/contexts/atoms'
+import {LoadingIndicator} from '@usevenice/web/components/loading-indicators'
 
 type ConnectMode = 'institution' | 'provider'
 

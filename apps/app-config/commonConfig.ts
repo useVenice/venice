@@ -3,7 +3,6 @@ import {joinPath, zParser} from '@usevenice/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 export const commonEnv = zParser(zCommonEnv).parse({
   // Need to use fully qualified form of process.env.$VAR for
   // webpack DefineEnv that next.js uses to work
@@ -11,7 +10,6 @@ export const commonEnv = zParser(zCommonEnv).parse({
   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
 })
-/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 // TODO: Removing providers we are not using so we don't have nearly as much code, at least on the frontend!
 // Further perhaps code from supported providers can be loaded dynamically based on
