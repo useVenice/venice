@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const {withSentryConfig} = require('@sentry/nextjs')
 
 /**
+ * Meta: change from `@type` to @satisfies once ts 5.0 is out
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
