@@ -7,7 +7,14 @@
   - API only stateless mode mode
   - stream specific sync
 
-## 2022-10-29 Background sync
+
+## 2023-01-27 Replace pg_cron + graphile-worker with inngest for reliable background sync
+- Inngest is much more reliable, scalable and debuggable.
+- It also allows the core worker implementation to be not dependent on postgres / Supabase if you choose to
+  use a different metadata backend instead of Postgres
+- Step function support in Inngest will allow us to workaround the 10 - 60s limitation on Vercel functions for syncs that take longer
+  - It also opens up the possibility for us to implement sync in a more advanced patterns, whether granular resumable or fan out
+## 2022-10-29 Background sync MVP
 
 Venice will now automatically sync in the background in addition addition to listening for webhook.
 

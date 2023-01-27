@@ -11,7 +11,6 @@ import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
 import type {NonEmptyArray} from '@usevenice/util'
 import {parseUrl, R, z, zFunction, zodInsecureDebug} from '@usevenice/util'
-import {runWorker, setupWorker} from '@usevenice/worker'
 
 import {cliFromRouter} from './cli-utils'
 
@@ -28,24 +27,6 @@ export const cli = cliFromRouter(veniceRouter, {
     accessToken: process.env['ACCESS_TOKEN'],
   }),
 })
-
-cli
-  .command('setupWorker', 'Setup event loop for the worker via pg_cron')
-  .option('--syncHttp', 'Use "http" extension instead of "pg_net"')
-  .action(
-    zFunction([z.object({syncHttp: z.boolean().optional()})], async (opts) => {
-      await setupWorker(opts)
-    }),
-  )
-
-cli
-  .command('runWorker', 'Start the worker')
-  .option('--timeout', 'Timeout in ms before worker exits')
-  .action(
-    zFunction([z.object({timeout: z.number().nullish()})], async (opts) => {
-      await runWorker({timeout: opts.timeout ?? undefined})
-    }),
-  )
 
 cli
   .command('serve [port]', 'Creates a standalone server for testing')

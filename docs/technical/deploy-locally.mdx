@@ -27,7 +27,7 @@ more info.
 
 ### Hook up to a test database (e.g. Supabase)
 
-Here's a quick video from our founder on how to hook Venice up to a custom 
+Here's a quick video from our founder on how to hook Venice up to a custom
 database in just a few minutes using [Supabase](https://supabase.com).
 
 <p>
@@ -43,7 +43,7 @@ Join our community of founders & developers building the future of finance toget
 </Card>
 
 <Card title="Reach out" icon="screwdriver-wrench" href="mailto:hi@venice.is">
-Need a custom integration? Reach out to our support team and we'll have a quote 
+Need a custom integration? Reach out to our support team and we'll have a quote
 back to you in no time!
 </Card>
 
@@ -103,26 +103,20 @@ file you can use to deploy Venice locally to your machine.
 | `int_plaid__language`             | `en \| fr \| es \| nl \| de`<br /><br />The default value is `"en"`  |
 | `int_plaid__clientName`           | (Optional) `string` with a default value of "This Application"`. The name of your application, as it should be displayed in Link (max length of 30 characters)<br /><br />If a value longer than 30 characters is provided, Link will display `This Application` instead.   |
 
-### Worker
-
-| Name                              | Description                                                              |
-| :-------------------------------- | :----------------------------------------------------------------------- |
-| `WORKER_INVOCATION_SECRET`        | (Required) Used to guard against who can invoke the `/api/worker` endpoint.<br /><br />Note: This can be set to a randomly generated alphanumeric string value |
-
 ## Environments
 
-There are three environments Venice operates in when creating new connections, 
+There are three environments Venice operates in when creating new connections,
 and they correspond to the same environments in data aggregators like Plaid.
 
 - **sandbox**: access to test data only (e.g. `Platypus` bank using `user_good` & `pass_good` credentials)
 - **development**: limited access to live data
 - **production**: access to live financial data
 
-The default is `sandbox`. To change the environment when creating new connections, 
+The default is `sandbox`. To change the environment when creating new connections,
 append `&env=development` (or `&env=production`) to the end of the add pipeline URL.
 
-This setting only affects new connections. Existing connections store which 
-environment they are part of and automatically use the correct environment-specific 
+This setting only affects new connections. Existing connections store which
+environment they are part of and automatically use the correct environment-specific
 keys from environment variables when communicating with data aggregators.
 
 ## Local Development

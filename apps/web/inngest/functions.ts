@@ -1,6 +1,10 @@
 import '@usevenice/app-config/register.node'
 
-import {veniceBackendConfig} from '@usevenice/app-config/backendConfig'
+import {
+  veniceBackendConfig,
+  veniceRouter,
+} from '@usevenice/app-config/backendConfig'
+import type {UserId} from '@usevenice/cdk-core'
 import {inngest} from './events'
 
 export const demoFn = inngest.createStepFunction(
@@ -34,8 +38,18 @@ export const scheduleSyncs = inngest.createScheduledFunction(
 export const syncPipeline = inngest.createStepFunction(
   'Sync pipeline',
   'sync/requested',
-  async ({event}) => {
-    console.log('Sync pipeline', event.data.pipelineId)
-    return event.data.pipelineId
+  async ({
+    event: {
+      data: {pipelineId, forReal},
+    },
+  }) => {
+    console.log('Sync pipeline', pipelineId)
+    if (forReal) {
+      // TODO: Figure out what is the userId we ought to be using...
+      await veniceRouter
+        .createCaller({isAdmin: true, userId: 'usr_TASK_NOOP' as UserId})
+        .mutation('syncPipeline', [{id: pipelineId}, {}])
+    }
+    return pipelineId
   },
 )

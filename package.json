@@ -99,8 +99,7 @@
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@1.1.0": "patches/remeda@1.1.0.patch",
-      "zod@3.19.0": "patches/zod@3.19.0.patch",
-      "graphile-worker@0.13.0": "patches/graphile-worker@0.13.0.patch"
+      "zod@3.19.0": "patches/zod@3.19.0.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {

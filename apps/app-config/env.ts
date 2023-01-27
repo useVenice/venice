@@ -55,11 +55,6 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     .trim()
     .optional()
     .describe('Used for validating authenticity of accessToken'),
-
-  WORKER_INVOCATION_SECRET: z
-    .string()
-    .default('')
-    .describe('Used to invoke the /api/worker endpoint'),
 })
 
 // MARK: - Integration env vars
@@ -154,8 +149,8 @@ export function parseIntConfigsFromRawEnv(
     }),
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
-    [k in typeof PROVIDERS[number]['name']]?: Extract<
-      typeof PROVIDERS[number],
+    [k in (typeof PROVIDERS)[number]['name']]?: Extract<
+      (typeof PROVIDERS)[number],
       {name: k}
     >['def']['_types']['integrationConfig']
   }

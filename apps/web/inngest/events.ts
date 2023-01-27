@@ -6,7 +6,7 @@ type ToEvents<T extends Record<string, unknown>> = {
 }
 
 export type Events = ToEvents<{
-  'sync/requested': {pipelineId: Id['pipe']}
+  'sync/requested': {pipelineId: Id['pipe']; forReal?: boolean}
   'test/demo': {mydata: string}
 }>
 

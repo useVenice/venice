@@ -9,7 +9,6 @@ const {withSentryConfig} = require('@sentry/nextjs')
 const nextConfig = {
   transpilePackages: [
     path.resolve(__dirname, '../app-config'),
-    path.resolve(__dirname, '../worker'),
     path.resolve(__dirname, '../../integrations/core-integration-airtable'),
     path.resolve(__dirname, '../../integrations/core-integration-firebase'),
     path.resolve(__dirname, '../../integrations/core-integration-fs'),
