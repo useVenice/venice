@@ -20,14 +20,16 @@ export const scheduleSyncs = inngest.createScheduledFunction(
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
         secondsSinceLastSync: 24 * 60 * 60, // 24 hours
       })
-      console.log(`Scheduling sync for ${pipelines.length} pipes`)
-      await inngest.send(
-        'pipeline/sync-requested',
-        pipelines.map((pipe) => ({data: {pipelineId: pipe.id}})),
-      )
-      // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
-      // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
-      console.log(`Scheduled ${pipelines.length} pipeline syncs`)
+      console.log(`Found ${pipelines.length} pipelines needing to sync`)
+      if (pipelines.length > 0) {
+        await inngest.send(
+          'pipeline/sync-requested',
+          pipelines.map((pipe) => ({data: {pipelineId: pipe.id}})),
+        )
+        // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
+        // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
+        console.log(`Scheduled ${pipelines.length} pipeline syncs`)
+      }
       return {scheduledCount: pipelines.length}
     }),
 )
