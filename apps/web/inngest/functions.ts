@@ -18,7 +18,7 @@ export const scheduleSyncs = inngest.createScheduledFunction(
   async () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async () => {
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
-        secondsSinceLastSync: 24 * 60 * 60, // 24 hours
+        secondsSinceLastSync: 1 * 60 * 60, // Every hour
       })
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
       if (pipelines.length > 0) {
