@@ -192,7 +192,9 @@ export default R.identity<NextApiHandler>((req, res) => {
   }
 
   const segments = req.query['trpc'] as [string] | string
+
   if (Array.isArray(segments) && parseWebhookRequest.isWebhook(segments)) {
+    // TODO: #inngestMe This is where we can call inngest.send rather than handling webhooks synchronously.
     const {procedure, ...ret} = parseWebhookRequest({
       method: req.method,
       headers: req.headers,
@@ -200,7 +202,7 @@ export default R.identity<NextApiHandler>((req, res) => {
       query: req.query,
       body: req.body,
     })
-    req.query = ret.query as typeof req['query']
+    req.query = ret.query as (typeof req)['query']
     req.query['trpc'] = procedure
     req.body = ret.body
   }

@@ -250,7 +250,10 @@ export const makeSyncEngine = <
     pipeline: ParsedPipeline,
     opts: z.infer<typeof zSyncOptions> & {
       source$?: Source<AnyEntityPayload>
-      /** Trigger the default sourceSync after source$ exhausts */
+      /**
+       * Trigger the default sourceSync after source$ exhausts
+       * TODO: #inngestMe This is where we can fire off a request to syncPipeline so it happens async
+       */
       source$ConcatDefault?: boolean
       destination$$?: Destination
     } = {},
