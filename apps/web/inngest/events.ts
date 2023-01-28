@@ -9,7 +9,7 @@ type ToEvents<T extends Record<string, unknown>> = {
 }
 
 export type Events = ToEvents<{
-  'pipeline/sync-requested': {pipelineId: Id['pipe']; forReal?: boolean}
+  'pipeline/sync-requested': {pipelineId: Id['pipe']}
   'webhook/received': {body: unknown; headers: Record<string, string>}
 }>
 
