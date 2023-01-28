@@ -76,7 +76,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           id,
           settings: R.keys(settings),
           institution,
-          existingResourceß: resource,
+          existingResource: resource,
         })
 
         const institutionId = institution
