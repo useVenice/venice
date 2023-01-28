@@ -156,7 +156,6 @@ function EmptyDestinationsView() {
 // import {makeUlid} from '@usevenice/util'
 // import {makeId} from '@usevenice/cdk-core'
 // import {Database, PlusCircle} from 'phosphor-react'
-// import {useDelete, useInsert} from 'react-supabase'
 
 // const [_insertLedgerRes, insertLedger] = useInsert('resource')
 // const [_deleteLedgerRes, deleteLedger] = useDelete('resource')

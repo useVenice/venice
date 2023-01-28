@@ -8,7 +8,6 @@ import React from 'react'
 import {QueryClient, QueryClientProvider} from 'react-query'
 import {createWebStoragePersistor} from 'react-query/createWebStoragePersistor-experimental'
 import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
-import {Provider} from 'react-supabase'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
@@ -85,9 +84,7 @@ export function MyApp({Component, pageProps}: AppProps) {
           <UIProvider>
             <SessionContextProvider supabaseClient={supabase}>
               <_VeniceProvider>
-                <Provider value={supabase}>
-                  <Component {...pageProps} />
-                </Provider>
+                <Component {...pageProps} />
               </_VeniceProvider>
             </SessionContextProvider>
           </UIProvider>
