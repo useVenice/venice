@@ -8,7 +8,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import * as trpc from '@trpc/server'
+import type {AnyRouter} from '@trpc/server'
 import cac from 'cac'
 
 import type {AnyZFunction, MaybePromise, z} from '@usevenice/util'
@@ -18,7 +18,6 @@ import {
   isIterable,
   isZodType,
   parseIf,
-  preprocessArgsTuple,
   R,
   routerFromZFunctionMap,
   safeJSONParse,
@@ -62,8 +61,6 @@ export function readFileContent(filename: string, dirname?: string) {
   return fs.readFileSync(filePath, 'utf8')
 }
 
-type AnyProcedure = trpc.ProcedureRecord[string]
-
 // TODO Take router._defs and add options based on it so that docs can be shown
 // on the command line.
 
@@ -76,51 +73,20 @@ export interface CliOpts<TContext = unknown> {
   defaultHelpCommand?: boolean
 }
 const globalStart = Date.now() // Not entirely accurate...
-export function cliFromRouter<T extends trpc.AnyRouter>(
+export function cliFromRouter<T extends AnyRouter>(
   router: T,
   cliOpts?: CliOpts<Parameters<T['createCaller']>[0]>,
 ) {
   const cli = cac()
-  R.pipe(
-    R.pick(router._def, ['queries', 'mutations', 'subscriptions']),
-    R.toPairs,
-    R.flatMap(([type, map]) =>
-      R.toPairs(map).map(
-        ([name, procedure]) =>
-          [
-            type as 'queries' | 'mutations' | 'subscriptions',
-            name,
-            procedure as AnyProcedure,
-          ] as const,
-      ),
-    ),
-    R.uniqBy(([, name]) => name), // cac will natively add commands with the same name twice...
-  ).forEach(([type, name, _procedure]) => {
-    const method = (
-      {
-        queries: 'query',
-        mutations: 'mutation',
-        subscriptions: 'subscription',
-      } as const
-    )[type]
+  Object.entries(router._def.procedures).forEach(([name, _procedure]) => {
     // console.debug(`Adding command ${name}`)
     // sub-command is not really working, let's hope we don't have naming conflicts...
     // @see https://share.cleanshot.com/BtVq26
     // Do not name query the same way as we do mutations
 
-    // Normally we rely on the inputParser inside the router itself to normalize into
-    // array with the right # of arguments.
-    // However when not creating router directly rather than from zFunctionMap
-    // then preprocessing does not happen automatically, causing issue on cli...
-    R.pipe(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      parseIf((_procedure as any).inputParser, isZodType),
+    const zTuple = R.pipe(
+      parseIf((_procedure as any)._def.inputs[0], isZodType),
       (t) => (t?._def?.typeName === 'ZodTuple' ? (t as z.ZodTuple) : undefined),
-      (tuple) =>
-        tuple &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ((_procedure as any).parseInputFn = (input: unknown) =>
-          preprocessArgsTuple(tuple).parseAsync(input)),
     )
 
     cli
@@ -148,13 +114,27 @@ export function cliFromRouter<T extends trpc.AnyRouter>(
             }
             return tuple.length > 1 ? tuple : inpt
           },
+          // Normally we rely on the inputParser inside the router itself to normalize into
+          // array with the right # of arguments.
+          // However when not creating router directly rather than from zFunctionMap
+          // then preprocessing does not happen automatically, causing issue on cli...
+          (i) => {
+            const tupleItems = zTuple?._def.items
+            return !tupleItems
+              ? i
+              : R.pipe(Array.isArray(i) ? i : [i], (arr) => [
+                  ...arr.slice(0, tupleItems.length),
+                  ...new Array(Math.max(tupleItems.length - arr.length, 0)),
+                ])
+          },
         )
 
         console.log(`[cli] ${name} input`, input)
         console.log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
         const start = Date.now()
         await cliOpts?.prepare?.()
-        const res = router.createCaller(cliOpts?.context)[method](name, input)
+        // @ts-expect-error
+        const res = router.createCaller(cliOpts?.context)[name](input)
         await printResult(res)
         await cliOpts?.cleanup?.()
         console.log(`[cli] ${name} done in ${Date.now() - start}ms`)
@@ -175,7 +155,7 @@ export function cliFromZFunctionMap(
   map: Record<string, AnyZFunction | unknown>,
   cliOpts?: CliOpts,
 ) {
-  const cli = cliFromRouter(routerFromZFunctionMap(trpc.router(), map), {
+  const cli = cliFromRouter(routerFromZFunctionMap(map), {
     ...cliOpts,
     defaultHelpCommand:
       ('' in map ? false : undefined) ?? cliOpts?.defaultHelpCommand,

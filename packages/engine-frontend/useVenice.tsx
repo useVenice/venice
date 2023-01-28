@@ -1,16 +1,15 @@
 import React from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
-import type {UseQueryResult} from 'react-query'
 
 import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
 import type {
-  AnySyncMutationInput,
-  AnySyncQueryOutput,
+  AnySyncRouterInput,
   IntegrationInput,
 } from '@usevenice/engine-backend'
 import {z} from '@usevenice/util'
 
+import {createTRPCClientProxy} from '@trpc/client'
 import {VeniceProvider} from './VeniceProvider'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
@@ -37,15 +36,16 @@ export function useVeniceAdmin({
 
   const {trpc, isAdmin, userId, developerMode} = VeniceProvider.useContext()
 
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!userId,
-  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
+  const integrationsRes = trpc.listIntegrations.useQuery(
+    {},
+    {enabled: !!userId},
+  )
 
-  const creatorIdsRes = trpc.useQuery(
-    ['adminSearchCreatorIds', {keywords: creatorIdKeywords}],
+  const creatorIdsRes = trpc.adminSearchCreatorIds.useQuery(
+    {keywords: creatorIdKeywords},
     {enabled: isAdmin},
-  ) as UseQueryResult<AnySyncQueryOutput<'adminSearchCreatorIds'>>
-  const adminSyncMeta = trpc.useMutation('adminSyncMetadata')
+  )
+  const adminSyncMeta = trpc.adminSyncMetadata.useMutation()
 
   return {integrationsRes, creatorIdsRes, adminSyncMeta, isAdmin, developerMode}
 }
@@ -56,21 +56,26 @@ export function useVeniceAdmin({
 export function useVenice({envName, keywords}: UseVeniceOptions) {
   const {trpc, userId, isAdmin, developerMode, queryClient} =
     VeniceProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!userId,
-  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
-  const resourcesRes = trpc.useQuery(['listResources', {}], {
-    enabled: !!userId,
+  const integrationsRes = trpc.listIntegrations.useQuery(
+    {},
+    {enabled: !!userId},
+  )
+  const resourcesRes = trpc.listResources.useQuery(
+    {},
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
-  }) as UseQueryResult<AnySyncQueryOutput<'listResources'>>
-  const insRes = trpc.useQuery(['searchInstitutions', {keywords}], {
-    enabled: !!userId,
-  }) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
-  const syncResource = trpc.useMutation('syncResource')
-  const deleteResource = trpc.useMutation('deleteResource', {
+    {enabled: !!userId},
+  )
+  const insRes = trpc.searchInstitutions.useQuery(
+    {keywords},
+    {
+      enabled: !!userId,
+    },
+  )
+  const syncResource = trpc.syncResource.useMutation()
+  const deleteResource = trpc.deleteResource.useMutation({
     onSettled: () => queryClient.invalidateQueries(['listResources']),
   })
-  const checkResource = trpc.useMutation('checkResource', {
+  const checkResource = trpc.checkResource.useMutation({
     onSettled: () => queryClient.invalidateQueries(['listResources']),
   })
 
@@ -99,26 +104,30 @@ export function useVeniceConnect({
 }: UseVeniceOptions) {
   const {
     connectFnMapRef,
-    trpcClient: client,
+    trpcClient: _client,
     trpc,
     queryClient,
     userId,
   } = VeniceProvider.useContext()
-  const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
-    enabled: !!userId,
-  }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
+  const client = createTRPCClientProxy(_client) // Move this inside...
+
+  const integrationsRes = trpc.listIntegrations.useQuery(
+    {},
+    {enabled: !!userId},
+  )
 
   const preConnOpts = React.useCallback(
     (
-      input: AnySyncMutationInput<'preConnect'>,
+      input: AnySyncRouterInput['preConnect'],
     ): NonNullable<Parameters<typeof queryClient.fetchQuery>[2]> => ({
       queryKey: ['preConnect', input],
       queryFn: async ({queryKey, ...rest}) => {
         console.log('preConnQueryFn', queryKey, rest)
         // "mutation" because preConnect can have side effects such as causing `user` to be registered
         // This is used by prefetchQuery though afaik only query results may be cached by react-query
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-        return client.mutation(queryKey[0] as any, queryKey[1] as any)
+        return client.preConnect.mutate(
+          queryKey[1] as AnySyncRouterInput['preConnect'],
+        )
       },
       staleTime: 15 * 60 * 1000, // This should be provider dependent
       // in particular dependent on the response from preConnect.
@@ -198,7 +207,7 @@ export function useVeniceConnect({
         )
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.mutation('postConnect', [
+        const postConRes = await client.postConnect.mutate([
           res,
           int,
           {...opt, connectWith: _opts.connectWith},

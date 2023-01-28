@@ -1,5 +1,5 @@
 import {httpLink} from '@trpc/client/links/httpLink'
-import {createReactQueryHooks} from '@trpc/react'
+import {createTRPCReact, httpBatchLink} from '@trpc/react-query'
 import React from 'react'
 
 import type {
@@ -31,7 +31,7 @@ interface DialogConfig {
   options: Parameters<UseConnectScope['openDialog']>[1]
 }
 
-const trpc = createReactQueryHooks<AnySyncRouter>()
+const trpc = createTRPCReact<AnySyncRouter>()
 
 export const VeniceContext = React.createContext<{
   trpc: typeof trpc
@@ -83,12 +83,17 @@ export function VeniceProvider<
   const url = config.apiUrl
   const trpcClient = React.useMemo(
     () =>
+      // Disable reqeuest batching in DEBUG mode for easier debugging
+      // createTRPCProxyClient<AnySyncRouter>({
       trpc.createClient({
-        headers: () => ({
-          ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
-        }),
-        // Disable reqeuest batching in DEBUG mode for easier debugging
-        ...(__DEBUG__ ? {links: [httpLink({url})]} : {url}),
+        links: [
+          (__DEBUG__ ? httpLink : httpBatchLink)({
+            url,
+            headers: () => ({
+              ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
+            }),
+          }),
+        ],
       }),
     [__DEBUG__, accessToken, url],
   )

@@ -43,7 +43,7 @@ export const syncPipeline = inngest.createStepFunction(
     // TODO: Figure out what is the userId we ought to be using...
     await veniceRouter
       .createCaller({isAdmin: true, userId: 'usr_TASK_NOOP' as UserId})
-      .mutation('syncPipeline', [{id: pipelineId}, {}])
+      .syncPipeline([{id: pipelineId}, {}])
     console.log('did sync pipeline', pipelineId)
     return pipelineId
   },

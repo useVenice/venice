@@ -27,11 +27,8 @@ export default function DataExplorerScreen() {
   const userInfoRes = trpc.useQuery(['userInfo', {}], {
     enabled: !!userId,
   })
-  // @ts-expect-error
   const apiKey = userInfoRes.data?.apiKey
-  // @ts-expect-error
   const databaseUrl: string = userInfoRes.data?.databaseUrl ?? ''
-  // @ts-expect-error
   const tableNames: string[] = userInfoRes.data?.tableNames ?? []
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')

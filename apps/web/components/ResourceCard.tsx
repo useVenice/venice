@@ -18,10 +18,10 @@ import {InstitutionLogo} from './InstitutionLogo'
 
 export interface ResourceCardProps {
   resource: ZStandard['resource'] & {
-    envName: EnvName | null | undefined
+    envName?: EnvName | null | undefined
+    lastSyncCompletedAt?: string | null | undefined
+    institution?: ZStandard['institution'] | null | undefined
     syncInProgress: boolean
-    lastSyncCompletedAt: Date | null | undefined
-    institution: ZStandard['institution'] | null | undefined
   }
 }
 

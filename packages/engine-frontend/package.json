@@ -5,16 +5,16 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@trpc/client": "9.26.0",
-    "@trpc/react": "9.26.0",
-    "@trpc/server": "9.26.0",
+    "@tanstack/react-query": "*",
+    "@trpc/client": "10.9.0",
+    "@trpc/react-query": "10.9.0",
+    "@trpc/server": "10.9.0",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
     "react": "*",
-    "react-dom": "*",
-    "react-query": "*"
+    "react-dom": "*"
   },
   "devDependencies": {
     "@types/react": "*"

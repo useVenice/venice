@@ -1,17 +1,16 @@
-import * as trpc from '@trpc/server'
-import type {inferProcedureInput, inferProcedureOutput} from '@trpc/server'
-import {TRPCError} from '@trpc/server'
+import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
+import {initTRPC, TRPCError} from '@trpc/server'
 
 import type {
   AnyEntityPayload,
   AnySyncProvider,
-  ResourceUpdate,
   ConnectWith,
   Destination,
   EnvName,
   Link,
   LinkFactory,
   MetaService,
+  ResourceUpdate,
   Source,
   UserId,
 } from '@usevenice/cdk-core'
@@ -27,17 +26,17 @@ import {
   zWebhookInput,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
-import {isZodType, joinPath, R, rxjs, z, zParser} from '@usevenice/util'
+import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
-import {_zContext, makeJwtClient} from './auth-utils'
+import {makeJwtClient, _zContext} from './auth-utils'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
-  ResourceInput,
   IntegrationInput,
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
+  ResourceInput,
   ZInput,
 } from './makeSyncParsers'
 import {
@@ -96,22 +95,39 @@ export interface SyncEngineConfig<
 }
 
 export type AnySyncRouter = ReturnType<typeof makeSyncEngine>['router']
+export type AnySyncRouterInput = inferRouterInputs<AnySyncRouter>
+export type AnySyncRouterOutput = inferRouterOutputs<AnySyncRouter>
 
-export type AnySyncQueryInput<
-  K extends keyof AnySyncRouter['_def']['queries'],
-> = inferProcedureInput<AnySyncRouter['_def']['queries'][K]>
-export type AnySyncQueryOutput<
-  K extends keyof AnySyncRouter['_def']['queries'],
-> = inferProcedureOutput<AnySyncRouter['_def']['queries'][K]>
+export const trpcServer = initTRPC
+  .context<UserInfo>()
+  .meta<EngineMeta>()
+  .create()
 
-export type AnySyncMutationInput<
-  K extends keyof AnySyncRouter['_def']['mutations'],
-> = inferProcedureInput<AnySyncRouter['_def']['mutations'][K]>
-export type AnySyncMutationOutput<
-  K extends keyof AnySyncRouter['_def']['mutations'],
-> = inferProcedureOutput<AnySyncRouter['_def']['mutations'][K]>
-
-export const baseRouter: typeof trpc.router<UserInfo, EngineMeta> = trpc.router
+export const isAuthed = trpcServer.middleware(({next, ctx, path}) => {
+  if (!ctx.userId && !ctx.isAdmin) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: `Auth required: ${path}`,
+    })
+  }
+  // Figure out how we can pass the context into zod validators so that we can
+  // check user has access to resource pipline etc in a single place...
+  // Also we probably don't want non-admin user to be able to provider anything
+  // other than the `id` for integration, resource and pipeline
+  return next({ctx: {...ctx, userId: ctx.userId}})
+})
+export const isAdmin = trpcServer.middleware(({next, ctx, path}) => {
+  if (!ctx.isAdmin) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: `Admin only: ${path}`,
+    })
+  }
+  return next({ctx: {...ctx, isAdmin: true as const}})
+})
+export const publicProcedure = trpcServer.procedure
+export const authedProcedure = publicProcedure.use(isAuthed)
+export const adminProcedure = publicProcedure.use(isAdmin)
 
 // TODO: Figure out how to support both syncing on the command line via CLI without auth
 // as well as syncing via API which has auth...
@@ -320,11 +336,11 @@ export const makeSyncEngine = <
     )
   }
 
-  const anonRouter = baseRouter()
-    .query('health', {resolve: () => 'Ok ' + new Date().toISOString()})
-    .mutation('handleWebhook', {
-      input: z.tuple([zInt, zWebhookInput]),
-      resolve: async ({input: [int, input]}) => {
+  const router = trpcServer.router({
+    health: publicProcedure.query(() => 'Ok ' + new Date().toISOString()),
+    handleWebhook: publicProcedure
+      .input(z.tuple([zInt, zWebhookInput]))
+      .mutation(async ({input: [int, input]}) => {
         if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
           console.warn(`${int.provider.name} does not handle webhooks`)
           return
@@ -344,27 +360,10 @@ export const makeSyncEngine = <
         )
 
         return res.response?.body
-      },
-    })
-
-  const authenticatedRouter = baseRouter()
-    .middleware(({next, ctx, path}) => {
-      if (!ctx.userId && !ctx.isAdmin) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: `Auth required: ${path}`,
-        })
-      }
-      // Figure out how we can pass the context into zod validators so that we can
-      // check user has access to resource pipline etc in a single place...
-      // Also we probably don't want non-admin user to be able to provider anything
-      // other than the `id` for integration, resource and pipeline
-      return next({ctx: {...ctx, userId: ctx.userId}})
-    })
-    // MARK: - Metadata  etc
-    .query('listIntegrations', {
-      input: z.object({type: z.enum(['source', 'destination']).nullish()}),
-      resolve: async ({input: {type}}) => {
+      }),
+    listIntegrations: authedProcedure
+      .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
+      .query(async ({input: {type}}) => {
         const ints = await getDefaultIntegrations()
         return ints
           .map((int) => ({
@@ -378,11 +377,10 @@ export const makeSyncEngine = <
               (type === 'source' && int.isSource) ||
               (type === 'destination' && int.isDestination),
           )
-      },
-    })
-    .query('searchInstitutions', {
-      input: z.object({keywords: z.string().trim().nullish()}).optional(),
-      resolve: async ({input: {keywords} = {}}) => {
+      }),
+    searchInstitutions: authedProcedure
+      .input(z.object({keywords: z.string().trim().nullish()}).optional())
+      .query(async ({input: {keywords} = {}}) => {
         const ints = await getDefaultIntegrations()
         const institutions = await metaService.searchInstitutions({
           keywords,
@@ -406,11 +404,10 @@ export const makeSyncEngine = <
             int: {id: int.id},
           }))
         })
-      },
-    })
-    .query('listResources', {
-      input: z.object({}).optional(),
-      resolve: async ({ctx}) => {
+      }),
+    listResources: authedProcedure
+      .input(z.object({}).optional())
+      .query(async ({ctx}) => {
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
         const resources = await metaService.tables.resource.list({
@@ -484,127 +481,87 @@ export const makeSyncEngine = <
               : undefined,
           }
         })
-      },
-    })
+      }),
     // TODO: Do we need this method at all? Or should we simply add params to args
     // to syncResource instead? For example, skipPipelines?
-    .mutation('checkResource', {
-      meta: {
+    checkResource: authedProcedure
+      .meta({
         description: 'Not automatically called, used for debugging for now',
-      },
-      input: z.tuple([zReso, zCheckResourceOptions.optional()]),
-      resolve: async ({
-        input: [{settings, integration: int, ...reso}, opts],
-        ctx,
-      }) => {
-        authorizeOrThrow(ctx, 'resource', reso)
-        // console.log('checkResource', {settings, integration, ...conn}, opts)
-        const resoUpdate = await int.provider.checkResource?.({
-          settings,
-          config: int.config,
-          options: opts ?? {},
-          context: {
-            webhookBaseUrl: joinPath(
-              apiUrl,
-              parseWebhookRequest.pathOf(int.id),
-            ),
-          },
-        })
-        if (resoUpdate || opts?.import) {
-          /** Do not update the `creatorId` here... */
-          await _syncResourceUpdate(int, {
-            ...(opts?.import && {
-              userId: reso.creatorId ?? undefined,
-              envName: reso.envName ?? undefined,
-            }),
-            ...resoUpdate,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            settings: {...(opts?.import && settings), ...resoUpdate?.settings},
-            resourceExternalId:
-              resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
-            connectWith: opts?.connectWith,
+      })
+      .input(z.tuple([zReso, zCheckResourceOptions.optional()]))
+      .mutation(
+        async ({input: [{settings, integration: int, ...reso}, opts], ctx}) => {
+          authorizeOrThrow(ctx, 'resource', reso)
+          // console.log('checkResource', {settings, integration, ...conn}, opts)
+          const resoUpdate = await int.provider.checkResource?.({
+            settings,
+            config: int.config,
+            options: opts ?? {},
+            context: {
+              webhookBaseUrl: joinPath(
+                apiUrl,
+                parseWebhookRequest.pathOf(int.id),
+              ),
+            },
           })
-        }
-        if (!int.provider.checkResource) {
-          return `Not implemented in ${int.provider.name}`
-        }
-        return 'Ok'
-      },
-    })
+          if (resoUpdate || opts?.import) {
+            /** Do not update the `creatorId` here... */
+            await _syncResourceUpdate(int, {
+              ...(opts?.import && {
+                userId: reso.creatorId ?? undefined,
+                envName: reso.envName ?? undefined,
+              }),
+              ...resoUpdate,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              settings: {
+                ...(opts?.import && settings),
+                ...resoUpdate?.settings,
+              },
+              resourceExternalId:
+                resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
+              connectWith: opts?.connectWith,
+            })
+          }
+          if (!int.provider.checkResource) {
+            return `Not implemented in ${int.provider.name}`
+          }
+          return 'Ok'
+        },
+      ),
     // What about delete? Should this delete also? Or soft delete?
-    .mutation('deleteResource', {
-      input: z.tuple([
-        zReso,
-        z.object({revokeOnly: z.boolean().nullish()}).optional(),
-      ]),
-      resolve: async ({
-        input: [{settings, integration, ...reso}, opts],
-        ctx,
-      }) => {
-        authorizeOrThrow(ctx, 'resource', reso)
-        await integration.provider.revokeResource?.(
-          settings,
-          integration.config,
-        )
-        if (opts?.revokeOnly) {
-          return
-        }
-        await metaService.tables.resource.delete(reso.id)
-      },
-    })
+    deleteResource: authedProcedure
+      .input(
+        z.tuple([
+          zReso,
+          z.object({revokeOnly: z.boolean().nullish()}).optional(),
+        ]),
+      )
+      .mutation(
+        async ({input: [{settings, integration, ...reso}, opts], ctx}) => {
+          authorizeOrThrow(ctx, 'resource', reso)
+          await integration.provider.revokeResource?.(
+            settings,
+            integration.config,
+          )
+          if (opts?.revokeOnly) {
+            return
+          }
+          await metaService.tables.resource.delete(reso.id)
+        },
+      ),
     // MARK: - Connect
-    .mutation('preConnect', {
-      input: z.tuple([zInt, zConnectOptions]),
+    preConnect: authedProcedure
+      .input(z.tuple([zInt, zConnectOptions]))
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      resolve: async ({
-        input: [int, {resourceExternalId, ...connCtxInput}],
-        ctx,
-      }) => {
-        const reso = resourceExternalId
-          ? await metaService.tables.resource
-              .get(makeId('reso', int.provider.name, resourceExternalId))
-              .then((input) => zReso.parseAsync(input))
-          : undefined
-        authorizeOrThrow(ctx, 'resource', reso)
-        return int.provider.preConnect?.(int.config, {
-          ...connCtxInput,
-          userId: ctx.userId ?? ADMIN_UID,
-          resource: reso
-            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              {externalId: resourceExternalId!, settings: reso.settings}
-            : undefined,
-          webhookBaseUrl: joinPath(apiUrl, parseWebhookRequest.pathOf(int.id)),
-          redirectUrl: getRedirectUrl?.(int, ctx),
-        })
-      },
-    })
-    // useConnectHook happens client side only
-    // for cli usage, can just call `postConnect` directly. Consider making the
-    // flow a bit smoother with a guided cli flow
-    .mutation('postConnect', {
-      // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
-      // needed
-      input: z.tuple([z.unknown(), zInt, zPostConnectOptions]),
-      // How do we verify that the userId here is the same as the userId from preConnectOption?
-      resolve: async ({
-        input: [input, int, {resourceExternalId, ...connCtxInput}],
-        ctx,
-      }) => {
-        console.log('didConnect start', int.provider.name, input, connCtxInput)
-        if (!int.provider.postConnect || !int.provider.def.connectOutput) {
-          return 'Noop'
-        }
-        const reso = resourceExternalId
-          ? await metaService.tables.resource
-              .get(makeId('reso', int.provider.name, resourceExternalId))
-              .then((input) => zReso.parseAsync(input))
-          : undefined
-        authorizeOrThrow(ctx, 'resource', reso)
-
-        const resoUpdate = await int.provider.postConnect(
-          int.provider.def.connectOutput.parse(input),
-          int.config,
-          {
+      .mutation(
+        async ({input: [int, {resourceExternalId, ...connCtxInput}], ctx}) => {
+          const reso = resourceExternalId
+            ? await metaService.tables.resource
+                .get(makeId('reso', int.provider.name, resourceExternalId))
+                .then((input) => zReso.parseAsync(input))
+            : undefined
+          authorizeOrThrow(ctx, 'resource', reso)
+          return int.provider.preConnect?.(int.config, {
             ...connCtxInput,
             userId: ctx.userId ?? ADMIN_UID,
             resource: reso
@@ -616,24 +573,72 @@ export const makeSyncEngine = <
               parseWebhookRequest.pathOf(int.id),
             ),
             redirectUrl: getRedirectUrl?.(int, ctx),
-          },
-        )
-        await _syncResourceUpdate(int, {
-          ...resoUpdate,
-          // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          userId: ctx.userId ?? ADMIN_UID,
-          envName: connCtxInput.envName,
-          connectWith: connCtxInput.connectWith,
-        })
-        console.log('didConnect finish', int.provider.name, input)
-        return 'Resource successfully connected'
-      },
-    })
+          })
+        },
+      ),
+    // useConnectHook happens client side only
+    // for cli usage, can just call `postConnect` directly. Consider making the
+    // flow a bit smoother with a guided cli flow
+    postConnect: authedProcedure
+      .input(z.tuple([z.unknown(), zInt, zPostConnectOptions]))
+      // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
+      // needed
+      // How do we verify that the userId here is the same as the userId from preConnectOption?
 
+      .mutation(
+        async ({
+          input: [input, int, {resourceExternalId, ...connCtxInput}],
+          ctx,
+        }) => {
+          console.log(
+            'didConnect start',
+            int.provider.name,
+            input,
+            connCtxInput,
+          )
+          if (!int.provider.postConnect || !int.provider.def.connectOutput) {
+            return 'Noop'
+          }
+          const reso = resourceExternalId
+            ? await metaService.tables.resource
+                .get(makeId('reso', int.provider.name, resourceExternalId))
+                .then((input) => zReso.parseAsync(input))
+            : undefined
+          authorizeOrThrow(ctx, 'resource', reso)
+
+          const resoUpdate = await int.provider.postConnect(
+            int.provider.def.connectOutput.parse(input),
+            int.config,
+            {
+              ...connCtxInput,
+              userId: ctx.userId ?? ADMIN_UID,
+              resource: reso
+                ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  {externalId: resourceExternalId!, settings: reso.settings}
+                : undefined,
+              webhookBaseUrl: joinPath(
+                apiUrl,
+                parseWebhookRequest.pathOf(int.id),
+              ),
+              redirectUrl: getRedirectUrl?.(int, ctx),
+            },
+          )
+          await _syncResourceUpdate(int, {
+            ...resoUpdate,
+            // No need for each integration to worry about this, unlike in the case of handleWebhook.
+            userId: ctx.userId ?? ADMIN_UID,
+            envName: connCtxInput.envName,
+            connectWith: connCtxInput.connectWith,
+          })
+          console.log('didConnect finish', int.provider.name, input)
+          return 'Resource successfully connected'
+        },
+      ),
     // MARK: - Sync
-    .mutation('syncResource', {
-      input: z.tuple([zReso, zSyncOptions.optional()]),
-      resolve: async function syncResource({input: [reso, opts], ctx}) {
+
+    syncResource: authedProcedure
+      .input(z.tuple([zReso, zSyncOptions.optional()]))
+      .mutation(async function syncResource({input: [reso, opts], ctx}) {
         authorizeOrThrow(ctx, 'resource', reso)
         console.log('[syncResource]', reso, opts)
         // No need to checkResource here as sourceSync should take care of it
@@ -673,44 +678,27 @@ export const makeSyncEngine = <
           connectWith: opts?.connectWith,
           triggerDefaultSync: true,
         })
-      },
-    })
-    .mutation('syncPipeline', {
-      input: z.tuple([zPipeline, zSyncOptions.optional()]),
-      resolve: async function syncPipeline({input: [pipeline, opts], ctx}) {
+      }),
+    syncPipeline: authedProcedure
+      .input(z.tuple([zPipeline, zSyncOptions.optional()]))
+      .mutation(async function syncPipeline({input: [pipeline, opts], ctx}) {
         console.log('[syncPipeline]', pipeline)
         authorizeOrThrow(ctx, 'pipeline', pipeline)
         return _syncPipeline(pipeline, opts)
-      },
-    })
-
-  const adminRouter = baseRouter()
-    .middleware(({next, ctx, path}) => {
-      if (!ctx.isAdmin) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: `Admin only: ${path}`,
-        })
-      }
-      return next({ctx: {...ctx, isAdmin: true as const}})
-    })
-    // .query('adminDebugEnv', {resolve: () => process.env}) // Temporary...
-    .query('adminSearchCreatorIds', {
-      input: z.object({keywords: z.string().trim().nullish()}).optional(),
-      resolve: async ({input: {keywords} = {}}) =>
-        metaService.searchCreatorIds({keywords}),
-    })
-    .query('adminGetIntegration', {
-      input: zInt,
-      resolve: ({input: int}) => ({
-        config: int.config,
-        provider: int.provider.name,
-        id: int.id,
       }),
-    })
-    .mutation('adminSyncMetadata', {
-      input: zInt.nullish(),
-      resolve: async ({input: int}) => {
+    adminSearchCreatorIds: adminProcedure
+      .input(z.object({keywords: z.string().trim().nullish()}).optional())
+      .query(async ({input: {keywords} = {}}) =>
+        metaService.searchCreatorIds({keywords}),
+      ),
+    adminGetIntegration: adminProcedure.input(zInt).query(({input: int}) => ({
+      config: int.config,
+      provider: int.provider.name,
+      id: int.id,
+    })),
+    adminSyncMetadata: adminProcedure
+      .input(zInt.nullish())
+      .mutation(async ({input: int}) => {
         const ints = int ? [int] : await getDefaultIntegrations()
         const stats = await sync({
           source: rxjs.merge(
@@ -741,13 +729,8 @@ export const makeSyncEngine = <
           destination: metaLinks.persistInstitution(),
         })
         return `Synced ${stats} institutions from ${ints.length} providers`
-      },
-    })
-
-  const router = baseRouter()
-    .merge(anonRouter)
-    .merge(authenticatedRouter)
-    .merge(adminRouter)
+      }),
+  })
 
   const jwtClient = jwtSecretOrPublicKey
     ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})
@@ -760,18 +743,18 @@ export const makeSyncEngine = <
 
   // Improve the error generated by zod
   // TODO: Move me into a generic location...
-  for (const key of ['queries', 'mutations', 'subscriptions'] as const) {
-    for (const [name, val] of Object.entries(router._def[key])) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const inputParser: unknown = val.inputParser
-      if (isZodType(inputParser)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        val.parseInputFn = zParser(
-          inputParser.describe(`${key}.${name}.input`),
-        ).parseAsync
-      }
-    }
-  }
+  // for (const key of ['queries', 'mutations', 'subscriptions'] as const) {
+  //   for (const [name, val] of Object.entries(router._def[key])) {
+  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  //     const inputParser: unknown = val.inputParser
+  //     if (isZodType(inputParser)) {
+  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  //       val.parseInputFn = zParser(
+  //         inputParser.describe(`${key}.${name}.input`),
+  //       ).parseAsync
+  //     }
+  //   }
+  // }
 
   return {router, jwtClient, zContext}
 }

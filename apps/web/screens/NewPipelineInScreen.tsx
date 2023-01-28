@@ -66,9 +66,7 @@ export function NewPipelineInScreen(props: {connectWith?: ConnectWith}) {
       connect({id: onlyIntegrationId}, {})
     }
   }, [connect, onlyIntegrationId])
-
   return match(integrationsRes)
-    .with({status: 'idle'}, () => null)
     .with({status: 'loading'}, () => (
       <Container className="flex-1">
         <LoadingIndicator />
@@ -118,7 +116,6 @@ export function NewPipelineInScreen(props: {connectWith?: ConnectWith}) {
               </div>
 
               {match(ls.insRes)
-                .with({status: 'idle'}, () => null)
                 .with({status: 'loading'}, () => <LoadingIndicator />)
                 .with({status: 'error'}, () => (
                   <span className="text-xs">Something went wrong</span>

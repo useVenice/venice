@@ -1,7 +1,6 @@
 import '@usevenice/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
-import {TRPCError} from '@trpc/server'
 import {getCookie} from 'cookies-next'
 import type {NextApiHandler, NextApiRequest, NextApiResponse} from 'next'
 
@@ -11,7 +10,11 @@ import {
   syncEngine,
   veniceRouter,
 } from '@usevenice/app-config/backendConfig'
-import {baseRouter, parseWebhookRequest} from '@usevenice/engine-backend'
+import {
+  authedProcedure,
+  parseWebhookRequest,
+  trpcServer,
+} from '@usevenice/engine-backend'
 import {fromMaybeArray, makeUlid, R, safeJSONParse, z} from '@usevenice/util'
 
 import {kAccessToken} from '../../../contexts/atoms'
@@ -96,29 +99,17 @@ export async function createDbUser(userId: string) {
   return {usr, apiKey, databaseUrl: getUrl()}
 }
 
-const customRouter = baseRouter()
-  .middleware(({next, ctx, path}) => {
-    if (!ctx.userId) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: `Auth required: ${path}`,
-      })
-    }
-    return next({ctx: {...ctx, userId: ctx.userId}})
-  })
-  .mutation('dropDbUser', {
-    input: z.object({}),
-    resolve: async ({ctx}) => await dropDbUser(ctx.userId),
-  })
-  .mutation('createDbUser', {
-    input: z.object({}),
-    resolve: async ({ctx}) => await createDbUser(ctx.userId),
-  })
-  .mutation('executeSql', {
-    input: z.object({sql: z.string()}),
-    output: z.any(),
-    resolve: async ({input, ctx}) => {
-      const {databaseUrl} = await createDbUser(ctx.userId)
+const customRouter = trpcServer.router({
+  dropDbUser: authedProcedure
+    .input(z.object({}))
+    .mutation(async ({ctx}) => await dropDbUser(ctx.userId!)),
+  createDbUser: authedProcedure
+    .input(z.object({}))
+    .mutation(async ({ctx}) => await createDbUser(ctx.userId!)),
+  executeSql: authedProcedure
+    .input(z.object({sql: z.string()}))
+    .mutation(async ({input, ctx}) => {
+      const {databaseUrl} = await createDbUser(ctx.userId!)
       const pgClient = makePostgresClient({
         databaseUrl,
         transformFieldNames: false,
@@ -128,12 +119,11 @@ const customRouter = baseRouter()
       const query = pgClient.sql([input.sql])
       const res = await pool.query(query)
       return res.rows
-    },
-  })
-  .query('userInfo', {
-    input: z.object({}).nullish(),
-    resolve: async ({ctx}) => {
-      const info = await createDbUser(ctx.userId)
+    }),
+  userInfo: authedProcedure
+    .input(z.object({}).nullish())
+    .query(async ({ctx}) => {
+      const info = await createDbUser(ctx.userId!)
       const pgClient = makePostgresClient({
         databaseUrl: info.databaseUrl,
         transformFieldNames: false,
@@ -143,8 +133,8 @@ const customRouter = baseRouter()
         pgClient.sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';`,
       )
       return {...info, tableNames}
-    },
-  })
+    }),
+})
 
 export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   // https://vercel.com/support/articles/how-to-enable-cors
@@ -164,8 +154,10 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   return false
 }
 
+export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
+
 const handler = trpcNext.createNextApiHandler({
-  router: veniceRouter.merge(customRouter),
+  router: appRouter,
   createContext: ({req}) => {
     console.log('[createContext]', {
       query: req.query,

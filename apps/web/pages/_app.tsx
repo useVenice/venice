@@ -5,9 +5,9 @@ import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import React from 'react'
-import {QueryClient, QueryClientProvider} from 'react-query'
-import {createWebStoragePersistor} from 'react-query/createWebStoragePersistor-experimental'
-import {persistQueryClient} from 'react-query/persistQueryClient-experimental'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
+import {persistQueryClient} from '@tanstack/react-query-persist-client'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
@@ -35,12 +35,12 @@ if (
   typeof window !== 'undefined' &&
   !window.location.href.includes('localhost')
 ) {
-  const persistor = createWebStoragePersistor({storage: window.localStorage})
+  const persister = createSyncStoragePersister({storage: window.localStorage})
   // persistor.removeClient() // Will clean up cache
 
   void persistQueryClient({
     queryClient,
-    persistor,
+    persister,
     // Change this key if we change the format of the data to avoid crashes
     // also we should clear any persisted data if userId ever changes
     buster: undefined, // Should check against userId and version
