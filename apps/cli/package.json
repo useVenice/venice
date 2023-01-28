@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@trpc/server": "9.26.0",
+    "@trpc/server": "",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/core-integration-firebase": "workspace:*",

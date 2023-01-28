@@ -4,7 +4,7 @@ import type {
   NoInfer,
   ObjectPartialDeep,
 } from '@usevenice/util'
-import {R, zCast} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 
 /** @deprecated. See metaService. */
 export interface KVStore<T = Json> {
@@ -23,7 +23,7 @@ export interface KVStore<T = Json> {
   close?(): Promise<unknown>
 }
 
-export const zKVStore = zCast<KVStore<Record<string, unknown>>>()
+export const zKVStore = z.custom<KVStore<Record<string, unknown>>>()
 
 /** Technically does not belong in FS, but we also don't have a good place for it for now... */
 export function makeMemoryKVStore<T>(): KVStore<T> {

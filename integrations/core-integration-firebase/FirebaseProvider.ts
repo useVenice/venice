@@ -166,7 +166,7 @@ export const firebaseProvider = makeSyncProvider({
 export type WrappedFirebase = ReturnType<typeof initFirebase>
 
 export const anyFirestore = zFunction(
-  z.enum(zSettings.validDiscriminatorValues as [AuthSettings['role']]),
+  z.enum(Array.from(zSettings.optionsMap.keys()) as [AuthSettings['role']]),
   (role) => (role === 'admin' ? $admin().firestore : firebase.firestore),
 )
 

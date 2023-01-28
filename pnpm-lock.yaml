@@ -15,30 +15,30 @@ patchedDependencies:
   '@next/env@12.2.5':
     hash: atv7jky62tkac2egbnendfcmcq
     path: patches/@next__env@12.2.5.patch
-  cac@6.7.12:
-    hash: nsfmzcycabp3f3q7kw2uyer77u
-    path: patches/cac@6.7.12.patch
-  '@trpc/server@9.26.0':
-    hash: 7dg2hkb5vsyvp4d3ht7xgb4spm
-    path: patches/@trpc__server@9.26.0.patch
   firebase@9.8.1:
     hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
   micro-memoize@4.0.10:
     hash: hko3q5jvea7ey3trpjtkqgcale
     path: patches/micro-memoize@4.0.10.patch
-  plaid@10.7.0:
-    hash: dlxtnpp6e63xoartngub3qbkta
-    path: patches/plaid@10.7.0.patch
+  cac@6.7.12:
+    hash: nsfmzcycabp3f3q7kw2uyer77u
+    path: patches/cac@6.7.12.patch
   esbuild-jest@0.5.0:
     hash: qbdhvjs7sktehqpuch2x3qhd4y
     path: patches/esbuild-jest@0.5.0.patch
+  '@trpc/server@9.26.0':
+    hash: 7dg2hkb5vsyvp4d3ht7xgb4spm
+    path: patches/@trpc__server@9.26.0.patch
+  plaid@10.7.0:
+    hash: dlxtnpp6e63xoartngub3qbkta
+    path: patches/plaid@10.7.0.patch
+  zod@3.20.2:
+    hash: 6o55l5jjmzhdiwsempa52rp2y4
+    path: patches/zod@3.20.2.patch
   remeda@1.1.0:
     hash: dx4ufj3unw254ycjy2ltcxmnru
     path: patches/remeda@1.1.0.patch
-  zod@3.19.0:
-    hash: 3rh4x6zo56u6u2wso4aud3giei
-    path: patches/zod@3.19.0.patch
 
 importers:
 
@@ -160,7 +160,7 @@ importers:
       tablemark: 3.0.0
       tunnel: 0.0.6
       write-file-safe: 1.3.1
-      zod: 3.19.0
+      zod: 3.20.2
     dependencies:
       '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
       '@usevenice/cdk-core': link:../../packages/cdk-core
@@ -201,7 +201,7 @@ importers:
       read-file-safe: 1.0.10
       tunnel: 0.0.6
       write-file-safe: 1.3.1
-      zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
+      zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     devDependencies:
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
@@ -209,7 +209,7 @@ importers:
 
   apps/cli:
     specifiers:
-      '@trpc/server': 9.26.0
+      '@trpc/server': ''
       '@usevenice/app-config': workspace:*
       '@usevenice/cdk-core': workspace:*
       '@usevenice/core-integration-firebase': workspace:*
@@ -239,7 +239,7 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
     dependencies:
-      '@trpc/server': 9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm
+      '@trpc/server': 10.9.0
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/core-integration-firebase': link:../../integrations/core-integration-firebase
@@ -629,12 +629,12 @@ importers:
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/core-integration-postgres': workspace:*
       '@usevenice/util': workspace:*
-      zod: 3.19.0
+      zod: 3.20.2
     dependencies:
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/core-integration-postgres': link:../core-integration-postgres
       '@usevenice/util': link:../../packages/util
-      zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
+      zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     devDependencies:
       '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
 
@@ -966,7 +966,7 @@ importers:
       type-fest: 2.19.0
       ulidx: 0.3.0
       write-file-safe: 1.3.1
-      zod: 3.19.0
+      zod: 3.20.2
     dependencies:
       '@blossomfinance/iso-4217-currencies': 0.2.5
       accounting: 0.4.1
@@ -998,7 +998,7 @@ importers:
       ts-brand: 0.0.2
       type-fest: 2.19.0
       ulidx: 0.3.0
-      zod: 3.19.0_3rh4x6zo56u6u2wso4aud3giei
+      zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     devDependencies:
       '@types/accounting': 0.4.2
       '@types/json-stable-stringify': 1.0.34
@@ -3761,6 +3761,10 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
+    dev: false
+
+  /@trpc/server/10.9.0:
+    resolution: {integrity: sha512-5psyZgbvy29pJND32hwkWTMbv6s86IbsPOeDopsgNF0VegZT6Dsijmb7Ub/TDhuJVQVq5u4u5briMXi3SxmBkw==}
     dev: false
 
   /@trpc/server/9.26.0_7dg2hkb5vsyvp4d3ht7xgb4spm:
@@ -8187,7 +8191,7 @@ packages:
       serialize-error-cjs: 0.1.3
       sigmund: 1.0.1
       type-fest: 3.5.3
-      zod: 3.19.1
+      zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -12004,7 +12008,7 @@ packages:
       roarr: 7.13.0
       serialize-error: 8.1.0
       through2: 4.0.2
-      zod: 3.19.1
+      zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     transitivePeerDependencies:
       - pg-native
     dev: false
@@ -13489,11 +13493,7 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod/3.19.0_3rh4x6zo56u6u2wso4aud3giei:
-    resolution: {integrity: sha512-Yw0qvUsCNGBe5YacikdMt5gVYeUuaEFVDIHKMfElrGSaBhwR3CQK6vOzgfAJOjTdGIhEeoaj8GtT+NDZrepZbw==}
+  /zod/3.20.2_6o55l5jjmzhdiwsempa52rp2y4:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
     dev: false
     patched: true
-
-  /zod/3.19.1:
-    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
-    dev: false

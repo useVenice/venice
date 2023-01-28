@@ -99,7 +99,7 @@
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
       "plaid@10.7.0": "patches/plaid@10.7.0.patch",
       "remeda@1.1.0": "patches/remeda@1.1.0.patch",
-      "zod@3.19.0": "patches/zod@3.19.0.patch"
+      "zod@3.20.2": "patches/zod@3.20.2.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {

@@ -8,17 +8,16 @@ import {
   renameAccountLink,
 } from '@usevenice/cdk-ledger'
 import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
-import {
-  makeSyncEngine,
-  type inferProcedureInput,
-} from '@usevenice/engine-backend'
+import type {PipelineInput} from '@usevenice/engine-backend'
+import {makeSyncEngine} from '@usevenice/engine-backend'
 import {joinPath, R, Rx, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
+import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
-export {makePostgresClient} from '@usevenice/integration-postgres'
 export {Papa} from '@usevenice/integration-import'
+export {makePostgresClient} from '@usevenice/integration-postgres'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
@@ -117,6 +116,16 @@ export const veniceBackendConfig = makeSyncEngine.config({
 export const {router: veniceRouter, ...syncEngine} =
   makeSyncEngine(veniceBackendConfig)
 export type VeniceRouter = typeof veniceRouter
-export type VeniceInput = inferProcedureInput<
-  VeniceRouter['_def']['mutations']['syncPipeline']
->[0]
+// After upgrading from zod 3.19 to zod 3.20.2 CastInput is now broken
+// @see https://share.cleanshot.com/vpzSPkjP
+// It's probably better to keep typing simpler especially when working with 3rd party
+// libs that can have major changes...
+// export type VeniceInput = inferProcedureInput<
+//   VeniceRouter['_def']['mutations']['syncPipeline']
+// >[0]
+export type VeniceInput = PipelineInput<
+  (typeof PROVIDERS)[number],
+  (typeof PROVIDERS)[number]
+>
+
+// veniceRouter.createCaller({}).mutation('syncPipeline', )

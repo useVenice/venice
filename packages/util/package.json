@@ -35,7 +35,7 @@
     "ts-brand": "0.0.2",
     "type-fest": "2.19.0",
     "ulidx": "0.3.0",
-    "zod": "3.19.0"
+    "zod": "3.20.2"
   },
   "devDependencies": {
     "@types/accounting": "0.4.2",
