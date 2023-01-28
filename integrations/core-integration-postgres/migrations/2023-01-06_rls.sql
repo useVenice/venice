@@ -1,3 +1,13 @@
+-- Unfortunately we cannot do this because of of 1) uuid <> varchar mismatch
+-- 2) OSS where users are managed outside of supabase
+-- ALTER TABLE "public"."connection" DROP COLUMN "ledger_id"; -- Not yet, but soon
+-- ALTER TABLE "public"."connection" ADD COLUMN "creator_id" uuid; -- TODO: Make me not null
+-- ALTER TABLE "public"."connection" ADD CONSTRAINT "fk_connection_creator_id"
+--   FOREIGN KEY ("creator_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+ALTER TABLE "public"."connection" RENAME COLUMN "ledger_id" to "creator_id";
+CREATE INDEX IF NOT EXISTS connection_creator_id ON connection (creator_id);
+
 
 -- TODO: Do things like easy mustache template for SQL exist? So we can avoid the duplication without needing to go into a full programming language?
 
@@ -23,7 +33,8 @@ $function$;
 
 -- Given that we allow user to actually login to postgres with raw URL, we need to
 -- prevent them from impersonating other users...
-DROP FUNCTION auth.uid CASCADE;
+CREATE SCHEMA IF NOT EXISTS auth;
+DROP FUNCTION IF EXISTS auth.uid CASCADE;
 CREATE OR REPLACE FUNCTION auth.uid() RETURNS varchar LANGUAGE sql STABLE
 AS $function$
   select public._uid()
@@ -36,17 +47,6 @@ CREATE OR REPLACE FUNCTION auth.connection_ids()
 AS $function$
   select array(select id from "connection" where creator_id = public._uid())
 $function$;
-
-
--- Unfortunately we cannot do this because of of 1) uuid <> varchar mismatch
--- 2) OSS where users are managed outside of supabase
--- ALTER TABLE "public"."connection" DROP COLUMN "ledger_id"; -- Not yet, but soon
--- ALTER TABLE "public"."connection" ADD COLUMN "creator_id" uuid; -- TODO: Make me not null
--- ALTER TABLE "public"."connection" ADD CONSTRAINT "fk_connection_creator_id"
---   FOREIGN KEY ("creator_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-ALTER TABLE "public"."connection" RENAME COLUMN "ledger_id" to "creator_id";
-CREATE INDEX IF NOT EXISTS connection_creator_id ON connection (creator_id);
 
 ALTER TABLE "public"."connection" ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "creator_access" on "public"."connection";

@@ -7,6 +7,31 @@ jobs:
     name: Run type checks, lint, and tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      # https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+      postgres:
+        image: postgres:latest
+        # service environment variables
+        # `POSTGRES_HOST` is `postgres`
+        env:
+          # optional (defaults to `postgres`)
+          POSTGRES_DB: test
+          # required
+          POSTGRES_PASSWORD: test
+          # optional (defaults to `5432`)
+          POSTGRES_PORT: 5432
+          # optional (defaults to `postgres`)
+          POSTGRES_USER: test
+        ports:
+          # maps tcp port 5432 on service container to the host
+          - 5432:5432
+        # set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,6 +74,9 @@ jobs:
         # Ideally have a way to switch between the two... Where we can also choose proactive parsing for sanity checking...
       - name: Run health check
         run: POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=nnop node --loader tsx ./bin/venice health
+
+      - name: Run migration check
+        run: POSTGRES_OR_WEBHOOK_URL=postgres://test:test@localhost:5432/test pnpm migration up
 
       - name: Run lint
         run: pnpm run lint

@@ -37,7 +37,7 @@ test('sql generation', () => {
     [
         txn_test,
         plaid,
-        conn_test123,
+        reso_test123,
     ]
   `)
 })

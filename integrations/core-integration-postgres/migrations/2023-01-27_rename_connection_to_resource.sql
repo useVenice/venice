@@ -8,11 +8,11 @@ ALTER INDEX connection_provider_name RENAME TO resource_provider_name;
 ALTER INDEX connection_creator_id RENAME TO resource_creator_id;
 ALTER POLICY connection_creator_access ON public.pipeline RENAME TO resource_creator_access;
 
-ALTER TABLE "public"."pipeline" DROP CONSTRAINT pipeline_destination_id_fkey,
+ALTER TABLE "public"."pipeline" DROP CONSTRAINT fk_destination_id,
 	ADD CONSTRAINT "fk_destination_id" FOREIGN KEY ("destination_id")
     REFERENCES "public"."resource"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "public"."pipeline" DROP CONSTRAINT pipeline_source_id_fkey,
+ALTER TABLE "public"."pipeline" DROP CONSTRAINT fk_source_id,
 	ADD CONSTRAINT "fk_source_id" FOREIGN KEY ("source_id")
     REFERENCES "public"."resource"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
