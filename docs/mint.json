@@ -44,10 +44,13 @@
     {
       "group": "Technical",
       "pages": [
+        "technical/nomenclature",
         "technical/architecture",
+        "technical/data-models",
         "technical/open-source",
         "technical/pipelines",
-        "technical/deploy-locally"
+        "technical/deploy-locally",
+        "technical/deploy-to-cloud"
       ]
     },
     {
