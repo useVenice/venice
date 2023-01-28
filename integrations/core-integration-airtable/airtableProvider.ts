@@ -3,12 +3,12 @@ import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import {fromCompletion, z, zCast} from '@usevenice/util'
 
-import {makeAirtableClient, zAirtableConnectionSettings} from './AirtableClient'
+import {makeAirtableClient, zAirtableResourceSettings} from './AirtableClient'
 
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('airtable'),
-  connectionSettings: zAirtableConnectionSettings,
+  resourceSettings: zAirtableResourceSettings,
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
 })
 

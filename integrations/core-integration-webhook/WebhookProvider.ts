@@ -5,7 +5,7 @@ import {createHTTPClient, rxjs, z, zCast} from '@usevenice/util'
 const webhookProviderDef = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('webhook'),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     destinationUrl: z.string(),
   }),
   destinationInputEntity: zCast<AnyEntityPayload>(),
@@ -17,10 +17,10 @@ export const webhookProvider = makeSyncProvider({
   destinationSync: ({settings: {destinationUrl}}) => {
     const http = createHTTPClient({baseURL: destinationUrl})
     let batch = {
-      connUpdates: [] as unknown[],
+      resUpdates: [] as unknown[],
       stateUpdates: [] as unknown[],
       entities: [] as Array<
-        typeof webhookProviderDef['_types']['destinationInputEntity']
+        (typeof webhookProviderDef)['_types']['destinationInputEntity']
       >,
     }
 
@@ -29,8 +29,8 @@ export const webhookProvider = makeSyncProvider({
         batch.entities.push(op.data)
         return rxjs.of(op)
       },
-      connUpdate: (op) => {
-        batch.connUpdates.push(op)
+      resoUpdate: (op) => {
+        batch.resUpdates.push(op)
         return rxjs.of(op)
       },
       stateUpdate: (op) => {
@@ -41,7 +41,7 @@ export const webhookProvider = makeSyncProvider({
         if (Object.values(batch).some((arr) => arr.length > 0)) {
           await http.post('', batch)
           // Add queuing and retries here...
-          batch = {connUpdates: [], stateUpdates: [], entities: []}
+          batch = {resUpdates: [], stateUpdates: [], entities: []}
         }
         return op
       },

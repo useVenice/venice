@@ -25,14 +25,14 @@ export interface MetaTable<
 
 export interface CreatorIdResultRow {
   id: Id['ldgr']
-  connectionCount?: number
+  resourceCount?: number
   firstCreatedAt?: unknown
   lastUpdatedAt?: unknown
 }
 
 export interface MetaService {
   tables: {
-    [k in keyof ZRaw]: MetaTable<Id[typeof IDS[k]], ZRaw[k]>
+    [k in keyof ZRaw]: MetaTable<Id[(typeof IDS)[k]], ZRaw[k]>
   }
   // TODO: Make the following methods optional
   // and default to dumb listing all rows from table and in memory filter
@@ -52,7 +52,7 @@ export interface MetaService {
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
   findPipelines: (options: {
-    connectionIds?: Array<Id['conn']>
+    resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
 }

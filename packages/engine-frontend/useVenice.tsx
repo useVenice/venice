@@ -59,19 +59,19 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
   const integrationsRes = trpc.useQuery(['listIntegrations', {}], {
     enabled: !!userId,
   }) as UseQueryResult<AnySyncQueryOutput<'listIntegrations'>>
-  const connectionsRes = trpc.useQuery(['listConnections', {}], {
+  const resourcesRes = trpc.useQuery(['listResources', {}], {
     enabled: !!userId,
     // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
-  }) as UseQueryResult<AnySyncQueryOutput<'listConnections'>>
+  }) as UseQueryResult<AnySyncQueryOutput<'listResources'>>
   const insRes = trpc.useQuery(['searchInstitutions', {keywords}], {
     enabled: !!userId,
   }) as UseQueryResult<AnySyncQueryOutput<'searchInstitutions'>>
-  const syncConnection = trpc.useMutation('syncConnection')
-  const deleteConnection = trpc.useMutation('deleteConnection', {
-    onSettled: () => queryClient.invalidateQueries(['listConnections']),
+  const syncResource = trpc.useMutation('syncResource')
+  const deleteResource = trpc.useMutation('deleteResource', {
+    onSettled: () => queryClient.invalidateQueries(['listResources']),
   })
-  const checkConnection = trpc.useMutation('checkConnection', {
-    onSettled: () => queryClient.invalidateQueries(['listConnections']),
+  const checkResource = trpc.useMutation('checkResource', {
+    onSettled: () => queryClient.invalidateQueries(['listResources']),
   })
 
   // Connect should return a shape similar to client.mutation such that
@@ -82,11 +82,11 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
     userId,
     connect,
     integrationsRes,
-    connectionsRes,
+    resourcesRes,
     insRes,
-    syncConnection,
-    deleteConnection,
-    checkConnection,
+    syncResource,
+    deleteResource,
+    checkResource,
     isAdmin,
     developerMode,
   }
@@ -164,11 +164,11 @@ export function useVeniceConnect({
     async function (
       int: IntegrationInput,
       _opts: {
-        connectionId?: Id['conn']
-        /** For exsting Existing connection Id */
-        /** Optional for new connection */
+        resourceId?: Id['reso']
+        /** For exsting Existing resource Id */
+        /** Optional for new resource */
         institutionId?: Id['ins']
-        /** For creating initial pipeline in new connection */
+        /** For creating initial pipeline in new resource */
         connectWith?: ConnectWith
       },
     ) {
@@ -181,8 +181,8 @@ export function useVeniceConnect({
         institutionExternalId: _opts.institutionId
           ? extractId(_opts.institutionId)[2]
           : undefined,
-        connectionExternalId: _opts.connectionId
-          ? extractId(_opts.connectionId)[2]
+        resourceExternalId: _opts.resourceId
+          ? extractId(_opts.resourceId)[2]
           : undefined,
         envName,
       }
@@ -205,14 +205,14 @@ export function useVeniceConnect({
         ])
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
 
-        void queryClient.invalidateQueries(['listConnections'])
+        void queryClient.invalidateQueries(['listResources'])
 
         console.log(`[useVeniceConnect] ${int.id} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
           console.log(`[useVeniceConnect] ${int.id} Cancelled`)
         } else {
-          console.error(`[useVeniceConnect] ${int.id} Connection failed`, err)
+          console.error(`[useVeniceConnect] ${int.id} Connect failed`, err)
         }
       }
     },

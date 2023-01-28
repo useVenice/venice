@@ -8,14 +8,14 @@ import {A, Deferred, R, Rx, rxjs, z, zCast} from '@usevenice/util'
 import {makeStripeClient, zStripeConfig} from './StripeClient'
 
 // const kStripe = 'stripe' as const
-type StripeEntity = z.infer<typeof def['sourceOutputEntity']>
-type StripeSyncOperation = typeof def['_opType']
+type StripeEntity = z.infer<(typeof def)['sourceOutputEntity']>
+type StripeSyncOperation = (typeof def)['_opType']
 
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('stripe'),
   integrationConfig: zStripeConfig,
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     secretKey: z.string(),
     accountId: z.string().nullish(),
     transactionSyncCursor: z.string().nullish(),
@@ -94,7 +94,7 @@ export const stripeProvider = makeSyncProvider({
   useConnectHook: (_) => {
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
+      new Deferred<(typeof def)['_types']['connectOutput']>(),
     )
 
     React.useEffect(() => {
@@ -113,7 +113,7 @@ export const stripeProvider = makeSyncProvider({
   },
 
   postConnect: (input) => ({
-    connectionExternalId: input.secretKey ?? '',
+    resourceExternalId: input.secretKey ?? '',
     settings: {
       secretKey: input.secretKey ?? '',
       accountId: input.accountId ?? '',
@@ -123,7 +123,7 @@ export const stripeProvider = makeSyncProvider({
   /*
   rxjs.of(input).pipe(
     Rx.mergeMap((_res) => {
-      const settings = def._type('connectionSettings', {
+      const settings = def._type('resourceSettings', {
       secretKey: input.secretKey ?? '',
       accountId: input.accountId ?? '',
     })
@@ -195,7 +195,7 @@ const opData = <K extends StripeEntity['entityName']>(
 // Will use it once we know how to handle meta data for stripe
 // const opMeta = (id: string, data: Partial<StripeConn>) =>
 //   ({
-//     type: 'connUpdate',
-//     id: makeStandardId('conn', kStripe, id),
+//     type: 'resoUpdate',
+//     id: makeStandardId('reso', kStripe, id),
 //     data,
 //   } as StripeSyncOperation)

@@ -12,7 +12,7 @@ export const BASE_META_IDS = {
 
 export const META_IDS = {
   integration: 'int',
-  connection: 'conn',
+  resource: 'reso',
   institution: 'ins',
 } as const
 
@@ -32,9 +32,9 @@ export const IDS = {
 
 export const IDS_INVERTED = invert(IDS)
 
-type BASE_META_ID_PREFIX = typeof BASE_META_IDS[keyof typeof BASE_META_IDS]
+type BASE_META_ID_PREFIX = (typeof BASE_META_IDS)[keyof typeof BASE_META_IDS]
 
-export type IdPrefix = typeof IDS[keyof typeof IDS]
+export type IdPrefix = (typeof IDS)[keyof typeof IDS]
 export type Id<TName extends string = string> = {
   [k in IdPrefix]: k extends BASE_META_ID_PREFIX
     ? `${k}_${string}`

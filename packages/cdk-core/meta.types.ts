@@ -15,7 +15,7 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 // MARK: - Standard types
 
 export type ZStandard = {
-  [k in keyof typeof zStandard]: z.infer<typeof zStandard[k]>
+  [k in keyof typeof zStandard]: z.infer<(typeof zStandard)[k]>
 }
 export const zStandard = {
   /** Should this be renamed to `UpstreamProvider` instead? */
@@ -37,8 +37,8 @@ export const zStandard = {
     /** Environment specific providers */
     envName: zEnvName.optional(),
   }),
-  connection: z.object({
-    id: zId('conn'),
+  resource: z.object({
+    id: zId('reso'),
     displayName: z.string(),
     /**
      * This correspond to the connection status.
@@ -60,7 +60,7 @@ export const zStandard = {
 // MARK: - Raw types
 
 export type ZRaw = {
-  [k in keyof typeof zRaw]: z.infer<typeof zRaw[k]>
+  [k in keyof typeof zRaw]: z.infer<(typeof zRaw)[k]>
 }
 /** Should this be a factory function so we can use typed config / settings? */
 export const zRaw = {
@@ -68,8 +68,8 @@ export const zRaw = {
     id: zId('int'),
     config: zJsonObject.nullish(),
   }),
-  connection: z.object({
-    id: zId('conn'),
+  resource: z.object({
+    id: zId('reso'),
     creatorId: zUserId.nullish(),
     integrationId: zId('int').nullish(),
     institutionId: zId('ins').nullish(),
@@ -77,13 +77,13 @@ export const zRaw = {
     // TODO: Does envName belong in Raw layer or Standard layer?
     /** Development env often allows connection to production institutions */
     envName: zEnvName.nullish(),
-    standard: zStandard.connection.omit({id: true}).nullish(),
+    standard: zStandard.resource.omit({id: true}).nullish(),
   }),
   pipeline: z.object({
     id: zId('pipe'),
-    sourceId: zId('conn').nullish(),
+    sourceId: zId('reso').nullish(),
     sourceState: zJsonObject.nullish(),
-    destinationId: zId('conn').nullish(),
+    destinationId: zId('reso').nullish(),
     destinationState: zJsonObject.nullish(),
     linkOptions: z
       .array(

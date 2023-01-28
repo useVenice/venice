@@ -10,7 +10,7 @@ const ID_PREFIXES = {
   acct: 'acct',
   bal: 'bal',
   comm: 'comm',
-  conn: 'conn',
+  res: 'reso', // Resource
   evt: 'evt',
   lbl: 'lbl',
   ldgr: 'ldgr',

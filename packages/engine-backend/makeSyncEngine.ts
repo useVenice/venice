@@ -5,7 +5,7 @@ import {TRPCError} from '@trpc/server'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
-  ConnectionUpdate,
+  ResourceUpdate,
   ConnectWith,
   Destination,
   EnvName,
@@ -20,7 +20,7 @@ import {
   handlersLink,
   makeId,
   sync,
-  zCheckConnectionOptions,
+  zCheckResourceOptions,
   zConnectOptions,
   zPostConnectOptions,
   zStandard,
@@ -33,7 +33,7 @@ import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
-  ConnectionInput,
+  ResourceInput,
   IntegrationInput,
   ParsedInt,
   ParsedPipeline,
@@ -64,7 +64,7 @@ export interface SyncEngineConfig<
    */
   apiUrl: string
 
-  /** Used for oauth based connections */
+  /** Used for oauth based resources */
   getRedirectUrl?: (
     integration: ParsedInt,
     ctx: {userId?: UserId | null},
@@ -83,7 +83,7 @@ export interface SyncEngineConfig<
   getLinksForPipeline?: (pipeline: ParsedPipeline) => Link[]
 
   getDefaultPipeline?: (
-    connInput?: ConnectionInput<TProviders[number]>,
+    connInput?: ResourceInput<TProviders[number]>,
     connectWith?: ConnectWith,
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
   defaultIntegrations?:
@@ -116,7 +116,7 @@ export const baseRouter: typeof trpc.router<UserInfo, EngineMeta> = trpc.router
 // TODO: Figure out how to support both syncing on the command line via CLI without auth
 // as well as syncing via API which has auth...
 // Some methods require userId in context (preConnect / postConnect)
-// while other methods (sometimes) does not require userId (syncConnection)
+// while other methods (sometimes) does not require userId (syncResource)
 // We should also be careful that during upserts we never change the `creatorId` and thus
 // the permission structure...
 const ADMIN_UID = 'admin' as UserId
@@ -151,7 +151,7 @@ export const makeSyncEngine = <
         }),
       )
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {zInt, zConn, zPipeline} = makeSyncParsers({
+  const {zInt, zReso, zPipeline} = makeSyncParsers({
     providers,
     getDefaultPipeline,
     getDefaultConfig: (name, id) =>
@@ -171,76 +171,72 @@ export const makeSyncEngine = <
       ),
     )
 
-  const getPipelinesForConnection = (
-    connInput: ZInput['connection'],
+  const getPipelinesForResource = (
+    resoInput: ZInput['resource'],
     connectWith: ConnectWith | undefined,
   ) => {
     const defaultPipeline = () =>
       getDefaultPipeline?.(
-        connInput as ConnectionInput<TProviders[number]>,
+        resoInput as ResourceInput<TProviders[number]>,
         connectWith,
       )
 
     // TODO: In the case of an existing `conn`, how do we update conn.settings too?
     // Otherwise we will result in outdated settings...
     return metaService
-      .findPipelines({connectionIds: [connInput.id]})
+      .findPipelines({resourceIds: [resoInput.id]})
       .then((pipes) => (pipes.length ? pipes : R.compact([defaultPipeline()])))
       .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
   }
 
-  const _syncConnectionUpdate = async (
+  const _syncResourceUpdate = async (
     int: ParsedInt,
     {
       userId,
       envName,
       settings,
       institution,
-      ...connUpdate
-    }: ConnectionUpdate<AnyEntityPayload, {}>,
+      ...resoUpdate
+    }: ResourceUpdate<AnyEntityPayload, {}>,
   ) => {
-    console.log('[_syncConnectionUpdate]', int.id, {
+    console.log('[_syncResourceUpdate]', int.id, {
       userId,
       envName,
       settings,
       institution,
-      ...connUpdate,
+      ...resoUpdate,
     })
-    const id = makeId(
-      'conn',
-      int.provider.name,
-      connUpdate.connectionExternalId,
-    )
+    const id = makeId('reso', int.provider.name, resoUpdate.resourceExternalId)
     await metaLinks
       .handlers({
-        connection: {id, integrationId: int.id, creatorId: userId, envName},
+        resource: {id, integrationId: int.id, creatorId: userId, envName},
       })
-      .connUpdate({type: 'connUpdate', id, settings, institution})
+      .resoUpdate({type: 'resoUpdate', id, settings, institution})
 
-    if (!connUpdate.source$ && !connUpdate.triggerDefaultSync) {
+    if (!resoUpdate.source$ && !resoUpdate.triggerDefaultSync) {
       console.log(
-        '[_syncConnectionUpdate] Returning early skip syncing pipelines',
+        '[_syncResourceUpdate] Returning early skip syncing pipelines',
       )
       return
     }
 
-    const pipelines = await getPipelinesForConnection(
+    const pipelines = await getPipelinesForResource(
       {
         id,
-        // Should we spread connUpdate into it?
+        // Should we spread resoUpdate into it?
         settings,
         creatorId: userId,
-        // institution: connUpdate.institution,
+        // institution: resoUpdate.institution,
       },
-      connUpdate.connectWith ?? undefined,
+      resoUpdate.connectWith ?? undefined,
     )
 
-    console.log('_syncConnectionUpdate existingPipes.len', pipelines.length)
+    console.log('_syncResourceUpdate existingPipes.len', pipelines.length)
     await Promise.all(
       pipelines.map(async (pipe) => {
         await _syncPipeline(pipe, {
-          source$: connUpdate.source$,
-          source$ConcatDefault: connUpdate.triggerDefaultSync,
+          source$: resoUpdate.source$,
+          source$ConcatDefault: resoUpdate.triggerDefaultSync,
         })
       }),
     )
@@ -338,12 +334,12 @@ export const makeSyncEngine = <
           int.config,
         )
         await Promise.all(
-          res.connectionUpdates.map((connUpdate) =>
+          res.resourceUpdates.map((resoUpdate) =>
             // Provider is responsible for providing envName / userId
             // TODO: Should provider be responsible for providing connectWith?
-            // This may be relevant for OneBrick connections for example
+            // This may be relevant for OneBrick resources for example
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            _syncConnectionUpdate(int, connUpdate),
+            _syncResourceUpdate(int, resoUpdate),
           ),
         )
 
@@ -360,9 +356,9 @@ export const makeSyncEngine = <
         })
       }
       // Figure out how we can pass the context into zod validators so that we can
-      // check user has access to connection pipline etc in a single place...
+      // check user has access to resource pipline etc in a single place...
       // Also we probably don't want non-admin user to be able to provider anything
-      // other than the `id` for integration, connection and pipeline
+      // other than the `id` for integration, resource and pipeline
       return next({ctx: {...ctx, userId: ctx.userId}})
     })
     // MARK: - Metadata  etc
@@ -412,23 +408,23 @@ export const makeSyncEngine = <
         })
       },
     })
-    .query('listConnections', {
+    .query('listResources', {
       input: z.object({}).optional(),
       resolve: async ({ctx}) => {
-        // Add info about what it takes to `reconnect` here for connections which
+        // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
-        const connections = await metaService.tables.connection.list({
+        const resources = await metaService.tables.resource.list({
           creatorId: ctx.userId,
         })
         const insById = R.pipe(
           await metaService.tables.institution.list({
-            ids: R.compact(connections.map((c) => c.institutionId)),
+            ids: R.compact(resources.map((c) => c.institutionId)),
           }),
           (insList) => R.mapToObj(insList, (ins) => [ins.id, ins]),
         )
         const pipelinesByConnId = R.pipe(
           await metaService.findPipelines({
-            connectionIds: connections.map((c) => c.id),
+            resourceIds: resources.map((c) => c.id),
           }),
           R.map((pipe) => ({
             ...pipe,
@@ -439,29 +435,29 @@ export const makeSyncEngine = <
                 pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
           })),
           (pipes) =>
-            R.mapToObj(connections, (c) => [
+            R.mapToObj(resources, (c) => [
               c.id,
               pipes.filter(
                 (p) => p.sourceId === c.id || p.destinationId === c.id,
               ),
             ]),
         )
-        return connections.map((conn) => {
-          const [, providerName, externalId] = extractId(conn.id)
+        return resources.map((reso) => {
+          const [, providerName, externalId] = extractId(reso.id)
           const mappers = providerMap[providerName]?.standardMappers
-          const standardConn = mappers?.connection(conn.settings)
-          const standardIns = conn.institutionId
-            ? mappers?.institution?.(insById[conn.institutionId]?.external)
+          const standardRes = mappers?.resource(reso.settings)
+          const standardIns = reso.institutionId
+            ? mappers?.institution?.(insById[reso.institutionId]?.external)
             : undefined
 
-          const pipes = pipelinesByConnId[conn.id] ?? []
+          const pipes = pipelinesByConnId[reso.id] ?? []
           const syncInProgress = pipes.some((p) => p.syncInProgress)
           const lastSyncCompletedAt = R.maxBy(
             pipes,
             (p) => p.lastSyncCompletedAt?.getTime() ?? 0,
           )?.lastSyncCompletedAt
 
-          // console.log('map connection', {
+          // console.log('map resource', {
           //   conn,
           //   standardConn,
           //   standardIns,
@@ -472,18 +468,18 @@ export const makeSyncEngine = <
           return {
             // TODO: How do we get zod to report which specific object has failed parsing?
             // This error for example is cryptic, https://share.cleanshot.com/t1QY1mnG
-            // I would really like to know that it is zStandard.connection that has failed parsing
-            ...zStandard.connection.omit({id: true}).parse(standardConn),
-            id: conn.id,
+            // I would really like to know that it is zStandard.resource that has failed parsing
+            ...zStandard.resource.omit({id: true}).parse(standardRes),
+            id: reso.id,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            envName: conn.envName as EnvName | null | undefined,
+            envName: reso.envName as EnvName | null | undefined,
             externalId,
             syncInProgress,
             lastSyncCompletedAt,
-            institution: conn.institutionId
+            institution: reso.institutionId
               ? {
                   ...zStandard.institution.omit({id: true}).parse(standardIns),
-                  id: conn.institutionId,
+                  id: reso.institutionId,
                 }
               : undefined,
           }
@@ -491,19 +487,19 @@ export const makeSyncEngine = <
       },
     })
     // TODO: Do we need this method at all? Or should we simply add params to args
-    // to syncConnection instead? For example, skipPipelines?
-    .mutation('checkConnection', {
+    // to syncResource instead? For example, skipPipelines?
+    .mutation('checkResource', {
       meta: {
         description: 'Not automatically called, used for debugging for now',
       },
-      input: z.tuple([zConn, zCheckConnectionOptions.optional()]),
+      input: z.tuple([zReso, zCheckResourceOptions.optional()]),
       resolve: async ({
-        input: [{settings, integration: int, ...conn}, opts],
+        input: [{settings, integration: int, ...reso}, opts],
         ctx,
       }) => {
-        authorizeOrThrow(ctx, 'connection', conn)
-        // console.log('checkConnection', {settings, integration, ...conn}, opts)
-        const connUpdate = await int.provider.checkConnection?.({
+        authorizeOrThrow(ctx, 'resource', reso)
+        // console.log('checkResource', {settings, integration, ...conn}, opts)
+        const resoUpdate = await int.provider.checkResource?.({
           settings,
           config: int.config,
           options: opts ?? {},
@@ -514,46 +510,46 @@ export const makeSyncEngine = <
             ),
           },
         })
-        if (connUpdate || opts?.import) {
+        if (resoUpdate || opts?.import) {
           /** Do not update the `creatorId` here... */
-          await _syncConnectionUpdate(int, {
+          await _syncResourceUpdate(int, {
             ...(opts?.import && {
-              userId: conn.creatorId ?? undefined,
-              envName: conn.envName ?? undefined,
+              userId: reso.creatorId ?? undefined,
+              envName: reso.envName ?? undefined,
             }),
-            ...connUpdate,
+            ...resoUpdate,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            settings: {...(opts?.import && settings), ...connUpdate?.settings},
-            connectionExternalId:
-              connUpdate?.connectionExternalId ?? extractId(conn.id)[2],
+            settings: {...(opts?.import && settings), ...resoUpdate?.settings},
+            resourceExternalId:
+              resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
             connectWith: opts?.connectWith,
           })
         }
-        if (!int.provider.checkConnection) {
+        if (!int.provider.checkResource) {
           return `Not implemented in ${int.provider.name}`
         }
         return 'Ok'
       },
     })
     // What about delete? Should this delete also? Or soft delete?
-    .mutation('deleteConnection', {
+    .mutation('deleteResource', {
       input: z.tuple([
-        zConn,
+        zReso,
         z.object({revokeOnly: z.boolean().nullish()}).optional(),
       ]),
       resolve: async ({
-        input: [{settings, integration, ...conn}, opts],
+        input: [{settings, integration, ...reso}, opts],
         ctx,
       }) => {
-        authorizeOrThrow(ctx, 'connection', conn)
-        await integration.provider.revokeConnection?.(
+        authorizeOrThrow(ctx, 'resource', reso)
+        await integration.provider.revokeResource?.(
           settings,
           integration.config,
         )
         if (opts?.revokeOnly) {
           return
         }
-        await metaService.tables.connection.delete(conn.id)
+        await metaService.tables.resource.delete(reso.id)
       },
     })
     // MARK: - Connect
@@ -561,21 +557,21 @@ export const makeSyncEngine = <
       input: z.tuple([zInt, zConnectOptions]),
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
       resolve: async ({
-        input: [int, {connectionExternalId, ...connCtxInput}],
+        input: [int, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const conn = connectionExternalId
-          ? await metaService.tables.connection
-              .get(makeId('conn', int.provider.name, connectionExternalId))
-              .then((input) => zConn.parseAsync(input))
+        const reso = resourceExternalId
+          ? await metaService.tables.resource
+              .get(makeId('reso', int.provider.name, resourceExternalId))
+              .then((input) => zReso.parseAsync(input))
           : undefined
-        authorizeOrThrow(ctx, 'connection', conn)
+        authorizeOrThrow(ctx, 'resource', reso)
         return int.provider.preConnect?.(int.config, {
           ...connCtxInput,
           userId: ctx.userId ?? ADMIN_UID,
-          connection: conn
+          resource: reso
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              {externalId: connectionExternalId!, settings: conn.settings}
+              {externalId: resourceExternalId!, settings: reso.settings}
             : undefined,
           webhookBaseUrl: joinPath(apiUrl, parseWebhookRequest.pathOf(int.id)),
           redirectUrl: getRedirectUrl?.(int, ctx),
@@ -591,29 +587,29 @@ export const makeSyncEngine = <
       input: z.tuple([z.unknown(), zInt, zPostConnectOptions]),
       // How do we verify that the userId here is the same as the userId from preConnectOption?
       resolve: async ({
-        input: [input, int, {connectionExternalId, ...connCtxInput}],
+        input: [input, int, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
         console.log('didConnect start', int.provider.name, input, connCtxInput)
         if (!int.provider.postConnect || !int.provider.def.connectOutput) {
           return 'Noop'
         }
-        const conn = connectionExternalId
-          ? await metaService.tables.connection
-              .get(makeId('conn', int.provider.name, connectionExternalId))
-              .then((input) => zConn.parseAsync(input))
+        const reso = resourceExternalId
+          ? await metaService.tables.resource
+              .get(makeId('reso', int.provider.name, resourceExternalId))
+              .then((input) => zReso.parseAsync(input))
           : undefined
-        authorizeOrThrow(ctx, 'connection', conn)
+        authorizeOrThrow(ctx, 'resource', reso)
 
-        const connUpdate = await int.provider.postConnect(
+        const resoUpdate = await int.provider.postConnect(
           int.provider.def.connectOutput.parse(input),
           int.config,
           {
             ...connCtxInput,
             userId: ctx.userId ?? ADMIN_UID,
-            connection: conn
+            resource: reso
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                {externalId: connectionExternalId!, settings: conn.settings}
+                {externalId: resourceExternalId!, settings: reso.settings}
               : undefined,
             webhookBaseUrl: joinPath(
               apiUrl,
@@ -622,57 +618,57 @@ export const makeSyncEngine = <
             redirectUrl: getRedirectUrl?.(int, ctx),
           },
         )
-        await _syncConnectionUpdate(int, {
-          ...connUpdate,
+        await _syncResourceUpdate(int, {
+          ...resoUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
           userId: ctx.userId ?? ADMIN_UID,
           envName: connCtxInput.envName,
           connectWith: connCtxInput.connectWith,
         })
         console.log('didConnect finish', int.provider.name, input)
-        return 'Connection Success'
+        return 'Resource successfully connected'
       },
     })
 
     // MARK: - Sync
-    .mutation('syncConnection', {
-      input: z.tuple([zConn, zSyncOptions.optional()]),
-      resolve: async function syncConnection({input: [conn, opts], ctx}) {
-        authorizeOrThrow(ctx, 'connection', conn)
-        console.log('[syncConnection]', conn, opts)
-        // No need to checkConnection here as sourceSync should take care of it
+    .mutation('syncResource', {
+      input: z.tuple([zReso, zSyncOptions.optional()]),
+      resolve: async function syncResource({input: [reso, opts], ctx}) {
+        authorizeOrThrow(ctx, 'resource', reso)
+        console.log('[syncResource]', reso, opts)
+        // No need to checkResource here as sourceSync should take care of it
 
         if (opts?.metaOnly) {
           await sync({
             source:
-              conn.integration.provider.sourceSync?.({
-                id: conn.id,
-                config: conn.integration.config,
-                settings: conn.settings,
+              reso.integration.provider.sourceSync?.({
+                id: reso.id,
+                config: reso.integration.config,
+                settings: reso.settings,
                 // Maybe we should rename `options` to `state`?
                 // Should also make the distinction between `config`, `settings` and `state` much more clear.
                 // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
                 state: R.identity<VeniceSourceState>({
-                  streams: ['connection', 'institution'],
+                  streams: ['resource', 'institution'],
                 }),
               }) ?? rxjs.EMPTY,
-            destination: metaLinks.postSource({src: conn}),
+            destination: metaLinks.postSource({src: reso}),
           })
           return
         }
 
-        // TODO: Figure how to handle situations where connection does not exist yet
+        // TODO: Figure how to handle situations where resource does not exist yet
         // but pipeline is already being persisted properly. This current solution
-        // is vulnerable to race condition and feels brittle. Though syncConnection is only
+        // is vulnerable to race condition and feels brittle. Though syncResource is only
         // called from the UI so we are fine for now.
-        await _syncConnectionUpdate(conn.integration, {
+        await _syncResourceUpdate(reso.integration, {
           userId: ctx.userId,
-          settings: conn.settings,
+          settings: reso.settings,
           // What about envName
-          connectionExternalId: extractId(conn.id)[2],
-          institution: conn.institution && {
-            externalId: extractId(conn.institution.id)[2],
-            data: conn.institution.external ?? {},
+          resourceExternalId: extractId(reso.id)[2],
+          institution: reso.institution && {
+            externalId: extractId(reso.institution.id)[2],
+            data: reso.institution.external ?? {},
           },
           connectWith: opts?.connectWith,
           triggerDefaultSync: true,

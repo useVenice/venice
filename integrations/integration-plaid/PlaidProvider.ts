@@ -66,7 +66,7 @@ const _def = makeSyncProvider.def({
      */
     language: zLanguage.default('en'),
   }),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     itemId: z.string().nullish(),
     accessToken: z.string(),
     institution: zCast<plaid.Institution | undefined>(),
@@ -180,7 +180,7 @@ export const plaidProvider = makeSyncProvider({
       loginUrl: ins.url ?? undefined,
       envName: undefined,
     }),
-    connection: (settings) => {
+    resource: (settings) => {
       // TODO: Unify item.error and webhookItemError into a single field
       // so we know what the true status of the item is...
       const err =
@@ -200,20 +200,20 @@ export const plaidProvider = makeSyncProvider({
   },
   preConnect: (
     config,
-    {envName, userId, connection, institutionExternalId, ...ctx},
+    {envName, userId, resource, institutionExternalId, ...ctx},
   ) =>
     makePlaidClient(config)
       .linkTokenCreate(envName, {
-        access_token: connection?.settings.accessToken, // Reconnecting
+        access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId
           ? `${institutionExternalId}`
           : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: userId},
         client_name: config.clientName,
         language: config.language,
-        ...(!connection?.settings.accessToken && {products: config.products}),
+        ...(!resource?.settings.accessToken && {products: config.products}),
         country_codes: config.countryCodes,
-        // Webhook and redirect_uri would be part of the `connection` already.
+        // Webhook and redirect_uri would be part of the `resource` already.
         // redirect_uri: ctx.redirectUrl,
         webhook: ctx.webhookBaseUrl,
       })
@@ -308,7 +308,7 @@ export const plaidProvider = makeSyncProvider({
           })
         : null,
     ])
-    const settings = def._type('connectionSettings', {
+    const settings = def._type('resourceSettings', {
       itemId: res.item_id,
       accessToken: res.access_token,
       institution: insRes?.institution,
@@ -316,7 +316,7 @@ export const plaidProvider = makeSyncProvider({
 
     // Emit itemId
     return {
-      connectionExternalId: res.item_id,
+      resourceExternalId: res.item_id,
       settings,
       institution: insRes?.institution && {
         externalId: insRes.institution.institution_id,
@@ -329,15 +329,15 @@ export const plaidProvider = makeSyncProvider({
     }
   },
 
-  checkConnection: async ({config, settings, options, context}) => {
-    console.log('[Plaid] checkConnection', options, context)
+  checkResource: async ({config, settings, options, context}) => {
+    console.log('[Plaid] checkResource', options, context)
     const client = makePlaidClient(config)
     const envName = inferPlaidEnvFromToken(settings.accessToken)
     const itemId: string =
       settings.itemId ??
       settings.item?.item_id ??
       (await client.itemGet(settings.accessToken).then((r) => r.item.item_id))
-    const connUpdate = {envName, connectionExternalId: itemId}
+    const resoUpdate = {envName, resourceExternalId: itemId}
 
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
@@ -345,7 +345,7 @@ export const plaidProvider = makeSyncProvider({
         webhook: context.webhookBaseUrl,
       })
       return {
-        ...connUpdate,
+        ...resoUpdate,
         triggerDefaultSync: true, // to update settings.item.webhook
         // postgres deepMerge is not implemented yet
         // settings: {item: {webhook: context.webhookBaseUrl}},
@@ -366,12 +366,12 @@ export const plaidProvider = makeSyncProvider({
       // To immediate get item to be in a loginRequired state, as it is hard for us to
       // generate an item error and put it inside settings.item.
       // And because this call does nto appear to trigger any webhook
-      return {...connUpdate, triggerDefaultSync: true}
+      return {...resoUpdate, triggerDefaultSync: true}
     }
-    return connUpdate
+    return resoUpdate
   },
 
-  revokeConnection: (settings, config) =>
+  revokeResource: (settings, config) =>
     makePlaidClient(config)
       .itemRemove(settings.accessToken)
       .catch((err: IAxiosError) => {
@@ -409,11 +409,11 @@ export const plaidProvider = makeSyncProvider({
 
       const {item_id: itemId} = item
       yield [
-        def._opConn(itemId, {
+        def._opRes(itemId, {
           envName:
-            shouldSync(state, 'connection') &&
+            shouldSync(state, 'resource') &&
             inferPlaidEnvFromToken(settings.accessToken),
-          settings: shouldSync(state, 'connection') && {
+          settings: shouldSync(state, 'resource') && {
             item,
             status,
             // Clear previous webhook error since item is now up to date
@@ -634,14 +634,14 @@ export const plaidProvider = makeSyncProvider({
       case 'ITEM': {
         switch (webhook.webhook_code) {
           case 'WEBHOOK_UPDATE_ACKNOWLEDGED':
-            return {connectionUpdates: []}
+            return {resourceUpdates: []}
           case 'ERROR':
-            // delegate.patchConnection({error: webhook.error})
+            // delegate.patchResource({error: webhook.error})
             // await delegate.commit()
             console.error('[plaid] ITEM webhook error', webhook)
             return def._webhookReturn(webhook.item_id, {
               source$: rxjs.of(
-                def._opConn(webhook.item_id, {
+                def._opRes(webhook.item_id, {
                   settings: {webhookItemError: webhook.error},
                 }),
               ),
@@ -653,7 +653,7 @@ export const plaidProvider = makeSyncProvider({
           case 'INITIAL_UPDATE':
           case 'HISTORICAL_UPDATE':
             return DEFAULT_SYNC
-          // return [{connectionExternalId, triggerDefaultSync: true}] // Incremental false?
+          // return [{resourceExternalId, triggerDefaultSync: true}] // Incremental false?
           case 'DEFAULT_UPDATE':
             return DEFAULT_SYNC
           case 'TRANSACTIONS_REMOVED':
@@ -681,7 +681,7 @@ export const plaidProvider = makeSyncProvider({
     }
 
     console.warn('[plaid] Unhandled webhook', webhook)
-    return {connectionUpdates: []}
+    return {resourceUpdates: []}
   },
 })
 

@@ -48,7 +48,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('yodlee'),
   integrationConfig: zConfig,
-  connectionSettings: zSettings,
+  resourceSettings: zSettings,
   institutionData: zYodleeInstitution,
   // Should accessToken be cached based on provider / userId?
   connectInput: z.object({accessToken: zAccessToken}),
@@ -193,7 +193,7 @@ export const yodleeProvider = makeSyncProvider({
       name: ins.name ?? `<${ins.id}>`,
       envName: ins._envName,
     }),
-    connection: (settings) => ({
+    resource: (settings) => ({
       id: `${settings.providerAccountId}`,
       displayName:
         settings.provider?.name ?? `Unnamed <${settings.providerAccountId}>`,
@@ -259,7 +259,7 @@ export const yodleeProvider = makeSyncProvider({
     ])
 
     return {
-      connectionExternalId: providerAccountId,
+      resourceExternalId: providerAccountId,
       settings: {
         envName,
         loginName,

@@ -28,12 +28,12 @@ export interface AnyEntityPayload {
   id: string // ExternalId
 }
 
-export interface ConnUpdateData<
+export interface ResoUpdateData<
   TSettings = {},
   TInsData = {},
   TVariant extends 'partial' | 'complete' = 'partial',
 > {
-  id: Id['conn']
+  id: Id['reso']
   // TODO: remove `?` when Variant = 'complete'
   settings?: TVariant extends 'partial'
     ? ObjectPartialDeep<NoInfer<TSettings>> | undefined
@@ -56,10 +56,10 @@ type NullableEntity<T> = T extends AnyEntityPayload
 
 export type SyncOperation<
   TData extends AnyEntityPayload = AnyEntityPayload,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
 > =
-  | (TConnUpdate & {type: 'connUpdate'})
+  | (TResoUpdate & {type: 'resoUpdate'})
   // TODO: We should separate state from options, and perhaps make state
   // less black box also, see airbyte protocol v2 for inspiration
   // Also consider merging fields below into a single field
@@ -72,9 +72,9 @@ export type AnySyncOperation = NonDiscriminatedUnion<SyncOperation>
 
 export type Source<
   T extends AnyEntityPayload,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
-> = rxjs.Observable<SyncOperation<T, TConnUpdate, TStateUpdate>>
+> = rxjs.Observable<SyncOperation<T, TResoUpdate, TStateUpdate>>
 
 /**
  * Adapted from TRPC link and Apollo Link
@@ -83,20 +83,20 @@ export type Source<
 export type Link<
   TDataIn extends AnyEntityPayload = AnyEntityPayload,
   TDataOut extends AnyEntityPayload = TDataIn,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
 > = (
-  obs: rxjs.Observable<SyncOperation<TDataIn, TConnUpdate, TStateUpdate>>,
-) => rxjs.Observable<SyncOperation<TDataOut, TConnUpdate, TStateUpdate>>
+  obs: rxjs.Observable<SyncOperation<TDataIn, TResoUpdate, TStateUpdate>>,
+) => rxjs.Observable<SyncOperation<TDataOut, TResoUpdate, TStateUpdate>>
 
 export type LinkFactory<
   TDataIn extends AnyEntityPayload = AnyEntityPayload,
   TDataOut extends AnyEntityPayload = TDataIn,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TArg = any,
-> = (arg: TArg) => Link<TDataIn, TDataOut, TConnUpdate, TStateUpdate>
+> = (arg: TArg) => Link<TDataIn, TDataOut, TResoUpdate, TStateUpdate>
 
 /**
  * Terminating link is just a link... It can still emit things like ready event
@@ -104,6 +104,6 @@ export type LinkFactory<
  */
 export type Destination<
   T extends AnyEntityPayload = AnyEntityPayload,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
-> = Link<T, AnyEntityPayload, TConnUpdate, TStateUpdate>
+> = Link<T, AnyEntityPayload, TResoUpdate, TStateUpdate>

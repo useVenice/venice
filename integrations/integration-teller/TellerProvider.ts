@@ -11,14 +11,14 @@ import {
   zTellerConfig,
 } from './TellerClient'
 
-type TellerEntity = z.infer<typeof def['sourceOutputEntity']>
+type TellerEntity = z.infer<(typeof def)['sourceOutputEntity']>
 type TellerSyncOperation = SyncOperation<TellerEntity>
 
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('teller'),
   integrationConfig: zTellerConfig,
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     token: z.string(),
   }),
   institutionData: zInstitution,
@@ -105,7 +105,7 @@ export const tellerProvider = makeSyncProvider({
     },
   }),
   standardMappers: {
-    connection: (settings) => ({
+    resource: (settings) => ({
       displayName: 'TODO' + settings.token,
       institutionId: 'ins_teller_TODO',
     }),
@@ -155,7 +155,7 @@ export const tellerProvider = makeSyncProvider({
   },
   // eslint-disable-next-line @typescript-eslint/require-await
   postConnect: async (input, _config) => ({
-    connectionExternalId: input.token, // FIXME
+    resourceExternalId: input.token, // FIXME
     settings: {token: input.token},
     // institution // FIXME
   }),

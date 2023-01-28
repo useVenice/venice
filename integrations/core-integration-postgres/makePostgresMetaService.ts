@@ -64,7 +64,7 @@ export const makePostgresMetaService = zFunction(
   ({databaseUrl}): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
-      connection: metaTable('connection', _getDeps(databaseUrl)),
+      resource: metaTable('resource', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),
       integration: metaTable('integration', _getDeps(databaseUrl)),
       pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
@@ -80,11 +80,11 @@ export const makePostgresMetaService = zFunction(
           sql`
             SELECT
               creator_id as id,
-              count(*) AS connection_count,
+              count(*) AS resource_count,
               min(created_at) AS first_created_at,
               max(updated_at) AS last_updated_at
             FROM
-              connection
+              resource
             ${where}
             GROUP BY creator_id
           `,
@@ -110,9 +110,9 @@ export const makePostgresMetaService = zFunction(
         )
       },
 
-      findPipelines: ({connectionIds, secondsSinceLastSync}) => {
+      findPipelines: ({resourceIds, secondsSinceLastSync}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
-        const ids = connectionIds && sql.array(connectionIds, 'varchar')
+        const ids = resourceIds && sql.array(resourceIds, 'varchar')
         const conditions = R.compact([
           ids && sql`(source_id = ANY(${ids}) OR destination_id = ANY(${ids}))`,
           secondsSinceLastSync &&

@@ -11,13 +11,13 @@ import {
   zEnvName,
 } from './WiseClient'
 
-type WiseSyncOperation = typeof def['_opType']
+type WiseSyncOperation = (typeof def)['_opType']
 
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('wise'),
   // integrationConfig: zWiseConfig,
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     envName: zEnvName,
     apiToken: z.string().nullish(),
   }),
@@ -89,11 +89,11 @@ export const wiseProvider = makeSyncProvider({
 
   useConnectHook: (_) => {
     const [options, setOptions] = React.useState<z.infer<
-      typeof def['connectInput']
+      (typeof def)['connectInput']
     > | null>(null)
 
     const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
+      new Deferred<(typeof def)['_types']['connectOutput']>(),
     )
 
     React.useEffect(() => {
@@ -117,7 +117,7 @@ export const wiseProvider = makeSyncProvider({
   },
 
   postConnect: (input) => ({
-    connectionExternalId: input.apiToken ?? '',
+    resourceExternalId: input.apiToken ?? '',
     settings: {
       envName: input.envName ?? '',
       apiToken: input.apiToken,

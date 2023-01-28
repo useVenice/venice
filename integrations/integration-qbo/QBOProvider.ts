@@ -10,7 +10,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('qbo'),
   integrationConfig: zConfig,
-  connectionSettings: zCreds,
+  resourceSettings: zCreds,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

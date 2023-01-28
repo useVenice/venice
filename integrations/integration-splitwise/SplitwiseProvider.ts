@@ -20,7 +20,7 @@ import {makeSplitwiseClient} from './SplitwiseClientNext'
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('splitwise'),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     currentUser: zCurrentUser.nullish(),
     accessToken: z.string(),
   }),

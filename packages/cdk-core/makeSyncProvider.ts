@@ -7,7 +7,7 @@ import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
-  ConnUpdateData,
+  ResoUpdateData,
   Destination,
   Source,
   StateUpdateData,
@@ -17,8 +17,8 @@ import type {
 // MARK: - Shared connect types
 
 export const zConnectWith = z.object({
-  sourceId: zId('conn').nullish(),
-  destinationId: zId('conn').nullish(),
+  sourceId: zId('reso').nullish(),
+  destinationId: zId('reso').nullish(),
 })
 
 /** Useful for establishing the initial pipeline when creating a connection for the first time */
@@ -30,7 +30,7 @@ export const zConnectOptions = z.object({
   envName: zEnvName,
   /** Noop if `connectionId` is specified */
   institutionExternalId: zExternalId.nullish(),
-  connectionExternalId: zExternalId.nullish(),
+  resourceExternalId: zExternalId.nullish(),
 })
 
 export const zPostConnectOptions = zConnectOptions.extend({
@@ -52,25 +52,25 @@ export type UseConnectHook<T extends AnyProviderDef> = (scope: {
 
 // MARK: - Server side connect types
 
-export interface CheckConnectionContext {
+export interface CheckResourceContext {
   webhookBaseUrl: string
 }
 
 /** Context providers get during the connection establishing phase */
 export interface ConnectContext<TSettings>
-  extends Omit<ConnectOptions, 'connectionExternalId'>,
-    CheckConnectionContext {
+  extends Omit<ConnectOptions, 'resourceExternalId'>,
+    CheckResourceContext {
   userId: UserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
   redirectUrl?: string
-  connection?: {
+  resource?: {
     externalId: ExternalId
     settings: TSettings
   } | null
 }
 
-export type CheckConnectionOptions = z.infer<typeof zCheckConnectionOptions>
-export const zCheckConnectionOptions = z.object({
+export type CheckResourceOptions = z.infer<typeof zCheckResourceOptions>
+export const zCheckResourceOptions = z.object({
   /** Persist input into connection storage */
   import: z.boolean().nullish(),
   /**
@@ -85,12 +85,12 @@ export const zCheckConnectionOptions = z.object({
   connectWith: zConnectWith.nullish(),
 })
 
-/** Extra props not on ConnUpdateData */
-export interface ConnectionUpdate<TEntity extends AnyEntityPayload, TSettings>
-  // make `ConnUpdateData.id` not prefixed so we can have better inheritance
-  extends Omit<ConnUpdateData<TSettings>, 'id'> {
-  // Subset of connUpdate
-  connectionExternalId: ExternalId
+/** Extra props not on ResoUpdateData */
+export interface ResourceUpdate<TEntity extends AnyEntityPayload, TSettings>
+  // make `ResoUpdateData.id` not prefixed so we can have better inheritance
+  extends Omit<ResoUpdateData<TSettings>, 'id'> {
+  // Subset of resoUpdate
+  resourceExternalId: ExternalId
   // Can we inherit types used by metaLinks?
   /** If missing it means do not change the userId... */
   userId?: UserId | null
@@ -115,7 +115,7 @@ export interface WebhookReturnType<
   TEntity extends AnyEntityPayload,
   TSettings,
 > {
-  connectionUpdates: Array<ConnectionUpdate<TEntity, TSettings>>
+  resourceUpdates: Array<ResourceUpdate<TEntity, TSettings>>
   /** HTTP Response body */
   response?: {
     body: Record<string, unknown>
@@ -139,7 +139,7 @@ export type AnyProviderDef = ReturnType<typeof makeSyncProviderDef>
 function makeSyncProviderDef<
   TName extends string,
   ZIntConfig extends _opt<z.ZodTypeAny>,
-  ZConnSettings extends _opt<z.ZodTypeAny>,
+  ZResSettings extends _opt<z.ZodTypeAny>,
   ZInsData extends _opt<z.ZodTypeAny>,
   // How do we enforce that the input type of ZWebhookInput must be a subset
   // of the input type of typeof zWebhookInput?
@@ -161,7 +161,7 @@ function makeSyncProviderDef<
 >(schemas: {
   name: z.ZodLiteral<TName>
   integrationConfig: ZIntConfig
-  connectionSettings: ZConnSettings
+  resourceSettings: ZResSettings
   institutionData: ZInsData
   webhookInput: ZWebhookInput
 
@@ -183,33 +183,33 @@ function makeSyncProviderDef<
     }>,
     {type: 'data'}
   >
-  type ConnUpdate = ConnUpdateData<
-    _types['connectionSettings'],
+  type resoUpdate = ResoUpdateData<
+    _types['resourceSettings'],
     _types['institutionData']
   >
   type StateUpdate = StateUpdateData<
     _types['sourceState'],
     _types['destinationState']
   >
-  type Op = SyncOperation<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
-  type Src = Source<_types['sourceOutputEntity'], ConnUpdate, StateUpdate>
+  type Op = SyncOperation<_types['sourceOutputEntity'], resoUpdate, StateUpdate>
+  type Src = Source<_types['sourceOutputEntity'], resoUpdate, StateUpdate>
 
   return {
     ...schemas,
     _types: {} as _types,
-    _connUpdateType: {} as ConnUpdate,
+    _resUpdateType: {} as resoUpdate,
     _stateUpdateType: {} as StateUpdate,
     _sourceType: {} as Src,
     // destination type is a function and thus causes issues...
     _opType: {} as Op,
     _insOpType: {} as InsOpData,
-    _connectionUpdateType: {} as ConnectionUpdate<
+    _resourceUpdateType: {} as ResourceUpdate<
       _types['sourceOutputEntity'],
-      _types['connectionSettings']
+      _types['resourceSettings']
     >,
     _webhookReturnType: {} as WebhookReturnType<
       _types['sourceOutputEntity'],
-      _types['connectionSettings']
+      _types['resourceSettings']
     >,
   }
 }
@@ -219,7 +219,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
   type InsOpData = T['_insOpType']
   type Op = T['_opType']
   type OpData = Extract<Op, {type: 'data'}>
-  type OpConn = Extract<Op, {type: 'connUpdate'}>
+  type OpRes = Extract<Op, {type: 'resoUpdate'}>
   type OpState = Extract<Op, {type: 'stateUpdate'}>
   return {
     ...def,
@@ -229,14 +229,14 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
     ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
-    _opConn: (id: string, rest: Omit<OpConn, 'id' | 'type'>) =>
+    _opRes: (id: string, rest: Omit<OpRes, 'id' | 'type'>) =>
       R.identity<Op>({
         // We don't prefix in `_opData`, should we actually prefix here?
         ...rest,
         // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-        id: makeId('conn', def.name.value, id),
-        type: 'connUpdate',
-      }) as OpConn,
+        id: makeId('reso', def.name.value, id),
+        type: 'resoUpdate',
+      }) as OpRes,
     _opState: (
       sourceState?: OpState['sourceState'],
       destinationState?: OpState['destinationState'],
@@ -269,10 +269,10 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
       },
     }),
     _webhookReturn: (
-      connectionExternalId: T['_connectionUpdateType']['connectionExternalId'],
-      rest: Omit<T['_connectionUpdateType'], 'connectionExternalId'>,
+      resourceExternalId: T['_resourceUpdateType']['resourceExternalId'],
+      rest: Omit<T['_resourceUpdateType'], 'resourceExternalId'>,
     ): T['_webhookReturnType'] => ({
-      connectionUpdates: [{...rest, connectionExternalId}],
+      resourceUpdates: [{...rest, resourceExternalId}],
     }),
   }
 }
@@ -280,7 +280,7 @@ makeSyncProviderDef.helpers = <T extends AnyProviderDef>(def: T) => {
 makeSyncProviderDef.defaults = makeSyncProviderDef({
   name: z.literal('noop'),
   integrationConfig: undefined,
-  connectionSettings: undefined,
+  resourceSettings: undefined,
   institutionData: undefined,
   webhookInput: undefined,
   connectInput: undefined,
@@ -305,9 +305,9 @@ export function makeSyncProvider<
   TSrcSync extends _opt<
     (
       input: OmitNever<{
-        id: Id['conn']
+        id: Id['reso']
         config: T['_types']['integrationConfig']
-        settings: T['_types']['connectionSettings']
+        settings: T['_types']['resourceSettings']
         state: T['_types']['sourceState']
       }>,
     ) => Source<T['_types']['sourceOutputEntity']>
@@ -315,9 +315,9 @@ export function makeSyncProvider<
   TDestSync extends _opt<
     (
       input: OmitNever<{
-        id: Id['conn']
+        id: Id['reso']
         config: T['_types']['integrationConfig']
-        settings: T['_types']['connectionSettings']
+        settings: T['_types']['resourceSettings']
         state: T['_types']['destinationState']
       }>,
     ) => Destination<T['_types']['destinationInputEntity']>
@@ -335,9 +335,9 @@ export function makeSyncProvider<
     institution?: (
       data: T['_types']['institutionData'],
     ) => Omit<ZStandard['institution'], 'id'>
-    connection: (
-      settings: T['_types']['connectionSettings'],
-    ) => Omit<ZStandard['connection'], 'id'>
+    resource: (
+      settings: T['_types']['resourceSettings'],
+    ) => Omit<ZStandard['resource'], 'id'>
   }>,
   // TODO: Consider modeling after classes. Separating `static` from `instance` methods
   // by introducing a separate `instance` method that accepts config
@@ -348,7 +348,7 @@ export function makeSyncProvider<
   TPreConn extends _opt<
     (
       config: T['_types']['integrationConfig'],
-      context: ConnectContext<T['_types']['connectionSettings']>,
+      context: ConnectContext<T['_types']['resourceSettings']>,
     ) => Promise<T['_types']['connectInput']>
   >,
   TUseConnHook extends _opt<UseConnectHook<T>>,
@@ -356,39 +356,39 @@ export function makeSyncProvider<
     (
       connectOutput: T['_types']['connectOutput'],
       config: T['_types']['integrationConfig'],
-      context: ConnectContext<T['_types']['connectionSettings']>,
+      context: ConnectContext<T['_types']['resourceSettings']>,
     ) => MaybePromise<
       Omit<
-        ConnectionUpdate<
+        ResourceUpdate<
           T['_types']['sourceOutputEntity'],
-          T['_types']['connectionSettings']
+          T['_types']['resourceSettings']
         >,
         'creatorId'
       >
     >
   >,
-  TCheckConn extends _opt<
+  TCheckRes extends _opt<
     (
       input: OmitNever<{
-        settings: T['_types']['connectionSettings']
+        settings: T['_types']['resourceSettings']
         config: T['_types']['integrationConfig']
-        options: CheckConnectionOptions
-        context: CheckConnectionContext
+        options: CheckResourceOptions
+        context: CheckResourceContext
       }>,
     ) => MaybePromise<
       Omit<
-        ConnectionUpdate<
+        ResourceUpdate<
           T['_types']['sourceOutputEntity'],
-          T['_types']['connectionSettings']
+          T['_types']['resourceSettings']
         >,
         'creatorId'
       >
     >
   >,
   // This probably need to also return an observable
-  TRevokeConn extends _opt<
+  TRevokeRes extends _opt<
     (
-      settings: T['_types']['connectionSettings'],
+      settings: T['_types']['resourceSettings'],
       config: T['_types']['integrationConfig'],
     ) => Promise<unknown>
   >,
@@ -402,7 +402,7 @@ export function makeSyncProvider<
     ) => MaybePromise<
       WebhookReturnType<
         T['_types']['sourceOutputEntity'],
-        T['_types']['connectionSettings']
+        T['_types']['resourceSettings']
       >
     >
   >,
@@ -429,10 +429,10 @@ export function makeSyncProvider<
   postConnect: TPostConn
 
   /** Notably may be used to update webhook */
-  checkConnection: TCheckConn
+  checkResource: TCheckRes
 
   /** Well, what it says... */
-  revokeConnection: TRevokeConn
+  revokeResource: TRevokeRes
 
   handleWebhook: THandleWebhook
 
@@ -475,8 +475,8 @@ makeSyncProvider.defaults = makeSyncProvider({
   preConnect: undefined,
   useConnectHook: undefined,
   postConnect: undefined,
-  checkConnection: undefined,
-  revokeConnection: undefined,
+  checkResource: undefined,
+  revokeResource: undefined,
   handleWebhook: undefined,
   sourceSync: undefined,
   destinationSync: undefined,

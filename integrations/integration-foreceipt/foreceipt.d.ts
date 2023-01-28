@@ -13,7 +13,7 @@ declare namespace Foreceipt {
     teamGuid?: string | null
   }
 
-  export interface _ConnectionOld {
+  export interface _ResourceOld {
     credentials: Credentials
     userGuid: string
     teamGuid: string | null

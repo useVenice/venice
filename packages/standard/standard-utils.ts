@@ -18,7 +18,7 @@ export function stdTypeAndEntity<T extends Standard.TypeAndEntity[0]>(
   return [entityName, entity]
 }
 
-export const zConnectionStatus = z.enum(['connected', 'disconnected', 'error'])
+export const zResourceStatus = z.enum(['connected', 'disconnected', 'error'])
 export const zReviewStatus = z.enum(['unreviewed', 'reviewed', 'flagged'])
 export const zAccountType = z.enum([
   'asset',
@@ -90,11 +90,11 @@ export const zAccountType = z.enum([
 
 // MARK: - Deprecated helpers
 
-export const CONNECTION_STATUSES = zConnectionStatus.Enum
+export const RESOURCE_STATUSES = zResourceStatus.Enum
 export const REVIEW_STATUSES = zReviewStatus.enum
 export const ACCOUNT_TYPES = zAccountType.Enum
 
-export const CONNECTION_STATUS_DISPLAY: DisplayOf<Standard.ConnectionStatus> = {
+export const RESOURCE_STATUS_DISPLAY: DisplayOf<Standard.ResourceStatus> = {
   connected: 'Connected',
   disconnected: 'Disconnected',
   error: 'Error',

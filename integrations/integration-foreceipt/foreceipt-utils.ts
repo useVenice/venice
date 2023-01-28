@@ -42,8 +42,8 @@ function _parseCategories(
   return categoryNameById
 }
 
-export function _parseConnectionInfo(
-  userAndTeam: Omit<Foreceipt._ConnectionOld, 'credentials'>,
+export function _parseResourceInfo(
+  userAndTeam: Omit<Foreceipt._ResourceOld, 'credentials'>,
   settings: Array<{
     type: 'ACCOUNT' | 'CATEGORY'
     json: Foreceipt.UserSettingJson

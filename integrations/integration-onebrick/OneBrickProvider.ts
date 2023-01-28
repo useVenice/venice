@@ -17,7 +17,7 @@ const connectInputSchema = z.object({
   redirect_url: z.string().nullish(),
 })
 
-type OnebrickEntity = z.infer<typeof def['sourceOutputEntity']>
+type OnebrickEntity = z.infer<(typeof def)['sourceOutputEntity']>
 type OnebrickSyncOperation = SyncOperation<OnebrickEntity>
 
 const zOneBrickWebhookBody = z.object({
@@ -30,7 +30,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('onebrick'),
   integrationConfig: zOneBrickConfig,
-  connectionSettings: z.object({accessToken: z.string()}),
+  resourceSettings: z.object({accessToken: z.string()}),
   connectInput: connectInputSchema,
   connectOutput: z.object({
     publicToken: z.string(),
@@ -108,7 +108,7 @@ export const oneBrickProvider = makeSyncProvider({
       z.infer<typeof connectInputSchema>
     >({publicToken: undefined, redirect_url: undefined})
     const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
+      new Deferred<(typeof def)['_types']['connectOutput']>(),
     )
     React.useEffect(() => {
       if (options.publicToken && options.redirect_url) {
@@ -164,9 +164,9 @@ export const oneBrickProvider = makeSyncProvider({
     // TODO: Add verification to check webhook came from oneBrick provider in fact..
     // TODO: Get the bank detail using bankId so we can put it up there
     // TODO: Figure out if accessToken is actually the only unique thing about
-    // onebrick connection, and whether they could be rotated...
+    // onebrick resource, and whether they could be rotated...
     return def._webhookReturn(md5Hash(accessToken), {
-      settings: def.connectionSettings.parse({accessToken}),
+      settings: def.resourceSettings.parse({accessToken}),
       userId: zUserId.parse(userId),
       triggerDefaultSync: true,
     })

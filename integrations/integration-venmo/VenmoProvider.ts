@@ -1,6 +1,6 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {veniceProviderBase} from '@usevenice/cdk-ledger'
-import type { Brand} from '@usevenice/util';
+import type {Brand} from '@usevenice/util'
 import {A, DateTime, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 import {
@@ -22,7 +22,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('venmo'),
   integrationConfig: zConfig,
-  connectionSettings: zSettings,
+  resourceSettings: zSettings,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

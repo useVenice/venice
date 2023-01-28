@@ -3,7 +3,7 @@ import {produce, R, Rx, rxjs} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
-  ConnUpdateData,
+  ResoUpdateData,
   Link,
   StateUpdateData,
   SyncOperation,
@@ -14,11 +14,11 @@ type OperationType = SyncOperation['type']
 export type OpHandlers<
   TRet,
   T extends Data = Data,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
 > = Partial<{
   [k in OperationType]: (
-    op: Extract<SyncOperation<T, TConnUpdate, TStateUpdate>, {type: k}>,
+    op: Extract<SyncOperation<T, TResoUpdate, TStateUpdate>, {type: k}>,
   ) => TRet
 }>
 
@@ -28,13 +28,13 @@ export type OpHandlers<
  */
 export function handlersLink<
   TData extends Data,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
 >(
   handlers: OpHandlers<
     rxjs.ObservableInput<SyncOperation<TData>> | void,
     TData,
-    TConnUpdate,
+    TResoUpdate,
     TStateUpdate
   >,
 ): Link<TData> {

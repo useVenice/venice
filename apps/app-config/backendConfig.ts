@@ -44,7 +44,7 @@ export const veniceBackendConfig = makeSyncEngine.config({
     log: logLink,
   },
   // Integrations shall include `config`.
-  // In contrast, connection shall include `external`
+  // In contrast, resource shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
 
@@ -101,14 +101,14 @@ export const veniceBackendConfig = makeSyncEngine.config({
     source: conn,
     // TODO: Make me parsable from env vars
     destination: connectWith?.destinationId
-      ? {id: connectWith?.destinationId as 'conn_postgres'} // Temp fix..
+      ? {id: connectWith?.destinationId as 'reso_postgres'} // Temp fix..
       : usePg
       ? {
-          id: 'conn_postgres',
+          id: 'reso_postgres',
           settings: {databaseUrl: env.POSTGRES_OR_WEBHOOK_URL},
         }
       : {
-          id: 'conn_webhook',
+          id: 'reso_webhook',
           settings: {destinationUrl: env.POSTGRES_OR_WEBHOOK_URL},
         },
   }),

@@ -65,9 +65,9 @@ const zConfig = z
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('import'),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     preset: zPreset,
-    /** This is outdated. Should be the same as the connection external ID */
+    /** This is outdated. Should be the same as the resource external ID */
     accountExternalId: z.string(),
   }),
   sourceOutputEntity: zSrcEntitySchema,
@@ -84,7 +84,7 @@ export const importProvider = makeSyncProvider({
     sourceMapEntity: ({entity}, conn) =>
       formats[entity.preset].mapEntity(
         // A bit of a type hack... but needed
-        entity.row as UnionToIntersection<typeof entity['row']>,
+        entity.row as UnionToIntersection<(typeof entity)['row']>,
         conn.accountExternalId as ExternalId,
       ),
   }),

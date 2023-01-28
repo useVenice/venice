@@ -9,7 +9,7 @@ import type {Standard} from '@usevenice/standard'
 import type {Merge} from '@usevenice/util'
 import {A, objectFromArray, R, Rx, rxjs, z, zCast} from '@usevenice/util'
 
-import type {_parseConnectionInfo} from './foreceipt-utils'
+import type {_parseResourceInfo} from './foreceipt-utils'
 import type {ForeceiptClientOptions} from './ForeceiptClient'
 import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
@@ -18,7 +18,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('foreceipt'),
   // integrationConfig: zForeceiptConfig,
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     credentials: zCast<Readonly<Foreceipt.Credentials>>(),
     options: zCast<ForeceiptClientOptions>(),
     _id: zCast<ExternalId>(),
@@ -31,7 +31,7 @@ const _def = makeSyncProvider.def({
       id: z.string(),
       entityName: z.literal('account'),
       entity: zCast<Foreceipt.Account>(),
-      info: zCast<ReturnType<typeof _parseConnectionInfo> | undefined>(),
+      info: zCast<ReturnType<typeof _parseResourceInfo> | undefined>(),
     }),
     z.object({
       id: z.string(),
@@ -46,8 +46,7 @@ const _def = makeSyncProvider.def({
         >
       >(),
       info: zCast<
-        | ({_id?: ExternalId} & ReturnType<typeof _parseConnectionInfo>)
-        | undefined
+        ({_id?: ExternalId} & ReturnType<typeof _parseResourceInfo>) | undefined
       >(),
     }),
   ]),
@@ -161,7 +160,7 @@ export const foreceiptProvider = makeSyncProvider({
 
   // TODO: Need to check and fix the issue
   // postConnect: async (input, config) => {
-  //   const settings = def._type('connectionSettings', {
+  //   const settings = def._type('resourceSettings', {
   //     ...input,
   //   })
   //   const source$: rxjs.Observable<ForeceiptSyncOperation> =

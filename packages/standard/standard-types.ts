@@ -2,22 +2,22 @@ import type {Amount, AmountMap, Brand, Split, z} from '@usevenice/util'
 
 import type {
   zAccountType,
-  zConnectionStatus,
+  zResourceStatus,
   zReviewStatus,
 } from './standard-utils'
 
-// MARK: - Connection
+// MARK: - Resource
 
-export type ConnectionStatus = z.infer<typeof zConnectionStatus>
+export type ResourceStatus = z.infer<typeof zResourceStatus>
 /**
  * Goes beyond the 5 top types so we can calculate standard metrics such as
  * EBITA, Gross Margins, etc.
  */
 export type AccountType = z.infer<typeof zAccountType>
 export type ReviewStatus = z.infer<typeof zReviewStatus>
-export interface Connection {
+export interface Resource {
   lastSuccessfulRefresh?: ISODateTime | null
-  status: ConnectionStatus
+  status: ResourceStatus
   name?: string | null
   notes?: string | null
   institution?: {
@@ -26,7 +26,7 @@ export interface Connection {
     url?: string | null
   }
   /**
-   * Whether we should hide the connection from user interface because
+   * Whether we should hide the resource from user interface because
    * it's really an implementation detail. Only applies to Yodlee.User for now
    */
   hidden?: boolean

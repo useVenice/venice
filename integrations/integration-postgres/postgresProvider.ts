@@ -12,7 +12,7 @@ export {makePostgresClient} from '@usevenice/core-integration-postgres'
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
-  connectionSettings: zPgConfig.pick({databaseUrl: true}),
+  resourceSettings: zPgConfig.pick({databaseUrl: true}),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
 })
 
@@ -20,7 +20,7 @@ export const postgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
   standardMappers: {
-    connection: (_settings) => ({
+    resource: (_settings) => ({
       displayName: 'Postgres',
       status: 'healthy',
     }),
@@ -48,7 +48,7 @@ export const postgresProvider = makeSyncProvider({
         batches[tableName] = batch
         batch.push({
           id,
-          ledger_connection_id: ledgerId,
+          ledger_resource_id: ledgerId,
           standard: data.entity,
           external: data.external,
           source_id: sourceId,

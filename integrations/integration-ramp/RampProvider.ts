@@ -15,14 +15,14 @@ import {
 } from './RampClient'
 
 const kRamp = 'ramp' as const
-type RampEntity = z.infer<typeof def['sourceOutputEntity']>
-type RampSrcSyncOptions = z.infer<typeof def['sourceState']>
-type RampSyncOperation = typeof def['_opType']
+type RampEntity = z.infer<(typeof def)['sourceOutputEntity']>
+type RampSrcSyncOptions = z.infer<(typeof def)['sourceState']>
+type RampSyncOperation = (typeof def)['_opType']
 
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('ramp'),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     accessToken: z.string().nullish(),
     clientId: z.string().nullish(),
     clientSecret: z.string().nullish(),
@@ -96,11 +96,11 @@ export const rampProvider = makeSyncProvider({
     },
   }),
 
-  // TODO: Need to find a way to skip unnecessary pipe/connection
+  // TODO: Need to find a way to skip unnecessary pipe/resource
   useConnectHook: (_) => {
     const [isShowPromt, setIsShowPromt] = React.useState(false)
     const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
+      new Deferred<(typeof def)['_types']['connectOutput']>(),
     )
 
     React.useEffect(() => {
@@ -137,14 +137,14 @@ export const rampProvider = makeSyncProvider({
   },
 
   postConnect: (input) => ({
-    connectionExternalId: input.clientId ?? '',
+    resourceExternalId: input.clientId ?? '',
     settings: input,
     triggerDefaultSync: true,
   }),
 
   // Disable it for now until it's ready
   // handleWebhook: (input) => {
-  //   const conn = identity<z.infer<typeof base['connectionSchema']>>({
+  //   const conn = identity<z.infer<typeof base['resourceSchema']>>({
   //     clientId: '',
   //     clientSecret: '',
   //     authorizationCode: input.query['code'] as string,
@@ -212,7 +212,7 @@ const opData = <K extends RampEntity['entityName']>(
 
 const opMeta = (id: string, sourceState: Partial<RampSrcSyncOptions>) =>
   ({
-    type: 'connUpdate',
-    id: makeStandardId('conn', kRamp, id),
+    type: 'resoUpdate',
+    id: makeStandardId('reso', kRamp, id),
     sourceState,
   } as RampSyncOperation)

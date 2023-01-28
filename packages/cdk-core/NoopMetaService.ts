@@ -12,7 +12,7 @@ const noopTable: MetaTable<string, never> = {
 // much like used to have memoryKV store
 export const noopMetaService: MetaService = {
   tables: {
-    connection: noopTable,
+    resource: noopTable,
     institution: noopTable,
     integration: noopTable,
     pipeline: noopTable,

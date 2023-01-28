@@ -8,34 +8,34 @@ import {useVenice} from '@usevenice/engine-frontend'
 
 import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
-import {ConnectionCard} from '../components/ConnectionCard'
+import {ResourceCard} from '../components/ResourceCard'
 import {PageLayout} from '../layouts/PageLayout'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
 export default function PipelinesScreen() {
   const mode = useAtomValue(modeAtom)
   const env = useAtomValue(envAtom)
-  const {connectionsRes} = useVenice({envName: env})
-  const connections = connectionsRes.data ?? []
+  const {resourcesRes} = useVenice({envName: env})
+  const resources = resourcesRes.data ?? []
 
   // List the pipelines in and out of Venice
-  const sources = connections.filter(
-    (conn) => !conn.id.startsWith('conn_postgres'),
+  const sources = resources.filter(
+    (reso) => !reso.id.startsWith('reso_postgres'),
   )
-  const ledgers = connections.filter((conn) =>
-    conn.id.startsWith('conn_postgres'),
+  const ledgers = resources.filter((reso) =>
+    reso.id.startsWith('reso_postgres'),
   )
   const destinations: typeof sources = []
   const [ledgerId, setLedgerId] = useAtom(ledgerIdAtom)
 
   React.useEffect(() => {
-    if (!connectionsRes.isLoading && !ledgers.some((l) => l.id === ledgerId)) {
+    if (!resourcesRes.isLoading && !ledgers.some((l) => l.id === ledgerId)) {
       setLedgerId(ledgers[0]?.id ?? '')
     }
-  }, [connectionsRes.isLoading, ledgerId, ledgers, setLedgerId])
+  }, [resourcesRes.isLoading, ledgerId, ledgers, setLedgerId])
 
   const connectWith = React.useMemo(
-    () => ({destinationId: ledgerId as Id['conn']}),
+    () => ({destinationId: ledgerId as Id['reso']}),
     [ledgerId],
   )
 
@@ -62,8 +62,8 @@ export default function PipelinesScreen() {
             {sources.length == 0 ? (
               <EmptySourcesView />
             ) : (
-              sources.map((conn) => (
-                <ConnectionCard key={conn.id} connection={conn} />
+              sources.map((reso) => (
+                <ResourceCard key={reso.id} resource={reso} />
               ))
             )}
           </div>
@@ -82,8 +82,8 @@ export default function PipelinesScreen() {
             {destinations.length == 0 ? (
               <EmptyDestinationsView />
             ) : (
-              destinations.map((conn) => (
-                <ConnectionCard key={conn.id} connection={conn} />
+              destinations.map((reso) => (
+                <ResourceCard key={reso.id} resource={reso} />
               ))
             )}
           </div>
@@ -158,27 +158,27 @@ function EmptyDestinationsView() {
 // import {Database, PlusCircle} from 'phosphor-react'
 // import {useDelete, useInsert} from 'react-supabase'
 
-// const [_insertLedgerRes, insertLedger] = useInsert('connection')
-// const [_deleteLedgerRes, deleteLedger] = useDelete('connection')
+// const [_insertLedgerRes, insertLedger] = useInsert('resource')
+// const [_deleteLedgerRes, deleteLedger] = useDelete('resource')
 
 // <ul className="shrink self-center md:block">
-//   {ledgers.map((conn) => (
-//     <li key={conn.id}>
+//   {ledgers.map((reso) => (
+//     <li key={reso.id}>
 //       <DropdownMenu>
 //         <DropdownMenuTrigger>
-//           <Database className="inline cursor-pointer" alt={conn.id} />
+//           <Database className="inline cursor-pointer" alt={reso.id} />
 //         </DropdownMenuTrigger>
 //         <DropdownMenuContent>
 //           <DropdownMenuItem
 //             className="cursor-pointer"
-//             onClick={() => setLedgerId(conn.id)}>
+//             onClick={() => setLedgerId(reso.id)}>
 //             Switch to
 //           </DropdownMenuItem>
 //           <DropdownMenuItem
 //             className="cursor-pointer"
 //             onClick={async () => {
-//               await deleteLedger((query) => query.eq('id', conn.id))
-//               await connectionsRes.refetch()
+//               await deleteLedger((query) => query.eq('id', reso.id))
+//               await resourcesRes.refetch()
 //             }}>
 //             Delete
 //           </DropdownMenuItem>
@@ -189,9 +189,9 @@ function EmptyDestinationsView() {
 //   <li>
 //     <PlusCircle
 //       onClick={async () => {
-//         const newId = makeId('conn', 'postgres', makeUlid())
+//         const newId = makeId('reso', 'postgres', makeUlid())
 //         await insertLedger({id: newId, creator_id: user?.id})
-//         await connectionsRes.refetch()
+//         await resourcesRes.refetch()
 //         setLedgerId(newId)
 //       }}
 //       className="inline cursor-pointer"

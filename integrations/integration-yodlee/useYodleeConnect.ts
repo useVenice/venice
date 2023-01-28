@@ -15,7 +15,7 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
     {accessToken},
     {
       envName,
-      connectionExternalId: providerAccountId,
+      resourceExternalId: providerAccountId,
       institutionExternalId: providerId,
     },
   ) => {

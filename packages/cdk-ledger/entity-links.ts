@@ -29,7 +29,7 @@ import type {
 import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 import {isVeniceProvider} from './veniceProviderBase'
 
-// TODO: Can we use the `parsedConn` type here?
+// TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({
   integration: {provider},
   settings: initialSettings,
@@ -37,7 +37,7 @@ export function mapStandardEntityLink({
 }: {
   integration: {provider: AnySyncProvider}
   settings: unknown
-  id: Id['conn'] | undefined
+  id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> {
   if (!isVeniceProvider(provider)) {
     throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
@@ -47,7 +47,7 @@ export function mapStandardEntityLink({
       return rxjs.of(op)
     }
 
-    // TODO: Update the initialConn as we receive connection updates
+    // TODO: Update the initialReso as we receive resource updates
     const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>
       typeof map === 'function'
         ? map(op.data, initialSettings)

@@ -24,8 +24,8 @@ import {deepMerge, infer, R} from '@usevenice/util'
 // Should the mapping of the StandardInstitution happen inside here?
 
 export function makeMetaLinks(metaBase: MetaService) {
-  type Conn = Pick<
-    ZRaw['connection'],
+  type Res = Pick<
+    ZRaw['resource'],
     'id' | 'envName' | 'integrationId' | 'creatorId'
   >
   type Pipe = Pick<
@@ -33,17 +33,17 @@ export function makeMetaLinks(metaBase: MetaService) {
     'id' | 'sourceId' | 'destinationId' | 'linkOptions'
   >
 
-  const postSource = (opts: {src: Conn}) => handle({connection: opts.src})
+  const postSource = (opts: {src: Res}) => handle({resource: opts.src})
 
-  const postDestination = (opts: {pipeline: Pipe; dest: Conn}) =>
-    handle({connection: opts.dest, pipeline: opts.pipeline})
+  const postDestination = (opts: {pipeline: Pipe; dest: Res}) =>
+    handle({resource: opts.dest, pipeline: opts.pipeline})
 
   const persistInstitution = () => handle({})
 
   const handle = (...args: Parameters<typeof handlers>) =>
     handlersLink<AnyEntityPayload>({
-      connUpdate: async (op) => {
-        await handlers(...args).connUpdate(op)
+      resoUpdate: async (op) => {
+        await handlers(...args).resoUpdate(op)
         return op
       },
       stateUpdate: async (op) => {
@@ -58,25 +58,25 @@ export function makeMetaLinks(metaBase: MetaService) {
 
   const handlers = ({
     pipeline,
-    connection,
+    resource,
   }: {
     /** Used for state persistence. Do not pass in until destination handled event already */
     pipeline?: Pipe
-    connection?: Conn
+    resource?: Res
   }) =>
     infer<OpHandlers<Promise<void>>>()({
       // TODO: make standard insitution and connection here...
-      connUpdate: async (op) => {
-        if (op.id !== connection?.id) {
+      resoUpdate: async (op) => {
+        if (op.id !== resource?.id) {
           return
         }
         const {id, settings = {}, institution} = op
-        const providerName = extractId(connection.id)[1]
-        console.log('[metaLink] connUpdate', {
+        const providerName = extractId(resource.id)[1]
+        console.log('[metaLink] resoUpdate', {
           id,
           settings: R.keys(settings),
           institution,
-          existingConnection: connection,
+          existingResourceß: resource,
         })
 
         const institutionId = institution
@@ -96,24 +96,23 @@ export function makeMetaLinks(metaBase: MetaService) {
         // Is it a hack? When there is no 3rd component of id, does that always
         // mean that the integration does not in fact exist in database?
         const integrationId =
-          connection.integrationId &&
-          extractId(connection.integrationId)[2] === ''
+          resource.integrationId && extractId(resource.integrationId)[2] === ''
             ? undefined
-            : connection.integrationId
+            : resource.integrationId
 
         // Can we run this in one transaction?
 
-        await patch('connection', id, {
+        await patch('resource', id, {
           id,
           settings,
           // It is also an issue that institution may not exist at the initial time of
           // connection establishing..
           integrationId,
           institutionId,
-          // maybe we should distinguish between setDefaults (from existingConnection) vs. actually
+          // maybe we should distinguish between setDefaults (from existingResource) vs. actually
           // updating the values...
-          envName: op.envName ?? connection.envName,
-          creatorId: connection.creatorId,
+          envName: op.envName ?? resource.envName,
+          creatorId: resource.creatorId,
         })
       },
       stateUpdate: async (op) => {
@@ -161,7 +160,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           id as Id['ins'],
           entity as ZRaw['institution'],
         )
-        // console.log(`[meta] Did update connection`, id, op.data)
+        // console.log(`[meta] Did update resource`, id, op.data)
       },
     })
 

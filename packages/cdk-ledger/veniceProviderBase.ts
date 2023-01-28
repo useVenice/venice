@@ -9,7 +9,7 @@ import {zEntityName, zEntityPayload} from './entity-link-types'
 
 type _opt<T> = T | undefined
 
-/** Aka EntityName + connection + institution, See Airbyte docs on streams */
+/** Aka EntityName + resource + institution, See Airbyte docs on streams */
 export const zStream = z.enum([
   // TODO: Merge these different references to entity names together in one place...
   ...zEntityName.options,
@@ -27,13 +27,13 @@ export const veniceProviderBase = <
     | Partial<{
         [k in T['_types']['sourceOutputEntity']['entityName']]: (
           entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
-          settings: T['_types']['connectionSettings'],
+          settings: T['_types']['resourceSettings'],
         ) => EntityPayload | null
       }>
     // More powerful
     | ((
         entity: T['_types']['sourceOutputEntity'],
-        settings: T['_types']['connectionSettings'],
+        settings: T['_types']['resourceSettings'],
       ) => EntityPayload | null)
   >,
 >(
@@ -60,7 +60,7 @@ veniceProviderBase.def = makeSyncProvider.def({
 export type VeniceProvider = ReturnType<typeof veniceProviderBase>
 
 export type VeniceSourceState =
-  typeof veniceProviderBase.def['_types']['sourceState']
+  (typeof veniceProviderBase.def)['_types']['sourceState']
 
 export function isVeniceProvider(
   provider: AnySyncProvider,

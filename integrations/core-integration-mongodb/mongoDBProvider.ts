@@ -15,7 +15,7 @@ export const zMongoConnection = z.object({
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('mongodb'),
-  connectionSettings: zMongoConnection,
+  resourceSettings: zMongoConnection,
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
 

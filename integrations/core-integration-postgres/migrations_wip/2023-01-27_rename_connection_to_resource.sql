@@ -16,3 +16,6 @@ ALTER TABLE "public"."commodity" RENAME COLUMN "ledger_connection_id" TO "ledger
 ALTER POLICY ledger_connection_creator_access ON public.transaction RENAME TO ledger_resource_creator_access;
 ALTER POLICY ledger_connection_creator_access ON public.account RENAME TO ledger_resource_creator_access;
 ALTER POLICY ledger_connection_creator_access ON public.commodity RENAME TO ledger_resource_creator_access;
+
+
+-- TODO: Update connection ids

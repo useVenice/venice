@@ -5,7 +5,7 @@ import {defineProxyFn, titleCase, z, zFunction} from '@usevenice/util'
 export const $airtable =
   defineProxyFn<() => typeof import('airtable')>('$airtable')
 
-export const zAirtableConnectionSettings = z.object({
+export const zAirtableResourceSettings = z.object({
   apiKey: z.string(),
   airtableBase: z.string(),
 })
@@ -24,7 +24,7 @@ export const zTransaction = zAccount.extend({
 })
 
 export const makeAirtableClient = zFunction(
-  zAirtableConnectionSettings,
+  zAirtableResourceSettings,
   ({apiKey, airtableBase}) => {
     const Airtable = $airtable()
     let base: Base

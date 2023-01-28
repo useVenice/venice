@@ -7,7 +7,7 @@ const debugProviderDef = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('debug'),
   webhookInput: zWebhookInput,
-  connectionSettings: z.unknown(),
+  resourceSettings: z.unknown(),
   integrationConfig: z.unknown(),
   sourceOutputEntity: z.unknown(),
   institutionData: z.unknown(),
@@ -18,7 +18,7 @@ export const debugProvider = makeSyncProvider({
   def: debugProviderDef,
   destinationSync: () => logLink({prefix: 'debug', verbose: true}),
   handleWebhook: (input) => ({
-    connectionUpdates: [],
+    resourceUpdates: [],
     response: {body: {echo: input}},
   }),
 })

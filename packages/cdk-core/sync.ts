@@ -2,7 +2,7 @@ import {R, Rx, toCompletion} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
-  ConnUpdateData,
+  ResoUpdateData,
   Destination,
   Link,
   Source,
@@ -18,12 +18,12 @@ const COMMIT: Extract<SyncOperation, {type: 'commit'}> = {type: 'commit'}
 /** The most fundamental implementation of using using protocol */
 export async function sync<
   T extends Data = Data,
-  TConnUpdate extends object = ConnUpdateData,
+  TResoUpdate extends object = ResoUpdateData,
   TStateUpdate extends object = StateUpdateData,
 >(input: {
-  source: Source<T, TConnUpdate, TStateUpdate>
-  destination: Destination<T, TConnUpdate, TStateUpdate>
-  links?: Array<Link<T, T, TConnUpdate, TStateUpdate>>
+  source: Source<T, TResoUpdate, TStateUpdate>
+  destination: Destination<T, TResoUpdate, TStateUpdate>
+  links?: Array<Link<T, T, TResoUpdate, TStateUpdate>>
   watch?: boolean
 }) {
   const start = Date.now()

@@ -7,7 +7,7 @@ import {makePostgresClient, zPgConfig} from './makePostgresClient'
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('core-postgres'),
-  connectionSettings: zPgConfig,
+  resourceSettings: zPgConfig,
   destinationInputEntity: zCast<AnyEntityPayload>(),
 })
 

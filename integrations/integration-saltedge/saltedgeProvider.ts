@@ -1,8 +1,7 @@
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
-import type {
-  Brand} from '@usevenice/util';
+import type {Brand} from '@usevenice/util'
 import {
   A,
   DateTime,
@@ -25,7 +24,7 @@ const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('saltedge'),
   integrationConfig: zConfig,
-  connectionSettings: zCast<SaltEdge.Connection & {_id: ExternalId}>(),
+  resourceSettings: zCast<SaltEdge.Connection & {_id: ExternalId}>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

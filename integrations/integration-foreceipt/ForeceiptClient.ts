@@ -9,7 +9,7 @@ import {
 import type {HTTPError} from '@usevenice/util'
 import {createHTTPClient, Rx, rxjs, z, zCast, zFunction} from '@usevenice/util'
 
-import {_parseConnectionInfo} from './foreceipt-utils'
+import {_parseResourceInfo} from './foreceipt-utils'
 
 class ForeceiptError extends Error {
   override name = 'ForeceiptError'
@@ -253,7 +253,7 @@ export const makeForeceiptClient = zFunction(zForeceiptConfig, (cfg) => {
     const [settings] = await Promise.all([
       rxjs.firstValueFrom(getUserSettings$()),
     ])
-    const info = _parseConnectionInfo(userAndTeam, settings)
+    const info = _parseResourceInfo(userAndTeam, settings)
 
     return info
   })

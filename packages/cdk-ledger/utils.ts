@@ -6,7 +6,7 @@ const STANDARD_NAME_TO_PREFIX = {
   account: 'acct',
   transaction: 'txn',
   commodity: 'comm',
-  connection: 'conn',
+  resource: 'reso',
   integration: 'int',
   ledger: 'ldgr',
 } as const

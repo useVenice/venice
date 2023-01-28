@@ -27,7 +27,7 @@ const zWatchPathsInput = z.object({
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('fs'),
-  connectionSettings: zWatchPathsInput.pick({basePath: true}),
+  resourceSettings: zWatchPathsInput.pick({basePath: true}),
   /**
    * `paths` only used for sourceSync, not destSync. Though these are not technically states...
    * And they are not safe to just erase if fullSync = true.
@@ -46,7 +46,7 @@ export const fsProvider = makeSyncProvider({
   sourceSync: ({settings, state}) =>
     _fsWatchPaths$({...settings, ...state}).pipe(_readPathData()),
   destinationSync: ({settings: {basePath}}) =>
-    // TODO: Should we add the connectionId to data?
+    // TODO: Should we add the resourceId to data?
     handlersLink({
       data: ({data}) =>
         fromCompletion(

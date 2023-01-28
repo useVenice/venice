@@ -85,7 +85,7 @@ function fromQuery<T extends Record<string, unknown>>(query: AnyQuery<T>) {
 const def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('firebase'),
-  connectionSettings: zSettings,
+  resourceSettings: zSettings,
   sourceState: z.object({
     /**
      * Only used for sourceSync, not destSync. Though these are not technically states...

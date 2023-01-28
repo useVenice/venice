@@ -16,8 +16,8 @@ import {envAtom} from '../contexts/atoms'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
 
-export interface ConnectionCardProps {
-  connection: ZStandard['connection'] & {
+export interface ResourceCardProps {
+  resource: ZStandard['resource'] & {
     envName: EnvName | null | undefined
     syncInProgress: boolean
     lastSyncCompletedAt: Date | null | undefined
@@ -25,18 +25,13 @@ export interface ConnectionCardProps {
   }
 }
 
-export function ConnectionCard({connection: conn}: ConnectionCardProps) {
+export function ResourceCard({resource: reso}: ResourceCardProps) {
   const env = useAtomValue(envAtom)
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is userId...
   // How do we express these situations?
-  const {
-    connect,
-    syncConnection,
-    deleteConnection,
-    checkConnection,
-    developerMode,
-  } = useVenice({envName: env})
+  const {connect, syncResource, deleteResource, checkResource, developerMode} =
+    useVenice({envName: env})
 
   const dropdownItemClass =
     'cursor-pointer text-offwhite/75 p-2 hover:outline-0 outline-none hover:bg-offwhite/5 rounded-lg'
@@ -46,7 +41,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
       <div className="card-body p-4">
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
-            <InstitutionLogo institution={conn.institution} />
+            <InstitutionLogo institution={reso.institution} />
 
             {developerMode && (
               <div className="flex-row gap-4">
@@ -59,13 +54,13 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
           </div>
 
           <div className="flex flex-1 justify-end">
-            {conn.status === 'disconnected' && (
+            {reso.status === 'disconnected' && (
               <button
                 className="btn btn-primary btn-sm"
                 onClick={() => {
                   void connect(
                     {id: 'int_plaid'}, // Need the integration id too
-                    {connectionId: conn.id},
+                    {resourceId: reso.id},
                   )
                 }}>
                 Reconnect
@@ -77,7 +72,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
             <DropdownMenuTrigger
               className={twMerge(
                 'text-xl outline-none hover:outline-0',
-                (syncConnection.isLoading || deleteConnection.isLoading) &&
+                (syncResource.isLoading || deleteResource.isLoading) &&
                   'loading cursor-not-allowed',
               )}>
               <DotsThreeVertical />
@@ -86,19 +81,19 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
             <DropdownMenuContent className="border border-base-content/25 bg-black text-sm">
               <DropdownMenuItem
                 className={dropdownItemClass}
-                onClick={() => copyToClipboard(conn.id)}>
+                onClick={() => copyToClipboard(reso.id)}>
                 Copy id
               </DropdownMenuItem>
               <DropdownMenuItem
                 className={dropdownItemClass}
                 onClick={() =>
-                  syncConnection
-                    .mutateAsync([{id: conn.id}, {}])
+                  syncResource
+                    .mutateAsync([{id: reso.id}, {}])
                     .then((res) => {
-                      console.log('syncConnection success', res)
+                      console.log('syncResource success', res)
                     })
                     .catch((err) => {
-                      console.error('syncConnection error', err)
+                      console.error('syncResource error', err)
                     })
                 }>
                 Sync
@@ -107,13 +102,13 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
               <DropdownMenuItem
                 className={dropdownItemClass}
                 onClick={() =>
-                  syncConnection
-                    .mutateAsync([{id: conn.id}, {fullResync: true}])
+                  syncResource
+                    .mutateAsync([{id: reso.id}, {fullResync: true}])
                     .then((res) => {
-                      console.log('syncConnection success', res)
+                      console.log('syncResource success', res)
                     })
                     .catch((err) => {
-                      console.error('syncConnection error', err)
+                      console.error('syncResource error', err)
                     })
                 }>
                 Full sync
@@ -123,32 +118,32 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
               <DropdownMenuItem
                 className={twMerge(dropdownItemClass, 'text-red')}
                 onClick={() =>
-                  deleteConnection
-                    .mutateAsync([{id: conn.id}, {}])
+                  deleteResource
+                    .mutateAsync([{id: reso.id}, {}])
                     .then((res) => {
-                      console.log('deleteConnection success', res)
+                      console.log('deleteResource success', res)
                     })
                     .catch((err) => {
-                      console.error('deleteConnection error', err)
+                      console.error('deleteResource error', err)
                     })
                 }>
                 Delete
               </DropdownMenuItem>
 
-              {conn.envName === 'sandbox' && (
+              {reso.envName === 'sandbox' && (
                 <DropdownMenuItem
                   className={dropdownItemClass}
                   onClick={() =>
-                    checkConnection
+                    checkResource
                       .mutateAsync([
-                        {id: conn.id},
+                        {id: reso.id},
                         {sandboxSimulateDisconnect: true},
                       ])
                       .then((res) => {
-                        console.log('checkConnection success', res)
+                        console.log('checkResource success', res)
                       })
                       .catch((err) => {
-                        console.error('checkConnection error', err)
+                        console.error('checkResource error', err)
                       })
                   }>
                   Simulate disconnect
@@ -160,11 +155,11 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
 
         <div className="flex justify-between space-x-4">
           <span className="card-title text-lg text-offwhite">
-            {conn.displayName}
+            {reso.displayName}
           </span>
 
           <div className="flex flex-col items-end space-y-1 text-sm">
-            {conn.status && conn.status !== 'manual' && (
+            {reso.status && reso.status !== 'manual' && (
               <div
                 className={twMerge(
                   'flex items-center space-x-1',
@@ -172,19 +167,19 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
                     healthy: 'text-green',
                     disconnected: 'text-orange-600',
                     error: 'text-red',
-                  }[conn.status],
+                  }[reso.status],
                 )}>
                 <Circle weight="fill" />
-                <span>{sentenceCase(conn.status)}</span>
+                <span>{sentenceCase(reso.status)}</span>
               </div>
             )}
 
             <span className="text-xs text-gray">
-              {conn.syncInProgress
+              {reso.syncInProgress
                 ? 'Syncing…'
-                : conn.lastSyncCompletedAt
+                : reso.lastSyncCompletedAt
                 ? `Synced ${
-                    formatDateTime(conn.lastSyncCompletedAt, 'relative') ??
+                    formatDateTime(reso.lastSyncCompletedAt, 'relative') ??
                     'recently'
                   }`
                 : 'Never synced yet'}
@@ -194,7 +189,7 @@ export function ConnectionCard({connection: conn}: ConnectionCardProps) {
 
         {developerMode && (
           <div className="flex-row gap-4">
-            <span className="text-2xs border-base-content/25">{conn.id}</span>
+            <span className="text-2xs border-base-content/25">{reso.id}</span>
           </div>
         )}
       </div>

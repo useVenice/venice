@@ -11,7 +11,7 @@ import {
   makeTogglClient,
 } from './TogglCient'
 
-type TogglSyncOperation = typeof def['_opType']
+type TogglSyncOperation = (typeof def)['_opType']
 
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
@@ -25,7 +25,7 @@ const def = makeSyncProvider.def({
     email: z.string().nullish(),
     password: z.string().nullish(),
   }),
-  connectionSettings: z.object({
+  resourceSettings: z.object({
     apiToken: z.string(),
     email: z.string().nullish(),
     password: z.string().nullish(),
@@ -82,7 +82,7 @@ export const togglProvider = makeSyncProvider({
     const [isShowPromt, setIsShowPromt] = React.useState(false)
 
     const [deferred] = React.useState(
-      new Deferred<typeof def['_types']['connectOutput']>(),
+      new Deferred<(typeof def)['_types']['connectOutput']>(),
     )
 
     React.useEffect(() => {
@@ -103,7 +103,7 @@ export const togglProvider = makeSyncProvider({
   },
 
   postConnect: (input) => ({
-    connectionExternalId: input.apiToken,
+    resourceExternalId: input.apiToken,
     settings: {
       apiToken: input.apiToken,
       email: input.email,
