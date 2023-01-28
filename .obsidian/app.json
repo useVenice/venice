@@ -1,7 +1,0 @@
-{
-  "showUnsupportedFiles": false,
-  "userIgnoreFilters": [
-    "\"/node_modules/\"",
-    "\"/apps/app-config/node_modules/\""
-  ]
-}
