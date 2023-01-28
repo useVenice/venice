@@ -88,6 +88,8 @@ const _def = makeSyncProvider.def({
       transactionSyncCursor: z.string().nullish(),
       /** ISO8601 */
       investmentTransactionEndDate: z.string().nullish(),
+
+      syncInvestments: z.boolean().nullish(),
     })
     .default({}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -432,14 +434,17 @@ export const plaidProvider = makeSyncProvider({
       }
 
       // Sync accounts
-      let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined | null
       if (shouldSync(state, 'account')) {
         const {accounts} = await client.accountsGet({
           access_token: accessToken,
           options: {...(accountIds && {account_ids: accountIds})},
         })
         yield accounts.map((a) => def._opData('account', a.account_id, a))
+      }
 
+      let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined | null
+      // Investments shall be explicitly enabled for now...
+      if (shouldSync(state, 'account') && state.syncInvestments) {
         await invHoldingsGetLimit()
         holdingsRes = await client
           .investmentsHoldingsGet({
@@ -473,7 +478,6 @@ export const plaidProvider = makeSyncProvider({
             holdings,
             securities,
             investmentAccounts,
-            accounts,
           })
         }
       }
