@@ -18,7 +18,7 @@ const mainNavigation = [
     href: '/pipelines',
     icon: ArrowLeftRightIcon,
   },
-  {name: 'Export Data', href: '/export', icon: ExportIcon},
+  {name: 'Export Data', href: '/data', icon: ExportIcon},
   {
     name: 'API Access',
     href: '/api-access',
