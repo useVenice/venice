@@ -10,10 +10,9 @@ import {
   SupportIcon,
 } from '../../../components/icons'
 
-import type {NavLinkProps} from './NavLink'
 import {NavLink} from './NavLink'
 
-const mainNavigation: NavLinkProps[] = [
+const mainNavigation = [
   {
     name: 'Connections',
     href: '/pipelines',
@@ -27,7 +26,7 @@ const mainNavigation: NavLinkProps[] = [
   },
 ]
 
-const helpNavigation: NavLinkProps[] = [
+const helpNavigation = [
   {
     name: 'Support',
     href: '/support',

@@ -5,7 +5,7 @@ import type {ComponentType} from 'react'
 
 import type {SvgIconProps} from '../../../components/icons'
 
-export interface NavLinkProps {
+interface NavLinkProps {
   name: string
   href: string
   icon: ComponentType<SvgIconProps>
