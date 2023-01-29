@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import type {PropsWithChildren} from 'react'
-import {AuthLayout} from './AuthLayout/AuthLayout'
+import {AuthLayout} from './AuthLayout'
 
 interface PageLayoutProps extends PropsWithChildren {
   requiresAuthentication?: boolean
