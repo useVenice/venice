@@ -98,3 +98,10 @@ Jump into our [documentation](https://docs.venice.is) and learn how you can easi
 
 - [Email us](mailto:hi@venice.is)
 - [Join our Discord](https://discord.gg/gTMch6Gn2u)
+
+## Looking for self-hosting?
+
+The current Venice `main` branch is focused on the Venice platform. The previous version
+focused on self-hosting can be found at the [self-hosting](https://github.com/useVenice/venice/tree/self-hosting) branch.
+Our goal is to bridge the gap (for specifically for the cloud platform to depend on self-hosting under the hood) and merge the codepath 
+so there is only a single branch. Ping us on Discord if you would like details.
