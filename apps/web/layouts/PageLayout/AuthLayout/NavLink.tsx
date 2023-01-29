@@ -1,19 +1,21 @@
 import clsx from 'clsx'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import {useRouter} from 'next/router'
-import type {ComponentType} from 'react'
+import type {ComponentPropsWithoutRef, ComponentType} from 'react'
 
 import type {SvgIconProps} from '../../../components/icons'
 
 interface NavLinkProps {
   name: string
   href: string
+  external?: boolean
   icon: ComponentType<SvgIconProps>
 }
 
-export function NavLink({name, href, icon: Icon}: NavLinkProps) {
+export function NavLink({name, href, external, icon: Icon}: NavLinkProps) {
   const router = useRouter()
   const current = router.pathname === href
+  const Link = external ? ExternalLink : NextLink
   return (
     <div key={name} className="relative px-4">
       <Link
@@ -35,4 +37,8 @@ export function NavLink({name, href, icon: Icon}: NavLinkProps) {
       )}
     </div>
   )
+}
+
+function ExternalLink(props: ComponentPropsWithoutRef<'a'>) {
+  return <a {...props} target="_blank" rel="noopener noreferrer" />
 }

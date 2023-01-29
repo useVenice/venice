@@ -29,10 +29,16 @@ const mainNavigation = [
 const helpNavigation = [
   {
     name: 'Support',
-    href: '/support',
+    href: 'https://docs.venice.is/support/contact-us',
+    external: true,
     icon: SupportIcon,
   },
-  {name: 'Documentation', href: '/docs', icon: DocsIcon},
+  {
+    name: 'Documentation',
+    href: 'https://docs.venice.is',
+    external: true,
+    icon: DocsIcon,
+  },
 ]
 
 export function Sidebar() {
