@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "run-s build:*",
-    "build:migration": "if [ \"$VERCEL_ENV\" = production ]; then pnpm --dir ../../ migration up; else echo 'Skip non-production migration'; fi",
+    "build:migration": "if [ \"$VERCEL_ENV\" = production ] || [ \"$VERCEL_GIT_COMMIT_REF\" = staging ]; then pnpm --dir ../../ migration up; else echo 'Skip non prod/staging migration'; fi",
     "build:next": "next build",
     "dev": "next dev",
     "start": "next start"
