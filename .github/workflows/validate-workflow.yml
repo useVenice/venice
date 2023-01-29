@@ -42,7 +42,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # TODO: Can we get this from "engine" field?
+          node-version: 18 # TODO: Can we get this from "engine" field in package.json?
 
       - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
@@ -54,7 +54,7 @@ jobs:
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
         uses: actions/cache@v3
