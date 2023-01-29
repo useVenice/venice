@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: 18 # TODO: Can we get this from "engine" field?
 
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
         id: pnpm-install
         with:
