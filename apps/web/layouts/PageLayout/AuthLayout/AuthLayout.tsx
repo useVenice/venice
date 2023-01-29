@@ -20,10 +20,10 @@ export function AuthLayout({children}: AuthLayoutProps) {
 
   return (
     <div className="h-screen bg-venice-black">
-      <div className="fixed inset-y-0 flex w-64 flex-col">
+      <div className="fixed inset-y-0 flex w-56 flex-col">
         <Sidebar />
       </div>
-      <div className="flex flex-1 flex-col pl-64">
+      <div className="flex flex-1 flex-col pl-56">
         <main className="flex-1">{children}</main>
       </div>
     </div>
