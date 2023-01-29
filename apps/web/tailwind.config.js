@@ -32,7 +32,6 @@ module.exports = {
         mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       },
       textColor: {
-        ...VeniceTheme,
         'venice-gray': '#c0c0c0',
       },
       transparent: 'transparent',
