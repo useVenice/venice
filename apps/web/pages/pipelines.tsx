@@ -6,8 +6,8 @@ import Link from 'next/link'
 import type {Id} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {EnhancedActiveLink} from '../components/EnhancedActiveLink'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
+import {PageHeader} from '../components/PageHeader'
 import {ResourceCard} from '../components/ResourceCard'
 import {PageLayout} from '../layouts/PageLayout'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
@@ -51,12 +51,12 @@ export default function PipelinesScreen() {
               height={32}
             />
             <h2 className="p-3 text-lg font-medium">Pipelines in</h2>
-            <EnhancedActiveLink
+            <Link
               key="/pipelines?mode=connect"
               href="/pipelines?mode=connect"
               className="btn btn-sm mt-3 ml-4 rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs font-normal hover:bg-green/90 active:bg-green/75">
               Add
-            </EnhancedActiveLink>
+            </Link>
           </div>
           <div className="mt-4 ml-11 flex flex-1 flex-col gap-4 pr-10">
             {sources.length == 0 ? (
@@ -93,7 +93,8 @@ export default function PipelinesScreen() {
   )
 
   return (
-    <PageLayout title="Pipelines">
+    <PageLayout title="Connections">
+      <PageHeader title={['Connections']} />
       {/* We need this workaround so connect does not capture the wrong scope */}
       {mode === 'connect' && connectWith.destinationId ? (
         <NewPipelineInScreen connectWith={connectWith} />

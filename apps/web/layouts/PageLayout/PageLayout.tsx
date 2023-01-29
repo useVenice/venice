@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import type {PropsWithChildren} from 'react'
-import {AuthLayout} from './AuthLayout'
+import {AuthLayout} from './AuthLayout/AuthLayout'
 
 interface PageLayoutProps extends PropsWithChildren {
   requiresAuthentication?: boolean
@@ -12,10 +12,11 @@ export function PageLayout({
   requiresAuthentication = true,
   title,
 }: PageLayoutProps) {
+  const pageTitle = `Venice - ${title}`
   return (
     <>
       <Head>
-        <title>Venice - {title}</title>
+        <title>{pageTitle}</title>
       </Head>
 
       {requiresAuthentication ? <AuthLayout>{children}</AuthLayout> : children}
