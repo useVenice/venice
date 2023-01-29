@@ -5,6 +5,7 @@ export default function ApiAccessPage() {
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access', 'SQL']} />
+      <p>Coming soon.</p>
     </PageLayout>
   )
 }
