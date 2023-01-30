@@ -109,7 +109,8 @@ export function useVeniceConnect({
     queryClient,
     userId,
   } = VeniceProvider.useContext()
-  const client = createTRPCClientProxy(_client) // Move this inside...
+  // Move this inside the context
+  const client = React.useMemo(() => createTRPCClientProxy(_client), [_client])
 
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
