@@ -818,10 +818,12 @@ importers:
       '@types/react': 18.0.24
       '@usevenice/util': workspace:*
       react: 18.2.0
+      react-script-hook: 1.7.2
     dependencies:
       '@trpc/server': 10.9.0
       '@usevenice/util': link:../util
       react: 18.2.0
+      react-script-hook: 1.7.2_react@18.2.0
     devDependencies:
       '@types/react': 18.0.24
 
@@ -11303,6 +11305,15 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-script-hook/1.7.2_react@18.2.0:
+    resolution: {integrity: sha512-fhyCEfXb94fag34UPRF0zry1XGwmVY+79iibWwTqAoOiCzYJQOYTiWJ7CnqglA9tMSV8g45cQpHCMcBwr7dwhA==}
+    peerDependencies:
+      react: ^16.8.6 || 17 - 18
+      react-dom: ^16.8.6 || 17 - 18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-style-singleton/2.2.1_bbvjflvjoibwhtpmedigb26h6y:

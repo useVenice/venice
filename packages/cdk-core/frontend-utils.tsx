@@ -2,46 +2,21 @@ import React from 'react'
 
 import {Deferred} from '@usevenice/util'
 
-export function loadScriptOnce(src: string) {
-  const cachedScript = loadScriptOnce.cache.get(src)
-  if (cachedScript) {
-    return Promise.resolve(cachedScript)
-  }
+import useScriptHook from 'react-script-hook'
 
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = src
-
-    const handleLoad = () => {
-      resolve(script)
-      script.removeEventListener('load', handleLoad)
-    }
-    const handleError = () => {
-      reject(new Error(`Failed to load ${src}`))
-      script.removeEventListener('error', handleError)
-    }
-
-    script.addEventListener('load', handleLoad)
-    script.addEventListener('error', handleError)
-
-    document.head.append(script)
-  })
-}
-loadScriptOnce.cache = new Map<string, HTMLScriptElement>()
-
-/**
- * @deprecated. TODO: Replace me with https://github.com/hupe1980/react-script-hook
- * fwiw plaid link uses react-script-hook also
- */
 export function useScript(src: string) {
+  const [loaded, error] = useScriptHook({src, checkForExisting: true})
+
   const deferred = React.useRef(new Deferred<void>())
   React.useEffect(() => {
-    loadScriptOnce(src)
-      .then(() => deferred.current.resolve())
-      .catch(deferred.current.reject)
-  }, [deferred, src])
+    if (loaded) {
+      deferred.current.resolve()
+    } else if (error) {
+      deferred.current.reject(error)
+    }
+  }, [deferred, loaded, error])
 
-  return deferred.current.promise
+  return deferred.current.promise // TODO: return loaded / error also
 }
 
 export const CANCELLATION_TOKEN = 'CANCELLED'

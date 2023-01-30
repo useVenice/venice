@@ -7,7 +7,8 @@
   "dependencies": {
     "@trpc/server": "10.9.0",
     "@usevenice/util": "workspace:*",
-    "react": "*"
+    "react": "*",
+    "react-script-hook": "1.7.2"
   },
   "devDependencies": {
     "@types/react": "*"
