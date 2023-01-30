@@ -1,8 +1,9 @@
 import clsx from 'clsx'
 import NextLink from 'next/link'
 import {useRouter} from 'next/router'
-import type {ComponentPropsWithoutRef, ComponentType} from 'react'
+import type {ComponentType} from 'react'
 
+import {ExternalLink} from '../../../components/ExternalLink'
 import type {SvgIconProps} from '../../../components/icons'
 
 interface NavLinkProps {
@@ -37,8 +38,4 @@ export function NavLink({name, href, external, icon: Icon}: NavLinkProps) {
       )}
     </div>
   )
-}
-
-function ExternalLink(props: ComponentPropsWithoutRef<'a'>) {
-  return <a {...props} target="_blank" rel="noopener noreferrer" />
 }
