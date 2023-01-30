@@ -14,7 +14,7 @@
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "plaid": "10.7.0",
+    "plaid": "12.3.0",
     "react": "*",
     "react-dom": "*",
     "react-plaid-link": "3.3.2"

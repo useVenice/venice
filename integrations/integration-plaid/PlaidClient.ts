@@ -1,17 +1,3 @@
-import type {
-  AccountsGetRequest,
-  InstitutionsGetByIdRequest,
-  InstitutionsGetRequest,
-  InvestmentsHoldingsGetRequest,
-  InvestmentsTransactionsGetRequest,
-  ItemPublicTokenExchangeRequest,
-  ItemWebhookUpdateRequest,
-  LinkTokenCreateRequest,
-  SandboxItemFireWebhookRequest,
-  SandboxItemResetLoginRequest,
-  TransactionsGetRequest,
-  TransactionsSyncRequest,
-} from 'plaid'
 import {
   Configuration,
   CountryCode,
@@ -33,6 +19,12 @@ import type {WebhookShape} from './plaid.types'
 
 type EnvName = z.infer<typeof zEnvName>
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+
+// Too bad we cannot use it...
+// export const zCountryCode = z.enum(
+//   // Yay ts 4.1 https://stackoverflow.com/questions/52393730/typescript-string-literal-union-type-from-enum/64966647#64966647
+//   Object.values(CountryCode) as NonEmptyArray<`${CountryCode}`>,
+// )
 export const zCountryCode = z.nativeEnum(CountryCode)
 export const zProducts = z.nativeEnum(Products)
 
@@ -75,68 +67,5 @@ export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
 
   const fromToken = (token: string) => fromEnv(inferPlaidEnvFromToken(token))
 
-  const getData = <T>(r: {data: T}) => r.data
-
-  return {
-    linkTokenCreate: zFunction(
-      [zEnvName, zCast<LinkTokenCreateRequest>()],
-      (env, opts) => fromEnv(env).linkTokenCreate(opts).then(getData),
-    ),
-    itemPublicTokenExchange: zFunction(
-      zCast<ItemPublicTokenExchangeRequest>(),
-      (opts) =>
-        fromToken(opts.public_token)
-          .itemPublicTokenExchange(opts)
-          .then(getData),
-    ),
-    itemGet: zFunction(z.string(), (access_token) =>
-      fromToken(access_token).itemGet({access_token}).then(getData),
-    ),
-    itemRemove: zFunction(z.string(), async (access_token) =>
-      fromToken(access_token).itemRemove({access_token}).then(getData),
-    ),
-    accountsGet: zFunction(zCast<AccountsGetRequest>(), (opts) =>
-      fromToken(opts.access_token).accountsGet(opts).then(getData),
-    ),
-    transactionsGet: zFunction(zCast<TransactionsGetRequest>(), (opts) =>
-      fromToken(opts.access_token).transactionsGet(opts).then(getData),
-    ),
-    transactionsSync: zFunction(zCast<TransactionsSyncRequest>(), (opts) =>
-      fromToken(opts.access_token).transactionsSync(opts).then(getData),
-    ),
-    investmentsTransactionsGet: zFunction(
-      zCast<InvestmentsTransactionsGetRequest>(),
-      (opts) =>
-        fromToken(opts.access_token)
-          .investmentsTransactionsGet(opts)
-          .then(getData),
-    ),
-    investmentsHoldingsGet: zFunction(
-      zCast<InvestmentsHoldingsGetRequest>(),
-      (opts) =>
-        fromToken(opts.access_token).investmentsHoldingsGet(opts).then(getData),
-    ),
-    institutionsGetById: zFunction(
-      [zEnvName, zCast<InstitutionsGetByIdRequest>()],
-      (envName, opts) =>
-        fromEnv(envName).institutionsGetById(opts).then(getData),
-    ),
-    institutionsGet: zFunction(
-      [zEnvName, zCast<InstitutionsGetRequest>()],
-      (envName, opts) => fromEnv(envName).institutionsGet(opts).then(getData),
-    ),
-    itemWebhookUpdate: zFunction(zCast<ItemWebhookUpdateRequest>(), (opts) =>
-      fromToken(opts.access_token).itemWebhookUpdate(opts).then(getData),
-    ),
-    sandboxItemFireWebhook: zFunction(
-      zCast<SandboxItemFireWebhookRequest>(),
-      (opts) =>
-        fromToken(opts.access_token).sandboxItemFireWebhook(opts).then(getData),
-    ),
-    sandboxItemResetLogin: zFunction(
-      zCast<SandboxItemResetLoginRequest>(),
-      (opts) =>
-        fromToken(opts.access_token).sandboxItemResetLogin(opts).then(getData),
-    ),
-  }
+  return {fromToken, fromEnv}
 })
