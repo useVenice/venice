@@ -182,8 +182,12 @@ export function useVeniceConnect({
         connectWith?: ConnectWith
       },
     ) {
+      console.log('[useVeniceConnect] _connect')
       if (!envName || !userId) {
-        console.log('Connect missing params, noop', {envName, userId})
+        console.log('[useVeniceConnect] Connect missing params, noop', {
+          envName,
+          userId,
+        })
         return
       }
 

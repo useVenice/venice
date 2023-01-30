@@ -265,17 +265,19 @@ export const plaidProvider = makeSyncProvider({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     ;(globalThis as any).plaidLink = plaidLink
 
+    const {open, ready} = plaidLink
+
     React.useEffect(() => {
-      if (!plaidLink.ready || !state) {
+      if (!ready || !state) {
         return
       }
       console.log('[plaid] Will open')
-      plaidLink.open() // Unfortunately open gets called multiple times due to unmounting.
+      open() // Unfortunately open gets called multiple times due to unmounting.
       // It is a bit of a no-op though, so we should be fine...
       return () => {
         console.log('[plaid] Did unmount...')
       }
-    }, [plaidLink, state])
+    }, [open, ready, state])
 
     return async (opts, {institutionExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
@@ -286,9 +288,11 @@ export const plaidProvider = makeSyncProvider({
       // TODO: Implement a dialog fallback to tell user to search for the needed
       // institution in the next screen to work around the problem that
       // plaid does not support instiutionId
-      console.warn('[plaid] institutionExternalId not handled', {
-        institutionExternalId,
-      })
+      if (institutionExternalId) {
+        console.warn('[plaid] institutionExternalId not handled', {
+          institutionExternalId,
+        })
+      }
       const res$ = new Deferred<(typeof def)['_types']['connectOutput']>()
       setState({options: {token: opts.link_token}, res$})
       return res$.promise
