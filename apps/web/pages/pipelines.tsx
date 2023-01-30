@@ -9,7 +9,7 @@ import {useVenice} from '@usevenice/engine-frontend'
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
 import {PageHeader} from '../components/PageHeader'
 import {ResourceCard} from '../components/ResourceCard'
-import {PageLayout} from '../layouts/PageLayout'
+import {PageLayout} from '../components/PageLayout'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
 export default function PipelinesScreen() {

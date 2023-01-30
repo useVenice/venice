@@ -1,7 +1,7 @@
 import {PageHeader} from '../components/PageHeader'
 import {supabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
-import {PageLayout} from '../layouts/PageLayout'
+import {PageLayout} from '../components/PageLayout'
 
 export default function AccountPage() {
   const [session] = useSession()
