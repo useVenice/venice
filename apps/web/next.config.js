@@ -49,15 +49,6 @@ const nextConfig = {
     NEXT_PUBLIC_NODE_ENV: process.env['NODE_ENV'],
   },
   reactStrictMode: true,
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/pipelines',
-        permanent: false,
-      },
-    ]
-  },
   rewrites: async () => ({
     beforeFiles: [
       // Proxy metrics requests to Posthog.
