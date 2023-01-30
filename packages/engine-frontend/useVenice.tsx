@@ -116,6 +116,7 @@ export function useVeniceConnect({
     {enabled: !!userId},
   )
 
+  // Should we leverage TRPC.useQueries instead now?
   const preConnOpts = React.useCallback(
     (
       input: AnySyncRouterInput['preConnect'],

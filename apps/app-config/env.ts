@@ -1,4 +1,4 @@
-import {debugProvider, makeId} from '@usevenice/cdk-core'
+import {debugProvider, makeId, zEnvName} from '@usevenice/cdk-core'
 import {airtableProvider} from '@usevenice/core-integration-airtable'
 import {firebaseProvider} from '@usevenice/core-integration-firebase'
 import {fsProvider} from '@usevenice/core-integration-fs'
@@ -44,6 +44,7 @@ export const zCommonEnv = zEnvVars({
     ),
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+  DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),
 })
 
 export const zBackendEnv = zEnvVars({
