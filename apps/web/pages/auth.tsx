@@ -20,7 +20,8 @@ export default function AuthScreen() {
       <Container className="min-h-screen justify-center">
         <div className="mx-auto grid w-80 grid-cols-1">
           <Image
-            src="/venice-logo.svg"
+            className="mx-auto"
+            src="/venice-logo-white-no-bg.svg"
             alt="Venice Logo"
             width={102}
             height={32}
