@@ -9,7 +9,7 @@ type MainContentLayoutProps = PropsWithChildren<{
 export function PageHeader({title}: MainContentLayoutProps) {
   return (
     <header className="flex items-center border-b border-venice-black-300 py-2 px-4">
-      <h1 className="flex grow items-center gap-2 font-medium uppercase">
+      <h1 className="flex grow items-center gap-2 text-sm font-medium uppercase">
         {title.map((part, i) => (
           <Fragment key={part}>
             {i > 0 ? <TitleSeparator /> : null}
