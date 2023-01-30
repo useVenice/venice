@@ -1,7 +1,10 @@
+import {EnvName} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
+
+type VercelEnv = 'production' | 'preview' | 'development'
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export const commonEnv = zParser(zCommonEnv).parse({
@@ -10,6 +13,13 @@ export const commonEnv = zParser(zCommonEnv).parse({
   NEXT_PUBLIC_SERVER_URL: process.env['NEXT_PUBLIC_SERVER_URL']!,
   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
+  DEFAULT_CONNECT_ENV: (
+    {
+      production: 'production',
+      preview: 'development',
+      development: 'sandbox',
+    } satisfies Record<VercelEnv, EnvName>
+  )[process.env['NEXT_PUBLIC_VERCEL_ENV'] ?? ''],
 })
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
