@@ -1,6 +1,5 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
-const plugin = require('tailwindcss/plugin')
 
 const {VeniceTheme} = require('./styles/themes')
 
@@ -19,15 +18,23 @@ module.exports = {
       'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
     },
     extend: {
-      backgroundColor: {
-        'venice-black': VeniceTheme.black,
+      colors: {
+        ...VeniceTheme,
+        'venice-black': {
+          DEFAULT: VeniceTheme.black,
+          300: '#4e4e4e',
+          500: '#2e2e2e',
+        },
       },
-      colors: VeniceTheme,
+      current: 'currentColor',
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
         mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       },
-      textColor: VeniceTheme,
+      textColor: {
+        'venice-gray': '#c0c0c0',
+      },
+      transparent: 'transparent',
     },
     fontFamily: {
       montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
@@ -109,13 +116,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    require('tailwindcss-radix')(),
-    require('daisyui'),
-    // ActiveLink
-    plugin(({addVariant}) => {
-      addVariant('link-active', '&[data-link-active]')
-      addVariant('link-exact-active', '&[data-link-exact-active]')
-    }),
-  ],
+  plugins: [require('tailwindcss-radix')(), require('daisyui')],
 }

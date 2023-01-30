@@ -12,10 +12,11 @@ export function PageLayout({
   requiresAuthentication = true,
   title,
 }: PageLayoutProps) {
+  const pageTitle = `Venice - ${title}`
   return (
     <>
       <Head>
-        <title>Venice - {title}</title>
+        <title>{pageTitle}</title>
       </Head>
 
       {requiresAuthentication ? <AuthLayout>{children}</AuthLayout> : children}
