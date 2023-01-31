@@ -1,18 +1,18 @@
 import './global.css'
 
+import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {persistQueryClient} from '@tanstack/react-query-persist-client'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import React from 'react'
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
-import {persistQueryClient} from '@tanstack/react-query-persist-client'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {UIProvider} from '@usevenice/ui'
+import {Loading, UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {supabase} from '../contexts/common-contexts'
@@ -50,10 +50,16 @@ if (
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
-  const [session] = useSession()
+  const [session, meta] = useSession()
+
   // console.log('session.accessToken', session?.access_token)
   const accessToken = session?.access_token ?? accessTokenQueryParam
   const developerMode = useAtomValue(developerModeAtom)
+
+  if (meta.status === 'loading') {
+    return <Loading />
+  }
+  // return null
 
   // if (!session) {
   //   console.log('Forceful early exit....')
