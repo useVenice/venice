@@ -129,7 +129,7 @@ const customRouter = trpcServer.router({
         transformFieldNames: false,
       })
       const pool = await pgClient.getPool()
-      const tableNames = await pool.anyFirst(
+      const tableNames = await pool.anyFirst<string>(
         pgClient.sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';`,
       )
       return {...info, tableNames}

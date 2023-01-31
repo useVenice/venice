@@ -15,6 +15,8 @@ import type {DialogInstance} from '@usevenice/ui'
 import {Dialog} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
+export type {CreateTRPCReact} from '@trpc/react-query'
+
 export type SyncEngineCommonConfig<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
