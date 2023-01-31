@@ -1,5 +1,5 @@
 import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../layouts/PageLayout'
+import {PageLayout} from '../components/PageLayout'
 
 export default function ApiAccessPage() {
   return (

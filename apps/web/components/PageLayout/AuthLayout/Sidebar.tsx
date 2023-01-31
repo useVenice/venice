@@ -8,7 +8,7 @@ import {
   ExportIcon,
   ProfileIcon,
   SupportIcon,
-} from '../../../components/icons'
+} from '../../icons'
 
 import {NavLink} from './NavLink'
 
@@ -57,8 +57,8 @@ export function Sidebar() {
 
       <SidebarMain />
 
-      <footer className="flex shrink-0 p-6">
-        <Account />
+      <footer className="shrink-0 py-6">
+        <NavLink name="Account" href="/account" icon={ProfileIcon} />
       </footer>
     </div>
   )
@@ -87,22 +87,5 @@ function NavSectionSeparator() {
     <div className="py-6 px-4">
       <hr className="border-venice-black-300" />
     </div>
-  )
-}
-
-function Account() {
-  return (
-    <Link
-      href="/account"
-      className="block shrink-0 text-venice-gray hover:text-offwhite">
-      <div className="flex items-center gap-x-3">
-        <div className="inline-flex h-6 w-6 fill-current">
-          <ProfileIcon />
-        </div>
-        <div>
-          <p className="text-sm">Account</p>
-        </div>
-      </div>
-    </Link>
   )
 }

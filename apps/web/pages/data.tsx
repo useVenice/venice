@@ -12,7 +12,7 @@ import '@glideapps/glide-data-grid/dist/index.css'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
 import {copyToClipboard} from '../contexts/common-contexts'
-import {PageLayout} from '../layouts/PageLayout'
+import {PageLayout} from '../components/PageLayout'
 
 import {VeniceDataGridTheme} from '../styles/themes'
 const DataEditor = dynamic(
