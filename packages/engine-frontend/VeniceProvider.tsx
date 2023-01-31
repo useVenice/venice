@@ -158,8 +158,13 @@ export function VeniceProvider<
   )
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-VeniceProvider.useContext = () => React.useContext(VeniceContext)!
+VeniceProvider.useContext = () => {
+  const ctx = React.useContext(VeniceContext)
+  if (!ctx) {
+    throw new Error('VeniceProvider missing while useVenice')
+  }
+  return ctx
+}
 
 VeniceProvider.config = <
   TProviders extends readonly AnySyncProvider[],
