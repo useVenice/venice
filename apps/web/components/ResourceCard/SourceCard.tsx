@@ -28,9 +28,9 @@ export interface SourceCardProps {
     name: string
     logoUrl?: string
   }
-  lastSyncCompletedAt?: string
+  lastSyncCompletedAt?: string | null | undefined
   // TODO where to get the type
-  status?: 'error' | 'healthy' | 'disconnected' | 'manual'
+  status?: 'error' | 'healthy' | 'disconnected' | 'manual' | null | undefined
 }
 
 // displayName : "Postgres"
