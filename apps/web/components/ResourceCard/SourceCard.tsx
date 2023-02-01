@@ -1,6 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import clsx from 'clsx'
-import {formatDistance} from 'date-fns'
+import {formatDistanceToNow} from 'date-fns'
 import Image from 'next/image'
 import type {ComponentType} from 'react'
 import type {SvgIconProps} from '../icons'
@@ -14,41 +14,76 @@ import {
 import {ResourceCard} from './ResourceCard'
 
 export interface SourceCardProps {
-  id: number
-  customization: {name?: string}
-  institution: {
+  // id: number
+  // customization: {name?: string}
+  // institution: {
+  //   name: string
+  //   logoUrl: string
+  // }
+  // connectionStatus: 'connected' | 'disconnected'
+  // lastSynced: number
+  // id: string
+  displayName: string
+  institution?: {
     name: string
-    logoUrl: string
+    logoUrl?: string
   }
-  connectionStatus: 'connected' | 'disconnected'
-  lastSynced: number
+  lastSyncCompletedAt?: string
+  // TODO where to get the type
+  status?: 'error' | 'healthy' | 'disconnected' | 'manual'
 }
 
+// displayName : "Postgres"
+// envName : null
+// externalId : "<string>"
+// id : "<string>"
+// lastSyncCompletedAt : "2023-01-29T11:14:04.171Z"
+// status : "healthy"
+// syncInProgress : true
+
+// institution? : {
+//   id : "ins_plaid_ins_13"
+//   loginUrl: "https://www.pnc.com"
+//   logoUrl: "data:image/png;base64,..."
+//   name : "PNC"
+// }
+
 export function SourceCard(props: SourceCardProps) {
-  const {connectionStatus, customization, institution, lastSynced} = props
-  // const name = customization.name || institution.name;
+  const {displayName, institution, lastSyncCompletedAt, status} = props
+  console.log('\n\n\n')
+  console.log(props)
+  console.log('\n\n\n')
   return (
     <ResourceCard
-      tagColor={
-        connectionStatus === 'disconnected' ? 'venice-red' : 'venice-green'
-      }>
+      tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
       <div className="flex grow flex-col justify-between py-2 px-3">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
-          <Image
-            width={32}
-            height={32}
-            src={institution.logoUrl}
-            alt={`${institution.name} Logo`}
-          />
-          <span className="text-sm uppercase">
-            {customization.name || institution.name}
-          </span>
+          {institution?.logoUrl ? (
+            <Image
+              width={32}
+              height={32}
+              src={institution.logoUrl}
+              alt={`${institution.name} Logo`}
+            />
+          ) : (
+            <span>No institution - TODO</span>
+          )}
+          <span className="text-sm uppercase">{displayName}</span>
           <ActionMenu />
         </div>
         <div className="text-right">
-          <ConnectionStatus status={connectionStatus} />
+          {status ? (
+            <ConnectionStatus status={status} />
+          ) : (
+            <p>Status unknown TODO</p>
+          )}
           <p className="text-xs text-venice-gray">
-            Synced {formatDistance(lastSynced, Date.now(), {addSuffix: true})}
+            Synced{' '}
+            {lastSyncCompletedAt
+              ? formatDistanceToNow(new Date(lastSyncCompletedAt), {
+                  addSuffix: true,
+                })
+              : 'unknown'}
           </p>
         </div>
       </div>
@@ -96,7 +131,11 @@ function ActionMenuItem(props: ActionMenuItemProps) {
   )
 }
 
-function ConnectionStatus({status}: {status: 'connected' | 'disconnected'}) {
+function ConnectionStatus({
+  status,
+}: {
+  status: 'error' | 'healthy' | 'disconnected' | 'manual'
+}) {
   const {color, text} =
     status === 'disconnected'
       ? {color: 'text-venice-red', text: 'Disconnected'}
