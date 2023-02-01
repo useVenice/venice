@@ -8,7 +8,7 @@ import {useVenice} from '@usevenice/engine-frontend'
 
 import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
 import {PageHeader} from '../components/PageHeader'
-import {ResourceCard} from '../components/ResourceCard'
+import {LegacyResourceCard} from '../components/LegacyResourceCard'
 import {PageLayout} from '../components/PageLayout'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
@@ -63,7 +63,7 @@ export default function PipelinesScreen() {
               <EmptySourcesView />
             ) : (
               sources.map((reso) => (
-                <ResourceCard key={reso.id} resource={reso} />
+                <LegacyResourceCard key={reso.id} resource={reso} />
               ))
             )}
           </div>
@@ -83,7 +83,7 @@ export default function PipelinesScreen() {
               <EmptyDestinationsView />
             ) : (
               destinations.map((reso) => (
-                <ResourceCard key={reso.id} resource={reso} />
+                <LegacyResourceCard key={reso.id} resource={reso} />
               ))
             )}
           </div>

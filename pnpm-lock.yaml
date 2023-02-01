@@ -264,22 +264,10 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
-  apps/tests:
-    specifiers:
-      '@usevenice/app-config': workspace:*
-      openapi-typescript: 5.4.1
-      remeda: 0.0.32
-      tsx: 3.12.2
-    dependencies:
-      '@usevenice/app-config': link:../app-config
-      remeda: 0.0.32
-    devDependencies:
-      openapi-typescript: 5.4.1
-      tsx: 3.12.2
-
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
+      '@radix-ui/react-dropdown-menu': 1.0.0
       '@sentry/cli': 2.11.0
       '@sentry/nextjs': 7.34.0
       '@supabase/auth-ui-react': 0.2.6
@@ -301,6 +289,7 @@ importers:
       cookies-next: 2.1.1
       csstype: '*'
       daisyui: 2.24.2
+      date-fns: ^2.29.3
       inngest: 0.9.3
       jotai: 1.8.3
       lodash: 4.17.21
@@ -324,6 +313,7 @@ importers:
       webpack: '*'
     dependencies:
       '@glideapps/glide-data-grid': 5.2.1_qqgdla4ljul3xmvjycg6ibkvsu
+      '@radix-ui/react-dropdown-menu': 1.0.0_knhnagtyfncgg2hpin7s37uixq
       '@sentry/nextjs': 7.34.0_yrisq2kkn5ai44qx4uoxveaxsy
       '@supabase/auth-ui-react': 0.2.6_biqbaboplfbrettd7655fr4n2y
       '@supabase/supabase-js': 2.2.1
@@ -339,6 +329,7 @@ importers:
       '@usevenice/util': link:../../packages/util
       clsx: 1.2.1
       cookies-next: 2.1.1
+      date-fns: 2.29.3
       inngest: 0.9.3
       jotai: 1.8.3_react@18.2.0
       lodash: 4.17.21
@@ -5834,6 +5825,11 @@ packages:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
 
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
+
   /dayjs/1.11.5:
     resolution: {integrity: sha512-CAdX5Q3YW3Gclyo5Vpqkgpj8fSdLQcRuzfX6mC6Phy0nfJ0eGYOeS7m4mt2plDWLAtA4TqTakvbboHvUxfe4iA==}
     dev: false
@@ -11018,10 +11014,6 @@ packages:
     resolution: {integrity: sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==}
     engines: {node: '>=8'}
     dev: true
-
-  /remeda/0.0.32:
-    resolution: {integrity: sha512-FEdl8ONpqY7AvvMHG5WYdomc0mGf2khHPUDu6QvNkOq4Wjkw5BvzWM4QyksAQ/US1sFIIRG8TVBn6iJx6HbRrA==}
-    dev: false
 
   /remeda/1.1.0_dx4ufj3unw254ycjy2ltcxmnru:
     resolution: {integrity: sha512-dtPAM1fP1HEorGDYyJiZUYfgzswyey0S1sD1FpCOhfgmpTJmnLz32q2WeEB1EyNLMENJuXSKWY8Hrm1CKM9lpw==}

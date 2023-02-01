@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
+    "@radix-ui/react-dropdown-menu": "1.0.0",
     "@sentry/nextjs": "7.34.0",
     "@supabase/auth-ui-react": "0.2.6",
     "@supabase/supabase-js": "2.2.1",
@@ -26,6 +27,7 @@
     "@usevenice/util": "workspace:*",
     "clsx": "^1.2.1",
     "cookies-next": "2.1.1",
+    "date-fns": "^2.29.3",
     "inngest": "0.9.3",
     "jotai": "1.8.3",
     "lodash": "4.17.21",

@@ -23,8 +23,13 @@ module.exports = {
         'venice-black': {
           DEFAULT: VeniceTheme.black,
           300: '#4e4e4e',
+          400: '#3e3e3e',
           500: '#2e2e2e',
         },
+        'venice-gold': VeniceTheme.gold,
+        'venice-gray-muted': VeniceTheme.gray,
+        'venice-green': VeniceTheme.green,
+        'venice-red': VeniceTheme.red,
       },
       current: 'currentColor',
       fontFamily: {

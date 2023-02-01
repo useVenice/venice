@@ -16,7 +16,7 @@ import {envAtom} from '../contexts/atoms'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
 
-export interface ResourceCardProps {
+interface LegacyResourceCardProps {
   resource: ZStandard['resource'] & {
     envName?: EnvName | null | undefined
     lastSyncCompletedAt?: string | null | undefined
@@ -25,7 +25,7 @@ export interface ResourceCardProps {
   }
 }
 
-export function ResourceCard({resource: reso}: ResourceCardProps) {
+export function LegacyResourceCard({resource: reso}: LegacyResourceCardProps) {
   const env = useAtomValue(envAtom)
   // NOTE: envName is not relevant when reconnecting,
   // and honestly neither is userId...

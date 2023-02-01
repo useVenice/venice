@@ -6,6 +6,7 @@ const VeniceTheme = {
   dropShadow: '#00000026',
   footerBlack: '#191919',
   githubGray: '#eef1f5',
+  gold: '#ecac4c',
   gray: '#7d7d7d',
   green: '#12b886',
   greenGlow: '#12b88626',

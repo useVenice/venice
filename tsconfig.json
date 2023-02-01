@@ -9,6 +9,8 @@
     "importsNotUsedAsValues": "remove",
     "noEmit": true,
     "esModuleInterop": true,
+    "isolatedModules": true,
+    "incremental": true,
     "module": "ES2020",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
