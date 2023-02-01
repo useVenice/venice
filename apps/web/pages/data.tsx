@@ -9,35 +9,38 @@ import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
-import {VeniceProvider} from '@usevenice/engine-frontend'
-
-import {copyToClipboard} from '../contexts/common-contexts'
 import {PageLayout} from '../components/PageLayout'
+import {copyToClipboard} from '../contexts/common-contexts'
 
+import type {InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import {VeniceDataGridTheme} from '../styles/themes'
+import {useQuery} from '@tanstack/react-query'
+import {LoadingIndicator} from '../components/loading-indicators'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},
 )
 
-export default function DataExplorerScreen() {
-  const {trpcClient, trpc, userId} = VeniceProvider.useContext()
+export default function DataExplorerScreen({
+  info: {apiKey, databaseUrl, tables},
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const tableNames = tables.map((t) => t.table_name)
 
-  // @ts-expect-error
-  const userInfoRes = trpc.useQuery(['userInfo', {}], {
-    enabled: !!userId,
-  })
-  const apiKey = userInfoRes.data?.apiKey
-  const databaseUrl: string = userInfoRes.data?.databaseUrl ?? ''
-  const tableNames: string[] = userInfoRes.data?.tableNames ?? []
+  function urlForQuery(query: string, format: 'json' | 'csv') {
+    return `${window.location.origin}/api/sql?format=${format}&apiKey=${apiKey}&q=${query}`
+  }
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
 
-  const csvUrl =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/api/sql?format=csv&apiKey=${apiKey}&q=${sql}`
-      : null
-  const [resultRows, setResultRows] = useState([])
+  const queryRes = useQuery(
+    ['sql', sql] as const,
+    async ({queryKey}): Promise<Array<Record<string, unknown>>> =>
+      fetch(urlForQuery(queryKey[1], 'json')).then((r) => r.json()),
+    {enabled: false}, // manual fetching only
+  )
+
+  const csvUrl = urlForQuery(sql, 'csv')
 
   return (
     <PageLayout title="Data Explorer">
@@ -64,14 +67,10 @@ export default function DataExplorerScreen() {
           {/* Header */}
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
+            {queryRes.isFetching && <LoadingIndicator />}
             <button
               className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs hover:bg-green/90 active:bg-green/75"
-              onClick={async () => {
-                // @ts-expect-error
-                const res = await trpcClient.mutation('executeSql', {sql})
-                console.log('executeSql result', res)
-                setResultRows(res)
-              }}>
+              onClick={() => queryRes.refetch()}>
               Execute SQL
             </button>
           </div>
@@ -85,15 +84,12 @@ export default function DataExplorerScreen() {
                   <li
                     className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
                     key={name}
-                    onClick={async () => {
-                      const newSql = `SELECT * FROM ${name} LIMIT 10`
-                      setSql(newSql)
-                      // @ts-expect-error
-                      const res = await trpcClient.mutation('executeSql', {
-                        sql: newSql,
-                      })
-                      console.log('executeSql result', res)
-                      setResultRows(res)
+                    onClick={() => {
+                      setSql(`SELECT * FROM ${name} LIMIT 10`)
+                      // TODO: Figure otu the right pattern to run refetch after state has been updated only...
+                      setTimeout(() => {
+                        queryRes.refetch()
+                      }, 0)
                     }}>
                     {name}
                   </li>
@@ -108,7 +104,7 @@ export default function DataExplorerScreen() {
 
           {/* SQL Results */}
           <div className="mt-2 max-h-[80vh] overflow-scroll">
-            <ResultTableView rows={resultRows} />
+            <ResultTableView rows={queryRes.data ?? []} />
           </div>
         </div>
       </Container>
@@ -162,7 +158,11 @@ function TextFieldToCopy({
 
 /* Data Grid */
 
-export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
+export function ResultTableView({
+  rows,
+}: {
+  rows: Array<Record<string, unknown>>
+}) {
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
 
   const [columns, setColumns] = React.useState<GridColumn[]>([])
@@ -227,3 +227,13 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
     />
   )
 }
+
+export const getServerSideProps = (async (context) => {
+  const {serverGetUser, getDatabaseInfo} = await import('../server/procedures')
+  const user = await serverGetUser(context)
+  if (!user?.id) {
+    return {redirect: {destination: '/', permanent: false}}
+  }
+  const info = await getDatabaseInfo(user.id)
+  return {props: {info}}
+}) satisfies GetServerSideProps

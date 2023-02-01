@@ -50,6 +50,8 @@ export function useVeniceAdmin({
   return {integrationsRes, creatorIdsRes, adminSyncMeta, isAdmin, developerMode}
 }
 
+export type UseVenice = ReturnType<typeof useVenice>
+
 /**
  * Ledger-specific
  */

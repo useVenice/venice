@@ -60,16 +60,8 @@ const nextConfig = {
   }),
 
   swcMinify: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  experimental: {
-    esmExternals: false,
-    newNextLinkBehavior: true,
-  },
+  typescript: {ignoreBuildErrors: true},
+  eslint: {ignoreDuringBuilds: true},
   webpack: (config) => {
     config.module.exprContextCritical = false
     config.module.unknownContextCritical = false

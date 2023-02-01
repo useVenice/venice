@@ -3,7 +3,7 @@ import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
 import {RedirectTo} from '../components/common-components'
-import {supabase} from '../contexts/common-contexts'
+import {browserSupabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'
 import {VeniceTheme} from '../styles/themes'
@@ -30,7 +30,7 @@ export default function AuthScreen() {
             You&apos;ll be up and running in 2 minutes!
           </p>
           <Auth
-            supabaseClient={supabase}
+            supabaseClient={browserSupabase}
             appearance={{
               theme: ThemeSupa,
               variables: veniceThemeTweaks,

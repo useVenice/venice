@@ -1,5 +1,5 @@
 import {PageHeader} from '../components/PageHeader'
-import {supabase} from '../contexts/common-contexts'
+import {browserSupabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'
 
@@ -12,7 +12,7 @@ export default function AccountPage() {
         <p>Logged in as {session?.user?.email}</p>
         <button
           className="btn btn-primary"
-          onClick={() => supabase.auth.signOut()}>
+          onClick={() => browserSupabase.auth.signOut()}>
           Log out
         </button>
       </div>

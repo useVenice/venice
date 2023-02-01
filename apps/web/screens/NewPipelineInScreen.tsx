@@ -5,6 +5,7 @@ import {match} from 'ts-pattern'
 
 import type {ConnectWith, EnvName} from '@usevenice/cdk-core'
 import {zEnvName} from '@usevenice/cdk-core'
+import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
 import {
   Container,
@@ -34,7 +35,7 @@ export function NewPipelineInScreen(props: {connectWith?: ConnectWith}) {
     connect: _connect,
     developerMode,
     ...ls
-  } = useVenice({envName, keywords})
+  }: UseVenice = useVenice({envName, keywords})
 
   console.log('[NewPipelineInScreen] connectWith', props.connectWith)
 
