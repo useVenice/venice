@@ -8,8 +8,7 @@ import {
   Papa,
 } from '@usevenice/app-config/backendConfig'
 import {R, z} from '@usevenice/util'
-
-import {respondToCORS} from './trpc/[...trpc]'
+import {respondToCORS} from '../../server/api-helpers'
 
 const adminClient = makePostgresClient({
   databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,

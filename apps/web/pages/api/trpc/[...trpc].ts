@@ -1,45 +1,12 @@
 import '@usevenice/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
-import {getCookie} from 'cookies-next'
-import type {NextApiHandler, NextApiRequest, NextApiResponse} from 'next'
+import type {NextApiHandler} from 'next'
 
 import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
-import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
-
-import {kAccessToken} from '../../../contexts/atoms'
-
-export function getAccessToken(req: NextApiRequest) {
-  return (
-    fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??
-    req.headers.authorization?.match(/^Bearer (.+)/)?.[1] ??
-    R.pipe(
-      getCookie(kAccessToken, {req}),
-      (v) =>
-        typeof v === 'string' ? (safeJSONParse(v) as unknown) : undefined,
-      (v) => (typeof v === 'string' ? v : undefined),
-    )
-  )
-}
-
-export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
-  // https://vercel.com/support/articles/how-to-enable-cors
-
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
-  // Need to use the request origin for credentials-mode "include" to work
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin ?? '*')
-  // prettier-ignore
-  res.setHeader('Access-Control-Allow-Methods', req.headers['access-control-request-method'] ?? '*')
-  // prettier-ignore
-  res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] ?? '*')
-  if (req.method === 'OPTIONS') {
-    console.log('Respond to OPTIONS request', req.headers.origin)
-    res.status(200).end()
-    return true
-  }
-  return false
-}
+import {R} from '@usevenice/util'
+import {getAccessToken, respondToCORS} from '../../../server/api-helpers'
 
 // export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
 // export type AppRouter = typeof appRouter
@@ -71,7 +38,7 @@ export default R.identity<NextApiHandler>((req, res) => {
   if (respondToCORS(req, res)) {
     return
   }
-
+  // TODO: Split out webhook into its own function...
   const segments = req.query['trpc'] as [string] | string
 
   if (Array.isArray(segments) && parseWebhookRequest.isWebhook(segments)) {
