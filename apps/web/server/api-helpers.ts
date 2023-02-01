@@ -4,6 +4,17 @@ import type {NextApiRequest, NextApiResponse} from 'next'
 import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 import {kAccessToken} from '../contexts/atoms'
 
+import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {GetServerSidePropsContext} from 'next'
+
+/** For serverSideProps */
+export async function serverGetUser(context: GetServerSidePropsContext) {
+  const supabase = createServerSupabaseClient(context)
+  const {data: sessionRes} = await supabase.auth.getSession()
+  return sessionRes.session?.user
+}
+
+/** For API endpoints. Consider using supabase nextjs auth helper too */
 export function getAccessToken(req: NextApiRequest) {
   return (
     fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??

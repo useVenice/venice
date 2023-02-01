@@ -7,16 +7,8 @@ import {
 import type {NonEmptyArray} from '@usevenice/util'
 import {makeUlid} from '@usevenice/util'
 
-import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import type {Id} from '@usevenice/cdk-core'
 import {makeId} from '@usevenice/cdk-core'
-import type {GetServerSidePropsContext} from 'next'
-
-export async function serverGetUser(context: GetServerSidePropsContext) {
-  const supabase = createServerSupabaseClient(context)
-  const {data: sessionRes} = await supabase.auth.getSession()
-  return sessionRes.session?.user
-}
 
 export async function dropDbUser(userId: string) {
   const pgClient = makePostgresClient({
@@ -58,10 +50,9 @@ export async function ensureDatabaseUser(userId: string) {
       AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
   `)
 
-  const getUrl = () => {
-    const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
-    return `${adminUrl.protocol}//${username}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
-  }
+  const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
+  const getUrl = () =>
+    `${adminUrl.protocol}//${username}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
   if (apiKey) {
     return {usr: username, apiKey, databaseUrl: getUrl()}
   }
@@ -71,6 +62,9 @@ export async function ensureDatabaseUser(userId: string) {
     apiKey = `key_${makeUlid()}`
     await trxn.query(
       sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`,
+    )
+    await trxn.query(
+      sql`GRANT ${usr} TO ${sql.identifier([adminUrl.username])}`,
     )
     await trxn.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
     await trxn.query(
@@ -115,24 +109,56 @@ export async function ensureDefaultLedger(userId: string) {
 
 export async function getDatabaseInfo(userId: string) {
   const info = await ensureDatabaseUser(userId)
-  const pgClient = makePostgresClient({
+  const {getPool, sql} = makePostgresClient({
     databaseUrl: info.databaseUrl,
     transformFieldNames: false,
   })
-  const pool = await pgClient.getPool()
+  const pool = await getPool()
   const tables = await pool.any<{table_name: string; table_type: string}>(
-    pgClient.sql`
-    SELECT
-      "table_name",
-      table_type
-    FROM
-      information_schema.tables
-    WHERE
-      table_schema = 'public'
-    ORDER BY
-      table_type DESC,
-      "table_name"
+    sql`
+      SELECT
+        "table_name",
+        table_type
+      FROM
+        information_schema.tables
+      WHERE
+        table_schema = 'public'
+      ORDER BY
+        table_type DESC,
+        "table_name"
     `,
   )
   return {...info, tables}
+}
+
+// TODO: Sync roles with users, and reset to latest permissions, ensure this is sync'ed with ensureDatabaseUser
+export async function autoRepairRoles() {
+  const {getPool, sql} = makePostgresClient({
+    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
+    transformFieldNames: false,
+  })
+  const pool = await getPool()
+  await pool.query(
+    sql`
+      DO $$
+        DECLARE
+          ele record;
+        BEGIN
+          FOR ele IN
+          SELECT
+            usename
+          FROM
+            pg_user
+          WHERE
+            starts_with (usename, 'usr_')
+            LOOP
+              EXECUTE format('
+      GRANT %I to postgres;
+      GRANT SELECT, UPDATE, DELETE ON public.transaction, public.posting TO %I;
+        ', ele.usename, ele.usename);
+            END LOOP;
+        END;
+        $$;
+    `,
+  )
 }

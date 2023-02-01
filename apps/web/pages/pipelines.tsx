@@ -141,9 +141,7 @@ function EmptyDestinationsView() {
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {serverGetUser, ensureDefaultLedger} = await import(
-    '../server/procedures'
-  )
+  const {serverGetUser, ensureDefaultLedger} = await import('../server')
   const user = await serverGetUser(context)
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}
