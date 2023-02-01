@@ -1,18 +1,22 @@
-import {useAtom, useAtomValue} from 'jotai'
-import React from 'react'
+import {useAtomValue} from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
+import React from 'react'
 
-import type {Id} from '@usevenice/cdk-core'
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {envAtom, ledgerIdAtom, modeAtom} from '../contexts/atoms'
+import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {GetServerSidePropsContext, InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import {PageHeader} from '../components/PageHeader'
-import {ResourceCard} from '../components/ResourceCard'
 import {PageLayout} from '../components/PageLayout'
+import {ResourceCard} from '../components/ResourceCard'
+import {envAtom, modeAtom} from '../contexts/atoms'
 import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
 
-export default function PipelinesScreen() {
+export default function PipelinesScreen(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) {
   const mode = useAtomValue(modeAtom)
   const env = useAtomValue(envAtom)
   const {resourcesRes} = useVenice({envName: env})
@@ -22,20 +26,11 @@ export default function PipelinesScreen() {
   const sources = resources.filter(
     (reso) => !reso.id.startsWith('reso_postgres'),
   )
-  const ledgers = resources.filter((reso) =>
-    reso.id.startsWith('reso_postgres'),
-  )
   const destinations: typeof sources = []
-  const [ledgerId, setLedgerId] = useAtom(ledgerIdAtom)
-
-  React.useEffect(() => {
-    if (!resourcesRes.isLoading && !ledgers.some((l) => l.id === ledgerId)) {
-      setLedgerId(ledgers[0]?.id ?? '')
-    }
-  }, [resourcesRes.isLoading, ledgerId, ledgers, setLedgerId])
+  const ledgerId = props.ids[0]
 
   const connectWith = React.useMemo(
-    () => ({destinationId: ledgerId as Id['reso']}),
+    () => ({destinationId: ledgerId}),
     [ledgerId],
   )
 
@@ -144,6 +139,24 @@ function EmptyDestinationsView() {
     </div>
   )
 }
+
+export async function serverGetUser(context: GetServerSidePropsContext) {
+  const supabase = createServerSupabaseClient(context)
+  const {data: sessionRes} = await supabase.auth.getSession()
+  return sessionRes.session?.user
+}
+
+// Should this be moved to _app getInitialProps?
+export const getServerSideProps = (async (context) => {
+  const user = await serverGetUser(context)
+  if (!user?.id) {
+    return {redirect: {destination: '/', permanent: false}}
+  }
+
+  const {ensureDefaultLedger} = await import('./api/trpc/[...trpc]')
+  const ids = await ensureDefaultLedger(user.id)
+  return {props: {ids}}
+}) satisfies GetServerSideProps
 
 // Ledgers UI code (not in MVP for now)
 // TODO: Move this into settings screen (rarely used)

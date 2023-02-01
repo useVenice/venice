@@ -15,9 +15,19 @@ import {
   parseWebhookRequest,
   trpcServer,
 } from '@usevenice/engine-backend'
-import {fromMaybeArray, makeUlid, R, safeJSONParse, z} from '@usevenice/util'
+import type {
+  NonEmptyArray} from '@usevenice/util';
+import {
+  fromMaybeArray,
+  makeUlid,
+  R,
+  safeJSONParse,
+  z,
+} from '@usevenice/util'
 
 import {kAccessToken} from '../../../contexts/atoms'
+import type {Id} from '@usevenice/cdk-core';
+import { makeId} from '@usevenice/cdk-core'
 
 export function getAccessToken(req: NextApiRequest) {
   return (
@@ -97,6 +107,27 @@ export async function createDbUser(userId: string) {
   )
 
   return {usr, apiKey, databaseUrl: getUrl()}
+}
+
+export async function ensureDefaultLedger(userId: string) {
+  const pgClient = makePostgresClient({
+    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
+    transformFieldNames: false,
+  })
+  const sql = pgClient.sql
+  const pool = await pgClient.getPool()
+  const ids = await pool.anyFirst<Id['reso']>(
+    sql`SELECT id FROM resource WHERE creator_id = ${userId} AND provider_name = 'postgres'`,
+  )
+  console.log('[ensureDefaultLedger] ids', ids)
+  if (ids.length > 0) {
+    return ids as NonEmptyArray<Id['reso']>
+  }
+  const ledgerId = makeId('reso', 'postgres', userId)
+  await pool.query(
+    sql`INSERT INTO resource (id, creator_id) VALUES (${ledgerId}, ${userId})`,
+  )
+  return [ledgerId] as NonEmptyArray<Id['reso']>
 }
 
 const customRouter = trpcServer.router({
