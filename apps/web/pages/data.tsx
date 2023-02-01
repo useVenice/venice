@@ -9,29 +9,21 @@ import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
-import type {CreateTRPCReact} from '@usevenice/engine-frontend'
-import {VeniceProvider} from '@usevenice/engine-frontend'
-
 import {PageLayout} from '../components/PageLayout'
 import {copyToClipboard} from '../contexts/common-contexts'
 
+import type {InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import {VeniceDataGridTheme} from '../styles/themes'
-import type {appRouter} from './api/trpc/[...trpc]'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},
 )
 
-type TRPCType = CreateTRPCReact<typeof appRouter, unknown, null>
-
-export default function DataExplorerScreen() {
-  const {trpcClient, trpc: _trpc, userId} = VeniceProvider.useContext()
-  const trpc = _trpc as unknown as TRPCType
-
-  const userInfoRes = trpc.userInfo.useQuery({}, {enabled: !!userId})
-  const apiKey = userInfoRes.data?.apiKey
-  const databaseUrl = userInfoRes.data?.databaseUrl ?? ''
-  const tableNames = userInfoRes.data?.tableNames ?? []
+export default function DataExplorerScreen({
+  info: {apiKey, databaseUrl, tables},
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const tableNames = tables.map((t) => t.table_name)
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
 
@@ -229,3 +221,13 @@ export function ResultTableView({rows}: {rows: Array<Record<string, any>>}) {
     />
   )
 }
+
+export const getServerSideProps = (async (context) => {
+  const {serverGetUser, getDatabaseInfo} = await import('../server/procedures')
+  const user = await serverGetUser(context)
+  if (!user?.id) {
+    return {redirect: {destination: '/', permanent: false}}
+  }
+  const info = await getDatabaseInfo(user.id)
+  return {props: {info}}
+}) satisfies GetServerSideProps

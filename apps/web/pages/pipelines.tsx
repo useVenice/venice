@@ -5,8 +5,7 @@ import React from 'react'
 
 import {useVenice} from '@usevenice/engine-frontend'
 
-import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
-import type {GetServerSidePropsContext, InferGetServerSidePropsType} from 'next'
+import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -140,20 +139,15 @@ function EmptyDestinationsView() {
   )
 }
 
-export async function serverGetUser(context: GetServerSidePropsContext) {
-  const supabase = createServerSupabaseClient(context)
-  const {data: sessionRes} = await supabase.auth.getSession()
-  return sessionRes.session?.user
-}
-
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
+  const {serverGetUser, ensureDefaultLedger} = await import(
+    '../server/procedures'
+  )
   const user = await serverGetUser(context)
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}
   }
-
-  const {ensureDefaultLedger} = await import('./api/trpc/[...trpc]')
   const ids = await ensureDefaultLedger(user.id)
   return {props: {ids}}
 }) satisfies GetServerSideProps

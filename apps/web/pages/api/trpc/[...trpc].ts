@@ -4,30 +4,11 @@ import * as trpcNext from '@trpc/server/adapters/next'
 import {getCookie} from 'cookies-next'
 import type {NextApiHandler, NextApiRequest, NextApiResponse} from 'next'
 
-import {
-  backendEnv,
-  makePostgresClient,
-  syncEngine,
-  veniceRouter,
-} from '@usevenice/app-config/backendConfig'
-import {
-  authedProcedure,
-  parseWebhookRequest,
-  trpcServer,
-} from '@usevenice/engine-backend'
-import type {
-  NonEmptyArray} from '@usevenice/util';
-import {
-  fromMaybeArray,
-  makeUlid,
-  R,
-  safeJSONParse,
-  z,
-} from '@usevenice/util'
+import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
+import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 
 import {kAccessToken} from '../../../contexts/atoms'
-import type {Id} from '@usevenice/cdk-core';
-import { makeId} from '@usevenice/cdk-core'
 
 export function getAccessToken(req: NextApiRequest) {
   return (
@@ -41,131 +22,6 @@ export function getAccessToken(req: NextApiRequest) {
     )
   )
 }
-
-// Can these be expressed as custom postgres functions?
-
-async function dropDbUser(userId: string) {
-  const pgClient = makePostgresClient({
-    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
-    transformFieldNames: false,
-  })
-  const sql = pgClient.sql
-  const pool = await pgClient.getPool()
-  const usr = sql.identifier([`usr_${userId}`])
-
-  await pool.query(
-    sql`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM ${usr}`,
-  )
-  await pool.query(sql`REVOKE USAGE ON SCHEMA public FROM ${usr}`)
-  await pool.query(sql`DROP USER ${usr}`)
-  await pool.query(
-    sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data - 'apiKey' WHERE id = ${userId}`,
-  )
-}
-
-export async function createDbUser(userId: string) {
-  const pgClient = makePostgresClient({
-    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
-    transformFieldNames: false,
-  })
-  const sql = pgClient.sql
-  const pool = await pgClient.getPool()
-
-  const username = `usr_${userId}`
-  let apiKey = await pool.maybeOneFirst(sql`
-    SELECT
-      raw_user_meta_data ->> 'apiKey'
-    FROM
-      auth.users
-    WHERE
-      id = ${userId}
-      AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
-  `)
-
-  const getUrl = () => {
-    const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
-    return `${adminUrl.protocol}//${username}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
-  }
-  if (apiKey) {
-    return {usr: username, apiKey, databaseUrl: getUrl()}
-  }
-
-  apiKey = `key_${makeUlid()}`
-
-  const usr = sql.identifier([username])
-  await pool.query(sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`)
-  await pool.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
-  await pool.query(
-    sql`GRANT SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${usr}`,
-  )
-  await pool.query(sql`REVOKE ALL PRIVILEGES ON public.migrations FROM ${usr}`)
-  await pool.query(sql`REVOKE ALL PRIVILEGES ON public.integration FROM ${usr}`)
-  await pool.query(
-    sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data || ${sql.jsonb(
-      {apiKey},
-    )} WHERE id = ${userId}`,
-  )
-
-  return {usr, apiKey, databaseUrl: getUrl()}
-}
-
-export async function ensureDefaultLedger(userId: string) {
-  const pgClient = makePostgresClient({
-    databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
-    transformFieldNames: false,
-  })
-  const sql = pgClient.sql
-  const pool = await pgClient.getPool()
-  const ids = await pool.anyFirst<Id['reso']>(
-    sql`SELECT id FROM resource WHERE creator_id = ${userId} AND provider_name = 'postgres'`,
-  )
-  console.log('[ensureDefaultLedger] ids', ids)
-  if (ids.length > 0) {
-    return ids as NonEmptyArray<Id['reso']>
-  }
-  const ledgerId = makeId('reso', 'postgres', userId)
-  await pool.query(
-    sql`INSERT INTO resource (id, creator_id) VALUES (${ledgerId}, ${userId})`,
-  )
-  return [ledgerId] as NonEmptyArray<Id['reso']>
-}
-
-const customRouter = trpcServer.router({
-  dropDbUser: authedProcedure
-    .input(z.object({}))
-    .mutation(async ({ctx}) => await dropDbUser(ctx.userId!)),
-  createDbUser: authedProcedure
-    .input(z.object({}))
-    .mutation(async ({ctx}) => await createDbUser(ctx.userId!)),
-  executeSql: authedProcedure
-    .input(z.object({sql: z.string()}))
-    .mutation(async ({input, ctx}) => {
-      const {databaseUrl} = await createDbUser(ctx.userId!)
-      const pgClient = makePostgresClient({
-        databaseUrl,
-        transformFieldNames: false,
-      })
-      const pool = await pgClient.getPool()
-      // @ts-expect-error
-      const query = pgClient.sql([input.sql])
-      const res = await pool.query(query)
-      return res.rows
-    }),
-  userInfo: authedProcedure
-    .input(z.object({}).nullish())
-    .query(async ({ctx}) => {
-      const info = await createDbUser(ctx.userId!)
-      const pgClient = makePostgresClient({
-        databaseUrl: info.databaseUrl,
-        transformFieldNames: false,
-      })
-      const pool = await pgClient.getPool()
-      const tableNames = await pool.anyFirst<string>(
-        pgClient.sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';`,
-      )
-      return {...info, tableNames}
-    }),
-})
 
 export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   // https://vercel.com/support/articles/how-to-enable-cors
@@ -185,10 +41,12 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   return false
 }
 
-export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
+// export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
+// export type AppRouter = typeof appRouter
+// export type TRPCType = CreateTRPCReact<AppRouter, unknown, null>
 
 const handler = trpcNext.createNextApiHandler({
-  router: appRouter,
+  router: veniceRouter,
   createContext: ({req}) => {
     console.log('[createContext]', {
       query: req.query,
