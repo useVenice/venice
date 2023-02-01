@@ -66,10 +66,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    esmExternals: false,
-    newNextLinkBehavior: true,
-  },
   webpack: (config) => {
     config.module.exprContextCritical = false
     config.module.unknownContextCritical = false
