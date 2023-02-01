@@ -7,6 +7,7 @@ export const supabase = createClient(
   commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   {auth: {autoRefreshToken: true}},
 )
+;(globalThis as any).supabase = supabase
 
 export async function copyToClipboard(content: string) {
   console.debug('Will save to clipboard', content)

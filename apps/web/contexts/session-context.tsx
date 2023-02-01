@@ -36,6 +36,7 @@ export function SessionContextProvider({supabaseClient, ...props}: Props) {
 
     const {data: authListener} = supabaseClient.auth.onAuthStateChange(
       (_event, session) => {
+        console.log('AuthChange event', _event)
         setValue([session ?? null, {error: null, status: 'success'}])
       },
     )
