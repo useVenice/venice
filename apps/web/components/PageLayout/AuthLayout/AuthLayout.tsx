@@ -8,7 +8,8 @@ import {Sidebar} from './Sidebar'
 interface AuthLayoutProps extends PropsWithChildren {}
 
 export function AuthLayout({children}: AuthLayoutProps) {
-  const [session, {loading: isLoadingSession}] = useSession()
+  const [session, {status}] = useSession()
+  const isLoadingSession = status === 'loading'
 
   if (isLoadingSession) {
     return <LoadingIndicatorOverlay />

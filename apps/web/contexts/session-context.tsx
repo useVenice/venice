@@ -1,5 +1,5 @@
-import type {Session} from '@supabase/supabase-js'
-import type {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {Session, SupabaseClient} from '@supabase/supabase-js'
+
 import React from 'react'
 
 /** TODO This ought to be a bit more generic... */
@@ -14,7 +14,7 @@ export const SessionContext = React.createContext<SessionContextValue>([
 ])
 
 export interface SessionContextProps {
-  supabaseClient: ReturnType<typeof createBrowserSupabaseClient>
+  supabaseClient: SupabaseClient
   [propName: string]: unknown
 }
 
