@@ -8,9 +8,16 @@ const {VeniceTheme} = require('./styles/themes')
  */
 module.exports = {
   content: [
-    './**/*.tsx',
-    '../../integrations/**/*.tsx',
-    '../../packages/engine-frontend/**/*.tsx',
+    // No styles in here, be very careful about including extra
+    // paths here we don't need otherwise it causes massive DX perf issues
+    // where it takes 60 seconds to compile a one line hello world change
+    // '../../integrations/**/*.tsx',
+    // '../../packages/engine-frontend/**/*.tsx',
+
+    './app/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     boxShadow: {
