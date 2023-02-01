@@ -67,7 +67,7 @@ export default function DataExplorerScreen({
           {/* Header */}
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
-            {queryRes.isLoading && <LoadingIndicator />}
+            {queryRes.isFetching && <LoadingIndicator />}
             <button
               className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs hover:bg-green/90 active:bg-green/75"
               onClick={() => queryRes.refetch()}>
