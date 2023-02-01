@@ -56,6 +56,13 @@ export default R.identity<NextApiHandler>(async (req, res) => {
   const clientPool = await client.getPool()
   // @ts-expect-error
   const result = await clientPool.query(client.sql([q]))
+  if (req.query['dl']) {
+    // TODO: Better filename would be nice.
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="sql-${Date.now()}.${format}"`,
+    )
+  }
   if (format === 'json') {
     res.send(result.rows)
   } else if (format === 'csv') {

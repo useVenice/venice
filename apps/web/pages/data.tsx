@@ -27,8 +27,20 @@ export default function DataExplorerScreen({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const tableNames = tables.map((t) => t.table_name)
 
-  function urlForQuery(query: string, format: 'json' | 'csv') {
-    return `${window.location.origin}/api/sql?format=${format}&apiKey=${apiKey}&q=${query}`
+  function urlForQuery({
+    query,
+    format,
+    download,
+  }: {
+    query: string
+    format: 'json' | 'csv'
+    download?: boolean
+  }) {
+    return `${
+      window.location.origin
+    }/api/sql?format=${format}&apiKey=${apiKey}&q=${query}${
+      download ? '&dl=1' : ''
+    }`
   }
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
@@ -36,11 +48,11 @@ export default function DataExplorerScreen({
   const queryRes = useQuery(
     ['sql', sql] as const,
     async ({queryKey}): Promise<Array<Record<string, unknown>>> =>
-      fetch(urlForQuery(queryKey[1], 'json')).then((r) => r.json()),
+      fetch(urlForQuery({query: queryKey[1], format: 'json'})).then((r) =>
+        r.json(),
+      ),
     {enabled: false}, // manual fetching only
   )
-
-  const csvUrl = urlForQuery(sql, 'csv')
 
   return (
     <PageLayout title="Data Explorer">
@@ -56,10 +68,26 @@ export default function DataExplorerScreen({
 
           <TextFieldToCopy
             title="CSV Export"
-            value={csvUrl ?? ''}
+            value={urlForQuery({query: sql, format: 'csv'})}
             description="Tip: Use with Google Sheet's IMPORTDATA function to pipe
-                         data from Venice live into your spreadsheets"
-          />
+                         data from Venice live into your spreadsheets">
+            <button
+              className="relative inline-flex cursor-pointer items-center space-x-2 rounded border border-[#FFF]/10  bg-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition hover:bg-[#222] active:bg-black"
+              type="button"
+              onClick={() =>
+                window.open(
+                  urlForQuery({query: sql, format: 'csv', download: true}),
+                )
+              }>
+              <Image
+                src="/copy-icon.svg"
+                alt="Copy text"
+                width={14}
+                height={14}
+              />
+              <span className="truncate">Download</span>
+            </button>
+          </TextFieldToCopy>
         </div>
 
         {/* Data Explorer */}
@@ -125,6 +153,7 @@ function TextFieldToCopy({
   title,
   value,
   description,
+  children,
 }: TextFieldToCopyProps) {
   return (
     <div className={className}>
@@ -135,6 +164,7 @@ function TextFieldToCopy({
           value={value}
           disabled></input>
         <div className="absolute inset-y-0 right-0 mr-3 flex items-center space-x-1 pl-3 pr-1">
+          {children}
           <button
             className="relative inline-flex cursor-pointer items-center space-x-2 rounded border border-[#FFF]/10  bg-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition hover:bg-[#222] active:bg-black"
             type="button"
