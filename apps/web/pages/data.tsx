@@ -16,6 +16,7 @@ import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import {VeniceDataGridTheme} from '../styles/themes'
 import {useQuery} from '@tanstack/react-query'
+import {LoadingIndicator} from '../components/loading-indicators'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},
@@ -66,6 +67,7 @@ export default function DataExplorerScreen({
           {/* Header */}
           <div className="flex flex-row gap-2">
             <span className="mr-auto text-lg font-bold">Data Explorer</span>
+            {queryRes.isLoading && <LoadingIndicator />}
             <button
               className="rounded-lg border border-[#000]/50 bg-green px-4 py-2 text-xs hover:bg-green/90 active:bg-green/75"
               onClick={() => queryRes.refetch()}>
