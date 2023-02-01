@@ -163,7 +163,7 @@ export function upsertByIdQuery(
     }),
   )
 
-  const getColId = (c: typeof cols[number]) => c.colId
+  const getColId = (c: (typeof cols)[number]) => c.colId
 
   const query = sql`
     INSERT INTO ${table} (${sql.join(cols.map(getColId), sql`, `)})
