@@ -5,7 +5,7 @@ import Image from 'next/image'
 import React, {useState} from 'react'
 
 import {Container} from '@usevenice/ui'
-import {produce} from '@usevenice/util'
+import {produce, R} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
@@ -25,7 +25,13 @@ const DataEditor = dynamic(
 export default function DataExplorerScreen({
   info: {apiKey, databaseUrl, tables},
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const tableNames = tables.map((t) => t.table_name)
+  const groupedTables = R.groupBy(tables, (t) =>
+    t.table_type === 'VIEW'
+      ? 'Views'
+      : t.table_name.startsWith('raw')
+      ? 'Raw tables'
+      : 'Meta tables',
+  )
 
   function urlForQuery({
     query,
@@ -106,23 +112,27 @@ export default function DataExplorerScreen({
           {/* SQL Editor Area */}
           <div className="flex flex-row">
             <div>
-              <h3 className="text-sm font-light text-offwhite/50">{`Tables (${tableNames.length})`}</h3>
-              <ul>
-                {tableNames.map((name) => (
-                  <li
-                    className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
-                    key={name}
-                    onClick={() => {
-                      setSql(`SELECT * FROM ${name} LIMIT 10`)
-                      // TODO: Figure otu the right pattern to run refetch after state has been updated only...
-                      setTimeout(() => {
-                        queryRes.refetch()
-                      }, 0)
-                    }}>
-                    {name}
-                  </li>
-                ))}
-              </ul>
+              {Object.entries(groupedTables).map(([group, tables]) => (
+                <React.Fragment key={group}>
+                  <h3 className="text-sm font-light text-offwhite/50">{`${group} (${tables.length})`}</h3>
+                  <ul>
+                    {tables.map(({table_name: name}) => (
+                      <li
+                        className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
+                        key={name}
+                        onClick={() => {
+                          setSql(`SELECT * FROM ${name} LIMIT 10`)
+                          // TODO: Figure otu the right pattern to run refetch after state has been updated only...
+                          setTimeout(() => {
+                            queryRes.refetch()
+                          }, 0)
+                        }}>
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                </React.Fragment>
+              ))}
             </div>
             <textarea
               className="ml-12 flex-1 resize-none rounded-lg border border-base-content/50 bg-primaryUIControl p-3 font-mono text-offwhite"
