@@ -45,6 +45,7 @@ function Tag(props: TagProps) {
 const tagColorMap = {
   offwhite: 'bg-offwhite',
   'venice-gold': 'bg-venice-gold',
+  'venice-gray': 'bg-venice-gray',
   'venice-green': 'bg-venice-green',
   'venice-red': 'bg-venice-red',
 }

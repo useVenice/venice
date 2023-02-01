@@ -1,6 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import clsx from 'clsx'
-import {formatDistanceToNow} from 'date-fns'
+import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
 import type {ComponentType} from 'react'
 import type {SvgIconProps} from '../icons'
@@ -9,29 +9,22 @@ import {
   DeleteIcon,
   EditIcon,
   MoreIcon,
+  StoreFilledIcon,
   SyncIcon,
 } from '../icons'
 import {ResourceCard} from './ResourceCard'
 
 export interface SourceCardProps {
-  // id: number
-  // customization: {name?: string}
-  // institution: {
-  //   name: string
-  //   logoUrl: string
-  // }
-  // connectionStatus: 'connected' | 'disconnected'
-  // lastSynced: number
-  // id: string
   displayName: string
   institution?: {
     name: string
     logoUrl?: string
   }
-  lastSyncCompletedAt?: string | null | undefined
-  // TODO where to get the type
-  status?: 'error' | 'healthy' | 'disconnected' | 'manual' | null | undefined
+  lastSyncCompletedAt?: string | null
+  status?: ConnectionStatus | null
 }
+
+type ConnectionStatus = 'error' | 'healthy' | 'disconnected' | 'manual'
 
 // displayName : "Postgres"
 // envName : null
@@ -50,9 +43,6 @@ export interface SourceCardProps {
 
 export function SourceCard(props: SourceCardProps) {
   const {displayName, institution, lastSyncCompletedAt, status} = props
-  console.log('\n\n\n')
-  console.log(props)
-  console.log('\n\n\n')
   return (
     <ResourceCard
       tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
@@ -66,24 +56,21 @@ export function SourceCard(props: SourceCardProps) {
               alt={`${institution.name} Logo`}
             />
           ) : (
-            <span>No institution - TODO</span>
+            // TEMPORARY
+            <StoreFilledIcon className="h-8 w-8 fill-current text-offwhite" />
           )}
           <span className="text-sm uppercase">{displayName}</span>
           <ActionMenu />
         </div>
         <div className="text-right">
-          {status ? (
-            <ConnectionStatus status={status} />
-          ) : (
-            <p>Status unknown TODO</p>
-          )}
+          {status ? <ConnectionStatus status={status} /> : null}
           <p className="text-xs text-venice-gray">
-            Synced{' '}
             {lastSyncCompletedAt
-              ? formatDistanceToNow(new Date(lastSyncCompletedAt), {
-                  addSuffix: true,
-                })
-              : 'unknown'}
+              ? `Synced ${formatDistanceToNowStrict(
+                  new Date(lastSyncCompletedAt),
+                  {addSuffix: true},
+                )}`
+              : 'No sync information'}
           </p>
         </div>
       </div>
@@ -91,7 +78,14 @@ export function SourceCard(props: SourceCardProps) {
   )
 }
 
-function ActionMenu() {
+function ActionMenu(props: {disabled?: boolean}) {
+  if (props.disabled) {
+    return (
+      <button className="pointer-events-none rounded-full p-1">
+        <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray-muted" />
+      </button>
+    )
+  }
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -131,11 +125,7 @@ function ActionMenuItem(props: ActionMenuItemProps) {
   )
 }
 
-function ConnectionStatus({
-  status,
-}: {
-  status: 'error' | 'healthy' | 'disconnected' | 'manual'
-}) {
+function ConnectionStatus({status}: {status: ConnectionStatus}) {
   const {color, text} =
     status === 'disconnected'
       ? {color: 'text-venice-red', text: 'Disconnected'}
@@ -146,5 +136,26 @@ function ConnectionStatus({
       <CircleFilledIcon className="h-2 w-2 fill-current" />
       <span className="inline-flex text-xs">{text}</span>
     </p>
+  )
+}
+
+export function SourceCardSkeleton() {
+  return (
+    <ResourceCard tagColor="venice-gray">
+      <div className="flex grow flex-col justify-between py-2 px-3">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+          <div className="h-8 w-8 rounded-full bg-venice-gray-muted" />
+          <div className="h-4 w-[6rem] rounded bg-venice-gray-muted" />
+          <ActionMenu disabled />
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <p className="inline-flex items-center gap-1">
+            <CircleFilledIcon className="h-2 w-2 fill-current text-venice-gray-muted" />
+            <span className="flex h-2 w-[4rem] rounded-sm bg-venice-gray-muted" />
+          </p>
+          <div className="inline-flex h-2 w-[7rem] rounded-sm bg-venice-gray-muted" />
+        </div>
+      </div>
+    </ResourceCard>
   )
 }

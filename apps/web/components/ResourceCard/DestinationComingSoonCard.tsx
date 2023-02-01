@@ -13,7 +13,7 @@ export function DestinationComingSoonCard() {
           <a
             className="text-green hover:text-opacity-70"
             href="mailto:hi@venice.is">
-            Reach out!
+            Reach&nbsp;out!
           </a>
         </p>
       </div>
