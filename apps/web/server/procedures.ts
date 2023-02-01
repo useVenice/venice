@@ -27,14 +27,16 @@ export async function dropDbUser(userId: string) {
   const pool = await pgClient.getPool()
   const usr = sql.identifier([`usr_${userId}`])
 
-  await pool.query(
-    sql`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM ${usr}`,
-  )
-  await pool.query(sql`REVOKE USAGE ON SCHEMA public FROM ${usr}`)
-  await pool.query(sql`DROP USER ${usr}`)
-  await pool.query(
-    sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data - 'apiKey' WHERE id = ${userId}`,
-  )
+  await pool.transaction(async (trxn) => {
+    await trxn.query(
+      sql`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM ${usr}`,
+    )
+    await trxn.query(sql`REVOKE USAGE ON SCHEMA public FROM ${usr}`)
+    await trxn.query(sql`DROP USER ${usr}`)
+    await trxn.query(
+      sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data - 'apiKey' WHERE id = ${userId}`,
+    )
+  })
 }
 
 export async function ensureDatabaseUser(userId: string) {
@@ -46,7 +48,7 @@ export async function ensureDatabaseUser(userId: string) {
   const pool = await pgClient.getPool()
 
   const username = `usr_${userId}`
-  let apiKey = await pool.maybeOneFirst(sql`
+  let apiKey = await pool.maybeOneFirst<string>(sql`
     SELECT
       raw_user_meta_data ->> 'apiKey'
     FROM
@@ -64,21 +66,28 @@ export async function ensureDatabaseUser(userId: string) {
     return {usr: username, apiKey, databaseUrl: getUrl()}
   }
 
-  apiKey = `key_${makeUlid()}`
-
   const usr = sql.identifier([username])
-  await pool.query(sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`)
-  await pool.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
-  await pool.query(
-    sql`GRANT SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${usr}`,
-  )
-  await pool.query(sql`REVOKE ALL PRIVILEGES ON public.migrations FROM ${usr}`)
-  await pool.query(sql`REVOKE ALL PRIVILEGES ON public.integration FROM ${usr}`)
-  await pool.query(
-    sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data || ${sql.jsonb(
-      {apiKey},
-    )} WHERE id = ${userId}`,
-  )
+  await pool.transaction(async (trxn) => {
+    apiKey = `key_${makeUlid()}`
+    await trxn.query(
+      sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`,
+    )
+    await trxn.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
+    await trxn.query(
+      sql`GRANT SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${usr}`,
+    )
+    await trxn.query(
+      sql`REVOKE ALL PRIVILEGES ON public.migrations FROM ${usr}`,
+    )
+    await trxn.query(
+      sql`REVOKE ALL PRIVILEGES ON public.integration FROM ${usr}`,
+    )
+    await trxn.query(
+      sql`UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data || ${sql.jsonb(
+        {apiKey},
+      )} WHERE id = ${userId}`,
+    )
+  })
 
   return {usr, apiKey, databaseUrl: getUrl()}
 }
