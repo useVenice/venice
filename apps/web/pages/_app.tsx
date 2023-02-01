@@ -15,7 +15,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
-import {supabase} from '../contexts/common-contexts'
+import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
 
 const queryClient = new QueryClient({
@@ -88,7 +88,7 @@ export function MyApp({Component, pageProps}: AppProps) {
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
           <UIProvider>
-            <SessionContextProvider supabaseClient={supabase}>
+            <SessionContextProvider supabaseClient={browserSupabase}>
               <_VeniceProvider>
                 <Component {...pageProps} />
               </_VeniceProvider>

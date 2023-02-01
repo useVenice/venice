@@ -1,4 +1,5 @@
-import type {Session, SupabaseClient} from '@supabase/supabase-js'
+import type {Session} from '@supabase/supabase-js'
+import type {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import React from 'react'
 
 /** TODO This ought to be a bit more generic... */
@@ -12,14 +13,17 @@ export const SessionContext = React.createContext<SessionContextValue>([
   {status: 'loading', error: null},
 ])
 
-export interface Props {
-  supabaseClient: SupabaseClient
+export interface SessionContextProps {
+  supabaseClient: ReturnType<typeof createBrowserSupabaseClient>
   [propName: string]: unknown
 }
 
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
-export function SessionContextProvider({supabaseClient, ...props}: Props) {
+export function SessionContextProvider({
+  supabaseClient,
+  ...props
+}: SessionContextProps) {
   const [value, setValue] = React.useState<SessionContextValue>([
     undefined,
     {status: 'loading', error: null},

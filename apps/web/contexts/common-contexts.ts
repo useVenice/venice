@@ -1,13 +1,13 @@
-import {createClient} from '@supabase/supabase-js'
+import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 
 // https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
-export const supabase = createClient(
-  commonEnv.NEXT_PUBLIC_SUPABASE_URL,
-  commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  {auth: {autoRefreshToken: true}},
-)
-;(globalThis as any).supabase = supabase
+export const browserSupabase = createBrowserSupabaseClient({
+  supabaseUrl: commonEnv.NEXT_PUBLIC_SUPABASE_URL,
+  supabaseKey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  // {auth: {autoRefreshToken: true}}, // auth-helpers-nextjs does not allow passing options to auth: at the moment
+})
+;(globalThis as any).supabaseBrowser = browserSupabase
 
 export async function copyToClipboard(content: string) {
   console.debug('Will save to clipboard', content)
