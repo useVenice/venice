@@ -196,7 +196,7 @@ importers:
 
   apps/cli:
     specifiers:
-      '@trpc/server': ''
+      '@trpc/server': 10.9.1
       '@usevenice/app-config': workspace:*
       '@usevenice/cdk-core': workspace:*
       '@usevenice/core-integration-firebase': workspace:*
@@ -226,7 +226,7 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
     dependencies:
-      '@trpc/server': 10.9.0
+      '@trpc/server': 10.9.1
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/core-integration-firebase': link:../../integrations/core-integration-firebase
@@ -3965,10 +3965,6 @@ packages:
       '@trpc/server': 10.9.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-    dev: false
-
-  /@trpc/server/10.9.0:
-    resolution: {integrity: sha512-5psyZgbvy29pJND32hwkWTMbv6s86IbsPOeDopsgNF0VegZT6Dsijmb7Ub/TDhuJVQVq5u4u5briMXi3SxmBkw==}
     dev: false
 
   /@trpc/server/10.9.1:
