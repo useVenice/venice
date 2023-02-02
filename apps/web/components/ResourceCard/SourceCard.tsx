@@ -9,7 +9,6 @@ import {
   DeleteIcon,
   EditIcon,
   MoreIcon,
-  StoreFilledIcon,
   SyncIcon,
 } from '../icons'
 import {ResourceCard} from './ResourceCard'
@@ -56,8 +55,13 @@ export function SourceCard(props: SourceCardProps) {
               alt={`${institution.name} Logo`}
             />
           ) : (
-            // TEMPORARY
-            <StoreFilledIcon className="h-8 w-8 fill-current text-offwhite" />
+            <Image
+              width={32}
+              height={32}
+              src="/institution-placeholder.svg"
+              alt=""
+              aria-hidden="true"
+            />
           )}
           <span className="text-sm uppercase">{displayName}</span>
           <ActionMenu />

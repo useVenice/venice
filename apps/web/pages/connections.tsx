@@ -1,6 +1,8 @@
 import {VeniceProvider} from '@usevenice/engine-frontend'
+import {Dialog} from '@usevenice/ui'
 import Image from 'next/image'
 import Link from 'next/link'
+import {useState} from 'react'
 import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -122,9 +124,10 @@ function SourcesColumn(props: SourcesColumnProps) {
 }
 
 function EmptySources() {
+  const [isDialogOpen, setDialogOpen] = useState(false)
   return (
     <>
-      <AddSourceCard />
+      <AddSourceCard onClick={() => setDialogOpen(true)} />
       <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
         <p>
           Venice has over 12,000 financial data sources to choose from (e.g.
@@ -139,6 +142,9 @@ function EmptySources() {
           </a>
         </p>
       </div>
+      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <div className="h-24 w-24 overflow-hidden rounded bg-white">test</div>
+      </Dialog>
     </>
   )
 }
