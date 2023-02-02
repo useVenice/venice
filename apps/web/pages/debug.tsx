@@ -1,5 +1,5 @@
 import type {SupabaseClient} from '@supabase/supabase-js'
-import {useQuery} from '@tanstack/react-query'
+import {useMutation, useQuery} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
@@ -8,10 +8,25 @@ import type {Database} from '../lib/supabase.gen'
 import {createSSRHelpers} from '../server'
 
 async function getPipelines(supabase: SupabaseClient<Database>) {
+  type Resource = Pick<
+    Database['public']['Tables']['resource']['Row'],
+    'id' | 'display_name' | 'provider_name'
+  >
   return supabase
     .from('pipeline')
-    .select('*')
-    .then((r) => r.data ?? [])
+    .select(
+      'id, last_sync_completed_at, source:source_id(id, display_name,provider_name), destination:destination_id(id,display_name, provider_name)',
+    )
+    .then(
+      (r) =>
+        r.data?.map(
+          (row) =>
+            row as typeof row & {
+              source: Resource
+              destination: Resource
+            },
+        ) ?? [],
+    )
 }
 
 // Should this be moved to _app getInitialProps?
@@ -31,16 +46,44 @@ export const getServerSideProps = (async (_context) => {
 export default function Debug(
   _props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  const {trpc} = VeniceProvider.useContext()
+  const {trpc, queryClient} = VeniceProvider.useContext()
   const res = trpc.health.useQuery(undefined, {enabled: false})
 
   const res2 = useQuery(['pipelines'], () => getPipelines(browserSupabase), {
-    enabled: false,
+    // enabled: false,
   })
+
+  const updateDisplayName = useMutation(
+    async ({resourceId, newName}: {resourceId: string; newName: string}) =>
+      browserSupabase
+        .from('resource')
+        .update({display_name: newName})
+        .eq('id', resourceId),
+    {onSuccess: () => queryClient.invalidateQueries(['pipelines'])},
+  )
+
+  const pipelines = res2.data ?? []
+  console.log('pipelines', pipelines)
 
   return (
     <h1 className="text-white">
       how are you {res.data} pipelines {res2.data?.length}
+      <ul>
+        {pipelines.map((p) => (
+          <li key={p.id}>
+            {p.source?.id} {p.source?.display_name}
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={() => {
+          updateDisplayName.mutate({
+            resourceId: pipelines?.[0]?.source?.id ?? '',
+            newName: new Date().toString(),
+          })
+        }}>
+        Update
+      </button>
     </h1>
   )
 }
