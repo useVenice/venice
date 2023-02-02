@@ -10,7 +10,15 @@ type ToEvents<T extends Record<string, unknown>> = {
 
 export type Events = ToEvents<{
   'pipeline/sync-requested': {pipelineId: Id['pipe']}
+  'resource/sync-requested': {resourceId: Id['reso']}
   'webhook/received': {body: unknown; headers: Record<string, string>}
 }>
 
-export const inngest = new Inngest<Events>({name: 'Venice'})
+export const inngest = new Inngest<Events>({
+  name: 'Venice',
+  // TODO: have a dedicated browser inngest key
+  eventKey: process.env['INNGEST_EVENT_KEY'] ?? 'local',
+  // This is needed in the browser otherwise we get failed to execute fetch on Window
+  // due to the way Inngest uses this.fetch when invoking fetch
+  fetch: globalThis.fetch.bind(globalThis),
+})

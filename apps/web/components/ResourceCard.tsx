@@ -15,6 +15,7 @@ import {formatDateTime, sentenceCase} from '@usevenice/util'
 import {envAtom} from '../contexts/atoms'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
+import {inngest} from '../inngest/events'
 
 export interface ResourceCardProps {
   resource: ZStandard['resource'] & {
@@ -86,16 +87,20 @@ export function ResourceCard({resource: reso}: ResourceCardProps) {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className={dropdownItemClass}
-                onClick={() =>
-                  syncResource
-                    .mutateAsync([{id: reso.id}, {}])
-                    .then((res) => {
-                      console.log('syncResource success', res)
-                    })
-                    .catch((err) => {
-                      console.error('syncResource error', err)
-                    })
-                }>
+                onClick={() => {
+                  // syncResource
+                  //   .mutateAsync([{id: reso.id}, {}])
+                  //   .then((res) => {
+                  //     console.log('syncResource success', res)
+                  //   })
+                  //   .catch((err) => {
+                  //     console.error('syncResource error', err)
+                  //   })
+
+                  void inngest.send('resource/sync-requested', {
+                    data: {resourceId: reso.id},
+                  })
+                }}>
                 Sync
               </DropdownMenuItem>
 
