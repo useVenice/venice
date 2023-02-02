@@ -12,10 +12,10 @@ import {
 } from '@usevenice/ui'
 import {formatDateTime, sentenceCase} from '@usevenice/util'
 
+import {inngest} from '@usevenice/engine-backend/events'
 import {envAtom} from '../contexts/atoms'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
-import {inngest} from '../inngest/events'
 
 export interface ResourceCardProps {
   resource: ZStandard['resource'] & {

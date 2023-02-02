@@ -6,8 +6,8 @@ import {
   veniceRouter,
 } from '@usevenice/app-config/backendConfig'
 import type {UserId} from '@usevenice/cdk-core'
+import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
-import {inngest} from './events'
 import {ensureDefaultLedger, getPool, sql} from '../server'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

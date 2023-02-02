@@ -847,12 +847,14 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/util': workspace:*
+      inngest: 0.9.3
       jsonwebtoken: 8.5.1
     dependencies:
       '@trpc/server': 10.9.0
       '@usevenice/cdk-core': link:../cdk-core
       '@usevenice/cdk-ledger': link:../cdk-ledger
       '@usevenice/util': link:../util
+      inngest: 0.9.3
       jsonwebtoken: 8.5.1
     devDependencies:
       '@types/jsonwebtoken': 8.5.9

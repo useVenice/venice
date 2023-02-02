@@ -9,6 +9,7 @@
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/util": "workspace:*",
+    "inngest": "0.9.3",
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
