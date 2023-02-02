@@ -17,6 +17,7 @@ import {Loading, UIProvider} from '@usevenice/ui'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
+import type {PageProps} from '../server'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,10 +77,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   )
 }
 
-export function MyApp({
-  Component,
-  pageProps,
-}: AppProps<{dehydratedState: unknown}>) {
+export function MyApp({Component, pageProps}: AppProps<PageProps>) {
   // console.log('MyApp re-render', pageProps)
   return (
     <>

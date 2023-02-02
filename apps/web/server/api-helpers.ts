@@ -5,8 +5,40 @@ import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 import {kAccessToken} from '../contexts/atoms'
 
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {DehydratedState} from '@tanstack/react-query'
+import {dehydrate, QueryClient} from '@tanstack/react-query'
+import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import type {UserId} from '@usevenice/cdk-core'
 import type {GetServerSidePropsContext} from 'next'
 import type {Database} from '../lib/supabase.gen'
+
+export interface PageProps {
+  dehydratedState: DehydratedState
+}
+
+export async function createSSRHelpers(context: GetServerSidePropsContext) {
+  const supabase = createServerSupabaseClient<Database>(context)
+  const queryClient = new QueryClient()
+
+  await import('@usevenice/app-config/register.node')
+  const {veniceRouter} = await import('@usevenice/app-config/backendConfig')
+  const {data: sessionRes} = await supabase.auth.getSession()
+  const user = sessionRes.session?.user
+
+  const ssg = createProxySSGHelpers({
+    queryClient,
+    router: veniceRouter,
+    ctx: {userId: user?.id as UserId | undefined},
+    // transformer: superjson,
+  })
+  return {
+    user,
+    supabase,
+    queryClient,
+    ssg,
+    getPageProps: (): PageProps => ({dehydratedState: dehydrate(queryClient)}),
+  }
+}
 
 /** For serverSideProps */
 export async function serverGetUser(context: GetServerSidePropsContext) {
