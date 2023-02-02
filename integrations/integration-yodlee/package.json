@@ -22,7 +22,7 @@
   "devDependencies": {
     "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
-    "openapi-typescript": "5.4.1",
+    "openapi-typescript": "6.1.0",
     "openapi-typescript-codegen": "0.23.0"
   }
 }

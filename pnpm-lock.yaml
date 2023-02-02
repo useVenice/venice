@@ -13,24 +13,21 @@ overrides:
   esbuild: 0.17.5
 
 patchedDependencies:
-  cac@6.7.12:
-    hash: nsfmzcycabp3f3q7kw2uyer77u
-    path: patches/cac@6.7.12.patch
-  esbuild-jest@0.5.0:
-    hash: qbdhvjs7sktehqpuch2x3qhd4y
-    path: patches/esbuild-jest@0.5.0.patch
   micro-memoize@4.0.10:
     hash: hko3q5jvea7ey3trpjtkqgcale
     path: patches/micro-memoize@4.0.10.patch
   firebase@9.8.1:
     hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
+  cac@6.7.12:
+    hash: nsfmzcycabp3f3q7kw2uyer77u
+    path: patches/cac@6.7.12.patch
   zod@3.20.2:
     hash: 6o55l5jjmzhdiwsempa52rp2y4
     path: patches/zod@3.20.2.patch
-  remeda@1.1.0:
-    hash: dx4ufj3unw254ycjy2ltcxmnru
-    path: patches/remeda@1.1.0.patch
+  esbuild-jest@0.5.0:
+    hash: qbdhvjs7sktehqpuch2x3qhd4y
+    path: patches/esbuild-jest@0.5.0.patch
 
 importers:
 
@@ -262,14 +259,14 @@ importers:
   apps/tests:
     specifiers:
       '@usevenice/app-config': workspace:*
-      openapi-typescript: 5.4.1
-      remeda: 0.0.32
+      openapi-typescript: 6.1.0
+      remeda: 1.6.1
       tsx: 3.12.2
     dependencies:
       '@usevenice/app-config': link:../app-config
-      remeda: 0.0.32
+      remeda: 1.6.1
     devDependencies:
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
       tsx: 3.12.2
 
   apps/web:
@@ -585,7 +582,7 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/util': workspace:*
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
       react: 18.2.0
     dependencies:
       '@usevenice/cdk-core': link:../../packages/cdk-core
@@ -594,7 +591,7 @@ importers:
       react: 18.2.0
     devDependencies:
       '@types/react': 18.0.24
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
 
   integrations/integration-plaid:
     specifiers:
@@ -603,7 +600,7 @@ importers:
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/standard': workspace:*
       '@usevenice/util': workspace:*
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
       plaid: 12.3.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -619,7 +616,7 @@ importers:
       react-plaid-link: 3.3.2_biqbaboplfbrettd7655fr4n2y
     devDependencies:
       '@types/react': 18.0.24
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
 
   integrations/integration-postgres:
     specifiers:
@@ -792,7 +789,7 @@ importers:
       '@usevenice/standard': workspace:*
       '@usevenice/util': workspace:*
       csstype: '*'
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
       openapi-typescript-codegen: 0.23.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -807,7 +804,7 @@ importers:
     devDependencies:
       '@cfworker/json-schema': 1.12.4
       '@types/react': 18.0.24
-      openapi-typescript: 5.4.1
+      openapi-typescript: 6.1.0
       openapi-typescript-codegen: 0.23.0
 
   packages/cdk-core:
@@ -957,7 +954,7 @@ importers:
       pluralize: 8.0.0
       query-string: 7.1.1
       read-file-safe: 1.0.10
-      remeda: 1.1.0
+      remeda: 1.6.1
       rxjs: 7.5.6
       sentence-case: 3.0.4
       shvl: 2.0.3
@@ -966,7 +963,7 @@ importers:
       tiny-invariant: 1.2.0
       ts-brand: 0.0.2
       type-fest: 2.19.0
-      ulidx: 0.3.0
+      ulidx: 0.4.0
       write-file-safe: 1.3.1
       zod: 3.20.2
     dependencies:
@@ -991,7 +988,7 @@ importers:
       micro-memoize: 4.0.10_hko3q5jvea7ey3trpjtkqgcale
       pluralize: 8.0.0
       query-string: 7.1.1
-      remeda: 1.1.0_dx4ufj3unw254ycjy2ltcxmnru
+      remeda: 1.6.1
       rxjs: 7.5.6
       sentence-case: 3.0.4
       shvl: 2.0.3
@@ -999,7 +996,7 @@ importers:
       tiny-invariant: 1.2.0
       ts-brand: 0.0.2
       type-fest: 2.19.0
-      ulidx: 0.3.0
+      ulidx: 0.4.0
       zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     devDependencies:
       '@types/accounting': 0.4.2
@@ -4754,6 +4751,11 @@ packages:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
+
+  /ansi-colors/4.1.3:
+    resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
+    engines: {node: '>=6'}
+    dev: true
 
   /ansi-escapes/4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
@@ -9463,6 +9465,8 @@ packages:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
     engines: {node: '>=10.0.0'}
     hasBin: true
+    dev: false
+    optional: true
 
   /mimic-fn/2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
@@ -9967,16 +9971,15 @@ packages:
       json-schema-ref-parser: 9.0.9
     dev: true
 
-  /openapi-typescript/5.4.1:
-    resolution: {integrity: sha512-AGB2QiZPz4rE7zIwV3dRHtoUC/CWHhUjuzGXvtmMQN2AFV8xCTLKcZUHLcdPQmt/83i22nRE7+TxXOXkK+gf4Q==}
-    engines: {node: '>= 14.0.0'}
+  /openapi-typescript/6.1.0:
+    resolution: {integrity: sha512-4G0hQu9zXHESZe4fZouucmA+6J5oKSBNYzG0gPbV9V4aKBNIwfUY86ur/cxyTMzuN9vQuAiMe//q4ZMXgMvGtQ==}
     hasBin: true
     dependencies:
+      ansi-colors: 4.1.3
+      fast-glob: 3.2.12
       js-yaml: 4.1.0
-      mime: 3.0.0
-      prettier: 2.8.3
-      tiny-glob: 0.2.9
-      undici: 5.11.0
+      supports-color: 9.3.1
+      undici: 5.16.0
       yargs-parser: 21.1.1
     dev: true
 
@@ -11030,14 +11033,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /remeda/0.0.32:
-    resolution: {integrity: sha512-FEdl8ONpqY7AvvMHG5WYdomc0mGf2khHPUDu6QvNkOq4Wjkw5BvzWM4QyksAQ/US1sFIIRG8TVBn6iJx6HbRrA==}
+  /remeda/1.6.1:
+    resolution: {integrity: sha512-ywn4Tv2cPBj6hk0TEYMHusWVXu72yJNCaWUdMK7kc7x/PjQPBSvtMbmBWP4PQH791kpl3rPBe3ZVkJyPj3c+0g==}
     dev: false
-
-  /remeda/1.1.0_dx4ufj3unw254ycjy2ltcxmnru:
-    resolution: {integrity: sha512-dtPAM1fP1HEorGDYyJiZUYfgzswyey0S1sD1FpCOhfgmpTJmnLz32q2WeEB1EyNLMENJuXSKWY8Hrm1CKM9lpw==}
-    dev: false
-    patched: true
 
   /remove-file-safe/1.0.1:
     resolution: {integrity: sha512-YzBF0IfrPG9PMGCZsQjMNeIyi9+PPYLDHTcU+bDhgZhfaO6WFpA75+kB5eEkg9C3Puomo6Y50Ll8sCem2TiBdA==}
@@ -12055,6 +12053,11 @@ packages:
     dependencies:
       has-flag: 4.0.0
 
+  /supports-color/9.3.1:
+    resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
+    engines: {node: '>=12'}
+    dev: true
+
   /supports-hyperlinks/2.3.0:
     resolution: {integrity: sha512-RpsAZlpWcDwOPQA22aCH4J0t7L8JmAvsCxfOSEwm7cQs3LshN36QaTkwd70DnBOXDWGssw2eUoc8CaRWT0XunA==}
     engines: {node: '>=8'}
@@ -12490,8 +12493,8 @@ packages:
     dev: true
     optional: true
 
-  /ulidx/0.3.0:
-    resolution: {integrity: sha512-Qvpa2xAzS6fBUpiqHSHWvn6XiSLCAPyNDDz035vsEWmUoXRqC4c9JySLIfdBuK0N1xGBxng6GHDOZgyNQfxAHg==}
+  /ulidx/0.4.0:
+    resolution: {integrity: sha512-Ih/3tOXQ4w+zriMzjas8F1Yl4iNM+IQoamnY+n3XX01MBQC9lMiMnO/ONT8jXQfzprYhymrNcYpwgq6QutxUUA==}
     dependencies:
       layerr: 0.1.2
     dev: false
@@ -12517,8 +12520,8 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
-  /undici/5.11.0:
-    resolution: {integrity: sha512-oWjWJHzFet0Ow4YZBkyiJwiK5vWqEYoH7BINzJAJOLedZ++JpAlCbUktW2GQ2DS2FpKmxD/JMtWUUWl1BtghGw==}
+  /undici/5.16.0:
+    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
