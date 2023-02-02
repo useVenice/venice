@@ -27,8 +27,8 @@ export const postgresProvider = makeSyncProvider({
   },
   destinationSync: ({id: ledgerId, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {
-      databaseUrl,
-      migrationsPath: __dirname + '/migrations',
+      // databaseUrl,
+      // migrationsPath: __dirname + '/migrations',
       ledgerId,
     })
     const {getPool} = makePostgresClient({
