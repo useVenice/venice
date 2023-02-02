@@ -30,6 +30,7 @@ import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {makeJwtClient, _zContext} from './auth-utils'
+import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   IntegrationInput,
@@ -233,7 +234,7 @@ export const makeSyncEngine = <
       console.log(
         '[_syncResourceUpdate] Returning early skip syncing pipelines',
       )
-      return
+      return id
     }
 
     const pipelines = await getPipelinesForResource(
@@ -256,6 +257,7 @@ export const makeSyncEngine = <
         })
       }),
     )
+    return id
   }
 
   const _syncPipeline = async (
@@ -361,6 +363,15 @@ export const makeSyncEngine = <
 
         return res.response?.body
       }),
+    dispatch: authedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
+      if (input.name !== 'resource/sync-requested') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Event name not supported ${input.name}`,
+        })
+      }
+      await inngest.send(input.name, {data: input.data, user: {id: ctx.userId}})
+    }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
       .query(async ({input: {type}}) => {
@@ -623,13 +634,22 @@ export const makeSyncEngine = <
               redirectUrl: getRedirectUrl?.(int, ctx),
             },
           )
-          await _syncResourceUpdate(int, {
+
+          const syncInBackground =
+            resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
+
+          const resourceId = await _syncResourceUpdate(int, {
             ...resoUpdate,
             // No need for each integration to worry about this, unlike in the case of handleWebhook.
             userId: ctx.userId ?? ADMIN_UID,
             envName: connCtxInput.envName,
             connectWith: connCtxInput.connectWith,
+            triggerDefaultSync:
+              !syncInBackground && resoUpdate.triggerDefaultSync,
           })
+          if (syncInBackground) {
+            await inngest.send('resource/sync-requested', {data: {resourceId}})
+          }
           console.log('didConnect finish', int.provider.name, input)
           return 'Resource successfully connected'
         },

@@ -32,7 +32,7 @@
     "@roarr/cli": "5.7.0",
     "@tsconfig/strictest": "1.0.2",
     "@types/jest": "29.0.0",
-    "@types/node": "16.11.12",
+    "@types/node": "18.11.18",
     "@types/prettier": "2.7.0",
     "@typescript-eslint/eslint-plugin": "5.36.1",
     "@typescript-eslint/parser": "5.36.1",
@@ -83,8 +83,8 @@
       "libpq"
     ],
     "overrides": {
-      "@types/react": "18.0.24",
-      "@types/react-dom": "18.0.8",
+      "@types/react": "18.0.27",
+      "@types/react-dom": "18.0.10",
       "axios": "0.21.1",
       "react": "18.2.0",
       "react-dom": "18.2.0",
@@ -92,12 +92,10 @@
       "esbuild": "0.17.5"
     },
     "patchedDependencies": {
-      "@next/env@12.2.5": "patches/@next__env@12.2.5.patch",
       "cac@6.7.12": "patches/cac@6.7.12.patch",
       "esbuild-jest@0.5.0": "patches/esbuild-jest@0.5.0.patch",
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
-      "remeda@1.1.0": "patches/remeda@1.1.0.patch",
       "zod@3.20.2": "patches/zod@3.20.2.patch"
     },
     "peerDependencyRules": {

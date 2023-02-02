@@ -1,7 +1,7 @@
 import './global.css'
 
 import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {QueryClient, QueryClientProvider, Hydrate} from '@tanstack/react-query'
 import {persistQueryClient} from '@tanstack/react-query-persist-client'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
@@ -17,6 +17,7 @@ import {Loading, UIProvider} from '@usevenice/ui'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
+import type {PageProps} from '../server'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,7 +77,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   )
 }
 
-export function MyApp({Component, pageProps}: AppProps) {
+export function MyApp({Component, pageProps}: AppProps<PageProps>) {
   // console.log('MyApp re-render', pageProps)
   return (
     <>
@@ -87,13 +88,15 @@ export function MyApp({Component, pageProps}: AppProps) {
 
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
-          <UIProvider>
-            <SessionContextProvider supabaseClient={browserSupabase}>
-              <_VeniceProvider>
-                <Component {...pageProps} />
-              </_VeniceProvider>
-            </SessionContextProvider>
-          </UIProvider>
+          <Hydrate state={pageProps.dehydratedState}>
+            <UIProvider>
+              <SessionContextProvider supabaseClient={browserSupabase}>
+                <_VeniceProvider>
+                  <Component {...pageProps} />
+                </_VeniceProvider>
+              </SessionContextProvider>
+            </UIProvider>
+          </Hydrate>
         </QueryClientProvider>
       </QueryParamProvider>
     </>

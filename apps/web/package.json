@@ -7,19 +7,21 @@
     "build:migration": "if [ \"$VERCEL_ENV\" = production ] || [ \"$VERCEL_GIT_COMMIT_REF\" = staging ]; then pnpm --dir ../../ migration up; else echo 'Skip non prod/staging migration'; fi",
     "build:next": "next build",
     "dev": "next dev",
+    "gen:supabase": "supabase gen types typescript --linked --schema public > ./lib/supabase.gen.ts",
     "start": "next start"
   },
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
     "@radix-ui/react-dropdown-menu": "1.0.0",
-    "@sentry/nextjs": "7.34.0",
+    "@sentry/nextjs": "7.35.0",
     "@supabase/auth-helpers-nextjs": "0.5.4",
     "@supabase/auth-ui-react": "0.2.6",
     "@supabase/supabase-js": "2.7.0",
     "@tanstack/query-sync-storage-persister": "4.22.4",
     "@tanstack/react-query": "4.23.0",
     "@tanstack/react-query-persist-client": "4.23.0",
-    "@trpc/server": "10.9.0",
+    "@trpc/react-query": "10.9.1",
+    "@trpc/server": "10.9.1",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
@@ -46,7 +48,7 @@
     "use-query-params": "2.1.0"
   },
   "devDependencies": {
-    "@sentry/cli": "2.11.0",
+    "@sentry/cli": "2.12.0",
     "@types/react": "18.0.24",
     "@types/react-dom": "18.0.8",
     "autoprefixer": "*",

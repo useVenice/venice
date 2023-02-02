@@ -3,7 +3,7 @@ import {Circle, DotsThreeVertical} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {EnvName, ZStandard} from '@usevenice/cdk-core'
-import {useVenice} from '@usevenice/engine-frontend'
+import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,9 @@ export function LegacyResourceCard({resource: reso}: LegacyResourceCardProps) {
   // How do we express these situations?
   const {connect, syncResource, deleteResource, checkResource, developerMode} =
     useVenice({envName: env})
+
+  const {trpc} = VeniceProvider.useContext()
+  const dispatch = trpc.dispatch.useMutation()
 
   const dropdownItemClass =
     'cursor-pointer text-offwhite/75 p-2 hover:outline-0 outline-none hover:bg-offwhite/5 rounded-lg'
@@ -86,16 +89,20 @@ export function LegacyResourceCard({resource: reso}: LegacyResourceCardProps) {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className={dropdownItemClass}
-                onClick={() =>
-                  syncResource
-                    .mutateAsync([{id: reso.id}, {}])
-                    .then((res) => {
-                      console.log('syncResource success', res)
-                    })
-                    .catch((err) => {
-                      console.error('syncResource error', err)
-                    })
-                }>
+                onClick={() => {
+                  // syncResource
+                  //   .mutateAsync([{id: reso.id}, {}])
+                  //   .then((res) => {
+                  //     console.log('syncResource success', res)
+                  //   })
+                  //   .catch((err) => {
+                  //     console.error('syncResource error', err)
+                  //   })
+                  dispatch.mutate({
+                    name: 'resource/sync-requested',
+                    data: {resourceId: reso.id},
+                  })
+                }}>
                 Sync
               </DropdownMenuItem>
 

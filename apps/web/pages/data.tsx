@@ -5,7 +5,7 @@ import Image from 'next/image'
 import React, {useState} from 'react'
 
 import {Container} from '@usevenice/ui'
-import {produce} from '@usevenice/util'
+import {produce, R} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
@@ -25,10 +25,28 @@ const DataEditor = dynamic(
 export default function DataExplorerScreen({
   info: {apiKey, databaseUrl, tables},
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const tableNames = tables.map((t) => t.table_name)
+  const groupedTables = R.groupBy(tables, (t) =>
+    t.table_type === 'VIEW'
+      ? 'Views'
+      : t.table_name.startsWith('raw')
+      ? 'Raw tables'
+      : 'Meta tables',
+  )
 
-  function urlForQuery(query: string, format: 'json' | 'csv') {
-    return `${window.location.origin}/api/sql?format=${format}&apiKey=${apiKey}&q=${query}`
+  function urlForQuery({
+    query,
+    format,
+    download,
+  }: {
+    query: string
+    format: 'json' | 'csv'
+    download?: boolean
+  }) {
+    return `${
+      window.location.origin
+    }/api/sql?format=${format}&apiKey=${apiKey}&q=${query}${
+      download ? '&dl=1' : ''
+    }`
   }
 
   const [sql, setSql] = useState('SELECT id FROM transaction limit 100')
@@ -36,11 +54,11 @@ export default function DataExplorerScreen({
   const queryRes = useQuery(
     ['sql', sql] as const,
     async ({queryKey}): Promise<Array<Record<string, unknown>>> =>
-      fetch(urlForQuery(queryKey[1], 'json')).then((r) => r.json()),
+      fetch(urlForQuery({query: queryKey[1], format: 'json'})).then((r) =>
+        r.json(),
+      ),
     {enabled: false}, // manual fetching only
   )
-
-  const csvUrl = urlForQuery(sql, 'csv')
 
   return (
     <PageLayout title="Data Explorer">
@@ -56,10 +74,26 @@ export default function DataExplorerScreen({
 
           <TextFieldToCopy
             title="CSV Export"
-            value={csvUrl ?? ''}
+            value={urlForQuery({query: sql, format: 'csv'})}
             description="Tip: Use with Google Sheet's IMPORTDATA function to pipe
-                         data from Venice live into your spreadsheets"
-          />
+                         data from Venice live into your spreadsheets">
+            <button
+              className="relative inline-flex cursor-pointer items-center space-x-2 rounded border border-[#FFF]/10  bg-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition hover:bg-[#222] active:bg-black"
+              type="button"
+              onClick={() =>
+                window.open(
+                  urlForQuery({query: sql, format: 'csv', download: true}),
+                )
+              }>
+              <Image
+                src="/copy-icon.svg"
+                alt="Copy text"
+                width={14}
+                height={14}
+              />
+              <span className="truncate">Download</span>
+            </button>
+          </TextFieldToCopy>
         </div>
 
         {/* Data Explorer */}
@@ -78,23 +112,27 @@ export default function DataExplorerScreen({
           {/* SQL Editor Area */}
           <div className="flex flex-row">
             <div>
-              <h3 className="text-sm font-light text-offwhite/50">{`Tables (${tableNames.length})`}</h3>
-              <ul>
-                {tableNames.map((name) => (
-                  <li
-                    className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
-                    key={name}
-                    onClick={() => {
-                      setSql(`SELECT * FROM ${name} LIMIT 10`)
-                      // TODO: Figure otu the right pattern to run refetch after state has been updated only...
-                      setTimeout(() => {
-                        queryRes.refetch()
-                      }, 0)
-                    }}>
-                    {name}
-                  </li>
-                ))}
-              </ul>
+              {Object.entries(groupedTables).map(([group, tables]) => (
+                <React.Fragment key={group}>
+                  <h3 className="text-sm font-light text-offwhite/50">{`${group} (${tables.length})`}</h3>
+                  <ul>
+                    {tables.map(({table_name: name}) => (
+                      <li
+                        className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
+                        key={name}
+                        onClick={() => {
+                          setSql(`SELECT * FROM ${name} LIMIT 10`)
+                          // TODO: Figure otu the right pattern to run refetch after state has been updated only...
+                          setTimeout(() => {
+                            queryRes.refetch()
+                          }, 0)
+                        }}>
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                </React.Fragment>
+              ))}
             </div>
             <textarea
               className="ml-12 flex-1 resize-none rounded-lg border border-base-content/50 bg-primaryUIControl p-3 font-mono text-offwhite"
@@ -125,6 +163,7 @@ function TextFieldToCopy({
   title,
   value,
   description,
+  children,
 }: TextFieldToCopyProps) {
   return (
     <div className={className}>
@@ -135,6 +174,7 @@ function TextFieldToCopy({
           value={value}
           disabled></input>
         <div className="absolute inset-y-0 right-0 mr-3 flex items-center space-x-1 pl-3 pr-1">
+          {children}
           <button
             className="relative inline-flex cursor-pointer items-center space-x-2 rounded border border-[#FFF]/10  bg-black px-2.5 py-2 text-center text-xs outline-none outline-0 transition hover:bg-[#222] active:bg-black"
             type="button"
@@ -229,7 +269,7 @@ export function ResultTableView({
 }
 
 export const getServerSideProps = (async (context) => {
-  const {serverGetUser, getDatabaseInfo} = await import('../server/procedures')
+  const {serverGetUser, getDatabaseInfo} = await import('../server')
   const user = await serverGetUser(context)
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}

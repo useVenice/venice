@@ -1,4 +1,4 @@
-import {inngest} from '../../inngest/events'
+import {inngest} from '@usevenice/engine-backend/events'
 
 import {serve} from 'inngest/next'
 import * as functions from '../../inngest/functions'

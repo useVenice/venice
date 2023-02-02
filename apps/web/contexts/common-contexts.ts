@@ -1,8 +1,9 @@
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
+import type {Database} from '../lib/supabase.gen'
 
 // https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
-export const browserSupabase = createBrowserSupabaseClient({
+export const browserSupabase = createBrowserSupabaseClient<Database>({
   supabaseUrl: commonEnv.NEXT_PUBLIC_SUPABASE_URL,
   supabaseKey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   // {auth: {autoRefreshToken: true}}, // auth-helpers-nextjs does not allow passing options to auth: at the moment
