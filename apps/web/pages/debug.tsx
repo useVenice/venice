@@ -12,11 +12,12 @@ async function getPipelines(supabase: SupabaseClient<Database>) {
   type Resource = Pick<
     Database['public']['Tables']['resource']['Row'],
     'id' | 'display_name' | 'provider_name'
-  >
+  > & {institution: {id: string; name: string} | null}
+
   return supabase
     .from('pipeline')
     .select(
-      'id, last_sync_completed_at, source:source_id(id, display_name,provider_name), destination:destination_id(id,display_name, provider_name)',
+      'id, last_sync_completed_at, source:source_id(id, display_name,provider_name, institution (id, external->name) ), destination:destination_id(id,display_name, provider_name, institution (id, external->name))',
     )
     .then(
       (r) =>
