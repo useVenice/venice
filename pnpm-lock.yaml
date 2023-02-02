@@ -280,6 +280,7 @@ importers:
       '@tanstack/query-sync-storage-persister': 4.22.4
       '@tanstack/react-query': 4.23.0
       '@tanstack/react-query-persist-client': 4.23.0
+      '@trpc/react-query': 10.9.1
       '@trpc/server': 10.9.1
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
@@ -324,6 +325,7 @@ importers:
       '@tanstack/query-sync-storage-persister': 4.22.4
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-query-persist-client': 4.23.0_zg4ue6bz2kddeqfqsgf6nfp2su
+      '@trpc/react-query': 10.9.1_aimcwerdnwqpgtz3ehm6a4udle
       '@trpc/server': 10.9.1
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
@@ -3949,6 +3951,21 @@ packages:
       '@trpc/server': 10.9.1
     dependencies:
       '@trpc/server': 10.9.1
+    dev: false
+
+  /@trpc/react-query/10.9.1_aimcwerdnwqpgtz3ehm6a4udle:
+    resolution: {integrity: sha512-R6TvyJkvxc0i7qXNHlb+1aUnsJz5YuxhZDzDUJl9akNlvxlmZFm3R9gEMEjDAXIYAUHjbmucl9FKKN6GjCTBTA==}
+    peerDependencies:
+      '@tanstack/react-query': ^4.3.8
+      '@trpc/client': 10.9.1
+      '@trpc/server': 10.9.1
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
+      '@trpc/server': 10.9.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@trpc/react-query/10.9.1_jag57mq4agkv7zgc5mk732u4sq:
