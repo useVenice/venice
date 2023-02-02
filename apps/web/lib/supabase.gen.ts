@@ -213,6 +213,7 @@ export interface Database {
         Row: {
           created_at: string
           creator_id: string | null
+          display_name: string | null
           env_name: string | null
           id: string
           institution_id: string | null
@@ -224,6 +225,7 @@ export interface Database {
         Insert: {
           created_at?: string
           creator_id?: string | null
+          display_name?: string | null
           env_name?: string | null
           id?: string
           institution_id?: string | null
@@ -235,6 +237,7 @@ export interface Database {
         Update: {
           created_at?: string
           creator_id?: string | null
+          display_name?: string | null
           env_name?: string | null
           id?: string
           institution_id?: string | null
