@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
+    "@lukemorales/query-key-factory": "1.1.0",
     "@sentry/nextjs": "7.35.0",
     "@supabase/auth-helpers-nextjs": "0.5.4",
     "@supabase/auth-ui-react": "0.2.6",
