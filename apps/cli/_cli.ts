@@ -3,7 +3,6 @@ import '@usevenice/app-config/register.node'
 
 import type {PROVIDERS} from '@usevenice/app-config/env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
-import {loadedEnv} from '@usevenice/app-config/register.node'
 import {
   makePostgresClient,
   makePostgresMetaService,
@@ -37,8 +36,9 @@ if (getEnvVar('DEBUG_ZOD')) {
 }
 
 function env() {
-  return zParser(zAllEnv).parseUnknown(loadedEnv)
+  return zParser(zAllEnv).parseUnknown(process.env)
 }
+
 function intConfig<T extends (typeof PROVIDERS)[number]['name']>(name: T) {
   const config = parseIntConfigsFromRawEnv()[name]
   if (!config) {

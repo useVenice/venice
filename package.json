@@ -92,7 +92,6 @@
       "esbuild": "0.17.5"
     },
     "patchedDependencies": {
-      "@next/env@12.2.5": "patches/@next__env@12.2.5.patch",
       "cac@6.7.12": "patches/cac@6.7.12.patch",
       "esbuild-jest@0.5.0": "patches/esbuild-jest@0.5.0.patch",
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",

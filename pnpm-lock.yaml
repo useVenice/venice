@@ -13,9 +13,6 @@ overrides:
   esbuild: 0.17.5
 
 patchedDependencies:
-  remeda@1.1.0:
-    hash: dx4ufj3unw254ycjy2ltcxmnru
-    path: patches/remeda@1.1.0.patch
   cac@6.7.12:
     hash: nsfmzcycabp3f3q7kw2uyer77u
     path: patches/cac@6.7.12.patch
@@ -28,12 +25,12 @@ patchedDependencies:
   firebase@9.8.1:
     hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
-  '@next/env@12.2.5':
-    hash: atv7jky62tkac2egbnendfcmcq
-    path: patches/@next__env@12.2.5.patch
   zod@3.20.2:
     hash: 6o55l5jjmzhdiwsempa52rp2y4
     path: patches/zod@3.20.2.patch
+  remeda@1.1.0:
+    hash: dx4ufj3unw254ycjy2ltcxmnru
+    path: patches/remeda@1.1.0.patch
 
 importers:
 
@@ -113,7 +110,6 @@ importers:
 
   apps/app-config:
     specifiers:
-      '@next/env': 12.2.5
       '@types/find-config': 1.0.1
       '@types/tunnel': 0.0.3
       '@usevenice/cdk-core': workspace:*
@@ -157,7 +153,6 @@ importers:
       write-file-safe: 1.3.1
       zod: 3.20.2
     dependencies:
-      '@next/env': 12.2.5_atv7jky62tkac2egbnendfcmcq
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/cdk-ledger': link:../../packages/cdk-ledger
       '@usevenice/core-integration-airtable': link:../../integrations/core-integration-airtable
@@ -2856,11 +2851,6 @@ packages:
       hey-listen: 1.0.8
       tslib: 2.4.0
     dev: false
-
-  /@next/env/12.2.5_atv7jky62tkac2egbnendfcmcq:
-    resolution: {integrity: sha512-vLPLV3cpPGjUPT3PjgRj7e3nio9t6USkuew3JE/jMeon/9Mvp1WyR18v3iwnCuX7eUAm1HmAbJHHLAbcu/EJcw==}
-    dev: false
-    patched: true
 
   /@next/env/13.1.5:
     resolution: {integrity: sha512-0Ry4NhJy6qLbXhvxPRUQ1H6RzgtryGdUto7hfgAK0Iw/bScgeVjwLZdfhm2iT7qsOS32apo9cWzLCxjc6iGPsA==}

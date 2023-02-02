@@ -26,8 +26,6 @@ import {
   memoize,
 } from '@usevenice/util'
 
-import {loadEnv} from './loadEnv.node'
-
 if (process.env['SILENT']) {
   console.log = () => {} // To suppress spurious log
   console.debug = () => {} // To suppress spurious log
@@ -35,9 +33,6 @@ if (process.env['SILENT']) {
 }
 
 console.log('[Dep] app-config/register.node')
-
-/** Side effect here */
-export const loadedEnv = loadEnv()
 
 implementProxyFn(
   $makeProxyAgent,
