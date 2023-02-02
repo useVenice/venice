@@ -6,10 +6,11 @@ import {kAccessToken} from '../contexts/atoms'
 
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import type {GetServerSidePropsContext} from 'next'
+import type {Database} from '../lib/supabase.gen'
 
 /** For serverSideProps */
 export async function serverGetUser(context: GetServerSidePropsContext) {
-  const supabase = createServerSupabaseClient(context)
+  const supabase = createServerSupabaseClient<Database>(context)
   const {data: sessionRes} = await supabase.auth.getSession()
   return sessionRes.session?.user
 }
