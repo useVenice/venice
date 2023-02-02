@@ -3,6 +3,7 @@ import {useMutation, useQuery} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
+import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
 import type {Database} from '../lib/supabase.gen'
 import {createSSRHelpers} from '../server'
@@ -51,6 +52,28 @@ export default function Debug(
 
   const res2 = useQuery(['pipelines'], () => getPipelines(browserSupabase), {
     // enabled: false,
+    // staleTime: 1000,
+    // refetchInterval: 1000,
+  })
+
+  React.useEffect(() => {
+    const sub = browserSupabase
+      .channel('any')
+      .on(
+        'postgres_changes',
+        {event: '*', schema: 'public', table: 'pipeline'},
+        (payload) => {
+          console.log('Change received!', payload)
+        },
+      )
+      .subscribe()
+
+    console.log('listenened to postgres_changes')
+
+    return () => {
+      console.log('Unsub to postgres_changes')
+      void sub.unsubscribe()
+    }
   })
 
   const updateDisplayName = useMutation(
