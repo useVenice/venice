@@ -3,7 +3,7 @@ import {Circle, DotsThreeVertical} from 'phosphor-react'
 import {twMerge} from 'tailwind-merge'
 
 import type {EnvName, ZStandard} from '@usevenice/cdk-core'
-import {useVenice} from '@usevenice/engine-frontend'
+import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,6 @@ import {
 } from '@usevenice/ui'
 import {formatDateTime, sentenceCase} from '@usevenice/util'
 
-import {inngest} from '@usevenice/engine-backend/events'
 import {envAtom} from '../contexts/atoms'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {InstitutionLogo} from './InstitutionLogo'
@@ -33,6 +32,9 @@ export function ResourceCard({resource: reso}: ResourceCardProps) {
   // How do we express these situations?
   const {connect, syncResource, deleteResource, checkResource, developerMode} =
     useVenice({envName: env})
+
+  const {trpc} = VeniceProvider.useContext()
+  const dispatch = trpc.dispatch.useMutation()
 
   const dropdownItemClass =
     'cursor-pointer text-offwhite/75 p-2 hover:outline-0 outline-none hover:bg-offwhite/5 rounded-lg'
@@ -96,8 +98,8 @@ export function ResourceCard({resource: reso}: ResourceCardProps) {
                   //   .catch((err) => {
                   //     console.error('syncResource error', err)
                   //   })
-
-                  void inngest.send('resource/sync-requested', {
+                  dispatch.mutate({
+                    name: 'resource/sync-requested',
                     data: {resourceId: reso.id},
                   })
                 }}>

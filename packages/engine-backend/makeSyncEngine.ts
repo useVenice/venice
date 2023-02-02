@@ -30,7 +30,7 @@ import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {makeJwtClient, _zContext} from './auth-utils'
-import {inngest} from './events'
+import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   IntegrationInput,
@@ -363,6 +363,15 @@ export const makeSyncEngine = <
 
         return res.response?.body
       }),
+    dispatch: authedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
+      if (input.name !== 'resource/sync-requested') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Event name not supported ${input.name}`,
+        })
+      }
+      await inngest.send(input.name, {data: input.data, user: {id: ctx.userId}})
+    }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
       .query(async ({input: {type}}) => {
