@@ -44,6 +44,7 @@
     "react-responsive-carousel": "3.2.23",
     "superjson": "1.9.1",
     "tailwind-merge": "1.6.0",
+    "tailwindcss-animate": "^1.0.5",
     "ts-pattern": "4.0.5",
     "use-query-params": "2.1.0"
   },

@@ -1,22 +1,21 @@
+import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {DropdownMenuPrimitive as DropdownMenu} from '@usevenice/ui'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import type {ComponentType, PropsWithChildren} from 'react'
 import {useEffect, useState} from 'react'
-import {browserSupabase} from '../../contexts/common-contexts'
-import {mutations} from '../../lib/supabase-queries'
-import type {SvgIconProps} from '../icons'
+import {browserSupabase} from '../../../contexts/common-contexts'
+import {mutations} from '../../../lib/supabase-queries'
 import {
   CircleFilledIcon,
   CloseIcon,
   DeleteIcon,
   EditIcon,
-  MoreIcon,
   SyncIcon,
-} from '../icons'
-import {ResourceCard} from '../ResourceCard'
+} from '../../icons'
+import {ResourceCard} from '../../ResourceCard'
+import {ActionMenu, ActionMenuItem} from './ActionMenu'
+import {AddSourceDialog} from '../AddSourceDialog'
 
 export interface SourceCardProps {
   id: string
@@ -33,6 +32,7 @@ type ConnectionStatus = 'error' | 'healthy' | 'disconnected' | 'manual'
 
 export function SourceCard(props: SourceCardProps) {
   const {id, displayName, institution, lastSyncCompletedAt, status} = props
+  const [isActionMenuOpen, setActionMenuOpen] = useState(false)
 
   // action.rename
   const [isRenaming, setIsRenaming] = useState(false)
@@ -40,6 +40,9 @@ export function SourceCard(props: SourceCardProps) {
   // action.sync
   const {trpc} = VeniceProvider.useContext()
   const dispatch = trpc.dispatch.useMutation()
+
+  // action.delete
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   return (
     <ResourceCard
@@ -74,7 +77,9 @@ export function SourceCard(props: SourceCardProps) {
             <span className="text-sm uppercase">{displayName}</span>
           )}
 
-          <ActionMenu>
+          <ActionMenu
+            isOpen={isActionMenuOpen}
+            onOpenChange={setActionMenuOpen}>
             <ActionMenuItem
               icon={EditIcon}
               label="Rename"
@@ -94,17 +99,29 @@ export function SourceCard(props: SourceCardProps) {
             <ActionMenuItem
               icon={DeleteIcon}
               label="Delete"
-              // TODO: open delete confirmation modal
-              onClick={async () => {
-                const result = await browserSupabase
-                  .from('pipelines')
-                  .delete()
-                  .eq('id', id)
-
-                console.log(result)
+              onClick={() => {
+                // need to close dropdown menu first
+                setActionMenuOpen(false)
+                setTimeout(() => setDeleteDialogOpen(true), 0)
               }}
+              // TODO: open delete confirmation modal
+              // onClick={async () => {
+              //   const result = await browserSupabase
+              //     .from('pipelines')
+              //     .delete()
+              //     .eq('id', id)
+
+              //   console.log(result)
+              // }}
             />
           </ActionMenu>
+
+          {/* Needs to keep Dialog root outside ActionMenu otherwise it won't open */}
+          <Dialog.Root
+            open={isDeleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}>
+            <DeleteSourceDialog />
+          </Dialog.Root>
         </div>
         <div className="text-right">
           {status ? <ConnectionStatus status={status} /> : null}
@@ -173,47 +190,6 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
   )
 }
 
-function ActionMenu(props: PropsWithChildren<{}>) {
-  return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="rounded-full p-1 hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75">
-          <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray" />
-        </button>
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          sideOffset={4}
-          align="start"
-          className="min-w-[8rem]">
-          <div className="rounded-lg border border-venice-black-300 bg-venice-black-500 px-1 py-2 text-sm">
-            {props.children}
-          </div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
-  )
-}
-
-interface ActionMenuItemProps {
-  icon: ComponentType<SvgIconProps>
-  label: string
-  onClick?: () => void
-}
-
-function ActionMenuItem(props: ActionMenuItemProps) {
-  const {icon: Icon, label, onClick} = props
-  return (
-    <DropdownMenu.Item
-      className="grid cursor-pointer grid-cols-[auto_1fr] items-center gap-2 rounded-lg px-2 py-1.5 text-offwhite hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75"
-      onClick={onClick}>
-      <Icon className="h-3 w-3 fill-current" />
-      <span>{label}</span>
-    </DropdownMenu.Item>
-  )
-}
-
 function ConnectionStatus({status}: {status: ConnectionStatus}) {
   const {color, text} =
     status === 'disconnected'
@@ -228,31 +204,22 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
   )
 }
 
-export function SourceCardSkeleton() {
+function DeleteSourceDialog() {
   return (
-    <ResourceCard tagColor="venice-gray">
-      <div className="flex grow flex-col justify-between py-2 px-3">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-venice-gray-muted" />
-          <div className="h-4 w-[6rem] rounded bg-venice-gray-muted" />
-          <DisabledActionMenu />
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <p className="inline-flex items-center gap-1">
-            <CircleFilledIcon className="h-2 w-2 fill-current text-venice-gray-muted" />
-            <span className="flex h-2 w-[4rem] rounded-sm bg-venice-gray-muted" />
-          </p>
-          <div className="inline-flex h-2 w-[7rem] rounded-sm bg-venice-gray-muted" />
-        </div>
+    <Dialog.Portal>
+      <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity will-change-auto animate-in fade-in" />
+        <Dialog.Content className="fixed z-50 grid w-full gap-4 bg-venice-black-500 p-6 opacity-100 animate-in fade-in-70 focus:outline-none focus:ring-venice-black-300 sm:max-w-lg sm:rounded-lg">
+          <Dialog.Title>
+            Are you sure you want to delete this connection?
+          </Dialog.Title>
+          <Dialog.Description>
+            Deleting Wells Fargo will: stop syncing its data into Venice keep
+            all previously synced data safely in Venice delete this connection
+            with Wells Fargo
+          </Dialog.Description>
+        </Dialog.Content>
       </div>
-    </ResourceCard>
-  )
-}
-
-function DisabledActionMenu() {
-  return (
-    <button className="pointer-events-none rounded-full p-1">
-      <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray-muted" />
-    </button>
+    </Dialog.Portal>
   )
 }
