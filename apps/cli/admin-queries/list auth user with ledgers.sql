@@ -11,4 +11,3 @@ FROM
 			'reso_postgres')
 			left join pg_user pu on pu.usename = ('usr_' || u.id);
 
-
