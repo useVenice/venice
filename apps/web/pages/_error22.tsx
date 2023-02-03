@@ -37,6 +37,7 @@ CustomErrorComponent.getInitialProps = async (ctx: NextPageContext) => {
     'ctx.res?.statusCode': ctx.res?.statusCode,
     'ctx.err?.statusCode': ctx.err?.statusCode,
     'ctx.err': ctx.err,
+    'ctx,.statusCode': ctx.statusCode,
   })
   // console.log('CustomErrorComponent getInitialProps', contextData)
 
