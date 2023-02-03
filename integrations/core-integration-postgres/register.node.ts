@@ -7,3 +7,6 @@ import {$slonik, $slonikMigrator} from './makePostgresClient'
 
 implementProxyFn($slonik, () => slonik)
 implementProxyFn($slonikMigrator, () => slonikMigrator)
+
+// Is this the right place for it?
+export {DatabaseError} from 'pg'

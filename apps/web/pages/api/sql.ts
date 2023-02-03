@@ -2,7 +2,7 @@ import '@usevenice/app-config/register.node'
 
 import type {NextApiHandler} from 'next'
 
-import {Papa} from '@usevenice/app-config/backendConfig'
+import {Papa, DatabaseError} from '@usevenice/app-config/backendConfig'
 import {R, z} from '@usevenice/util'
 import {runAsAdmin, runAsUser, sql} from '../../server'
 import {respondToCORS} from '../../server/api-helpers'
@@ -41,25 +41,32 @@ export default R.identity<NextApiHandler>(async (req, res) => {
   if (!userId) {
     throw new Error('Invalid api key')
   }
-
-  const result = await runAsUser(userId, async (trxn) =>
-    // @ts-expect-error
-    trxn.query(sql([query])),
-  )
-
-  // const clientPool = await client.getPool()
-
-  // const result = await clientPool.query(client.sql([q]))
-  if (req.query['dl']) {
-    // TODO: Better filename would be nice.
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="sql-${Date.now()}.${format}"`,
+  try {
+    const result = await runAsUser(userId, async (trxn) =>
+      // @ts-expect-error
+      trxn.query(sql([query])),
     )
-  }
-  if (format === 'json') {
-    res.send(result.rows)
-  } else if (format === 'csv') {
-    res.send(Papa.unparse([...result.rows]))
+
+    // const clientPool = await client.getPool()
+
+    // const result = await clientPool.query(client.sql([q]))
+    if (req.query['dl']) {
+      // TODO: Better filename would be nice.
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="sql-${Date.now()}.${format}"`,
+      )
+    }
+    if (format === 'json') {
+      res.send(result.rows)
+    } else if (format === 'csv') {
+      res.send(Papa.unparse([...result.rows]))
+    }
+  } catch (err) {
+    if (err instanceof DatabaseError) {
+      res.status(400).send(err.message)
+      return
+    }
+    throw err
   }
 })
