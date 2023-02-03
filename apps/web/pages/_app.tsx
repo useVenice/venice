@@ -1,8 +1,6 @@
 import './global.css'
 
-import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
-import {QueryClient, QueryClientProvider, Hydrate} from '@tanstack/react-query'
-import {persistQueryClient} from '@tanstack/react-query-persist-client'
+import {Hydrate, QueryClientProvider} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
@@ -17,8 +15,8 @@ import {Loading, UIProvider} from '@usevenice/ui'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-import type {PageProps} from '../server'
 import {queryClient} from '../lib/query-client'
+import type {PageProps} from '../server'
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
