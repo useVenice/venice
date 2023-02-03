@@ -80,16 +80,15 @@ export const mutations = {
         mutationKey: ['updateResource'],
 
         // Consider updating query data directly rather than invalidating
-        // This is not always necessary due to finicky issues with Suapbase realtime
-        // For example two simultaneous subscriptions seems to break it
+        // This is no longer necessary due to supabase realtime sub
         // However due to network sometimes times changes may actually get missed
         // therefore we still need this for now to be sure
         // We should figure out why react query is not deduplicating the requests though
         // They seem to fire one another
-        onSuccess: () =>
-          queryClient.invalidateQueries(
-            getQueryKeys(browserSupabase).pipelines._def,
-          ),
+        // onSuccess: () =>
+        //   queryClient.invalidateQueries(
+        //     getQueryKeys(browserSupabase).pipelines._def,
+        //   ),
       },
     ),
 }
@@ -105,7 +104,7 @@ postgresSubscriptionsAtom.onMount = (setAtom) => {
     subscribePostgresChanges('resource', invalidate),
     // it seems that if we have two subscriptions then we don't get any changes at all
     // but if we have one subscription we do... why is that possibly the case?
-    // subscribePostgresChanges('pipeline', invalidate),
+    subscribePostgresChanges('pipeline', invalidate),
 
     // Institutions do not change very often so no need to monitor closely
   ]
@@ -122,7 +121,8 @@ export function subscribePostgresChanges(
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
   const sub = browserSupabase
-    .channel('any')
+    // Unique channel name otherwise multiple calls to subscribe would overwrite each other
+    .channel(`pg/public.${tableName}.${Date.now()}`)
     .on(
       'postgres_changes',
       {event: '*', schema: 'public', table: tableName},
@@ -134,7 +134,7 @@ export function subscribePostgresChanges(
     .subscribe()
   console.log(`[postgres_changes] Sub public.${tableName}`)
   return {
-    // ...sub,
+    ...sub,
     unsub: () => {
       console.log(`[postgres_changes] Unsub public.${tableName}`)
       void sub.unsubscribe()
