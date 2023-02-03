@@ -1,3 +1,4 @@
+import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import Image from 'next/image'
 import Link from 'next/link'
 import {useMemo} from 'react'
@@ -12,6 +13,7 @@ import {
   SourceCardSkeleton,
 } from '../components/connections'
 import {queries} from '../lib/supabase-queries'
+import {AddSourceDialog} from '../components/connections/AddSourceDialog'
 
 export default function Page() {
   const {isLoading, data: connections = []} = queries.usePipelinesList()
@@ -112,11 +114,17 @@ function SourcesColumn(props: SourcesColumnProps) {
           <span className="text-sm uppercase">Sources</span>
         </h2>
         {sources.length > 0 && (
-          <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
-            <AddFilledIcon />
-          </button>
+          <Dialog.Root>
+            <Dialog.Trigger asChild>
+              <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
+                <AddFilledIcon />
+              </button>
+            </Dialog.Trigger>
+            <AddSourceDialog />
+          </Dialog.Root>
         )}
       </header>
+      {/* TEMPORARY - to remove */}
       <EmptySources />
       {sources.length > 0 ? (
         sources.map((source) => <SourceCard key={source.id} {...source} />)
