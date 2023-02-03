@@ -11,7 +11,7 @@ import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {ResourceCard} from '../components/ResourceCard'
 import {envAtom, modeAtom} from '../contexts/atoms'
-import {NewPipelineInScreen} from '../screens/NewPipelineInScreen'
+import {NewPipelineInScreen} from '../components/NewPipelineInScreen'
 
 export default function PipelinesScreen(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,

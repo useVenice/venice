@@ -7,7 +7,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import type {Id} from '@usevenice/cdk-core'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
-import type {Database} from './supabase.gen'
+import type {Database} from '../supabase/supabase.gen'
 
 // MARK: Queries
 

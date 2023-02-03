@@ -1,6 +1,6 @@
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 // import {commonEnv} from '@usevenice/app-config/commonConfig'
-import type {Database} from '../lib/supabase.gen'
+import type {Database} from '../supabase/supabase.gen'
 
 // https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
 export const browserSupabase = createBrowserSupabaseClient<Database>({

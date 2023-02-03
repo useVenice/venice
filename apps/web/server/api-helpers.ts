@@ -10,7 +10,7 @@ import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import type {UserId} from '@usevenice/cdk-core'
 import type {GetServerSidePropsContext} from 'next'
-import type {Database} from '../lib/supabase.gen'
+import type {Database} from '../supabase/supabase.gen'
 
 export interface PageProps {
   dehydratedState: DehydratedState

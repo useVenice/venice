@@ -7,7 +7,7 @@
     "build:migration": "if [ \"$VERCEL_ENV\" = production ] || [ \"$VERCEL_GIT_COMMIT_REF\" = staging ]; then pnpm --dir ../../ migration up; else echo 'Skip non prod/staging migration'; fi",
     "build:next": "next build",
     "dev": "next dev",
-    "gen:supabase": "supabase gen types typescript --linked --schema public > ./lib/supabase.gen.ts",
+    "gen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
     "start": "next start"
   },
   "dependencies": {
