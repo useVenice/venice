@@ -1,46 +1,18 @@
-import type {SupabaseClient} from '@supabase/supabase-js'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useQuery} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
-import type {Database} from '../lib/supabase.gen'
+import {getQueryKeys, mutations} from '../lib/supabase-queries'
 import {createSSRHelpers} from '../server'
 
-async function getPipelines(supabase: SupabaseClient<Database>) {
-  type Resource = Pick<
-    Database['public']['Tables']['resource']['Row'],
-    'id' | 'display_name' | 'provider_name'
-  > & {institution: {id: string; name: string} | null}
-
-  return supabase
-    .from('pipeline')
-    .select(
-      'id, last_sync_completed_at, source:source_id(id, display_name,provider_name, institution (id, external->name) ), destination:destination_id(id,display_name, provider_name, institution (id, external->name))',
-    )
-    .then(
-      (r) =>
-        r.data?.map(
-          (row) =>
-            row as typeof row & {
-              source: Resource
-              destination: Resource
-            },
-        ) ?? [],
-    )
-}
-
 // Should this be moved to _app getInitialProps?
-export const getServerSideProps = (async (_context) => {
-  const {ssg, getPageProps, queryClient, supabase} = await createSSRHelpers(
-    _context,
-  )
+export const getServerSideProps = (async (ctx) => {
+  const {ssg, getPageProps, queryClient, supabase} = await createSSRHelpers(ctx)
 
   await ssg.health.prefetch(undefined)
-  // Unfortunately have to duplicate queryKey and data fetcher settings...
-  // Quite a bit of boilerplate...
-  await queryClient.prefetchQuery(['pipelines'], () => getPipelines(supabase))
+  await queryClient.prefetchQuery(getQueryKeys(supabase).pipelines.list)
 
   return {props: {...getPageProps(), ids: []}}
 }) satisfies GetServerSideProps
@@ -48,14 +20,10 @@ export const getServerSideProps = (async (_context) => {
 export default function Debug(
   _props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  const {trpc, queryClient} = VeniceProvider.useContext()
+  const {trpc} = VeniceProvider.useContext()
   const res = trpc.health.useQuery(undefined, {enabled: false})
 
-  const res2 = useQuery(['pipelines'], () => getPipelines(browserSupabase), {
-    // enabled: false,
-    // staleTime: 1000,
-    // refetchInterval: 1000,
-  })
+  const res2 = useQuery(getQueryKeys(browserSupabase).pipelines.list)
 
   React.useEffect(() => {
     const sub = browserSupabase
@@ -77,14 +45,7 @@ export default function Debug(
     }
   })
 
-  const updateDisplayName = useMutation(
-    async ({resourceId, newName}: {resourceId: string; newName: string}) =>
-      browserSupabase
-        .from('resource')
-        .update({display_name: newName})
-        .eq('id', resourceId),
-    {onSuccess: () => queryClient.invalidateQueries(['pipelines'])},
-  )
+  const updateResource = mutations.useUpdateResource()
 
   const pipelines = res2.data ?? []
   console.log('pipelines', pipelines)
@@ -101,9 +62,9 @@ export default function Debug(
       </ul>
       <button
         onClick={() => {
-          updateDisplayName.mutate({
-            resourceId: pipelines?.[0]?.source?.id ?? '',
-            newName: new Date().toString(),
+          updateResource.mutate({
+            id: pipelines?.[0]?.source?.id as any,
+            display_name: `new name ${new Date().toString()}`,
           })
         }}>
         Update
