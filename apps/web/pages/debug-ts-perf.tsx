@@ -40,11 +40,12 @@ export const getServerSideProps = (async (_context) => {
     _context,
   )
 
-  // await ssg.health.prefetch(undefined)
+  await ssg.health.prefetch(undefined)
   // Unfortunately have to duplicate queryKey and data fetcher settings...
   // Quite a bit of boilerplate...
   await queryClient.prefetchQuery(getQueryKeys(supabase).pipelines.list)
 
+  getPageProps() // suppress type error
   return {
     props: {
       // ...getPageProps(), // Dehyrated properties is currently causing crash due to undefined not being valid json value...
