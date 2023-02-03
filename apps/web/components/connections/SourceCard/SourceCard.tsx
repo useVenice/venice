@@ -73,7 +73,9 @@ export function SourceCard(props: SourceCardProps) {
               onUpdateSuccess={() => setIsRenaming(false)}
             />
           ) : (
-            <span className="text-sm font-medium uppercase">{displayName}</span>
+            <span className="truncate text-sm font-medium uppercase">
+              {displayName}
+            </span>
           )}
 
           <ActionMenu
