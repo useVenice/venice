@@ -28,3 +28,6 @@ export default function VeniceDocument() {
     </Html>
   )
 }
+
+// NOTE we do not use a custom _error.tsx because 500 errors are being rendered incorrectly
+// as 404, see https://stackoverflow.com/questions/73992633/next-js-getserversideprops-throw-error-results-in-404-instead-of-500
