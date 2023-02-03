@@ -25,16 +25,23 @@ const CustomErrorComponent = (props: ErrorProps) => {
   return <NextErrorComponent {...props} />
 }
 
-CustomErrorComponent.getInitialProps = async (contextData: NextPageContext) => {
+CustomErrorComponent.getInitialProps = async (ctx: NextPageContext) => {
   // console.log('_error getInitialProps typeof window=', typeof window)
   // In case this is running in a serverless function, await this in order to give Sentry
   // time to send the error before the lambda exits
-  await Sentry.captureUnderscoreErrorException(contextData)
+  await Sentry.captureUnderscoreErrorException(ctx)
 
   // This will contain the status code of the response
-  const ret = NextErrorComponent.getInitialProps(contextData)
-  console.log('CustomErrorComponent getInitialProps', ret)
+  const ret = NextErrorComponent.getInitialProps(ctx)
+  console.log('CustomErrorComponent getInitialProps', {
+    'ctx.res?.statusCode': ctx.res?.statusCode,
+    'ctx.err?.statusCode': ctx.err?.statusCode,
+    'ctx.err': ctx.err,
+  })
   // console.log('CustomErrorComponent getInitialProps', contextData)
+
+  // const statusCode = res && res.statusCode ? res.statusCode : err ? err.statusCode : 404;
+
   return ret
 }
 
