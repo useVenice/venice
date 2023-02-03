@@ -1,4 +1,4 @@
-import {ResourceCard} from './ResourceCard'
+import {ResourceCard} from '../ResourceCard'
 
 export function DestinationComingSoonCard() {
   return (

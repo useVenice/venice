@@ -1,6 +1,5 @@
 export {AddDestinationCard} from './AddDestinationCard'
 export {AddSourceCard} from './AddSourceCard'
 export {DestinationComingSoonCard} from './DestinationComingSoonCard'
-export {ResourceCard} from './ResourceCard'
 export {SourceCard, SourceCardSkeleton} from './SourceCard'
 export type {SourceCardProps} from './SourceCard'

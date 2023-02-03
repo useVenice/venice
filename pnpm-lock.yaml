@@ -260,7 +260,6 @@ importers:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
       '@lukemorales/query-key-factory': 1.1.0
-      '@radix-ui/react-dropdown-menu': 1.0.0
       '@sentry/cli': 2.12.0
       '@sentry/nextjs': 7.35.0
       '@supabase/auth-helpers-nextjs': 0.5.4
@@ -309,7 +308,6 @@ importers:
     dependencies:
       '@glideapps/glide-data-grid': 5.2.1_qqgdla4ljul3xmvjycg6ibkvsu
       '@lukemorales/query-key-factory': 1.1.0
-      '@radix-ui/react-dropdown-menu': 1.0.0_5ndqzdd6t4rivxsukjv3i3ak2q
       '@sentry/nextjs': 7.35.0_yrisq2kkn5ai44qx4uoxveaxsy
       '@supabase/auth-helpers-nextjs': 0.5.4_cuu76bm7225ei4sq5x2iikmd2y
       '@supabase/auth-ui-react': 0.2.6_biqbaboplfbrettd7655fr4n2y

@@ -1,5 +1,5 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import {VeniceProvider} from '@usevenice/engine-frontend'
+import {DropdownMenuPrimitive as DropdownMenu} from '@usevenice/ui'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
@@ -16,7 +16,7 @@ import {
   MoreIcon,
   SyncIcon,
 } from '../icons'
-import {ResourceCard} from './ResourceCard'
+import {ResourceCard} from '../ResourceCard'
 
 export interface SourceCardProps {
   id: string

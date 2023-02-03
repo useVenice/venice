@@ -1,17 +1,16 @@
-import {Dialog} from '@usevenice/ui'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useMemo, useState} from 'react'
+import {useMemo} from 'react'
 import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
-import type {SourceCardProps} from '../components/ResourceCard'
+import type {SourceCardProps} from '../components/connections'
 import {
   AddSourceCard,
   DestinationComingSoonCard,
   SourceCard,
   SourceCardSkeleton,
-} from '../components/ResourceCard'
+} from '../components/connections'
 import {queries} from '../lib/supabase-queries'
 
 export default function Page() {
@@ -113,11 +112,12 @@ function SourcesColumn(props: SourcesColumnProps) {
           <span className="text-sm uppercase">Sources</span>
         </h2>
         {sources.length > 0 && (
-          <button className="h-5 w-5 fill-current text-green hover:text-opacity-70">
+          <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
             <AddFilledIcon />
           </button>
         )}
       </header>
+      <EmptySources />
       {sources.length > 0 ? (
         sources.map((source) => <SourceCard key={source.id} {...source} />)
       ) : (
@@ -128,10 +128,9 @@ function SourcesColumn(props: SourcesColumnProps) {
 }
 
 function EmptySources() {
-  const [isDialogOpen, setDialogOpen] = useState(false)
   return (
     <>
-      <AddSourceCard onClick={() => setDialogOpen(true)} />
+      <AddSourceCard />
       <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
         <p>
           Venice has over 12,000 financial data sources to choose from (e.g.
@@ -146,9 +145,6 @@ function EmptySources() {
           </a>
         </p>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-        <div className="h-24 w-24 overflow-hidden rounded bg-white">test</div>
-      </Dialog>
     </>
   )
 }
