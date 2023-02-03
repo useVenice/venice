@@ -20,9 +20,10 @@ import type {NextPageContext} from 'next'
 import type {ErrorProps} from 'next/error'
 import NextErrorComponent from 'next/error'
 
-const CustomErrorComponent = (props: ErrorProps) => (
-  <NextErrorComponent {...props} />
-)
+const CustomErrorComponent = (props: ErrorProps) => {
+  console.log('CustomErrorComponent', props)
+  return <NextErrorComponent {...props} />
+}
 
 CustomErrorComponent.getInitialProps = async (contextData: NextPageContext) => {
   // console.log('_error getInitialProps typeof window=', typeof window)
