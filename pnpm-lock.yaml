@@ -16,12 +16,12 @@ patchedDependencies:
   cac@6.7.12:
     hash: nsfmzcycabp3f3q7kw2uyer77u
     path: patches/cac@6.7.12.patch
-  esbuild-jest@0.5.0:
-    hash: qbdhvjs7sktehqpuch2x3qhd4y
-    path: patches/esbuild-jest@0.5.0.patch
   firebase@9.8.1:
     hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
+  esbuild-jest@0.5.0:
+    hash: qbdhvjs7sktehqpuch2x3qhd4y
+    path: patches/esbuild-jest@0.5.0.patch
   zod@3.20.2:
     hash: 6o55l5jjmzhdiwsempa52rp2y4
     path: patches/zod@3.20.2.patch
@@ -259,6 +259,7 @@ importers:
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
+      '@lukemorales/query-key-factory': 1.1.0
       '@radix-ui/react-dropdown-menu': 1.0.0
       '@sentry/cli': 2.12.0
       '@sentry/nextjs': 7.35.0
@@ -307,6 +308,7 @@ importers:
       webpack: '*'
     dependencies:
       '@glideapps/glide-data-grid': 5.2.1_qqgdla4ljul3xmvjycg6ibkvsu
+      '@lukemorales/query-key-factory': 1.1.0
       '@radix-ui/react-dropdown-menu': 1.0.0_5ndqzdd6t4rivxsukjv3i3ak2q
       '@sentry/nextjs': 7.35.0_yrisq2kkn5ai44qx4uoxveaxsy
       '@supabase/auth-helpers-nextjs': 0.5.4_cuu76bm7225ei4sq5x2iikmd2y
@@ -2794,6 +2796,13 @@ packages:
   /@jsdevtools/ono/7.1.3:
     resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
     dev: true
+
+  /@lukemorales/query-key-factory/1.1.0:
+    resolution: {integrity: sha512-9CjPb7HSsnPfa/urgb0aSzMBjwzKq3maVC9JY0Y8PDYwDRNUqnwudtyDMCAFcKZgssu9xT8QKrpByOq2IlWDWQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@tanstack/query-core': ^4.0.0
+    dev: false
 
   /@motionone/animation/10.14.0:
     resolution: {integrity: sha512-h+1sdyBP8vbxEBW5gPFDnj+m2DCqdlAuf2g6Iafb1lcMnqjsRXWlPw1AXgvUMXmreyhqmPbJqoNfIKdytampRQ==}

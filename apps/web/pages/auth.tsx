@@ -6,7 +6,7 @@ import {RedirectTo} from '../components/common-components'
 import {browserSupabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'
-import {VeniceTheme} from '../styles/themes'
+import {VeniceTheme} from '../themes'
 
 export default function AuthScreen() {
   const [session] = useSession()

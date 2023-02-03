@@ -89,13 +89,13 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
-            <UIProvider>
-              <SessionContextProvider supabaseClient={browserSupabase}>
-                <_VeniceProvider>
+            <SessionContextProvider supabaseClient={browserSupabase}>
+              <_VeniceProvider>
+                <UIProvider>
                   <Component {...pageProps} />
-                </_VeniceProvider>
-              </SessionContextProvider>
-            </UIProvider>
+                </UIProvider>
+              </_VeniceProvider>
+            </SessionContextProvider>
           </Hydrate>
         </QueryClientProvider>
       </QueryParamProvider>

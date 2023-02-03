@@ -14,7 +14,7 @@ import {copyToClipboard} from '../contexts/common-contexts'
 
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
-import {VeniceDataGridTheme} from '../styles/themes'
+import {VeniceDataGridTheme} from '../themes'
 import {useQuery} from '@tanstack/react-query'
 import {LoadingIndicator} from '../components/loading-indicators'
 const DataEditor = dynamic(

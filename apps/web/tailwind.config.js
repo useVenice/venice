@@ -1,7 +1,7 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
-const {VeniceTheme} = require('./styles/themes')
+const {VeniceTheme} = require('./themes')
 
 /**
  * @type {import('tailwindcss').Config}
