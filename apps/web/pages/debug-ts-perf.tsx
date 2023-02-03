@@ -15,7 +15,8 @@ export default function Debug() {
     <ul>
       {res.data.map((p) => (
         <li key={p.id}>
-          {p.id} {p.source?.display_name} {p.source?.institution?.name}
+          {p.id} {p.source?.id} {p.source?.display_name}{' '}
+          {p.source?.institution?.name}
           <button
             onClick={() =>
               updateResource.mutate({
@@ -26,6 +27,8 @@ export default function Debug() {
             {' '}
             Update display name
           </button>
+          <br />
+          <br />
         </li>
       ))}
     </ul>
