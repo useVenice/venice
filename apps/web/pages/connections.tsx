@@ -1,36 +1,40 @@
-import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Dialog} from '@usevenice/ui'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useState} from 'react'
+import {useMemo, useState} from 'react'
 import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
+import type {SourceCardProps} from '../components/ResourceCard'
 import {
   AddSourceCard,
   DestinationComingSoonCard,
   SourceCard,
   SourceCardSkeleton,
 } from '../components/ResourceCard'
-
-interface Source {
-  id: string
-  displayName: string
-  institution?: {
-    name: string
-    logoUrl?: string
-  }
-  lastSyncCompletedAt?: string | null
-  status?: 'error' | 'healthy' | 'disconnected' | 'manual' | null
-}
+import {queries} from '../lib/supabase-queries'
 
 export default function Page() {
-  const {trpc, userId} = VeniceProvider.useContext()
-  const {
-    isLoading,
-    // error,
-    data: sources,
-  } = trpc.listResources.useQuery({}, {enabled: !!userId})
+  const {isLoading, data: connections = []} = queries.usePipelinesList()
+  const sources = useMemo(
+    () =>
+      connections.reduce<SourceCardProps[]>((sources, c) => {
+        const s = c.source
+        if (s == null) {
+          return sources
+        }
+        const source: SourceCardProps = {
+          id: s.id,
+          // TODO: fix backend
+          displayName: s.display_name ?? s.displayName ?? '',
+          institution: s.institution,
+          lastSyncCompletedAt: c.last_sync_completed_at,
+          status: s.status,
+        }
+        return [...sources, source]
+      }, []),
+    [connections],
+  )
 
   return (
     <PageLayout title="Connections">
@@ -40,7 +44,7 @@ export default function Page() {
           {isLoading ? (
             <LoadingSourcesColumn />
           ) : (
-            <SourcesColumn sources={sources ?? []} />
+            <SourcesColumn sources={sources} />
           )}
 
           <VeniceDatabaseSection />
@@ -90,7 +94,7 @@ function LoadingSourcesColumn() {
 }
 
 interface SourcesColumnProps {
-  sources: Source[]
+  sources: SourceCardProps[]
 }
 
 function SourcesColumn(props: SourcesColumnProps) {

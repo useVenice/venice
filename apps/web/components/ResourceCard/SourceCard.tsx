@@ -6,6 +6,7 @@ import Image from 'next/image'
 import type {ComponentType, PropsWithChildren} from 'react'
 import {useEffect, useState} from 'react'
 import {browserSupabase} from '../../contexts/common-contexts'
+import {mutations} from '../../lib/supabase-queries'
 import type {SvgIconProps} from '../icons'
 import {
   CircleFilledIcon,
@@ -21,7 +22,7 @@ export interface SourceCardProps {
   id: string
   displayName: string
   institution?: {
-    name: string
+    name?: string
     logoUrl?: string
   }
   lastSyncCompletedAt?: string | null
@@ -67,7 +68,6 @@ export function SourceCard(props: SourceCardProps) {
               resourceId={id}
               displayName={displayName}
               onCancel={() => setIsRenaming(false)}
-              // TODO invalidate query
               onUpdateSuccess={() => setIsRenaming(false)}
             />
           ) : (
@@ -132,6 +132,7 @@ interface EditingDisplayNameProps {
 function EditingDisplayName(props: EditingDisplayNameProps) {
   const {onCancel, onUpdateSuccess, resourceId} = props
   const [displayName, setDisplayName] = useState(props.displayName)
+  const updateResource = mutations.useUpdateResource()
 
   useEffect(() => {
     async function handleKeyUp(event: KeyboardEvent) {
@@ -140,10 +141,11 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
           onCancel()
           break
         case 'Enter':
-          await browserSupabase
-            .from('resource')
-            .update({display_name: displayName})
-            .eq('id', resourceId)
+          await updateResource.mutateAsync({
+            // @ts-expect-error fix query or mutation type
+            id: resourceId,
+            display_name: displayName,
+          })
           onUpdateSuccess()
           break
       }
@@ -153,7 +155,7 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
     return () => {
       document.removeEventListener('keyup', handleKeyUp)
     }
-  }, [displayName, onCancel, onUpdateSuccess, resourceId])
+  }, [displayName, onCancel, onUpdateSuccess, resourceId, updateResource])
 
   return (
     <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1">
