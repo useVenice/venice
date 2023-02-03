@@ -5,7 +5,7 @@ import {createSSRHelpers} from '../server'
 
 export default function Debug() {
   const res = queries.usePipelinesList()
-  console.log('data', res.data?.[0])
+  console.log('pipelines', res.data)
   const updateResource = mutations.useUpdateResource()
 
   if (!res.data) {
@@ -15,7 +15,8 @@ export default function Debug() {
     <ul>
       {res.data.map((p) => (
         <li key={p.id}>
-          {p.id} {p.source?.display_name} {p.source?.institution?.name}
+          {p.id} {p.source?.id} {p.source?.display_name}{' '}
+          {p.source?.institution?.name}
           <button
             onClick={() =>
               updateResource.mutate({
@@ -26,6 +27,8 @@ export default function Debug() {
             {' '}
             Update display name
           </button>
+          <br />
+          <br />
         </li>
       ))}
     </ul>
@@ -37,10 +40,15 @@ export const getServerSideProps = (async (_context) => {
     _context,
   )
 
-  await ssg.health.prefetch(undefined)
+  // await ssg.health.prefetch(undefined)
   // Unfortunately have to duplicate queryKey and data fetcher settings...
   // Quite a bit of boilerplate...
   await queryClient.prefetchQuery(getQueryKeys(supabase).pipelines.list)
 
-  return {props: {...getPageProps(), ids: []}}
+  return {
+    props: {
+      // ...getPageProps(), // Dehyrated properties is currently causing crash due to undefined not being valid json value...
+      ids: [],
+    },
+  }
 }) satisfies GetServerSideProps
