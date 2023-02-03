@@ -1,11 +1,15 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import {VeniceProvider} from '@usevenice/engine-frontend'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import type {ComponentType} from 'react'
+import type {ComponentType, PropsWithChildren} from 'react'
+import {useEffect, useState} from 'react'
+import {browserSupabase} from '../../contexts/common-contexts'
 import type {SvgIconProps} from '../icons'
 import {
   CircleFilledIcon,
+  CloseIcon,
   DeleteIcon,
   EditIcon,
   MoreIcon,
@@ -14,6 +18,7 @@ import {
 import {ResourceCard} from './ResourceCard'
 
 export interface SourceCardProps {
+  id: string
   displayName: string
   institution?: {
     name: string
@@ -25,23 +30,16 @@ export interface SourceCardProps {
 
 type ConnectionStatus = 'error' | 'healthy' | 'disconnected' | 'manual'
 
-// displayName : "Postgres"
-// envName : null
-// externalId : "<string>"
-// id : "<string>"
-// lastSyncCompletedAt : "2023-01-29T11:14:04.171Z"
-// status : "healthy"
-// syncInProgress : true
-
-// institution? : {
-//   id : "ins_plaid_ins_13"
-//   loginUrl: "https://www.pnc.com"
-//   logoUrl: "data:image/png;base64,..."
-//   name : "PNC"
-// }
-
 export function SourceCard(props: SourceCardProps) {
-  const {displayName, institution, lastSyncCompletedAt, status} = props
+  const {id, displayName, institution, lastSyncCompletedAt, status} = props
+
+  // action.rename
+  const [isRenaming, setIsRenaming] = useState(false)
+
+  // action.sync
+  const {trpc} = VeniceProvider.useContext()
+  const dispatch = trpc.dispatch.useMutation()
+
   return (
     <ResourceCard
       tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
@@ -63,8 +61,50 @@ export function SourceCard(props: SourceCardProps) {
               aria-hidden="true"
             />
           )}
-          <span className="text-sm uppercase">{displayName}</span>
-          <ActionMenu />
+
+          {isRenaming ? (
+            <EditingDisplayName
+              resourceId={id}
+              displayName={displayName}
+              onCancel={() => setIsRenaming(false)}
+              // TODO invalidate query
+              onUpdateSuccess={() => setIsRenaming(false)}
+            />
+          ) : (
+            <span className="text-sm uppercase">{displayName}</span>
+          )}
+
+          <ActionMenu>
+            <ActionMenuItem
+              icon={EditIcon}
+              label="Rename"
+              onClick={() => setIsRenaming(true)}
+            />
+            <ActionMenuItem
+              icon={SyncIcon}
+              label="Sync"
+              // TODO: show sync in progress and result (success/failure)
+              onClick={() =>
+                dispatch.mutate({
+                  name: 'resource/sync-requested',
+                  data: {resourceId: id},
+                })
+              }
+            />
+            <ActionMenuItem
+              icon={DeleteIcon}
+              label="Delete"
+              // TODO: open delete confirmation modal
+              onClick={async () => {
+                const result = await browserSupabase
+                  .from('pipelines')
+                  .delete()
+                  .eq('id', id)
+
+                console.log(result)
+              }}
+            />
+          </ActionMenu>
         </div>
         <div className="text-right">
           {status ? <ConnectionStatus status={status} /> : null}
@@ -82,14 +122,56 @@ export function SourceCard(props: SourceCardProps) {
   )
 }
 
-function ActionMenu(props: {disabled?: boolean}) {
-  if (props.disabled) {
-    return (
-      <button className="pointer-events-none rounded-full p-1">
-        <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray-muted" />
+interface EditingDisplayNameProps {
+  displayName: string
+  onCancel: () => void
+  onUpdateSuccess: () => void
+  resourceId: string
+}
+
+function EditingDisplayName(props: EditingDisplayNameProps) {
+  const {onCancel, onUpdateSuccess, resourceId} = props
+  const [displayName, setDisplayName] = useState(props.displayName)
+
+  useEffect(() => {
+    async function handleKeyUp(event: KeyboardEvent) {
+      switch (event.key) {
+        case 'Escape':
+          onCancel()
+          break
+        case 'Enter':
+          await browserSupabase
+            .from('resource')
+            .update({display_name: displayName})
+            .eq('id', resourceId)
+          onUpdateSuccess()
+          break
+      }
+    }
+
+    document.addEventListener('keyup', handleKeyUp)
+    return () => {
+      document.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [displayName, onCancel, onUpdateSuccess, resourceId])
+
+  return (
+    <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1">
+      <input
+        value={displayName}
+        onChange={(event) => setDisplayName(event.target.value)}
+        className="grow appearance-none bg-transparent text-sm text-offwhite focus:outline-none"
+      />
+      <button
+        className="h-4 w-4 shrink-0 rounded-full fill-current p-1 text-white hover:bg-offwhite/20 focus:outline-none focus-visible:bg-offwhite/20"
+        onClick={onCancel}>
+        <CloseIcon />
       </button>
-    )
-  }
+    </div>
+  )
+}
+
+function ActionMenu(props: PropsWithChildren<{}>) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -104,9 +186,7 @@ function ActionMenu(props: {disabled?: boolean}) {
           align="start"
           className="min-w-[8rem]">
           <div className="rounded-lg border border-venice-black-300 bg-venice-black-500 px-1 py-2 text-sm">
-            <ActionMenuItem icon={EditIcon} label="Rename" />
-            <ActionMenuItem icon={SyncIcon} label="Sync" />
-            <ActionMenuItem icon={DeleteIcon} label="Delete" />
+            {props.children}
           </div>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
@@ -117,12 +197,15 @@ function ActionMenu(props: {disabled?: boolean}) {
 interface ActionMenuItemProps {
   icon: ComponentType<SvgIconProps>
   label: string
+  onClick?: () => void
 }
 
 function ActionMenuItem(props: ActionMenuItemProps) {
-  const {icon: Icon, label} = props
+  const {icon: Icon, label, onClick} = props
   return (
-    <DropdownMenu.Item className="grid cursor-pointer grid-cols-[auto_1fr] items-center gap-2 rounded-lg px-2 py-1.5 text-offwhite hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75">
+    <DropdownMenu.Item
+      className="grid cursor-pointer grid-cols-[auto_1fr] items-center gap-2 rounded-lg px-2 py-1.5 text-offwhite hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75"
+      onClick={onClick}>
       <Icon className="h-3 w-3 fill-current" />
       <span>{label}</span>
     </DropdownMenu.Item>
@@ -150,7 +233,7 @@ export function SourceCardSkeleton() {
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-venice-gray-muted" />
           <div className="h-4 w-[6rem] rounded bg-venice-gray-muted" />
-          <ActionMenu disabled />
+          <DisabledActionMenu />
         </div>
         <div className="flex flex-col items-end gap-2">
           <p className="inline-flex items-center gap-1">
@@ -161,5 +244,13 @@ export function SourceCardSkeleton() {
         </div>
       </div>
     </ResourceCard>
+  )
+}
+
+function DisabledActionMenu() {
+  return (
+    <button className="pointer-events-none rounded-full p-1">
+      <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray-muted" />
+    </button>
   )
 }

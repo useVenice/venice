@@ -1,6 +1,7 @@
 export * from './AddFilledIcon'
 export * from './ArrowLeftRightIcon'
 export * from './CircleFilledIcon'
+export * from './CloseIcon'
 export * from './DatabaseIcon'
 export * from './DeleteIcon'
 export * from './DocsIcon'
