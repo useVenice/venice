@@ -39,8 +39,10 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     `),
   )
   if (!userId) {
-    throw new Error('Invalid api key')
+    res.status(401).send('Invalid api key')
+    return
   }
+  console.log('[sql] Will run query for user', {query, userId})
   try {
     const result = await runAsUser(userId, async (trxn) =>
       // @ts-expect-error
