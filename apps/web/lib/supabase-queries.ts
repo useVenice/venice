@@ -4,7 +4,10 @@ import type {
   SupabaseClient,
 } from '@supabase/supabase-js'
 import {useMutation, useQuery} from '@tanstack/react-query'
-import type {Id} from '@usevenice/cdk-core'
+import {PROVIDERS} from '@usevenice/app-config/env'
+import type {AnySyncProvider, Id} from '@usevenice/cdk-core'
+import {zStandard} from '@usevenice/cdk-core'
+import {R} from '@usevenice/util'
 import {atom, useAtom} from 'jotai'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
@@ -12,38 +15,65 @@ import type {Database} from '../supabase/supabase.gen'
 import {queryClient} from './query-client'
 
 // MARK: Queries
+const providerMap = R.mapToObj(PROVIDERS, (p) => [
+  p.name as string,
+  p as AnySyncProvider,
+])
+type Institution = Pick<
+  Database['public']['Tables']['institution']['Row'],
+  'id' | 'external' | 'provider_name' | 'standard'
+>
+type Resource = Pick<
+  Database['public']['Tables']['resource']['Row'],
+  'id' | 'display_name' | 'provider_name' | 'settings'
+> & {institution: Institution | null}
+
+// TODO: thsi should be done server side...
+function parseResource(reso: Resource | null | undefined) {
+  if (!reso) {
+    return reso
+  }
+  const mappers = providerMap[reso.provider_name]?.standardMappers
+  const standardReso = zStandard.resource
+    .omit({id: true})
+    .nullish()
+    .parse(mappers?.resource?.(reso.settings))
+  const standardIns = zStandard.institution
+    .omit({id: true})
+    .nullish()
+    .parse(
+      reso.institution && mappers?.institution?.(reso.institution?.external),
+    )
+
+  return {
+    ...reso,
+    ...standardReso,
+    institution: {...reso.institution, ...standardIns},
+  }
+}
 
 export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
   createQueryKeyStore({
     pipelines: {
       list: {
         queryKey: null,
-        queryFn: () => {
-          type Resource = Pick<
-            Database['public']['Tables']['resource']['Row'],
-            'id' | 'display_name' | 'provider_name'
-          > & {institution: {id: string; name: string} | null}
-
-          return supabase
+        queryFn: () =>
+          supabase
             .from('pipeline')
             .select(
               `id,
                last_sync_completed_at,
-               source:source_id (id, display_name, provider_name, institution (id)),
-               destination:destination_id (id, display_name, provider_name, institution (id))`,
+               source:source_id (id, display_name, provider_name, settings, institution (id, external, standard)),
+               destination:destination_id (id, display_name, provider_name, settings, institution (id, external, standard))`,
             )
             .then(
               (r) =>
-                r.data?.map(
-                  (row) =>
-                    // Consider enforcing pipeline must have source & destination statically
-                    row as typeof row & {
-                      source: Resource | null
-                      destination: Resource | null
-                    },
-                ) ?? [],
-            )
-        },
+                r.data?.map((r) => ({
+                  ...r,
+                  source: parseResource(r.source as Resource | null),
+                  destination: parseResource(r.destination as Resource | null),
+                })) ?? [],
+            ),
       },
     },
   })
