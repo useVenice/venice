@@ -1,6 +1,6 @@
 import type {UserId} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
-import type { InferGetServerSidePropsType} from 'next';
+import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -68,7 +68,7 @@ export default function ConnectionsPage(
           <VeniceDatabaseSection />
 
           {/* destinations column */}
-          <section className="flex w-[20rem] shrink-0 flex-col gap-4">
+          <section className="flex w-[24rem] shrink-0 flex-col gap-4">
             <header>
               <h2 className="flex grow items-center gap-2">
                 <Image
@@ -92,7 +92,7 @@ export default function ConnectionsPage(
 
 function LoadingSourcesColumn() {
   return (
-    <section className="flex w-[20rem] shrink-0 flex-col gap-4">
+    <section className="flex w-[24rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
         <h2 className="flex grow items-center gap-2">
           <Image
@@ -119,7 +119,7 @@ interface ConnectionsColumnProps {
 function ConnectionsColumn(props: ConnectionsColumnProps) {
   const {connections} = props
   return (
-    <section className="flex w-[20rem] shrink-0 flex-col gap-4">
+    <section className="flex w-[24rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
         <h2 className="flex grow items-center gap-2">
           <Image
