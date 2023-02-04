@@ -364,7 +364,10 @@ export const makeSyncEngine = <
         return res.response?.body
       }),
     dispatch: authedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
-      if (input.name !== 'resource/sync-requested') {
+      if (
+        input.name !== 'resource/sync-requested' &&
+        input.name !== 'pipeline/sync-requested'
+      ) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: `Event name not supported ${input.name}`,

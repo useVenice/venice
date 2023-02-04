@@ -90,8 +90,8 @@ export function ConnectionCard(props: ConnectionCardProps) {
               // TODO: show sync in progress and result (success/failure)
               onClick={() =>
                 dispatch.mutate({
-                  name: 'resource/sync-requested',
-                  data: {resourceId: id},
+                  name: 'pipeline/sync-requested',
+                  data: {pipelineId: id},
                 })
               }
             />
