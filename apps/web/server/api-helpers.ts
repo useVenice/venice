@@ -13,7 +13,7 @@ import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
 export interface PageProps {
-  dehydratedState: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
+  dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
 export async function createSSRHelpers(context: GetServerSidePropsContext) {

@@ -73,6 +73,7 @@ export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
                source:source_id (id, display_name, provider_name, settings, institution (id, external, standard)),
                destination:destination_id (id, display_name, provider_name, settings, institution (id, external, standard))`,
             )
+            // .or('source_id')
             .then(
               (r) =>
                 r.data?.map((r) => ({

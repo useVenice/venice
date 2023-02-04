@@ -59,7 +59,11 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
 
       <QueryParamProvider adapter={NextAdapter}>
         <QueryClientProvider client={browserQueryClient}>
-          <Hydrate state={superjson.deserialize(pageProps.dehydratedState)}>
+          <Hydrate
+            state={
+              pageProps.dehydratedState &&
+              superjson.deserialize(pageProps.dehydratedState)
+            }>
             <SessionContextProvider supabaseClient={browserSupabase}>
               <_VeniceProvider>
                 <UIProvider>
