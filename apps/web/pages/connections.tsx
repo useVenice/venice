@@ -124,8 +124,6 @@ function SourcesColumn(props: SourcesColumnProps) {
           </Dialog.Root>
         )}
       </header>
-      {/* TEMPORARY - to remove */}
-      <EmptySources />
       {sources.length > 0 ? (
         sources.map((source) => <SourceCard key={source.id} {...source} />)
       ) : (
