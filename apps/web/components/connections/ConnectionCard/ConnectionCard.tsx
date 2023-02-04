@@ -1,10 +1,10 @@
-import type {ZStandard} from '@usevenice/cdk-core'
+import type {Id, ZStandard} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {browserSupabase} from '../../../contexts/common-contexts'
 import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
@@ -27,7 +27,7 @@ type ConnectionStatus = Connection['resource']['status']
 export function ConnectionCard(props: ConnectionCardProps) {
   const {
     id,
-    resource: {displayName, institution, status},
+    resource: {id: resourceId, displayName, institution, status},
     lastSyncCompletedAt,
   } = props.connection
 
@@ -65,13 +65,15 @@ export function ConnectionCard(props: ConnectionCardProps) {
 
           {isRenaming ? (
             <EditingDisplayName
-              resourceId={id}
+              resourceId={resourceId}
               displayName={displayName ?? ''}
               onCancel={() => setIsRenaming(false)}
               onUpdateSuccess={() => setIsRenaming(false)}
             />
           ) : (
-            <span className="truncate text-sm font-medium uppercase">
+            <span
+              className="truncate text-sm font-medium uppercase"
+              onClick={() => setIsRenaming(true)}>
               {displayName}
             </span>
           )}
@@ -113,8 +115,8 @@ export function ConnectionCard(props: ConnectionCardProps) {
           <Dialog.Root
             open={isDeleteDialogOpen}
             onOpenChange={setDeleteDialogOpen}>
-            <DeleteSourceDialog
-              resourceId={id}
+            <DeleteConnectionDialog
+              resourceId={resourceId}
               name={displayName}
               institution={institution}
               onCancel={() => setDeleteDialogOpen(false)}
@@ -141,7 +143,7 @@ interface EditingDisplayNameProps {
   displayName: string
   onCancel: () => void
   onUpdateSuccess: () => void
-  resourceId: string
+  resourceId: Id['reso']
 }
 
 function EditingDisplayName(props: EditingDisplayNameProps) {
@@ -158,7 +160,6 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
         case 'Enter':
           // TODO show loading state on mutation.isLoading
           await updateResource.mutateAsync({
-            // @ts-expect-error fix query or mutation type
             id: resourceId,
             display_name: displayName,
           })
@@ -173,9 +174,14 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
     }
   }, [displayName, onCancel, onUpdateSuccess, resourceId, updateResource])
 
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [inputRef])
   return (
     <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1">
       <input
+        ref={inputRef}
         value={displayName}
         onChange={(event) => setDisplayName(event.target.value)}
         className="grow appearance-none bg-transparent text-sm text-offwhite focus:outline-none"
@@ -203,14 +209,14 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
   )
 }
 
-interface DeleteSourceDialogProps {
+interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
   name?: Connection['resource']['displayName']
   onCancel: () => void
-  resourceId: string
+  resourceId: Id['reso']
 }
 
-function DeleteSourceDialog(props: DeleteSourceDialogProps) {
+function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
   const {institution, name, onCancel, resourceId} = props
   return (
     <Dialog.Portal>

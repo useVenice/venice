@@ -51,6 +51,10 @@ function parseResource(_reso: Resource | null | undefined) {
   return {
     ...reso,
     ...standardReso,
+    id: reso.id as Id['reso'],
+    displayName:
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      reso.displayName || standardReso?.displayName || standardIns?.name || '',
     institution: standardIns
       ? {...standardIns, id: reso?.institution?.id as Id['ins']}
       : null,
@@ -80,7 +84,7 @@ function listConnections(supabase: SupabaseClient<Database>) {
             : null
           return {
             ...camelcaseKeys(pipe),
-            id: pipe.id, // Rename to pipelineId
+            id: pipe.id as Id['pipe'], // Rename to pipelineId
             // isSyncing: boolean ADD me
             type,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
