@@ -27,9 +27,9 @@ export default function Page() {
         const source: SourceCardProps = {
           id: s.id,
           // TODO: fix backend
-          displayName: s.display_name ?? s.displayName ?? '',
+          displayName: s.displayName ?? '',
           institution: s.institution,
-          lastSyncCompletedAt: c.last_sync_completed_at,
+          lastSyncCompletedAt: c.lastSyncCompletedAt,
           status: s.status,
         }
         return [...sources, source]

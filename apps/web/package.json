@@ -28,6 +28,7 @@
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
+    "camelcase-keys": "8.0.2",
     "clsx": "^1.2.1",
     "cookies-next": "2.1.1",
     "date-fns": "^2.29.3",

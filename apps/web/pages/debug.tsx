@@ -56,7 +56,7 @@ export default function Debug(
       <ul>
         {pipelines.map((p) => (
           <li key={p.id}>
-            {p.source?.id} {p.source?.display_name}
+            {p.source?.id} {p.source?.displayName}
           </li>
         ))}
       </ul>

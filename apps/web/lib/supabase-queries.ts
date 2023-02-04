@@ -14,6 +14,8 @@ import {browserSupabase} from '../contexts/common-contexts'
 import type {Database} from '../supabase/supabase.gen'
 import {queryClient} from './query-client'
 
+import camelcaseKeys from 'camelcase-keys'
+
 // MARK: Queries
 const providerMap = R.mapToObj(PROVIDERS, (p) => [
   p.name as string,
@@ -29,11 +31,12 @@ type Resource = Pick<
 > & {institution: Institution | null}
 
 // TODO: thsi should be done server side...
-function parseResource(reso: Resource | null | undefined) {
-  if (!reso) {
-    return reso
+function parseResource(_reso: Resource | null | undefined) {
+  if (!_reso) {
+    return _reso
   }
-  const mappers = providerMap[reso.provider_name]?.standardMappers
+  const reso = camelcaseKeys(_reso)
+  const mappers = providerMap[reso.providerName]?.standardMappers
   const standardReso = zStandard.resource
     .omit({id: true})
     .nullish()
@@ -52,6 +55,10 @@ function parseResource(reso: Resource | null | undefined) {
   }
 }
 
+// TODO: Evaluate putting the whole thing into trpc and run via server supabase
+// Would enable better re-use (hello CLI! Also public API) and also eliminiate the need to have separate
+// queries / mutations queryKey management. Although it is annoying that we'd essentially be adding
+// an extra proxy when we could just hit Supabase directly in the first place...
 export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
   createQueryKeyStore({
     pipelines: {
@@ -69,7 +76,7 @@ export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
             .then(
               (r) =>
                 r.data?.map((r) => ({
-                  ...r,
+                  ...camelcaseKeys(r),
                   source: parseResource(r.source as Resource | null),
                   destination: parseResource(r.destination as Resource | null),
                 })) ?? [],
@@ -128,6 +135,7 @@ export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
 postgresSubscriptionsAtom.onMount = (setAtom) => {
   const invalidate = () =>
     queryClient.invalidateQueries(getQueryKeys(browserSupabase).pipelines._def)
+
   // Consider updating query data directly rather than invalidating for things like sync status updates
   const subs = [
     subscribePostgresChanges('resource', invalidate),
