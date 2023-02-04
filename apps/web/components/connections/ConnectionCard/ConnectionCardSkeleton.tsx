@@ -1,7 +1,7 @@
 import {CircleFilledIcon, MoreIcon} from '../../icons'
 import {ResourceCard} from '../../ResourceCard'
 
-export function SourceCardSkeleton() {
+export function ConnectionCardSkeleton() {
   return (
     <ResourceCard tagColor="venice-gray">
       <div className="flex grow animate-pulse flex-col justify-between py-2 px-3">

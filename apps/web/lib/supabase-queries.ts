@@ -51,9 +51,52 @@ function parseResource(_reso: Resource | null | undefined) {
   return {
     ...reso,
     ...standardReso,
-    institution: {...reso.institution, ...standardIns},
+    institution: standardIns
+      ? {...standardIns, id: reso?.institution?.id as Id['ins']}
+      : null,
   }
 }
+
+type ConnType = 'source' | 'destination'
+
+function listConnections(supabase: SupabaseClient<Database>) {
+  return supabase
+    .from('pipeline')
+    .select(
+      `id,
+       last_sync_completed_at,
+       source_id,
+       destination_id,
+       source:source_id (id, display_name, provider_name, settings, institution (id, external, standard)),
+       destination:destination_id (id, display_name, provider_name, settings, institution (id, external, standard))`,
+    )
+    .then((res) =>
+      (res.data ?? [])
+        .map(({source, destination, source_id, destination_id, ...pipe}) => {
+          const type: ConnType | null = source_id?.startsWith('reso_postgres')
+            ? 'destination'
+            : destination_id?.startsWith('reso_postgres')
+            ? 'source'
+            : null
+          return {
+            ...camelcaseKeys(pipe),
+            id: pipe.id, // Rename to pipelineId
+            // isSyncing: boolean ADD me
+            type,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            resource: parseResource(
+              (type === 'source'
+                ? source
+                : type === 'destination'
+                ? destination
+                : null) as Resource | null,
+            )!,
+          }
+        })
+        .filter((c) => !!c.resource),
+    )
+}
+export type Connection = Awaited<ReturnType<typeof listConnections>>[number]
 
 // TODO: Evaluate putting the whole thing into trpc and run via server supabase
 // Would enable better re-use (hello CLI! Also public API) and also eliminiate the need to have separate
@@ -61,36 +104,26 @@ function parseResource(_reso: Resource | null | undefined) {
 // an extra proxy when we could just hit Supabase directly in the first place...
 export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
   createQueryKeyStore({
-    pipelines: {
+    connections: {
       list: {
         queryKey: null,
         queryFn: () =>
-          supabase
-            .from('pipeline')
-            .select(
-              `id,
-               last_sync_completed_at,
-               source:source_id (id, display_name, provider_name, settings, institution (id, external, standard)),
-               destination:destination_id (id, display_name, provider_name, settings, institution (id, external, standard))`,
-            )
-            // .or('source_id')
-            .then(
-              (r) =>
-                r.data?.map((r) => ({
-                  ...camelcaseKeys(r),
-                  source: parseResource(r.source as Resource | null),
-                  destination: parseResource(r.destination as Resource | null),
-                })) ?? [],
-            ),
+          listConnections(supabase).then(
+            (connections) =>
+              R.groupBy(connections, (c) => c.type ?? '') as unknown as Record<
+                ConnType,
+                Connection[] | undefined
+              >,
+          ),
       },
     },
   })
 
 export const queries = {
-  usePipelinesList: () => {
+  useConnectionsList: () => {
     useAtom(postgresSubscriptionsAtom)
     return useQuery({
-      ...getQueryKeys(browserSupabase).pipelines.list,
+      ...getQueryKeys(browserSupabase).connections.list,
       // Never stale because we explicitly invalidate using supabase realtime
       staleTime: Number.POSITIVE_INFINITY,
     })
@@ -136,7 +169,7 @@ export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
 postgresSubscriptionsAtom.onMount = (setAtom) => {
   const invalidate = () =>
     browserQueryClient.invalidateQueries(
-      getQueryKeys(browserSupabase).pipelines._def,
+      getQueryKeys(browserSupabase).connections._def,
     )
 
   // Consider updating query data directly rather than invalidating for things like sync status updates

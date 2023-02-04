@@ -1,20 +1,19 @@
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useMemo} from 'react'
+import {
+  AddSourceCard,
+  ConnectionCard,
+  ConnectionCardSkeleton,
+  DestinationComingSoonCard,
+} from '../components/connections'
+import {AddSourceDialog} from '../components/connections/AddSourceDialog'
 import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
-import type {SourceCardProps} from '../components/connections'
-import {
-  AddSourceCard,
-  DestinationComingSoonCard,
-  SourceCard,
-  SourceCardSkeleton,
-} from '../components/connections'
+import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
-import {AddSourceDialog} from '../components/connections/AddSourceDialog'
-import {GetServerSideProps} from 'next'
 import {createSSRHelpers} from '../server'
 
 // Should this be moved to _app getInitialProps?
@@ -25,7 +24,7 @@ export const getServerSideProps = (async (context) => {
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}
   }
-  await queryClient.prefetchQuery(getQueryKeys(supabase).pipelines.list)
+  await queryClient.prefetchQuery(getQueryKeys(supabase).connections.list)
   // console.log('prefetched pipelines', res, getPageProps())
 
   // const {ensureDefaultLedger} = await import('../server')
@@ -42,36 +41,17 @@ export const getServerSideProps = (async (context) => {
 }) satisfies GetServerSideProps
 
 export default function ConnectionsPage() {
-  const {isLoading, data: connections = []} = queries.usePipelinesList()
-  const sources = useMemo(
-    () =>
-      connections.reduce<SourceCardProps[]>((sources, c) => {
-        const s = c.source
-        if (s == null) {
-          return sources
-        }
-        const source: SourceCardProps = {
-          id: s.id,
-          // TODO: fix backend
-          displayName: s.displayName ?? '',
-          institution: s.institution,
-          lastSyncCompletedAt: c.lastSyncCompletedAt,
-          status: s.status,
-        }
-        return [...sources, source]
-      }, []),
-    [connections],
-  )
+  const res = queries.useConnectionsList()
 
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
         <PageHeader title={['Connections']} />
         <div className="flex gap-24 overflow-y-auto p-16">
-          {isLoading ? (
+          {res.isLoading ? (
             <LoadingSourcesColumn />
           ) : (
-            <SourcesColumn sources={sources} />
+            <ConnectionsColumn connections={res.data?.source ?? []} />
           )}
 
           <VeniceDatabaseSection />
@@ -114,18 +94,18 @@ function LoadingSourcesColumn() {
           <span className="text-sm uppercase">Sources</span>
         </h2>
       </header>
-      <SourceCardSkeleton />
-      <SourceCardSkeleton />
+      <ConnectionCardSkeleton />
+      <ConnectionCardSkeleton />
     </section>
   )
 }
 
-interface SourcesColumnProps {
-  sources: SourceCardProps[]
+interface ConnectionsColumnProps {
+  connections: Connection[]
 }
 
-function SourcesColumn(props: SourcesColumnProps) {
-  const {sources} = props
+function ConnectionsColumn(props: ConnectionsColumnProps) {
+  const {connections} = props
   return (
     <section className="flex w-[20rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
@@ -139,7 +119,7 @@ function SourcesColumn(props: SourcesColumnProps) {
           />
           <span className="text-sm uppercase">Sources</span>
         </h2>
-        {sources.length > 0 && (
+        {connections.length > 0 && (
           <Dialog.Root>
             <Dialog.Trigger asChild>
               <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
@@ -150,8 +130,10 @@ function SourcesColumn(props: SourcesColumnProps) {
           </Dialog.Root>
         )}
       </header>
-      {sources.length > 0 ? (
-        sources.map((source) => <SourceCard key={source.id} {...source} />)
+      {connections.length > 0 ? (
+        connections.map((source) => (
+          <ConnectionCard key={source.id} connection={source} />
+        ))
       ) : (
         <EmptySources />
       )}

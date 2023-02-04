@@ -1,3 +1,4 @@
+import type {ZStandard} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import clsx from 'clsx'
@@ -5,6 +6,7 @@ import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
 import {useEffect, useState} from 'react'
 import {browserSupabase} from '../../../contexts/common-contexts'
+import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
 import {
   CircleFilledIcon,
@@ -16,21 +18,18 @@ import {
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 
-export interface SourceCardProps {
-  id: string
-  displayName: string
-  institution?: {
-    name?: string
-    logoUrl?: string
-  }
-  lastSyncCompletedAt?: string | null
-  status?: ConnectionStatus | null
+export interface ConnectionCardProps {
+  connection: Connection
 }
 
-type ConnectionStatus = 'error' | 'healthy' | 'disconnected' | 'manual'
+type ConnectionStatus = Connection['resource']['status']
 
-export function SourceCard(props: SourceCardProps) {
-  const {id, displayName, institution, lastSyncCompletedAt, status} = props
+export function ConnectionCard(props: ConnectionCardProps) {
+  const {
+    id,
+    resource: {displayName, institution, status},
+    lastSyncCompletedAt,
+  } = props.connection
 
   // action.rename
   const [isRenaming, setIsRenaming] = useState(false)
@@ -67,7 +66,7 @@ export function SourceCard(props: SourceCardProps) {
           {isRenaming ? (
             <EditingDisplayName
               resourceId={id}
-              displayName={displayName}
+              displayName={displayName ?? ''}
               onCancel={() => setIsRenaming(false)}
               onUpdateSuccess={() => setIsRenaming(false)}
             />
@@ -205,8 +204,8 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
 }
 
 interface DeleteSourceDialogProps {
-  institution?: SourceCardProps['institution']
-  name: SourceCardProps['displayName']
+  institution?: ZStandard['institution'] | null
+  name?: Connection['resource']['displayName']
   onCancel: () => void
   resourceId: string
 }
