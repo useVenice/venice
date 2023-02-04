@@ -3,10 +3,7 @@ import React from 'react'
 
 import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
-import type {
-  AnySyncRouterInput,
-  IntegrationInput,
-} from '@usevenice/engine-backend'
+import type {IntegrationInput} from '@usevenice/engine-backend'
 import {z} from '@usevenice/util'
 
 import {createTRPCClientProxy} from '@trpc/client'
@@ -20,8 +17,10 @@ export const zUseVeniceOptions = z.object({
    * until the last possible moment. Otherwise preConnect will be eagerly called
    * as soon as user loads the webpage which could end up creating a bunch of entities
    * such as StripeCustomer, YodleeUser that never have any material amount of data.
+   *
+   * TODO: Implement me...
    */
-  lazyUserCreation: z.boolean().nullish(),
+  lazyPreConnect: z.boolean().nullish(),
   /** When searching for for institution  */
   keywords: z.string().nullish(),
 })
@@ -60,7 +59,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
     VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
-    {enabled: !!userId},
+    {enabled: !!userId, staleTime: 15 * 60 * 1000},
   )
   const resourcesRes = trpc.listResources.useQuery(
     {},
@@ -100,10 +99,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 }
 
 /** Also ledger-specific */
-export function useVeniceConnect({
-  envName,
-  lazyUserCreation,
-}: UseVeniceOptions) {
+export function useVeniceConnect({envName}: UseVeniceOptions) {
   const {
     connectFnMapRef,
     trpcClient: _client,
@@ -113,66 +109,13 @@ export function useVeniceConnect({
   } = VeniceProvider.useContext()
   // Move this inside the context
   const client = React.useMemo(() => createTRPCClientProxy(_client), [_client])
-
-  const integrationsRes = trpc.listIntegrations.useQuery(
-    {},
-    {enabled: !!userId},
-  )
-
-  // Should we leverage TRPC.useQueries instead now?
-  const preConnOpts = React.useCallback(
-    (
-      input: AnySyncRouterInput['preConnect'],
-    ): NonNullable<Parameters<typeof queryClient.fetchQuery>[2]> => ({
-      queryKey: ['preConnect', input],
-      queryFn: async ({queryKey, ...rest}) => {
-        console.log('preConnQueryFn', queryKey, rest)
-        // "mutation" because preConnect can have side effects such as causing `user` to be registered
-        // This is used by prefetchQuery though afaik only query results may be cached by react-query
-        return client.preConnect.mutate(
-          queryKey[1] as AnySyncRouterInput['preConnect'],
-        )
-      },
-      staleTime: 15 * 60 * 1000, // This should be provider dependent
-      // in particular dependent on the response from preConnect.
-      // Plaid link token expires in ~4 hours, while yodlee access token expires in
-      // ~30 mins. The expireAt are both within the token itself.
-    }),
-    [client, queryClient],
-  )
-
-  React.useEffect(() => {
-    // TODO: we dont actually need userId anymore
-    // Maybe we can make trpcClient change ref when accessToken changes instead?
-    if (!userId || !envName || lazyUserCreation) {
-      return
-    }
-    integrationsRes.data
-      ?.map((int) => preConnOpts([{id: int.id}, {envName}]))
-      // If we have been sitting on the page for 15 mins, can prefetch re-run automatically?
-      // Or would that be a reason for useQueries instead?
-      .forEach((options) => queryClient.prefetchQuery(options))
-  }, [
-    envName,
-    userId,
-    integrationsRes.data,
-    preConnOpts,
-    queryClient,
-    lazyUserCreation,
-  ])
-  // Alternatively... unfortunate... No trpc.useQueries https://github.com/trpc/trpc/issues/1454
-  // One downside is we will have ot add react-query as a direct dependency, which might be fine...
-  // @yenbekbay is prefetch better or useQueries better?
-  // useQueries(
-  //   (integrationsRes.data ?? []).map((int) =>
-  //     preConnFetchOpts([{id: int.id}, {envName, userId}]),
-  //   ),
-  // )
+  const ctx = trpc.useContext()
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
   // TODO: We should add something to know whether we are currently connecting in a global state
   // And if we are then return early
+
   const connect = React.useCallback(
     async function (
       int: IntegrationInput,
@@ -205,7 +148,10 @@ export function useVeniceConnect({
       }
       try {
         console.log(`[useVeniceConnect] ${int.id} Will connect`)
-        const preConnRes = await queryClient.fetchQuery(preConnOpts([int, opt]))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const preConnRes = await ctx.preConnect.fetch([int, opt], {
+          staleTime: 15 * 60 * 1000, // Good for 15 minutes
+        })
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
@@ -233,7 +179,14 @@ export function useVeniceConnect({
         }
       }
     },
-    [envName, userId, connectFnMapRef, preConnOpts, queryClient, client],
+    [
+      envName,
+      userId,
+      ctx.preConnect,
+      connectFnMapRef,
+      client.postConnect,
+      queryClient,
+    ],
   )
   return connect
 }
