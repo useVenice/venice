@@ -564,7 +564,7 @@ export const makeSyncEngine = <
     preConnect: authedProcedure
       .input(z.tuple([zInt, zConnectOptions]))
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      .mutation(
+      .query(
         async ({input: [int, {resourceExternalId, ...connCtxInput}], ctx}) => {
           const reso = resourceExternalId
             ? await metaService.tables.resource

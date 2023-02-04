@@ -12,6 +12,7 @@ import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {envAtom, modeAtom} from '../contexts/atoms'
 import {NewPipelineInScreen} from '../components/NewPipelineInScreen'
+import {createSSRHelpers} from '../server'
 
 export default function PipelinesScreen(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
@@ -141,13 +142,23 @@ function EmptyDestinationsView() {
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {serverGetUser, ensureDefaultLedger} = await import('../server')
-  const user = await serverGetUser(context)
+  const {ssg, user, getPageProps} = await createSSRHelpers(context)
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}
   }
+  const {ensureDefaultLedger} = await import('../server')
   const ids = await ensureDefaultLedger(user.id)
-  return {props: {ids}}
+  const integrations = await ssg.listIntegrations.fetch({})
+  // console.log('integrations', integrations, getPageProps())
+
+  // TODO: Get the correct default env name...
+  await Promise.all(
+    integrations.map((int) =>
+      ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
+    ),
+  )
+  // maybe list resources also?
+  return {props: {...getPageProps(), ids}}
 }) satisfies GetServerSideProps
 
 // Ledgers UI code (not in MVP for now)

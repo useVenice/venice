@@ -80,7 +80,6 @@ export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
 
 export const queries = {
   usePipelinesList: () => {
-    // Not sure why useAtom is not working...
     useAtom(postgresSubscriptionsAtom)
     return useQuery({
       ...getQueryKeys(browserSupabase).pipelines.list,
