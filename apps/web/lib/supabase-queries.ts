@@ -5,9 +5,10 @@ import type {
 } from '@supabase/supabase-js'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {PROVIDERS} from '@usevenice/app-config/env'
-import type {AnySyncProvider, Id} from '@usevenice/cdk-core'
+import type {AnySyncProvider, Id, UserId} from '@usevenice/cdk-core'
+import {makeId} from '@usevenice/cdk-core'
 import {zStandard} from '@usevenice/cdk-core'
-import {R} from '@usevenice/util'
+import {makeUlid, R} from '@usevenice/util'
 import {atom, useAtom} from 'jotai'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
@@ -77,11 +78,13 @@ function listConnections(supabase: SupabaseClient<Database>) {
     .then((res) =>
       (res.data ?? [])
         .map(({source, destination, source_id, destination_id, ...pipe}) => {
-          const type: ConnType | null = source_id?.startsWith('reso_postgres')
-            ? 'destination'
-            : destination_id?.startsWith('reso_postgres')
-            ? 'source'
-            : null
+          // TODO: We should ensure all pipelines have source & destination
+          const type: ConnType | null =
+            !source_id || source_id?.startsWith('reso_postgres')
+              ? 'destination'
+              : !destination_id || destination_id?.startsWith('reso_postgres')
+              ? 'source'
+              : null
           return {
             ...camelcaseKeys(pipe),
             id: pipe.id as Id['pipe'], // Rename to pipelineId
@@ -165,6 +168,52 @@ export const mutations = {
         //   ),
       },
     ),
+
+  useDeletePipeline: () =>
+    useMutation(
+      async ({
+        pipelineId,
+        resourceId,
+      }: {
+        pipelineId: Id['pipe']
+        resourceId: Id['reso']
+      }) => {
+        await browserSupabase.from('pipeline').delete().eq('id', pipelineId)
+        // TODO: Need to properly handle this on the server to
+        // 1) Remove orphan resource
+        // 2) Revoke before deleting as needed
+        if (resourceId.includes('debug')) {
+          await browserSupabase.from('resource').delete().eq('id', resourceId)
+        }
+      },
+      // TODO: Revoke & remove the resources as pipelines are deleted
+      // We should have a background job for this probably...
+    ),
+
+  useCreateDummySource: ({
+    ledgerId,
+    userId,
+  }: {
+    ledgerId: Id['reso']
+    userId: UserId
+  }) =>
+    useMutation(async () => {
+      const baseId = makeUlid()
+      const resourceId = makeId('reso', 'debug', baseId)
+      const pipelineId = makeId('pipe', `debug_${baseId}`)
+
+      await browserSupabase.from('resource').insert({
+        id: resourceId,
+        creator_id: userId,
+        display_name: `Dummy ${Date.now()}`,
+      })
+
+      await browserSupabase.from('pipeline').insert({
+        id: pipelineId,
+        source_id: resourceId,
+        destination_id: ledgerId,
+      })
+    }),
 }
 
 // MARK: Subscriptions

@@ -116,6 +116,7 @@ export function ConnectionCard(props: ConnectionCardProps) {
             open={isDeleteDialogOpen}
             onOpenChange={setDeleteDialogOpen}>
             <DeleteConnectionDialog
+              pipelineId={id}
               resourceId={resourceId}
               name={displayName}
               institution={institution}
@@ -213,11 +214,13 @@ interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
   name?: Connection['resource']['displayName']
   onCancel: () => void
+  pipelineId: Id['pipe']
   resourceId: Id['reso']
 }
 
 function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
-  const {institution, name, onCancel, resourceId} = props
+  const {institution, name, onCancel, pipelineId, resourceId} = props
+  const deletePipeline = mutations.useDeletePipeline()
   return (
     <Dialog.Portal>
       <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
@@ -260,14 +263,7 @@ function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
               Cancel
             </button>
             <button
-              onClick={async () => {
-                const result = await browserSupabase
-                  .from('pipelines')
-                  .delete()
-                  .eq('id', resourceId)
-
-                console.log(result)
-              }}
+              onClick={() => deletePipeline.mutate({pipelineId, resourceId})}
               className="flex min-w-[6rem] items-center gap-2 rounded-lg bg-venice-red px-3 py-2 text-sm text-offwhite hover:bg-[#ac2039] focus:outline-none focus-visible:bg-[#ac2039]">
               <DeleteIcon className="h-4 w-4 fill-current" />
               <span>Delete</span>

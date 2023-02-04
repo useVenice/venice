@@ -1,4 +1,6 @@
+import type {UserId} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import type { InferGetServerSidePropsType} from 'next';
 import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,6 +15,7 @@ import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import type {Connection} from '../lib/supabase-queries'
+import {mutations} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
 import {createSSRHelpers} from '../server'
 
@@ -27,8 +30,8 @@ export const getServerSideProps = (async (context) => {
   await queryClient.prefetchQuery(getQueryKeys(supabase).connections.list)
   // console.log('prefetched pipelines', res, getPageProps())
 
-  // const {ensureDefaultLedger} = await import('../server')
-  // const ids = await ensureDefaultLedger(user.id)
+  const {ensureDefaultLedger} = await import('../server')
+  const ledgerIds = await ensureDefaultLedger(user.id)
   // const integrations = await ssg.listIntegrations.fetch({})
 
   // // TODO: Get the correct default env name...
@@ -37,12 +40,17 @@ export const getServerSideProps = (async (context) => {
   //     ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
   //   ),
   // )
-  return {props: getPageProps()}
+  return {props: {...getPageProps(), ledgerIds, userId: user.id as UserId}}
 }) satisfies GetServerSideProps
 
-export default function ConnectionsPage() {
+export default function ConnectionsPage(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) {
   const res = queries.useConnectionsList()
-
+  const createDummySource = mutations.useCreateDummySource({
+    ledgerId: props.ledgerIds[0],
+    userId: props.userId,
+  })
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
@@ -51,7 +59,10 @@ export default function ConnectionsPage() {
           {res.isLoading ? (
             <LoadingSourcesColumn />
           ) : (
-            <ConnectionsColumn connections={res.data?.source ?? []} />
+            <ConnectionsColumn
+              connections={res.data?.source ?? []}
+              createDummy={() => createDummySource.mutate()}
+            />
           )}
 
           <VeniceDatabaseSection />
@@ -102,6 +113,7 @@ function LoadingSourcesColumn() {
 
 interface ConnectionsColumnProps {
   connections: Connection[]
+  createDummy?: () => void
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
@@ -122,7 +134,13 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
         {connections.length > 0 && (
           <Dialog.Root>
             <Dialog.Trigger asChild>
-              <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
+              <button
+                className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70"
+                onClick={(e) => {
+                  console.log('creating dummy')
+                  props.createDummy?.()
+                  e.preventDefault()
+                }}>
                 <AddFilledIcon />
               </button>
             </Dialog.Trigger>
