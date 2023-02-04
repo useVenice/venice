@@ -12,7 +12,7 @@ import {atom, useAtom} from 'jotai'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
 import type {Database} from '../supabase/supabase.gen'
-import {queryClient} from './query-client'
+import {browserQueryClient} from './query-client'
 
 import camelcaseKeys from 'camelcase-keys'
 
@@ -134,7 +134,9 @@ export const mutations = {
 export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
 postgresSubscriptionsAtom.onMount = (setAtom) => {
   const invalidate = () =>
-    queryClient.invalidateQueries(getQueryKeys(browserSupabase).pipelines._def)
+    browserQueryClient.invalidateQueries(
+      getQueryKeys(browserSupabase).pipelines._def,
+    )
 
   // Consider updating query data directly rather than invalidating for things like sync status updates
   const subs = [

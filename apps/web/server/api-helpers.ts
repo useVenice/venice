@@ -5,15 +5,15 @@ import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
 import {kAccessToken} from '../contexts/atoms'
 
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
-import type {DehydratedState} from '@tanstack/react-query'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import type {UserId} from '@usevenice/cdk-core'
 import type {GetServerSidePropsContext} from 'next'
+import superjson from 'superjson'
+import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
-
 export interface PageProps {
-  dehydratedState: DehydratedState
+  dehydratedState: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
 export async function createSSRHelpers(context: GetServerSidePropsContext) {
@@ -36,7 +36,9 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
     supabase,
     queryClient,
     ssg,
-    getPageProps: (): PageProps => ({dehydratedState: dehydrate(queryClient)}),
+    getPageProps: (): PageProps => ({
+      dehydratedState: superjson.serialize(dehydrate(queryClient)),
+    }),
   }
 }
 

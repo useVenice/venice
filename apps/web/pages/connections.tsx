@@ -12,10 +12,36 @@ import {
   SourceCard,
   SourceCardSkeleton,
 } from '../components/connections'
-import {queries} from '../lib/supabase-queries'
+import {getQueryKeys, queries} from '../lib/supabase-queries'
 import {AddSourceDialog} from '../components/connections/AddSourceDialog'
+import {GetServerSideProps} from 'next'
+import {createSSRHelpers} from '../server'
 
-export default function Page() {
+// Should this be moved to _app getInitialProps?
+export const getServerSideProps = (async (context) => {
+  const {user, getPageProps, supabase, queryClient} = await createSSRHelpers(
+    context,
+  )
+  if (!user?.id) {
+    return {redirect: {destination: '/', permanent: false}}
+  }
+  await queryClient.prefetchQuery(getQueryKeys(supabase).pipelines.list)
+  // console.log('prefetched pipelines', res, getPageProps())
+
+  // const {ensureDefaultLedger} = await import('../server')
+  // const ids = await ensureDefaultLedger(user.id)
+  // const integrations = await ssg.listIntegrations.fetch({})
+
+  // // TODO: Get the correct default env name...
+  // await Promise.all(
+  //   integrations.map((int) =>
+  //     ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
+  //   ),
+  // )
+  return {props: getPageProps()}
+}) satisfies GetServerSideProps
+
+export default function ConnectionsPage() {
   const {isLoading, data: connections = []} = queries.usePipelinesList()
   const sources = useMemo(
     () =>
