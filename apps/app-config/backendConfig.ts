@@ -18,6 +18,7 @@ import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
 
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'
+export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
