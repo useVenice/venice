@@ -191,25 +191,32 @@ function VeniceDatabaseSection() {
         src="/venice-database.png"
         alt="Venice Database"
       />
-      <ul className="flex flex-col gap-2 pt-[3.25rem]">
+      <Image
+        className="mr-12 mt-1"
+        width={51}
+        height={103}
+        src="/db-links-line.svg"
+        alt="Line for links"
+      />
+      <ul className="absolute ml-14 flex flex-col pt-[9.65rem]">
         <li>
           <Link
             href="/data"
-            className="text-sm text-green hover:text-opacity-70">
+            className="text-sm leading-4 text-green hover:text-opacity-70">
             Export data
           </Link>
         </li>
         <li>
           <Link
             href="/api-access"
-            className="text-sm text-green hover:text-opacity-70">
+            className="text-sm leading-4 text-green hover:text-opacity-70">
             Explore APIs
           </Link>
         </li>
         <li>
           <Link
             href="/api-access"
-            className="text-sm text-green hover:text-opacity-70">
+            className="text-sm leading-4 text-green hover:text-opacity-70">
             Access database
           </Link>
         </li>
