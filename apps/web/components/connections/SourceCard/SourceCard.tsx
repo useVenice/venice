@@ -31,7 +31,6 @@ type ConnectionStatus = 'error' | 'healthy' | 'disconnected' | 'manual'
 
 export function SourceCard(props: SourceCardProps) {
   const {id, displayName, institution, lastSyncCompletedAt, status} = props
-  const [isActionMenuOpen, setActionMenuOpen] = useState(false)
 
   // action.rename
   const [isRenaming, setIsRenaming] = useState(false)
@@ -78,9 +77,7 @@ export function SourceCard(props: SourceCardProps) {
             </span>
           )}
 
-          <ActionMenu
-            isOpen={isActionMenuOpen}
-            onOpenChange={setActionMenuOpen}>
+          <ActionMenu>
             <ActionMenuItem
               icon={EditIcon}
               label="Rename"
@@ -101,9 +98,13 @@ export function SourceCard(props: SourceCardProps) {
               icon={DeleteIcon}
               label="Delete"
               onClick={() => {
-                // need to close dropdown menu first
-                setActionMenuOpen(false)
-                // ...
+                // a work around to address error:
+                //   react-remove-scroll-bar cannot calculate scrollbar size
+                //   because it is removed (overflow:hidden on body)
+                //
+                // because the dropdown modal was open (setting overflow:hidden)
+                // and the dialog modal tries to open. there might be a better
+                // way to handle this.
                 setTimeout(() => setDeleteDialogOpen(true), 0)
               }}
             />
@@ -114,12 +115,9 @@ export function SourceCard(props: SourceCardProps) {
             open={isDeleteDialogOpen}
             onOpenChange={setDeleteDialogOpen}>
             <DeleteSourceDialog
-              resourceId=""
-              name="Wells Fargo"
-              institution={{
-                name: 'Wells Fargo',
-                logoUrl: '/wells-fargo-logo.svg',
-              }}
+              resourceId={id}
+              name={displayName}
+              institution={institution}
               onCancel={() => setDeleteDialogOpen(false)}
             />
           </Dialog.Root>
@@ -159,6 +157,7 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
           onCancel()
           break
         case 'Enter':
+          // TODO show loading state on mutation.isLoading
           await updateResource.mutateAsync({
             // @ts-expect-error fix query or mutation type
             id: resourceId,
@@ -206,11 +205,8 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
 }
 
 interface DeleteSourceDialogProps {
-  institution?: {
-    name: string
-    logoUrl: string
-  }
-  name: string
+  institution?: SourceCardProps['institution']
+  name: SourceCardProps['displayName']
   onCancel: () => void
   resourceId: string
 }
