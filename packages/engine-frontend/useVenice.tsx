@@ -25,30 +25,6 @@ export const zUseVeniceOptions = z.object({
   keywords: z.string().nullish(),
 })
 
-/** Non ledger-specific */
-export function useVeniceAdmin({
-  creatorIdKeywords,
-}: {
-  creatorIdKeywords?: string
-}) {
-  // Add a context for if user is in developer mode...
-
-  const {trpc, isAdmin, userId, developerMode} = VeniceProvider.useContext()
-
-  const integrationsRes = trpc.listIntegrations.useQuery(
-    {},
-    {enabled: !!userId},
-  )
-
-  const creatorIdsRes = trpc.adminSearchCreatorIds.useQuery(
-    {keywords: creatorIdKeywords},
-    {enabled: isAdmin},
-  )
-  const adminSyncMeta = trpc.adminSyncMetadata.useMutation()
-
-  return {integrationsRes, creatorIdsRes, adminSyncMeta, isAdmin, developerMode}
-}
-
 export type UseVenice = ReturnType<typeof useVenice>
 
 /**
@@ -61,16 +37,10 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
     {},
     {enabled: !!userId, staleTime: 15 * 60 * 1000},
   )
-  const resourcesRes = trpc.listResources.useQuery(
-    {},
-    // refetchInterval: 1 * 1000, // So we can refresh the syncInProgress indicator
-    {enabled: !!userId},
-  )
+  const resourcesRes = trpc.listResources.useQuery({}, {enabled: !!userId})
   const insRes = trpc.searchInstitutions.useQuery(
     {keywords},
-    {
-      enabled: !!userId,
-    },
+    {enabled: !!userId},
   )
   const syncResource = trpc.syncResource.useMutation()
   const deleteResource = trpc.deleteResource.useMutation({

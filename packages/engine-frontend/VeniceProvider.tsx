@@ -172,26 +172,3 @@ VeniceProvider.config = <
 >(
   config: SyncEngineCommonConfig<TProviders, TLinks>,
 ) => config
-
-// TODO: Figure out how to work with NextJS SSR here
-// adding typeof withTRPC<Router> breaks prettier, let's figure it out...
-// const withVenice = (options: Parameters<typeof withTRPC>[0]) =>
-//   withTRPC({
-//     ...options,
-//     // Improve typing to omit options.config.url, it is a noop
-//     config: (info) => ({...options.config(info), url: routerUrl}),
-//   })
-
-/**
- * Used to create a callback to get the current value without re-rendering
- * whenever value changes...
- *
- * TODO: Move me to frontend utils...
- */
-export function useGetter<T>(value: T) {
-  const ref = React.useRef(value)
-  React.useEffect(() => {
-    ref.current = value
-  }, [value, ref])
-  return React.useCallback(() => ref.current, [ref])
-}
