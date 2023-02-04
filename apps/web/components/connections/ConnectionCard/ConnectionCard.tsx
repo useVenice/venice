@@ -5,7 +5,6 @@ import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
 import React, {useEffect, useState} from 'react'
-import {browserSupabase} from '../../../contexts/common-contexts'
 import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
 import {
