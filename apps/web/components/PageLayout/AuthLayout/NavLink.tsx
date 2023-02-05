@@ -1,10 +1,9 @@
+import type {SvgIconProps} from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import NextLink from 'next/link'
 import {useRouter} from 'next/router'
 import type {ComponentType} from 'react'
-
 import {ExternalLink} from '../../ExternalLink'
-import type {SvgIconProps} from '../../icons'
 
 interface NavLinkProps {
   name: string

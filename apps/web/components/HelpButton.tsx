@@ -1,5 +1,5 @@
+import {QuestionCircleIcon} from '@usevenice/ui/icons'
 import {ExternalLink} from './ExternalLink'
-import {QuestionCircleIcon} from './icons'
 
 export function HelpButton() {
   return (

@@ -1,4 +1,4 @@
-import {CircleFilledIcon, MoreIcon} from '../../icons'
+import {CircleFilledIcon, MoreIcon} from '@usevenice/ui/icons'
 import {ResourceCard} from '../../ResourceCard'
 
 export function ConnectionCardSkeleton() {

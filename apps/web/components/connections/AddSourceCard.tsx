@@ -1,5 +1,5 @@
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
-import {AddFilledIcon} from '../icons'
+import {AddFilledIcon} from '@usevenice/ui/icons'
 import {ResourceCard} from '../ResourceCard'
 import {AddSourceDialog} from './AddSourceDialog'
 
