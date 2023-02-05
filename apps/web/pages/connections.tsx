@@ -1,4 +1,4 @@
-import type {UserId} from '@usevenice/cdk-core'
+import type {ConnectWith, UserId} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
@@ -15,8 +15,7 @@ import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import type {Connection} from '../lib/supabase-queries'
-import {mutations} from '../lib/supabase-queries'
-import {getQueryKeys, queries} from '../lib/supabase-queries'
+import {getQueryKeys, mutations, queries} from '../lib/supabase-queries'
 import {createSSRHelpers} from '../server'
 
 // Should this be moved to _app getInitialProps?
@@ -62,6 +61,7 @@ export default function ConnectionsPage(
             <ConnectionsColumn
               connections={res.data?.source ?? []}
               createDummy={() => createDummySource.mutate()}
+              connectWith={{destinationId: props.ledgerIds[0]}}
             />
           )}
 
@@ -110,10 +110,10 @@ function LoadingSourcesColumn() {
     </section>
   )
 }
-
 interface ConnectionsColumnProps {
   connections: Connection[]
   createDummy?: () => void
+  connectWith?: ConnectWith
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
@@ -136,15 +136,16 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             <Dialog.Trigger asChild>
               <button
                 className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70"
-                onClick={(e) => {
-                  console.log('creating dummy')
-                  props.createDummy?.()
-                  e.preventDefault()
-                }}>
+                // onClick={(e) => {
+                //   console.log('creating dummy')
+                //   props.createDummy?.()
+                //   e.preventDefault()
+                // }}
+              >
                 <AddFilledIcon />
               </button>
             </Dialog.Trigger>
-            <AddSourceDialog />
+            <AddSourceDialog connectWith={props.connectWith} />
           </Dialog.Root>
         )}
       </header>
