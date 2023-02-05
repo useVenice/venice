@@ -1,4 +1,4 @@
-import type {Id, ZStandard} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
 import clsx from 'clsx'
@@ -16,6 +16,7 @@ import {
 } from '../../icons'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
+import {DeleteConnectionDialog} from './DeleteConnectionDialog'
 
 export interface ConnectionCardProps {
   connection: Connection
@@ -157,7 +158,7 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
   const updateResource = mutations.useUpdateResource()
 
   useEffect(() => {
-    async function handleKeyUp(event: KeyboardEvent) {
+    async function handleKeyDown(event: KeyboardEvent) {
       switch (event.key) {
         case 'Escape':
           onCancel()
@@ -173,18 +174,22 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
       }
     }
 
-    document.addEventListener('keyup', handleKeyUp)
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      document.removeEventListener('keyup', handleKeyUp)
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [displayName, onCancel, onUpdateSuccess, resourceId, updateResource])
 
   const inputRef = React.useRef<HTMLInputElement>(null)
   useEffect(() => {
-    inputRef.current?.focus()
+    // HACK: don't know why but doing it sync or with 0 timeout doesn't work
+    // using autoFocus props on input also doesn't work. It might have
+    // something to do with radix dropdown focus management.
+    setTimeout(() => inputRef.current?.focus(), 100)
   }, [inputRef])
+
   return (
-    <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1">
+    <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1 focus-within:ring-1 focus-within:ring-inset focus-within:ring-venice-green">
       <input
         ref={inputRef}
         value={displayName}
@@ -211,70 +216,5 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
       <CircleFilledIcon className="h-2 w-2 fill-current" />
       <span className="inline-flex text-xs">{text}</span>
     </p>
-  )
-}
-
-interface DeleteConnectionDialogProps {
-  institution?: ZStandard['institution'] | null
-  name?: Connection['resource']['displayName']
-  onCancel: () => void
-  pipelineId: Id['pipe']
-  resourceId: Id['reso']
-}
-
-function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
-  const {institution, name, onCancel, pipelineId, resourceId} = props
-  const deletePipeline = mutations.useDeletePipeline()
-  return (
-    <Dialog.Portal>
-      <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity will-change-auto animate-in fade-in" />
-        <Dialog.Content className="fixed z-50 grid w-full gap-4 border border-venice-black-300 bg-venice-black-500 p-6 opacity-100 animate-in fade-in-70 focus:outline-none focus:ring-venice-black-300 sm:min-w-[35rem] sm:max-w-lg sm:rounded-lg">
-          <div className="mt-2 mb-3 flex items-center justify-center gap-2">
-            {institution?.logoUrl ? (
-              <Image
-                width={32}
-                height={32}
-                src={institution.logoUrl}
-                alt={`${institution.name} Logo`}
-              />
-            ) : (
-              <Image
-                width={32}
-                height={32}
-                src="/institution-placeholder.svg"
-                alt=""
-                aria-hidden="true"
-              />
-            )}
-            <span className="text-sm uppercase">{name}</span>
-          </div>
-          <Dialog.Title className="text-center text-venice-green">
-            Are you sure you want to delete this connection?
-          </Dialog.Title>
-          <div className="mx-auto max-w-[20rem] text-sm text-venice-gray">
-            <p className="pb-1">Deleting {name} will:</p>
-            <ul className="list-disc pl-4">
-              <li>stop syncing its data into Venice keep</li>
-              <li>all previously synced data safely in Venice</li>
-              <li>delete this connection with {name}</li>
-            </ul>
-          </div>
-          <div className="mt-12 flex justify-center gap-4">
-            <button
-              onClick={onCancel}
-              className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400">
-              Cancel
-            </button>
-            <button
-              onClick={() => deletePipeline.mutate({pipelineId, resourceId})}
-              className="flex min-w-[6rem] items-center gap-2 rounded-lg bg-venice-red px-3 py-2 text-sm text-offwhite hover:bg-[#ac2039] focus:outline-none focus-visible:bg-[#ac2039]">
-              <DeleteIcon className="h-4 w-4 fill-current" />
-              <span>Delete</span>
-            </button>
-          </div>
-        </Dialog.Content>
-      </div>
-    </Dialog.Portal>
   )
 }
