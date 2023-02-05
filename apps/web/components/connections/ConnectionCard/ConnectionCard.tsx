@@ -4,7 +4,7 @@ import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import React, {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
 import {
@@ -180,7 +180,7 @@ function EditingDisplayName(props: EditingDisplayNameProps) {
     }
   }, [displayName, onCancel, onUpdateSuccess, resourceId, updateResource])
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     // HACK: don't know why but doing it sync or with 0 timeout doesn't work
     // using autoFocus props on input also doesn't work. It might have
