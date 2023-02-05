@@ -21,7 +21,7 @@ const mainNavigation = [
   {name: 'Export Data', href: '/data', icon: ExportIcon},
   {
     name: 'API Access',
-    href: '/access-api',
+    href: '/api-access',
     icon: DatabaseIcon,
   },
 ]
