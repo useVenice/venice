@@ -2,7 +2,6 @@ import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import {NewPipelineInScreen} from '../NewPipelineInScreen'
 import type {ConnectWith} from '@usevenice/cdk-core'
 
-// TEMPORARY - add Plaid Oauth iframe
 export function AddSourceDialog(props: {connectWith?: ConnectWith}) {
   return (
     <Dialog.Portal>
