@@ -9,7 +9,7 @@ export function ActionMenu(props: ActionMenuProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="rounded-full p-1 hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75">
+        <button className="rounded-full p-1 hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75 data-[state=open]:bg-venice-black/75">
           <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray" />
         </button>
       </DropdownMenu.Trigger>
@@ -18,10 +18,8 @@ export function ActionMenu(props: ActionMenuProps) {
         <DropdownMenu.Content
           sideOffset={4}
           align="start"
-          className="min-w-[8rem] animate-slide-down">
-          <div className="rounded-lg border border-venice-black-300 bg-venice-black-500 px-1 py-2 text-sm">
-            {props.children}
-          </div>
+          className="min-w-[8rem] animate-slide-down rounded-lg border border-venice-black-300 bg-venice-black-500 px-1 py-2 text-sm drop-shadow-md">
+          {props.children}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
