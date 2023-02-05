@@ -1,7 +1,7 @@
-import type {ConnectWith, UserId} from '@usevenice/cdk-core'
+import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
-import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
+import type {NonEmptyArray} from '@usevenice/util'
+import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -15,52 +15,56 @@ import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import type {Connection} from '../lib/supabase-queries'
-import {getQueryKeys, mutations, queries} from '../lib/supabase-queries'
+import {getQueryKeys, queries} from '../lib/supabase-queries'
+import type {PageProps} from '../server'
 import {createSSRHelpers} from '../server'
 
+type ServerSideProps = PageProps & {
+  ledgerIds: NonEmptyArray<Id['reso']>
+  userId: UserId
+}
+
 // Should this be moved to _app getInitialProps?
-export const getServerSideProps = (async (context) => {
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  context,
+) => {
   const {user, getPageProps, supabase, queryClient} = await createSSRHelpers(
     context,
   )
   if (!user?.id) {
-    return {redirect: {destination: '/', permanent: false}}
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
   }
+
   await queryClient.prefetchQuery(getQueryKeys(supabase).connections.list)
-  // console.log('prefetched pipelines', res, getPageProps())
 
   const {ensureDefaultLedger} = await import('../server')
   const ledgerIds = await ensureDefaultLedger(user.id)
-  // const integrations = await ssg.listIntegrations.fetch({})
+  return {
+    props: {
+      ...getPageProps(),
+      ledgerIds,
+      userId: user.id as UserId,
+    },
+  }
+}
 
-  // // TODO: Get the correct default env name...
-  // await Promise.all(
-  //   integrations.map((int) =>
-  //     ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
-  //   ),
-  // )
-  return {props: {...getPageProps(), ledgerIds, userId: user.id as UserId}}
-}) satisfies GetServerSideProps
-
-export default function ConnectionsPage(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export default function ConnectionsPage(props: ServerSideProps) {
   const res = queries.useConnectionsList()
-  const createDummySource = mutations.useCreateDummySource({
-    ledgerId: props.ledgerIds[0],
-    userId: props.userId,
-  })
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
         <PageHeader title={['Connections']} />
         <div className="flex gap-24 overflow-y-auto p-16">
           {res.isLoading ? (
-            <LoadingSourcesColumn />
+            <LoadingConnectionsColumn />
           ) : (
             <ConnectionsColumn
               connections={res.data?.source ?? []}
-              createDummy={() => createDummySource.mutate()}
               connectWith={{destinationId: props.ledgerIds[0]}}
             />
           )}
@@ -81,7 +85,6 @@ export default function ConnectionsPage(
                 <span className="text-sm uppercase">Destinations</span>
               </h2>
             </header>
-            {/* <AddDestinationCard /> */}
             <DestinationComingSoonCard />
           </section>
         </div>
@@ -90,7 +93,7 @@ export default function ConnectionsPage(
   )
 }
 
-function LoadingSourcesColumn() {
+function LoadingConnectionsColumn() {
   return (
     <section className="flex w-[24rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
@@ -110,10 +113,10 @@ function LoadingSourcesColumn() {
     </section>
   )
 }
+
 interface ConnectionsColumnProps {
   connections: Connection[]
-  createDummy?: () => void
-  connectWith?: ConnectWith
+  connectWith: ConnectWith
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
@@ -134,14 +137,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
         {connections.length > 0 && (
           <Dialog.Root>
             <Dialog.Trigger asChild>
-              <button
-                className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70"
-                // onClick={(e) => {
-                //   console.log('creating dummy')
-                //   props.createDummy?.()
-                //   e.preventDefault()
-                // }}
-              >
+              <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
                 <AddFilledIcon />
               </button>
             </Dialog.Trigger>
