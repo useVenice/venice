@@ -17,11 +17,13 @@ import {browserQueryClient} from './query-client'
 
 import camelcaseKeys from 'camelcase-keys'
 
-// MARK: Queries
+// MARK: - Queries
+
 const providerMap = R.mapToObj(PROVIDERS, (p) => [
   p.name as string,
   p as AnySyncProvider,
 ])
+
 type Institution = Pick<
   Database['public']['Tables']['institution']['Row'],
   'id' | 'external' | 'provider_name' | 'standard'
@@ -69,6 +71,7 @@ function listConnections(supabase: SupabaseClient<Database>) {
     .from('pipeline')
     .select(
       `id,
+       last_sync_started_at,
        last_sync_completed_at,
        source_id,
        destination_id,
@@ -77,18 +80,22 @@ function listConnections(supabase: SupabaseClient<Database>) {
     )
     .then((res) =>
       (res.data ?? [])
-        .map(({source, destination, source_id, destination_id, ...pipe}) => {
-          // TODO: We should ensure all pipelines have source & destination
+        .map((p) => camelcaseKeys(p))
+        .map(({source, destination, sourceId, destinationId, ...pipe}) => {
           const type: ConnType | null =
-            !source_id || source_id?.startsWith('reso_postgres')
+            !sourceId || sourceId?.startsWith('reso_postgres')
               ? 'destination'
-              : !destination_id || destination_id?.startsWith('reso_postgres')
+              : !destinationId || destinationId?.startsWith('reso_postgres')
               ? 'source'
               : null
           return {
             ...camelcaseKeys(pipe),
             id: pipe.id as Id['pipe'], // Rename to pipelineId
-            // isSyncing: boolean ADD me
+            syncInProgress:
+              (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
+              (pipe.lastSyncStartedAt &&
+                pipe.lastSyncCompletedAt &&
+                pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
             type,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             resource: parseResource(
@@ -100,6 +107,7 @@ function listConnections(supabase: SupabaseClient<Database>) {
             )!,
           }
         })
+        // This shouldn't happen, but just in case...
         .filter((c) => !!c.resource),
     )
 }
@@ -137,7 +145,7 @@ export const queries = {
   },
 }
 
-// MARK: Mutations
+// MARK: - Mutations
 
 export const mutations = {
   useUpdateResource: () =>
@@ -218,28 +226,6 @@ export const mutations = {
 
 // MARK: Subscriptions
 
-export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
-postgresSubscriptionsAtom.onMount = (setAtom) => {
-  const invalidate = () =>
-    browserQueryClient.invalidateQueries(
-      getQueryKeys(browserSupabase).connections._def,
-    )
-
-  // Consider updating query data directly rather than invalidating for things like sync status updates
-  const subs = [
-    subscribePostgresChanges('resource', invalidate),
-    // it seems that if we have two subscriptions then we don't get any changes at all
-    // but if we have one subscription we do... why is that possibly the case?
-    subscribePostgresChanges('pipeline', invalidate),
-
-    // Institutions do not change very often so no need to monitor closely
-  ]
-  setAtom(subs)
-  return () => subs.forEach((s) => s.unsub())
-}
-
-// MARK: - Utilities
-
 type PostgresSubscription = ReturnType<typeof subscribePostgresChanges>
 
 export function subscribePostgresChanges(
@@ -274,4 +260,24 @@ export function usePostgresChanges(
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
   React.useEffect(() => subscribePostgresChanges(tableName, fn).unsub)
+}
+
+export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
+postgresSubscriptionsAtom.onMount = (setAtom) => {
+  const invalidate = () =>
+    browserQueryClient.invalidateQueries(
+      getQueryKeys(browserSupabase).connections._def,
+    )
+
+  // Consider updating query data directly rather than invalidating for things like sync status updates
+  const subs = [
+    subscribePostgresChanges('resource', invalidate),
+    // it seems that if we have two subscriptions then we don't get any changes at all
+    // but if we have one subscription we do... why is that possibly the case?
+    subscribePostgresChanges('pipeline', invalidate),
+
+    // Institutions do not change very often so no need to monitor closely
+  ]
+  setAtom(subs)
+  return () => subs.forEach((s) => s.unsub())
 }

@@ -1,6 +1,6 @@
 import type {Id, ZStandard} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
@@ -28,6 +28,7 @@ export function ConnectionCard(props: ConnectionCardProps) {
     id,
     resource: {id: resourceId, displayName, institution, status},
     lastSyncCompletedAt,
+    syncInProgress,
   } = props.connection
 
   // action.rename
@@ -126,12 +127,16 @@ export function ConnectionCard(props: ConnectionCardProps) {
         <div className="text-right">
           {status ? <ConnectionStatus status={status} /> : null}
           <p className="text-xs font-medium text-venice-gray">
-            {lastSyncCompletedAt
-              ? `Synced ${formatDistanceToNowStrict(
-                  new Date(lastSyncCompletedAt),
-                  {addSuffix: true},
-                )}`
-              : 'No sync information'}
+            {syncInProgress ? (
+              <Loading text="Syncing" />
+            ) : lastSyncCompletedAt ? (
+              `Synced ${formatDistanceToNowStrict(
+                new Date(lastSyncCompletedAt),
+                {addSuffix: true},
+              )}`
+            ) : (
+              'No sync information'
+            )}
           </p>
         </div>
       </div>
