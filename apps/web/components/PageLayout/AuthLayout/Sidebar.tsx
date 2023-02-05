@@ -1,6 +1,3 @@
-import Image from 'next/image'
-import Link from 'next/link'
-
 import {
   ArrowLeftRightIcon,
   DatabaseIcon,
@@ -8,8 +5,9 @@ import {
   ExportIcon,
   ProfileIcon,
   SupportIcon,
-} from '../../icons'
-
+} from '@usevenice/ui/icons'
+import Image from 'next/image'
+import Link from 'next/link'
 import {NavLink} from './NavLink'
 
 const mainNavigation = [

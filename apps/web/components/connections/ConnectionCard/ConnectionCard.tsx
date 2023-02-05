@@ -1,19 +1,19 @@
 import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
-import clsx from 'clsx'
-import {formatDistanceToNowStrict} from 'date-fns'
-import Image from 'next/image'
-import {useEffect, useRef, useState} from 'react'
-import type {Connection} from '../../../lib/supabase-queries'
-import {mutations} from '../../../lib/supabase-queries'
 import {
   CircleFilledIcon,
   CloseIcon,
   DeleteIcon,
   EditIcon,
   SyncIcon,
-} from '../../icons'
+} from '@usevenice/ui/icons'
+import clsx from 'clsx'
+import {formatDistanceToNowStrict} from 'date-fns'
+import Image from 'next/image'
+import {useEffect, useRef, useState} from 'react'
+import type {Connection} from '../../../lib/supabase-queries'
+import {mutations} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 import {DeleteConnectionDialog} from './DeleteConnectionDialog'

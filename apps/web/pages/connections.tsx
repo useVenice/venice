@@ -1,5 +1,6 @@
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {NonEmptyArray} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
@@ -11,7 +12,6 @@ import {
   DestinationComingSoonCard,
 } from '../components/connections'
 import {AddSourceDialog} from '../components/connections/AddSourceDialog'
-import {AddFilledIcon} from '../components/icons'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import type {Connection} from '../lib/supabase-queries'

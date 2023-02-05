@@ -1,7 +1,7 @@
 import {DropdownMenuPrimitive as DropdownMenu} from '@usevenice/ui'
+import type {SvgIconProps} from '@usevenice/ui/icons'
+import {MoreIcon} from '@usevenice/ui/icons'
 import type {ComponentType, PropsWithChildren} from 'react'
-import type {SvgIconProps} from '../../icons'
-import {MoreIcon} from '../../icons'
 
 type ActionMenuProps = PropsWithChildren<{}>
 

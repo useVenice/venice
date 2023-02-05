@@ -1,9 +1,9 @@
 import type {Id, ZStandard} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import {DeleteIcon} from '@usevenice/ui/icons'
 import Image from 'next/image'
 import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
-import {DeleteIcon} from '../../icons'
 
 interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
