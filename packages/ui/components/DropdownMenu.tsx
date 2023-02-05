@@ -25,3 +25,5 @@ export function DropdownMenuContent({
     </DropdownMenuPrimitive.Portal>
   )
 }
+
+export {DropdownMenuPrimitive}

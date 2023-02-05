@@ -27,28 +27,19 @@ export const zUseVeniceOptions = z.object({
 
 export type UseVenice = ReturnType<typeof useVenice>
 
-/**
- * Ledger-specific
- */
 export function useVenice({envName, keywords}: UseVeniceOptions) {
-  const {trpc, userId, isAdmin, developerMode, queryClient} =
-    VeniceProvider.useContext()
+  const {trpc, userId, isAdmin, developerMode} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
     {enabled: !!userId, staleTime: 15 * 60 * 1000},
   )
-  const resourcesRes = trpc.listResources.useQuery({}, {enabled: !!userId})
+
   const insRes = trpc.searchInstitutions.useQuery(
     {keywords},
     {enabled: !!userId},
   )
-  const syncResource = trpc.syncResource.useMutation()
-  const deleteResource = trpc.deleteResource.useMutation({
-    onSettled: () => queryClient.invalidateQueries(['listResources']),
-  })
-  const checkResource = trpc.checkResource.useMutation({
-    onSettled: () => queryClient.invalidateQueries(['listResources']),
-  })
+  const deleteResource = trpc.deleteResource.useMutation({})
+  const checkResource = trpc.checkResource.useMutation({})
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
@@ -58,9 +49,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
     userId,
     connect,
     integrationsRes,
-    resourcesRes,
     insRes,
-    syncResource,
     deleteResource,
     checkResource,
     isAdmin,
@@ -70,11 +59,11 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 
 /** Also ledger-specific */
 export function useVeniceConnect({envName}: UseVeniceOptions) {
+  // We are relying on subscription to invalidate now rather than explicit invalidate...
   const {
     connectFnMapRef,
     trpcClient: _client,
     trpc,
-    queryClient,
     userId,
   } = VeniceProvider.useContext()
   // Move this inside the context
@@ -138,8 +127,6 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
         ])
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
 
-        void queryClient.invalidateQueries(['listResources'])
-
         console.log(`[useVeniceConnect] ${int.id} Did connect`)
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
@@ -149,14 +136,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
         }
       }
     },
-    [
-      envName,
-      userId,
-      ctx.preConnect,
-      connectFnMapRef,
-      client.postConnect,
-      queryClient,
-    ],
+    [envName, userId, ctx.preConnect, connectFnMapRef, client.postConnect],
   )
   return connect
 }

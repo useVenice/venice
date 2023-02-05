@@ -28,8 +28,10 @@
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
+    "camelcase-keys": "8.0.2",
     "clsx": "^1.2.1",
     "cookies-next": "2.1.1",
+    "date-fns": "^2.29.3",
     "inngest": "0.9.3",
     "jotai": "1.8.3",
     "lodash": "4.17.21",
@@ -43,6 +45,7 @@
     "react-responsive-carousel": "3.2.23",
     "superjson": "1.9.1",
     "tailwind-merge": "1.6.0",
+    "tailwindcss-animate": "^1.0.5",
     "ts-pattern": "4.0.5",
     "use-query-params": "2.1.0"
   },

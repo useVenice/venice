@@ -15,8 +15,9 @@ import {Loading, UIProvider} from '@usevenice/ui'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-import {queryClient} from '../lib/query-client'
+import {browserQueryClient} from '../lib/query-client'
 import type {PageProps} from '../server'
+import superjson from 'superjson'
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
@@ -38,7 +39,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   // }
   return (
     <VeniceProvider
-      queryClient={queryClient}
+      queryClient={browserQueryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
       developerMode={developerMode}>
@@ -57,8 +58,12 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
-        <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
+        <QueryClientProvider client={browserQueryClient}>
+          <Hydrate
+            state={
+              pageProps.dehydratedState &&
+              superjson.deserialize(pageProps.dehydratedState)
+            }>
             <SessionContextProvider supabaseClient={browserSupabase}>
               <_VeniceProvider>
                 <UIProvider>

@@ -99,3 +99,5 @@ export const Dialog = React.forwardRef(function Dialog(
     </DialogPrimitive.Root>
   )
 })
+
+export {DialogPrimitive}

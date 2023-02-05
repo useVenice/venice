@@ -15,7 +15,7 @@ import {NavLink} from './NavLink'
 const mainNavigation = [
   {
     name: 'Connections',
-    href: '/pipelines',
+    href: '/connections',
     icon: ArrowLeftRightIcon,
   },
   {name: 'Export Data', href: '/data', icon: ExportIcon},
