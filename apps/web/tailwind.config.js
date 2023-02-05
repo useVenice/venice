@@ -14,16 +14,13 @@ module.exports = {
     // '../../integrations/**/*.tsx',
     // '../../packages/engine-frontend/**/*.tsx',
 
+    '../../packages/ui/**/*.tsx',
     './app/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    boxShadow: {
-      'venice-green-glow': `0px 0px 8px 4px ${VeniceTheme.greenGlow}`,
-      'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
-    },
     extend: {
       keyframes: {
         // Dropdown menu
@@ -72,14 +69,17 @@ module.exports = {
           'toast-slide-in-bottom 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         'toast-swipe-out': 'toast-swipe-out 100ms ease-out forwards',
       },
+      backgroundColor: {
+        'venice-red-btn': 'salmon',
+        'venice-green-btn': VeniceTheme.green.darkened,
+      },
+      boxShadow: {
+        'venice-green-glow': `0px 0px 8px 4px ${VeniceTheme.greenGlow}`,
+        'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
+      },
       colors: {
         ...VeniceTheme,
-        'venice-black': {
-          DEFAULT: VeniceTheme.black,
-          300: '#4e4e4e',
-          400: '#3e3e3e',
-          500: '#2e2e2e',
-        },
+        'venice-black': VeniceTheme.black,
         'venice-gold': VeniceTheme.gold,
         'venice-gray-muted': VeniceTheme.gray,
         'venice-green': VeniceTheme.green,
@@ -95,21 +95,17 @@ module.exports = {
       },
       transparent: 'transparent',
     },
-    fontFamily: {
-      montserrat: ['Montserrat', ...defaultTheme.fontFamily.sans],
-      sourceCode: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
-    },
   },
   daisyui: {
     logs: false,
     themes: [
       {
         light: {
-          primary: VeniceTheme.green,
+          primary: VeniceTheme._green,
           'primary-content': VeniceTheme.offwhite,
-          secondary: VeniceTheme.green,
+          secondary: VeniceTheme._green,
           'secondary-content': VeniceTheme.offwhite,
-          accent: VeniceTheme.green,
+          accent: VeniceTheme._green,
           'accent-content': VeniceTheme.white,
           neutral: colors.gray[700],
           'neutral-content': colors.white,

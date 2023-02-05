@@ -2,13 +2,22 @@
 
 const VeniceTheme = {
   background: '#1e1e1e',
-  black: '#1e1e1e',
+  black: {
+    DEFAULT: '#1e1e1e',
+    300: '#4e4e4e',
+    400: '#3e3e3e',
+    500: '#2e2e2e',
+  },
   dropShadow: '#00000026',
   footerBlack: '#191919',
   githubGray: '#eef1f5',
   gold: '#ecac4c',
   gray: '#7d7d7d',
-  green: '#12b886',
+  _green: '#12b886',
+  green: {
+    DEFAULT: '#12b886',
+    darkened: '#099f72',
+  },
   greenGlow: '#12b88626',
   innerBevel: '#0000001a',
   inputBackground: '#292929',

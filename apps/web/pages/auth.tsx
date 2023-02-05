@@ -46,8 +46,8 @@ export default function AuthScreen() {
 const veniceThemeTweaks = {
   default: {
     colors: {
-      brand: VeniceTheme.green,
-      brandAccent: VeniceTheme.green,
+      brand: VeniceTheme._green,
+      brandAccent: VeniceTheme._green,
       brandButtonText: VeniceTheme.offwhite,
       defaultButtonBackground: '#2e2e2e',
       defaultButtonBackgroundHover: '#3e3e3e',
