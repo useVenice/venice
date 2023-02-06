@@ -1,7 +1,7 @@
-import {useQuery} from '@tanstack/react-query'
 import {
   Button,
   Card,
+  CircularProgress,
   Select,
   SelectContent,
   SelectItem,
@@ -16,6 +16,8 @@ import {
   SyncIcon,
 } from '@usevenice/ui/icons'
 
+import {useQuery} from '@tanstack/react-query'
+import {twMerge} from 'tailwind-merge'
 import Link from 'next/link'
 import {useEffect, useState} from 'react'
 import {ExternalLink} from '../components/ExternalLink'
@@ -42,16 +44,13 @@ export default function Page() {
         .limit(PREVIEW_LIMIT)
 
       if (postgresError) {
-        console.error('------------------')
-        console.error(postgresError)
-        console.error('------------------')
         throw new Error(postgresError.message)
       }
-      console.log(data)
       return data as Array<Record<string, string | number | null>>
     },
-    // don't fetch until a query is selected
+    // don't fetch until a table is selected
     enabled: selectedTable != null,
+    keepPreviousData: true,
   })
 
   const data: DataPreviewTableProps['data'] = {headings: [], rows: []}
@@ -63,33 +62,28 @@ export default function Page() {
     data.rows = preview.data
   }
 
-  // error = error
-
-  // loading = isLoading && !data
-
-  // refreshing = isLoading && data
-  // - if there's a data shows it
-  //   and also show "refreshing indicator"
-
-  // const data = useFakeData(selectedQuery)
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
       <div className="p-6">
         <div className="grid grid-cols-[1fr_auto]">
-          <Select value={selectedTable} onValueChange={selectTable}>
-            <SelectTrigger
-              className="max-w-[10rem]"
-              placeholder="Select a table…"
-            />
-            <SelectContent>
-              <SelectItem value="posting">Posting</SelectItem>
-              <SelectItem value="transaction">Transaction</SelectItem>
-              <SelectItem value="institution">Institution</SelectItem>
-              <SelectItem value="pipeline">Pipeline</SelectItem>
-              <SelectItem value="resource">Resource</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-4">
+            <Select value={selectedTable} onValueChange={selectTable}>
+              <SelectTrigger
+                className="max-w-[10rem]"
+                placeholder="Select a table…"
+              />
+              <SelectContent>
+                <SelectItem value="posting">Posting</SelectItem>
+                <SelectItem value="transaction">Transaction</SelectItem>
+                <SelectItem value="institution">Institution</SelectItem>
+                <SelectItem value="pipeline">Pipeline</SelectItem>
+                <SelectItem value="resource">Resource</SelectItem>
+              </SelectContent>
+            </Select>
+            {/* TODO fade in & out the loader */}
+            {preview.isFetching && <CircularProgress className="h-5 w-5" />}
+          </div>
           <div className="flex gap-2">
             <Button
               variant="primary"
@@ -108,7 +102,13 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-6 overflow-x-auto">
-          <DataPreviewTable data={data} />
+          <DataPreviewTable
+            data={data}
+            isFetching={preview.isFetching}
+            // since we disable query until a table is selected,
+            // isLoading=true means it's the initial state
+            isInitial={preview.isLoading}
+          />
         </div>
         <div className="mt-12 max-w-[38.5rem]">
           <SyncSpreadsheetCard selectedTable={selectedTable} />
@@ -123,23 +123,32 @@ interface DataPreviewTableProps {
     headings: string[]
     rows: Array<Record<string, string | number | null>>
   }
-}
-
-function EmptyPreviewTable() {
-  return (
-    <div className="grid min-h-[15rem] place-items-center">
-      <p className="font-mono text-lg text-venice-gray-muted">
-        Placeholder - Empty State - No data
-      </p>
-    </div>
-  )
+  isFetching: boolean
+  isInitial: boolean
 }
 
 function DataPreviewTable(props: DataPreviewTableProps) {
-  const {headings, rows} = props.data
+  const {data, isFetching, isInitial} = props
+  const {headings, rows} = data
+
+  if (isInitial) {
+    return (
+      <div className="grid min-h-[15rem] place-items-center">
+        <p className="font-mono text-lg text-venice-gray-muted">
+          Placeholder - Initial State - Try selecting a table…
+        </p>
+      </div>
+    )
+  }
 
   if (rows.length === 0) {
-    return <EmptyPreviewTable />
+    return (
+      <div className="grid min-h-[15rem] place-items-center">
+        <p className="font-mono text-lg text-venice-gray-muted">
+          Placeholder - Empty State - No data
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -156,7 +165,11 @@ function DataPreviewTable(props: DataPreviewTableProps) {
           ))}
         </tr>
       </thead>
-      <tbody className="divide-y divide-venice-gray-muted/50">
+      <tbody
+        className={twMerge(
+          'divide-y divide-venice-gray-muted/50 transition-opacity',
+          isFetching && 'opacity-70',
+        )}>
         {rows.map((r) => (
           <tr key={r['id']}>
             {headings.map((c) => (
