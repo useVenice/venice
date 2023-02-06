@@ -194,7 +194,6 @@ function CopyTextButton(props: CopyTextButtonProps) {
     : {icon: CopyTextIcon, text: 'Copy'}
 
   async function copyToClipboard() {
-    console.log('copy!')
     if (navigator) {
       await navigator.clipboard.writeText(props.content)
       setCopied(true)
