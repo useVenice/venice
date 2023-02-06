@@ -19,7 +19,7 @@ import {
 import {useQuery} from '@tanstack/react-query'
 import {twMerge} from 'tailwind-merge'
 import Link from 'next/link'
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -30,38 +30,7 @@ const DOWNLOAD_LIMIT = 100
 
 export default function Page() {
   const [selectedTable, selectTable] = useState<string>()
-
-  const preview = useQuery({
-    queryKey: ['export.preview', selectedTable],
-    queryFn: async () => {
-      if (!selectedTable) {
-        return []
-      }
-
-      const {data, error: postgresError} = await browserSupabase
-        .from(selectedTable)
-        .select()
-        .limit(PREVIEW_LIMIT)
-
-      if (postgresError) {
-        throw new Error(postgresError.message)
-      }
-      return data as Array<Record<string, string | number | null>>
-    },
-    // don't fetch until a table is selected
-    enabled: selectedTable != null,
-    keepPreviousData: true,
-  })
-
-  const data: DataPreviewTableProps['data'] = {headings: [], rows: []}
-  if (preview.data?.[0]) {
-    const [firstRow] = preview.data
-    // TODO get column names from backend, getting from the first object
-    // might not always be correct
-    data.headings = Object.keys(firstRow)
-    data.rows = preview.data
-  }
-
+  const preview = usePreviewData(selectedTable)
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
@@ -102,13 +71,7 @@ export default function Page() {
           </div>
         </div>
         <div className="mt-6 overflow-x-auto">
-          <DataPreviewTable
-            data={data}
-            isFetching={preview.isFetching}
-            // since we disable query until a table is selected,
-            // isLoading=true means it's the initial state
-            isInitial={preview.isLoading}
-          />
+          <DataPreviewTable {...preview} />
         </div>
         <div className="mt-12 max-w-[38.5rem]">
           <SyncSpreadsheetCard selectedTable={selectedTable} />
@@ -304,6 +267,51 @@ function CopyTextButton(props: CopyTextButtonProps) {
       <span>{text}</span>
     </Button>
   )
+}
+
+function usePreviewData(selectedTable?: string): DataPreviewTableProps {
+  const query = useQuery({
+    queryKey: ['export.preview', selectedTable],
+    queryFn: async () => {
+      if (!selectedTable) {
+        return []
+      }
+
+      const {data, error: postgresError} = await browserSupabase
+        .from(selectedTable)
+        .select()
+        .limit(PREVIEW_LIMIT)
+
+      if (postgresError) {
+        throw new Error(postgresError.message)
+      }
+      return data as Array<Record<string, string | number | null>>
+    },
+    // don't fetch until a table is selected
+    enabled: selectedTable != null,
+    keepPreviousData: true,
+  })
+
+  const data = useMemo(() => {
+    const rows = query.data
+    if (rows?.[0]) {
+      return {
+        // TODO get column names from backend, getting from the first object
+        // might not always be correct
+        headings: Object.keys(rows[0]),
+        rows,
+      }
+    }
+    return {headings: [], rows: []}
+  }, [query.data])
+
+  return {
+    // since we disable query until a table is selected,
+    // isLoading=true means it's the initial state
+    isInitial: query.isLoading,
+    isFetching: query.isFetching,
+    data,
+  }
 }
 
 const STUB_API_KEY = 'key_01GQHZ4F7GCSFKFWPRZ833PGXP'
