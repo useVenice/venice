@@ -181,7 +181,7 @@ function EmptySources() {
 function VeniceDatabaseSection() {
   return (
     // padding top is used to align againsts the two sides
-    <section className="flex shrink-0 flex-col items-center pt-[2.625rem]">
+    <section className="relative flex shrink-0 flex-col items-center pt-[2.625rem]">
       <Image
         width={86}
         height={112}
@@ -195,7 +195,7 @@ function VeniceDatabaseSection() {
         src="/db-links-line.svg"
         alt="Line for links"
       />
-      <ul className="absolute ml-14 flex flex-col pt-[9.65rem]">
+      <ul className="absolute top-[12.3rem] left-[1.2rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
             href="/data"
