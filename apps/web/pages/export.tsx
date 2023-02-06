@@ -1,3 +1,4 @@
+import {useQuery} from '@tanstack/react-query'
 import {
   Button,
   Card,
@@ -20,19 +21,66 @@ import {useEffect, useState} from 'react'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
+import {browserSupabase} from '../contexts/common-contexts'
+
+const PREVIEW_LIMIT = 8
+const DOWNLOAD_LIMIT = 100
 
 export default function Page() {
-  const [selectedQuery, selectQuery] = useState<string>()
-  const data = useFakeData(selectedQuery)
+  const [selectedTable, selectTable] = useState<string>()
+
+  const preview = useQuery({
+    queryKey: ['export.preview', selectedTable],
+    queryFn: async () => {
+      if (!selectedTable) {
+        return []
+      }
+
+      const {data, error: postgresError} = await browserSupabase
+        .from(selectedTable)
+        .select()
+        .limit(PREVIEW_LIMIT)
+
+      if (postgresError) {
+        console.error('------------------')
+        console.error(postgresError)
+        console.error('------------------')
+        throw new Error(postgresError.message)
+      }
+      console.log(data)
+      return data as Array<Record<string, string | number | null>>
+    },
+    // don't fetch until a query is selected
+    enabled: selectedTable != null,
+  })
+
+  const data: DataPreviewTableProps['data'] = {headings: [], rows: []}
+  if (preview.data?.[0]) {
+    const [firstRow] = preview.data
+    // TODO get column names from backend, getting from the first object
+    // might not always be correct
+    data.headings = Object.keys(firstRow)
+    data.rows = preview.data
+  }
+
+  // error = error
+
+  // loading = isLoading && !data
+
+  // refreshing = isLoading && data
+  // - if there's a data shows it
+  //   and also show "refreshing indicator"
+
+  // const data = useFakeData(selectedQuery)
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
       <div className="p-6">
         <div className="grid grid-cols-[1fr_auto]">
-          <Select value={selectedQuery} onValueChange={selectQuery}>
+          <Select value={selectedTable} onValueChange={selectTable}>
             <SelectTrigger
               className="max-w-[10rem]"
-              placeholder="placeholder…"
+              placeholder="Select a table…"
             />
             <SelectContent>
               <SelectItem value="posting">Posting</SelectItem>
@@ -43,7 +91,11 @@ export default function Page() {
             </SelectContent>
           </Select>
           <div className="flex gap-2">
-            <Button variant="primary" className="gap-1">
+            <Button
+              variant="primary"
+              className="gap-1"
+              disabled={!selectedTable}
+              onClick={() => downloadCsvData(selectedTable)}>
               <DownloadIcon className="h-4 w-4 fill-current text-offwhite" />
               Download
             </Button>
@@ -59,7 +111,7 @@ export default function Page() {
           <DataPreviewTable data={data} />
         </div>
         <div className="mt-12 max-w-[38.5rem]">
-          <SyncSpreadsheetCard />
+          <SyncSpreadsheetCard selectedTable={selectedTable} />
         </div>
       </div>
     </PageLayout>
@@ -73,17 +125,21 @@ interface DataPreviewTableProps {
   }
 }
 
+function EmptyPreviewTable() {
+  return (
+    <div className="grid min-h-[15rem] place-items-center">
+      <p className="font-mono text-lg text-venice-gray-muted">
+        Placeholder - Empty State - No data
+      </p>
+    </div>
+  )
+}
+
 function DataPreviewTable(props: DataPreviewTableProps) {
   const {headings, rows} = props.data
 
   if (rows.length === 0) {
-    return (
-      <div className="grid min-h-[15rem] place-items-center">
-        <p className="font-mono text-lg text-venice-gray-muted">
-          Placeholder - Empty State - No data
-        </p>
-      </div>
-    )
+    return <EmptyPreviewTable />
   }
 
   return (
@@ -107,7 +163,10 @@ function DataPreviewTable(props: DataPreviewTableProps) {
               <td
                 key={c}
                 className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
-                {r[c]}
+                {/* TODO how to ensure fields are not recursively parsed as object from supabase */}
+                {typeof r[c] === 'object' && r[c] !== null
+                  ? JSON.stringify(r[c])
+                  : r[c]}
               </td>
             ))}
           </tr>
@@ -117,9 +176,15 @@ function DataPreviewTable(props: DataPreviewTableProps) {
   )
 }
 
-function SyncSpreadsheetCard() {
-  const inputValue =
-    '=IMPORTDATA(https://app.venice.is/api/sql?format=csv&something=something'
+interface SyncSpreadsheetCardProps {
+  selectedTable?: string
+}
+
+function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
+  const {selectedTable} = props
+  const googleSheetImport = selectedTable
+    ? `=IMPORTDATA(${formatCsvQueryUrl(selectedTable)})`
+    : ''
   return (
     <Card>
       <div className="grid gap-6 p-6">
@@ -145,10 +210,10 @@ function SyncSpreadsheetCard() {
               <div className="-ml-4 flex gap-2 py-2">
                 <input
                   className="h-8 grow truncate rounded-lg bg-venice-black-400 px-2 font-mono text-xs ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-                  value={inputValue}
+                  value={googleSheetImport}
                   readOnly
                 />
-                <CopyTextButton content={inputValue} />
+                <CopyTextButton content={googleSheetImport} />
               </div>
               <li>
                 There is no step 2! Congratulations, your spreadsheet will now
@@ -165,7 +230,10 @@ function SyncSpreadsheetCard() {
               Using Excel, you can treat a Venice CSV file as a local
               &quot;source of truth&quot; which refreshes your spreadsheet every
               time that CSV file is overwritten.{' '}
-              <button className="text-venice-green hover:text-venice-green-darkened">
+              <button
+                className="text-venice-green hover:text-venice-green-darkened"
+                disabled={!selectedTable}
+                onClick={() => downloadCsvData(selectedTable)}>
                 Download your data as a CSV
               </button>{' '}
               file and then{' '}
@@ -188,15 +256,20 @@ interface CopyTextButtonProps {
 }
 
 function CopyTextButton(props: CopyTextButtonProps) {
-  const [isCopied, setCopied] = useState(true)
+  const [isCopied, setCopied] = useState(false)
   const {icon: Icon, text} = isCopied
     ? {icon: CheckCircleFilledIcon, text: 'Copied'}
     : {icon: CopyTextIcon, text: 'Copy'}
 
   async function copyToClipboard() {
     if (navigator) {
-      await navigator.clipboard.writeText(props.content)
-      setCopied(true)
+      try {
+        await navigator.clipboard.writeText(props.content)
+        setCopied(true)
+      } catch (err) {
+        // TODO report via Sentry
+        console.error('Unabled to copy content to clipboard.', err)
+      }
     }
   }
 
@@ -220,142 +293,26 @@ function CopyTextButton(props: CopyTextButtonProps) {
   )
 }
 
-function useFakeData(query?: string): {
-  headings: string[]
-  rows: Array<Record<string, string | number | null>>
-} {
-  switch (query) {
-    case 'institution':
-      return {
-        headings: ['id', 'standard', 'external', 'provider_name'],
-        rows: [
-          {
-            id: 'ins_plaid_ins_13',
-            standard: '{}',
-            external:
-              '{"url": "https://www.pnc.com","logo": "iVBORw0KGgoAAAANSUhEUgAAAJgAAACYCAMAAAAvHNATAAAABGdBTUEAALGPC=","name": "PNC","oauth": false,"products":["assets","balance","transactions","credit_details","income","identity","investments","liabilities"]}',
-            provider_name: 'plaid',
-          },
-          {
-            id: 'ins_plaid_ins_20',
-            standard: '{}',
-            external: '{url: "https://www.citizensbank.com"}',
-            provider_name: 'plaid',
-          },
-          {
-            id: 'ins_plaid_ins_10',
-            standard: '{}',
-            external: '{url: "https://www.americanexpress.com/"}',
-            provider_name: 'plaid',
-          },
-          {
-            id: 'ins_plaid_ins_5',
-            standard: '{}',
-            external: '{url: "https://www.citi.com"}',
-            provider_name: 'plaid',
-          },
-          {
-            id: 'ins_plaid_ins_109508',
-            standard: '{}',
-            external: '{url: "https://www.platypus.com"}',
-            provider_name: 'plaid',
-          },
-        ],
-      }
-    case 'transaction':
-      return {
-        headings: [
-          'id',
-          'date',
-          'description',
-          'payee',
-          'amount_quantity',
-          'amount_unit',
-        ],
-        rows: [
-          {
-            id: 'txn_plaid_MDnKQZAk4jFraay3X7rlTyZqevXw1qSeWQrmv',
-            date: '2023-01-28',
-            description: 'United Airlines',
-            payee: 'United Airlines',
-            amount_quantity: '500',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_gWDmxJ81XPTNRRlA6BNxuGkZ8J5VvZi46KJyl',
-            date: '2023-01-28',
-            description: 'Touchstone Climbing',
-            payee: null,
-            amount_quantity: '-78.5',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_Ae4779deBlHoGpya79JBU7g9Lp17gEio7DGyX',
-            date: '2023-01-28',
-            description: 'United Airlines',
-            payee: 'United Airlines',
-            amount_quantity: '500',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_yjDmmboj8aslJRGp3dnKUdov6LydoWFD9mN5d',
-            date: '2023-01-28',
-            description: 'Touchstone Climbing',
-            payee: null,
-            amount_quantity: '-78.5',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_xPRbbXpPQdI1kMomLRJJiJNLLnN8vEcJExBbg',
-            date: '2023-01-29',
-            description: 'CD DEPOSIT .INITIAL.',
-            payee: null,
-            amount_quantity: '-1000',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_aMPxx3wMmEu9bEQ5z8WWC1p77dpQgvi1983MG',
-            date: '2023-01-29',
-            description: 'ACH Electronic CreditGUSTO PAY 123456',
-            payee: null,
-            amount_quantity: '-5850',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_KEy88VMEleHJ9Na1ylzXtR4jBB9vzxCm6rejr',
-            date: '2023-01-30',
-            description: 'Uber 063015 SF**POOL**',
-            payee: 'Uber',
-            amount_quantity: '-5.4',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_xPRbbXpPQdI1kMomLRJrulKzRR1j5DuA9LxZr',
-            date: '2023-01-30',
-            description: 'CREDIT CARD 3333 PAYMENT *//',
-            payee: null,
-            amount_quantity: '-25',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_Bbo3B5Q7ZDCjGGkMbWjwHXjBJoo8gQCLMwLNe',
-            date: '2023-01-29',
-            description: 'CD DEPOSIT .INITIAL.',
-            payee: null,
-            amount_quantity: '-1000',
-            amount_unit: 'USD',
-          },
-          {
-            id: 'txn_plaid_xn6Q8XPzqguz669J7ozyc75M3GG4ZvUA4nAvx',
-            date: '2023-01-29',
-            description: 'ACH Electronic CreditGUSTO PAY 123456',
-            payee: null,
-            amount_quantity: '-5850',
-            amount_unit: 'USD',
-          },
-        ],
-      }
-    default:
-      return {headings: [], rows: []}
+const STUB_API_KEY = 'key_01GQHZ4F7GCSFKFWPRZ833PGXP'
+
+function formatCsvQueryUrl(
+  table: string,
+  option: {download: boolean} = {download: false},
+) {
+  const url = new URL('/api/sql', window.location.origin)
+  const params = new URLSearchParams({
+    apiKey: STUB_API_KEY,
+    format: 'csv',
+    q: `SELECT * FROM ${table} LIMIT ${DOWNLOAD_LIMIT}`,
+  })
+  if (option.download) {
+    params.set('dl', '1')
+  }
+  return `${url}?${params}`
+}
+
+function downloadCsvData(selectedTable?: string): void {
+  if (selectedTable) {
+    window.open(formatCsvQueryUrl(selectedTable, {download: true}))
   }
 }
