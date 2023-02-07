@@ -9,7 +9,6 @@ import {
 } from '@usevenice/ui'
 
 import {
-  BankIcon,
   CheckCircleFilledIcon,
   CodeIcon,
   CopyTextIcon,
@@ -17,16 +16,13 @@ import {
   SyncIcon,
 } from '@usevenice/ui/icons'
 
-import {useQuery} from '@tanstack/react-query'
-import clsx from 'clsx'
 import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
-import type {ReactNode} from 'react'
-import {useEffect, useMemo, useState} from 'react'
+import {useEffect, useState} from 'react'
+import {PreviewResult, usePreviewQuery} from '../components/export'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
-import {browserSupabase} from '../contexts/common-contexts'
 
 const PREVIEW_LIMIT = 8
 const DOWNLOAD_LIMIT = 100
@@ -52,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 export default function Page(props: ServerSideProps) {
   const {apiKey} = props
   const [selectedTable, selectTable] = useState<string>()
-  const preview = usePreviewData(selectedTable)
+  const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
@@ -100,141 +96,6 @@ export default function Page(props: ServerSideProps) {
         </div>
       </div>
     </PageLayout>
-  )
-}
-
-interface PreviewResultProps {
-  data: {
-    headings: string[]
-    rows: Array<Record<string, string | number | null>>
-  }
-  isFetching: boolean
-  isInitial: boolean
-}
-
-function PreviewResult(props: PreviewResultProps) {
-  const {data, isFetching, isInitial} = props
-  const {headings, rows} = data
-
-  if (isInitial) {
-    return isFetching ? (
-      <LoadingPreviewResult />
-    ) : (
-      <EmptyPreviewResult
-        title="No results found."
-        action={
-          <p className="max-w-[14rem] text-center">
-            <Link
-              className="text-venice-green hover:text-venice-green-darkened"
-              href="/connections">
-              Please connect more financial institutions.
-            </Link>
-          </p>
-        }
-      />
-    )
-  }
-
-  if (rows.length === 0) {
-    return (
-      <EmptyPreviewResult
-        title="No results found."
-        action={
-          <p className="max-w-[14rem] text-center">
-            <Link
-              className="text-venice-green hover:text-venice-green-darkened"
-              href="/connections">
-              Please connect more financial institutions.
-            </Link>
-          </p>
-        }
-      />
-    )
-  }
-
-  return (
-    <table className="min-w-full divide-y divide-venice-gray-muted">
-      <thead>
-        <tr>
-          {headings.map((c) => (
-            <th
-              key={c}
-              scope="col"
-              className="p-2 text-left font-mono text-xs font-normal uppercase text-venice-gray-muted">
-              {c}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody
-        className={clsx(
-          'divide-y divide-venice-gray-muted/50 transition-opacity',
-          isFetching && 'opacity-70',
-        )}>
-        {rows.map((r) => (
-          <tr key={r['id']}>
-            {headings.map((c) => (
-              <td
-                key={c}
-                className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
-                {/* TODO how to ensure fields are not recursively parsed as object from supabase */}
-                {typeof r[c] === 'object' && r[c] !== null
-                  ? JSON.stringify(r[c])
-                  : r[c]}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
-}
-
-interface EmptyPreviewResultProps {
-  title: string
-  action: ReactNode
-}
-
-function EmptyPreviewResult(props: EmptyPreviewResultProps) {
-  const {title, action} = props
-  return (
-    <Card>
-      <div className="flex flex-col items-center gap-8 p-8">
-        <BankIcon className="h-8 w-8 fill-venice-gray-muted" />
-        <h3 className="text-venice-gray-muted">{title}</h3>
-        {action}
-      </div>
-    </Card>
-  )
-}
-
-function LoadingPreviewResult() {
-  return (
-    <ul className="w-full animate-pulse will-change-auto">
-      <LoadingPreviewRow bgColor="bg-venice-black-500" />
-      <LoadingPreviewRow bgColor="bg-venice-black-400" />
-      <LoadingPreviewRow bgColor="bg-venice-black-300" />
-    </ul>
-  )
-}
-
-interface LoadingPreviewRowProps {
-  // tailwind bg-{color}
-  bgColor: string
-}
-
-function LoadingPreviewRow(props: LoadingPreviewRowProps) {
-  const {bgColor} = props
-  const square = <div className={clsx('h-4 w-4 rounded', bgColor)} />
-  const rect = <div className={clsx('h-4 w-[5rem] rounded', bgColor)} />
-  return (
-    <li className="flex justify-between border-b border-venice-gray-muted/50">
-      <div className="shrink-0 py-2 px-3">{square}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow-[3] justify-center py-2 px-3">{rect}</div>
-    </li>
   )
 }
 
@@ -354,51 +215,6 @@ function CopyTextButton(props: CopyTextButtonProps) {
       <span>{text}</span>
     </Button>
   )
-}
-
-function usePreviewData(selectedTable?: string): PreviewResultProps {
-  const query = useQuery({
-    queryKey: ['export.preview', selectedTable],
-    queryFn: async () => {
-      if (!selectedTable) {
-        return []
-      }
-
-      const {data, error: postgresError} = await browserSupabase
-        .from(selectedTable)
-        .select()
-        .limit(PREVIEW_LIMIT)
-
-      if (postgresError) {
-        throw new Error(postgresError.message)
-      }
-      return data as Array<Record<string, string | number | null>>
-    },
-    // don't fetch until a table is selected
-    enabled: selectedTable != null,
-    keepPreviousData: true,
-  })
-
-  const data = useMemo(() => {
-    const rows = query.data
-    if (rows?.[0]) {
-      return {
-        // TODO get column names from backend, getting from the first object
-        // might not always be correct
-        headings: Object.keys(rows[0]),
-        rows,
-      }
-    }
-    return {headings: [], rows: []}
-  }, [query.data])
-
-  return {
-    // since we disable query until a table is selected,
-    // isLoading=true means it's the initial state
-    isInitial: query.isLoading,
-    isFetching: query.isFetching,
-    data,
-  }
 }
 
 function formatCsvQueryUrl({
