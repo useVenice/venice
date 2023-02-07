@@ -13,7 +13,7 @@ export function CircularProgress(props: CircularProgressProps) {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="3 3 18 18"
         className={twMerge(
-          'animate-spin fill-offwhite text-venice-gray-muted',
+          'animate-spin fill-venice-green text-venice-gray-muted',
           props.className,
         )}
         aria-hidden="true">
