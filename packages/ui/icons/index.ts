@@ -1,5 +1,6 @@
 export * from './AddFilledIcon'
 export * from './ArrowLeftRightIcon'
+export * from './BankIcon'
 export * from './CheckCircleFilledIcon'
 export * from './CheckIcon'
 export * from './ChevronDownIcon'

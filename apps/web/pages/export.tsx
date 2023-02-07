@@ -9,6 +9,7 @@ import {
 } from '@usevenice/ui'
 
 import {
+  BankIcon,
   CheckCircleFilledIcon,
   CodeIcon,
   CopyTextIcon,
@@ -17,9 +18,10 @@ import {
 } from '@usevenice/ui/icons'
 
 import {useQuery} from '@tanstack/react-query'
-import {twMerge} from 'tailwind-merge'
 import Link from 'next/link'
+import type {ReactNode} from 'react'
 import {useEffect, useMemo, useState} from 'react'
+import clsx from 'clsx'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -70,10 +72,10 @@ export default function Page() {
             </Button>
           </div>
         </div>
-        <div className="mt-6 overflow-x-auto">
-          <DataPreviewTable {...preview} />
+        <div className="mt-6 min-h-[15rem] overflow-x-auto">
+          <PreviewResult {...preview} />
         </div>
-        <div className="mt-12 max-w-[38.5rem]">
+        <div className="mt-6 max-w-[38.5rem]">
           <SyncSpreadsheetCard selectedTable={selectedTable} />
         </div>
       </div>
@@ -81,7 +83,7 @@ export default function Page() {
   )
 }
 
-interface DataPreviewTableProps {
+interface PreviewResultProps {
   data: {
     headings: string[]
     rows: Array<Record<string, string | number | null>>
@@ -90,27 +92,43 @@ interface DataPreviewTableProps {
   isInitial: boolean
 }
 
-function DataPreviewTable(props: DataPreviewTableProps) {
+function PreviewResult(props: PreviewResultProps) {
   const {data, isFetching, isInitial} = props
   const {headings, rows} = data
 
   if (isInitial) {
-    return (
-      <div className="grid min-h-[15rem] place-items-center">
-        <p className="font-mono text-lg text-venice-gray-muted">
-          Placeholder - Initial State - Try selecting a table…
-        </p>
-      </div>
+    return isFetching ? (
+      <LoadingPreviewResult />
+    ) : (
+      <EmptyPreviewResult
+        title="No results found."
+        action={
+          <p className="max-w-[14rem] text-center">
+            <Link
+              className="text-venice-green hover:text-venice-green-darkened"
+              href="/connections">
+              Please connect more financial institutions.
+            </Link>
+          </p>
+        }
+      />
     )
   }
 
   if (rows.length === 0) {
     return (
-      <div className="grid min-h-[15rem] place-items-center">
-        <p className="font-mono text-lg text-venice-gray-muted">
-          Placeholder - Empty State - No data
-        </p>
-      </div>
+      <EmptyPreviewResult
+        title="No results found."
+        action={
+          <p className="max-w-[14rem] text-center">
+            <Link
+              className="text-venice-green hover:text-venice-green-darkened"
+              href="/connections">
+              Please connect more financial institutions.
+            </Link>
+          </p>
+        }
+      />
     )
   }
 
@@ -129,7 +147,7 @@ function DataPreviewTable(props: DataPreviewTableProps) {
         </tr>
       </thead>
       <tbody
-        className={twMerge(
+        className={clsx(
           'divide-y divide-venice-gray-muted/50 transition-opacity',
           isFetching && 'opacity-70',
         )}>
@@ -149,6 +167,54 @@ function DataPreviewTable(props: DataPreviewTableProps) {
         ))}
       </tbody>
     </table>
+  )
+}
+
+interface EmptyPreviewResultProps {
+  title: string
+  action: ReactNode
+}
+
+function EmptyPreviewResult(props: EmptyPreviewResultProps) {
+  const {title, action} = props
+  return (
+    <Card>
+      <div className="flex flex-col items-center gap-8 p-8">
+        <BankIcon className="h-8 w-8 fill-venice-gray-muted" />
+        <h3 className="text-venice-gray-muted">{title}</h3>
+        {action}
+      </div>
+    </Card>
+  )
+}
+
+function LoadingPreviewResult() {
+  return (
+    <ul className="w-full animate-pulse will-change-auto">
+      <LoadingPreviewRow bgColor="bg-venice-black-500" />
+      <LoadingPreviewRow bgColor="bg-venice-black-400" />
+      <LoadingPreviewRow bgColor="bg-venice-black-300" />
+    </ul>
+  )
+}
+
+interface LoadingPreviewRowProps {
+  // tailwind bg-{color}
+  bgColor: string
+}
+
+function LoadingPreviewRow(props: LoadingPreviewRowProps) {
+  const {bgColor} = props
+  const square = <div className={clsx('h-4 w-4 rounded', bgColor)} />
+  const rect = <div className={clsx('h-4 w-[5rem] rounded', bgColor)} />
+  return (
+    <li className="flex justify-between border-b border-venice-gray-muted/50">
+      <div className="shrink-0 py-2 px-3">{square}</div>
+      <div className="flex grow justify-center py-2 px-3">{rect}</div>
+      <div className="flex grow justify-center py-2 px-3">{rect}</div>
+      <div className="flex grow justify-center py-2 px-3">{rect}</div>
+      <div className="flex grow-[3] justify-center py-2 px-3">{rect}</div>
+    </li>
   )
 }
 
@@ -269,7 +335,7 @@ function CopyTextButton(props: CopyTextButtonProps) {
   )
 }
 
-function usePreviewData(selectedTable?: string): DataPreviewTableProps {
+function usePreviewData(selectedTable?: string): PreviewResultProps {
   const query = useQuery({
     queryKey: ['export.preview', selectedTable],
     queryFn: async () => {
