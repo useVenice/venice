@@ -18,10 +18,11 @@ import {
 } from '@usevenice/ui/icons'
 
 import {useQuery} from '@tanstack/react-query'
+import clsx from 'clsx'
+import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import type {ReactNode} from 'react'
 import {useEffect, useMemo, useState} from 'react'
-import clsx from 'clsx'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -30,7 +31,26 @@ import {browserSupabase} from '../contexts/common-contexts'
 const PREVIEW_LIMIT = 8
 const DOWNLOAD_LIMIT = 100
 
-export default function Page() {
+interface ServerSideProps {
+  apiKey: string
+}
+
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  ctx,
+) => {
+  const {serverGetUser} = await import('../server')
+  const user = await serverGetUser(ctx)
+
+  const {z} = await import('@usevenice/util')
+  const apiKey = z.string().parse(user?.user_metadata?.['apiKey'])
+
+  return {
+    props: {apiKey},
+  }
+}
+
+export default function Page(props: ServerSideProps) {
+  const {apiKey} = props
   const [selectedTable, selectTable] = useState<string>()
   const preview = usePreviewData(selectedTable)
   return (
@@ -60,7 +80,7 @@ export default function Page() {
               variant="primary"
               className="gap-1"
               disabled={!selectedTable}
-              onClick={() => downloadCsvData(selectedTable)}>
+              onClick={() => downloadCsvData({apiKey, selectedTable})}>
               <DownloadIcon className="h-4 w-4 fill-current text-offwhite" />
               Download
             </Button>
@@ -76,7 +96,7 @@ export default function Page() {
           <PreviewResult {...preview} />
         </div>
         <div className="mt-6 max-w-[38.5rem]">
-          <SyncSpreadsheetCard selectedTable={selectedTable} />
+          <SyncSpreadsheetCard apiKey={apiKey} selectedTable={selectedTable} />
         </div>
       </div>
     </PageLayout>
@@ -219,13 +239,14 @@ function LoadingPreviewRow(props: LoadingPreviewRowProps) {
 }
 
 interface SyncSpreadsheetCardProps {
+  apiKey: string
   selectedTable?: string
 }
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
-  const {selectedTable} = props
+  const {apiKey, selectedTable} = props
   const googleSheetImport = selectedTable
-    ? `=IMPORTDATA(${formatCsvQueryUrl(selectedTable)})`
+    ? `=IMPORTDATA(${formatCsvQueryUrl({apiKey, table: selectedTable})})`
     : ''
   return (
     <Card>
@@ -275,7 +296,7 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
               <button
                 className="text-venice-green hover:text-venice-green-darkened"
                 disabled={!selectedTable}
-                onClick={() => downloadCsvData(selectedTable)}>
+                onClick={() => downloadCsvData({apiKey, selectedTable})}>
                 Download your data as a CSV
               </button>{' '}
               file and then{' '}
@@ -380,26 +401,37 @@ function usePreviewData(selectedTable?: string): PreviewResultProps {
   }
 }
 
-const STUB_API_KEY = 'key_01GQHZ4F7GCSFKFWPRZ833PGXP'
-
-function formatCsvQueryUrl(
-  table: string,
-  option: {download: boolean} = {download: false},
-) {
+function formatCsvQueryUrl({
+  apiKey,
+  table,
+  download = false,
+}: {
+  apiKey: string
+  table: string
+  download?: boolean
+}) {
   const url = new URL('/api/sql', window.location.origin)
   const params = new URLSearchParams({
-    apiKey: STUB_API_KEY,
+    apiKey,
     format: 'csv',
     q: `SELECT * FROM ${table} LIMIT ${DOWNLOAD_LIMIT}`,
   })
-  if (option.download) {
+  if (download) {
     params.set('dl', '1')
   }
   return `${url}?${params}`
 }
 
-function downloadCsvData(selectedTable?: string): void {
+function downloadCsvData({
+  apiKey,
+  selectedTable,
+}: {
+  apiKey: string
+  selectedTable?: string
+}): void {
   if (selectedTable) {
-    window.open(formatCsvQueryUrl(selectedTable, {download: true}))
+    window.open(
+      formatCsvQueryUrl({apiKey, table: selectedTable, download: true}),
+    )
   }
 }
