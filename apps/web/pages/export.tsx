@@ -49,7 +49,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 export default function Page(props: ServerSideProps) {
   const {serverUrl, apiKey} = props
-  const [selectedTable, selectTable] = useState<string>()
+  const [selectedTable, selectTable] = useState<string>('transaction')
   const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
   const isEmptyResult = preview.data.isEmpty
   return (
