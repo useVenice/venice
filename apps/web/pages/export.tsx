@@ -111,6 +111,9 @@ interface SyncSpreadsheetCardProps {
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
   const {apiKey, isEmptyResult, selectedTable} = props
+  if (!selectedTable) {
+    return <></>
+  }
   const googleSheetImport = selectedTable
     ? `=IMPORTDATA(${formatCsvQueryUrl({apiKey, table: selectedTable})})`
     : ''
@@ -161,7 +164,7 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
               time that CSV file is overwritten.{' '}
               <button
                 className="text-venice-green hover:text-venice-green-darkened disabled:cursor-default disabled:hover:text-venice-green"
-                disabled={!selectedTable || isEmptyResult}
+                disabled={isEmptyResult}
                 onClick={() => downloadCsvData({apiKey, selectedTable})}>
                 Download your data as a CSV
               </button>{' '}
