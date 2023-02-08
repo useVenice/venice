@@ -11,19 +11,19 @@ export function CircularProgress(props: CircularProgressProps) {
     <div role="status">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="3 3 18 18"
+        viewBox="0 0 18 18"
         className={twMerge(
-          'animate-spin fill-venice-green text-venice-gray-muted',
+          'animate-spin fill-venice-green text-venice-black-400',
           props.className,
         )}
         aria-hidden="true">
         <path
-          d="M12 5C8.13401 5 5 8.13401 5 12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12C19 8.13401 15.866 5 12 5ZM3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z"
           fill="currentColor"
+          d="M9 3.357a5.643 5.643 0 1 0 0 11.286A5.643 5.643 0 0 0 9 3.357ZM5.693 1.015a8.643 8.643 0 1 1 6.614 15.97 8.643 8.643 0 0 1-6.614-15.97Z"
         />
         <path
-          d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z"
           fill="currentFill"
+          d="M9.883 3.427A5.643 5.643 0 0 0 5.01 5.01a1.5 1.5 0 0 1-2.121-2.121 8.643 8.643 0 1 1 7.463 14.647 1.5 1.5 0 0 1-.47-2.963 5.643 5.643 0 0 0 0-11.146Z"
         />
       </svg>
       <span className="sr-only">Loading…</span>
