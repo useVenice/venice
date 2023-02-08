@@ -14,13 +14,13 @@ export function PreviewResult(props: PreviewQuery) {
       <LoadingPreviewResult />
     ) : (
       <EmptyPreviewResult
-        title="No results found."
+        title="Select a table to export from!"
         action={
           <p className="max-w-[14rem] text-center">
             <Link
               className="text-venice-green hover:text-venice-green-darkened"
               href="/connections">
-              Please connect more financial institutions.
+              Or, connect more financial institutions.
             </Link>
           </p>
         }
