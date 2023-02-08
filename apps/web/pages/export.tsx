@@ -48,6 +48,7 @@ export default function Page(props: ServerSideProps) {
   const {apiKey} = props
   const [selectedTable, selectTable] = useState<string>()
   const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
+  const isEmptyResult = preview.data.isEmpty
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
@@ -74,7 +75,7 @@ export default function Page(props: ServerSideProps) {
             <Button
               variant="primary"
               className="gap-1"
-              disabled={!selectedTable}
+              disabled={!selectedTable || isEmptyResult}
               onClick={() => downloadCsvData({apiKey, selectedTable})}>
               <DownloadIcon className="h-4 w-4 fill-current text-offwhite" />
               Download
@@ -91,7 +92,11 @@ export default function Page(props: ServerSideProps) {
           <PreviewResult {...preview} />
         </div>
         <div className="mt-6 max-w-[38.5rem]">
-          <SyncSpreadsheetCard apiKey={apiKey} selectedTable={selectedTable} />
+          <SyncSpreadsheetCard
+            apiKey={apiKey}
+            isEmptyResult={isEmptyResult}
+            selectedTable={selectedTable}
+          />
         </div>
       </div>
     </PageLayout>
@@ -100,11 +105,12 @@ export default function Page(props: ServerSideProps) {
 
 interface SyncSpreadsheetCardProps {
   apiKey: string
+  isEmptyResult: boolean
   selectedTable?: string
 }
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
-  const {apiKey, selectedTable} = props
+  const {apiKey, isEmptyResult, selectedTable} = props
   const googleSheetImport = selectedTable
     ? `=IMPORTDATA(${formatCsvQueryUrl({apiKey, table: selectedTable})})`
     : ''
@@ -154,8 +160,8 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
               &quot;source of truth&quot; which refreshes your spreadsheet every
               time that CSV file is overwritten.{' '}
               <button
-                className="text-venice-green hover:text-venice-green-darkened"
-                disabled={!selectedTable}
+                className="text-venice-green hover:text-venice-green-darkened disabled:cursor-default disabled:hover:text-venice-green"
+                disabled={!selectedTable || isEmptyResult}
                 onClick={() => downloadCsvData({apiKey, selectedTable})}>
                 Download your data as a CSV
               </button>{' '}

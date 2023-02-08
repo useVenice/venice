@@ -4,6 +4,7 @@ import {browserSupabase} from '../../contexts/common-contexts'
 
 export interface PreviewQuery {
   data: {
+    isEmpty: boolean
     headings: string[]
     rows: Array<Record<string, string | number | null>>
     totalCount: number
@@ -21,7 +22,7 @@ export function usePreviewQuery({
 }): PreviewQuery {
   interface QueryResult {
     rows: Array<Record<string, string | number | null>>
-    totalCount: number | null
+    totalCount: number
   }
 
   const query = useQuery<QueryResult>({
@@ -44,7 +45,7 @@ export function usePreviewQuery({
       }
       return {
         rows: data as Array<Record<string, string | number | null>>,
-        totalCount: count,
+        totalCount: count ?? 0,
       }
     },
     // don't fetch until a table is selected
@@ -53,11 +54,12 @@ export function usePreviewQuery({
   })
 
   const data = useMemo(() => {
-    const {rows = [], totalCount} = query.data ?? {}
+    const {rows = [], totalCount = 0} = query.data ?? {}
 
     // not very explicit & readable but to appease the type
     if (!rows[0]) {
       return {
+        isEmpty: true,
         headings: [],
         rows: [],
         totalCount: 0,
@@ -65,12 +67,12 @@ export function usePreviewQuery({
     }
 
     return {
+      isEmpty: rows.length === 0,
       // TODO get column names from backend, getting from the first object
       // might not always be correct
       headings: Object.keys(rows[0]),
       rows,
-      // is it correct to default totalCount to 0 instead of surface null
-      totalCount: totalCount ?? 0,
+      totalCount,
     }
   }, [query.data])
 
