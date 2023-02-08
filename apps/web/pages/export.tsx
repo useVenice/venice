@@ -25,7 +25,6 @@ import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
 const PREVIEW_LIMIT = 8
-const DOWNLOAD_LIMIT = 100
 
 interface ServerSideProps {
   apiKey: string
@@ -230,7 +229,7 @@ function formatCsvQueryUrl({
   const params = new URLSearchParams({
     apiKey,
     format: 'csv',
-    q: `SELECT * FROM ${table} LIMIT ${DOWNLOAD_LIMIT}`,
+    q: `SELECT * FROM ${table}`,
   })
   if (download) {
     params.set('dl', '1')
