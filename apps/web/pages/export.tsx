@@ -192,7 +192,7 @@ function CopyTextButton(props: CopyTextButtonProps) {
         setCopied(true)
       } catch (err) {
         // TODO report via Sentry
-        console.error('Unabled to copy content to clipboard.', err)
+        console.error('Unable to copy content to clipboard.', err)
       }
     }
   }
