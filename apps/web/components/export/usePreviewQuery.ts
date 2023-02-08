@@ -6,6 +6,7 @@ export interface PreviewQuery {
   data: {
     headings: string[]
     rows: Array<Record<string, string | number | null>>
+    totalCount: number
   }
   isFetching: boolean
   isInitial: boolean
@@ -18,22 +19,33 @@ export function usePreviewQuery({
   table?: string
   limit: number
 }): PreviewQuery {
-  const query = useQuery({
+  interface QueryResult {
+    rows: Array<Record<string, string | number | null>>
+    totalCount: number | null
+  }
+
+  const query = useQuery<QueryResult>({
     queryKey: ['export.preview', table],
     queryFn: async () => {
       if (!table) {
-        return []
+        return {
+          rows: [],
+          totalCount: 0,
+        }
       }
 
-      const {data, error: postgresError} = await browserSupabase
+      const {count, data, error} = await browserSupabase
         .from(table)
-        .select()
+        .select('*', {count: 'exact'})
         .limit(limit)
 
-      if (postgresError) {
-        throw new Error(postgresError.message)
+      if (error) {
+        throw new Error(error.message)
       }
-      return data as Array<Record<string, string | number | null>>
+      return {
+        rows: data as Array<Record<string, string | number | null>>,
+        totalCount: count,
+      }
     },
     // don't fetch until a table is selected
     enabled: table != null,
@@ -41,16 +53,25 @@ export function usePreviewQuery({
   })
 
   const data = useMemo(() => {
-    const rows = query.data
-    if (rows?.[0]) {
+    const {rows = [], totalCount} = query.data ?? {}
+
+    // not very explicit & readable but to appease the type
+    if (!rows[0]) {
       return {
-        // TODO get column names from backend, getting from the first object
-        // might not always be correct
-        headings: Object.keys(rows[0]),
-        rows,
+        headings: [],
+        rows: [],
+        totalCount: 0,
       }
     }
-    return {headings: [], rows: []}
+
+    return {
+      // TODO get column names from backend, getting from the first object
+      // might not always be correct
+      headings: Object.keys(rows[0]),
+      rows,
+      // is it correct to default totalCount to 0 instead of surface null
+      totalCount: totalCount ?? 0,
+    }
   }, [query.data])
 
   return {
