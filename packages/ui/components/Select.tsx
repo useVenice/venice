@@ -2,7 +2,7 @@ import * as Radix from '@radix-ui/react-select'
 import type {ElementRef, ReactNode} from 'react'
 import {forwardRef} from 'react'
 import {twMerge} from 'tailwind-merge'
-import {CheckIcon, ChevronDownIcon} from '../icons'
+import {CheckIcon, ChevronDownIcon, ChevronUpIcon} from '../icons'
 
 export {Select, SelectGroup, SelectLabel} from '@radix-ui/react-select'
 
@@ -34,7 +34,6 @@ export const SelectTrigger = forwardRef<TriggerRef, TriggerProps>(
 type ContentRef = ElementRef<typeof Radix.Content>
 type ContentProps = Radix.SelectContentProps
 
-// TODO use SelectScrollUpButton and SelectScrollDownButton
 export const SelectContent = forwardRef<ContentRef, ContentProps>(
   function SelectContent(props, ref) {
     const {children, className, ...contentProps} = props
@@ -43,13 +42,19 @@ export const SelectContent = forwardRef<ContentRef, ContentProps>(
         <Radix.SelectContent
           ref={ref}
           className={twMerge(
-            'min-w-[8rem] animate-slide-down overflow-hidden rounded-lg border border-venice-black-300 bg-venice-black-500 px-1 py-2 text-sm drop-shadow-md animate-in fade-in-80',
+            'min-w-[8rem] animate-slide-down overflow-hidden rounded-lg border border-venice-black-300 bg-venice-black-500 text-sm drop-shadow-md animate-in fade-in-80',
             className,
           )}
           {...contentProps}>
-          <Radix.SelectViewport className="grid gap-1">
+          <Radix.SelectScrollUpButton className="grid cursor-default place-items-center bg-venice-black-500 p-1">
+            <ChevronUpIcon className="h-3 w-3 fill-offwhite" />
+          </Radix.SelectScrollUpButton>
+          <Radix.SelectViewport className="grid gap-1 p-1">
             {children}
           </Radix.SelectViewport>
+          <Radix.SelectScrollDownButton className="grid cursor-default place-items-center bg-venice-black-500 p-1">
+            <ChevronDownIcon className="h-3 w-3 fill-offwhite" />
+          </Radix.SelectScrollDownButton>
         </Radix.SelectContent>
       </Radix.SelectPortal>
     )
