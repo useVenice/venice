@@ -19,6 +19,7 @@ import {
 import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {useEffect, useState} from 'react'
+import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {PreviewResult, usePreviewQuery} from '../components/export'
 import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
@@ -27,6 +28,7 @@ import {PageLayout} from '../components/PageLayout'
 const PREVIEW_LIMIT = 8
 
 interface ServerSideProps {
+  serverUrl: string
   apiKey: string
 }
 
@@ -37,15 +39,16 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   const user = await serverGetUser(ctx)
 
   const {z} = await import('@usevenice/util')
+  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
   const apiKey = z.string().parse(user?.user_metadata?.['apiKey'])
 
   return {
-    props: {apiKey},
+    props: {serverUrl, apiKey},
   }
 }
 
 export default function Page(props: ServerSideProps) {
-  const {apiKey} = props
+  const {serverUrl, apiKey} = props
   const [selectedTable, selectTable] = useState<string>()
   const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
   const isEmptyResult = preview.data.isEmpty
@@ -76,7 +79,9 @@ export default function Page(props: ServerSideProps) {
               variant="primary"
               className="gap-1"
               disabled={!selectedTable || isEmptyResult}
-              onClick={() => downloadCsvData({apiKey, selectedTable})}>
+              onClick={() =>
+                downloadCsvData({serverUrl, apiKey, selectedTable})
+              }>
               <DownloadIcon className="h-4 w-4 fill-current text-offwhite" />
               Download
             </Button>
@@ -93,6 +98,7 @@ export default function Page(props: ServerSideProps) {
         </div>
         <div className="mt-6 max-w-[38.5rem]">
           <SyncSpreadsheetCard
+            serverUrl={serverUrl}
             apiKey={apiKey}
             isEmptyResult={isEmptyResult}
             selectedTable={selectedTable}
@@ -104,18 +110,23 @@ export default function Page(props: ServerSideProps) {
 }
 
 interface SyncSpreadsheetCardProps {
+  serverUrl: string
   apiKey: string
   isEmptyResult: boolean
   selectedTable?: string
 }
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
-  const {apiKey, isEmptyResult, selectedTable} = props
+  const {serverUrl, apiKey, isEmptyResult, selectedTable} = props
   if (!selectedTable) {
     return <></>
   }
   const googleSheetImport = selectedTable
-    ? `=IMPORTDATA(${formatCsvQueryUrl({apiKey, table: selectedTable})})`
+    ? `=IMPORTDATA(${formatCsvQueryUrl({
+        serverUrl,
+        apiKey,
+        table: selectedTable,
+      })})`
     : ''
   return (
     <Card>
@@ -165,7 +176,9 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
               <button
                 className="text-venice-green hover:text-venice-green-darkened disabled:cursor-default disabled:hover:text-venice-green"
                 disabled={isEmptyResult}
-                onClick={() => downloadCsvData({apiKey, selectedTable})}>
+                onClick={() =>
+                  downloadCsvData({serverUrl, apiKey, selectedTable})
+                }>
                 Download your data as a CSV
               </button>{' '}
               file and then{' '}
@@ -226,15 +239,18 @@ function CopyTextButton(props: CopyTextButtonProps) {
 }
 
 function formatCsvQueryUrl({
+  serverUrl,
   apiKey,
   table,
   download = false,
 }: {
+  serverUrl: string
   apiKey: string
   table: string
   download?: boolean
 }) {
-  const url = new URL('/api/sql', window.location.origin)
+  const baseUrl = new URL(serverUrl)
+  const url = new URL('/api/sql', baseUrl)
   const params = new URLSearchParams({
     apiKey,
     format: 'csv',
@@ -247,15 +263,22 @@ function formatCsvQueryUrl({
 }
 
 function downloadCsvData({
+  serverUrl,
   apiKey,
   selectedTable,
 }: {
+  serverUrl: string
   apiKey: string
   selectedTable?: string
 }): void {
   if (selectedTable) {
     window.open(
-      formatCsvQueryUrl({apiKey, table: selectedTable, download: true}),
+      formatCsvQueryUrl({
+        serverUrl,
+        apiKey,
+        table: selectedTable,
+        download: true,
+      }),
     )
   }
 }
