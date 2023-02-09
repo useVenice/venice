@@ -16,7 +16,7 @@ const mainNavigation = [
     href: '/connections',
     icon: ArrowLeftRightIcon,
   },
-  {name: 'Export Data', href: '/data', icon: ExportIcon},
+  {name: 'Export Data', href: '/export', icon: ExportIcon},
   {
     name: 'API Access',
     href: '/api-access',

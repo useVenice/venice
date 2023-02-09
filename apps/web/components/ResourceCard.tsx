@@ -1,3 +1,5 @@
+import type {CardProps} from '@usevenice/ui'
+import {Card} from '@usevenice/ui'
 import clsx from 'clsx'
 import type {PropsWithChildren} from 'react'
 
@@ -5,22 +7,23 @@ type TagColor = keyof typeof tagColorMap
 type ResourceCardProps = PropsWithChildren<{
   tagColor: TagColor
   // tailwind bg- classname
-  bgColor?: string
+  bgColor?: CardProps['bgColor']
 }>
 
 export function ResourceCard(props: ResourceCardProps) {
   const {bgColor = 'bg-venice-black-400', children, tagColor} = props
   return (
-    <div
-      className={clsx(
-        'relative min-h-[6.5rem] overflow-hidden rounded-lg ring-1 ring-inset ring-venice-black-300',
-        // allow children to fill the height or align vertically center
-        'grid',
-        bgColor,
-      )}>
-      <Tag tagColor={tagColor} />
-      {children}
-    </div>
+    <Card bgColor={bgColor}>
+      <div
+        className={clsx(
+          'relative min-h-[6.5rem] rounded-lg',
+          // allow children to fill the height or align vertically center
+          'grid',
+        )}>
+        <Tag tagColor={tagColor} />
+        {children}
+      </div>
+    </Card>
   )
 }
 

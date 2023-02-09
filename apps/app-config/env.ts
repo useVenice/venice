@@ -32,9 +32,11 @@ export const zCommonEnv = zEnvVars({
     .string()
     .default(
       // Explicitly webpack defined in next.config.js so should work client side too...
-      process.env['VERCEL_URL'] ? 'https://' + process.env['VERCEL_URL'] : '/',
+      process.env['VERCEL_URL']
+        ? 'https://' + process.env['VERCEL_URL']
+        : 'http://localhost:3000',
     )
-    // Should we default to request url?
+    // TODO: Should we default to request url?
     // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
     .describe(
       `Fully qualified url your venice next.js app used for redirects, webhooks, background tasks and server-side rendering.

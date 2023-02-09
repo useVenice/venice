@@ -56,12 +56,13 @@ export default R.identity<NextApiHandler>(async (req, res) => {
       // TODO: Better filename would be nice.
       res.setHeader(
         'Content-Disposition',
-        `attachment; filename="sql-${Date.now()}.${format}"`,
+        `attachment; filename="venice-${Date.now()}.${format}"`,
       )
     }
     if (format === 'json') {
       res.send(result.rows)
     } else if (format === 'csv') {
+      // TODO: This currently doesn't work with JSONB columns being exported (needs to be stringified)
       res.send(Papa.unparse([...result.rows]))
     }
   } catch (err) {
