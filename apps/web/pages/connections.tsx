@@ -72,7 +72,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
           <VeniceDatabaseSection />
 
           {/* destinations column */}
-          <section className="flex w-[24rem] shrink-0 flex-col gap-4">
+          {/* <section className="flex w-[24rem] shrink-0 flex-col gap-4">
             <header>
               <h2 className="flex grow items-center gap-2">
                 <Image
@@ -86,7 +86,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
               </h2>
             </header>
             <DestinationComingSoonCard />
-          </section>
+          </section> */}
         </div>
       </div>
     </PageLayout>
