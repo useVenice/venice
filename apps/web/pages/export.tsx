@@ -28,8 +28,8 @@ import {PageLayout} from '../components/PageLayout'
 const PREVIEW_LIMIT = 8
 
 interface ServerSideProps {
-  serverUrl: string
   apiKey: string
+  serverUrl: string
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
@@ -39,19 +39,27 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   const user = await serverGetUser(ctx)
 
   const {z} = await import('@usevenice/util')
-  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
   const apiKey = z.string().parse(user?.user_metadata?.['apiKey'])
+  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
   return {
-    props: {serverUrl, apiKey},
+    props: {apiKey, serverUrl},
   }
 }
 
 export default function Page(props: ServerSideProps) {
-  const {serverUrl, apiKey} = props
-  const [selectedTable, selectTable] = useState<string>('transaction')
+  const {apiKey, serverUrl} = props
+  const [selectedTable, selectTable] = useState('transaction')
+
   const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
   const isEmptyResult = preview.data.isEmpty
+
+  const csvQuery = useCsvQuery({
+    apiKey,
+    serverUrl,
+    table: selectedTable,
+  })
+
   return (
     <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data', 'CSV']} />
@@ -59,10 +67,7 @@ export default function Page(props: ServerSideProps) {
         <div className="grid grid-cols-[1fr_auto]">
           <div className="flex items-center gap-4">
             <Select value={selectedTable} onValueChange={selectTable}>
-              <SelectTrigger
-                className="max-w-[10rem]"
-                placeholder="Select a table…"
-              />
+              <SelectTrigger className="max-w-[10rem]" />
               <SelectContent>
                 <SelectItem value="posting">Posting</SelectItem>
                 <SelectItem value="transaction">Transaction</SelectItem>
@@ -78,10 +83,8 @@ export default function Page(props: ServerSideProps) {
             <Button
               variant="primary"
               className="gap-1"
-              disabled={!selectedTable || isEmptyResult}
-              onClick={() =>
-                downloadCsvData({serverUrl, apiKey, selectedTable})
-              }>
+              disabled={isEmptyResult}
+              onClick={() => window.open(csvQuery.downloadUrl)}>
               <DownloadIcon className="h-4 w-4 fill-current text-offwhite" />
               Download
             </Button>
@@ -98,10 +101,8 @@ export default function Page(props: ServerSideProps) {
         </div>
         <div className="mt-6 max-w-[38.5rem]">
           <SyncSpreadsheetCard
-            serverUrl={serverUrl}
-            apiKey={apiKey}
+            csvQuery={csvQuery}
             isEmptyResult={isEmptyResult}
-            selectedTable={selectedTable}
           />
         </div>
       </div>
@@ -110,24 +111,13 @@ export default function Page(props: ServerSideProps) {
 }
 
 interface SyncSpreadsheetCardProps {
-  serverUrl: string
-  apiKey: string
+  csvQuery: CsvQuery
   isEmptyResult: boolean
-  selectedTable?: string
 }
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
-  const {serverUrl, apiKey, isEmptyResult, selectedTable} = props
-  if (!selectedTable) {
-    return <></>
-  }
-  const googleSheetImport = selectedTable
-    ? `=IMPORTDATA(${formatCsvQueryUrl({
-        serverUrl,
-        apiKey,
-        table: selectedTable,
-      })})`
-    : ''
+  const {csvQuery, isEmptyResult} = props
+  const googleSheetImport = `=IMPORTDATA(${csvQuery.apiEndpoint})`
   return (
     <Card>
       <div className="grid gap-6 p-6">
@@ -176,9 +166,7 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
               <button
                 className="text-venice-green hover:text-venice-green-darkened disabled:cursor-default disabled:hover:text-venice-green"
                 disabled={isEmptyResult}
-                onClick={() =>
-                  downloadCsvData({serverUrl, apiKey, selectedTable})
-                }>
+                onClick={() => window.open(csvQuery.downloadUrl)}>
                 Download your data as a CSV
               </button>{' '}
               file and then{' '}
@@ -238,17 +226,20 @@ function CopyTextButton(props: CopyTextButtonProps) {
   )
 }
 
-function formatCsvQueryUrl({
-  serverUrl,
+interface CsvQuery {
+  apiEndpoint: string
+  downloadUrl: string
+}
+
+function useCsvQuery({
   apiKey,
+  serverUrl,
   table,
-  download = false,
 }: {
-  serverUrl: string
   apiKey: string
+  serverUrl: string
   table: string
-  download?: boolean
-}) {
+}): CsvQuery {
   const baseUrl = new URL(serverUrl)
   const url = new URL('/api/sql', baseUrl)
   const params = new URLSearchParams({
@@ -256,29 +247,12 @@ function formatCsvQueryUrl({
     format: 'csv',
     q: `SELECT * FROM ${table}`,
   })
-  if (download) {
-    params.set('dl', '1')
-  }
-  return `${url}?${params}`
-}
 
-function downloadCsvData({
-  serverUrl,
-  apiKey,
-  selectedTable,
-}: {
-  serverUrl: string
-  apiKey: string
-  selectedTable?: string
-}): void {
-  if (selectedTable) {
-    window.open(
-      formatCsvQueryUrl({
-        serverUrl,
-        apiKey,
-        table: selectedTable,
-        download: true,
-      }),
-    )
+  const downloadParams = new URLSearchParams(params)
+  downloadParams.set('dl', '1')
+
+  return {
+    apiEndpoint: `${url}?${params}`,
+    downloadUrl: `${url}?${downloadParams}`,
   }
 }
