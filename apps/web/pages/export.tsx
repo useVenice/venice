@@ -51,7 +51,7 @@ export default function Page(props: ServerSideProps) {
   const {apiKey, serverUrl} = props
   const [selectedTable, selectTable] = useState('transaction')
 
-  const preview = usePreviewQuery({table: selectedTable, limit: PREVIEW_LIMIT})
+  const preview = usePreviewQuery({limit: PREVIEW_LIMIT, table: selectedTable})
   const isEmptyResult = preview.data.isEmpty
 
   const csvQuery = useCsvQuery({

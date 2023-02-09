@@ -14,11 +14,11 @@ export interface PreviewQuery {
 }
 
 export function usePreviewQuery({
-  table,
   limit,
+  table,
 }: {
-  table?: string
   limit: number
+  table: string
 }): PreviewQuery {
   interface QueryResult {
     rows: Array<Record<string, string | number | null>>
@@ -48,8 +48,6 @@ export function usePreviewQuery({
         totalCount: count ?? 0,
       }
     },
-    // don't fetch until a table is selected
-    enabled: table != null,
     keepPreviousData: true,
   })
 
@@ -77,8 +75,6 @@ export function usePreviewQuery({
   }, [query.data])
 
   return {
-    // since we disable query until a table is selected,
-    // isLoading=true means it's the initial state
     isInitial: query.isLoading,
     isFetching: query.isFetching,
     data,
