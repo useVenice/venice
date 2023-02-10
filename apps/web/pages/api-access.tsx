@@ -10,6 +10,7 @@ import {PageLayout} from '../components/PageLayout'
 
 // for server-side
 import {z} from '@usevenice/util'
+import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {getDatabaseInfo, serverGetUser} from '../server'
 
 interface ServerSideProps {
@@ -33,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
   const apiKey = z.string().parse(user.user_metadata['apiKey'])
   const {databaseUrl} = await getDatabaseInfo(user.id)
-  const serverUrl = `http://localhost:${ctx.req.socket.localPort}`
+  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
   return {
     props: {
