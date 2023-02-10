@@ -1,5 +1,5 @@
-import {twMerge} from 'tailwind-merge'
 import type {PropsWithChildren} from 'react'
+import {twMerge} from 'tailwind-merge'
 
 export type CardProps = PropsWithChildren<{
   // tailwind bg- classname
