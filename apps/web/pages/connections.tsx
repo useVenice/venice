@@ -9,7 +9,6 @@ import {
   AddSourceCard,
   ConnectionCard,
   ConnectionCardSkeleton,
-  DestinationComingSoonCard,
 } from '../components/connections'
 import {AddSourceDialog} from '../components/connections/AddSourceDialog'
 import {PageHeader} from '../components/PageHeader'
@@ -70,23 +69,6 @@ export default function ConnectionsPage(props: ServerSideProps) {
           )}
 
           <VeniceDatabaseSection />
-
-          {/* destinations column */}
-          {/* <section className="flex w-[24rem] shrink-0 flex-col gap-4">
-            <header>
-              <h2 className="flex grow items-center gap-2">
-                <Image
-                  width={30}
-                  height={30}
-                  src="/pipeline-out.svg"
-                  alt="" // decorative image
-                  aria-hidden="true"
-                />
-                <span className="text-sm uppercase">Destinations</span>
-              </h2>
-            </header>
-            <DestinationComingSoonCard />
-          </section> */}
         </div>
       </div>
     </PageLayout>
