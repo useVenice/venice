@@ -197,7 +197,7 @@ function useCsvQuery({
   const params = new URLSearchParams({
     apiKey,
     format: 'csv',
-    q: `SELECT * FROM ${table}`,
+    q: `SELECT * FROM "${table}"`,
   })
 
   const downloadParams = new URLSearchParams(params)

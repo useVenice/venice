@@ -256,6 +256,19 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
+  apps/tests:
+    specifiers:
+      '@usevenice/app-config': workspace:*
+      openapi-typescript: 6.1.0
+      remeda: 1.6.1
+      tsx: 3.12.2
+    dependencies:
+      '@usevenice/app-config': link:../app-config
+      remeda: 1.6.1
+    devDependencies:
+      openapi-typescript: 6.1.0
+      tsx: 3.12.2
+
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
