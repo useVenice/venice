@@ -10,22 +10,7 @@ export function PreviewResult(props: PreviewQuery) {
   const {headings, rows, totalCount} = data
 
   if (isInitial) {
-    return isFetching ? (
-      <LoadingPreviewResult />
-    ) : (
-      <EmptyPreviewResult
-        title="Select a table to export from!"
-        action={
-          <p className="max-w-[14rem] text-center">
-            <Link
-              className="text-venice-green hover:text-venice-green-darkened"
-              href="/connections">
-              Or, connect more financial institutions.
-            </Link>
-          </p>
-        }
-      />
-    )
+    return <LoadingPreviewResult />
   }
 
   if (rows.length === 0) {

@@ -37,9 +37,17 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 ) => {
   const {serverGetUser} = await import('../server')
   const user = await serverGetUser(ctx)
+  if (!user?.id) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
 
   const {z} = await import('@usevenice/util')
-  const apiKey = z.string().parse(user?.user_metadata?.['apiKey'])
+  const apiKey = z.string().parse(user.user_metadata['apiKey'])
   const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
   return {
