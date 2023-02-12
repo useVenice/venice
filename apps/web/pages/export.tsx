@@ -42,7 +42,6 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
       },
     }
   }
-
   const apiKey = z.string().parse(user.user_metadata['apiKey'])
   const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
