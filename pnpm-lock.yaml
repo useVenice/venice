@@ -299,7 +299,7 @@ importers:
       csstype: '*'
       daisyui: 2.24.2
       date-fns: ^2.29.3
-      inngest: 0.9.3
+      inngest: 1.0.0
       jotai: 1.8.3
       lodash: 4.17.21
       marked: 4.2.4
@@ -345,7 +345,7 @@ importers:
       clsx: 1.2.1
       cookies-next: 2.1.1
       date-fns: 2.29.3
-      inngest: 0.9.3
+      inngest: 1.0.0
       jotai: 1.8.3_react@18.2.0
       lodash: 4.17.21
       marked: 4.2.4
@@ -853,14 +853,14 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/util': workspace:*
-      inngest: 0.9.3
+      inngest: 1.0.0
       jsonwebtoken: 8.5.1
     dependencies:
       '@trpc/server': 10.9.1
       '@usevenice/cdk-core': link:../cdk-core
       '@usevenice/cdk-ledger': link:../cdk-ledger
       '@usevenice/util': link:../util
-      inngest: 0.9.3
+      inngest: 1.0.0
       jsonwebtoken: 8.5.1
     devDependencies:
       '@types/jsonwebtoken': 8.5.9
@@ -8005,17 +8005,17 @@ packages:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
     dev: false
 
-  /inngest/0.9.3:
-    resolution: {integrity: sha512-LUvhh/yy/bYG/TXBVxDphg6DffPHnZZuNuFPXFLA5wjHl6SJ+I45pcZEdAs8962FmulptGRWGUIovLPOlc53ow==}
+  /inngest/1.0.0:
+    resolution: {integrity: sha512-q5Q/7CK95Di3/gkuCryCamNVpLSxryOdWhXtjlejHYjtI+5gk2V24I/bIp0QfPk9jEDLIbrjS4jEusFjxY+lMg==}
     hasBin: true
     dependencies:
       buffer: 6.0.3
       cross-fetch: 3.1.5
       h3: 1.0.2
       hash.js: 1.1.7
+      json-stringify-deterministic: 1.0.8
       ms: 2.1.3
       serialize-error-cjs: 0.1.3
-      sigmund: 1.0.1
       type-fest: 3.5.3
       zod: 3.20.2_6o55l5jjmzhdiwsempa52rp2y4
     transitivePeerDependencies:
@@ -9148,6 +9148,11 @@ packages:
     resolution: {integrity: sha512-i/J297TW6xyj7sDFa7AmBPkQvLIxWr2kKPWI26tXydnZrzVAocNqn5DMNT1Mzk0vit1V5UkRM7C1KdVNp7Lmcg==}
     dependencies:
       jsonify: 0.0.0
+    dev: false
+
+  /json-stringify-deterministic/1.0.8:
+    resolution: {integrity: sha512-rkJID3qeigo3VCrEcxX1333fTBBxW89YrdYcZexMnL/WdB8u0zctyG63e/DpahRJyrWCDhh7IQhiR7u2XEDQ4Q==}
+    engines: {node: '>= 4'}
     dev: false
 
   /json-stringify-pretty-compact/3.0.0:
@@ -11652,10 +11657,6 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.3
       object-inspect: 1.12.2
-
-  /sigmund/1.0.1:
-    resolution: {integrity: sha512-fCvEXfh6NWpm+YSuY2bpXb/VIihqWA6hLsgboC+0nl71Q7N7o2eaCW8mJa/NLvQhs6jpd3VZV4UiUQlV6+lc8g==}
-    dev: false
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}

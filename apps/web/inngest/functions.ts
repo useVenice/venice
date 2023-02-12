@@ -13,9 +13,9 @@ import {ensureDefaultLedger, getPool, sql} from '../server'
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sentry = makeSentryClient({dsn: backendEnv.SENTRY_DSN!})
 
-export const scheduleSyncs = inngest.createScheduledFunction(
-  'Schedule pipeline syncs',
-  '* * * * *',
+export const scheduleSyncs = inngest.createFunction(
+  {name: 'Schedule pipeline syncs'},
+  {cron: '* * * * *'},
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async () => {
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
@@ -35,9 +35,9 @@ export const scheduleSyncs = inngest.createScheduledFunction(
     }),
 )
 
-export const syncPipeline = inngest.createStepFunction(
-  'Sync pipeline',
-  'pipeline/sync-requested',
+export const syncPipeline = inngest.createFunction(
+  {name: 'Schedule pipeline syncs'},
+  {event: 'pipeline/sync-requested'},
   async ({event}) => {
     const {pipelineId} = event.data
     console.log('Will sync pipeline', pipelineId)
@@ -52,9 +52,9 @@ export const syncPipeline = inngest.createStepFunction(
   },
 )
 
-export const syncResource = inngest.createStepFunction(
-  'Sync resource',
-  'resource/sync-requested',
+export const syncResource = inngest.createFunction(
+  {name: 'Sync resource'},
+  {event: 'resource/sync-requested'},
   async ({event}) => {
     try {
       const {resourceId} = event.data
