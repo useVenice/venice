@@ -2,27 +2,18 @@ import '@usevenice/app-config/register.node'
 
 import type {NextApiHandler} from 'next'
 
-import {
-  backendEnv,
-  makePostgresClient,
-  Papa,
-} from '@usevenice/app-config/backendConfig'
+import {Papa, DatabaseError} from '@usevenice/app-config/backendConfig'
 import {R, z} from '@usevenice/util'
-
-import {respondToCORS} from './trpc/[...trpc]'
-
-const adminClient = makePostgresClient({
-  databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
-})
-const {sql} = adminClient
+import {runAsAdmin, runAsUser, sql} from '../../server'
+import {respondToCORS} from '../../server/api-helpers'
 
 export default R.identity<NextApiHandler>(async (req, res) => {
   // Is this necessary? Can be useful for admin console though
   if (respondToCORS(req, res)) {
     return
   }
-  const {q, apiKey} = req.query
-  if (!q) {
+  const {q: query, apiKey} = req.query
+  if (!query) {
     res.status(400).send('sql query param q is required')
     return
   }
@@ -37,29 +28,53 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     return
   }
 
-  const adminPool = await adminClient.getPool()
   // TODO: index user by api key...
-  const userId = await adminPool.maybeOneFirst(sql`
-    SELECT
-      id
-    FROM
-      auth.users
-    WHERE raw_user_meta_data ->> 'apiKey' = ${apiKey}
-  `)
+  const userId = await runAsAdmin((pool) =>
+    pool.maybeOneFirst<string>(sql`
+      SELECT
+        id
+      FROM
+        auth.users
+      WHERE raw_user_meta_data ->> 'apiKey' = ${apiKey}
+    `),
+  )
   if (!userId) {
-    throw new Error('Invalid api key')
+    res.status(401).send('Invalid api key')
+    return
   }
-  const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
-  const databaseUrl = `${adminUrl.protocol}//usr_${userId}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
+  console.log('[sql] Will run query for user', {query, userId})
+  try {
+    const result = await runAsUser(userId, async (trxn) =>
+      // @ts-expect-error
+      trxn.query(sql([query])),
+    )
 
-  const client = makePostgresClient({databaseUrl, transformFieldNames: false})
+    // const clientPool = await client.getPool()
 
-  const clientPool = await client.getPool()
-  // @ts-expect-error
-  const result = await clientPool.query(client.sql([q]))
-  if (format === 'json') {
-    res.send(result.rows)
-  } else if (format === 'csv') {
-    res.send(Papa.unparse([...result.rows]))
+    // const result = await clientPool.query(client.sql([q]))
+    if (req.query['dl']) {
+      // TODO: Better filename would be nice.
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="venice-${Date.now()}.${format}"`,
+      )
+    }
+
+    switch (format) {
+      case 'json':
+        res.json(result.rows)
+        break
+      case 'csv':
+        res.setHeader('Content-Type', 'text/csv')
+        // TODO: This currently doesn't work with JSONB columns being exported (needs to be stringified)
+        res.send(Papa.unparse([...result.rows]))
+        break
+    }
+  } catch (err) {
+    if (err instanceof DatabaseError) {
+      res.status(400).send(err.message)
+      return
+    }
+    throw err
   }
 })

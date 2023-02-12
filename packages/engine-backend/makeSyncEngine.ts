@@ -6,7 +6,6 @@ import type {
   AnySyncProvider,
   ConnectWith,
   Destination,
-  EnvName,
   Link,
   LinkFactory,
   MetaService,
@@ -30,6 +29,7 @@ import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {makeJwtClient, _zContext} from './auth-utils'
+import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
   IntegrationInput,
@@ -233,7 +233,7 @@ export const makeSyncEngine = <
       console.log(
         '[_syncResourceUpdate] Returning early skip syncing pipelines',
       )
-      return
+      return id
     }
 
     const pipelines = await getPipelinesForResource(
@@ -256,6 +256,7 @@ export const makeSyncEngine = <
         })
       }),
     )
+    return id
   }
 
   const _syncPipeline = async (
@@ -361,6 +362,18 @@ export const makeSyncEngine = <
 
         return res.response?.body
       }),
+    dispatch: authedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
+      if (
+        input.name !== 'resource/sync-requested' &&
+        input.name !== 'pipeline/sync-requested'
+      ) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Event name not supported ${input.name}`,
+        })
+      }
+      await inngest.send(input.name, {data: input.data, user: {id: ctx.userId}})
+    }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
       .query(async ({input: {type}}) => {
@@ -378,6 +391,7 @@ export const makeSyncEngine = <
               (type === 'destination' && int.isDestination),
           )
       }),
+    // Implement this directly via supabase?
     searchInstitutions: authedProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
       .query(async ({input: {keywords} = {}}) => {
@@ -403,83 +417,6 @@ export const makeSyncEngine = <
             ins: {...res.data, id: ins.id, externalId},
             int: {id: int.id},
           }))
-        })
-      }),
-    listResources: authedProcedure
-      .input(z.object({}).optional())
-      .query(async ({ctx}) => {
-        // Add info about what it takes to `reconnect` here for resources which
-        // has disconnected
-        const resources = await metaService.tables.resource.list({
-          creatorId: ctx.userId,
-        })
-        const insById = R.pipe(
-          await metaService.tables.institution.list({
-            ids: R.compact(resources.map((c) => c.institutionId)),
-          }),
-          (insList) => R.mapToObj(insList, (ins) => [ins.id, ins]),
-        )
-        const pipelinesByConnId = R.pipe(
-          await metaService.findPipelines({
-            resourceIds: resources.map((c) => c.id),
-          }),
-          R.map((pipe) => ({
-            ...pipe,
-            syncInProgress:
-              (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
-              (pipe.lastSyncStartedAt &&
-                pipe.lastSyncCompletedAt &&
-                pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
-          })),
-          (pipes) =>
-            R.mapToObj(resources, (c) => [
-              c.id,
-              pipes.filter(
-                (p) => p.sourceId === c.id || p.destinationId === c.id,
-              ),
-            ]),
-        )
-        return resources.map((reso) => {
-          const [, providerName, externalId] = extractId(reso.id)
-          const mappers = providerMap[providerName]?.standardMappers
-          const standardRes = mappers?.resource(reso.settings)
-          const standardIns = reso.institutionId
-            ? mappers?.institution?.(insById[reso.institutionId]?.external)
-            : undefined
-
-          const pipes = pipelinesByConnId[reso.id] ?? []
-          const syncInProgress = pipes.some((p) => p.syncInProgress)
-          const lastSyncCompletedAt = R.maxBy(
-            pipes,
-            (p) => p.lastSyncCompletedAt?.getTime() ?? 0,
-          )?.lastSyncCompletedAt
-
-          // console.log('map resource', {
-          //   conn,
-          //   standardConn,
-          //   standardIns,
-          //   syncInProgress,
-          //   'pipelinesByConnId[conn.id]': pipelinesByConnId[conn.id],
-          // })
-
-          return {
-            // TODO: How do we get zod to report which specific object has failed parsing?
-            // This error for example is cryptic, https://share.cleanshot.com/t1QY1mnG
-            // I would really like to know that it is zStandard.resource that has failed parsing
-            ...zStandard.resource.omit({id: true}).parse(standardRes),
-            id: reso.id,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            envName: reso.envName as EnvName | null | undefined,
-            externalId,
-            syncInProgress,
-            lastSyncCompletedAt,
-            institution: reso.institutionId
-              ? {
-                  ...zStandard.institution.omit({id: true}).parse(standardIns),
-                  id: reso.institutionId,
-                }
-              : undefined,
-          }
         })
       }),
     // TODO: Do we need this method at all? Or should we simply add params to args
@@ -553,7 +490,7 @@ export const makeSyncEngine = <
     preConnect: authedProcedure
       .input(z.tuple([zInt, zConnectOptions]))
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
-      .mutation(
+      .query(
         async ({input: [int, {resourceExternalId, ...connCtxInput}], ctx}) => {
           const reso = resourceExternalId
             ? await metaService.tables.resource
@@ -623,13 +560,22 @@ export const makeSyncEngine = <
               redirectUrl: getRedirectUrl?.(int, ctx),
             },
           )
-          await _syncResourceUpdate(int, {
+
+          const syncInBackground =
+            resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
+
+          const resourceId = await _syncResourceUpdate(int, {
             ...resoUpdate,
             // No need for each integration to worry about this, unlike in the case of handleWebhook.
             userId: ctx.userId ?? ADMIN_UID,
             envName: connCtxInput.envName,
             connectWith: connCtxInput.connectWith,
+            triggerDefaultSync:
+              !syncInBackground && resoUpdate.triggerDefaultSync,
           })
+          if (syncInBackground) {
+            await inngest.send('resource/sync-requested', {data: {resourceId}})
+          }
           console.log('didConnect finish', int.provider.name, input)
           return 'Resource successfully connected'
         },

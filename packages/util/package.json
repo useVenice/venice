@@ -26,7 +26,7 @@
     "micro-memoize": "4.0.10",
     "pluralize": "8.0.0",
     "query-string": "7.1.1",
-    "remeda": "1.1.0",
+    "remeda": "1.6.1",
     "rxjs": "7.5.6",
     "sentence-case": "3.0.4",
     "shvl": "2.0.3",
@@ -34,7 +34,7 @@
     "tiny-invariant": "1.2.0",
     "ts-brand": "0.0.2",
     "type-fest": "2.19.0",
-    "ulidx": "0.3.0",
+    "ulidx": "0.4.0",
     "zod": "3.20.2"
   },
   "devDependencies": {

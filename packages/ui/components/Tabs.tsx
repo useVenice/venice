@@ -53,3 +53,5 @@ export function TabContent({children, ...restProps}: TabContentProps) {
     <TabsPrimitive.Content {...restProps}>{children}</TabsPrimitive.Content>
   )
 }
+
+export {TabsPrimitive}

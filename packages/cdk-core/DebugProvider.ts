@@ -1,4 +1,4 @@
-import {z} from '@usevenice/util'
+import {rxjs, z} from '@usevenice/util'
 
 import {logLink} from './base-links'
 import {makeSyncProvider, zWebhookInput} from './makeSyncProvider'
@@ -16,9 +16,13 @@ const debugProviderDef = makeSyncProvider.def({
 export const debugProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def: debugProviderDef,
+  sourceSync: () => rxjs.EMPTY,
   destinationSync: () => logLink({prefix: 'debug', verbose: true}),
   handleWebhook: (input) => ({
     resourceUpdates: [],
     response: {body: {echo: input}},
   }),
+  // Temporary hack to workaround assertion in mapStandardEntityLink when using debugProvider
+  // as a source. However we should do something so this workaround is not needed in the first place
+  extension: {sourceMapEntity: {}},
 })

@@ -1,5 +1,6 @@
 import * as plaid from 'plaid'
-import type {PlaidError} from 'plaid'
+import type {PlaidApi, PlaidError} from 'plaid'
+import {CountryCode, Products} from 'plaid'
 import React from 'react'
 import type {
   PlaidAccount as PlaidLinkAccount,
@@ -24,8 +25,17 @@ import type {
   IAxiosError,
   RequiredOnly,
 } from '@usevenice/util'
-import {DateTime} from '@usevenice/util'
-import {A, Deferred, R, RateLimit, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {
+  A,
+  DateTime,
+  Deferred,
+  R,
+  RateLimit,
+  Rx,
+  rxjs,
+  z,
+  zCast,
+} from '@usevenice/util'
 
 import {
   getPlaidAccountBalance,
@@ -58,8 +68,8 @@ const _def = makeSyncProvider.def({
         Maximum length of 30 characters.
         If a value longer than 30 characters is provided, Link will display "This Application" instead.`,
       ),
-    products: zProducts.array().default(['transactions']),
-    countryCodes: zCountryCode.array().default(['US']),
+    products: z.array(zProducts).default([Products.Transactions]),
+    countryCodes: z.array(zCountryCode).default([CountryCode.Us]),
     /**
      * When using a Link customization, the language configured
      * here must match the setting in the customization, or the customization will not be applied.
@@ -203,7 +213,8 @@ export const plaidProvider = makeSyncProvider({
     {envName, userId, resource, institutionExternalId, ...ctx},
   ) =>
     makePlaidClient(config)
-      .linkTokenCreate(envName, {
+      .fromEnv(envName)
+      .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId
           ? `${institutionExternalId}`
@@ -217,7 +228,7 @@ export const plaidProvider = makeSyncProvider({
         // redirect_uri: ctx.redirectUrl,
         webhook: ctx.webhookBaseUrl,
       })
-      .then((res) => {
+      .then(({data: res}) => {
         console.log('willConnect response', res)
         return res
       }),
@@ -254,17 +265,19 @@ export const plaidProvider = makeSyncProvider({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     ;(globalThis as any).plaidLink = plaidLink
 
+    const {open, ready} = plaidLink
+
     React.useEffect(() => {
-      if (!plaidLink.ready || !state) {
-        return
+      console.log('[plaid] useEffect may open', {ready, state})
+      if (ready && state) {
+        console.log('[plaid] Will open')
+        open() // Unfortunately open gets called multiple times due to unmounting.
+        // It is a bit of a no-op though, so we should be fine...
       }
-      console.log('[plaid] Will open')
-      plaidLink.open() // Unfortunately open gets called multiple times due to unmounting.
-      // It is a bit of a no-op though, so we should be fine...
       return () => {
-        console.log('[plaid] Did unmount...')
+        console.log('[plaid] useEffect did cleanup...')
       }
-    }, [plaidLink, state])
+    }, [open, ready, state])
 
     return async (opts, {institutionExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
@@ -275,9 +288,11 @@ export const plaidProvider = makeSyncProvider({
       // TODO: Implement a dialog fallback to tell user to search for the needed
       // institution in the next screen to work around the problem that
       // plaid does not support instiutionId
-      console.warn('[plaid] institutionExternalId not handled', {
-        institutionExternalId,
-      })
+      if (institutionExternalId) {
+        console.warn('[plaid] institutionExternalId not handled', {
+          institutionExternalId,
+        })
+      }
       const res$ = new Deferred<(typeof def)['_types']['connectOutput']>()
       setState({options: {token: opts.link_token}, res$})
       return res$.promise
@@ -285,28 +300,29 @@ export const plaidProvider = makeSyncProvider({
   },
 
   postConnect: async ({publicToken: public_token, meta}, config) => {
-    const client = makePlaidClient(config)
+    const client: PlaidApi = makePlaidClient(config).fromToken(public_token)
+
     const envName = inferPlaidEnvFromToken(public_token)
-    const [res, insRes] = await Promise.all([
+    const [{data: res}, {data: insRes}] = await Promise.all([
       client.itemPublicTokenExchange({public_token}),
       meta?.institution?.institution_id && envName
-        ? client.institutionsGetById(envName, {
+        ? client.institutionsGetById({
             institution_id: meta.institution.institution_id,
             // Is this right? Get all country codes...
             country_codes: [
-              'US',
-              'GB',
-              'ES',
-              'NL',
-              'FR',
-              'IE',
-              'CA',
-              'DE',
-              'IT',
+              CountryCode.Us,
+              CountryCode.Gb,
+              CountryCode.Es,
+              CountryCode.Nl,
+              CountryCode.Fr,
+              CountryCode.Ie,
+              CountryCode.Ca,
+              CountryCode.De,
+              CountryCode.It,
             ],
             options: {include_optional_metadata: true},
           })
-        : null,
+        : {data: null},
     ])
     const settings = def._type('resourceSettings', {
       itemId: res.item_id,
@@ -331,12 +347,14 @@ export const plaidProvider = makeSyncProvider({
 
   checkResource: async ({config, settings, options, context}) => {
     console.log('[Plaid] checkResource', options, context)
-    const client = makePlaidClient(config)
+    const client = makePlaidClient(config).fromToken(settings.accessToken)
     const envName = inferPlaidEnvFromToken(settings.accessToken)
     const itemId: string =
       settings.itemId ??
       settings.item?.item_id ??
-      (await client.itemGet(settings.accessToken).then((r) => r.item.item_id))
+      (await client
+        .itemGet({access_token: settings.accessToken})
+        .then((r) => r.data.item.item_id))
     const resoUpdate = {envName, resourceExternalId: itemId}
 
     if (options.updateWebhook) {
@@ -373,7 +391,8 @@ export const plaidProvider = makeSyncProvider({
 
   revokeResource: (settings, config) =>
     makePlaidClient(config)
-      .itemRemove(settings.accessToken)
+      .fromToken(settings.accessToken)
+      .itemRemove({access_token: settings.accessToken})
       .catch((err: IAxiosError) => {
         // TODO: Centralize me inside PlaidClient...
         if (
@@ -388,23 +407,26 @@ export const plaidProvider = makeSyncProvider({
       }),
 
   sourceSync: ({config, settings, state}) => {
-    const client = makePlaidClient(config)
+    const {accessToken} = settings
+    // Explicit typing to make TS Compiler job easier...
+    const client: PlaidApi = makePlaidClient(config).fromToken(accessToken)
 
     async function* iterateEntities() {
       // Sync item
-      const {accessToken} = settings
       const accountIds = state.accountIds?.length ? state.accountIds : null
-      const {item, status} = await client.itemGet(accessToken)
+      const {
+        data: {item, status},
+      } = await client.itemGet({access_token: accessToken})
 
       const institution =
         item.institution_id && shouldSync(state, 'institution')
           ? await client
-              .institutionsGetById(inferPlaidEnvFromToken(accessToken), {
+              .institutionsGetById({
                 institution_id: item.institution_id,
                 country_codes: config.countryCodes,
                 options: {include_optional_metadata: true},
               })
-              .then((r) => r.institution)
+              .then((r) => r.data.institution)
           : undefined
 
       const {item_id: itemId} = item
@@ -435,7 +457,9 @@ export const plaidProvider = makeSyncProvider({
 
       // Sync accounts
       if (shouldSync(state, 'account')) {
-        const {accounts} = await client.accountsGet({
+        const {
+          data: {accounts},
+        } = await client.accountsGet({
           access_token: accessToken,
           options: {...(accountIds && {account_ids: accountIds})},
         })
@@ -451,6 +475,7 @@ export const plaidProvider = makeSyncProvider({
             access_token: accessToken,
             options: {...(accountIds && {account_ids: accountIds})},
           })
+          .then((r) => r.data)
           // TODO: Centralize me inside PlaidClient...
           .catch((err: IAxiosError) => {
             const code =
@@ -495,6 +520,7 @@ export const plaidProvider = makeSyncProvider({
             cursor,
             options: {include_personal_finance_category: true},
           })
+          .then((r) => r.data)
           .catch((err: IAxiosError) => {
             const code =
               err.isAxiosError &&
@@ -559,7 +585,7 @@ export const plaidProvider = makeSyncProvider({
           let offset = 0
           while (true) {
             await invTxnGetLimit()
-            const invTxnRes = await client.investmentsTransactionsGet({
+            const {data: invTxnRes} = await client.investmentsTransactionsGet({
               access_token: accessToken,
               start_date: start.toISODate(),
               end_date: end.toISODate(),
@@ -596,16 +622,16 @@ export const plaidProvider = makeSyncProvider({
     // a management layer for that, which will be process-wide and
     // eventually distributed rate limiter too
     // @see https://share.cleanshot.com/w7xCNK
-    const client = makePlaidClient(config)
+    const client = makePlaidClient(config).fromEnv('sandbox')
     async function* iterateInstitutions() {
       let offset = 0
       while (true) {
         console.log('Awaiting rate limit')
         await insGetLimit()
-        const institutions = await client.institutionsGet('sandbox', {
+        const {data: institutions} = await client.institutionsGet({
           offset,
           count: 500,
-          country_codes: ['US', 'CA', 'GB'],
+          country_codes: [CountryCode.Us, CountryCode.Ca, CountryCode.Gb],
           options: {include_optional_metadata: true},
         })
         if (institutions.institutions.length === 0) {

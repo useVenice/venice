@@ -9,7 +9,6 @@
     "dev": "pnpm tsx watch ./_generateDocs.bin.ts"
   },
   "dependencies": {
-    "@next/env": "12.2.5",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/core-integration-airtable": "workspace:*",

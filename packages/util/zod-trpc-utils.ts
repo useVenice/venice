@@ -16,11 +16,16 @@ export function routerFromZFunctionMap<TMap extends ZFunctionMap>(
 ): AnyRouter {
   const trpcServer = initTRPC.create()
   return trpcServer.router(
-    R.mapValues(functionMap as Record<string, AnyZFunction>, (fn) =>
-      trpcServer.procedure
-        .input(preprocessArgsTuple(fn.parameters))
-        .output(fn.returnType)
-        .mutation(({input}) => fn.impl(...input)),
+    R.pipe(
+      functionMap as Record<string, AnyZFunction>,
+      // Protected against non zFunction being part of the zFunction map so we do not crash...
+      R.omitBy((fn) => !fn.impl),
+      R.mapValues((fn) =>
+        trpcServer.procedure
+          .input(preprocessArgsTuple(fn.parameters))
+          .output(fn.returnType)
+          .mutation(({input}) => fn.impl(...input)),
+      ),
     ),
   )
 }

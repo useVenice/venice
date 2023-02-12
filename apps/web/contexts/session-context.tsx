@@ -1,48 +1,47 @@
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
+
 import React from 'react'
 
 /** TODO This ought to be a bit more generic... */
-type AsyncStatus = 'idle' | 'loading' | 'success' | 'error'
+type AsyncStatus = 'loading' | 'error' | 'success'
 type SessionContextValue = [
   session: Session | null | undefined,
-  info: {status: AsyncStatus; error: unknown; loading: boolean},
+  info: {status: AsyncStatus; error: unknown},
 ]
 export const SessionContext = React.createContext<SessionContextValue>([
   undefined,
-  {status: 'idle', error: null, loading: true},
+  {status: 'loading', error: null},
 ])
 
-export interface Props {
+export interface SessionContextProps {
   supabaseClient: SupabaseClient
   [propName: string]: unknown
 }
 
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
-export function SessionContextProvider({supabaseClient, ...props}: Props) {
+export function SessionContextProvider({
+  supabaseClient,
+  ...props
+}: SessionContextProps) {
   const [value, setValue] = React.useState<SessionContextValue>([
     undefined,
-    {status: 'idle', error: null, loading: true},
+    {status: 'loading', error: null},
   ])
   React.useEffect(() => {
     supabaseClient.auth
       .getSession()
       .then(({data}) => {
-        setValue([
-          data.session ?? null,
-          {error: null, status: 'success', loading: false},
-        ])
+        setValue([data.session ?? null, {error: null, status: 'success'}])
       })
       .catch((err) => {
-        setValue([null, {error: err, status: 'error', loading: false}])
+        setValue([null, {error: err, status: 'error'}])
       })
 
     const {data: authListener} = supabaseClient.auth.onAuthStateChange(
       (_event, session) => {
-        setValue([
-          session ?? null,
-          {error: null, status: 'success', loading: false},
-        ])
+        console.log('AuthChange event', _event)
+        setValue([session ?? null, {error: null, status: 'success'}])
       },
     )
     return () => authListener?.subscription.unsubscribe()

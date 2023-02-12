@@ -1,59 +1,37 @@
 import './global.css'
 
+import {Hydrate, QueryClientProvider} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
 import React from 'react'
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister'
-import {persistQueryClient} from '@tanstack/react-query-persist-client'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {UIProvider} from '@usevenice/ui'
+import {Loading, UIProvider} from '@usevenice/ui'
 
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
-import {supabase} from '../contexts/common-contexts'
+import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
-      refetchOnWindowFocus: false, // Too many requests for going between devTool and not... alternative is to change the stale time
-      // refetchOnMount: false,
-      // refetchOnReconnect: false,
-      // How do we configure it that the only time we "refetch" is when we cmd+r reload the window?
-      // We still want to stale-while-revalidate though and thus we persist the query cache.
-    },
-  },
-})
-
-if (
-  typeof window !== 'undefined' &&
-  !window.location.href.includes('localhost')
-) {
-  const persister = createSyncStoragePersister({storage: window.localStorage})
-  // persistor.removeClient() // Will clean up cache
-
-  void persistQueryClient({
-    queryClient,
-    persister,
-    // Change this key if we change the format of the data to avoid crashes
-    // also we should clear any persisted data if userId ever changes
-    buster: undefined, // Should check against userId and version
-  })
-}
+import {browserQueryClient} from '../lib/query-client'
+import type {PageProps} from '../server'
+import superjson from 'superjson'
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({children}: {children: React.ReactNode}) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
-  const [session] = useSession()
+  const [session, meta] = useSession()
+
   // console.log('session.accessToken', session?.access_token)
   const accessToken = session?.access_token ?? accessTokenQueryParam
   const developerMode = useAtomValue(developerModeAtom)
+
+  if (meta.status === 'loading') {
+    return <Loading />
+  }
+  // return null
 
   // if (!session) {
   //   console.log('Forceful early exit....')
@@ -61,7 +39,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   // }
   return (
     <VeniceProvider
-      queryClient={queryClient}
+      queryClient={browserQueryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
       developerMode={developerMode}>
@@ -70,7 +48,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   )
 }
 
-export function MyApp({Component, pageProps}: AppProps) {
+export function MyApp({Component, pageProps}: AppProps<PageProps>) {
   // console.log('MyApp re-render', pageProps)
   return (
     <>
@@ -80,14 +58,20 @@ export function MyApp({Component, pageProps}: AppProps) {
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
-        <QueryClientProvider client={queryClient}>
-          <UIProvider>
-            <SessionContextProvider supabaseClient={supabase}>
+        <QueryClientProvider client={browserQueryClient}>
+          <Hydrate
+            state={
+              pageProps.dehydratedState &&
+              superjson.deserialize(pageProps.dehydratedState)
+            }>
+            <SessionContextProvider supabaseClient={browserSupabase}>
               <_VeniceProvider>
-                <Component {...pageProps} />
+                <UIProvider>
+                  <Component {...pageProps} />
+                </UIProvider>
               </_VeniceProvider>
             </SessionContextProvider>
-          </UIProvider>
+          </Hydrate>
         </QueryClientProvider>
       </QueryParamProvider>
     </>

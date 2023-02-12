@@ -6,7 +6,6 @@ import tablemark from 'tablemark'
 import {buildUrl, R, zParser} from '@usevenice/util'
 
 import {DOCUMENTED_PROVIDERS, parseIntConfigsFromRawEnv, zAllEnv} from './env'
-import {loadEnv} from './loadEnv.node'
 
 const envList = R.pipe(
   zAllEnv.shape,
@@ -124,7 +123,6 @@ console.log(`Wrote ${dotEnvExampleOutPath}`)
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('Test out loading env vars')
-  loadEnv()
   const env = zParser(zAllEnv).parseUnknown(process.env)
   const configs = parseIntConfigsFromRawEnv()
   console.log('Parsed env', env)

@@ -35,6 +35,7 @@ export const zConnectOptions = z.object({
 
 export const zPostConnectOptions = zConnectOptions.extend({
   connectWith: zConnectWith.nullish(),
+  syncInBand: z.boolean().nullish(),
 })
 
 // MARK: - Client side connect types

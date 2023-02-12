@@ -15,6 +15,8 @@ import type {DialogInstance} from '@usevenice/ui'
 import {Dialog} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
+export type {CreateTRPCReact} from '@trpc/react-query'
+
 export type SyncEngineCommonConfig<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
@@ -156,8 +158,13 @@ export function VeniceProvider<
   )
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-VeniceProvider.useContext = () => React.useContext(VeniceContext)!
+VeniceProvider.useContext = () => {
+  const ctx = React.useContext(VeniceContext)
+  if (!ctx) {
+    throw new Error('VeniceProvider missing while useVenice')
+  }
+  return ctx
+}
 
 VeniceProvider.config = <
   TProviders extends readonly AnySyncProvider[],
@@ -165,26 +172,3 @@ VeniceProvider.config = <
 >(
   config: SyncEngineCommonConfig<TProviders, TLinks>,
 ) => config
-
-// TODO: Figure out how to work with NextJS SSR here
-// adding typeof withTRPC<Router> breaks prettier, let's figure it out...
-// const withVenice = (options: Parameters<typeof withTRPC>[0]) =>
-//   withTRPC({
-//     ...options,
-//     // Improve typing to omit options.config.url, it is a noop
-//     config: (info) => ({...options.config(info), url: routerUrl}),
-//   })
-
-/**
- * Used to create a callback to get the current value without re-rendering
- * whenever value changes...
- *
- * TODO: Move me to frontend utils...
- */
-export function useGetter<T>(value: T) {
-  const ref = React.useRef(value)
-  React.useEffect(() => {
-    ref.current = value
-  }, [value, ref])
-  return React.useCallback(() => ref.current, [ref])
-}

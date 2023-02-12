@@ -6,6 +6,7 @@ import {zEnvName} from '@usevenice/cdk-core'
 import {parseQueryParams, shallowOmitUndefined} from '@usevenice/util'
 
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
+import {commonEnv} from '@usevenice/app-config/commonConfig'
 
 export const kAccessToken = 'accessToken' as const
 export const kEnv = 'env' as const
@@ -16,7 +17,7 @@ export const ledgerIdAtom = atomWithQueryParam(kLedgerId, '', StringParam)
 export const accessTokenAtom = atomWithQueryParam(kAccessToken, '', StringParam)
 export const envAtom = atomWithQueryParam<EnvName>(
   kEnv,
-  'sandbox',
+  commonEnv.DEFAULT_CONNECT_ENV,
   createEnumParam(zEnvName.options),
 )
 

@@ -3,7 +3,6 @@ import '@usevenice/app-config/register.node'
 
 import type {PROVIDERS} from '@usevenice/app-config/env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
-import {loadedEnv} from '@usevenice/app-config/register.node'
 import {
   makePostgresClient,
   makePostgresMetaService,
@@ -37,9 +36,10 @@ if (getEnvVar('DEBUG_ZOD')) {
 }
 
 function env() {
-  return zParser(zAllEnv).parseUnknown(loadedEnv)
+  return zParser(zAllEnv).parseUnknown(process.env)
 }
-function intConfig<T extends typeof PROVIDERS[number]['name']>(name: T) {
+
+function intConfig<T extends (typeof PROVIDERS)[number]['name']>(name: T) {
   const config = parseIntConfigsFromRawEnv()[name]
   if (!config) {
     throw new Error(`${name} provider is not configured`)
@@ -66,7 +66,13 @@ if (require.main === module) {
       makePostgresMetaService({
         databaseUrl: env().POSTGRES_OR_WEBHOOK_URL,
       }) as {},
-    plaid: () => makePlaidClient(intConfig('plaid')),
+    plaid: () =>
+      R.pipe(makePlaidClient(intConfig('plaid')), (p) =>
+        process.env['PLAID_ACCESS_TOKEN']
+          ? p.fromToken(process.env['PLAID_ACCESS_TOKEN'])
+          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            p.fromEnv(process.env['PLAID_ENV'] as any),
+      ) as {},
     onebrick: () => makeOneBrickClient(intConfig('onebrick')),
     teller: () => makeTellerClient(intConfig('teller')),
     stripe: () => makeStripeClient(intConfig('stripe')),
