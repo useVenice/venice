@@ -270,7 +270,7 @@ export function ResultTableView({
 
 export const getServerSideProps = (async (context) => {
   const {serverGetUser, getDatabaseInfo} = await import('../server')
-  const user = await serverGetUser(context)
+  const [user] = await serverGetUser(context)
   if (!user?.id) {
     return {redirect: {destination: '/', permanent: false}}
   }

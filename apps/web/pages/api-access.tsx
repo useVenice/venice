@@ -22,7 +22,7 @@ interface ServerSideProps {
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   ctx,
 ) => {
-  const user = await serverGetUser(ctx)
+  const [user] = await serverGetUser(ctx)
   if (!user?.id) {
     return {
       redirect: {
