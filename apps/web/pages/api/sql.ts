@@ -59,11 +59,16 @@ export default R.identity<NextApiHandler>(async (req, res) => {
         `attachment; filename="venice-${Date.now()}.${format}"`,
       )
     }
-    if (format === 'json') {
-      res.send(result.rows)
-    } else if (format === 'csv') {
-      // TODO: This currently doesn't work with JSONB columns being exported (needs to be stringified)
-      res.send(Papa.unparse([...result.rows]))
+
+    switch (format) {
+      case 'json':
+        res.json(result.rows)
+        break
+      case 'csv':
+        res.setHeader('Content-Type', 'text/csv')
+        // TODO: This currently doesn't work with JSONB columns being exported (needs to be stringified)
+        res.send(Papa.unparse([...result.rows]))
+        break
     }
   } catch (err) {
     if (err instanceof DatabaseError) {

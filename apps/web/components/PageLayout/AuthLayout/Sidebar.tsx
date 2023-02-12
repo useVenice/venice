@@ -1,5 +1,6 @@
 import {
   ArrowLeftRightIcon,
+  CsvFileIcon,
   DatabaseIcon,
   DocsIcon,
   ExportIcon,
@@ -21,6 +22,11 @@ const mainNavigation = [
     name: 'API Access',
     href: '/api-access',
     icon: DatabaseIcon,
+  },
+  {
+    name: 'Data explorer',
+    href: '/data',
+    icon: CsvFileIcon,
   },
 ]
 

@@ -121,7 +121,7 @@ export default function DataExplorerScreen({
                         className="mt-1 cursor-pointer pl-4 font-mono text-sm text-offwhite/75"
                         key={name}
                         onClick={() => {
-                          setSql(`SELECT * FROM ${name} LIMIT 10`)
+                          setSql(`SELECT * FROM "${name}" LIMIT 10`)
                           // TODO: Figure otu the right pattern to run refetch after state has been updated only...
                           setTimeout(() => {
                             queryRes.refetch()

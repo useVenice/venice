@@ -256,10 +256,24 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
+  apps/tests:
+    specifiers:
+      '@usevenice/app-config': workspace:*
+      openapi-typescript: 6.1.0
+      remeda: 1.6.1
+      tsx: 3.12.2
+    dependencies:
+      '@usevenice/app-config': link:../app-config
+      remeda: 1.6.1
+    devDependencies:
+      openapi-typescript: 6.1.0
+      tsx: 3.12.2
+
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
       '@lukemorales/query-key-factory': 1.1.0
+      '@monaco-editor/react': ^4.4.6
       '@sentry/cli': 2.12.0
       '@sentry/nextjs': 7.35.0
       '@supabase/auth-helpers-nextjs': 0.5.4
@@ -289,6 +303,7 @@ importers:
       jotai: 1.8.3
       lodash: 4.17.21
       marked: 4.2.4
+      monaco-editor: ^0.35.0
       next: 13.1.5
       next-query-params: 4.1.0
       next-router-query: 0.1.3
@@ -310,6 +325,7 @@ importers:
     dependencies:
       '@glideapps/glide-data-grid': 5.2.1_qqgdla4ljul3xmvjycg6ibkvsu
       '@lukemorales/query-key-factory': 1.1.0
+      '@monaco-editor/react': 4.4.6_3vguicescx7w3divwtpzvtv5wy
       '@sentry/nextjs': 7.35.0_yrisq2kkn5ai44qx4uoxveaxsy
       '@supabase/auth-helpers-nextjs': 0.5.4_cuu76bm7225ei4sq5x2iikmd2y
       '@supabase/auth-ui-react': 0.2.6_biqbaboplfbrettd7655fr4n2y
@@ -333,6 +349,7 @@ importers:
       jotai: 1.8.3_react@18.2.0
       lodash: 4.17.21
       marked: 4.2.4
+      monaco-editor: 0.35.0
       next: 13.1.5_biqbaboplfbrettd7655fr4n2y
       next-query-params: 4.1.0_siv5c6b7gmuo4qet7a3ayyekzm
       next-router-query: 0.1.3_next@13.1.5+react@18.2.0
@@ -2806,6 +2823,29 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@tanstack/query-core': ^4.0.0
+    dev: false
+
+  /@monaco-editor/loader/1.3.2_monaco-editor@0.35.0:
+    resolution: {integrity: sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==}
+    peerDependencies:
+      monaco-editor: '>= 0.21.0 < 1'
+    dependencies:
+      monaco-editor: 0.35.0
+      state-local: 1.0.7
+    dev: false
+
+  /@monaco-editor/react/4.4.6_3vguicescx7w3divwtpzvtv5wy:
+    resolution: {integrity: sha512-Gr3uz3LYf33wlFE3eRnta4RxP5FSNxiIV9ENn2D2/rN8KgGAD8ecvcITRtsbbyuOuNkwbuHYxfeaz2Vr+CtyFA==}
+    peerDependencies:
+      monaco-editor: '>= 0.25.0 < 1'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@monaco-editor/loader': 1.3.2_monaco-editor@0.35.0
+      monaco-editor: 0.35.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@motionone/animation/10.14.0:
@@ -9722,6 +9762,10 @@ packages:
       minimist: 1.2.6
     dev: false
 
+  /monaco-editor/0.35.0:
+    resolution: {integrity: sha512-BJfkAZ0EJ7JgrgWzqjfBNP9hPSS8NlfECEDMEIIiozV2UaPq22yeuOjgbd3TwMh3anH0krWZirXZfn8KUSxiOA==}
+    dev: false
+
   /mongodb-connection-string-url/2.5.4:
     resolution: {integrity: sha512-SeAxuWs0ez3iI3vvmLk/j2y+zHwigTDKQhtdxTgt5ZCOQQS5+HW4g45/Xw5vzzbn7oQXCNQ24Z40AkJsizEy7w==}
     dependencies:
@@ -11982,6 +12026,10 @@ packages:
     dependencies:
       escape-string-regexp: 2.0.0
     dev: true
+
+  /state-local/1.0.7:
+    resolution: {integrity: sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==}
+    dev: false
 
   /static-extend/0.1.2:
     resolution: {integrity: sha512-72E9+uLc27Mt718pMHt9VMNiAL4LMsmDbBva8mxWUCkT07fSzEGMYUCk0XWY6lp0j6RBAG4cJ3mWuZv2OE3s0g==}
