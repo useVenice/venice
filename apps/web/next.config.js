@@ -44,7 +44,10 @@ const nextConfig = {
     path.resolve(__dirname, '../../packages/ui'),
     path.resolve(__dirname, '../../packages/util'),
   ],
-  env: {NEXT_PUBLIC_NODE_ENV: process.env['NODE_ENV']},
+  env: {
+    NEXT_PUBLIC_PORT: process.env['PORT'] ?? '',
+    NEXT_PUBLIC_NODE_ENV: process.env['NODE_ENV'],
+  },
   reactStrictMode: true,
   rewrites: async () => ({
     beforeFiles: [

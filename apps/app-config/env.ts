@@ -34,7 +34,12 @@ export const zCommonEnv = zEnvVars({
       // https://vercel.com/docs/concepts/projects/environment-variables
       process.env['NEXT_PUBLIC_VERCEL_URL']
         ? 'https://' + process.env['NEXT_PUBLIC_VERCEL_URL']
-        : 'http://localhost:3000',
+        : // PORT env only works when next.js port is changed via env var rather than command line arguments
+          // TODO: have this depend on req.headers.Host to be more reliable, would also
+          // make things like proxy work automagically mostly
+          `http://localhost:${
+            process.env['PORT'] ?? process.env['NEXT_PUBLIC_PORT'] ?? 3000
+          }`,
     )
     // TODO: Should we default to request url?
     // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
