@@ -7,7 +7,7 @@ import {useMemo} from 'react'
 interface DataTableProps {
   isFetching: boolean
   headings: string[]
-  rows: Array<Record<string, string | number | Record<string, unknown> | null>>
+  rows: Array<Record<string, Record<string, unknown> | string | number | null>>
 }
 
 export function DataTable(props: DataTableProps) {
