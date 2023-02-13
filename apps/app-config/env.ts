@@ -38,7 +38,8 @@ export const zCommonEnv = zEnvVars({
           // TODO: have this depend on req.headers.Host to be more reliable, would also
           // make things like proxy work automagically mostly
           `http://localhost:${
-            process.env['PORT'] ?? process.env['NEXT_PUBLIC_PORT'] ?? 3000
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            process.env['PORT'] || process.env['NEXT_PUBLIC_PORT'] || 3000
           }`,
     )
     // TODO: Should we default to request url?
