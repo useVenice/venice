@@ -1,18 +1,18 @@
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
-import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import type { UseVenice} from '@usevenice/engine-frontend';
+import {useVenice} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {NonEmptyArray} from '@usevenice/util'
+import {useAtom} from 'jotai'
 import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  AddSourceCard,
-  ConnectionCard,
-  ConnectionCardSkeleton,
-} from '../components/connections'
-import {AddSourceDialog} from '../components/connections/AddSourceDialog'
+import React from 'react'
+import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
+import {ResourceCard} from '../components/ResourceCard'
+import {modeAtom} from '../contexts/atoms'
 import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
@@ -27,9 +27,8 @@ type ServerSideProps = PageProps & {
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   context,
 ) => {
-  const {user, getPageProps, supabase, queryClient} = await createSSRHelpers(
-    context,
-  )
+  const {user, getPageProps, supabase, queryClient, ssg} =
+    await createSSRHelpers(context)
   if (!user?.id) {
     return {
       redirect: {
@@ -39,7 +38,19 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     }
   }
 
-  await queryClient.prefetchQuery(getQueryKeys(supabase).connections.list)
+  const [integrations] = await Promise.all([
+    ssg.listIntegrations.fetch({}),
+    ssg.searchInstitutions.prefetch({keywords: undefined}),
+    queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
+  ])
+  // console.log('integrations', integrations, getPageProps())
+
+  // TODO: Get the correct default env name...
+  await Promise.all(
+    integrations.map((int) =>
+      ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
+    ),
+  )
 
   const {ensureDefaultLedger} = await import('../server')
   const ledgerIds = await ensureDefaultLedger(user.id)
@@ -54,6 +65,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 export default function ConnectionsPage(props: ServerSideProps) {
   const res = queries.useConnectionsList()
+
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
@@ -103,6 +115,33 @@ interface ConnectionsColumnProps {
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
   const {connections} = props
+
+  const {integrationsRes, connect: _connect}: UseVenice = useVenice({
+    envName: 'sandbox',
+    keywords: undefined,
+  })
+
+  const onlyIntegrationId =
+    integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
+
+  const [, setMode] = useAtom(modeAtom)
+
+  const connect = React.useCallback(
+    (...[int, opts]: Parameters<typeof _connect>) => {
+      _connect(int, {...opts, connectWith: props.connectWith})
+        .finally(() => {
+          setMode('manage')
+        })
+        .then((res) => {
+          console.log('connect success', res)
+        })
+        .catch((err) => {
+          console.error('connect error', err)
+        })
+    },
+    [_connect, props.connectWith, setMode],
+  )
+
   return (
     <section className="flex w-[24rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
@@ -117,14 +156,23 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
           <span className="text-sm uppercase">Sources</span>
         </h2>
         {connections.length > 0 && (
-          <Dialog.Root>
-            <Dialog.Trigger asChild>
-              <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
-                <AddFilledIcon />
-              </button>
-            </Dialog.Trigger>
-            <AddSourceDialog connectWith={props.connectWith} />
-          </Dialog.Root>
+          <button
+            onClick={() => {
+              if (onlyIntegrationId) {
+                connect({id: onlyIntegrationId}, {})
+              }
+            }}
+            className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
+            <AddFilledIcon />
+          </button>
+          // <Dialog.Root>
+          //   <Dialog.Trigger asChild>
+          //     <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
+          //       <AddFilledIcon />
+          //     </button>
+          //   </Dialog.Trigger>
+          //   <AddSourceDialog connectWith={props.connectWith} />
+          // </Dialog.Root>
         )}
       </header>
       {connections.length > 0 ? (
@@ -132,31 +180,40 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
           <ConnectionCard key={source.id} connection={source} />
         ))
       ) : (
-        <EmptySources />
+        <>
+          <ResourceCard
+            tagColor="offwhite"
+            bgColor="bg-gradient-to-r from-[#ECAA47] to-[#722273]">
+            <div className="grid place-items-center px-6 py-4">
+              <button
+                onClick={() => {
+                  if (onlyIntegrationId) {
+                    connect({id: onlyIntegrationId}, {})
+                  }
+                }}
+                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-offwhite hover:bg-venice-black/10 focus:outline-none focus-visible:bg-venice-black/10">
+                <AddFilledIcon className="inline-flex h-5 w-5 fill-current" />
+                <span className="text-sm uppercase">Add new source</span>
+              </button>
+            </div>
+          </ResourceCard>
+          <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
+            <p>
+              Venice has over 12,000 financial data sources to choose from (e.g.
+              banks & investments)
+            </p>
+            <p>
+              Don&apos;t see one you need?{' '}
+              <a
+                className="text-green hover:text-opacity-70"
+                href="mailto:hi@venice.is">
+                Reach&nbsp;out!
+              </a>
+            </p>
+          </div>
+        </>
       )}
     </section>
-  )
-}
-
-function EmptySources() {
-  return (
-    <>
-      <AddSourceCard />
-      <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
-        <p>
-          Venice has over 12,000 financial data sources to choose from (e.g.
-          banks & investments)
-        </p>
-        <p>
-          Don&apos;t see one you need?{' '}
-          <a
-            className="text-green hover:text-opacity-70"
-            href="mailto:hi@venice.is">
-            Reach&nbsp;out!
-          </a>
-        </p>
-      </div>
-    </>
   )
 }
 

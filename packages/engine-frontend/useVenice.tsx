@@ -36,7 +36,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 
   const insRes = trpc.searchInstitutions.useQuery(
     {keywords},
-    {enabled: !!userId},
+    {enabled: !!userId, staleTime: 15 * 60 * 1000}, // TODO: default system wide stale time.
   )
   const deleteResource = trpc.deleteResource.useMutation({})
   const checkResource = trpc.checkResource.useMutation({})
