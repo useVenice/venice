@@ -96,7 +96,8 @@
       "esbuild-jest@0.5.0": "patches/esbuild-jest@0.5.0.patch",
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
-      "zod@3.20.2": "patches/zod@3.20.2.patch"
+      "zod@3.20.2": "patches/zod@3.20.2.patch",
+      "@supabase/auth-helpers-shared@0.2.4": "patches/@supabase__auth-helpers-shared@0.2.4.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {

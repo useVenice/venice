@@ -16,6 +16,9 @@ patchedDependencies:
   cac@6.7.12:
     hash: nsfmzcycabp3f3q7kw2uyer77u
     path: patches/cac@6.7.12.patch
+  micro-memoize@4.0.10:
+    hash: hko3q5jvea7ey3trpjtkqgcale
+    path: patches/micro-memoize@4.0.10.patch
   firebase@9.8.1:
     hash: bmwbs4hhuxm5sycev5w2vhohk4
     path: patches/firebase@9.8.1.patch
@@ -25,9 +28,9 @@ patchedDependencies:
   zod@3.20.2:
     hash: 6o55l5jjmzhdiwsempa52rp2y4
     path: patches/zod@3.20.2.patch
-  micro-memoize@4.0.10:
-    hash: hko3q5jvea7ey3trpjtkqgcale
-    path: patches/micro-memoize@4.0.10.patch
+  '@supabase/auth-helpers-shared@0.2.4':
+    hash: spt5pcwsqykgpwwysts2ewtfzq
+    path: patches/@supabase__auth-helpers-shared@0.2.4.patch
 
 importers:
 
@@ -4004,17 +4007,18 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.0.4
     dependencies:
-      '@supabase/auth-helpers-shared': 0.2.4_cuu76bm7225ei4sq5x2iikmd2y
+      '@supabase/auth-helpers-shared': 0.2.4_spt5pcwsqykgpwwysts2ewtfzq_cuu76bm7225ei4sq5x2iikmd2y
       '@supabase/supabase-js': 2.7.0
     dev: false
 
-  /@supabase/auth-helpers-shared/0.2.4_cuu76bm7225ei4sq5x2iikmd2y:
+  /@supabase/auth-helpers-shared/0.2.4_spt5pcwsqykgpwwysts2ewtfzq_cuu76bm7225ei4sq5x2iikmd2y:
     resolution: {integrity: sha512-c+hi3N6DhjPTzjXGOokre4gmMZOqt0f1ORrwZwi2s07pk3cbkmn77DwwVtlYMNi3oZNYRQqAfxJu83UzpJrrmg==}
     peerDependencies:
       '@supabase/supabase-js': ^2.0.4
     dependencies:
       '@supabase/supabase-js': 2.7.0
     dev: false
+    patched: true
 
   /@supabase/auth-ui-react/0.2.6_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-N2qxgsjxPQZPdDotVumzruj4RHaKNFb9ZRecttMeGOvrYFbMWRQVpWT/rYkTPsRW2phKiGXQlMwha6YxUE+t6Q==}
