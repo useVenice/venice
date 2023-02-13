@@ -62,8 +62,12 @@ export async function serverGetUser(context: GetServerSidePropsContext) {
     }).verify(access_token)
     return [user, supabase] as const
   } catch (err) {
-    console.warn('Error verifying user access token', err)
-    return [null, supabase] as const
+    console.warn(
+      '[serverGetUser] Error verifying user access token, will logout',
+    )
+    await supabase.auth.signOut()
+    throw err
+    // return [null, supabase] as const
   }
 }
 
