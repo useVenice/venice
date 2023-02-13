@@ -1,6 +1,7 @@
 import {Button} from '@usevenice/ui'
 import {CheckCircleFilledIcon, CopyTextIcon} from '@usevenice/ui/icons'
 import {useEffect, useState} from 'react'
+import {copyToClipboard} from '../contexts/common-contexts'
 
 interface CopyTextButtonProps {
   content: string
@@ -14,18 +15,6 @@ export function CopyTextButton(props: CopyTextButtonProps) {
     ? {icon: CheckCircleFilledIcon, text: 'Copied'}
     : {icon: CopyTextIcon, text: 'Copy'}
 
-  async function copyToClipboard() {
-    if (navigator) {
-      try {
-        await navigator.clipboard.writeText(content)
-        setCopied(true)
-      } catch (err) {
-        // TODO report via Sentry
-        console.error('Unabled to copy content to clipboard.', err)
-      }
-    }
-  }
-
   useEffect(() => {
     if (isCopied) {
       const timer = setTimeout(() => setCopied(false), showCopiedDurationMs)
@@ -38,7 +27,7 @@ export function CopyTextButton(props: CopyTextButtonProps) {
     <Button
       variant="primary"
       disabled={isCopied}
-      onClick={copyToClipboard}
+      onClick={() => copyToClipboard(content)}
       className="shrink-0 gap-1 disabled:opacity-100">
       <Icon className="h-4 w-4 fill-current" />
       <span>{text}</span>
