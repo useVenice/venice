@@ -1,18 +1,5 @@
-diff --git a/dist/index.d.ts b/dist/index.d.ts
-index 9ac20859bbafc5cd9d025a9cb4fbcfc06ae7d345..191e66a6ba0304b3b2a711a6cc335a495214caf6 100644
---- a/dist/index.d.ts
-+++ b/dist/index.d.ts
-@@ -12,7 +12,7 @@ declare type SupabaseClientOptionsWithoutAuth<T = 'public'> = Omit<SupabaseClien
- declare function createBrowserSupabaseClient<Database = any, SchemaName extends string & keyof Database = 'public' extends keyof Database ? 'public' : string & keyof Database>({ supabaseUrl, supabaseKey, options, cookieOptions: { name, domain, path, sameSite, secure, maxAge } }: {
-     supabaseUrl: string;
-     supabaseKey: string;
--    options?: SupabaseClientOptionsWithoutAuth<SchemaName>;
-+    options?: SupabaseClientOptions<SchemaName>;
-     cookieOptions?: CookieOptions;
- }): _supabase_supabase_js.SupabaseClient<Database, SchemaName, Database[SchemaName] extends _supabase_supabase_js_dist_module_lib_types.GenericSchema ? Database[SchemaName] : any>;
- 
 diff --git a/dist/index.js b/dist/index.js
-index b31914a9af7bc1d5dd8b3dc7eae5ba5ba71638fe..ef5fec18f2b8f41c05d6285638744dda9862458e 100644
+index b31914a9af7bc1d5dd8b3dc7eae5ba5ba71638fe..af301710aaad38fda6187b9fe3a722dddb99d04e 100644
 --- a/dist/index.js
 +++ b/dist/index.js
 @@ -303,7 +303,7 @@ function isBrowser() {
@@ -20,7 +7,7 @@ index b31914a9af7bc1d5dd8b3dc7eae5ba5ba71638fe..ef5fec18f2b8f41c05d6285638744dda
    supabaseUrl,
    supabaseKey,
 -  options,
-+  options = {auth, ...options}, // @see https://github.com/supabase/auth-helpers/pull/449
++  options: {auth, ...options} = {}, // @see https://github.com/supabase/auth-helpers/pull/449,
    cookieOptions: {
      name = "supabase-auth-token",
      domain,
