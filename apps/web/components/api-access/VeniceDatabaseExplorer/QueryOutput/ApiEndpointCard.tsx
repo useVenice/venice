@@ -1,15 +1,16 @@
 import {InstructionCard} from '@usevenice/ui'
 import {CsvFileIcon, JsonFileIcon} from '@usevenice/ui/icons'
-import {CopyTextButton} from '../CopyTextButton'
+import {CopyTextButton} from '../../../CopyTextButton'
+import {OutputFormat} from './OutputFormat'
 
-interface ApiEndpointCard {
-  format: 'csv' | 'json'
+interface ApiEndpointCardProps {
+  format: OutputFormat
   queryUrl: string
 }
 
-export function ApiEndpointCard(props: ApiEndpointCard) {
+export function ApiEndpointCard(props: ApiEndpointCardProps) {
   const {format, queryUrl} = props
-  const icon = format === 'csv' ? CsvFileIcon : JsonFileIcon
+  const icon = iconByOutputFormat[format]
   return (
     <InstructionCard icon={icon} title="API Endpoint">
       <p className="text-venice-green">
@@ -26,4 +27,9 @@ export function ApiEndpointCard(props: ApiEndpointCard) {
       </div>
     </InstructionCard>
   )
+}
+
+const iconByOutputFormat = {
+  [OutputFormat.csv]: CsvFileIcon,
+  [OutputFormat.json]: JsonFileIcon,
 }

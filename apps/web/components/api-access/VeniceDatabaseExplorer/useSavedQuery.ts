@@ -28,7 +28,7 @@ export function useSavedQuery(): {
           {
             id,
             displayName: id,
-            query: `select * from "${id}" limit 10;`,
+            query: `select * from ${id} limit 10;`,
           },
         ]),
       ),
