@@ -5,17 +5,17 @@ import type {ReactNode} from 'react'
 import {useMemo} from 'react'
 
 interface DataTableProps {
+  columns: string[]
   isFetching: boolean
-  headings: string[]
   rows: Array<Record<string, Record<string, unknown> | string | number | null>>
 }
 
 export function DataTable(props: DataTableProps) {
-  const {isFetching} = props
+  const {columns, isFetching, rows} = props
 
-  const headings = useMemo(
+  const renderedColumns = useMemo(
     () =>
-      props.headings.map((c) => (
+      columns.map((c) => (
         <th
           key={c}
           scope="col"
@@ -23,14 +23,14 @@ export function DataTable(props: DataTableProps) {
           {c}
         </th>
       )),
-    [props.headings],
+    [columns],
   )
 
-  const rows = useMemo(
+  const renderedRows = useMemo(
     () =>
-      props.rows.map((r, i) => (
+      rows.map((r, i) => (
         <tr key={i}>
-          {props.headings.map((c) => {
+          {columns.map((c) => {
             const value = r[c]
             const displayValue =
               typeof value === 'object' && value !== null
@@ -46,20 +46,20 @@ export function DataTable(props: DataTableProps) {
           })}
         </tr>
       )),
-    [props.headings, props.rows],
+    [columns, rows],
   )
 
   return (
     <table className="min-w-full divide-y divide-venice-gray-muted">
       <thead>
-        <tr>{headings}</tr>
+        <tr>{renderedColumns}</tr>
       </thead>
       <tbody
         className={clsx(
           'divide-y divide-venice-gray-muted/50 overflow-y-auto transition-opacity',
           isFetching && 'opacity-70',
         )}>
-        {rows}
+        {renderedRows}
       </tbody>
     </table>
   )

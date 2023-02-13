@@ -103,7 +103,7 @@ interface DataTableQueryOutputProps {
 
 function DataTableQueryOutput(props: DataTableQueryOutputProps) {
   const {isInitial, isFetching, output} = props
-  const headings = useMemo(() => {
+  const columns = useMemo(() => {
     const firstRow = output?.[0]
     return firstRow ? Object.keys(firstRow) : []
   }, [output])
@@ -128,7 +128,7 @@ function DataTableQueryOutput(props: DataTableQueryOutputProps) {
 
   return (
     <div className="max-h-[20rem] overflow-auto">
-      <DataTable isFetching={isFetching} headings={headings} rows={output} />
+      <DataTable columns={columns} isFetching={isFetching} rows={output} />
     </div>
   )
 }
