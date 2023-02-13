@@ -7,7 +7,7 @@ import {useMemo} from 'react'
 interface DataTableProps {
   isFetching: boolean
   headings: string[]
-  rows: Array<Record<string, string | number | null>>
+  rows: Array<Record<string, string | number | Record<string, unknown> | null>>
 }
 
 export function DataTable(props: DataTableProps) {
@@ -28,15 +28,22 @@ export function DataTable(props: DataTableProps) {
 
   const rows = useMemo(
     () =>
-      props.rows.map((r) => (
-        <tr key={r['id']}>
-          {props.headings.map((c) => (
-            <td
-              key={c}
-              className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
-              {r[c]}
-            </td>
-          ))}
+      props.rows.map((r, i) => (
+        <tr key={i}>
+          {props.headings.map((c) => {
+            const value = r[c]
+            const displayValue =
+              typeof value === 'object' && value !== null
+                ? JSON.stringify(value)
+                : value
+            return (
+              <td
+                key={c}
+                className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
+                {displayValue}
+              </td>
+            )
+          })}
         </tr>
       )),
     [props.headings, props.rows],

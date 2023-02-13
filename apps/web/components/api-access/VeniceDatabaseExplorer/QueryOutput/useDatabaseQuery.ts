@@ -20,7 +20,7 @@ export interface DatabaseQuery {
 }
 
 const JsonQuerySchema = z.array(
-  z.record(z.union([z.string(), z.number(), z.null()])),
+  z.record(z.union([z.record(z.unknown()), z.string(), z.number(), z.null()])),
 )
 
 export namespace QueryData {
