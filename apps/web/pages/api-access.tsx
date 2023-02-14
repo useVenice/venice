@@ -3,7 +3,7 @@ import type {GetServerSideProps} from 'next'
 import {
   DatabaseAccessCard,
   PrimaryTabs,
-  QueryExplorer,
+  VeniceDatabaseExplorer,
 } from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -55,7 +55,7 @@ export default function Page(props: ServerSideProps) {
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access', 'SQL']} />
-      <div className="min-w-[55rem] max-w-[65rem] p-6">
+      <div className="p-6">
         <Tabs.Root
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
@@ -67,8 +67,8 @@ export default function Page(props: ServerSideProps) {
               {key: PrimaryTabsKey.databaseUri, label: 'Database URI'},
             ]}
           />
-          <Tabs.Content value={PrimaryTabsKey.sqlApi}>
-            <QueryExplorer apiKey={apiKey} serverUrl={serverUrl} />
+          <Tabs.Content className="max-w-[65rem]" value={PrimaryTabsKey.sqlApi}>
+            <VeniceDatabaseExplorer apiKey={apiKey} serverUrl={serverUrl} />
           </Tabs.Content>
           <Tabs.Content
             className="max-w-[38.5rem]"

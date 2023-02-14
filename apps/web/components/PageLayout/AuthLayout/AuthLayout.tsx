@@ -24,7 +24,7 @@ export function AuthLayout({children}: AuthLayoutProps) {
       <div className="fixed inset-y-0 flex w-56 flex-col">
         <Sidebar />
       </div>
-      <div className="flex flex-1 flex-col pl-56">
+      <div className="flex flex-1 flex-col overflow-x-hidden pl-56">
         <main className="flex-1">{children}</main>
       </div>
     </div>
