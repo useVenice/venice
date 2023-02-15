@@ -2,7 +2,7 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {RedirectTo} from '../components/common-components'
+import {RedirectTo} from '../components/RedirectTo'
 import {browserSupabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'

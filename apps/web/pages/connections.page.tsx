@@ -1,5 +1,5 @@
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
-import type { UseVenice} from '@usevenice/engine-frontend';
+import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {NonEmptyArray} from '@usevenice/util'
