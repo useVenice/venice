@@ -1,5 +1,6 @@
+import {ArcherContainer, ArcherElement} from 'react-archer'
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
-import type { UseVenice} from '@usevenice/engine-frontend';
+import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {NonEmptyArray} from '@usevenice/util'
@@ -17,6 +18,8 @@ import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
 import {createSSRHelpers} from '../server'
+
+const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
 type ServerSideProps = PageProps & {
   ledgerIds: NonEmptyArray<Id['reso']>
@@ -70,18 +73,24 @@ export default function ConnectionsPage(props: ServerSideProps) {
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
         <PageHeader title={['Connections']} />
-        <div className="flex gap-24 overflow-y-auto p-16">
-          {res.isLoading ? (
-            <LoadingConnectionsColumn />
-          ) : (
-            <ConnectionsColumn
-              connections={res.data?.source ?? []}
-              connectWith={{destinationId: props.ledgerIds[0]}}
-            />
-          )}
+        <ArcherContainer
+          className="overflow-y-auto"
+          strokeColor="#7d7d7d"
+          strokeWidth={1}
+          endMarker={false}>
+          <div className="flex gap-24 p-16">
+            {res.isLoading ? (
+              <LoadingConnectionsColumn />
+            ) : (
+              <ConnectionsColumn
+                connections={res.data?.source ?? []}
+                connectWith={{destinationId: props.ledgerIds[0]}}
+              />
+            )}
 
-          <VeniceDatabaseSection />
-        </div>
+            <VeniceDatabaseSection />
+          </div>
+        </ArcherContainer>
       </div>
     </PageLayout>
   )
@@ -115,6 +124,13 @@ interface ConnectionsColumnProps {
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
   const {connections} = props
+  const archerElementRelations = [
+    {
+      targetId: VENICE_DATABASE_IMAGE_ID,
+      targetAnchor: 'left',
+      sourceAnchor: 'right',
+    } as const,
+  ]
 
   const {integrationsRes, connect: _connect}: UseVenice = useVenice({
     envName: 'sandbox',
@@ -177,7 +193,12 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
       </header>
       {connections.length > 0 ? (
         connections.map((source) => (
-          <ConnectionCard key={source.id} connection={source} />
+          <ArcherElement
+            key={source.id}
+            id={`source-${source.id}`}
+            relations={archerElementRelations}>
+            <ConnectionCard connection={source} />
+          </ArcherElement>
         ))
       ) : (
         <>
@@ -221,13 +242,17 @@ function VeniceDatabaseSection() {
   return (
     // padding top is used to align againsts the two sides
     <section className="relative flex shrink-0 flex-col items-center pt-[2.625rem]">
+      <ArcherElement id={VENICE_DATABASE_IMAGE_ID}>
+        <Image
+          priority
+          width={86}
+          height={112}
+          src="/venice-database.png"
+          alt="Venice Database"
+        />
+      </ArcherElement>
       <Image
-        width={86}
-        height={112}
-        src="/venice-database.png"
-        alt="Venice Database"
-      />
-      <Image
+        priority
         className="mr-12 mt-1"
         width={51}
         height={103}
