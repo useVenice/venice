@@ -75,7 +75,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
         <PageHeader title={['Connections']} />
         <ArcherContainer
           className="overflow-y-auto"
-          strokeColor="#7d7d7d"
+          strokeColor="#3e3e3e"
           strokeWidth={1}
           endMarker={false}>
           <div className="flex gap-24 p-16">
