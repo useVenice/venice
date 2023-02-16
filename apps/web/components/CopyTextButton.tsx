@@ -27,7 +27,10 @@ export function CopyTextButton(props: CopyTextButtonProps) {
     <Button
       variant="primary"
       disabled={isCopied}
-      onClick={() => copyToClipboard(content)}
+      onClick={async () => {
+        await copyToClipboard(content)
+        setCopied(true)
+      }}
       className="shrink-0 gap-1 disabled:opacity-100">
       <Icon className="h-4 w-4 fill-current" />
       <span>{text}</span>
