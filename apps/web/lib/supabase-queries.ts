@@ -265,6 +265,8 @@ export function usePostgresChanges(
 export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
 postgresSubscriptionsAtom.onMount = (setAtom) => {
   const invalidate = () =>
+    // TODO: this needs to be passed in per request otherwise it's shared
+    // across requests during SSR
     browserQueryClient.invalidateQueries(
       getQueryKeys(browserSupabase).connections._def,
     )

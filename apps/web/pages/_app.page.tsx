@@ -1,26 +1,33 @@
 import './global.css'
 
+import type {QueryClient} from '@tanstack/react-query'
 import {Hydrate, QueryClientProvider} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
-import React from 'react'
+import React, {useRef} from 'react'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
+import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-import {browserQueryClient} from '../lib/query-client'
+import {createQueryClient} from '../lib/query-client'
 import type {PageProps} from '../server'
-import superjson from 'superjson'
 
 /** Need this to be a separate function so we can have hooks... */
-function _VeniceProvider({children}: {children: React.ReactNode}) {
+function _VeniceProvider({
+  children,
+  queryClient,
+}: {
+  children: React.ReactNode
+  queryClient: QueryClient
+}) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
   const [session, meta] = useSession()
 
@@ -39,7 +46,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   // }
   return (
     <VeniceProvider
-      queryClient={browserQueryClient}
+      queryClient={queryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
       developerMode={developerMode}>
@@ -49,7 +56,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
 }
 
 export function MyApp({Component, pageProps}: AppProps<PageProps>) {
-  // console.log('MyApp re-render', pageProps)
+  const {current: queryClient} = useRef(createQueryClient())
   return (
     <>
       <Head>
@@ -58,14 +65,14 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
-        <QueryClientProvider client={browserQueryClient}>
+        <QueryClientProvider client={queryClient}>
           <Hydrate
             state={
               pageProps.dehydratedState &&
               superjson.deserialize(pageProps.dehydratedState)
             }>
             <SessionContextProvider supabaseClient={browserSupabase}>
-              <_VeniceProvider>
+              <_VeniceProvider queryClient={queryClient}>
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>
