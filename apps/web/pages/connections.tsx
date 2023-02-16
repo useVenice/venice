@@ -76,9 +76,9 @@ export default function ConnectionsPage(props: ServerSideProps) {
         <ArcherContainer
           className="overflow-y-auto"
           strokeColor="#3e3e3e"
-          strokeWidth={1}
+          strokeWidth={2}
           endMarker={false}>
-          <div className="flex gap-24 p-16">
+          <div className="flex gap-36 p-16">
             {res.isLoading ? (
               <LoadingConnectionsColumn />
             ) : (
