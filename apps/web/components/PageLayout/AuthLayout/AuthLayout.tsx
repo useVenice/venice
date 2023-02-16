@@ -1,6 +1,6 @@
 import type {PropsWithChildren} from 'react'
 
-import {RedirectTo} from '../../common-components'
+import {RedirectTo} from '../../RedirectTo'
 import {LoadingIndicatorOverlay} from '../../loading-indicators'
 import {useSession} from '../../../contexts/session-context'
 import {Sidebar} from './Sidebar'
