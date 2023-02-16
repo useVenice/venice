@@ -1,6 +1,5 @@
 import {
   ArrowLeftRightIcon,
-  CsvFileIcon,
   DatabaseIcon,
   DocsIcon,
   ExportIcon,
