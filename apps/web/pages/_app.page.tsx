@@ -13,6 +13,9 @@ import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
+import 'nprogress/nprogress.css'
+import NProgress from 'nprogress'
+
 import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
@@ -55,8 +58,30 @@ function _VeniceProvider({
   )
 }
 
-export function MyApp({Component, pageProps}: AppProps<PageProps>) {
+export function MyApp({Component, pageProps, router}: AppProps<PageProps>) {
   const {current: queryClient} = useRef(createQueryClient())
+
+  React.useEffect(() => {
+    NProgress.configure({
+      showSpinner: false,
+      template:
+        "<div class='bar' role='bar' style='height: 0.1rem; background: #12b886;'></div>",
+    })
+    const handleRouteStart = () => NProgress.start()
+    const handleRouteDone = () => NProgress.done()
+
+    router.events.on('routeChangeStart', handleRouteStart)
+    router.events.on('routeChangeComplete', handleRouteDone)
+    router.events.on('routeChangeError', handleRouteDone)
+
+    return () => {
+      // Make sure to remove the event handler on unmount!
+      router.events.off('routeChangeStart', handleRouteStart)
+      router.events.off('routeChangeComplete', handleRouteDone)
+      router.events.off('routeChangeError', handleRouteDone)
+    }
+  })
+
   return (
     <>
       <Head>
