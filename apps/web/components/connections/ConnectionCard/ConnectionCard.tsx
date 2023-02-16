@@ -11,7 +11,7 @@ import {
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import {useEffect, useRef, useState} from 'react'
+import {forwardRef, useEffect, useRef, useState} from 'react'
 import type {Connection} from '../../../lib/supabase-queries'
 import {mutations} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
@@ -24,126 +24,128 @@ export interface ConnectionCardProps {
 
 type ConnectionStatus = Connection['resource']['status']
 
-export function ConnectionCard(props: ConnectionCardProps) {
-  const {
-    id,
-    resource: {id: resourceId, displayName, institution, status},
-    lastSyncCompletedAt,
-    syncInProgress,
-  } = props.connection
+export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
+  function ConnectionCard(props, ref) {
+    const {
+      id,
+      resource: {id: resourceId, displayName, institution, status},
+      lastSyncCompletedAt,
+      syncInProgress,
+    } = props.connection
 
-  // action.rename
-  const [isRenaming, setIsRenaming] = useState(false)
+    // action.rename
+    const [isRenaming, setIsRenaming] = useState(false)
 
-  // action.sync
-  const {trpc} = VeniceProvider.useContext()
-  const dispatch = trpc.dispatch.useMutation()
+    // action.sync
+    const {trpc} = VeniceProvider.useContext()
+    const dispatch = trpc.dispatch.useMutation()
 
-  // action.delete
-  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    // action.delete
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
-  return (
-    <ResourceCard
-      tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
-      <div className="flex grow flex-col justify-between py-2 px-3">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
-          {institution?.logoUrl ? (
-            <Image
-              width={32}
-              height={32}
-              src={institution.logoUrl}
-              alt={`${institution.name} Logo`}
-            />
-          ) : (
-            <Image
-              width={32}
-              height={32}
-              src="/institution-placeholder.svg"
-              alt=""
-              aria-hidden="true"
-            />
-          )}
-
-          {isRenaming ? (
-            <EditingDisplayName
-              resourceId={resourceId}
-              displayName={displayName ?? ''}
-              onCancel={() => setIsRenaming(false)}
-              onUpdateSuccess={() => setIsRenaming(false)}
-            />
-          ) : (
-            <span
-              className="truncate text-sm font-medium uppercase"
-              onClick={() => setIsRenaming(true)}>
-              {displayName}
-            </span>
-          )}
-
-          <ActionMenu>
-            <ActionMenuItem
-              icon={EditIcon}
-              label="Rename"
-              onClick={() => setIsRenaming(true)}
-            />
-            <ActionMenuItem
-              icon={SyncIcon}
-              label="Sync"
-              // TODO: show sync in progress and result (success/failure)
-              onClick={() =>
-                dispatch.mutate({
-                  name: 'pipeline/sync-requested',
-                  data: {pipelineId: id},
-                })
-              }
-            />
-            <ActionMenuItem
-              icon={DeleteIcon}
-              label="Delete"
-              onClick={() => {
-                // a work around to address error:
-                //   react-remove-scroll-bar cannot calculate scrollbar size
-                //   because it is removed (overflow:hidden on body)
-                //
-                // because the dropdown modal was open (setting overflow:hidden)
-                // and the dialog modal tries to open. there might be a better
-                // way to handle this.
-                setTimeout(() => setDeleteDialogOpen(true), 0)
-              }}
-            />
-          </ActionMenu>
-
-          {/* Needs to keep Dialog root outside ActionMenu otherwise it won't open */}
-          <Dialog.Root
-            open={isDeleteDialogOpen}
-            onOpenChange={setDeleteDialogOpen}>
-            <DeleteConnectionDialog
-              pipelineId={id}
-              resourceId={resourceId}
-              name={displayName}
-              institution={institution}
-              onCancel={() => setDeleteDialogOpen(false)}
-            />
-          </Dialog.Root>
-        </div>
-        <div className="text-right">
-          {status ? <ConnectionStatus status={status} /> : null}
-          <p className="text-xs font-medium text-venice-gray">
-            {syncInProgress ? (
-              <Loading text="Syncing" />
-            ) : lastSyncCompletedAt ? (
-              `Synced ${formatDistanceToNowStrict(
-                new Date(lastSyncCompletedAt),
-                {addSuffix: true},
-              )}`
+    return (
+      <ResourceCard
+        tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
+        <div className="flex grow flex-col justify-between py-2 px-3" ref={ref}>
+          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+            {institution?.logoUrl ? (
+              <Image
+                width={32}
+                height={32}
+                src={institution.logoUrl}
+                alt={`${institution.name} Logo`}
+              />
             ) : (
-              'No sync information'
+              <Image
+                width={32}
+                height={32}
+                src="/institution-placeholder.svg"
+                alt=""
+                aria-hidden="true"
+              />
             )}
-          </p>
+
+            {isRenaming ? (
+              <EditingDisplayName
+                resourceId={resourceId}
+                displayName={displayName ?? ''}
+                onCancel={() => setIsRenaming(false)}
+                onUpdateSuccess={() => setIsRenaming(false)}
+              />
+            ) : (
+              <span
+                className="truncate text-sm font-medium uppercase"
+                onClick={() => setIsRenaming(true)}>
+                {displayName}
+              </span>
+            )}
+
+            <ActionMenu>
+              <ActionMenuItem
+                icon={EditIcon}
+                label="Rename"
+                onClick={() => setIsRenaming(true)}
+              />
+              <ActionMenuItem
+                icon={SyncIcon}
+                label="Sync"
+                // TODO: show sync in progress and result (success/failure)
+                onClick={() =>
+                  dispatch.mutate({
+                    name: 'pipeline/sync-requested',
+                    data: {pipelineId: id},
+                  })
+                }
+              />
+              <ActionMenuItem
+                icon={DeleteIcon}
+                label="Delete"
+                onClick={() => {
+                  // a work around to address error:
+                  //   react-remove-scroll-bar cannot calculate scrollbar size
+                  //   because it is removed (overflow:hidden on body)
+                  //
+                  // because the dropdown modal was open (setting overflow:hidden)
+                  // and the dialog modal tries to open. there might be a better
+                  // way to handle this.
+                  setTimeout(() => setDeleteDialogOpen(true), 0)
+                }}
+              />
+            </ActionMenu>
+
+            {/* Needs to keep Dialog root outside ActionMenu otherwise it won't open */}
+            <Dialog.Root
+              open={isDeleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}>
+              <DeleteConnectionDialog
+                pipelineId={id}
+                resourceId={resourceId}
+                name={displayName}
+                institution={institution}
+                onCancel={() => setDeleteDialogOpen(false)}
+              />
+            </Dialog.Root>
+          </div>
+          <div className="text-right">
+            {status ? <ConnectionStatus status={status} /> : null}
+            <p className="text-xs font-medium text-venice-gray">
+              {syncInProgress ? (
+                <Loading text="Syncing" />
+              ) : lastSyncCompletedAt ? (
+                `Synced ${formatDistanceToNowStrict(
+                  new Date(lastSyncCompletedAt),
+                  {addSuffix: true},
+                )}`
+              ) : (
+                'No sync information'
+              )}
+            </p>
+          </div>
         </div>
-      </div>
-    </ResourceCard>
-  )
-}
+      </ResourceCard>
+    )
+  },
+)
 
 interface EditingDisplayNameProps {
   displayName: string

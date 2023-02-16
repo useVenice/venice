@@ -256,19 +256,6 @@ importers:
       micro: 9.3.5-canary.3
       ngrok: 4.3.3
 
-  apps/tests:
-    specifiers:
-      '@usevenice/app-config': workspace:*
-      openapi-typescript: 6.1.0
-      remeda: 1.6.1
-      tsx: 3.12.2
-    dependencies:
-      '@usevenice/app-config': link:../app-config
-      remeda: 1.6.1
-    devDependencies:
-      openapi-typescript: 6.1.0
-      tsx: 3.12.2
-
   apps/web:
     specifiers:
       '@glideapps/glide-data-grid': 5.2.1
@@ -310,7 +297,9 @@ importers:
       node-loader: 2.0.0
       phosphor-react: 1.4.1
       postcss: '*'
+      prop-types: ^15.6.2
       react: 18.2.0
+      react-archer: ^4.2.2
       react-dom: 18.2.0
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
@@ -354,7 +343,9 @@ importers:
       next-query-params: 4.1.0_siv5c6b7gmuo4qet7a3ayyekzm
       next-router-query: 0.1.3_next@13.1.5+react@18.2.0
       phosphor-react: 1.4.1_react@18.2.0
+      prop-types: 15.8.1
       react: 18.2.0
+      react-archer: 4.2.2_4fqkawmkvfssrs2e2rhsnm35dy
       react-dom: 18.2.0_react@18.2.0
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
@@ -11007,6 +10998,20 @@ packages:
       strip-json-comments: 2.0.1
     dev: false
 
+  /react-archer/4.2.2_4fqkawmkvfssrs2e2rhsnm35dy:
+    resolution: {integrity: sha512-THuOl1guFPYRx0QsZ69kV7bwr1Hapxwxad9BVQ9qyyGXW4E2zzI9QA9xYSMDRI6DnXhiAy2IEJWH0LqDpFV6qA==}
+    peerDependencies:
+      '@types/react': ^16.8.8 || ^17 || ^18
+      prop-types: ^15.6.2
+      react: ^16.9.0 || ^17 || ^18
+    dependencies:
+      '@types/react': 18.0.27
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-fast-compare: 2.0.4
+      resize-observer-polyfill: 1.5.0
+    dev: false
+
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -11022,6 +11027,10 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       prop-types: 15.8.1
+    dev: false
+
+  /react-fast-compare/2.0.4:
+    resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
     dev: false
 
   /react-is/16.13.1:
@@ -11314,6 +11323,10 @@ packages:
   /require-directory/2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
+
+  /resize-observer-polyfill/1.5.0:
+    resolution: {integrity: sha512-M2AelyJDVR/oLnToJLtuDJRBBWUGUvvGigj1411hXhAdyFWqMaqHp7TixW3FpiLuVaikIcR1QL+zqoJoZlOgpg==}
+    dev: false
 
   /resolve-alpn/1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
