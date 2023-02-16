@@ -202,22 +202,21 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
         ))
       ) : (
         <>
-          <ResourceCard
-            tagColor="offwhite"
-            bgColor="bg-gradient-to-r from-[#ECAA47] to-[#722273]">
-            <div className="grid place-items-center px-6 py-4">
-              <button
-                onClick={() => {
-                  if (onlyIntegrationId) {
-                    connect({id: onlyIntegrationId}, {})
-                  }
-                }}
-                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-offwhite hover:bg-venice-black/10 focus:outline-none focus-visible:bg-venice-black/10">
+          <button
+            onClick={() => {
+              if (onlyIntegrationId) {
+                connect({id: onlyIntegrationId}, {})
+              }
+            }}>
+            <ResourceCard
+              tagColor="offwhite"
+              bgColor="bg-gradient-to-r from-[#ECAA47] to-[#722273]">
+              <div className="inline-flex items-center justify-center gap-2 px-3 py-2 text-offwhite hover:bg-venice-black/10 focus:outline-none focus-visible:bg-venice-black/10">
                 <AddFilledIcon className="inline-flex h-5 w-5 fill-current" />
                 <span className="text-sm uppercase">Add new source</span>
-              </button>
-            </div>
-          </ResourceCard>
+              </div>
+            </ResourceCard>
+          </button>
           <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
             <p>
               Venice has over 12,000 financial data sources to choose from (e.g.
