@@ -1,5 +1,5 @@
 import {InstructionCard} from '@usevenice/ui'
-import {CsvFileIcon} from '@usevenice/ui/icons'
+import {DatabaseIcon} from '@usevenice/ui/icons'
 import {CopyTextButton} from '../CopyTextButton'
 
 interface DatabaseAccessCardProps {
@@ -9,7 +9,7 @@ interface DatabaseAccessCardProps {
 export function DatabaseAccessCard(props: DatabaseAccessCardProps) {
   const {databaseUrl} = props
   return (
-    <InstructionCard icon={CsvFileIcon} title="Database Access">
+    <InstructionCard icon={DatabaseIcon} title="Database Access">
       <p className="text-venice-green">
         Directly connect to Venice&apos;s unified database to:
       </p>
