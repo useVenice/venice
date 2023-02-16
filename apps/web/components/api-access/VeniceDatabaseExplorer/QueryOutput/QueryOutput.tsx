@@ -120,7 +120,7 @@ function DataTableQueryOutput(props: DataTableQueryOutputProps) {
   if (!output || !output[0]) {
     return (
       <EmptyDataTable
-        title="No result found."
+        title="No results found."
         containerClassName="min-h-[15rem]"
       />
     )
