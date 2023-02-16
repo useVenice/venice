@@ -46,8 +46,8 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
           <div className="mx-auto max-w-[20rem] text-sm text-venice-gray">
             <p className="pb-1">Deleting {name} will:</p>
             <ul className="list-disc pl-4">
-              <li>stop syncing its data into Venice keep</li>
-              <li>all previously synced data safely in Venice</li>
+              <li>stop syncing its data into Venice</li>
+              <li>keep all previously synced data safely in Venice</li>
               <li>delete this connection with {name}</li>
             </ul>
           </div>
