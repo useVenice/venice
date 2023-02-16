@@ -68,7 +68,7 @@ function QueryResultDisplay(props: QueryResultDisplayProps) {
     <div className="relative min-h-[15rem]">
       <textarea
         className="h-full w-full resize-none appearance-none overflow-y-auto rounded-lg bg-venice-black-500 p-3 font-mono text-sm text-venice-gray ring-1 ring-inset ring-venice-black-300 placeholder:text-venice-gray-muted focus:outline-none focus:ring-venice-green"
-        placeholder="<json output here>"
+        placeholder="No results — please execute a query first."
         value={displayOutput}
         readOnly
         spellCheck={false}
