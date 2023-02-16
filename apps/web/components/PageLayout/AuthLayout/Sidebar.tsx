@@ -23,11 +23,6 @@ const mainNavigation = [
     href: '/api-access',
     icon: DatabaseIcon,
   },
-  {
-    name: 'Data explorer',
-    href: '/data',
-    icon: CsvFileIcon,
-  },
 ]
 
 const helpNavigation = [
