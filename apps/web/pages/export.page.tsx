@@ -102,7 +102,7 @@ export default function Page(props: ServerSideProps) {
         <div className="mt-6 min-h-[15rem] overflow-x-auto">
           <PreviewResult {...preview} />
         </div>
-        <div className="mt-6 max-w-[38.5rem]">
+        <div className="mt-6 max-w-[50rem]">
           <SyncSpreadsheetCard
             csvQuery={csvQuery}
             isEmptyResult={isEmptyResult}

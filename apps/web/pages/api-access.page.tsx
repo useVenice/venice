@@ -71,7 +71,7 @@ export default function Page(props: ServerSideProps) {
             <VeniceDatabaseExplorer apiKey={apiKey} serverUrl={serverUrl} />
           </Tabs.Content>
           <Tabs.Content
-            className="max-w-[38.5rem]"
+            className="max-w-[50rem]"
             value={PrimaryTabsKey.databaseUri}>
             <DatabaseAccessCard databaseUrl={databaseUrl} />
           </Tabs.Content>
