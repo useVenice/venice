@@ -4,7 +4,7 @@ import type {GetServerSideProps} from 'next'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {serverGetUser} from '../server'
-import {Profile, Security} from './account'
+import {Profile} from './account'
 
 enum PrimaryTabsKey {
   profile = 'profile',
@@ -45,17 +45,11 @@ export default function Page(props: ServerSideProps) {
       <div className="p-6">
         <Tabs className="grid gap-6" defaultValue={PrimaryTabsKey.profile}>
           <TabsTriggers
-            options={[
-              {key: PrimaryTabsKey.profile, label: 'Profile'},
-              // {key: PrimaryTabsKey.security, label: 'Security'},
-            ]}
+            options={[{key: PrimaryTabsKey.profile, label: 'Profile'}]}
           />
           <TabsContent value={PrimaryTabsKey.profile}>
             <Profile username={username} />
           </TabsContent>
-          {/* <TabsContent value={PrimaryTabsKey.security}>
-            <Security />
-          </TabsContent> */}
         </Tabs>
       </div>
     </PageLayout>
