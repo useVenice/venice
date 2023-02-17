@@ -47,15 +47,15 @@ export default function Page(props: ServerSideProps) {
           <TabsTriggers
             options={[
               {key: PrimaryTabsKey.profile, label: 'Profile'},
-              {key: PrimaryTabsKey.security, label: 'Security'},
+              // {key: PrimaryTabsKey.security, label: 'Security'},
             ]}
           />
           <TabsContent value={PrimaryTabsKey.profile}>
             <Profile username={username} />
           </TabsContent>
-          <TabsContent value={PrimaryTabsKey.security}>
+          {/* <TabsContent value={PrimaryTabsKey.security}>
             <Security />
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
     </PageLayout>
