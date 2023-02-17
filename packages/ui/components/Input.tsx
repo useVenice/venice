@@ -11,7 +11,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 ) {
   const {className, errorMessage, ...inputProps} = props
   return (
-    <div className="grid gap-1">
+    <div className="grid w-full gap-1">
       <input
         {...inputProps}
         className={twMerge(
