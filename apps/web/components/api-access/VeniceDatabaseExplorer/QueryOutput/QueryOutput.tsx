@@ -29,7 +29,7 @@ export function QueryOutput(props: QueryOutputProps) {
           />
         </Tabs.Content>
         <Tabs.Content value={OutputTabsKey.json}>
-          <section className="grid gap-3 lg:grid-cols-[1fr_26rem]">
+          <section className="grid gap-3 lg:grid-cols-[1fr_27rem]">
             <QueryResultDisplay
               isFetching={databaseQuery.json.isFetching}
               displayOutput={formatJsonDisplayOutput(databaseQuery.json.data)}
@@ -41,7 +41,7 @@ export function QueryOutput(props: QueryOutputProps) {
           </section>
         </Tabs.Content>
         <Tabs.Content value={OutputTabsKey.csv}>
-          <section className="grid gap-3 lg:grid-cols-[1fr_26rem]">
+          <section className="grid gap-3 lg:grid-cols-[1fr_27rem]">
             <QueryResultDisplay
               isFetching={databaseQuery.csv.isFetching}
               displayOutput={formatCsvDisplayOutput(databaseQuery.csv.data)}
