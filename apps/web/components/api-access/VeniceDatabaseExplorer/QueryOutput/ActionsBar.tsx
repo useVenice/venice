@@ -1,7 +1,7 @@
-import {CircularProgress, TabsPrimitive as Tabs} from '@usevenice/ui'
-import {Button} from '@usevenice/ui'
+import {Button, CircularProgress} from '@usevenice/ui'
 import {DownloadIcon, PlayIcon} from '@usevenice/ui/icons'
 import {useEffect} from 'react'
+import {OutputFormatTabs} from './OutputFormatTabs'
 import {OutputTabsKey} from './OutputTabsKey'
 import type {DatabaseQuery} from './useDatabaseQuery'
 
@@ -79,24 +79,5 @@ function ExecuteQueryActionGroup(props: ExecuteQueryActionGroupProps) {
         or hit ⌘ + Enter
       </span>
     </div>
-  )
-}
-
-interface OutputFormatTabsProps {
-  options: Array<{key: OutputTabsKey; label: string}>
-}
-
-function OutputFormatTabs(props: OutputFormatTabsProps) {
-  return (
-    <Tabs.List className="flex rounded-lg bg-venice-black-500 text-sm ring-1 ring-inset ring-venice-black-300">
-      {props.options.map(({key, label}) => (
-        <Tabs.Trigger
-          key={key}
-          value={key}
-          className="h-8 whitespace-nowrap rounded-lg px-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offwhite/70 data-[state=active]:bg-venice-green-btn">
-          {label}
-        </Tabs.Trigger>
-      ))}
-    </Tabs.List>
   )
 }

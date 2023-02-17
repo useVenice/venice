@@ -181,14 +181,6 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
             <AddFilledIcon />
           </button>
-          // <Dialog.Root>
-          //   <Dialog.Trigger asChild>
-          //     <button className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
-          //       <AddFilledIcon />
-          //     </button>
-          //   </Dialog.Trigger>
-          //   <AddSourceDialog connectWith={props.connectWith} />
-          // </Dialog.Root>
         )}
       </header>
       {connections.length > 0 ? (

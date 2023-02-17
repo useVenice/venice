@@ -1,8 +1,7 @@
-import {TabsPrimitive as Tabs} from '@usevenice/ui'
+import {Tabs, TabsTriggers, TabsContent} from '@usevenice/ui'
 import type {GetServerSideProps} from 'next'
 import {
   DatabaseAccessCard,
-  PrimaryTabs,
   VeniceDatabaseExplorer,
 } from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
@@ -56,26 +55,26 @@ export default function Page(props: ServerSideProps) {
     <PageLayout title="API Access">
       <PageHeader title={['API Access', 'SQL']} />
       <div className="p-6">
-        <Tabs.Root
+        <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
           className="grid gap-6"
           defaultValue={PrimaryTabsKey.sqlApi}>
-          <PrimaryTabs
+          <TabsTriggers
             options={[
               {key: PrimaryTabsKey.sqlApi, label: 'SQL API'},
               {key: PrimaryTabsKey.databaseUri, label: 'Database URI'},
             ]}
           />
-          <Tabs.Content value={PrimaryTabsKey.sqlApi}>
+          <TabsContent value={PrimaryTabsKey.sqlApi}>
             <VeniceDatabaseExplorer apiKey={apiKey} serverUrl={serverUrl} />
-          </Tabs.Content>
-          <Tabs.Content
+          </TabsContent>
+          <TabsContent
             className="max-w-[50rem]"
             value={PrimaryTabsKey.databaseUri}>
             <DatabaseAccessCard databaseUrl={databaseUrl} />
-          </Tabs.Content>
-        </Tabs.Root>
+          </TabsContent>
+        </Tabs>
       </div>
     </PageLayout>
   )
