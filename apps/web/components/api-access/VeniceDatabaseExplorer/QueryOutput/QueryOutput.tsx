@@ -1,4 +1,4 @@
-import {CircularProgress, TabsPrimitive as Tabs} from '@usevenice/ui'
+import {CircularProgress, Tabs, TabsContent} from '@usevenice/ui'
 import {useMemo} from 'react'
 import {DataTable, EmptyDataTable} from '../../../DataTable'
 import {ActionsBar} from './ActionsBar'
@@ -14,21 +14,21 @@ interface QueryOutputProps {
 export function QueryOutput(props: QueryOutputProps) {
   const {databaseQuery} = props
   return (
-    <Tabs.Root
+    <Tabs
       id="OutputFormatTabs"
       className="grid gap-6"
       value={databaseQuery.selectedOutputTab}
       onValueChange={databaseQuery.onOutputTabsValueChange}>
       <ActionsBar databaseQuery={databaseQuery} />
       <div className="overflow-x-auto">
-        <Tabs.Content value={OutputTabsKey.dataTable}>
+        <TabsContent value={OutputTabsKey.dataTable}>
           <DataTableQueryOutput
             isInitial={databaseQuery.json.isLoading}
             isFetching={databaseQuery.json.isFetching}
             output={databaseQuery.json.data}
           />
-        </Tabs.Content>
-        <Tabs.Content value={OutputTabsKey.json}>
+        </TabsContent>
+        <TabsContent value={OutputTabsKey.json}>
           <section className="grid gap-3 lg:grid-cols-[1fr_27rem]">
             <QueryResultDisplay
               isFetching={databaseQuery.json.isFetching}
@@ -39,8 +39,8 @@ export function QueryOutput(props: QueryOutputProps) {
               queryUrl={databaseQuery.getFetchUrl()}
             />
           </section>
-        </Tabs.Content>
-        <Tabs.Content value={OutputTabsKey.csv}>
+        </TabsContent>
+        <TabsContent value={OutputTabsKey.csv}>
           <section className="grid gap-3 lg:grid-cols-[1fr_27rem]">
             <QueryResultDisplay
               isFetching={databaseQuery.csv.isFetching}
@@ -51,9 +51,9 @@ export function QueryOutput(props: QueryOutputProps) {
               queryUrl={databaseQuery.getFetchUrl()}
             />
           </section>
-        </Tabs.Content>
+        </TabsContent>
       </div>
-    </Tabs.Root>
+    </Tabs>
   )
 }
 

@@ -1,20 +1,56 @@
+import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
+import {z} from '@usevenice/util'
+import type {GetServerSideProps} from 'next'
 import {PageHeader} from '../components/PageHeader'
-import {browserSupabase} from '../contexts/common-contexts'
-import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'
+import {serverGetUser} from '../server'
+import {Profile} from './account'
 
-export default function AccountPage() {
-  const [session] = useSession()
+enum PrimaryTabsKey {
+  profile = 'profile',
+  security = 'security',
+}
+
+interface ServerSideProps {
+  username: string
+}
+
+export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
+  ctx,
+) => {
+  const [user] = await serverGetUser(ctx)
+  if (!user?.id) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
+
+  // TODO when/why can user.email be null?
+  const username = z.string().parse(user.email)
+  return {
+    props: {
+      username,
+    },
+  }
+}
+
+export default function Page(props: ServerSideProps) {
+  const {username} = props
   return (
     <PageLayout title="Account">
       <PageHeader title={['Account']} />
-      <div className="mx-auto mt-12 flex max-w-md flex-col gap-y-8 p-4">
-        <p>Logged in as {session?.user?.email}</p>
-        <button
-          className="btn btn-primary"
-          onClick={() => browserSupabase.auth.signOut()}>
-          Log out
-        </button>
+      <div className="p-6">
+        <Tabs className="grid gap-6" defaultValue={PrimaryTabsKey.profile}>
+          <TabsTriggers
+            options={[{key: PrimaryTabsKey.profile, label: 'Profile'}]}
+          />
+          <TabsContent value={PrimaryTabsKey.profile}>
+            <Profile username={username} />
+          </TabsContent>
+        </Tabs>
       </div>
     </PageLayout>
   )
