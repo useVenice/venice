@@ -1,4 +1,3 @@
-import {ArcherContainer, ArcherElement} from 'react-archer'
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
@@ -9,6 +8,7 @@ import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import {ArcherContainer, ArcherElement} from 'react-archer'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
@@ -17,7 +17,7 @@ import {modeAtom} from '../contexts/atoms'
 import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
-import {createSSRHelpers} from '../server'
+import {createSSRHelpers, ensureDefaultLedger} from '../server'
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
@@ -55,7 +55,6 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     ),
   )
 
-  const {ensureDefaultLedger} = await import('../server')
   const ledgerIds = await ensureDefaultLedger(user.id)
   return {
     props: {
@@ -67,8 +66,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 }
 
 export default function ConnectionsPage(props: ServerSideProps) {
-  const res = queries.useConnectionsList()
-
+  const connections = queries.useConnectionsList()
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
@@ -79,11 +77,11 @@ export default function ConnectionsPage(props: ServerSideProps) {
           strokeWidth={2}
           endMarker={false}>
           <div className="flex gap-36 p-16">
-            {res.isLoading ? (
+            {connections.isLoading ? (
               <LoadingConnectionsColumn />
             ) : (
               <ConnectionsColumn
-                connections={res.data?.source ?? []}
+                connections={connections.data?.source ?? []}
                 connectWith={{destinationId: props.ledgerIds[0]}}
               />
             )}

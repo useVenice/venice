@@ -148,35 +148,6 @@ export const queries = {
 // MARK: - Mutations
 
 export const mutations = {
-  useUpdateResource: () =>
-    useMutation(
-      async ({
-        id,
-        ...update
-      }: Database['public']['Tables']['resource']['Update'] & {
-        id: Id['reso']
-      }) => browserSupabase.from('resource').update(update).eq('id', id),
-      {
-        // TODO: Consider optimistic update
-        // Unfortunately we don't have access to the variables at render time
-        // If we need a mutationKey per pipeline update we are gonna have to call
-        // useUpdateResource within PipelineCard or something similar.
-        // @see https://share.cleanshot.com/Px624f99
-        mutationKey: ['updateResource'],
-
-        // Consider updating query data directly rather than invalidating
-        // This is no longer necessary due to supabase realtime sub
-        // However due to network sometimes times changes may actually get missed
-        // therefore we still need this for now to be sure
-        // We should figure out why react query is not deduplicating the requests though
-        // They seem to fire one another
-        // onSuccess: () =>
-        //   queryClient.invalidateQueries(
-        //     getQueryKeys(browserSupabase).pipelines._def,
-        //   ),
-      },
-    ),
-
   useDeletePipeline: () =>
     useMutation(
       async ({

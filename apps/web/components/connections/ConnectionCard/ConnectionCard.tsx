@@ -1,9 +1,7 @@
-import type {Id} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
 import {
   CircleFilledIcon,
-  CloseIcon,
   DeleteIcon,
   EditIcon,
   SyncIcon,
@@ -11,12 +9,12 @@ import {
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
-import {forwardRef, useEffect, useRef, useState} from 'react'
+import {forwardRef, useState} from 'react'
 import type {Connection} from '../../../lib/supabase-queries'
-import {mutations} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 import {DeleteConnectionDialog} from './DeleteConnectionDialog'
+import {EditingDisplayName} from './EditingDisplayName'
 
 export interface ConnectionCardProps {
   connection: Connection
@@ -146,66 +144,6 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     )
   },
 )
-
-interface EditingDisplayNameProps {
-  displayName: string
-  onCancel: () => void
-  onUpdateSuccess: () => void
-  resourceId: Id['reso']
-}
-
-function EditingDisplayName(props: EditingDisplayNameProps) {
-  const {onCancel, onUpdateSuccess, resourceId} = props
-  const [displayName, setDisplayName] = useState(props.displayName)
-  const updateResource = mutations.useUpdateResource()
-
-  useEffect(() => {
-    async function handleKeyDown(event: KeyboardEvent) {
-      switch (event.key) {
-        case 'Escape':
-          onCancel()
-          break
-        case 'Enter':
-          // TODO show loading state on mutation.isLoading
-          await updateResource.mutateAsync({
-            id: resourceId,
-            display_name: displayName,
-          })
-          onUpdateSuccess()
-          break
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [displayName, onCancel, onUpdateSuccess, resourceId, updateResource])
-
-  const inputRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    // HACK: don't know why but doing it sync or with 0 timeout doesn't work
-    // using autoFocus props on input also doesn't work. It might have
-    // something to do with radix dropdown focus management.
-    setTimeout(() => inputRef.current?.focus(), 100)
-  }, [inputRef])
-
-  return (
-    <div className="relative flex grow items-center gap-2 rounded bg-venice-black px-2 py-1 focus-within:ring-1 focus-within:ring-inset focus-within:ring-venice-green">
-      <input
-        ref={inputRef}
-        value={displayName}
-        onChange={(event) => setDisplayName(event.target.value)}
-        className="grow appearance-none bg-transparent text-sm text-offwhite focus:outline-none"
-      />
-      <button
-        className="h-4 w-4 shrink-0 rounded-full fill-current p-1 text-white hover:bg-offwhite/20 focus:outline-none focus-visible:bg-offwhite/20"
-        onClick={onCancel}>
-        <CloseIcon />
-      </button>
-    </div>
-  )
-}
 
 function ConnectionStatus({status}: {status: ConnectionStatus}) {
   const {color, text} =
