@@ -13,7 +13,7 @@ export function OutputFormatTabs<K extends string>(
         <TabsPrimitive.Trigger
           key={key}
           value={key}
-          className="h-8 rounded-lg px-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offwhite/70 data-[state=active]:bg-venice-green-btn">
+          className="h-8 whitespace-nowrap rounded-lg px-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-offwhite/70 data-[state=active]:bg-venice-green-btn">
           {label}
         </TabsPrimitive.Trigger>
       ))}

@@ -1,6 +1,7 @@
 import {
   Button,
   CircularProgress,
+  Input,
   InstructionCard,
   Select,
   SelectContent,
@@ -137,8 +138,8 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
           </li>
           {/* negative margin-left to offset padding of the ordered list */}
           <div className="-ml-4 flex gap-2 py-2">
-            <input
-              className="h-8 grow truncate rounded-lg bg-venice-black-400 px-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
+            <Input
+              className="grow truncate"
               value={googleSheetImport}
               readOnly
             />

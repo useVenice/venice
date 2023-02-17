@@ -303,6 +303,7 @@ importers:
       react: 18.2.0
       react-archer: ^4.2.2
       react-dom: 18.2.0
+      react-hook-form: ^7.43.1
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
       tailwind-merge: 1.6.0
@@ -350,6 +351,7 @@ importers:
       react: 18.2.0
       react-archer: 4.2.2_4fqkawmkvfssrs2e2rhsnm35dy
       react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.43.1_react@18.2.0
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
       tailwind-merge: 1.6.0
@@ -11043,6 +11045,15 @@ packages:
 
   /react-fast-compare/2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
+    dev: false
+
+  /react-hook-form/7.43.1_react@18.2.0:
+    resolution: {integrity: sha512-+s3+s8LLytRMriwwuSqeLStVjRXFGxgjjx2jED7Z+wz1J/88vpxieRQGvJVvzrzVxshZ0BRuocFERb779m2kNg==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:
