@@ -19,7 +19,7 @@ export function DatabaseAccessCard(props: DatabaseAccessCardProps) {
         <li>Use your favorite SQL editor</li>
         <li>Write custom data analysis scripts</li>
       </ul>
-      <div className="flex gap-2 py-2">
+      <div className="flex gap-2 py-2 pr-7">
         <Input className="grow truncate" value={databaseUrl} readOnly />
         <CopyTextButton content={databaseUrl} />
       </div>
