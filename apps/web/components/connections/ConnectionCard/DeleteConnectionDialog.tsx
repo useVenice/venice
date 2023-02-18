@@ -1,21 +1,19 @@
-import type {Id, ZStandard} from '@usevenice/cdk-core'
+import type {ZStandard} from '@usevenice/cdk-core'
 import {DialogPrimitive as Dialog} from '@usevenice/ui'
 import {DeleteIcon} from '@usevenice/ui/icons'
 import Image from 'next/image'
 import type {Connection} from '../../../lib/supabase-queries'
-import {mutations} from '../../../lib/supabase-queries'
 
 interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
+  isDeleting?: boolean
   name?: Connection['resource']['displayName']
   onCancel: () => void
-  pipelineId: Id['pipe']
-  resourceId: Id['reso']
+  onDeletionConfirmed: () => void
 }
 
 export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
-  const {institution, name, onCancel, pipelineId, resourceId} = props
-  const deletePipeline = mutations.useDeletePipeline()
+  const {institution, isDeleting, name, onCancel, onDeletionConfirmed} = props
   return (
     <Dialog.Portal>
       <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
@@ -58,17 +56,11 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
               Cancel
             </button>
             <button
-              onClick={() => deletePipeline.mutate({pipelineId, resourceId})}
-              // TODO fix the dialog shows a second of non-disabled button
-              // after deletePipeline is done.
-              disabled={deletePipeline.isLoading}
+              onClick={onDeletionConfirmed}
+              disabled={isDeleting}
               className="flex min-w-[6rem] items-center gap-2 rounded-lg bg-venice-red px-3 py-2 text-sm text-offwhite hover:bg-[#ac2039] focus:outline-none focus-visible:bg-[#ac2039] disabled:opacity-30 disabled:hover:bg-venice-red">
               <DeleteIcon className="h-4 w-4 fill-current" />
-              {deletePipeline.isLoading ? (
-                <span>Deleting…</span>
-              ) : (
-                <span>Delete</span>
-              )}
+              {isDeleting ? <span>Deleting…</span> : <span>Delete</span>}
             </button>
           </div>
         </Dialog.Content>
