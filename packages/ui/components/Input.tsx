@@ -1,7 +1,7 @@
 import type {ComponentPropsWithoutRef} from 'react'
 import {forwardRef} from 'react'
 import {twMerge} from 'tailwind-merge'
-import {QuestionCircleIcon} from '../icons'
+import {ExclamationCircleIcon} from '../icons'
 
 type InputProps = {errorMessage?: string} & ComponentPropsWithoutRef<'input'>
 
@@ -26,8 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {errorMessage ? (
         <div className="flex gap-1.5 text-sm text-venice-red">
           <div className="mt-0.5">
-            {/* TODO change to exclamation mark instead */}
-            <QuestionCircleIcon className="h-3.5 w-3.5 fill-current" />
+            <ExclamationCircleIcon className="h-3.5 w-3.5 fill-current" />
           </div>
           {errorMessage}
         </div>
