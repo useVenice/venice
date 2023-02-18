@@ -15,7 +15,10 @@ const sentry = makeSentryClient({dsn: backendEnv.SENTRY_DSN!})
 
 export const scheduleSyncs = inngest.createFunction(
   {name: 'Schedule pipeline syncs'},
-  {cron: '* * * * *'},
+  // Disable scheduling during development, can be explicitly triggered from /api/inngest UI
+  process.env.NODE_ENV === 'development'
+    ? {event: 'debug/schedule-pipeline-syncs'}
+    : {cron: '* * * * *'},
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async () => {
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
@@ -36,7 +39,7 @@ export const scheduleSyncs = inngest.createFunction(
 )
 
 export const syncPipeline = inngest.createFunction(
-  {name: 'Schedule pipeline syncs'},
+  {name: 'Sync pipeline'},
   {event: 'pipeline/sync-requested'},
   async ({event}) => {
     const {pipelineId} = event.data
