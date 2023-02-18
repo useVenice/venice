@@ -1,4 +1,4 @@
-import {Tabs, TabsTriggers, TabsContent} from '@usevenice/ui'
+import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import type {GetServerSideProps} from 'next'
 import {
   DatabaseAccessCard,
@@ -9,13 +9,11 @@ import {PageLayout} from '../components/PageLayout'
 
 // for server-side
 import {z} from '@usevenice/util'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {getDatabaseInfo, serverGetUser} from '../server'
 
 interface ServerSideProps {
   apiKey: string
   databaseUrl: string
-  serverUrl: string
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
@@ -33,13 +31,11 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
   const apiKey = z.string().parse(user.user_metadata['apiKey'])
   const {databaseUrl} = await getDatabaseInfo(user.id)
-  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
   return {
     props: {
       apiKey,
       databaseUrl,
-      serverUrl,
     },
   }
 }
@@ -50,7 +46,7 @@ enum PrimaryTabsKey {
 }
 
 export default function Page(props: ServerSideProps) {
-  const {apiKey, databaseUrl, serverUrl} = props
+  const {apiKey, databaseUrl} = props
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access', 'SQL']} />
@@ -67,7 +63,7 @@ export default function Page(props: ServerSideProps) {
             ]}
           />
           <TabsContent value={PrimaryTabsKey.sqlApi}>
-            <VeniceDatabaseExplorer apiKey={apiKey} serverUrl={serverUrl} />
+            <VeniceDatabaseExplorer apiKey={apiKey} />
           </TabsContent>
           <TabsContent
             className="max-w-[50rem]"

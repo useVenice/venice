@@ -1,5 +1,6 @@
 import type {UseQueryResult} from '@tanstack/react-query'
 import {useQuery} from '@tanstack/react-query'
+import {getServerUrl} from '@usevenice/app-config/server-url'
 import {z} from '@usevenice/util'
 import {useMemo, useState} from 'react'
 import {OutputFormat} from './OutputFormat'
@@ -31,11 +32,11 @@ export namespace QueryData {
 interface UseDatabaseQueryProps {
   apiKey: string
   query?: string
-  serverUrl: string
 }
 
 export function useDatabaseQuery(props: UseDatabaseQueryProps): DatabaseQuery {
-  const {apiKey, query = '', serverUrl} = props
+  const {apiKey, query = ''} = props
+  const serverUrl = getServerUrl(null)
 
   const [selectedOutputTab, setSelectedOutputTab] = useState(OutputTabsKey.json)
 

@@ -8,6 +8,10 @@
   - stream specific sync
 
 
+## 2023-02-18 Removed `NEXT_PUBLIC_SERVER_URL` env var
+- We now automatically get the needed value from window / hostname / `VERCEL_URL` depending on the deployment environment
+
+
 ## 2023-01-27 Replace pg_cron + graphile-worker with inngest for reliable background sync
 - Inngest is much more reliable, scalable and debuggable.
 - It also allows the core worker implementation to be not dependent on postgres / Supabase if you choose to

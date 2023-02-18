@@ -5,18 +5,17 @@ import {SavedQueryId, useSavedQuery} from './useSavedQuery'
 
 interface VeniceDatabaseExplorerProps {
   apiKey: string
-  serverUrl: string
 }
 
 export function VeniceDatabaseExplorer(props: VeniceDatabaseExplorerProps) {
-  const {apiKey, serverUrl} = props
+  const {apiKey} = props
 
   const savedQuery = useSavedQuery()
   const [query, setQuery] = useState(
     () => savedQuery.getById(SavedQueryId.transaction)?.query,
   )
 
-  const databaseQuery = useDatabaseQuery({apiKey, query, serverUrl})
+  const databaseQuery = useDatabaseQuery({apiKey, query})
 
   function handleNavItemClick(id: SavedQueryId): void {
     setQuery(savedQuery.getById(id)?.query)

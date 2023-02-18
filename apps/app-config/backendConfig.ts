@@ -15,6 +15,7 @@ import {joinPath, R, Rx, zParser} from '@usevenice/util'
 import {veniceCommonConfig} from './commonConfig'
 import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
+import {getServerUrl} from './server-url'
 
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'
@@ -34,7 +35,7 @@ const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 export const veniceBackendConfig = makeSyncEngine.config({
   ...veniceCommonConfig,
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
-  getRedirectUrl: (_, _ctx) => joinPath(env.NEXT_PUBLIC_SERVER_URL, '/'),
+  getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
   metaService: usePg
     ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
     : noopMetaService,

@@ -28,28 +28,6 @@ import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 // MARK: - Env vars
 
 export const zCommonEnv = zEnvVars({
-  NEXT_PUBLIC_SERVER_URL: z
-    .string()
-    .default(
-      // https://vercel.com/docs/concepts/projects/environment-variables
-      process.env['NEXT_PUBLIC_VERCEL_URL']
-        ? 'https://' + process.env['NEXT_PUBLIC_VERCEL_URL']
-        : // PORT env only works when next.js port is changed via env var rather than command line arguments
-          // TODO: have this depend on req.headers.Host to be more reliable, would also
-          // make things like proxy work automagically mostly
-          `http://localhost:${
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            process.env['PORT'] || process.env['NEXT_PUBLIC_PORT'] || 3000
-          }`,
-    )
-    // TODO: Should we default to request url?
-    // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
-    .describe(
-      `Fully qualified url your venice next.js app used for redirects, webhooks, background tasks and server-side rendering.
-      e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$NEXT_PUBLIC_VERCEL_URL if not provided
-      @see https://vercel.com/docs/concepts/projects/environment-variables
-      Providing this explicitly is still preferrred as $NEXT_PUBLIC_VERCEL_URL does not account for custom domain`,
-    ),
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
   DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),
