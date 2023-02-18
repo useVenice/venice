@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 
 import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
@@ -43,22 +43,40 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
-  const connect = useVeniceConnect({envName})
+  const veniceConnect = useVeniceConnect({envName})
 
   return {
     userId,
-    connect,
     integrationsRes,
     insRes,
     deleteResource,
     checkResource,
     isAdmin,
     developerMode,
+    veniceConnect,
   }
 }
 
+interface VeniceConnect {
+  isConnecting: boolean
+  connect: (
+    input: IntegrationInput,
+    options: IntegrationOptions,
+  ) => Promise<void>
+}
+
+interface IntegrationOptions {
+  /** For creating initial pipeline in new resource */
+  connectWith?: ConnectWith
+  /** For exsting Existing resource Id */
+  /** Optional for new resource */
+  institutionId?: Id['ins']
+
+  resourceId?: Id['reso']
+}
+
 /** Also ledger-specific */
-export function useVeniceConnect({envName}: UseVeniceOptions) {
+export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
   // We are relying on subscription to invalidate now rather than explicit invalidate...
   const {
     connectFnMapRef,
@@ -70,23 +88,16 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
   const client = React.useMemo(() => createTRPCClientProxy(_client), [_client])
   const ctx = trpc.useContext()
 
+  // indicate whether the connecting (both pre- and post-) is in-flight
+  const [isConnecting, setIsConnecting] = useState(false)
+
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of hanlding loading and error...
   // TODO: We should add something to know whether we are currently connecting in a global state
   // And if we are then return early
 
   const connect = React.useCallback(
-    async function (
-      int: IntegrationInput,
-      _opts: {
-        resourceId?: Id['reso']
-        /** For exsting Existing resource Id */
-        /** Optional for new resource */
-        institutionId?: Id['ins']
-        /** For creating initial pipeline in new resource */
-        connectWith?: ConnectWith
-      },
-    ) {
+    async function (int: IntegrationInput, opts: IntegrationOptions) {
       console.log('[useVeniceConnect] _connect')
       if (!envName || !userId) {
         console.log('[useVeniceConnect] Connect missing params, noop', {
@@ -97,15 +108,16 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
       }
 
       const opt: ConnectOptions = {
-        institutionExternalId: _opts.institutionId
-          ? extractId(_opts.institutionId)[2]
+        institutionExternalId: opts.institutionId
+          ? extractId(opts.institutionId)[2]
           : undefined,
-        resourceExternalId: _opts.resourceId
-          ? extractId(_opts.resourceId)[2]
+        resourceExternalId: opts.resourceId
+          ? extractId(opts.resourceId)[2]
           : undefined,
         envName,
       }
       try {
+        setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} Will connect`)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const preConnRes = await ctx.preConnect.fetch([int, opt], {
@@ -116,18 +128,28 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
         const provider = extractId(int.id)[1]
         const innerConnect = connectFnMapRef.current?.[provider]
         // e.g. Plaid modal opens
+
+        // HACK: we keep our loading overlay opens underneath the integration
+        //   overlay until we fix PlaidProvider to expose more accurate
+        //   and fine-grained hook to wait for the open/close events from
+        //   the oauth dialog.
+        //
+        // setIsConnecting(false)
+
         const res: unknown = await innerConnect?.(preConnRes, opt)
         // e.g. Promise resolves once plaid modal closes successfully.
         // If user cancels CANCELLATION_TOKEN will be thrown and therefore
         // postConnect will not be called
+        setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.postConnect.mutate([
           res,
           int,
-          {...opt, connectWith: _opts.connectWith},
+          {...opt, connectWith: opts.connectWith},
         ])
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
+        setIsConnecting(false)
 
         console.log(`[useVeniceConnect] ${int.id} Did connect`)
       } catch (err) {
@@ -136,9 +158,12 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
         } else {
           console.error(`[useVeniceConnect] ${int.id} Connect failed`, err)
         }
+      } finally {
+        setIsConnecting(false)
       }
     },
     [envName, userId, ctx.preConnect, connectFnMapRef, client.postConnect],
   )
-  return connect
+
+  return {connect, isConnecting}
 }

@@ -6,7 +6,6 @@ import {useEffect} from 'react'
 export function useGlobalRouteTransitionEffect(): void {
   const router = useRouter()
   useEffect(() => {
-    console.log('[thanik] effect re-runs')
     NProgress.configure({
       showSpinner: false,
       template:

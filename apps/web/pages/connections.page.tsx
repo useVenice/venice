@@ -3,17 +3,15 @@ import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {NonEmptyArray} from '@usevenice/util'
-import {useAtom} from 'jotai'
 import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 import {ArcherContainer, ArcherElement} from 'react-archer'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
+import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {ResourceCard} from '../components/ResourceCard'
-import {modeAtom} from '../contexts/atoms'
 import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
@@ -130,31 +128,13 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
     } as const,
   ]
 
-  const {integrationsRes, connect: _connect}: UseVenice = useVenice({
+  const {integrationsRes, veniceConnect}: UseVenice = useVenice({
     envName: 'sandbox',
     keywords: undefined,
   })
 
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
-
-  const [, setMode] = useAtom(modeAtom)
-
-  const connect = React.useCallback(
-    (...[int, opts]: Parameters<typeof _connect>) => {
-      _connect(int, {...opts, connectWith: props.connectWith})
-        .finally(() => {
-          setMode('manage')
-        })
-        .then((res) => {
-          console.log('connect success', res)
-        })
-        .catch((err) => {
-          console.error('connect error', err)
-        })
-    },
-    [_connect, props.connectWith, setMode],
-  )
 
   return (
     <section className="flex w-[24rem] shrink-0 flex-col gap-4">
@@ -173,7 +153,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
           <button
             onClick={() => {
               if (onlyIntegrationId) {
-                connect({id: onlyIntegrationId}, {})
+                void veniceConnect.connect({id: onlyIntegrationId}, {})
               }
             }}
             className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
@@ -199,7 +179,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               className="flex items-center justify-center gap-2 px-3 py-2 text-offwhite hover:bg-venice-black/10 focus:outline-none focus-visible:bg-venice-black/10"
               onClick={() => {
                 if (onlyIntegrationId) {
-                  connect({id: onlyIntegrationId}, {})
+                  void veniceConnect.connect({id: onlyIntegrationId}, {})
                 }
               }}>
               <AddFilledIcon className="inline-flex h-5 w-5 fill-current" />
@@ -222,6 +202,8 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
           </div>
         </>
       )}
+
+      {veniceConnect.isConnecting && <LoadingIndicatorOverlayV2 />}
     </section>
   )
 }
