@@ -1,4 +1,4 @@
-import {useMutation, useQueryClient} from '@tanstack/react-query'
+import {useMutation} from '@tanstack/react-query'
 import type {Id} from '@usevenice/cdk-core'
 import {CircularProgress} from '@usevenice/ui'
 import {CloseIcon} from '@usevenice/ui/icons'
@@ -10,15 +10,15 @@ import {useOnClickOutside} from '../../../hooks/useOnClickOutside'
 interface EditingDisplayNameProps {
   displayName: string
   onCancel: () => void
+  onConnectionsMutated: () => Promise<void>
   onUpdateSuccess: () => void
   resourceId: Id['reso']
 }
 
 export function EditingDisplayName(props: EditingDisplayNameProps) {
-  const {onCancel, onUpdateSuccess, resourceId} = props
+  const {onCancel, onConnectionsMutated, onUpdateSuccess, resourceId} = props
   const [displayName, setDisplayName] = useState(props.displayName)
 
-  const queryClient = useQueryClient()
   const {mutate: updateDisplayName, isLoading: isUpdating} = useMutation(
     async () => {
       const {error} = await browserSupabase
@@ -34,9 +34,7 @@ export function EditingDisplayName(props: EditingDisplayNameProps) {
     {
       mutationKey: ['resource', 'update', resourceId],
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: ['connections', 'list'],
-        })
+        await onConnectionsMutated()
         onUpdateSuccess()
       },
       // TEMPORARY

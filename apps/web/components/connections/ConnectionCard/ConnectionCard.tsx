@@ -1,3 +1,4 @@
+import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
 import {
@@ -10,6 +11,7 @@ import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
+import {browserSupabase} from '../../../contexts/common-contexts'
 import type {Connection} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
@@ -18,18 +20,20 @@ import {EditingDisplayName} from './EditingDisplayName'
 
 export interface ConnectionCardProps {
   connection: Connection
+  onConnectionsMutated: () => Promise<void>
 }
 
 type ConnectionStatus = Connection['resource']['status']
 
 export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
   function ConnectionCard(props, ref) {
+    const {connection, onConnectionsMutated} = props
     const {
       id,
       resource: {id: resourceId, displayName, institution, status},
       lastSyncCompletedAt,
       syncInProgress,
-    } = props.connection
+    } = connection
 
     // action.rename
     const [isRenaming, setIsRenaming] = useState(false)
@@ -40,6 +44,38 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
     // action.delete
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const deleteConnection = useMutation<void, Error, void, {}>(
+      async () => {
+        const {error} = await browserSupabase
+          .from('pipeline')
+          .delete()
+          .eq('id', id)
+
+        if (error) {
+          throw new Error(error.message)
+        }
+
+        // TODO: Need to properly handle this on the server to
+        // 1) Remove orphan resource
+        // 2) Revoke before deleting as needed
+        if (resourceId.includes('debug')) {
+          const {error} = await browserSupabase
+            .from('resource')
+            .delete()
+            .eq('id', resourceId)
+
+          if (error) {
+            throw new Error(error.message)
+          }
+        }
+      },
+      {
+        onSuccess: onConnectionsMutated,
+        // TEMPORARY
+        onError: console.error,
+        onSettled: () => setDeleteDialogOpen(false),
+      },
+    )
 
     return (
       <ResourceCard
@@ -68,6 +104,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 resourceId={resourceId}
                 displayName={displayName ?? ''}
                 onCancel={() => setIsRenaming(false)}
+                onConnectionsMutated={onConnectionsMutated}
                 onUpdateSuccess={() => setIsRenaming(false)}
               />
             ) : (
@@ -116,11 +153,11 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               open={isDeleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}>
               <DeleteConnectionDialog
-                pipelineId={id}
-                resourceId={resourceId}
-                name={displayName}
+                isDeleting={deleteConnection.isLoading}
                 institution={institution}
+                name={displayName}
                 onCancel={() => setDeleteDialogOpen(false)}
+                onDeletionConfirmed={deleteConnection.mutate}
               />
             </Dialog.Root>
           </div>

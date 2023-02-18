@@ -148,27 +148,6 @@ export const queries = {
 // MARK: - Mutations
 
 export const mutations = {
-  useDeletePipeline: () =>
-    useMutation(
-      async ({
-        pipelineId,
-        resourceId,
-      }: {
-        pipelineId: Id['pipe']
-        resourceId: Id['reso']
-      }) => {
-        await browserSupabase.from('pipeline').delete().eq('id', pipelineId)
-        // TODO: Need to properly handle this on the server to
-        // 1) Remove orphan resource
-        // 2) Revoke before deleting as needed
-        if (resourceId.includes('debug')) {
-          await browserSupabase.from('resource').delete().eq('id', resourceId)
-        }
-      },
-      // TODO: Revoke & remove the resources as pipelines are deleted
-      // We should have a background job for this probably...
-    ),
-
   useCreateDummySource: ({
     ledgerId,
     userId,

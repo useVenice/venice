@@ -1,3 +1,4 @@
+import {useQueryClient} from '@tanstack/react-query'
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
@@ -6,6 +7,7 @@ import type {NonEmptyArray} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import {useCallback} from 'react'
 import {ArcherContainer, ArcherElement} from 'react-archer'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
@@ -65,6 +67,12 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 export default function ConnectionsPage(props: ServerSideProps) {
   const connections = queries.useConnectionsList()
+  const queryClient = useQueryClient()
+  const handleConnectionsMutated = useCallback(
+    () => queryClient.invalidateQueries({queryKey: ['connections', 'list']}),
+    [queryClient],
+  )
+
   return (
     <PageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
@@ -81,6 +89,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
               <ConnectionsColumn
                 connections={connections.data?.source ?? []}
                 connectWith={{destinationId: props.ledgerIds[0]}}
+                onConnectionsMutated={handleConnectionsMutated}
               />
             )}
 
@@ -116,10 +125,11 @@ function LoadingConnectionsColumn() {
 interface ConnectionsColumnProps {
   connections: Connection[]
   connectWith: ConnectWith
+  onConnectionsMutated: () => Promise<void>
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
-  const {connections} = props
+  const {connections, connectWith, onConnectionsMutated} = props
   const archerElementRelations = [
     {
       targetId: VENICE_DATABASE_IMAGE_ID,
@@ -136,6 +146,12 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
   const onlyIntegrationId =
     integrationsRes.data?.length === 1 ? integrationsRes.data[0]?.id : undefined
 
+  function addNewConnection() {
+    if (onlyIntegrationId) {
+      void veniceConnect.connect({id: onlyIntegrationId}, {connectWith})
+    }
+  }
+
   return (
     <section className="flex w-[24rem] shrink-0 flex-col gap-4">
       <header className="flex items-center">
@@ -151,11 +167,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
         </h2>
         {connections.length > 0 && (
           <button
-            onClick={() => {
-              if (onlyIntegrationId) {
-                void veniceConnect.connect({id: onlyIntegrationId}, {})
-              }
-            }}
+            onClick={addNewConnection}
             className="h-5 w-5 fill-current text-green hover:text-opacity-70 focus:outline-none focus-visible:text-opacity-70">
             <AddFilledIcon />
           </button>
@@ -167,7 +179,10 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             key={source.id}
             id={`source-${source.id}`}
             relations={archerElementRelations}>
-            <ConnectionCard connection={source} />
+            <ConnectionCard
+              connection={source}
+              onConnectionsMutated={onConnectionsMutated}
+            />
           </ArcherElement>
         ))
       ) : (
@@ -177,11 +192,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             bgColor="bg-gradient-to-r from-[#ECAA47] to-[#722273]">
             <button
               className="flex items-center justify-center gap-2 px-3 py-2 text-offwhite hover:bg-venice-black/10 focus:outline-none focus-visible:bg-venice-black/10"
-              onClick={() => {
-                if (onlyIntegrationId) {
-                  void veniceConnect.connect({id: onlyIntegrationId}, {})
-                }
-              }}>
+              onClick={addNewConnection}>
               <AddFilledIcon className="inline-flex h-5 w-5 fill-current" />
               <span className="text-sm uppercase">Add new source</span>
             </button>
