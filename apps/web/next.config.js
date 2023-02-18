@@ -94,7 +94,7 @@ const nextConfig = {
 
   productionBrowserSourceMaps: true, // Let's see if this helps with Sentry... We are OSS anyways so doesn't matter too much if source code is "leaked" to client
 
-  pageExtensions: ['page.tsx'],
+  pageExtensions: ['page.ts', 'page.tsx'],
 }
 
 /**
