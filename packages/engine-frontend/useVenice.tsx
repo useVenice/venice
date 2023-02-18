@@ -114,10 +114,12 @@ export function useVeniceConnect({envName}: UseVeniceOptions) {
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
         const provider = extractId(int.id)[1]
-        const res: unknown = await connectFnMapRef.current?.[provider]?.(
-          preConnRes,
-          opt,
-        )
+        const innerConnect = connectFnMapRef.current?.[provider]
+        // e.g. Plaid modal opens
+        const res: unknown = await innerConnect?.(preConnRes, opt)
+        // e.g. Promise resolves once plaid modal closes successfully.
+        // If user cancels CANCELLATION_TOKEN will be thrown and therefore
+        // postConnect will not be called
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
         const postConRes = await client.postConnect.mutate([
