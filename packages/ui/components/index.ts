@@ -1,6 +1,7 @@
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
 export * from './Button'
 export * from './Card'
+export * from './Checkbox'
 export * from './Container'
 export * from './Dialog'
 export * from './DropdownMenu'

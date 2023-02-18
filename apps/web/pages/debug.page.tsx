@@ -1,10 +1,17 @@
 import {plaidProvider} from '@usevenice/app-config/env'
-import {ZodForm, RadioGroup, RadioGroupItem} from '@usevenice/ui'
+import {
+  CheckboxGroup,
+  CheckboxGroupItem,
+  RadioGroup,
+  RadioGroupItem,
+  ZodForm,
+} from '@usevenice/ui'
 
 export default function DebugPage() {
   return (
     <div className="p-8">
       <RadioGroupDemo />
+      <CheckboxDemo />
       <ZodForm
         schema={plaidProvider.def.integrationConfig}
         initialValues={{
@@ -24,10 +31,23 @@ export default function DebugPage() {
 
 export function RadioGroupDemo() {
   return (
-    <RadioGroup label="Environment" defaultValue="development">
+    <RadioGroup
+      label="Environment"
+      defaultValue="development"
+      orientation="horizontal">
       <RadioGroupItem value="sandbox" />
       <RadioGroupItem value="development" />
       <RadioGroupItem value="production" />
     </RadioGroup>
+  )
+}
+
+export function CheckboxDemo() {
+  return (
+    <CheckboxGroup label="Country code" orientation="horizontal">
+      <CheckboxGroupItem value="US" />
+      <CheckboxGroupItem value="UK" />
+      <CheckboxGroupItem value="Canada" />
+    </CheckboxGroup>
   )
 }

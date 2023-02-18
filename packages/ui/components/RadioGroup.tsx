@@ -45,8 +45,9 @@ export interface RadioGroupItemProps
 }
 
 export function RadioGroupItem({
-  id,
-  label,
+  value,
+  id = `radio-group-item-${value}`,
+  label = titleCase(value),
   className,
   ...restProps
 }: RadioGroupItemProps) {
@@ -54,6 +55,7 @@ export function RadioGroupItem({
     <div className="flex flex-row items-center space-x-2">
       <RadioGroupPrimitive.Item
         {...restProps}
+        value={value}
         id={id}
         className={twMerge(
           'relative h-4 w-4 rounded-full border border-transparent text-white',
@@ -67,7 +69,7 @@ export function RadioGroupItem({
       </RadioGroupPrimitive.Item>
 
       <label htmlFor={id} className="text-sm">
-        {label ?? titleCase(restProps.value)}
+        {label}
       </label>
     </div>
   )
