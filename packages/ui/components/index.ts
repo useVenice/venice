@@ -13,4 +13,5 @@ export * from './RadioGroup'
 export * from './Select'
 export * from './Tabs'
 export * from './Toast'
+export * from './ZodForm'
 // codegen:end
