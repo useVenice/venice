@@ -232,7 +232,7 @@ function VeniceDatabaseSection() {
       <ul className="absolute top-[12.3rem] left-[1.2rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
-            href="/data"
+            href="/export"
             className="text-sm leading-4 text-green hover:text-opacity-70">
             Export data
           </Link>
