@@ -20,14 +20,13 @@ import {EditingDisplayName} from './EditingDisplayName'
 
 export interface ConnectionCardProps {
   connection: Connection
-  onConnectionsMutated: () => Promise<void>
 }
 
 type ConnectionStatus = Connection['resource']['status']
 
 export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
   function ConnectionCard(props, ref) {
-    const {connection, onConnectionsMutated} = props
+    const {connection} = props
     const {
       id,
       resource: {id: resourceId, displayName, institution, status},
@@ -70,8 +69,8 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
         }
       },
       {
-        onSuccess: onConnectionsMutated,
         // TEMPORARY
+        onSuccess: () => console.log('Delete success', id),
         onError: console.error,
         onSettled: () => setDeleteDialogOpen(false),
       },
@@ -104,7 +103,6 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 resourceId={resourceId}
                 displayName={displayName ?? ''}
                 onCancel={() => setIsRenaming(false)}
-                onConnectionsMutated={onConnectionsMutated}
                 onUpdateSuccess={() => setIsRenaming(false)}
               />
             ) : (

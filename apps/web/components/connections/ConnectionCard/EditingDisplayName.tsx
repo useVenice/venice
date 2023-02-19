@@ -1,6 +1,7 @@
 import {useMutation} from '@tanstack/react-query'
 import type {Id} from '@usevenice/cdk-core'
 import {CircularProgress} from '@usevenice/ui'
+import {delay} from '@usevenice/util'
 import {CloseIcon} from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {useEffect, useRef, useState} from 'react'
@@ -10,13 +11,12 @@ import {useOnClickOutside} from '../../../hooks/useOnClickOutside'
 interface EditingDisplayNameProps {
   displayName: string
   onCancel: () => void
-  onConnectionsMutated: () => Promise<void>
   onUpdateSuccess: () => void
   resourceId: Id['reso']
 }
 
 export function EditingDisplayName(props: EditingDisplayNameProps) {
-  const {onCancel, onConnectionsMutated, onUpdateSuccess, resourceId} = props
+  const {onCancel, onUpdateSuccess, resourceId} = props
   const [displayName, setDisplayName] = useState(props.displayName)
 
   const {mutate: updateDisplayName, isLoading: isUpdating} = useMutation(
@@ -34,7 +34,9 @@ export function EditingDisplayName(props: EditingDisplayNameProps) {
     {
       mutationKey: ['resource', 'update', resourceId],
       onSuccess: async () => {
-        await onConnectionsMutated()
+        // await onConnectionsMutated()
+        // How do we wait for refetch success? Or is it better to optimistic update?
+        await delay(500) // In pace of onConnectionsMutated() for now
         onUpdateSuccess()
       },
       // TEMPORARY

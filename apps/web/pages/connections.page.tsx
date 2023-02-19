@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query'
 import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
@@ -7,7 +6,6 @@ import type {NonEmptyArray} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useCallback} from 'react'
 import {ArcherContainer, ArcherElement} from 'react-archer'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
@@ -67,11 +65,6 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 export default function ConnectionsPage(props: ServerSideProps) {
   const connections = queries.useConnectionsList()
-  const queryClient = useQueryClient()
-  const handleConnectionsMutated = useCallback(
-    () => queryClient.invalidateQueries({queryKey: ['connections', 'list']}),
-    [queryClient],
-  )
 
   return (
     <PageLayout title="Connections">
@@ -89,7 +82,6 @@ export default function ConnectionsPage(props: ServerSideProps) {
               <ConnectionsColumn
                 connections={connections.data?.source ?? []}
                 connectWith={{destinationId: props.ledgerIds[0]}}
-                onConnectionsMutated={handleConnectionsMutated}
               />
             )}
 
@@ -125,11 +117,10 @@ function LoadingConnectionsColumn() {
 interface ConnectionsColumnProps {
   connections: Connection[]
   connectWith: ConnectWith
-  onConnectionsMutated: () => Promise<void>
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
-  const {connections, connectWith, onConnectionsMutated} = props
+  const {connections, connectWith} = props
   const archerElementRelations = [
     {
       targetId: VENICE_DATABASE_IMAGE_ID,
@@ -179,10 +170,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             key={source.id}
             id={`source-${source.id}`}
             relations={archerElementRelations}>
-            <ConnectionCard
-              connection={source}
-              onConnectionsMutated={onConnectionsMutated}
-            />
+            <ConnectionCard connection={source} />
           </ArcherElement>
         ))
       ) : (
