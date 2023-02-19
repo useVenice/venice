@@ -6,7 +6,7 @@ import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
 import Head from 'next/head'
-import React, {useRef} from 'react'
+import React from 'react'
 import {QueryParamProvider} from 'use-query-params'
 
 import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
@@ -17,7 +17,7 @@ import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-import {createQueryClient} from '../lib/query-client'
+import {browserQueryClient} from '../lib/query-client'
 import type {PageProps} from '../server'
 import {useGlobalRouteTransitionEffect} from './useGlobalRouteTransitionEffect'
 
@@ -57,7 +57,7 @@ function _VeniceProvider({
 }
 
 export function MyApp({Component, pageProps}: AppProps<PageProps>) {
-  const {current: queryClient} = useRef(createQueryClient())
+  // const {current: queryClient} = useRef(browserQueryClient)
 
   useGlobalRouteTransitionEffect()
 
@@ -69,14 +69,14 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={browserQueryClient}>
           <Hydrate
             state={
               pageProps.dehydratedState &&
               superjson.deserialize(pageProps.dehydratedState)
             }>
             <SessionContextProvider supabaseClient={browserSupabase}>
-              <_VeniceProvider queryClient={queryClient}>
+              <_VeniceProvider queryClient={browserQueryClient}>
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>
