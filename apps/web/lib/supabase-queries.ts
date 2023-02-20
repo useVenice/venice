@@ -171,8 +171,6 @@ export const mutations = {
 
 // MARK: Subscriptions
 
-type PostgresSubscription = ReturnType<typeof subscribePostgresChanges>
-
 export function subscribePostgresChanges(
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
