@@ -2,11 +2,8 @@ import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister
 import {QueryClient} from '@tanstack/react-query'
 import {persistQueryClient} from '@tanstack/react-query-persist-client'
 
-// TODO: Should this work across both and remain in the global scope?
-export const browserQueryClient = createQueryClient()
-
 export function createQueryClient() {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         // staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
@@ -18,21 +15,18 @@ export function createQueryClient() {
       },
     },
   })
-}
+  if (
+    typeof window !== 'undefined' &&
+    !window.location.href.includes('localhost')
+  ) {
+    const persister = createSyncStoragePersister({storage: window.localStorage})
+    // persistor.removeClient() // Will clean up cache
 
-if (
-  typeof window !== 'undefined' &&
-  !window.location.href.includes('localhost')
-) {
-  const persister = createSyncStoragePersister({storage: window.localStorage})
-  // persistor.removeClient() // Will clean up cache
-
-  void persistQueryClient({
-    queryClient: browserQueryClient,
-    persister,
-    // Change this key if we change the format of the data to avoid crashes
+    // Change buster if we change the format of the data to avoid crashes
     // also we should clear any persisted data if userId ever changes
-    buster: undefined, // Should check against userId and version
-  })
-  console.log('Persist query client...')
+    // Should check against userId and version
+    void persistQueryClient({queryClient, persister, buster: undefined})
+    console.log('Persist query client...')
+  }
+  return queryClient
 }
