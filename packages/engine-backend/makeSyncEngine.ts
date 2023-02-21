@@ -488,29 +488,36 @@ export const makeSyncEngine = <
       ),
     // MARK: - Connect
     preConnect: authedProcedure
-      .input(z.tuple([zInt, zConnectOptions]))
+      .input(z.tuple([zInt, zConnectOptions, z.unknown()]))
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
       .query(
-        async ({input: [int, {resourceExternalId, ...connCtxInput}], ctx}) => {
+        async ({
+          input: [int, {resourceExternalId, ...connCtxInput}, preConnInput],
+          ctx,
+        }) => {
           const reso = resourceExternalId
             ? await metaService.tables.resource
                 .get(makeId('reso', int.provider.name, resourceExternalId))
                 .then((input) => zReso.parseAsync(input))
             : undefined
           authorizeOrThrow(ctx, 'resource', reso)
-          return int.provider.preConnect?.(int.config, {
-            ...connCtxInput,
-            userId: ctx.userId ?? ADMIN_UID,
-            resource: reso
-              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                {externalId: resourceExternalId!, settings: reso.settings}
-              : undefined,
-            webhookBaseUrl: joinPath(
-              apiUrl,
-              parseWebhookRequest.pathOf(int.id),
-            ),
-            redirectUrl: getRedirectUrl?.(int, ctx),
-          })
+          return int.provider.preConnect?.(
+            int.config,
+            {
+              ...connCtxInput,
+              userId: ctx.userId ?? ADMIN_UID,
+              resource: reso
+                ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  {externalId: resourceExternalId!, settings: reso.settings}
+                : undefined,
+              webhookBaseUrl: joinPath(
+                apiUrl,
+                parseWebhookRequest.pathOf(int.id),
+              ),
+              redirectUrl: getRedirectUrl?.(int, ctx),
+            },
+            preConnInput,
+          )
         },
       ),
     // useConnectHook happens client side only

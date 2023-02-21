@@ -120,7 +120,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} Will connect`)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const preConnRes = await ctx.preConnect.fetch([int, opt], {
+        const preConnRes = await ctx.preConnect.fetch([int, opt, undefined], {
           staleTime: 15 * 60 * 1000, // Good for 15 minutes
         })
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)

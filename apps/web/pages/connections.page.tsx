@@ -49,7 +49,11 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   // TODO: Get the correct default env name...
   await Promise.all(
     integrations.map((int) =>
-      ssg.preConnect.prefetch([{id: int.id as never}, {envName: 'sandbox'}]),
+      ssg.preConnect.prefetch([
+        {id: int.id as never},
+        {envName: 'sandbox'},
+        undefined,
+      ]),
     ),
   )
 

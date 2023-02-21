@@ -165,7 +165,7 @@ function makeSyncProviderDef<
   resourceSettings: ZResSettings
   institutionData: ZInsData
   webhookInput: ZWebhookInput
-
+  preConnectInput: ZPreConnInput
   connectInput: ZConnInput
   connectOutput: ZConnOutput
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
@@ -284,6 +284,7 @@ makeSyncProviderDef.defaults = makeSyncProviderDef({
   resourceSettings: undefined,
   institutionData: undefined,
   webhookInput: undefined,
+  preConnectInput: undefined,
   connectInput: undefined,
   connectOutput: undefined,
   sourceOutputEntity: undefined,
@@ -350,6 +351,8 @@ export function makeSyncProvider<
     (
       config: T['_types']['integrationConfig'],
       context: ConnectContext<T['_types']['resourceSettings']>,
+      // TODO: Turn this into an object instead
+      input: T['_types']['preConnectInput'],
     ) => Promise<T['_types']['connectInput']>
   >,
   TUseConnHook extends _opt<UseConnectHook<T>>,

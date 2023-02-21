@@ -88,9 +88,9 @@ export const wiseProvider = makeSyncProvider({
   //   }),
 
   useConnectHook: (_) => {
-    const [options, setOptions] = React.useState<z.infer<
-      (typeof def)['connectInput']
-    > | null>(null)
+    const [options, setOptions] = React.useState<
+      (typeof def)['_types']['connectInput'] | null
+    >(null)
 
     const [deferred] = React.useState(
       new Deferred<(typeof def)['_types']['connectOutput']>(),
