@@ -1,7 +1,6 @@
 import './global.css'
 
-import type {
-  QueryClient} from '@tanstack/react-query';
+import type {QueryClient} from '@tanstack/react-query'
 import {
   Hydrate,
   QueryClientProvider,
@@ -25,7 +24,7 @@ import {SessionContextProvider, useSession} from '../contexts/session-context'
 import {createQueryClient} from '../lib/query-client'
 import {getQueryKeys, usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
-import {useGlobalRouteTransitionEffect} from './useGlobalRouteTransitionEffect'
+import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({

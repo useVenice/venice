@@ -2,15 +2,21 @@ import {plaidProvider} from '@usevenice/app-config/env'
 import {
   CheckboxGroup,
   CheckboxGroupItem,
+  Input,
   RadioGroup,
   RadioGroupItem,
   ZodForm,
 } from '@usevenice/ui'
 
+const Divider = () => <hr className="mt-2" />
+
 export default function DebugPage() {
   return (
     <div className="p-8">
+      <Input />
+      <Divider />
       <RadioGroupDemo />
+      <Divider />
       <CheckboxDemo />
       <ZodForm
         schema={plaidProvider.def.integrationConfig}
