@@ -1,20 +1,45 @@
 import {useTsController, createTsForm} from '@ts-react/form'
+import type {PropsMapping} from '@ts-react/form/lib/src/createSchemaForm'
 import {z} from '@usevenice/util'
+import {Input} from './components'
 
-function TextField() {
+/** https://github.com/iway1/react-ts-form/blob/main/API.md#createtsform-params */
+
+const propsMap: PropsMapping = [
+  ['name', 'name'],
+  ['control', 'control'],
+  ['enumValues', 'enumValues'],
+  ['descriptionLabel', 'label'],
+  ['descriptionPlaceholder', 'placeholder'],
+]
+/** Result of propsMap */
+interface FieldProps {
+  /** - the name of the input (the property name in your zod schema).  */
+  name?: string
+  /** - the react hook form control  */
+  control?: unknown
+  /** - (deprecated) enumValues extracted from your zod enum schema.  */
+  enumValues?: string[]
+  /** - The label extracted from .describe()  */
+  label?: string
+  /** - The placeholder extracted from .describe()  */
+  placeholder?: string
+}
+
+function TextField(props: FieldProps) {
   const {
     field: {onChange, value},
     error,
   } = useTsController<string>()
-
+  console.log('props', props)
   return (
-    <>
-      <input
-        onChange={(e) => onChange(e.target.value)}
-        value={value ? value : ''}
-      />
-      {error && error.errorMessage}
-    </>
+    <Input
+      label={props.label}
+      placeholder={props.placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      errorMessage={error?.errorMessage}
+    />
   )
 }
 
@@ -127,11 +152,11 @@ const mapping = [
   [z.number(), NumberField],
 ] as const
 
-const Form = createTsForm(mapping)
+const Form = createTsForm(mapping, {propsMap})
 
 const MyForm = z.object({
   eyeColor: z.enum(['blue', 'red', 'green']),
-  favoritePants: z.string().min(5),
+  favoritePants: z.string().min(5).describe('Fav pants // Do something'),
   ad: z.number().min(5),
 })
 
@@ -144,7 +169,7 @@ export function MyPage() {
       }}
       renderAfter={() => <button>Submit</button>}
       props={{
-        ad: {req: 12},
+        // ad: {req: 12},
         eyeColor: {
           // options: ['blue', 'red', 'green'],
         },
