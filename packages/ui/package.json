@@ -19,8 +19,8 @@
     "clsx": "1.2.1",
     "framer-motion": "6.5.1",
     "jotai": "1.8.4",
+    "lucide-react": "*",
     "nanoid": "3.3.4",
-    "phosphor-react": "*",
     "react": "*",
     "react-dom": "*",
     "tailwind-merge": "*"

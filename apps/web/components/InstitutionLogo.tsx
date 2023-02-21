@@ -1,4 +1,4 @@
-import {Bank} from 'phosphor-react'
+import {LucideLandmark} from 'lucide-react'
 
 import type {ZStandard} from '@usevenice/cdk-core'
 
@@ -16,7 +16,7 @@ export function InstitutionLogo({
     />
   ) : (
     <div className="flex h-12 shrink-0 items-center justify-center rounded-lg">
-      <Bank />
+      <LucideLandmark />
     </div>
   )
 }
