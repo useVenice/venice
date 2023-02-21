@@ -13,7 +13,16 @@ const Divider = () => <hr className="mt-2" />
 
 export default function DebugPage() {
   if (true) {
-    return <MyPage />
+    return (
+      <div className="p-9">
+        <label htmlFor="sel1">My select</label>
+        <select id="sel1">
+          <option value="opt 1">opt 1</option>
+          <option value="opt 2">opt 2</option>
+        </select>
+        <MyPage />
+      </div>
+    )
   }
   return (
     <div className="p-8">

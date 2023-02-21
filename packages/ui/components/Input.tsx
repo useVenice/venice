@@ -1,6 +1,7 @@
 import type {ComponentPropsWithoutRef} from 'react'
 import {forwardRef} from 'react'
 import {twMerge} from 'tailwind-merge'
+import useConstant from '../hooks/useConstant'
 import {ExclamationCircleIcon} from '../icons'
 import {Label} from './Label'
 
@@ -13,13 +14,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   props,
   ref,
 ) {
-  const {
-    id = `input-${Math.random()}`,
-    label,
-    className,
-    errorMessage,
-    ...inputProps
-  } = props
+  const defaultId = useConstant(() => `input-${Math.random()}`)
+  const {id = defaultId, label, className, errorMessage, ...inputProps} = props
   return (
     <div className="grid w-full gap-1">
       {label && <Label htmlFor={id}>{label}</Label>}
