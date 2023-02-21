@@ -3,6 +3,7 @@ import {
   CheckboxGroup,
   CheckboxGroupItem,
   Input,
+  MyPage,
   RadioGroup,
   RadioGroupItem,
   ZodForm,
@@ -11,6 +12,9 @@ import {
 const Divider = () => <hr className="mt-2" />
 
 export default function DebugPage() {
+  if (true) {
+    return <MyPage />
+  }
   return (
     <div className="p-8">
       <Input />

@@ -911,6 +911,7 @@ importers:
   packages/ui:
     specifiers:
       '@headlessui/react': 1.7.0
+      '@hookform/resolvers': 2.9.11
       '@radix-ui/react-checkbox': 1.0.1
       '@radix-ui/react-dialog': 1.0.0
       '@radix-ui/react-dropdown-menu': ^2.0.2
@@ -921,6 +922,7 @@ importers:
       '@radix-ui/react-toast': 1.0.0
       '@radix-ui/react-use-controllable-state': 1.0.0
       '@react-hookz/web': '*'
+      '@ts-react/form': 1.2.0
       '@types/react': 18.0.27
       clsx: 1.2.1
       framer-motion: 6.5.1
@@ -929,9 +931,11 @@ importers:
       nanoid: 3.3.4
       react: 18.2.0
       react-dom: 18.2.0
+      react-hook-form: 7.43.1
       tailwind-merge: '*'
     dependencies:
       '@headlessui/react': 1.7.0_biqbaboplfbrettd7655fr4n2y
+      '@hookform/resolvers': 2.9.11_react-hook-form@7.43.1
       '@radix-ui/react-checkbox': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-dialog': 1.0.0_5ndqzdd6t4rivxsukjv3i3ak2q
       '@radix-ui/react-dropdown-menu': 2.0.2_5ndqzdd6t4rivxsukjv3i3ak2q
@@ -942,6 +946,7 @@ importers:
       '@radix-ui/react-toast': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
       '@react-hookz/web': 16.0.0_biqbaboplfbrettd7655fr4n2y
+      '@ts-react/form': 1.2.0_43jaix5k6en3ddpeagttdgt6yy
       clsx: 1.2.1
       framer-motion: 6.5.1_biqbaboplfbrettd7655fr4n2y
       jotai: 1.8.4_react@18.2.0
@@ -949,6 +954,7 @@ importers:
       nanoid: 3.3.4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.43.1_react@18.2.0
       tailwind-merge: 1.6.1
     devDependencies:
       '@types/react': 18.0.27
@@ -2436,6 +2442,14 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@hookform/resolvers/2.9.11_react-hook-form@7.43.1:
+    resolution: {integrity: sha512-bA3aZ79UgcHj7tFV7RlgThzwSSHZgvfbt2wprldRkYBcMopdMvHyO17Wwp/twcJasNFischFfS7oz8Katz8DdQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.1_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -4225,6 +4239,19 @@ packages:
 
   /@trpc/server/10.9.1:
     resolution: {integrity: sha512-cUbj8KphlH0IHuoVUhkZrN1E+FdfRpagglqhblyj8VPJKkjzTjb6D8MYHlXhiX7Tdmtwy2w0ev39HBkzlM0thg==}
+    dev: false
+
+  /@ts-react/form/1.2.0_43jaix5k6en3ddpeagttdgt6yy:
+    resolution: {integrity: sha512-QeuNcFIffYquC4eE4xki7c2Qmk2YEx1q/OFarfdFWAkVCVdtawgbvKh7zvuN0Gun7kreOW6En0nvaEsfecpRZw==}
+    peerDependencies:
+      '@hookform/resolvers': ^2.8.0
+      react: ^18.0.0
+      react-hook-form: ^7.39.0
+      zod: ^3.19.0
+    dependencies:
+      '@hookform/resolvers': 2.9.11_react-hook-form@7.43.1
+      react: 18.2.0
+      react-hook-form: 7.43.1_react@18.2.0
     dev: false
 
   /@tsconfig/strictest/1.0.2:
