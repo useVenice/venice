@@ -1,7 +1,7 @@
 import type {ComponentPropsWithoutRef} from 'react'
 import {forwardRef} from 'react'
 import {twMerge} from 'tailwind-merge'
-import useConstant from '../hooks/useConstant'
+import {useConstant} from '../hooks/useConstant'
 import {ExclamationCircleIcon} from '../icons'
 import {Label} from './Label'
 

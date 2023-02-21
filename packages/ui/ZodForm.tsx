@@ -1,6 +1,6 @@
 import {useTsController, createTsForm} from '@ts-react/form'
 import type {PropsMapping} from '@ts-react/form/lib/src/createSchemaForm'
-import {titleCase, z} from '@usevenice/util'
+import {deepMerge, R, titleCase, z} from '@usevenice/util'
 import {
   CheckboxGroup,
   CheckboxGroupItem,
@@ -13,7 +13,7 @@ import {
   SelectTrigger,
 } from './components'
 import {Label} from './components/Label'
-import useConstant from './hooks/useConstant'
+import {useConstant} from './hooks/useConstant'
 
 /** https://github.com/iway1/react-ts-form/blob/main/API.md#createtsform-params */
 
@@ -142,9 +142,25 @@ const mapping = [
 ] as const
 
 // as never workaround to make sure props type inference is not broken
-const Form = createTsForm(mapping, {propsMap} as never)
+const TsForm = createTsForm(mapping, {propsMap} as never)
 
-const MyForm = z.object({
+export const ZodForm: typeof TsForm = (props) => (
+  <TsForm
+    {...props}
+    // TODO: make me work with effects by unwrapping at the top level
+    props={deepMerge(
+      props.props,
+      R.mapValues((props.schema as z.AnyZodObject).shape, (_, key) => ({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        zodType: (props.schema as z.AnyZodObject).shape[key],
+      })),
+    )}
+  />
+)
+
+//Testing
+
+const schema = z.object({
   eyeColor: z.enum(['blue', 'red', 'green']),
   eyeColors: z.array(z.enum(['blue', 'red', 'green'])),
   favoritePants: z.string().min(5).describe('Fav pants // Do something'),
@@ -153,25 +169,25 @@ const MyForm = z.object({
 
 export function MyPage() {
   return (
-    <Form
-      schema={MyForm}
+    <ZodForm
+      schema={schema}
       onSubmit={(vals) => {
         console.log('values', vals)
       }}
       // renderAfter={() => <button>Submit</button>}
-      props={{
-        eyeColor: {
-          zodType: MyForm.shape.eyeColor,
-          // options: ['blue', 'red', 'green'],
-        },
-        eyeColors: {
-          zodType: MyForm.shape.eyeColors,
-          // zodType: '',
-        },
-        favoritePants: {
-          // options: ['khakis', 'blue jeans'],
-        },
-      }}
+      // props={{
+      //   eyeColor: {
+      //     zodType: MyForm.shape.eyeColor,
+      //     // options: ['blue', 'red', 'green'],
+      //   },
+      //   eyeColors: {
+      //     zodType: MyForm.shape.eyeColors,
+      //     // zodType: '',
+      //   },
+      //   favoritePants: {
+      //     // options: ['khakis', 'blue jeans'],
+      //   },
+      // }}
     />
   )
 }

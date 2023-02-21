@@ -5,6 +5,7 @@ import {titleCase} from '@usevenice/util'
 import {LucideCheck} from 'lucide-react'
 import * as React from 'react'
 import {twMerge} from 'tailwind-merge'
+import {useConstant} from '../hooks'
 
 import {cn} from '../utils'
 
@@ -74,10 +75,12 @@ export interface CheckboxGroupItemProps
 
 export function CheckboxGroupItem({
   value,
-  id = `radio-group-item-${value}`,
+  id: _id,
   label = titleCase(value),
   ...restProps
 }: CheckboxGroupItemProps) {
+  const defaultId = useConstant(() => `checkbox-${Math.random()}`)
+  const id = _id ?? defaultId
   return (
     <div className="flex items-center space-x-2">
       <Checkbox {...restProps} id={id} />
