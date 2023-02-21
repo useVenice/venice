@@ -2,7 +2,11 @@ import {useTsController, createTsForm} from '@ts-react/form'
 import type {PropsMapping} from '@ts-react/form/lib/src/createSchemaForm'
 import {titleCase, z} from '@usevenice/util'
 import {
+  CheckboxGroup,
+  CheckboxGroupItem,
   Input,
+  RadioGroup,
+  RadioGroupItem,
   Select,
   SelectContent,
   SelectItem,
@@ -35,9 +39,8 @@ interface FieldProps {
   placeholder?: string
 }
 
-function StringField(props: FieldProps) {
+export function TextField(props: FieldProps) {
   const {field, error} = useTsController<string>()
-
   return (
     <Input
       label={props.label ?? titleCase(props.name)}
@@ -49,7 +52,7 @@ function StringField(props: FieldProps) {
   )
 }
 
-function EnumField({enumValues, label, name}: FieldProps) {
+export function SelectField({enumValues, label, name}: FieldProps) {
   const {field, error} = useTsController<string>()
   const id = useConstant(() => `enum-${Math.random()}`)
   // NOTE the htmlFor and id field does not currently work
@@ -73,95 +76,69 @@ function EnumField({enumValues, label, name}: FieldProps) {
   )
 }
 
-function NumberField({req}: {req: number; zodType?: string}) {
-  const {
-    field: {onChange, value},
-    error,
-  } = useTsController<number>()
+export function RadioGroupField({enumValues, label, name}: FieldProps) {
+  const {field, error} = useTsController<string>()
+
+  // NOTE the htmlFor and id field does not currently work
+  // not even sure if it is meant to work with radix select component at all
+  // Though it seems to be supported in the html layer.
   return (
     <>
-      <span>
-        <span>{`req is ${req}`}</span>
-        <input
-          value={value !== undefined ? value + '' : ''}
-          onChange={(e) => {
-            const value = Number.parseInt(e.target.value)
-            if (isNaN(value)) onChange(undefined)
-            else onChange(value)
-          }}
-        />
-        {error && error.errorMessage}
-      </span>
+      <RadioGroup
+        label={label ?? titleCase(name)}
+        value={field.value}
+        onValueChange={field.onChange}
+        orientation="horizontal">
+        {enumValues?.map((e) => (
+          <RadioGroupItem key={e} value={e}>
+            {titleCase(e)}
+          </RadioGroupItem>
+        ))}
+      </RadioGroup>
+      <span>{error?.errorMessage && error.errorMessage}</span>
     </>
   )
 }
 
-// function Checkbox({name}: {name: string}) {
-//   const {
-//     field: {onChange, value},
-//   } = useTsController<boolean>()
-
-//   return (
-//     <label>
-//       {name}
-//       <input
-//         onChange={(e) => onChange(e.target.checked)}
-//         checked={value ? value : false}
-//         type="checkbox"
-//       />
-//     </label>
-//   )
-// }
-function MultiCheckbox({...props}: FieldProps) {
-  console.log('multi checkbox props', props)
-  console.log(props.zodType)
+export function CheckboxGroupField({...props}: FieldProps) {
   const enumValues =
     props.enumValues ??
     ((props.zodType instanceof z.ZodArray &&
       props.zodType.element instanceof z.ZodEnum &&
       (props.zodType.element.options as string[])) ||
       [])
-  const {
-    field: {onChange, value},
-  } = useTsController<string[]>()
-
-  function toggleField(option: string) {
-    if (!value) onChange([option])
-    else {
-      onChange(
-        value.includes(option)
-          ? value.filter((e) => e !== option)
-          : [...value, option],
-      )
-    }
-  }
+  const {field, error} = useTsController<string[]>()
 
   return (
     <>
-      {enumValues.map((optionValue) => (
-        <label
-          htmlFor={optionValue}
-          style={{display: 'flex', flexDirection: 'row'}}
-          key={optionValue}>
-          {optionValue}
-          <input
-            name={optionValue}
-            type="checkbox"
-            onChange={() => toggleField(optionValue)}
-            checked={value?.includes(optionValue) ? true : false}
+      <CheckboxGroup
+        label={props.label ?? titleCase(props.name)}
+        orientation="horizontal">
+        {enumValues.map((v) => (
+          <CheckboxGroupItem
+            key={v}
+            value={v}
+            checked={field.value?.includes(v)}
+            onCheckedChange={(checked) =>
+              field.onChange(
+                checked
+                  ? [...(field.value ?? []), v]
+                  : field.value?.filter((val) => val !== v),
+              )
+            }
           />
-        </label>
-      ))}
+        ))}
+      </CheckboxGroup>
+      <span>{error?.errorMessage && error.errorMessage}</span>
     </>
   )
 }
 
 const mapping = [
   // z.number() is also viable. You'll probably have to use "createUniqueFieldSchema" (since you probably already have a Text Field)
-  [z.string(), StringField],
-  [z.enum(['placeholder']), EnumField],
-  [z.number(), NumberField],
-  [z.array(z.enum(['placeholder'])), MultiCheckbox],
+  [z.string(), TextField],
+  [z.enum(['placeholder']), RadioGroupField],
+  [z.array(z.enum(['placeholder'])), CheckboxGroupField],
 ] as const
 
 // as never workaround to make sure props type inference is not broken
@@ -171,7 +148,7 @@ const MyForm = z.object({
   eyeColor: z.enum(['blue', 'red', 'green']),
   eyeColors: z.array(z.enum(['blue', 'red', 'green'])),
   favoritePants: z.string().min(5).describe('Fav pants // Do something'),
-  ad: z.number().min(5),
+  // ad: z.number().min(5),
 })
 
 export function MyPage() {
@@ -181,9 +158,8 @@ export function MyPage() {
       onSubmit={(vals) => {
         console.log('values', vals)
       }}
-      renderAfter={() => <button>Submit</button>}
+      // renderAfter={() => <button>Submit</button>}
       props={{
-        ad: {req: 12, zodType: ''},
         eyeColor: {
           zodType: MyForm.shape.eyeColor,
           // options: ['blue', 'red', 'green'],
