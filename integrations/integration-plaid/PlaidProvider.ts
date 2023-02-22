@@ -87,7 +87,15 @@ const _def = makeSyncProvider.def({
     webhookItemError: zCast<ErrorShape>().nullish(),
   }),
   institutionData: zCast<plaid.Institution>(),
-  preConnectInput: z.object({envName: zPlaidEnvName}),
+  preConnectInput: z.object({
+    envName:
+      // Temp approach to prevent users from using development credentials which are limited to 100 max
+      // Will need to rethink how this works later, perhaps by redesigning preconnect / postConnect and the connect flow
+      // all together into one.
+      process.env.NODE_ENV === 'production'
+        ? z.enum(['sandbox', 'production'])
+        : zPlaidEnvName,
+  }),
   connectInput: z.object({link_token: z.string()}),
   connectOutput: z.object({
     publicToken: z.string(),
