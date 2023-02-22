@@ -3,11 +3,12 @@ import {BankIcon} from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import Link from 'next/link'
 import type {ReactNode} from 'react'
+import {DataTable} from '../DataTable'
 import type {PreviewQuery} from './usePreviewQuery'
 
 export function PreviewResult(props: PreviewQuery) {
   const {data, isFetching, isInitial} = props
-  const {headings, rows, totalCount} = data
+  const {rows, totalCount} = data
 
   if (isInitial) {
     return <LoadingPreviewResult />
@@ -32,40 +33,7 @@ export function PreviewResult(props: PreviewQuery) {
 
   return (
     <>
-      <table className="min-w-full divide-y divide-venice-gray-muted">
-        <thead>
-          <tr>
-            {headings.map((c) => (
-              <th
-                key={c}
-                scope="col"
-                className="p-2 text-left font-mono text-xs font-normal uppercase text-venice-gray-muted">
-                {c}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody
-          className={clsx(
-            'divide-y divide-venice-gray-muted/50 transition-opacity',
-            isFetching && 'opacity-70',
-          )}>
-          {rows.map((r) => (
-            <tr key={r['id']}>
-              {headings.map((c) => (
-                <td
-                  key={c}
-                  className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
-                  {/* TODO how to ensure fields are not recursively parsed as object from supabase */}
-                  {typeof r[c] === 'object' && r[c] !== null
-                    ? JSON.stringify(r[c])
-                    : r[c]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataTable isFetching={isFetching} rows={rows} />
       <p className="mt-2 text-end font-mono text-xs text-venice-gray-muted">
         {rows.length} of {totalCount} shown
       </p>

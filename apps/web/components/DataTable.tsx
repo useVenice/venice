@@ -1,67 +1,92 @@
-import {Card} from '@usevenice/ui'
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
+import {GridCellKind} from '@glideapps/glide-data-grid'
+import {Card, cn} from '@usevenice/ui'
 import {BankIcon} from '@usevenice/ui/icons'
 import clsx from 'clsx'
+import dynamic from 'next/dynamic'
 import type {ReactNode} from 'react'
-import {useMemo} from 'react'
+import React from 'react'
+
+import {produce} from '@usevenice/util'
+
+import '@glideapps/glide-data-grid/dist/index.css'
+
+import {VeniceDataGridTheme} from '../themes'
+const DataEditor = dynamic(
+  () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
+  {ssr: false},
+)
 
 interface DataTableProps {
-  columns: string[]
   isFetching: boolean
-  rows: Array<Record<string, Record<string, unknown> | string | number | null>>
+  rows: Array<Record<string, unknown>>
 }
 
-export function DataTable(props: DataTableProps) {
-  const {columns, isFetching, rows} = props
+export function DataTable({isFetching, rows}: DataTableProps) {
+  // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
 
-  const renderedColumns = useMemo(
-    () =>
-      columns.map((c) => (
-        <th
-          key={c}
-          scope="col"
-          className="p-2 text-left font-mono text-xs font-normal uppercase text-venice-gray-muted">
-          {c}
-        </th>
-      )),
-    [columns],
-  )
+  const [columns, setColumns] = React.useState<GridColumn[]>([])
+  React.useLayoutEffect(() => {
+    setColumns(
+      Object.keys(rows[0] ?? {}).map(
+        (key): GridColumn => ({id: key, title: key}),
+      ),
+    )
+  }, [rows])
 
-  const renderedRows = useMemo(
-    () =>
-      rows.map((r, i) => (
-        <tr key={i}>
-          {columns.map((c) => {
-            const value = r[c]
-            const displayValue =
-              typeof value === 'object' && value !== null
-                ? JSON.stringify(value)
-                : value
-            return (
-              <td
-                key={c}
-                className="max-w-[25rem] truncate whitespace-nowrap p-2 font-mono text-xs text-offwhite">
-                {displayValue}
-              </td>
-            )
-          })}
-        </tr>
-      )),
-    [columns, rows],
-  )
+  // If fetching data is slow you can use the DataEditor ref to send updates for cells
+  // once data is loaded.
 
-  return (
-    <table className="min-w-full divide-y divide-venice-gray-muted">
-      <thead>
-        <tr>{renderedColumns}</tr>
-      </thead>
-      <tbody
-        className={clsx(
-          'divide-y divide-venice-gray-muted/50 overflow-y-auto transition-opacity',
-          isFetching && 'opacity-70',
-        )}>
-        {renderedRows}
-      </tbody>
-    </table>
+  function getData([colIdx, rowIdx]: Item): GridCell {
+    const col = columns[colIdx]!
+    // if (!col) {
+    //   debugger
+    //   console.error('missing column', colIdx)
+    // }
+    const row = rows[rowIdx]!
+    const cell = row[col.id!]
+    const data = !cell
+      ? ''
+      : typeof cell === 'string'
+      ? cell
+      : JSON.stringify(cell)
+
+    // Unfortunately copying of JSON value is really not going to work well
+    // as they are escaped poorly for our purposes...
+    // @see https://github.com/glideapps/glide-data-grid/blob/main/packages/core/src/data-editor/data-editor-fns.ts#L232-L263
+    return {
+      kind: GridCellKind.Text,
+      allowOverlay: false,
+      data,
+      displayData: data,
+    }
+  }
+
+  return !columns.length ? null : (
+    <DataEditor
+      className={cn(isFetching && 'opacity-70')}
+      getCellContent={getData}
+      getCellsForSelection={true} // Enables copy
+      copyHeaders
+      columns={columns}
+      rows={rows.length}
+      smoothScrollX
+      smoothScrollY
+      onColumnResize={(col, newSize) => {
+        // console.log('col resize', col, newSize)
+        setColumns((existing) =>
+          produce(existing, (draft) => {
+            const c = draft.find((c) => c.id === col.id)
+            if (c) {
+              // @ts-expect-error
+              c.width = newSize
+            }
+          }),
+        )
+      }}
+      theme={VeniceDataGridTheme}
+    />
   )
 }
 

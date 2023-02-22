@@ -1,5 +1,4 @@
 import {CircularProgress, Tabs, TabsContent} from '@usevenice/ui'
-import {useMemo} from 'react'
 import {DataTable, EmptyDataTable} from '../../../DataTable'
 import {ActionsBar} from './ActionsBar'
 import {ApiEndpointCard} from './ApiEndpointCard'
@@ -102,10 +101,6 @@ interface DataTableQueryOutputProps {
 
 function DataTableQueryOutput(props: DataTableQueryOutputProps) {
   const {isInitial, isFetching, output} = props
-  const columns = useMemo(() => {
-    const firstRow = output?.[0]
-    return firstRow ? Object.keys(firstRow) : []
-  }, [output])
 
   if (isInitial) {
     return (
@@ -127,7 +122,7 @@ function DataTableQueryOutput(props: DataTableQueryOutputProps) {
 
   return (
     <div className="max-h-[20rem] overflow-auto">
-      <DataTable columns={columns} isFetching={isFetching} rows={output} />
+      <DataTable isFetching={isFetching} rows={output} />
     </div>
   )
 }

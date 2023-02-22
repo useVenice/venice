@@ -22,7 +22,7 @@ export interface DatabaseQuery {
 
 export namespace QueryData {
   export type csv = string
-  export type json = Record<string, unknown>
+  export type json = Array<Record<string, unknown>>
 }
 
 interface UseDatabaseQueryProps {
