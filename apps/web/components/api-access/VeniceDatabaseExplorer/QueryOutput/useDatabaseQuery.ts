@@ -1,8 +1,8 @@
 import type {UseQueryResult} from '@tanstack/react-query'
 import {useQuery} from '@tanstack/react-query'
+import {Papa} from '@usevenice/app-config/commonConfig'
 import {getServerUrl} from '@usevenice/app-config/server-url'
-import {z} from '@usevenice/util'
-import {useMemo, useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import {OutputFormat} from './OutputFormat'
 import {isOutputTabsKey, OutputTabsKey} from './OutputTabsKey'
 
@@ -20,13 +20,9 @@ export interface DatabaseQuery {
   execute: () => void
 }
 
-const JsonQuerySchema = z.array(
-  z.record(z.union([z.record(z.unknown()), z.string(), z.number(), z.null()])),
-)
-
 export namespace QueryData {
   export type csv = string
-  export type json = z.infer<typeof JsonQuerySchema>
+  export type json = Record<string, unknown>
 }
 
 interface UseDatabaseQueryProps {
@@ -38,7 +34,9 @@ export function useDatabaseQuery(props: UseDatabaseQueryProps): DatabaseQuery {
   const {apiKey, query = ''} = props
   const serverUrl = getServerUrl(null)
 
-  const [selectedOutputTab, setSelectedOutputTab] = useState(OutputTabsKey.json)
+  const [selectedOutputTab, setSelectedOutputTab] = useState(
+    OutputTabsKey.dataTable,
+  )
 
   function onOutputTabsValueChange(value: string): void {
     if (isOutputTabsKey(value)) {
@@ -106,20 +104,6 @@ export function useDatabaseQuery(props: UseDatabaseQueryProps): DatabaseQuery {
   // this allows switching between output format to display the correct data
   // as well as allowing to show previously cached output when switching back.
 
-  const csvQuery = useQuery({
-    ...queryOptions,
-    queryKey: ['/api/sql', OutputFormat.csv, query],
-    queryFn: async ({signal}) => {
-      const url = getFetchUrl()
-      const res = await fetch(url, {signal})
-      if (!res.ok) {
-        const message = await res.text()
-        throw new Error(`Network error: ${message}`)
-      }
-      return res.text()
-    },
-  })
-
   const jsonQuery = useQuery({
     ...queryOptions,
     queryKey: ['/api/sql', OutputFormat.json, query],
@@ -130,18 +114,22 @@ export function useDatabaseQuery(props: UseDatabaseQueryProps): DatabaseQuery {
         const message = await res.text()
         throw new Error(`Network error: ${message}`)
       }
-
-      const j: unknown = await res.json()
-      return JsonQuerySchema.parse(j)
+      return res.json()
     },
   })
 
-  function execute(): void {
-    if (format.fetch === OutputFormat.csv) {
-      void csvQuery.refetch()
-    } else {
-      void jsonQuery.refetch()
-    }
+  const csvQuery = React.useMemo(
+    () =>
+      ({
+        ...jsonQuery,
+        data: jsonQuery.data ? Papa.unparse(jsonQuery.data) : undefined,
+      } as UseQueryResult<QueryData.csv>),
+    [jsonQuery],
+  )
+  // No need to run a separate csv query here...
+
+  function execute() {
+    void jsonQuery.refetch()
   }
 
   return {

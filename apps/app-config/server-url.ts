@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {GetServerSidePropsContext} from 'next'
 
 export function getServerUrl(req: GetServerSidePropsContext['req'] | null) {
@@ -9,7 +10,6 @@ export function getServerUrl(req: GetServerSidePropsContext['req'] | null) {
     (process.env['VERCEL_URL']
       ? 'https://' + process.env['VERCEL_URL']
       : null) ||
-     
     `http://localhost:${
       process.env['PORT'] || process.env['NEXT_PUBLIC_PORT'] || 3000
     }`

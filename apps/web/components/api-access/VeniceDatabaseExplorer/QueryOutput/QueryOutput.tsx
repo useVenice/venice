@@ -15,7 +15,6 @@ export function QueryOutput(props: QueryOutputProps) {
   const {databaseQuery} = props
   return (
     <Tabs
-      id="OutputFormatTabs"
       className="grid gap-6"
       value={databaseQuery.selectedOutputTab}
       onValueChange={databaseQuery.onOutputTabsValueChange}>
