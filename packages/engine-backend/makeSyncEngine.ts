@@ -229,6 +229,7 @@ export const makeSyncEngine = <
       })
       .resoUpdate({type: 'resoUpdate', id, settings, institution})
 
+    // TODO: This should be happening async
     if (!resoUpdate.source$ && !resoUpdate.triggerDefaultSync) {
       console.log(
         '[_syncResourceUpdate] Returning early skip syncing pipelines',

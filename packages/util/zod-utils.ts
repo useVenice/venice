@@ -12,7 +12,13 @@ export function nonNullable<T>(value: T): value is NonNullable<T> {
 }
 
 export type JsonLiteral = z.infer<typeof zLiteral>
-export const zLiteral = z.union([z.string(), z.number(), z.boolean(), z.null()])
+export const zLiteral = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.null(),
+  // z.undefined(), // Technicall not valid json..
+])
 
 export type Json = JsonLiteral | {[key: string]: Json} | Json[]
 export const zJson: z.ZodType<Json> = z.lazy(() =>
@@ -70,7 +76,7 @@ export const cast = <T>() => (_input: unknown) => _input as T
 export const castIs = <T>() =>(_input: unknown): _input is T => true
 
 /** `zCast<TOut>()` standalone */
-export const zCast = <T>(...args: Parameters<typeof z['unknown']>) =>
+export const zCast = <T>(...args: Parameters<(typeof z)['unknown']>) =>
   z.unknown(...args).refine(castIs<T>())
 
 /** `castInput(schema)<TInput>()` */

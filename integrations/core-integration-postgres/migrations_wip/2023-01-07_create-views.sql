@@ -11,7 +11,7 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,standard#>> '{postingsMap,main,accountId}' as account_id
 	,standard->> 'externalCategory' as external_category
 	,standard->> 'notes'  as notes
-	,standard->> 'postingsMap' as postings
+	,standard->> 'postingsMap' as splits
 	,updated_at
 	,created_at
 FROM
@@ -43,7 +43,7 @@ CREATE VIEW transaction_split WITH (security_invoker) AS SELECT
 	,s.value as data
 	,updated_at
 	,created_at
-FROM "raw_transaction", 
+FROM "raw_transaction",
 	jsonb_each("raw_transaction".standard->'postingsMap') AS s;
 
 

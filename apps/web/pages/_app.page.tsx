@@ -68,7 +68,7 @@ function InvalidateQueriesOnPostgresChanges() {
       queryClient.invalidateQueries(
         getQueryKeys(browserSupabase).connections._def,
       ),
-    [],
+    [queryClient],
   )
   usePostgresChanges('resource', invalidate)
   usePostgresChanges('pipeline', invalidate)

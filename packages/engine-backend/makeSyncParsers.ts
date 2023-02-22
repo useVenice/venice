@@ -9,7 +9,8 @@ import type {
 } from '@usevenice/cdk-core'
 import {zConnectWith} from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
-import type {Json} from '@usevenice/util'
+import type { Json} from '@usevenice/util';
+import {deepOmitUndefined} from '@usevenice/util'
 import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
@@ -212,6 +213,7 @@ export function makeSyncParsers<
           ),
         ),
       ])
+      console.log('Will parse settings', reso?.settings, rest.settings)
       const settings = integration.provider.def.resourceSettings?.parse(
         deepMerge(reso?.settings, rest.settings),
         {path: ['settings']},
@@ -236,11 +238,13 @@ export function makeSyncParsers<
   const zPipeline = z
     .preprocess((arg) => {
       const defaultPipe = getDefaultPipeline?.()
-      return !arg
-        ? defaultPipe
-        : typeof arg === 'object'
-        ? deepMerge(defaultPipe, arg)
-        : arg
+      return deepOmitUndefined(
+        !arg
+          ? defaultPipe
+          : typeof arg === 'object'
+          ? deepMerge(defaultPipe, arg)
+          : arg,
+      )
     }, castInput(zInput.pipeline)<PipelineInput<TProviders[number], TProviders[number], TLinks>>())
     .transform(
       zGuard(async ({id, ...rest}) => {

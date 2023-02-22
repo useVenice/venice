@@ -88,6 +88,10 @@ const _def = makeSyncProvider.def({
   }),
   institutionData: zCast<plaid.Institution>(),
   preConnectInput: z.object({
+    ...(process.env.NODE_ENV === 'production'
+      ? {}
+      : // Development mode only
+        {sandboxPublicTokenCreate: z.boolean().optional()}),
     envName:
       // Temp approach to prevent users from using development credentials which are limited to 100 max
       // Will need to rethink how this works later, perhaps by redesigning preconnect / postConnect and the connect flow
@@ -97,7 +101,10 @@ const _def = makeSyncProvider.def({
         : zPlaidEnvName,
     language: zLanguage,
   }),
-  connectInput: z.object({link_token: z.string()}),
+  connectInput: z.union([
+    z.object({link_token: z.string()}),
+    z.object({public_token: z.string()}),
+  ]),
   connectOutput: z.object({
     publicToken: z.string(),
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
@@ -235,8 +242,17 @@ export const plaidProvider = makeSyncProvider({
     config,
     {envName, userId, resource, institutionExternalId, ...ctx},
     input,
-  ) =>
-    makePlaidClient(config)
+  ) => {
+    if (input.sandboxPublicTokenCreate) {
+      return makePlaidClient(config)
+        .fromEnv('sandbox')
+        .sandboxPublicTokenCreate({
+          initial_products: [Products.Transactions],
+          institution_id: 'ins_109508', // First Platipus bank
+        })
+        .then(({data: res}) => res)
+    }
+    return makePlaidClient(config)
       .fromEnv(input.envName || envName)
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
@@ -255,7 +271,8 @@ export const plaidProvider = makeSyncProvider({
       .then(({data: res}) => {
         console.log('willConnect response', res)
         return res
-      }),
+      })
+  },
 
   useConnectHook: (_) => {
     const [state, setState] = React.useState<{
@@ -305,6 +322,9 @@ export const plaidProvider = makeSyncProvider({
 
     return async (opts, {institutionExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
+      if ('public_token' in opts) {
+        return {publicToken: opts.public_token}
+      }
       if (plaidLink.error) {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw plaidLink.error
@@ -348,6 +368,8 @@ export const plaidProvider = makeSyncProvider({
           })
         : {data: null},
     ])
+    console.log('[Plaid post connect]', res, insRes)
+    // We will wait to sync the institution until later
     const settings = def._type('resourceSettings', {
       itemId: res.item_id,
       accessToken: res.access_token,

@@ -2,6 +2,7 @@ import {useTsController, createTsForm} from '@ts-react/form'
 import type {PropsMapping} from '@ts-react/form/lib/src/createSchemaForm'
 import {deepMerge, R, titleCase, z} from '@usevenice/util'
 import {
+  Checkbox,
   CheckboxGroup,
   CheckboxGroupItem,
   Input,
@@ -52,9 +53,24 @@ export function TextField(props: FieldProps) {
   )
 }
 
+export function CheckboxField({label, name}: FieldProps) {
+  const {field, error} = useTsController<boolean>()
+  const id = useConstant(() => `checkbox-${Math.random()}`)
+  return (
+    <>
+      <Label htmlFor={id}>{label ?? titleCase(name)}</Label>
+      <Checkbox
+        checked={field.value}
+        onCheckedChange={(state) => field.onChange(!!state)}
+      />
+      <span>{error?.errorMessage && error.errorMessage}</span>
+    </>
+  )
+}
+
 export function SelectField({enumValues, label, name}: FieldProps) {
   const {field, error} = useTsController<string>()
-  const id = useConstant(() => `enum-${Math.random()}`)
+  const id = useConstant(() => `select-${Math.random()}`)
   // NOTE the htmlFor and id field does not currently work
   // not even sure if it is meant to work with radix select component at all
   // Though it seems to be supported in the html layer.
@@ -137,6 +153,7 @@ export function CheckboxGroupField({...props}: FieldProps) {
 const mapping = [
   // z.number() is also viable. You'll probably have to use "createUniqueFieldSchema" (since you probably already have a Text Field)
   [z.string(), TextField],
+  [z.boolean(), CheckboxField],
   [z.enum(['placeholder']), RadioGroupField],
   [z.array(z.enum(['placeholder'])), CheckboxGroupField],
 ] as const
