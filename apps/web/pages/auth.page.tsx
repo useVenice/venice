@@ -35,6 +35,12 @@ export default function AuthScreen() {
               theme: ThemeSupa,
               variables: veniceThemeTweaks,
             }}
+            localization={{
+              variables: {
+                // Workaround for not implementing password reset just yet...
+                forgotten_password: {button_label: 'Send Magic Link email'},
+              },
+            }}
             providers={['google', 'github']}
             theme="dark"></Auth>
         </div>
