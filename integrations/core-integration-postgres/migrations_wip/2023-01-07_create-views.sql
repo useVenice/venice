@@ -11,7 +11,7 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,standard#>> '{postingsMap,main,accountId}' as account_id
 	,standard->> 'externalCategory' as external_category
 	,standard->> 'notes'  as notes
-	,standard->> 'postingsMap' as splits
+	,standard-> 'postingsMap' as splits -- keep type as jsonb rather than turn into string
 	,updated_at
 	,created_at
 FROM
