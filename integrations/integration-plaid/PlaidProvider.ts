@@ -1,5 +1,5 @@
-import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
+import * as plaid from 'plaid'
 import {CountryCode, Products} from 'plaid'
 import React from 'react'
 import type {
@@ -50,6 +50,7 @@ import {
   zCountryCode,
   zLanguage,
   zPlaidClientConfig,
+  zPlaidEnvName,
   zProducts,
   zWebhook,
 } from './PlaidClient'
@@ -86,6 +87,7 @@ const _def = makeSyncProvider.def({
     webhookItemError: zCast<ErrorShape>().nullish(),
   }),
   institutionData: zCast<plaid.Institution>(),
+  preConnectInput: z.object({envName: zPlaidEnvName}),
   connectInput: z.object({link_token: z.string()}),
   connectOutput: z.object({
     publicToken: z.string(),
@@ -208,12 +210,23 @@ export const plaidProvider = makeSyncProvider({
       }
     },
   },
+  // TODO: Do we actually need the preConnect and postConnect phase at all?
+  // What if everything is encapsulated in useConnectHook and integrations each get to
+  // expose trpc endpoints that the frontend can call at will?
+  // That can solve for things like custom API endpoints that we do not have the right abstraction for
+  // (such as sandboxFireWebhook, or sandboxLinkTokenCreate)
+  // Should also be easier for newcomers to reason about
+  // new methods
+  // - prefetch
+  // - connect
+  // - commandsForResource
   preConnect: (
     config,
     {envName, userId, resource, institutionExternalId, ...ctx},
+    input,
   ) =>
     makePlaidClient(config)
-      .fromEnv(envName)
+      .fromEnv(input.envName || envName)
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId

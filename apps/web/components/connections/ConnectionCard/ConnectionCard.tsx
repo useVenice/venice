@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {DialogPrimitive as Dialog, Loading} from '@usevenice/ui'
+import {DialogPrimitive, Loading} from '@usevenice/ui'
 import {
   CircleFilledIcon,
   DeleteIcon,
@@ -147,7 +147,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
             </ActionMenu>
 
             {/* Needs to keep Dialog root outside ActionMenu otherwise it won't open */}
-            <Dialog.Root
+            <DialogPrimitive.Root
               open={isDeleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}>
               <DeleteConnectionDialog
@@ -157,7 +157,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 onCancel={() => setDeleteDialogOpen(false)}
                 onDeletionConfirmed={deleteConnection.mutate}
               />
-            </Dialog.Root>
+            </DialogPrimitive.Root>
           </div>
           <div className="text-right">
             {status ? <ConnectionStatus status={status} /> : null}

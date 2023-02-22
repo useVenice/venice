@@ -1,5 +1,5 @@
 import type {ZStandard} from '@usevenice/cdk-core'
-import {DialogPrimitive as Dialog} from '@usevenice/ui'
+import {DialogPrimitive} from '@usevenice/ui'
 import {DeleteIcon} from '@usevenice/ui/icons'
 import Image from 'next/image'
 import type {Connection} from '../../../lib/supabase-queries'
@@ -15,10 +15,10 @@ interface DeleteConnectionDialogProps {
 export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
   const {institution, isDeleting, name, onCancel, onDeletionConfirmed} = props
   return (
-    <Dialog.Portal>
+    <DialogPrimitive.Portal>
       <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity will-change-auto animate-in fade-in" />
-        <Dialog.Content className="fixed z-50 grid w-full gap-4 border border-venice-black-300 bg-venice-black-500 p-6 opacity-100 animate-in fade-in-70 focus:outline-none focus:ring-venice-black-300 sm:min-w-[35rem] sm:max-w-lg sm:rounded-lg">
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity will-change-auto animate-in fade-in" />
+        <DialogPrimitive.Content className="fixed z-50 grid w-full gap-4 border border-venice-black-300 bg-venice-black-500 p-6 opacity-100 animate-in fade-in-70 focus:outline-none focus:ring-venice-black-300 sm:min-w-[35rem] sm:max-w-lg sm:rounded-lg">
           <div className="mt-2 mb-3 flex items-center justify-center gap-2">
             {institution?.logoUrl ? (
               <Image
@@ -38,9 +38,9 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
             )}
             <span className="text-sm uppercase">{name}</span>
           </div>
-          <Dialog.Title className="text-center text-venice-green">
+          <DialogPrimitive.Title className="text-center text-venice-green">
             Are you sure you want to delete this connection?
-          </Dialog.Title>
+          </DialogPrimitive.Title>
           <div className="mx-auto max-w-[20rem] text-sm text-venice-gray">
             <p className="pb-1">Deleting {name} will:</p>
             <ul className="list-disc pl-4">
@@ -63,8 +63,8 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
               {isDeleting ? <span>Deleting…</span> : <span>Delete</span>}
             </button>
           </div>
-        </Dialog.Content>
+        </DialogPrimitive.Content>
       </div>
-    </Dialog.Portal>
+    </DialogPrimitive.Portal>
   )
 }

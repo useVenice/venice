@@ -1,103 +1,128 @@
+'use client'
+
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import {Transition} from '@headlessui/react'
-import {useMeasure, useUpdateEffect} from '@react-hookz/web'
-import {motion, useAnimation} from 'framer-motion'
-import React from 'react'
-import {twMerge} from 'tailwind-merge'
+import {X} from 'lucide-react'
+import * as React from 'react'
+import {cn} from '../utils'
 
-export interface DialogProps extends DialogPrimitive.DialogProps {}
+const Dialog = DialogPrimitive.Root
 
-export interface DialogInstance {
-  open: () => void
-  close: () => void
+const DialogTrigger = DialogPrimitive.Trigger
+
+const DialogPortal = ({
+  className,
+  children,
+  ...props
+}: DialogPrimitive.DialogPortalProps) => (
+  <DialogPrimitive.Portal className={cn(className)} {...props}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
+      {children}
+    </div>
+  </DialogPrimitive.Portal>
+)
+DialogPortal.displayName = DialogPrimitive.Portal.displayName
+
+const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({className, children, ...props}, ref) => (
+  <DialogPrimitive.Overlay
+    className={cn(
+      'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=open]:fade-in data-[state=closed]:fade-out',
+      className,
+    )}
+    {...props}
+    ref={ref}
+  />
+))
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
+
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({className, children, ...props}, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        'fixed z-50 grid w-full gap-4 rounded-b-lg bg-white p-6 animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:max-w-lg sm:rounded-lg sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0',
+        'dark:bg-slate-900',
+        className,
+      )}
+      {...props}>
+      {children}
+      <DialogPrimitive.Close className="absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
+  </DialogPortal>
+))
+DialogContent.displayName = DialogPrimitive.Content.displayName
+
+const DialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex flex-col space-y-2 text-center sm:text-left',
+      className,
+    )}
+    {...props}
+  />
+)
+DialogHeader.displayName = 'DialogHeader'
+
+const DialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      className,
+    )}
+    {...props}
+  />
+)
+DialogFooter.displayName = 'DialogFooter'
+
+const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({className, ...props}, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn(
+      'text-lg font-semibold text-slate-900',
+      'dark:text-slate-50',
+      className,
+    )}
+    {...props}
+  />
+))
+DialogTitle.displayName = DialogPrimitive.Title.displayName
+
+const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({className, ...props}, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn('text-sm text-slate-500', 'dark:text-slate-400', className)}
+    {...props}
+  />
+))
+DialogDescription.displayName = DialogPrimitive.Description.displayName
+
+export {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
 }
-
-export const Dialog = React.forwardRef(function Dialog(
-  {
-    open: initialOpen = false,
-    onOpenChange,
-    children,
-    ...restProps
-  }: DialogProps,
-  ref: React.ForwardedRef<DialogInstance>,
-) {
-  const [open, setOpen] = React.useState(initialOpen)
-  useUpdateEffect(() => setOpen(initialOpen), [initialOpen])
-  React.useImperativeHandle(
-    ref,
-    (): DialogInstance => ({
-      open: () => setOpen(true),
-      close: () => setOpen(false),
-    }),
-    [],
-  )
-
-  const controls = useAnimation()
-  const [rect, contentRef] = useMeasure()
-  useUpdateEffect(() => {
-    if (rect?.height) {
-      void controls.start({
-        height: rect.height,
-        transition: {
-          type: 'spring',
-          stiffness: 550,
-          damping: 40,
-          restSpeed: 10,
-        },
-      })
-    }
-  }, [controls, rect?.height])
-
-  return (
-    <DialogPrimitive.Root
-      open={open}
-      onOpenChange={(newOpen) => {
-        setOpen(newOpen)
-        onOpenChange?.(newOpen)
-      }}
-      {...restProps}>
-      <Transition.Root show={open}>
-        <Transition.Child
-          as={React.Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0">
-          <DialogPrimitive.Overlay
-            forceMount
-            className="fixed inset-0 z-20 bg-black/50"
-          />
-        </Transition.Child>
-
-        <Transition.Child
-          as={React.Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95">
-          <DialogPrimitive.Content
-            forceMount
-            className={twMerge(
-              'fixed top-1/2 left-1/2 z-50 flex max-h-[95vh] w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col md:w-full',
-              'overflow-hidden rounded-lg bg-venice-black',
-              'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
-            )}>
-            <div className="shrink overflow-y-auto">
-              <motion.div className="h-0 w-full" animate={controls}>
-                <div ref={contentRef as React.RefObject<HTMLDivElement>}>
-                  {children}
-                </div>
-              </motion.div>
-            </div>
-          </DialogPrimitive.Content>
-        </Transition.Child>
-      </Transition.Root>
-    </DialogPrimitive.Root>
-  )
-})
-
-export {DialogPrimitive}

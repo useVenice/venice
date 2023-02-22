@@ -8,6 +8,7 @@ import {z} from '@usevenice/util'
 
 import {createTRPCClientProxy} from '@trpc/client'
 import {VeniceProvider} from './VeniceProvider'
+import {Button, ZodForm} from '@usevenice/ui'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
 export const zUseVeniceOptions = z.object({
@@ -83,6 +84,8 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
     trpcClient: _client,
     trpc,
     userId,
+    providerByName,
+    openDialog,
   } = VeniceProvider.useContext()
   // Move this inside the context
   const client = React.useMemo(() => createTRPCClientProxy(_client), [_client])
@@ -107,26 +110,57 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         return
       }
 
-      const opt: ConnectOptions = {
-        institutionExternalId: opts.institutionId
-          ? extractId(opts.institutionId)[2]
-          : undefined,
-        resourceExternalId: opts.resourceId
-          ? extractId(opts.resourceId)[2]
-          : undefined,
-        envName,
-      }
       try {
+        const providerName = extractId(int.id)[1]
+
+        const preConnInputSchema =
+          providerByName[providerName]?.def.preConnectInput
+
+        const preConnIpt = preConnInputSchema
+          ? await new Promise((resolve, reject) => {
+              openDialog(({close}) => (
+                <ZodForm
+                  schema={preConnInputSchema as any}
+                  onSubmit={(values) => {
+                    close()
+                    resolve(values)
+                  }}
+                  renderAfter={({submit}) => (
+                    <>
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          close()
+                          reject(CANCELLATION_TOKEN)
+                        }}>
+                        Cancel
+                      </Button>
+                      <Button onClick={submit}>Launch</Button>
+                    </>
+                  )}
+                />
+              ))
+            })
+          : undefined
+
+        const opt: ConnectOptions = {
+          institutionExternalId: opts.institutionId
+            ? extractId(opts.institutionId)[2]
+            : undefined,
+          resourceExternalId: opts.resourceId
+            ? extractId(opts.resourceId)[2]
+            : undefined,
+          envName,
+        }
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} Will connect`)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const preConnRes = await ctx.preConnect.fetch([int, opt, undefined], {
+        const preConnRes = await ctx.preConnect.fetch([int, opt, preConnIpt], {
           staleTime: 15 * 60 * 1000, // Good for 15 minutes
         })
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
-        const provider = extractId(int.id)[1]
-        const innerConnect = connectFnMapRef.current?.[provider]
+        const innerConnect = connectFnMapRef.current?.[providerName]
         // e.g. Plaid modal opens
 
         // HACK: we keep our loading overlay opens underneath the integration
@@ -162,7 +196,15 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         setIsConnecting(false)
       }
     },
-    [envName, userId, ctx.preConnect, connectFnMapRef, client.postConnect],
+    [
+      envName,
+      userId,
+      providerByName,
+      ctx.preConnect,
+      connectFnMapRef,
+      client.postConnect,
+      openDialog,
+    ],
   )
 
   return {connect, isConnecting}

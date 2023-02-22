@@ -40,12 +40,14 @@ export const zPostConnectOptions = zConnectOptions.extend({
 
 // MARK: - Client side connect types
 
+export type OpenDialogFn = (
+  Component: React.ComponentType<{close: () => void}>,
+  options?: {onClose?: () => void},
+) => void
+
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
   userId: UserId | undefined
-  openDialog: (
-    Component: React.ComponentType<{close: () => void}>,
-    options?: {onClose?: () => void},
-  ) => void
+  openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
   context: ConnectOptions,
