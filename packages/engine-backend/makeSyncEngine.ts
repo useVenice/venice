@@ -487,6 +487,7 @@ export const makeSyncEngine = <
           await metaService.tables.resource.delete(reso.id)
         },
       ),
+
     // MARK: - Connect
     preConnect: authedProcedure
       .input(z.tuple([zInt, zConnectOptions, z.unknown()]))

@@ -41,40 +41,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     const {trpc} = VeniceProvider.useContext()
     const dispatch = trpc.dispatch.useMutation()
 
+    const deleteResource = trpc.deleteResource.useMutation({
+      onSuccess: () => console.log('Delete success', id),
+      onError: console.error,
+      onSettled: () => setDeleteDialogOpen(false),
+    })
+
     // action.delete
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
-    const deleteConnection = useMutation<void, Error, void, {}>(
-      async () => {
-        const {error} = await browserSupabase
-          .from('pipeline')
-          .delete()
-          .eq('id', id)
-
-        if (error) {
-          throw new Error(error.message)
-        }
-
-        // TODO: Need to properly handle this on the server to
-        // 1) Remove orphan resource
-        // 2) Revoke before deleting as needed
-        if (resourceId.includes('debug')) {
-          const {error} = await browserSupabase
-            .from('resource')
-            .delete()
-            .eq('id', resourceId)
-
-          if (error) {
-            throw new Error(error.message)
-          }
-        }
-      },
-      {
-        // TEMPORARY
-        onSuccess: () => console.log('Delete success', id),
-        onError: console.error,
-        onSettled: () => setDeleteDialogOpen(false),
-      },
-    )
 
     return (
       <ResourceCard
@@ -151,11 +125,13 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               open={isDeleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}>
               <DeleteConnectionDialog
-                isDeleting={deleteConnection.isLoading}
+                isDeleting={deleteResource.isLoading}
                 institution={institution}
                 name={displayName}
                 onCancel={() => setDeleteDialogOpen(false)}
-                onDeletionConfirmed={deleteConnection.mutate}
+                onDeletionConfirmed={() =>
+                  deleteResource.mutate([{id: resourceId}, {}])
+                }
               />
             </DialogPrimitive.Root>
           </div>
