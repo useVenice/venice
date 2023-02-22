@@ -1,6 +1,11 @@
 import './global.css'
 
-import {Hydrate, QueryClientProvider} from '@tanstack/react-query'
+import type {QueryClient} from '@tanstack/react-query'
+import {
+  Hydrate,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
@@ -12,15 +17,23 @@ import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
+import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
-import {browserQueryClient} from '../lib/query-client'
+import {createQueryClient} from '../lib/query-client'
+import {getQueryKeys, usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
-import superjson from 'superjson'
+import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
 
 /** Need this to be a separate function so we can have hooks... */
-function _VeniceProvider({children}: {children: React.ReactNode}) {
+function _VeniceProvider({
+  children,
+  queryClient,
+}: {
+  children: React.ReactNode
+  queryClient: QueryClient
+}) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
   const [session, meta] = useSession()
 
@@ -39,7 +52,7 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   // }
   return (
     <VeniceProvider
-      queryClient={browserQueryClient}
+      queryClient={queryClient}
       config={veniceCommonConfig}
       accessToken={accessToken}
       developerMode={developerMode}>
@@ -48,8 +61,24 @@ function _VeniceProvider({children}: {children: React.ReactNode}) {
   )
 }
 
+function InvalidateQueriesOnPostgresChanges() {
+  const queryClient = useQueryClient()
+  const invalidate = React.useCallback(
+    () =>
+      queryClient.invalidateQueries(
+        getQueryKeys(browserSupabase).connections._def,
+      ),
+    [queryClient],
+  )
+  usePostgresChanges('resource', invalidate)
+  usePostgresChanges('pipeline', invalidate)
+  return null
+}
+
 export function MyApp({Component, pageProps}: AppProps<PageProps>) {
-  // console.log('MyApp re-render', pageProps)
+  const {current: queryClient} = React.useRef(createQueryClient())
+  useGlobalRouteTransitionEffect()
+
   return (
     <>
       <Head>
@@ -58,14 +87,15 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       </Head>
 
       <QueryParamProvider adapter={NextAdapter}>
-        <QueryClientProvider client={browserQueryClient}>
+        <QueryClientProvider client={queryClient}>
           <Hydrate
             state={
               pageProps.dehydratedState &&
               superjson.deserialize(pageProps.dehydratedState)
             }>
+            <InvalidateQueriesOnPostgresChanges />
             <SessionContextProvider supabaseClient={browserSupabase}>
-              <_VeniceProvider>
+              <_VeniceProvider queryClient={queryClient}>
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>

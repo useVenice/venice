@@ -17,8 +17,8 @@ import {
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {WebhookShape} from './plaid.types'
 
-type EnvName = z.infer<typeof zEnvName>
-export const zEnvName = z.enum(['sandbox', 'development', 'production'])
+type EnvName = z.infer<typeof zPlaidEnvName>
+export const zPlaidEnvName = z.enum(['sandbox', 'development', 'production'])
 
 // Too bad we cannot use it...
 // export const zCountryCode = z.enum(
@@ -38,7 +38,7 @@ export const zLanguage = z.enum([
 
 export const zPlaidClientConfig = z.object({
   clientId: z.string(),
-  secrets: z.record(zEnvName, z.string()),
+  secrets: z.record(zPlaidEnvName, z.string()),
 })
 
 export const zWebhook = zCast<WebhookShape>()

@@ -6,13 +6,14 @@ import type {
   AnyProviderDef,
   AnySyncProvider,
   LinkFactory,
+  OpenDialogFn,
   UseConnectHook,
   UserId,
 } from '@usevenice/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
 import {_zContext} from '@usevenice/engine-backend/auth-utils'
-import type {DialogInstance} from '@usevenice/ui'
-import {Dialog} from '@usevenice/ui'
+import type {AnimatedDialogInstance} from '@usevenice/ui'
+import {AnimatedDialog} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
 export type {CreateTRPCReact} from '@trpc/react-query'
@@ -41,9 +42,12 @@ export const VeniceContext = React.createContext<{
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   connectFnMapRef: React.RefObject<Record<string, ConnectFn | undefined>>
 
+  providerByName: Record<string, AnySyncProvider>
+
   userId: UserId | undefined
   isAdmin: boolean
   developerMode: boolean
+  openDialog: OpenDialogFn
 } | null>(null)
 
 export function VeniceProvider<
@@ -100,26 +104,28 @@ export function VeniceProvider<
     [__DEBUG__, accessToken, url],
   )
 
+  const dialogRef = React.useRef<AnimatedDialogInstance>(null)
+  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
+    null,
+  )
+
+  const openDialog: OpenDialogFn = React.useCallback(
+    (render, options) => {
+      setDialogConfig({Component: render, options})
+      dialogRef.current?.open()
+    },
+    [dialogRef, setDialogConfig],
+  )
+
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
-    p.useConnectHook?.({
-      userId,
-      openDialog: (render, options) => {
-        setDialogConfig({Component: render, options})
-        dialogRef.current?.open()
-      },
-    }),
+    p.useConnectHook?.({userId, openDialog}),
   ])
   const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
 
   React.useEffect(() => {
     connectFnMapRef.current = connectFnMap
   }, [connectFnMap])
-
-  const dialogRef = React.useRef<DialogInstance>(null)
-  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
-    null,
-  )
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -133,13 +139,23 @@ export function VeniceProvider<
             userId,
             isAdmin,
             developerMode,
+            openDialog,
+            providerByName: R.mapToObj(config.providers, (p) => [p.name, p]),
           }),
-          [trpcClient, queryClient, userId, isAdmin, developerMode],
+          [
+            trpcClient,
+            queryClient,
+            userId,
+            isAdmin,
+            developerMode,
+            openDialog,
+            config.providers,
+          ],
         )}>
         {children}
 
         {dialogConfig && (
-          <Dialog
+          <AnimatedDialog
             ref={dialogRef}
             modal // TODO: Modal is true by default, but dialog still auto-dismiss on press outside...
             open
@@ -151,7 +167,7 @@ export function VeniceProvider<
               }
             }}>
             <dialogConfig.Component close={() => dialogRef.current?.close()} />
-          </Dialog>
+          </AnimatedDialog>
         )}
       </VeniceContext.Provider>
     </trpc.Provider>

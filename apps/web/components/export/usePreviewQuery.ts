@@ -5,7 +5,6 @@ import {browserSupabase} from '../../contexts/common-contexts'
 export interface PreviewQuery {
   data: {
     isEmpty: boolean
-    headings: string[]
     rows: Array<Record<string, string | number | null>>
     totalCount: number
   }
@@ -58,7 +57,7 @@ export function usePreviewQuery({
     if (!rows[0]) {
       return {
         isEmpty: true,
-        headings: [],
+
         rows: [],
         totalCount: 0,
       }
@@ -66,9 +65,6 @@ export function usePreviewQuery({
 
     return {
       isEmpty: rows.length === 0,
-      // TODO get column names from backend, getting from the first object
-      // might not always be correct
-      headings: Object.keys(rows[0]),
       rows,
       totalCount,
     }

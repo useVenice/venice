@@ -40,12 +40,14 @@ export const zPostConnectOptions = zConnectOptions.extend({
 
 // MARK: - Client side connect types
 
+export type OpenDialogFn = (
+  Component: React.ComponentType<{close: () => void}>,
+  options?: {onClose?: () => void},
+) => void
+
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
   userId: UserId | undefined
-  openDialog: (
-    Component: React.ComponentType<{close: () => void}>,
-    options?: {onClose?: () => void},
-  ) => void
+  openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
   context: ConnectOptions,
@@ -165,7 +167,7 @@ function makeSyncProviderDef<
   resourceSettings: ZResSettings
   institutionData: ZInsData
   webhookInput: ZWebhookInput
-
+  preConnectInput: ZPreConnInput
   connectInput: ZConnInput
   connectOutput: ZConnOutput
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
@@ -284,6 +286,7 @@ makeSyncProviderDef.defaults = makeSyncProviderDef({
   resourceSettings: undefined,
   institutionData: undefined,
   webhookInput: undefined,
+  preConnectInput: undefined,
   connectInput: undefined,
   connectOutput: undefined,
   sourceOutputEntity: undefined,
@@ -350,6 +353,8 @@ export function makeSyncProvider<
     (
       config: T['_types']['integrationConfig'],
       context: ConnectContext<T['_types']['resourceSettings']>,
+      // TODO: Turn this into an object instead
+      input: T['_types']['preConnectInput'],
     ) => Promise<T['_types']['connectInput']>
   >,
   TUseConnHook extends _opt<UseConnectHook<T>>,

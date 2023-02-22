@@ -1,6 +1,7 @@
 import {
   Button,
   CircularProgress,
+  Input,
   InstructionCard,
   Select,
   SelectContent,
@@ -9,7 +10,6 @@ import {
 } from '@usevenice/ui'
 
 import {CodeIcon, DownloadIcon, SyncIcon} from '@usevenice/ui/icons'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {useState} from 'react'
@@ -20,6 +20,7 @@ import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
 // for server-side
+import {getServerUrl} from '@usevenice/app-config/server-url'
 import {z} from '@usevenice/util'
 import {serverGetUser} from '../server'
 
@@ -27,13 +28,12 @@ const PREVIEW_LIMIT = 8
 
 interface ServerSideProps {
   apiKey: string
-  serverUrl: string
 }
 
 export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   ctx,
 ) => {
-  const user = await serverGetUser(ctx)
+  const [user] = await serverGetUser(ctx)
   if (!user?.id) {
     return {
       redirect: {
@@ -43,25 +43,18 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     }
   }
   const apiKey = z.string().parse(user.user_metadata['apiKey'])
-  const serverUrl = commonEnv.NEXT_PUBLIC_SERVER_URL
 
-  return {
-    props: {apiKey, serverUrl},
-  }
+  return {props: {apiKey}}
 }
 
 export default function Page(props: ServerSideProps) {
-  const {apiKey, serverUrl} = props
+  const {apiKey} = props
   const [selectedTable, selectTable] = useState('transaction')
 
   const preview = usePreviewQuery({limit: PREVIEW_LIMIT, table: selectedTable})
   const isEmptyResult = preview.data.isEmpty
 
-  const csvQuery = useCsvQuery({
-    apiKey,
-    serverUrl,
-    table: selectedTable,
-  })
+  const csvQuery = useCsvQuery({apiKey, table: selectedTable})
 
   return (
     <PageLayout title="Explore Data">
@@ -72,11 +65,8 @@ export default function Page(props: ServerSideProps) {
             <Select value={selectedTable} onValueChange={selectTable}>
               <SelectTrigger className="max-w-[10rem]" />
               <SelectContent>
-                <SelectItem value="posting">Posting</SelectItem>
+                <SelectItem value="account">Account</SelectItem>
                 <SelectItem value="transaction">Transaction</SelectItem>
-                <SelectItem value="institution">Institution</SelectItem>
-                <SelectItem value="pipeline">Pipeline</SelectItem>
-                <SelectItem value="resource">Resource</SelectItem>
               </SelectContent>
             </Select>
             {/* TODO fade in & out the loader */}
@@ -102,7 +92,7 @@ export default function Page(props: ServerSideProps) {
         <div className="mt-6 min-h-[15rem] overflow-x-auto">
           <PreviewResult {...preview} />
         </div>
-        <div className="mt-6 max-w-[38.5rem]">
+        <div className="mt-6 max-w-[50rem]">
           <SyncSpreadsheetCard
             csvQuery={csvQuery}
             isEmptyResult={isEmptyResult}
@@ -137,8 +127,8 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
           </li>
           {/* negative margin-left to offset padding of the ordered list */}
           <div className="-ml-4 flex gap-2 py-2">
-            <input
-              className="h-8 grow truncate rounded-lg bg-venice-black-400 px-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
+            <Input
+              className="grow truncate"
               value={googleSheetImport}
               readOnly
             />
@@ -185,13 +175,12 @@ interface CsvQuery {
 
 function useCsvQuery({
   apiKey,
-  serverUrl,
   table,
 }: {
   apiKey: string
-  serverUrl: string
   table: string
 }): CsvQuery {
+  const serverUrl = getServerUrl(null)
   const baseUrl = new URL(serverUrl)
   const url = new URL('/api/sql', baseUrl)
   const params = new URLSearchParams({

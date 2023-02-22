@@ -28,22 +28,6 @@ import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 // MARK: - Env vars
 
 export const zCommonEnv = zEnvVars({
-  NEXT_PUBLIC_SERVER_URL: z
-    .string()
-    .default(
-      // https://vercel.com/docs/concepts/projects/environment-variables
-      process.env['NEXT_PUBLIC_VERCEL_URL']
-        ? 'https://' + process.env['NEXT_PUBLIC_VERCEL_URL']
-        : 'http://localhost:3000',
-    )
-    // TODO: Should we default to request url?
-    // https://stackoverflow.com/questions/23319033/how-to-get-the-port-number-in-node-js-when-a-request-is-processed
-    .describe(
-      `Fully qualified url your venice next.js app used for redirects, webhooks, background tasks and server-side rendering.
-      e.g. https://connect.example.com or http://localhost:3000 for development. Defaults to https://$NEXT_PUBLIC_VERCEL_URL if not provided
-      @see https://vercel.com/docs/concepts/projects/environment-variables
-      Providing this explicitly is still preferrred as $NEXT_PUBLIC_VERCEL_URL does not account for custom domain`,
-    ),
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
   DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),
@@ -73,6 +57,8 @@ export const zBackendEnv = zEnvVars({
 })
 
 // MARK: - Integration env vars
+
+export {plaidProvider}
 
 export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
 

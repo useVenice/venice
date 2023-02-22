@@ -56,28 +56,45 @@ export async function dropDbUser(userId: string) {
 }
 
 export async function ensureDatabaseUser(userId: string) {
+  console.log('[ensureDatabaseUser] for', userId)
+
   return runAsAdmin(async (trxn) => {
     const username = `usr_${userId}`
-    let apiKey = await trxn.maybeOneFirst<string>(sql`
-      SELECT
-        raw_user_meta_data ->> 'apiKey'
-      FROM
-        auth.users
-      WHERE
-        id = ${userId}
-        AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
-    `)
-
+    // eslint-disable-next-line prefer-const
+    let [apiKey, pgUserExists] = await Promise.all([
+      trxn.maybeOneFirst<string>(sql`
+        SELECT
+          raw_user_meta_data ->> 'apiKey'
+        FROM
+          auth.users
+        WHERE
+          id = ${userId}
+          AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
+      `),
+      trxn.oneFirst<boolean>(
+        sql`SELECT EXISTS (SELECT 1 FROM pg_user WHERE usename = ${username})`,
+      ),
+    ])
+    // TODO: Maybe also check for existance of user too? Although it's a bit tricky because
+    // we would also need to recursively check that all the permissions are correct on said user
+    // better to re-create more proactively, to delete user simply delete the apiKey
+    // but that still has an issue where the old databaseUrl will continue to work until
+    // ensureDatabaseUser gets called
     const adminUrl = new URL(backendEnv.POSTGRES_OR_WEBHOOK_URL)
     const getUrl = () =>
       `${adminUrl.protocol}//${username}:${apiKey}@${adminUrl.hostname}:${adminUrl.port}${adminUrl.pathname}`
-    if (apiKey) {
+    if (apiKey && pgUserExists) {
+      // console.log('UNSAFE_DEBUG_DATABASE_URL', {databaseUrl: getUrl()})
       return {usr: username, apiKey, databaseUrl: getUrl()}
     }
 
     const usr = sql.identifier([username])
 
     apiKey = `key_${makeUlid()}`
+    // Proactively drop so we can recreate,
+    // todo: Differentiate between user not existing error vs other error
+    await dropDbUser(userId).catch(() => null)
+
     await trxn.query(
       sql`CREATE USER ${usr} PASSWORD ${sql.literalValue(apiKey)}`,
     )
@@ -86,7 +103,7 @@ export async function ensureDatabaseUser(userId: string) {
     )
     await trxn.query(sql`GRANT USAGE ON SCHEMA public TO ${usr}`)
     await trxn.query(
-      sql`GRANT SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${usr}`,
+      sql`GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${usr}`,
     )
     await trxn.query(
       sql`REVOKE ALL PRIVILEGES ON public.migrations FROM ${usr}`,
@@ -99,7 +116,9 @@ export async function ensureDatabaseUser(userId: string) {
         {apiKey},
       )} WHERE id = ${userId}`,
     )
-    return {usr, apiKey, databaseUrl: getUrl()}
+    const databaseUrl = getUrl()
+    // console.log('UNSAFE_DEBUG_DATABASE_URL', {databaseUrl})
+    return {usr, apiKey, databaseUrl}
   })
 }
 

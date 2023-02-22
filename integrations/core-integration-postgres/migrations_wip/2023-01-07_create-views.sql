@@ -11,19 +11,40 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,standard#>> '{postingsMap,main,accountId}' as account_id
 	,standard->> 'externalCategory' as external_category
 	,standard->> 'notes'  as notes
-	,standard->> 'postingsMap' as postings
+	,standard-> 'postingsMap' as splits -- keep type as jsonb rather than turn into string
+	,updated_at
+	,created_at
 FROM
 	"raw_transaction";
 
-DROP VIEW IF EXISTS posting;
-CREATE VIEW posting WITH (security_invoker) AS SELECT
-	id
-	,p.key
-	,p.value #>>'{amount,quantity}' as amount_quantity
-	,p.value #>>'{amount,unit}' as amount_unit
-	,p.value ->>'accountId' as account_id
-	,p.value as data
-	from "raw_transaction", jsonb_each("raw_transaction".standard->'postingsMap') as p;
+
+DROP VIEW IF EXISTS account;
+CREATE VIEW account WITH (security_invoker) AS SELECT
+	id -- standard->>'_id' as id
+	,standard->>'name' as name
+	,standard->> 'type' as type
+	,standard->> 'lastFour' as last_four
+	,standard->> 'institutionName' as institution_name
+	,standard->> 'defaultUnit' as default_unit
+	,standard#>> '{informationalBalances,current,quantity}' as current_balance
+	,standard#>> '{informationalBalances,available,quantity}' as available_balance
+	,updated_at
+	,created_at
+FROM
+	"raw_account";
+
+DROP VIEW IF EXISTS transaction_split;
+CREATE VIEW transaction_split WITH (security_invoker) AS SELECT
+	id as transaction_id
+	,s.key
+	,s.value #>>'{amount,quantity}' as amount_quantity
+	,s.value #>>'{amount,unit}' as amount_unit
+	,s.value ->>'accountId' as account_id
+	,s.value as data
+	,updated_at
+	,created_at
+FROM "raw_transaction",
+	jsonb_each("raw_transaction".standard->'postingsMap') AS s;
 
 
 -- Needed to re-grant permission to all users to access the view whenever we re-construct it
@@ -39,7 +60,7 @@ BEGIN
 		WHERE
 			starts_with (usename, 'usr_')
 	LOOP
-		EXECUTE format('GRANT SELECT, UPDATE, DELETE ON public.transaction, public.posting TO %I', ele.usename);
+		EXECUTE format('GRANT SELECT, UPDATE, DELETE ON public.transaction, public.account, public.transaction_split TO %I', ele.usename);
 	END LOOP;
 END;
 $$;
@@ -53,10 +74,14 @@ REVOKE ALL ON pg_catalog.pg_user FROM public;
 ---
 
 
+
 CREATE OR REPLACE FUNCTION jsonb_array_to_text_array(_js jsonb)
   RETURNS text[]
   LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
 'SELECT ARRAY(SELECT jsonb_array_elements_text(_js))';
+
+
+--- Toy functions.
 
 ALTER TABLE "transaction"
 	ADD COLUMN "account_ids" text [] NOT NULL GENERATED ALWAYS AS (

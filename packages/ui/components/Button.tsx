@@ -15,7 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <Component
         className={twMerge(
           'inline-flex h-8 select-none items-center justify-center rounded-lg px-4 text-sm transition-colors',
-          'drop-shadow-sm hover:drop-shadow focus:outline-none disabled:pointer-events-none disabled:opacity-50 disabled:drop-shadow-none',
+          'drop-shadow-sm hover:drop-shadow focus:outline-none disabled:pointer-events-none disabled:opacity-70 disabled:drop-shadow-none',
           variants[variant],
           className,
         )}

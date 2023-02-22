@@ -1,6 +1,8 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
+import {titleCase} from '@usevenice/util'
 import React from 'react'
 import {twMerge} from 'tailwind-merge'
+import {useConstant} from '../hooks'
 
 export interface RadioGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
@@ -37,21 +39,30 @@ export function RadioGroup({
   )
 }
 
-export interface RadioProps
+export interface RadioGroupItemProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
-  id: string
-  label: string
+  id?: string
+  label?: string
 }
 
-export function Radio({id, label, className, ...restProps}: RadioProps) {
+export function RadioGroupItem({
+  value,
+  id: _id,
+  label = titleCase(value),
+  className,
+  ...restProps
+}: RadioGroupItemProps) {
+  const defaultId = useConstant(() => `radio-${Math.random()}`)
+  const id = _id ?? defaultId
   return (
     <div className="flex flex-row items-center space-x-2">
       <RadioGroupPrimitive.Item
         {...restProps}
+        value={value}
         id={id}
         className={twMerge(
           'relative h-4 w-4 rounded-full border border-transparent text-white',
-          'radix-state-checked:bg-primary radix-state-unchecked:bg-gray-100',
+          'radix-state-checked:bg-secondary radix-state-unchecked:bg-offwhite',
           'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
           className,
         )}>

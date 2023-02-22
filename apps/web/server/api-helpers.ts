@@ -12,18 +12,18 @@ import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
+import {makeJwtClient} from '@usevenice/engine-backend'
+import {backendEnv} from '@usevenice/app-config/backendConfig'
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
 export async function createSSRHelpers(context: GetServerSidePropsContext) {
-  const supabase = createServerSupabaseClient<Database>(context)
   const queryClient = new QueryClient()
 
+  const [user, supabase] = await serverGetUser(context)
   await import('@usevenice/app-config/register.node')
   const {veniceRouter} = await import('@usevenice/app-config/backendConfig')
-  const {data: sessionRes} = await supabase.auth.getSession()
-  const user = sessionRes.session?.user
 
   const ssg = createProxySSGHelpers({
     queryClient,
@@ -46,7 +46,29 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
 export async function serverGetUser(context: GetServerSidePropsContext) {
   const supabase = createServerSupabaseClient<Database>(context)
   const {data: sessionRes} = await supabase.auth.getSession()
-  return sessionRes.session?.user
+  // console.log('[createSSRHelpers] session', {
+  //   session: sessionRes.session,
+  //   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
+  //   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
+  // })
+  if (!sessionRes.session) {
+    return [null, supabase] as const
+  }
+  const {access_token, user} = sessionRes.session
+  // Should we rely on supabase at all given that they don't verify against JWT token?
+  try {
+    makeJwtClient({
+      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY!,
+    }).verify(access_token)
+    return [user, supabase] as const
+  } catch (err) {
+    console.warn(
+      '[serverGetUser] Error verifying user access token, will logout',
+    )
+    await supabase.auth.signOut()
+    throw err
+    // return [null, supabase] as const
+  }
 }
 
 /** For API endpoints. Consider using supabase nextjs auth helper too */

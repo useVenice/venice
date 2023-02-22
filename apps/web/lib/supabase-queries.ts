@@ -6,14 +6,11 @@ import type {
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider, Id, UserId} from '@usevenice/cdk-core'
-import {makeId} from '@usevenice/cdk-core'
-import {zStandard} from '@usevenice/cdk-core'
+import {makeId, zStandard} from '@usevenice/cdk-core'
 import {makeUlid, R} from '@usevenice/util'
-import {atom, useAtom} from 'jotai'
 import React from 'react'
 import {browserSupabase} from '../contexts/common-contexts'
 import type {Database} from '../supabase/supabase.gen'
-import {browserQueryClient} from './query-client'
 
 import camelcaseKeys from 'camelcase-keys'
 
@@ -135,69 +132,17 @@ export const getQueryKeys = (supabase: SupabaseClient<Database>) =>
   })
 
 export const queries = {
-  useConnectionsList: () => {
-    useAtom(postgresSubscriptionsAtom)
-    return useQuery({
+  useConnectionsList: () =>
+    useQuery({
       ...getQueryKeys(browserSupabase).connections.list,
       // Never stale because we explicitly invalidate using supabase realtime
       staleTime: Number.POSITIVE_INFINITY,
-    })
-  },
+    }),
 }
 
 // MARK: - Mutations
 
 export const mutations = {
-  useUpdateResource: () =>
-    useMutation(
-      async ({
-        id,
-        ...update
-      }: Database['public']['Tables']['resource']['Update'] & {
-        id: Id['reso']
-      }) => browserSupabase.from('resource').update(update).eq('id', id),
-      {
-        // TODO: Consider optimistic update
-        // Unfortunately we don't have access to the variables at render time
-        // If we need a mutationKey per pipeline update we are gonna have to call
-        // useUpdateResource within PipelineCard or something similar.
-        // @see https://share.cleanshot.com/Px624f99
-        mutationKey: ['updateResource'],
-
-        // Consider updating query data directly rather than invalidating
-        // This is no longer necessary due to supabase realtime sub
-        // However due to network sometimes times changes may actually get missed
-        // therefore we still need this for now to be sure
-        // We should figure out why react query is not deduplicating the requests though
-        // They seem to fire one another
-        // onSuccess: () =>
-        //   queryClient.invalidateQueries(
-        //     getQueryKeys(browserSupabase).pipelines._def,
-        //   ),
-      },
-    ),
-
-  useDeletePipeline: () =>
-    useMutation(
-      async ({
-        pipelineId,
-        resourceId,
-      }: {
-        pipelineId: Id['pipe']
-        resourceId: Id['reso']
-      }) => {
-        await browserSupabase.from('pipeline').delete().eq('id', pipelineId)
-        // TODO: Need to properly handle this on the server to
-        // 1) Remove orphan resource
-        // 2) Revoke before deleting as needed
-        if (resourceId.includes('debug')) {
-          await browserSupabase.from('resource').delete().eq('id', resourceId)
-        }
-      },
-      // TODO: Revoke & remove the resources as pipelines are deleted
-      // We should have a background job for this probably...
-    ),
-
   useCreateDummySource: ({
     ledgerId,
     userId,
@@ -225,8 +170,6 @@ export const mutations = {
 }
 
 // MARK: Subscriptions
-
-type PostgresSubscription = ReturnType<typeof subscribePostgresChanges>
 
 export function subscribePostgresChanges(
   tableName: keyof Database['public']['Tables'],
@@ -260,24 +203,4 @@ export function usePostgresChanges(
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
   React.useEffect(() => subscribePostgresChanges(tableName, fn).unsub)
-}
-
-export const postgresSubscriptionsAtom = atom<PostgresSubscription[]>([])
-postgresSubscriptionsAtom.onMount = (setAtom) => {
-  const invalidate = () =>
-    browserQueryClient.invalidateQueries(
-      getQueryKeys(browserSupabase).connections._def,
-    )
-
-  // Consider updating query data directly rather than invalidating for things like sync status updates
-  const subs = [
-    subscribePostgresChanges('resource', invalidate),
-    // it seems that if we have two subscriptions then we don't get any changes at all
-    // but if we have one subscription we do... why is that possibly the case?
-    subscribePostgresChanges('pipeline', invalidate),
-
-    // Institutions do not change very often so no need to monitor closely
-  ]
-  setAtom(subs)
-  return () => subs.forEach((s) => s.unsub())
 }

@@ -3,6 +3,9 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
+import {getServerUrl} from './server-url'
+
+export {Papa} from '@usevenice/integration-import'
 
 type VercelEnv = 'production' | 'preview' | 'development'
 
@@ -10,7 +13,6 @@ type VercelEnv = 'production' | 'preview' | 'development'
 export const commonEnv = zParser(zCommonEnv).parse({
   // Need to use fully qualified form of process.env.$VAR for
   // webpack DefineEnv that next.js uses to work
-  NEXT_PUBLIC_SERVER_URL: process.env['NEXT_PUBLIC_SERVER_URL']!,
   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
   DEFAULT_CONNECT_ENV: (
@@ -32,7 +34,7 @@ export const veniceCommonConfig = VeniceProvider.config({
   providers: PROVIDERS,
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
-  apiUrl: joinPath(commonEnv.NEXT_PUBLIC_SERVER_URL, '/api/trpc'),
+  apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
 
   // parseJwtPayload // use default here
 })

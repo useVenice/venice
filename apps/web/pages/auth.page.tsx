@@ -2,7 +2,7 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {RedirectTo} from '../components/common-components'
+import {RedirectTo} from '../components/RedirectTo'
 import {browserSupabase} from '../contexts/common-contexts'
 import {useSession} from '../contexts/session-context'
 import {PageLayout} from '../components/PageLayout'
@@ -34,6 +34,12 @@ export default function AuthScreen() {
             appearance={{
               theme: ThemeSupa,
               variables: veniceThemeTweaks,
+            }}
+            localization={{
+              variables: {
+                // Workaround for not implementing password reset just yet...
+                forgotten_password: {button_label: 'Send Magic Link email'},
+              },
             }}
             providers={['google', 'github']}
             theme="dark"></Auth>

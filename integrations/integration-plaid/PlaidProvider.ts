@@ -1,5 +1,5 @@
-import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
+import * as plaid from 'plaid'
 import {CountryCode, Products} from 'plaid'
 import React from 'react'
 import type {
@@ -50,6 +50,7 @@ import {
   zCountryCode,
   zLanguage,
   zPlaidClientConfig,
+  zPlaidEnvName,
   zProducts,
   zWebhook,
 } from './PlaidClient'
@@ -86,7 +87,24 @@ const _def = makeSyncProvider.def({
     webhookItemError: zCast<ErrorShape>().nullish(),
   }),
   institutionData: zCast<plaid.Institution>(),
-  connectInput: z.object({link_token: z.string()}),
+  preConnectInput: z.object({
+    ...(process.env.NODE_ENV === 'production'
+      ? {}
+      : // Development mode only
+        {sandboxPublicTokenCreate: z.boolean().optional()}),
+    envName:
+      // Temp approach to prevent users from using development credentials which are limited to 100 max
+      // Will need to rethink how this works later, perhaps by redesigning preconnect / postConnect and the connect flow
+      // all together into one.
+      process.env.NODE_ENV === 'production'
+        ? z.enum(['sandbox', 'production'])
+        : zPlaidEnvName,
+    language: zLanguage,
+  }),
+  connectInput: z.union([
+    z.object({link_token: z.string()}),
+    z.object({public_token: z.string()}),
+  ]),
   connectOutput: z.object({
     publicToken: z.string(),
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
@@ -195,6 +213,7 @@ export const plaidProvider = makeSyncProvider({
       // so we know what the true status of the item is...
       const err =
         (settings.item?.error as PlaidError | null) ?? settings.webhookItemError
+      const envName = inferPlaidEnvFromToken(settings.accessToken)
       return {
         id: `${settings.itemId}`,
         displayName: settings.institution?.name ?? '',
@@ -205,15 +224,36 @@ export const plaidProvider = makeSyncProvider({
             ? 'error'
             : 'healthy',
         statusMessage: err?.error_message,
+        labels: envName !== 'production' ? [envName] : [],
       }
     },
   },
+  // TODO: Do we actually need the preConnect and postConnect phase at all?
+  // What if everything is encapsulated in useConnectHook and integrations each get to
+  // expose trpc endpoints that the frontend can call at will?
+  // That can solve for things like custom API endpoints that we do not have the right abstraction for
+  // (such as sandboxFireWebhook, or sandboxLinkTokenCreate)
+  // Should also be easier for newcomers to reason about
+  // new methods
+  // - prefetch
+  // - connect
+  // - commandsForResource
   preConnect: (
     config,
     {envName, userId, resource, institutionExternalId, ...ctx},
-  ) =>
-    makePlaidClient(config)
-      .fromEnv(envName)
+    input,
+  ) => {
+    if (input.sandboxPublicTokenCreate) {
+      return makePlaidClient(config)
+        .fromEnv('sandbox')
+        .sandboxPublicTokenCreate({
+          initial_products: [Products.Transactions],
+          institution_id: 'ins_109508', // First Platipus bank
+        })
+        .then(({data: res}) => res)
+    }
+    return makePlaidClient(config)
+      .fromEnv(input.envName || envName)
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId
@@ -221,7 +261,7 @@ export const plaidProvider = makeSyncProvider({
           : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: userId},
         client_name: config.clientName,
-        language: config.language,
+        language: input.language || config.language,
         ...(!resource?.settings.accessToken && {products: config.products}),
         country_codes: config.countryCodes,
         // Webhook and redirect_uri would be part of the `resource` already.
@@ -231,7 +271,8 @@ export const plaidProvider = makeSyncProvider({
       .then(({data: res}) => {
         console.log('willConnect response', res)
         return res
-      }),
+      })
+  },
 
   useConnectHook: (_) => {
     const [state, setState] = React.useState<{
@@ -281,6 +322,9 @@ export const plaidProvider = makeSyncProvider({
 
     return async (opts, {institutionExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
+      if ('public_token' in opts) {
+        return {publicToken: opts.public_token}
+      }
       if (plaidLink.error) {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw plaidLink.error
@@ -324,6 +368,8 @@ export const plaidProvider = makeSyncProvider({
           })
         : {data: null},
     ])
+    console.log('[Plaid post connect]', res, insRes)
+    // We will wait to sync the institution until later
     const settings = def._type('resourceSettings', {
       itemId: res.item_id,
       accessToken: res.access_token,
