@@ -39,23 +39,25 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     }
   }
 
-  const [integrations] = await Promise.all([
+  // const [integrations] =
+  await Promise.all([
     ssg.listIntegrations.fetch({}),
     ssg.searchInstitutions.prefetch({keywords: undefined}),
     queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
   ])
   // console.log('integrations', integrations, getPageProps())
 
-  // TODO: Get the correct default env name...
-  await Promise.all(
-    integrations.map((int) =>
-      ssg.preConnect.prefetch([
-        {id: int.id as never},
-        {envName: 'sandbox'},
-        undefined,
-      ]),
-    ),
-  )
+  // TODO: Need to have default preConnectInput values for prefetch to work properly
+  // Get on this performance improvement when we can address it later...
+  // await Promise.all(
+  //   integrations.map((int) =>
+  //     ssg.preConnect.prefetch([
+  //       {id: int.id as never},
+  //       {envName: 'sandbox'},
+  //       undefined,
+  //     ]),
+  //   ),
+  // )
 
   const ledgerIds = await ensureDefaultLedger(user.id)
   return {
