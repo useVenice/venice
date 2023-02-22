@@ -1,4 +1,3 @@
-import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive, Loading} from '@usevenice/ui'
 import {
@@ -11,7 +10,6 @@ import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
-import {browserSupabase} from '../../../contexts/common-contexts'
 import type {Connection} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
