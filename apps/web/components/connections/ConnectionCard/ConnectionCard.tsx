@@ -29,7 +29,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     const {connection} = props
     const {
       id,
-      resource: {id: resourceId, displayName, institution, status},
+      resource: {id: resourceId, displayName, institution, status, labels = []},
       lastSyncCompletedAt,
       syncInProgress,
     } = connection
@@ -159,20 +159,28 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               />
             </DialogPrimitive.Root>
           </div>
-          <div className="text-right">
-            {status ? <ConnectionStatus status={status} /> : null}
-            <p className="text-xs font-medium text-venice-gray">
-              {syncInProgress ? (
-                <Loading text="Syncing" />
-              ) : lastSyncCompletedAt ? (
-                `Synced ${formatDistanceToNowStrict(
-                  new Date(lastSyncCompletedAt),
-                  {addSuffix: true},
-                )}`
-              ) : (
-                'No sync information'
-              )}
-            </p>
+          <div className="flex flex-row">
+            <div>
+              {labels.map((l) => (
+                // TODO STyle me please.
+                <span key={l}>[{l}]</span>
+              ))}
+            </div>
+            <div className="ml-auto text-right">
+              {status ? <ConnectionStatus status={status} /> : null}
+              <p className="text-xs font-medium text-venice-gray">
+                {syncInProgress ? (
+                  <Loading text="Syncing" />
+                ) : lastSyncCompletedAt ? (
+                  `Synced ${formatDistanceToNowStrict(
+                    new Date(lastSyncCompletedAt),
+                    {addSuffix: true},
+                  )}`
+                ) : (
+                  'No sync information'
+                )}
+              </p>
+            </div>
           </div>
         </div>
       </ResourceCard>

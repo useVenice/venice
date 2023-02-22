@@ -205,6 +205,7 @@ export const plaidProvider = makeSyncProvider({
       // so we know what the true status of the item is...
       const err =
         (settings.item?.error as PlaidError | null) ?? settings.webhookItemError
+      const envName = inferPlaidEnvFromToken(settings.accessToken)
       return {
         id: `${settings.itemId}`,
         displayName: settings.institution?.name ?? '',
@@ -215,6 +216,7 @@ export const plaidProvider = makeSyncProvider({
             ? 'error'
             : 'healthy',
         statusMessage: err?.error_message,
+        labels: envName !== 'production' ? [envName] : [],
       }
     },
   },

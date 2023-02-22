@@ -52,6 +52,7 @@ export const zStandard = {
       ])
       .nullish(), // Status unknown
     statusMessage: z.string().nullish(),
+    labels: z.array(z.string()).optional(),
   }),
 }
 
