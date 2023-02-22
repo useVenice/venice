@@ -6,10 +6,12 @@ export interface SavedQuery {
   query: string
 }
 
+// .. This used to come from the database... now hard-coded :(
 export enum SavedQueryId {
   institution = 'institution',
   pipeline = 'pipeline',
-  posting = 'posting',
+  account = 'account',
+  transaction_split = 'transaction_split',
   raw_account = 'raw_account',
   raw_commodity = 'raw_commodity',
   raw_transaction = 'raw_transaction',

@@ -28,7 +28,11 @@ export function VeniceDatabaseExplorer(props: VeniceDatabaseExplorerProps) {
         <nav className="grid gap-2 overflow-y-auto border-r border-venice-black-300 bg-venice-black py-3">
           <NavGroup
             title="Views"
-            items={[SavedQueryId.posting, SavedQueryId.transaction]}
+            items={[
+              SavedQueryId.account,
+              SavedQueryId.transaction,
+              SavedQueryId.transaction_split,
+            ]}
             onItemClick={handleNavItemClick}
           />
           <NavGroup

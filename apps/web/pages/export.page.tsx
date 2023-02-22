@@ -65,11 +65,8 @@ export default function Page(props: ServerSideProps) {
             <Select value={selectedTable} onValueChange={selectTable}>
               <SelectTrigger className="max-w-[10rem]" />
               <SelectContent>
-                <SelectItem value="posting">Posting</SelectItem>
+                <SelectItem value="account">Account</SelectItem>
                 <SelectItem value="transaction">Transaction</SelectItem>
-                <SelectItem value="institution">Institution</SelectItem>
-                <SelectItem value="pipeline">Pipeline</SelectItem>
-                <SelectItem value="resource">Resource</SelectItem>
               </SelectContent>
             </Select>
             {/* TODO fade in & out the loader */}
