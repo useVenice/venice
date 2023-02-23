@@ -3,6 +3,7 @@ import {
   DatabaseIcon,
   DocsIcon,
   ExportIcon,
+  IntegrationsIcon,
   ProfileIcon,
   SupportIcon,
 } from '@usevenice/ui/icons'
@@ -21,6 +22,11 @@ const mainNavigation = [
     name: 'API Access',
     href: '/api-access',
     icon: DatabaseIcon,
+  },
+  {
+    name: 'Integrations',
+    href: '/integrations',
+    icon: IntegrationsIcon,
   },
 ]
 
