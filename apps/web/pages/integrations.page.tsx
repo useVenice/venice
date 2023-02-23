@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   return {props: {}}
 }
 
-export default function Page(props: ServerSideProps) {
+export default function Page() {
   return (
     <PageLayout title="Integrations">
       <PageHeader title={['Integrations']} />
