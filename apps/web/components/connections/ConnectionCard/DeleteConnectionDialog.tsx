@@ -2,18 +2,30 @@ import type {ZStandard} from '@usevenice/cdk-core'
 import {DialogPrimitive} from '@usevenice/ui'
 import {DeleteIcon} from '@usevenice/ui/icons'
 import Image from 'next/image'
+import {useState} from 'react'
 import type {Connection} from '../../../lib/supabase-queries'
 
 interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
-  isDeleting?: boolean
+  isConnectionDeleting?: boolean
   name?: Connection['resource']['displayName']
   onCancel: () => void
   onDeletionConfirmed: () => void
 }
 
 export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
-  const {institution, isDeleting, name, onCancel, onDeletionConfirmed} = props
+  const {
+    institution,
+    isConnectionDeleting,
+    name,
+    onCancel,
+    onDeletionConfirmed,
+  } = props
+  const [isDeleting, setIsDeleting] = useState(false)
+  const handleDeletionConfirmed = () => {
+    setIsDeleting(true)
+    onDeletionConfirmed()
+  }
   return (
     <DialogPrimitive.Portal>
       <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
@@ -52,15 +64,20 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
           <div className="mt-12 flex justify-center gap-4">
             <button
               onClick={onCancel}
-              className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400">
+              disabled={isDeleting || isConnectionDeleting}
+              className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
               Cancel
             </button>
             <button
-              onClick={onDeletionConfirmed}
-              disabled={isDeleting}
+              onClick={handleDeletionConfirmed}
+              disabled={isDeleting || isConnectionDeleting}
               className="flex min-w-[6rem] items-center gap-2 rounded-lg bg-venice-red px-3 py-2 text-sm text-offwhite hover:bg-[#ac2039] focus:outline-none focus-visible:bg-[#ac2039] disabled:opacity-30 disabled:hover:bg-venice-red">
               <DeleteIcon className="h-4 w-4 fill-current" />
-              {isDeleting ? <span>Deleting…</span> : <span>Delete</span>}
+              {isConnectionDeleting ? (
+                <span>Deleting…</span>
+              ) : (
+                <span>Delete</span>
+              )}
             </button>
           </div>
         </DialogPrimitive.Content>

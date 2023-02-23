@@ -7,7 +7,7 @@ export function Loading({text = 'Loading'}: {text?: string}) {
     setCount((prev) => (prev + 1) % 3)
   }, INTERVAL_MS)
   return (
-    <span className="text-sm">
+    <span>
       {text}
       {'.'.repeat(count + 1)}
     </span>

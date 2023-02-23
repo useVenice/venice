@@ -123,7 +123,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               open={isDeleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}>
               <DeleteConnectionDialog
-                isDeleting={deleteResource.isLoading}
+                isConnectionDeleting={deleteResource.isLoading}
                 institution={institution}
                 name={displayName}
                 onCancel={() => setDeleteDialogOpen(false)}

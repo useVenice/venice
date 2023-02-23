@@ -43,7 +43,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
   const checkResource = trpc.checkResource.useMutation({})
 
   // Connect should return a shape similar to client.mutation such that
-  // consumers can use the same pattern of hanlding loading and error...
+  // consumers can use the same pattern of handling loading and error...
   const veniceConnect = useVeniceConnect({envName})
 
   return {
