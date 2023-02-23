@@ -1,6 +1,4 @@
-import type {ComponentPropsWithoutRef} from 'react'
-
-type SvgProps = ComponentPropsWithoutRef<'svg'>
+import type {SvgProps} from '../SvgProps'
 export type SvgIconProps = Omit<SvgProps, 'children'>
 
 export function SvgIcon(props: SvgProps) {
