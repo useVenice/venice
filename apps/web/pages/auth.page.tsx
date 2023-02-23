@@ -38,7 +38,13 @@ export default function AuthScreen() {
             localization={{
               variables: {
                 // Workaround for not implementing password reset just yet...
-                forgotten_password: {button_label: 'Send Magic Link email'},
+                forgotten_password: {
+                  button_label: 'Email me a magic link to sign in with',
+                  link_text: 'Email me a magic link to sign in with',
+                },
+                sign_in: {
+                  link_text: 'Sign in to an existing account',
+                },
               },
             }}
             providers={['google', 'github']}
