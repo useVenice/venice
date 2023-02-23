@@ -79,7 +79,7 @@ export function useDatabaseQuery(props: UseDatabaseQueryProps): DatabaseQuery {
     const url = new URL('/api/sql', serverUrl)
     const params = new URLSearchParams({
       apiKey,
-      format: format.fetch,
+      format: OutputFormat.json, // we convert JSON to CSV conditionally
       q: query,
     })
     return `${url}?${params}`
