@@ -1,6 +1,6 @@
 import {
   ArrowLeftRightIcon,
-  DatabaseIcon,
+  CodeIcon,
   DocsIcon,
   ExportIcon,
   IntegrationsIcon,
@@ -20,8 +20,8 @@ const mainNavigation = [
   {name: 'Export Data', href: '/export', icon: ExportIcon},
   {
     name: 'API Access',
-    href: '/api-access',
-    icon: DatabaseIcon,
+    href: '/api-access-new',
+    icon: CodeIcon,
   },
   {
     name: 'Integrations',

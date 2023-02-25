@@ -82,7 +82,7 @@ export default function Page(props: ServerSideProps) {
               Download
             </Button>
             <Button asChild className="gap-1">
-              <Link href="/api-access">
+              <Link href="/api-access-new">
                 <CodeIcon className="h-4 w-4 fill-current text-offwhite" />
                 Customize
               </Link>

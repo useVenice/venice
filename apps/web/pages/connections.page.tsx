@@ -244,16 +244,9 @@ function VeniceDatabaseSection() {
         </li>
         <li>
           <Link
-            href="/api-access"
+            href="/api-access-new"
             className="text-sm leading-4 text-green hover:text-opacity-70">
             Explore APIs
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/api-access"
-            className="text-sm leading-4 text-green hover:text-opacity-70">
-            Access database
           </Link>
         </li>
       </ul>
