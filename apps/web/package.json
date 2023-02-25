@@ -36,6 +36,7 @@
     "date-fns": "^2.29.3",
     "graphiql": "^2.2.0",
     "graphql": "^16.6.0",
+    "graphql-ws": "^5.11.3",
     "inngest": "1.0.0",
     "jotai": "1.8.3",
     "lodash": "4.17.21",

@@ -1,6 +1,6 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import type {GetServerSideProps} from 'next'
-import {VeniceGraphQLExplorer} from '../components/api-access'
+import {VeniceGraphQLExplorer, SQLAccessCard} from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
@@ -44,11 +44,11 @@ export default function Page(props: ServerSideProps) {
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access', 'GraphQL']} />
-      <div className="h-screen p-6">
+      <div className="p-6">
         <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
-          className="flex h-full flex-col gap-6 pb-12"
+          className="flex h-full flex-col content-start gap-6 pb-12"
           defaultValue={PrimaryTabsKey.graphqlAPI}>
           <TabsTriggers
             options={[
@@ -57,12 +57,12 @@ export default function Page(props: ServerSideProps) {
             ]}
           />
           <TabsContent
-            className="flex h-full flex-col"
+            className="flex flex-col"
             value={PrimaryTabsKey.graphqlAPI}>
             <VeniceGraphQLExplorer apiKey={apiKey} />
           </TabsContent>
-          <TabsContent className="max-w-[50rem]" value={PrimaryTabsKey.sqlApi}>
-            {/* <DatabaseAccessCard databaseUrl={databaseUrl} /> */}
+          <TabsContent className="max-w-[30rem]" value={PrimaryTabsKey.sqlApi}>
+            <SQLAccessCard />
           </TabsContent>
         </Tabs>
       </div>
