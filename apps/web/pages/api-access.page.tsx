@@ -8,11 +8,10 @@ import {
   TabsTriggers,
 } from '@usevenice/ui'
 import {useAtom} from 'jotai'
-import {ActivityIcon} from 'lucide-react'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
-import {GraphQLExplorer, RestExplorer} from '../components/api-access'
+import {GraphQLExplorer} from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
@@ -69,11 +68,9 @@ export default function ApiAccessNewPage() {
           <TabsContent className="flex flex-col pt-6" value={tabKey('graphql')}>
             <GraphQLExplorer />
           </TabsContent>
-          <TabsContent value={tabKey('rest')}>
-            <RestExplorer />
-          </TabsContent>
+          <TabsContent value={tabKey('rest')}></TabsContent>
           <TabsContent className="max-w-[30rem]" value={tabKey('realtime')}>
-            <InstructionCard icon={ActivityIcon} title="Real time API">
+            <InstructionCard icon={DatabaseIcon} title="Real time API">
               <p className="text-venice-green">
                 Please reach out if you&apos;re interested in:
               </p>
