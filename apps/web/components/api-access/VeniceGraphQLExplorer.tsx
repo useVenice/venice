@@ -10,11 +10,8 @@ import {useSession} from '../../contexts/session-context'
 export function VeniceGraphQLExplorer() {
   const [session] = useSession()
 
-  const fetcher = useConstant(() =>
-    createGraphiQLFetcher({
-      url: joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/graphql/v1'),
-    }),
-  )
+  const apiUrl = joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/graphql/v1')
+  const fetcher = useConstant(() => createGraphiQLFetcher({url: apiUrl}))
   const headersString = React.useMemo(
     () =>
       JSON.stringify(
@@ -30,6 +27,13 @@ export function VeniceGraphQLExplorer() {
 
   return (
     <div className="grow">
+      <pre className="label-text mb-2 overflow-y-scroll">
+        API URL: {apiUrl}
+        <br />
+        [Header] apikey: {commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        <br />
+        [Header] Authorization: Bearer {session?.access_token}
+      </pre>
       <GraphiQL
         fetcher={fetcher}
         defaultHeaders={headersString}

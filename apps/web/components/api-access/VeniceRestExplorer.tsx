@@ -13,16 +13,15 @@ export function VeniceRestExplorer() {
   const [session] = useSession()
 
   const apiUrl = useConstant(
-    () =>
-      new URL(
-        joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/') +
-          `?apikey=${commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-      ),
+    () => new URL(joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/')),
   )
 
   const oasDocument = useQuery({
     queryKey: ['oasDocument'],
-    queryFn: () => fetch(apiUrl.href).then((r) => r.json()),
+    queryFn: () =>
+      fetch(
+        apiUrl.href + `?apikey=${commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+      ).then((r) => r.json()),
     select: (data: Swagger2Spec): Swagger2Spec => ({
       ...data,
       host: apiUrl.host,
@@ -60,11 +59,11 @@ export function VeniceRestExplorer() {
   return (
     <div>
       <pre className="label-text mb-2 overflow-y-scroll">
-        HTTP Headers
+        API URL: {apiUrl.href}
         <br />
-        apikey: {commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        [Header] apikey: {commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}
         <br />
-        Authorization: Bearer {session?.access_token}
+        [Header] Authorization: Bearer {session?.access_token}
       </pre>
       <StoplightElements
         apiDescriptionDocument={oasDocument.data}
