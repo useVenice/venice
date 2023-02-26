@@ -19,7 +19,11 @@ export function VeniceGraphQLExplorer(props: VeniceGraphQLExplorerProps) {
 
   return (
     <div className="grow">
-      <GraphiQL fetcher={fetcher} query="query transactions { transaction }" />
+      <GraphiQL fetcher={fetcher} query="query transactions { transaction }">
+        <GraphiQL.Logo>
+          <div />
+        </GraphiQL.Logo>
+      </GraphiQL>
     </div>
   )
 }
