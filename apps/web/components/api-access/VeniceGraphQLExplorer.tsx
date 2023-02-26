@@ -1,25 +1,54 @@
-import type {Fetcher} from '@graphiql/toolkit'
 import {createGraphiQLFetcher} from '@graphiql/toolkit'
+import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {useConstant} from '@usevenice/ui'
+import {joinPath} from '@usevenice/util'
 import {GraphiQL} from 'graphiql'
 import 'graphiql/graphiql.css'
+import React from 'react'
+import {useSession} from '../../contexts/session-context'
 
-interface VeniceGraphQLExplorerProps {
-  apiKey: string
-}
+export function VeniceGraphQLExplorer() {
+  const [session] = useSession()
 
-export function VeniceGraphQLExplorer(props: VeniceGraphQLExplorerProps) {
-  const {apiKey} = props
-
-  const fetcher: Fetcher = createGraphiQLFetcher({
-    url: '/v1/graphql',
-    headers: {
-      'x-api-key': `${apiKey}`,
-    },
-  })
+  const fetcher = useConstant(() =>
+    createGraphiQLFetcher({
+      url: joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/graphql/v1'),
+    }),
+  )
+  const headersString = React.useMemo(
+    () =>
+      JSON.stringify(
+        {
+          apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+          authorization: `Bearer ${session?.access_token}`,
+        },
+        null,
+        4,
+      ),
+    [session?.access_token],
+  )
 
   return (
     <div className="grow">
-      <GraphiQL fetcher={fetcher} query="query transactions { transaction }">
+      <GraphiQL
+        fetcher={fetcher}
+        defaultHeaders={headersString}
+        defaultQuery={`{
+  transactionCollection {
+    edges {
+      node{
+        id
+        description
+        amountUnit
+        amountQuantity
+        account {
+          id
+          name
+        }
+      }
+    }
+  }
+}`}>
         <GraphiQL.Logo>
           <div />
         </GraphiQL.Logo>

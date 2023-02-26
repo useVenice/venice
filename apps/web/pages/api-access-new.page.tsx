@@ -65,7 +65,7 @@ export default function Page(props: ServerSideProps) {
           <TabsContent
             className="flex flex-col pt-6"
             value={PrimaryTabsKey.graphqlAPI}>
-            <VeniceGraphQLExplorer apiKey={apiKey} />
+            <VeniceGraphQLExplorer />
           </TabsContent>
           <TabsContent value={PrimaryTabsKey.restAPI}>
             <VeniceDatabaseExplorer apiKey={apiKey} />

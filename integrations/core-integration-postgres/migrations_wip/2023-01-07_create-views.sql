@@ -66,10 +66,10 @@ DROP VIEW IF EXISTS transaction_split;
 CREATE VIEW transaction_split WITH (security_invoker) AS SELECT
 	id as transaction_id
 	,s.key
-	,s.value #>>'{amount,quantity}' as amount_quantity
+	,(s.value #>'{amount,quantity}')  :: double precision as amount_quantity
 	,s.value #>>'{amount,unit}' as amount_unit
 	,s.value ->>'accountId' as account_id
-	,s.value as data
+	,s.value :: graphql_json as data
 	,updated_at
 	,created_at
 FROM "raw_transaction",
