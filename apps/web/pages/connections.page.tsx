@@ -81,7 +81,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
           strokeColor="#3e3e3e"
           strokeWidth={2}
           endMarker={false}>
-          <div className="flex gap-36 p-16">
+          <div className="flex gap-36 px-16 pt-8">
             {connections.isLoading ? (
               <LoadingConnectionsColumn />
             ) : (
@@ -247,6 +247,13 @@ function VeniceDatabaseSection() {
             href="/api-access-new"
             className="text-sm leading-4 text-green hover:text-opacity-70">
             Explore APIs
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/integrations"
+            className="text-sm leading-4 text-green hover:text-opacity-70">
+            View integrations
           </Link>
         </li>
       </ul>

@@ -48,7 +48,7 @@ export default function Page(props: ServerSideProps) {
         <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
-          className="flex h-full flex-col content-start gap-6 pb-12"
+          className="flex flex-col"
           defaultValue={PrimaryTabsKey.graphqlAPI}>
           <TabsTriggers
             options={[
@@ -57,7 +57,7 @@ export default function Page(props: ServerSideProps) {
             ]}
           />
           <TabsContent
-            className="flex flex-col"
+            className="flex flex-col pt-6"
             value={PrimaryTabsKey.graphqlAPI}>
             <VeniceGraphQLExplorer apiKey={apiKey} />
           </TabsContent>

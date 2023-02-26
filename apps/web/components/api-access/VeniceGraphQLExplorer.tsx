@@ -1,4 +1,4 @@
-import type { Fetcher} from '@graphiql/toolkit';
+import type {Fetcher} from '@graphiql/toolkit'
 import {createGraphiQLFetcher} from '@graphiql/toolkit'
 import {GraphiQL} from 'graphiql'
 import 'graphiql/graphiql.css'
@@ -19,7 +19,7 @@ export function VeniceGraphQLExplorer(props: VeniceGraphQLExplorerProps) {
 
   return (
     <div className="grow">
-      <GraphiQL fetcher={fetcher} />
+      <GraphiQL fetcher={fetcher} query="query transactions { transaction }" />
     </div>
   )
 }
