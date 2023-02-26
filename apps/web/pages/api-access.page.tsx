@@ -75,10 +75,12 @@ export default function ApiAccessNewPage() {
           <TabsContent className="max-w-[30rem]" value={tabKey('realtime')}>
             <InstructionCard icon={ActivityIcon} title="Real time API">
               <p className="text-venice-green">
-                Please reach out if you&apos;re interested in getting notified
-                of row insert / update / deletions in real time::
+                Please reach out if you&apos;re interested in:
               </p>
               <ul className="list-disc pl-4">
+                <li>
+                  Real-time notifications on row insert / update / deletions
+                </li>
                 <li>Web Socket API for client side use</li>
                 <li>
                   Webhook callback for server side use (e.g. serverless
@@ -100,7 +102,7 @@ export default function ApiAccessNewPage() {
               icon={DatabaseIcon}
               title="Dedicated database package">
               <p className="text-venice-green">
-                Please reach out if you&apos;re interested in::
+                Please reach out if you&apos;re interested in:
               </p>
               <ul className="list-disc pl-4">
                 <li>Dedicated Postgres database (or bring your own)</li>

@@ -65,10 +65,12 @@ export function RestExplorer() {
         <br />
         [Header] Authorization: Bearer {session?.access_token}
       </pre>
-      <StoplightElements
-        apiDescriptionDocument={oasDocument.data}
-        router="hash"
-      />
+      <div className="rounded-xl bg-venice-black-300 p-2">
+        <StoplightElements
+          apiDescriptionDocument={oasDocument.data}
+          router="hash"
+        />
+      </div>
     </div>
   )
 }
