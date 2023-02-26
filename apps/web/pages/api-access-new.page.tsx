@@ -1,11 +1,14 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import {GetServerSideProps} from 'next'
-import {SQLAccessCard, VeniceGraphQLExplorer} from '../components/api-access'
+import {
+  SQLAccessCard,
+  VeniceGraphQLExplorer,
+  VeniceRestExplorer,
+} from '../components/api-access-new'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
 // for server-side
-import {VeniceRestExplorer} from '../components/api-access/VeniceRestExplorer'
 import {serverGetUser} from '../server'
 
 export const getServerSideProps = (async (ctx) => {
