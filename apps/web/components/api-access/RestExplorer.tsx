@@ -1,4 +1,4 @@
-import '@stoplight/elements/styles.min.css'
+// import '@stoplight/elements/styles.min.css' // this pollutes the global CSS space
 
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
