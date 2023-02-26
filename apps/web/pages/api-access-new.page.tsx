@@ -1,6 +1,10 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import type {GetServerSideProps} from 'next'
-import {VeniceGraphQLExplorer, SQLAccessCard} from '../components/api-access'
+import {
+  VeniceGraphQLExplorer,
+  VeniceDatabaseExplorer,
+  SQLAccessCard,
+} from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
@@ -36,14 +40,15 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 enum PrimaryTabsKey {
   graphqlAPI = 'graphqlAPI',
-  sqlApi = 'sqlApi',
+  restAPI = 'restAPI',
+  database = 'database',
 }
 
 export default function Page(props: ServerSideProps) {
   const {apiKey} = props
   return (
     <PageLayout title="API Access">
-      <PageHeader title={['API Access', 'GraphQL']} />
+      <PageHeader title={['API Access']} />
       <div className="p-6">
         <Tabs
           // the id doesn't do anything, just for readability
@@ -53,7 +58,8 @@ export default function Page(props: ServerSideProps) {
           <TabsTriggers
             options={[
               {key: PrimaryTabsKey.graphqlAPI, label: 'GraphQL API'},
-              {key: PrimaryTabsKey.sqlApi, label: 'SQL Access'},
+              {key: PrimaryTabsKey.restAPI, label: 'Query API'},
+              {key: PrimaryTabsKey.database, label: 'Database'},
             ]}
           />
           <TabsContent
@@ -61,7 +67,12 @@ export default function Page(props: ServerSideProps) {
             value={PrimaryTabsKey.graphqlAPI}>
             <VeniceGraphQLExplorer apiKey={apiKey} />
           </TabsContent>
-          <TabsContent className="max-w-[30rem]" value={PrimaryTabsKey.sqlApi}>
+          <TabsContent value={PrimaryTabsKey.restAPI}>
+            <VeniceDatabaseExplorer apiKey={apiKey} />
+          </TabsContent>
+          <TabsContent
+            className="max-w-[30rem]"
+            value={PrimaryTabsKey.database}>
             <SQLAccessCard />
           </TabsContent>
         </Tabs>
