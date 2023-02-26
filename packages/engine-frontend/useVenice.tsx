@@ -116,7 +116,11 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         const preConnInputSchema =
           providerByName[providerName]?.def.preConnectInput
 
-        const preConnIpt = preConnInputSchema
+        const DISABLE_ZOD_FORM_FOR_NOW =
+          !!window.localStorage['DISABLE_ZOD_FORM_FOR_NOW']
+        const preConnIpt = DISABLE_ZOD_FORM_FOR_NOW
+          ? {}
+          : preConnInputSchema
           ? await new Promise((resolve, reject) => {
               openDialog(({close}) => (
                 <ZodForm

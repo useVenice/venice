@@ -98,8 +98,8 @@ const _def = makeSyncProvider.def({
       // all together into one.
       process.env.NODE_ENV === 'production'
         ? z.enum(['sandbox', 'production'])
-        : zPlaidEnvName,
-    language: zLanguage,
+        : zPlaidEnvName.optional(),
+    language: zLanguage.optional(),
   }),
   connectInput: z.union([
     z.object({link_token: z.string()}),
@@ -253,7 +253,11 @@ export const plaidProvider = makeSyncProvider({
         .then(({data: res}) => res)
     }
     return makePlaidClient(config)
-      .fromEnv(input.envName || envName)
+      .fromEnv(
+        input.envName ?? process.env.NODE_ENV === 'development'
+          ? 'sandbox'
+          : 'production',
+      )
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId
@@ -261,7 +265,7 @@ export const plaidProvider = makeSyncProvider({
           : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: userId},
         client_name: config.clientName,
-        language: input.language || config.language,
+        language: input.language ?? config.language,
         ...(!resource?.settings.accessToken && {products: config.products}),
         country_codes: config.countryCodes,
         // Webhook and redirect_uri would be part of the `resource` already.
