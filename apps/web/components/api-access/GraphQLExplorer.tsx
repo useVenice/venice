@@ -7,7 +7,7 @@ import 'graphiql/graphiql.css'
 import React from 'react'
 import {useSession} from '../../contexts/session-context'
 
-export function VeniceGraphQLExplorer() {
+export function GraphQLExplorer() {
   const [session] = useSession()
 
   const apiUrl = joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/graphql/v1')

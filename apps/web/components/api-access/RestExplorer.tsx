@@ -9,7 +9,7 @@ import {useSession} from '../../contexts/session-context'
 
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
 
-export function VeniceRestExplorer() {
+export function RestExplorer() {
   const [session] = useSession()
 
   const apiUrl = useConstant(

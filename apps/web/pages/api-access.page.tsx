@@ -12,10 +12,7 @@ import {ActivityIcon} from 'lucide-react'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
-import {
-  VeniceGraphQLExplorer,
-  VeniceRestExplorer,
-} from '../components/api-access'
+import {GraphQLExplorer, RestExplorer} from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
@@ -70,10 +67,10 @@ export default function ApiAccessNewPage() {
             }))}
           />
           <TabsContent className="flex flex-col pt-6" value={tabKey('graphql')}>
-            <VeniceGraphQLExplorer />
+            <GraphQLExplorer />
           </TabsContent>
           <TabsContent value={tabKey('rest')}>
-            <VeniceRestExplorer />
+            <RestExplorer />
           </TabsContent>
           <TabsContent className="max-w-[30rem]" value={tabKey('realtime')}>
             <InstructionCard icon={ActivityIcon} title="Real time API">
