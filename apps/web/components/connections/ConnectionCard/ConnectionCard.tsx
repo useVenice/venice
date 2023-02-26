@@ -134,10 +134,11 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
             </DialogPrimitive.Root>
           </div>
           <div className="flex flex-row">
-            <div>
+            <div className="self-end">
               {labels.map((l) => (
-                // TODO STyle me please.
-                <span key={l}>[{l}]</span>
+                <span className="text-xs font-medium text-venice-gray" key={l}>
+                  {l}
+                </span>
               ))}
             </div>
             <div className="ml-auto text-right">
