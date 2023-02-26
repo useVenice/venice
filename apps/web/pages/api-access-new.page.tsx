@@ -1,24 +1,14 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
-import type {GetServerSideProps} from 'next'
-import {
-  VeniceGraphQLExplorer,
-  VeniceDatabaseExplorer,
-  SQLAccessCard,
-} from '../components/api-access'
+import {GetServerSideProps} from 'next'
+import {SQLAccessCard, VeniceGraphQLExplorer} from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 
 // for server-side
-import {z} from '@usevenice/util'
+import {VeniceRestExplorer} from '../components/api-access/VeniceRestExplorer'
 import {serverGetUser} from '../server'
 
-interface ServerSideProps {
-  apiKey: string
-}
-
-export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  ctx,
-) => {
+export const getServerSideProps = (async (ctx) => {
   const [user] = await serverGetUser(ctx)
   if (!user?.id) {
     return {
@@ -28,15 +18,8 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
       },
     }
   }
-
-  const apiKey = z.string().parse(user.user_metadata['apiKey'])
-
-  return {
-    props: {
-      apiKey,
-    },
-  }
-}
+  return {props: {}}
+}) satisfies GetServerSideProps
 
 enum PrimaryTabsKey {
   graphqlAPI = 'graphqlAPI',
@@ -44,8 +27,7 @@ enum PrimaryTabsKey {
   database = 'database',
 }
 
-export default function Page(props: ServerSideProps) {
-  const {apiKey} = props
+export default function ApiAccessNewPage() {
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access']} />
@@ -58,7 +40,7 @@ export default function Page(props: ServerSideProps) {
           <TabsTriggers
             options={[
               {key: PrimaryTabsKey.graphqlAPI, label: 'GraphQL API'},
-              {key: PrimaryTabsKey.restAPI, label: 'Query API'},
+              {key: PrimaryTabsKey.restAPI, label: 'Rest API'},
               {key: PrimaryTabsKey.database, label: 'Database'},
             ]}
           />
@@ -68,7 +50,7 @@ export default function Page(props: ServerSideProps) {
             <VeniceGraphQLExplorer />
           </TabsContent>
           <TabsContent value={PrimaryTabsKey.restAPI}>
-            <VeniceDatabaseExplorer apiKey={apiKey} />
+            <VeniceRestExplorer />
           </TabsContent>
           <TabsContent
             className="max-w-[30rem]"
