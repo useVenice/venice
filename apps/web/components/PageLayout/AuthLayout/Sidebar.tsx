@@ -20,7 +20,12 @@ const mainNavigation = [
   {name: 'Export Data', href: '/export', icon: ExportIcon},
   {
     name: 'API Access',
-    href: '/api-access-new',
+    href: '/api-access',
+    icon: CodeIcon,
+  },
+  {
+    name: 'API Access (Old)',
+    href: '/api-access-old',
     icon: CodeIcon,
   },
   {

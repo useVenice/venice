@@ -1,24 +1,20 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
-import type {GetServerSideProps} from 'next'
+import {useAtom} from 'jotai'
+import {GetServerSideProps} from 'next'
+import {createEnumParam} from 'use-query-params'
 import {
-  DatabaseAccessCard,
-  VeniceDatabaseExplorer,
+  SQLAccessCard,
+  VeniceGraphQLExplorer,
+  VeniceRestExplorer,
 } from '../components/api-access'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
+import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
 
 // for server-side
-import {z} from '@usevenice/util'
-import {getDatabaseInfo, serverGetUser} from '../server'
+import {serverGetUser} from '../server'
 
-interface ServerSideProps {
-  apiKey: string
-  databaseUrl: string
-}
-
-export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  ctx,
-) => {
+export const getServerSideProps = (async (ctx) => {
   const [user] = await serverGetUser(ctx)
   if (!user?.id) {
     return {
@@ -28,47 +24,49 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
       },
     }
   }
+  return {props: {}}
+}) satisfies GetServerSideProps
 
-  const apiKey = z.string().parse(user.user_metadata['apiKey'])
-  const {databaseUrl} = await getDatabaseInfo(user.id)
+const tabLabelByKey = {
+  graphql: 'GraphQL API',
+  rest: 'Rest API',
+  sql: 'SQL API',
+} as const
 
-  return {
-    props: {
-      apiKey,
-      databaseUrl,
-    },
-  }
-}
+const tabKey = (k: keyof typeof tabLabelByKey) => k
 
-enum PrimaryTabsKey {
-  databaseUri = 'databaseUri',
-  sqlApi = 'sqlApi',
-}
+export const tabAtom = atomWithQueryParam(
+  'tab',
+  'graphql',
+  createEnumParam(Object.keys(tabLabelByKey)),
+)
 
-export default function Page(props: ServerSideProps) {
-  const {apiKey, databaseUrl} = props
+export default function ApiAccessNewPage() {
+  const [tab, setTab] = useAtom(tabAtom)
   return (
     <PageLayout title="API Access">
-      <PageHeader title={['API Access', 'SQL']} />
+      <PageHeader title={['API Access']} />
       <div className="p-6">
         <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
-          className="grid gap-6"
-          defaultValue={PrimaryTabsKey.sqlApi}>
+          className="flex flex-col"
+          value={tab}
+          onValueChange={setTab}>
           <TabsTriggers
-            options={[
-              {key: PrimaryTabsKey.sqlApi, label: 'SQL API'},
-              {key: PrimaryTabsKey.databaseUri, label: 'Database URI'},
-            ]}
+            options={Object.entries(tabLabelByKey).map(([key, label]) => ({
+              key,
+              label,
+            }))}
           />
-          <TabsContent value={PrimaryTabsKey.sqlApi}>
-            <VeniceDatabaseExplorer apiKey={apiKey} />
+          <TabsContent className="flex flex-col pt-6" value={tabKey('graphql')}>
+            <VeniceGraphQLExplorer />
           </TabsContent>
-          <TabsContent
-            className="max-w-[50rem]"
-            value={PrimaryTabsKey.databaseUri}>
-            <DatabaseAccessCard databaseUrl={databaseUrl} />
+          <TabsContent value={tabKey('rest')}>
+            <VeniceRestExplorer />
+          </TabsContent>
+          <TabsContent className="max-w-[30rem]" value={tabKey('sql')}>
+            <SQLAccessCard />
           </TabsContent>
         </Tabs>
       </div>
