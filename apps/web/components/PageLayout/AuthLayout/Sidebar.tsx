@@ -24,11 +24,6 @@ const mainNavigation = [
     icon: CodeIcon,
   },
   {
-    name: 'API Access (Old)',
-    href: '/api-access-old',
-    icon: CodeIcon,
-  },
-  {
     name: 'Integrations',
     href: '/integrations',
     icon: IntegrationsIcon,
