@@ -123,8 +123,7 @@ export async function ensureDatabaseUser(userId: string) {
 }
 
 export async function ensureDefaultLedger(userId: string) {
-  await ensureDatabaseUser(userId)
-  return runAsUser(userId, async (trxn) => {
+  return runAsAdmin(async (trxn) => {
     const ids = await trxn.anyFirst<Id['reso']>(
       sql`SELECT id FROM resource WHERE creator_id = ${userId} AND provider_name = 'postgres'`,
     )
