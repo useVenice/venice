@@ -14,7 +14,7 @@ interface NavLinkProps {
 
 export function NavLink({name, href, external, icon: Icon}: NavLinkProps) {
   const router = useRouter()
-  const current = router.pathname === href
+  const current = router.pathname.includes(href)
   const Link = external ? ExternalLink : NextLink
   return (
     <div key={name} className="relative px-4">
