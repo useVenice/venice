@@ -18,7 +18,11 @@ export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
-export async function createSSRHelpers(context: GetServerSidePropsContext) {
+export async function createSSRHelpers(
+  context:
+    | GetServerSidePropsContext
+    | {req: NextApiRequest; res: NextApiResponse},
+) {
   const queryClient = new QueryClient()
 
   const [user, supabase] = await serverGetUser(context)
@@ -43,14 +47,20 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
 }
 
 /** For serverSideProps */
-export async function serverGetUser(context: GetServerSidePropsContext) {
+export async function serverGetUser(
+  context:
+    | GetServerSidePropsContext
+    | {req: NextApiRequest; res: NextApiResponse},
+) {
   const supabase = createServerSupabaseClient<Database>(context)
+  // TODO: Consider returning access token
   const {data: sessionRes} = await supabase.auth.getSession()
-  // console.log('[createSSRHelpers] session', {
-  //   session: sessionRes.session,
-  //   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
-  //   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
-  // })
+
+  console.log('[createSSRHelpers] session', {
+    session: sessionRes.session,
+    NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
+  })
   if (!sessionRes.session) {
     return [null, supabase] as const
   }

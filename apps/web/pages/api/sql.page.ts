@@ -1,13 +1,13 @@
 import '@usevenice/app-config/register.node'
 
-import type {NextApiHandler} from 'next'
+import {NextApiHandler} from 'next'
 
-import {Papa, DatabaseError} from '@usevenice/app-config/backendConfig'
-import {R, z} from '@usevenice/util'
+import {DatabaseError, Papa} from '@usevenice/app-config/backendConfig'
+import {z} from '@usevenice/util'
 import {runAsAdmin, runAsUser, sql} from '../../server'
 import {respondToCORS} from '../../server/api-helpers'
 
-export default R.identity<NextApiHandler>(async (req, res) => {
+export default (async (req, res) => {
   // Is this necessary? Can be useful for admin console though
   if (respondToCORS(req, res)) {
     return
@@ -77,4 +77,4 @@ export default R.identity<NextApiHandler>(async (req, res) => {
     }
     throw err
   }
-})
+}) satisfies NextApiHandler
