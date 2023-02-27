@@ -10,7 +10,6 @@ import {
   TabsContent,
   TabsTriggers,
 } from '@usevenice/ui'
-import {z} from '@usevenice/util'
 import {useAtom} from 'jotai'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
@@ -29,7 +28,7 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/server-url'
-import {serverGetUser} from '../server'
+import {ensurePersonalAccessToken, serverGetUser} from '../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
@@ -56,7 +55,7 @@ export const getServerSideProps = (async (ctx) => {
       },
     }
   }
-  const pat = z.string().parse(user.user_metadata['apiKey'])
+  const pat = await ensurePersonalAccessToken(user.id)
   return {props: {pat}}
 }) satisfies GetServerSideProps
 

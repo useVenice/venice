@@ -3,13 +3,13 @@ import '@stoplight/elements/styles.min.css' // this pollutes the global CSS spac
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
 import {Loading} from '@usevenice/ui'
-import {R, z} from '@usevenice/util'
+import {R} from '@usevenice/util'
 
 import {restEndpoint, xPatUrlParamKey} from '@usevenice/app-config/server-url'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
-import {serverGetUser} from '../server'
+import {ensurePersonalAccessToken, serverGetUser} from '../server'
 
 export const getServerSideProps = (async (ctx) => {
   const [user] = await serverGetUser(ctx)
@@ -21,7 +21,7 @@ export const getServerSideProps = (async (ctx) => {
       },
     }
   }
-  const pat = z.string().parse(user.user_metadata['apiKey'])
+  const pat = await ensurePersonalAccessToken(user.id)
   return {props: {pat}}
 }) satisfies GetServerSideProps
 

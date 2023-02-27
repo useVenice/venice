@@ -82,11 +82,11 @@ export async function serverGetUser(
   // TODO: Consider returning access token
   const {data: sessionRes} = await supabase.auth.getSession()
 
-  console.log('[createSSRHelpers] session', {
-    session: sessionRes.session,
-    NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
-  })
+  // console.log('[createSSRHelpers] session', {
+  //   session: sessionRes.session,
+  //   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
+  //   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
+  // })
   if (!sessionRes.session) {
     return [null, supabase] as const
   }
@@ -107,7 +107,7 @@ export async function serverGetUser(
   }
 }
 
-/** For API endpoints. Consider using supabase nextjs auth helper too */
+/** @deprecated For API endpoints. Consider using supabase nextjs auth helper too */
 export function getAccessToken(req: NextApiRequest) {
   return (
     fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??

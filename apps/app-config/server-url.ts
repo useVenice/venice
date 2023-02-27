@@ -22,3 +22,4 @@ export const restEndpoint = new URL('/api/rest', getServerUrl(null))
 
 export const xPatHeaderKey = 'x-token'
 export const xPatUrlParamKey = 'token'
+export const xPatUserMetadataKey = 'personal_access_token'

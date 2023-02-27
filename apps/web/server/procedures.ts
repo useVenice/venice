@@ -122,6 +122,29 @@ export async function ensureDatabaseUser(userId: string) {
   })
 }
 
+export async function ensurePersonalAccessToken(userId: string) {
+  console.log('[ensurePersonalAccessToken] for', userId)
+
+  return runAsAdmin(async (trxn) => {
+    let pat = await trxn.maybeOneFirst<string>(sql`
+      SELECT raw_user_meta_data ->> 'apiKey' FROM auth.users
+      WHERE id = ${userId} AND starts_with (raw_user_meta_data ->> 'apiKey', 'key_')
+    `)
+
+    if (!pat) {
+      pat = `key_${makeUlid()}`
+      await trxn.query(
+        sql`
+          UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data ||
+            ${sql.jsonb({apiKey: pat})}
+          WHERE id = ${userId}
+        `,
+      )
+    }
+    return pat
+  })
+}
+
 export async function ensureDefaultLedger(userId: string) {
   return runAsAdmin(async (trxn) => {
     const ids = await trxn.anyFirst<Id['reso']>(
