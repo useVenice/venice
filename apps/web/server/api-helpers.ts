@@ -47,6 +47,9 @@ export async function createSSRHelpers(
   }
 }
 
+export const xPatHeaderKey = 'x-token'
+export const xPatUrlParamKey = 'token'
+
 export async function serverGetUserId({
   req,
   res,
@@ -54,8 +57,10 @@ export async function serverGetUserId({
   req: NextApiRequest
   res: NextApiResponse
 }) {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const pat = fromMaybeArray(req.query['token'] || req.headers['x-token'])[0]
+   
+  const pat = fromMaybeArray(
+    req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
+  )[0]
 
   if (pat) {
     const userId = await runAsAdmin((pool) =>

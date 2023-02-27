@@ -1,10 +1,10 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {makeJwtClient} from '@usevenice/engine-backend'
-import {DateTime} from '@usevenice/util'
+import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
-import {respondToCORS, serverGetUserId} from '../server'
+import {respondToCORS, serverGetUserId, xPatUrlParamKey} from '../server'
 
 // TODO: Centralize this
 const jwtClient = makeJwtClient({
@@ -34,6 +34,13 @@ export async function proxySupabase(
 
   return new Promise<void>((resolve, reject) => {
     proxy
+      // Do not pass the pat param onwards
+      .on('proxyReq', function (proxyReq) {
+        const parsed = parseUrl(proxyReq.path)
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete parsed.query[xPatUrlParamKey]
+        proxyReq.path = stringifyUrl(parsed)
+      })
       .once('proxyRes', resolve)
       .once('error', reject)
       .web(req, res, {

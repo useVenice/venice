@@ -2,24 +2,41 @@ import '@stoplight/elements/styles.min.css' // this pollutes the global CSS spac
 
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {Loading, useConstant} from '@usevenice/ui'
-import {joinPath, R} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 
+import {getServerUrl} from '@usevenice/app-config/server-url'
+import type {InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
+import {serverGetUser} from '../server'
 
-export default function RestExplorer() {
-  const apiUrl = useConstant(
-    () => new URL(joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/')),
-  )
+export const getServerSideProps = (async (ctx) => {
+  const [user] = await serverGetUser(ctx)
+  if (!user?.id) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
+  const pat = z.string().parse(user.user_metadata['apiKey'])
+  return {props: {pat}}
+}) satisfies GetServerSideProps
+
+export default function RestExplorerPage({
+  pat,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const apiUrl = useConstant(() => new URL('/api/rest/', getServerUrl(null)))
 
   const oasDocument = useQuery({
     queryKey: ['oasDocument'],
-    queryFn: () =>
-      fetch(
-        apiUrl.href + `?apikey=${commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-      ).then((r) => r.json()),
+    queryFn: () => fetch(apiUrl.href).then((r) => r.json()),
     select: (data: Swagger2Spec): Swagger2Spec => ({
+      // TODO: move this logic to server side [[...rest]] endpoint later.
+      // Need ot use selfHandleResponse and modify the response body json before
+      // being sent back down to the client...
       ...data,
       host: apiUrl.host,
       basePath: apiUrl.pathname,
@@ -30,14 +47,6 @@ export default function RestExplorer() {
         version: '2023-02-26',
       },
       schemes: [apiUrl.protocol.replace(':', '')],
-      // Stoplight does not interpret this correctly... https://github.com/stoplightio/elements/issues/2023
-      security: [{ApiKeyAuth: [], BearerAuth: []}],
-      // TODO: Need a way to intercept request for this to work... https://github.com/stoplightio/elements/issues/1860
-      // Or would have to add a proxy endpoint... which is sad.
-      securityDefinitions: {
-        ApiKeyAuth: {type: 'apiKey', in: 'header', name: 'apikey'},
-        BearerAuth: {type: 'apiKey', in: 'header', name: 'authorization'},
-      },
       // Remove RPC calls to be less confusing for users
       paths: R.pipe(
         data.paths,
@@ -61,9 +70,15 @@ export default function RestExplorer() {
 
   return (
     <div className="elements-container">
+      {/* TODO: Import xPatUrlParamKey to dedupe */}
+      <pre className="label-text">X-Token: {pat}</pre>
       <StoplightElements
         apiDescriptionDocument={oasDocument.data}
         router="hash"
+        // We have to use this because adding search to pathPath does not work
+        // as it gets escaped... with include policy the proxy will use the
+        // cookie to authenticate us before passing it on
+        tryItCredentialsPolicy="include"
       />
     </div>
   )

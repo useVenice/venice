@@ -8,7 +8,7 @@ import {
 
 import type {AnyRecord} from './type-utils'
 
-export {stringify as stringifyQueryParams} from 'query-string'
+export {stringify as stringifyQueryParams, stringifyUrl} from 'query-string'
 
 export function parseUrl<T extends AnyRecord>(
   url: string,
