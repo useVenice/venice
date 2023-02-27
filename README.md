@@ -11,11 +11,11 @@
 
 ## Get started
 
-Get early access & the chance to use Venice for free for now.
+Get financial data in just a few minutes!
 
 <p>
-  <a href="https://venice.is/early-access/apply" rel="nofollow">
-    <img src="/github/early-access.png" alt="Request early access" width="200">
+  <a href="https://app.venice.is" rel="nofollow">
+    <img src="/github/early-access.png" alt="Get started" width="200">
   </a>
 </p>
 
