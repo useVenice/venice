@@ -7,13 +7,14 @@ import {kAccessToken} from '../contexts/atoms'
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/server-url'
 import type {UserId} from '@usevenice/cdk-core'
+import {makeJwtClient} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
-import {makeJwtClient} from '@usevenice/engine-backend'
-import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {runAsAdmin, sql} from './procedures'
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
@@ -47,9 +48,6 @@ export async function createSSRHelpers(
   }
 }
 
-export const xPatHeaderKey = 'x-token'
-export const xPatUrlParamKey = 'token'
-
 export async function serverGetUserId({
   req,
   res,
@@ -57,7 +55,6 @@ export async function serverGetUserId({
   req: NextApiRequest
   res: NextApiResponse
 }) {
-   
   const pat = fromMaybeArray(
     req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
   )[0]

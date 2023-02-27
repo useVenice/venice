@@ -1,10 +1,11 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {xPatUrlParamKey} from '@usevenice/app-config/server-url'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
-import {respondToCORS, serverGetUserId, xPatUrlParamKey} from '../server'
+import {respondToCORS, serverGetUserId} from '../server'
 
 // TODO: Centralize this
 const jwtClient = makeJwtClient({

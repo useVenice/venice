@@ -1,6 +1,6 @@
 import {
-  Button,
   BroadcastIcon,
+  Button,
   CodeIcon,
   DatabaseIcon,
   DocsIcon,
@@ -10,21 +10,25 @@ import {
   TabsContent,
   TabsTriggers,
 } from '@usevenice/ui'
+import {z} from '@usevenice/util'
 import {useAtom} from 'jotai'
-import {GetServerSideProps} from 'next';
-import type { InferGetServerSidePropsType} from 'next'
+import type {InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
 import {GraphQLExplorer} from '../components/api-access'
+import {CopyTextButton} from '../components/CopyTextButton'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
-import {CopyTextButton} from '../components/CopyTextButton'
-import {z, joinPath} from '@usevenice/util'
-import {useSession} from '../contexts/session-context'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 
 // for server-side
+import {
+  graphqlEndpoint,
+  restEndpoint,
+  xPatHeaderKey,
+  xPatUrlParamKey,
+} from '@usevenice/app-config/server-url'
 import {serverGetUser} from '../server'
 
 const tabLabelByKey = {
@@ -61,8 +65,6 @@ export default function ApiAccessNewPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
 
-  const [session] = useSession()
-
   return (
     <PageLayout title="API Access">
       <PageHeader title={['API Access']} />
@@ -80,7 +82,7 @@ export default function ApiAccessNewPage({
             }))}
           />
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
-            <APIKeysCard accessToken={session?.access_token} apiKey={pat} />
+            <APIKeysCard pat={pat} />
           </TabsContent>
           <TabsContent className="flex flex-col" value={tabKey('graphql')}>
             <GraphQLExplorer pat={pat} />
@@ -142,17 +144,10 @@ export default function ApiAccessNewPage({
 /* API Keys Card */
 
 interface APIKeysCardProps {
-  accessToken?: string
-  apiKey: string
+  pat: string
 }
 
-function APIKeysCard(props: APIKeysCardProps) {
-  const {accessToken, apiKey} = props
-  const graphqlApiUrl = joinPath(
-    commonEnv.NEXT_PUBLIC_SUPABASE_URL,
-    '/graphql/v1',
-  )
-  const restApiUrl = joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/')
+function APIKeysCard({pat}: APIKeysCardProps) {
   return (
     <div className="flex flex-col gap-10">
       {/* GraphQL */}
@@ -163,10 +158,10 @@ function APIKeysCard(props: APIKeysCardProps) {
         <div className="flex gap-4">
           <input
             className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={graphqlApiUrl}
+            value={graphqlEndpoint.href}
             readOnly
           />
-          <CopyTextButton content={graphqlApiUrl} />
+          <CopyTextButton content={graphqlEndpoint.href} />
         </div>
       </div>
 
@@ -178,10 +173,10 @@ function APIKeysCard(props: APIKeysCardProps) {
         <div className="flex gap-4">
           <input
             className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={restApiUrl}
+            value={restEndpoint.href}
             readOnly
           />
-          <CopyTextButton content={restApiUrl} />
+          <CopyTextButton content={restEndpoint.href} />
         </div>
         <Button variant="primary" asChild className="w-[14rem] gap-2">
           <Link href="/rest-explorer" target="_blank">
@@ -193,17 +188,19 @@ function APIKeysCard(props: APIKeysCardProps) {
 
       <span className="max-w-[50%] border-b border-venice-black-500" />
 
-      {/* Access Token */}
+      {/* Personal Access Token */}
       <div className="flex flex-col gap-2">
-        <span className="font-mono text-base text-offwhite">Access Token</span>
+        <span className="font-mono text-base text-offwhite">
+          Personal Access Token
+        </span>
         <div className="flex gap-4">
           <input
             type="password"
             className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={accessToken}
+            value={pat}
             readOnly
           />
-          <CopyTextButton content={accessToken ?? ''} />
+          <CopyTextButton content={pat} />
         </div>
         <div className="flex gap-4">
           <CodeIcon className="h-5 w-5 place-self-center fill-venice-gray-muted" />
@@ -212,32 +209,18 @@ function APIKeysCard(props: APIKeysCardProps) {
               Header example:
             </span>
             <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 py-1 px-2 font-mono text-xs text-venice-gray">
-              <code>authorization: Bearer myAmazingAccessTokenHere</code>
+              <code>{xPatHeaderKey}: myPersonalAccessTokenHere</code>
             </pre>
           </div>
         </div>
-      </div>
-
-      {/* API Key */}
-      <div className="flex flex-col gap-2">
-        <span className="font-mono text-base text-offwhite">API Key</span>
-        <div className="flex gap-4">
-          <input
-            type="password"
-            className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={apiKey}
-            readOnly
-          />
-          <CopyTextButton content={apiKey} />
-        </div>
         <div className="flex gap-4">
           <CodeIcon className="h-5 w-5 place-self-center fill-venice-gray-muted" />
           <div>
             <span className="font-mono text-xs text-venice-gray">
-              Header example:
+              Query param example:
             </span>
             <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 py-1 px-2 font-mono text-xs text-venice-gray">
-              <code>apiKey: myAmazingApiKeyHere</code>
+              <code>?{xPatUrlParamKey}=myPersonalAccessTokenHere</code>
             </pre>
           </div>
         </div>

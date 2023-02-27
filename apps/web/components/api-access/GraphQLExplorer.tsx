@@ -1,4 +1,5 @@
 import {createGraphiQLFetcher} from '@graphiql/toolkit'
+import {graphqlEndpoint, xPatHeaderKey} from '@usevenice/app-config/server-url'
 import {useConstant} from '@usevenice/ui'
 import {GraphiQL} from 'graphiql'
 import 'graphiql/graphiql.css'
@@ -6,10 +7,10 @@ import React from 'react'
 
 export function GraphQLExplorer({pat}: {pat: string}) {
   const fetcher = useConstant(() =>
-    createGraphiQLFetcher({url: '/api/graphql'}),
+    createGraphiQLFetcher({url: graphqlEndpoint.pathname}),
   )
   const headersString = React.useMemo(
-    () => JSON.stringify({['x-token']: pat}, null, 4),
+    () => JSON.stringify({[xPatHeaderKey]: pat}, null, 4),
     [pat],
   )
 

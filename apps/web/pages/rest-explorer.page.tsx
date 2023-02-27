@@ -2,10 +2,10 @@ import '@stoplight/elements/styles.min.css' // this pollutes the global CSS spac
 
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
-import {Loading, useConstant} from '@usevenice/ui'
+import {Loading} from '@usevenice/ui'
 import {R, z} from '@usevenice/util'
 
-import {getServerUrl} from '@usevenice/app-config/server-url'
+import {restEndpoint, xPatUrlParamKey} from '@usevenice/app-config/server-url'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
@@ -28,25 +28,23 @@ export const getServerSideProps = (async (ctx) => {
 export default function RestExplorerPage({
   pat,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const apiUrl = useConstant(() => new URL('/api/rest/', getServerUrl(null)))
-
   const oasDocument = useQuery({
     queryKey: ['oasDocument'],
-    queryFn: () => fetch(apiUrl.href).then((r) => r.json()),
+    queryFn: () => fetch(restEndpoint.href).then((r) => r.json()),
     select: (data: Swagger2Spec): Swagger2Spec => ({
       // TODO: move this logic to server side [[...rest]] endpoint later.
       // Need ot use selfHandleResponse and modify the response body json before
       // being sent back down to the client...
       ...data,
-      host: apiUrl.host,
-      basePath: apiUrl.pathname,
+      host: restEndpoint.host,
+      basePath: restEndpoint.pathname,
       info: {
         description:
           'Venice: open source infrastructure to enable the frictionless movement of financial data.',
         title: 'Venice REST API',
         version: '2023-02-26',
       },
-      schemes: [apiUrl.protocol.replace(':', '')],
+      schemes: [restEndpoint.protocol.replace(':', '')],
       // Remove RPC calls to be less confusing for users
       paths: R.pipe(
         data.paths,
@@ -71,7 +69,9 @@ export default function RestExplorerPage({
   return (
     <div className="elements-container">
       {/* TODO: Import xPatUrlParamKey to dedupe */}
-      <pre className="label-text">X-Token: {pat}</pre>
+      <pre className="label-text">
+        [Header] {xPatUrlParamKey}: {pat}
+      </pre>
       <StoplightElements
         apiDescriptionDocument={oasDocument.data}
         router="hash"
