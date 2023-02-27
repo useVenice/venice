@@ -1,4 +1,4 @@
-// import '@stoplight/elements/styles.min.css' // this pollutes the global CSS space
+import '@stoplight/elements/styles.min.css' // this pollutes the global CSS space
 
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
@@ -8,7 +8,7 @@ import {joinPath, R} from '@usevenice/util'
 
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
 
-export function RestExplorer() {
+export default function RestExplorer() {
   const apiUrl = useConstant(
     () => new URL(joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/')),
   )
@@ -54,11 +54,9 @@ export function RestExplorer() {
   }
 
   return (
-    <div className="rounded-xl bg-venice-black-300 p-2">
-      <StoplightElements
-        apiDescriptionDocument={oasDocument.data}
-        router="hash"
-      />
-    </div>
+    <StoplightElements
+      apiDescriptionDocument={oasDocument.data}
+      router="hash"
+    />
   )
 }

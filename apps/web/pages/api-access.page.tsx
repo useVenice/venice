@@ -51,8 +51,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
-  graphql: 'GraphQL API',
-  rest: 'Rest API',
+  graphql: 'GraphQL Explorer',
   realtime: 'Real time API',
   sql: 'Raw SQL API',
 } as const
@@ -93,7 +92,6 @@ export default function ApiAccessNewPage(props: ServerSideProps) {
           <TabsContent className="flex flex-col" value={tabKey('graphql')}>
             <GraphQLExplorer />
           </TabsContent>
-          <TabsContent value={tabKey('rest')}></TabsContent>
           <TabsContent className="max-w-[30rem]" value={tabKey('realtime')}>
             <InstructionCard icon={BroadcastIcon} title="Realtime API">
               <p className="text-venice-green">
