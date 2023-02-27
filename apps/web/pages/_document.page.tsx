@@ -2,7 +2,7 @@ import {Head, Html, Main, NextScript} from 'next/document'
 
 export default function VeniceDocument() {
   return (
-    <Html className="bg-black text-offwhite">
+    <Html className="bg-black text-offwhite" data-theme="dark">
       <Head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -54,9 +54,11 @@ export default function RestExplorer() {
   }
 
   return (
-    <StoplightElements
-      apiDescriptionDocument={oasDocument.data}
-      router="hash"
-    />
+    <div className="elements-container">
+      <StoplightElements
+        apiDescriptionDocument={oasDocument.data}
+        router="hash"
+      />
+    </div>
   )
 }

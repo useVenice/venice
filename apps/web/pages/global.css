@@ -84,3 +84,10 @@ body.graphiql-dark reach-portal {
   --color-neutral: 0, 0%, 100% !important;
   --color-base: 0, 0%, 18% !important;
 }
+
+/* Stoplight */
+[data-theme='dark']
+  .elements-container
+  :is(.token.string, .token.function, .token.property) {
+  color: var(--ifm-color-primary) !important;
+}
