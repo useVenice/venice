@@ -13,5 +13,5 @@ export const config = {
 export default (async (req, res) =>
   proxySupabase(
     {req, res},
-    joinPath('rest/v1/', req.url?.replace('/api/rest', '') ?? ''),
+    joinPath('graphql/v1', req.url?.replace('/api/graphql', '')),
   )) satisfies NextApiHandler

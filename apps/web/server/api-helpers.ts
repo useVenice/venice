@@ -55,12 +55,12 @@ export async function serverGetUserId({
   res: NextApiResponse
 }) {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const apiKey = fromMaybeArray(req.query['token'] || req.headers['x-token'])[0]
+  const pat = fromMaybeArray(req.query['token'] || req.headers['x-token'])[0]
 
-  if (apiKey) {
+  if (pat) {
     const userId = await runAsAdmin((pool) =>
       pool.maybeOneFirst<string>(sql`
-        SELECT id FROM auth.users WHERE raw_user_meta_data ->> 'apiKey' = ${apiKey}
+        SELECT id FROM auth.users WHERE raw_user_meta_data ->> 'apiKey' = ${pat}
       `),
     )
     return [userId, 'apiKey'] as const

@@ -11,7 +11,8 @@ import {
   TabsTriggers,
 } from '@usevenice/ui'
 import {useAtom} from 'jotai'
-import type {GetServerSideProps} from 'next'
+import {GetServerSideProps} from 'next';
+import type { InferGetServerSidePropsType} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
 import {GraphQLExplorer} from '../components/api-access'
@@ -25,30 +26,6 @@ import {commonEnv} from '@usevenice/app-config/commonConfig'
 
 // for server-side
 import {serverGetUser} from '../server'
-
-interface ServerSideProps {
-  apiKey: string
-}
-export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  ctx,
-) => {
-  const [user] = await serverGetUser(ctx)
-  if (!user?.id) {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      },
-    }
-  }
-
-  const apiKey = z.string().parse(user.user_metadata['apiKey'])
-  return {
-    props: {
-      apiKey,
-    },
-  }
-}
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
@@ -65,8 +42,23 @@ export const tabAtom = atomWithQueryParam(
   createEnumParam(Object.keys(tabLabelByKey)),
 )
 
-export default function ApiAccessNewPage(props: ServerSideProps) {
-  const {apiKey} = props
+export const getServerSideProps = (async (ctx) => {
+  const [user] = await serverGetUser(ctx)
+  if (!user?.id) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
+  const pat = z.string().parse(user.user_metadata['apiKey'])
+  return {props: {pat}}
+}) satisfies GetServerSideProps
+
+export default function ApiAccessNewPage({
+  pat,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
 
   const [session] = useSession()
@@ -88,10 +80,10 @@ export default function ApiAccessNewPage(props: ServerSideProps) {
             }))}
           />
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
-            <APIKeysCard accessToken={session?.access_token} apiKey={apiKey} />
+            <APIKeysCard accessToken={session?.access_token} apiKey={pat} />
           </TabsContent>
           <TabsContent className="flex flex-col" value={tabKey('graphql')}>
-            <GraphQLExplorer />
+            <GraphQLExplorer pat={pat} />
           </TabsContent>
           <TabsContent className="max-w-[30rem]" value={tabKey('realtime')}>
             <InstructionCard icon={BroadcastIcon} title="Realtime API">

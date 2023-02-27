@@ -1,7 +1,7 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {makeJwtClient} from '@usevenice/engine-backend'
-import {DateTime, joinPath} from '@usevenice/util'
+import {DateTime} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
 import {respondToCORS, serverGetUserId} from '../server'
@@ -38,7 +38,7 @@ export async function proxySupabase(
       .once('error', reject)
       .web(req, res, {
         changeOrigin: true,
-        target: joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, targetPath),
+        target: new URL(targetPath, commonEnv.NEXT_PUBLIC_SUPABASE_URL).href,
         ignorePath: true,
         headers: {
           apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
