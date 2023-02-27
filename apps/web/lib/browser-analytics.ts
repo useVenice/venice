@@ -1,4 +1,5 @@
-import {zEvent} from '@usevenice/engine-backend/events'
+import {zUserId} from '@usevenice/cdk-core'
+import {zEvent, zUserTraits} from '@usevenice/engine-backend/events'
 import {z, zFunction} from '@usevenice/util'
 import posthog from 'posthog-js'
 
@@ -7,17 +8,14 @@ export const browserAnalytics = {
   init: zFunction(z.string(), (writeKey) =>
     posthog.init(writeKey, {api_host: '/metrics', autocapture: true}),
   ),
+  identify: z
+    .function()
+    .args(zUserId, zUserTraits.optional())
+    .implement((userId, traits) => posthog.identify(userId, traits)),
   track: z
     .function()
     .args(zEvent)
-    .implement((event) => {
-      // console.log('Will call posthog capture', event)
-      posthog.capture(event.name, event.data)
-    }),
-  identify: z
-    .function()
-    .args(z.string())
-    .implement((userId) => posthog.identify(userId)),
+    .implement((event) => posthog.capture(event.name, event.data)),
   reset: () => posthog.reset(),
 }
 ;(globalThis as any).posthog = posthog

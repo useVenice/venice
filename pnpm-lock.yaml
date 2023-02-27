@@ -321,6 +321,7 @@ importers:
       nprogress: ^0.2.0
       postcss: '*'
       posthog-js: 1.47.0
+      posthog-node: 2.5.4
       prop-types: ^15.6.2
       react: 18.2.0
       react-archer: ^4.2.2
@@ -378,6 +379,7 @@ importers:
       next-router-query: 0.1.3_next@13.1.5+react@18.2.0
       nprogress: 0.2.0
       posthog-js: 1.47.0
+      posthog-node: 2.5.4
       prop-types: 15.8.1
       react: 18.2.0
       react-archer: 4.2.2_4fqkawmkvfssrs2e2rhsnm35dy
@@ -12929,6 +12931,15 @@ packages:
     dependencies:
       fflate: 0.4.8
       rrweb-snapshot: 1.1.14
+    dev: false
+
+  /posthog-node/2.5.4:
+    resolution: {integrity: sha512-CdywlVh0CZU05/3MrBc0qY/zsLdU2X9XSz/yL1qMRhbyZhD8lrnuGlI69G2cpzZtli6S/nu64wcmULz/mFFA5w==}
+    engines: {node: '>=15.0.0'}
+    dependencies:
+      axios: 0.21.1
+    transitivePeerDependencies:
+      - debug
     dev: false
 
   /postman-collection/4.1.7:

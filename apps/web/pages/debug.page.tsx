@@ -11,6 +11,20 @@ import {
   DialogTrigger,
   ZodForm,
 } from '@usevenice/ui'
+import {GetServerSideProps} from 'next'
+import {serverAnalytics} from '../lib/server-analytics'
+import {serverGetUser} from '../server'
+
+export const getServerSideProps = (async (ctx) => {
+  const [user] = await serverGetUser(ctx)
+
+  if (user) {
+    serverAnalytics.track(user.id, {name: 'debug/debug', data: {}})
+  }
+  await serverAnalytics.flush()
+
+  return {props: {}}
+}) satisfies GetServerSideProps
 
 export default function DebugPage() {
   const {openDialog} = VeniceProvider.useContext()

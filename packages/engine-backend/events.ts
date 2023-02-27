@@ -4,14 +4,20 @@ import {z} from '@usevenice/util'
 import type {EventPayload} from 'inngest'
 import {Inngest} from 'inngest'
 
-// TODO: Unify this with all analytics events as well
 // TODO: Implement webhook as events too
+
+export const zUserTraits = z
+  .object({
+    email: z.string(),
+  })
+  .partial()
 
 const eventMap = {
   'pipeline/sync-requested': {pipelineId: zId('pipe')},
   'resource/sync-requested': {resourceId: zId('reso')},
   'webhook/received': {body: z.unknown(), headers: z.record(z.string())},
   'debug/schedule-pipeline-syncs': {},
+  'debug/debug': {},
   'user/signup': {},
   'user/login': {},
   'connection/created': {},
