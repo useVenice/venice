@@ -67,7 +67,10 @@ begin
     execute format('set request.jwt.claim.email=%L', auth_user.email);
     execute format('set request.jwt.claims=%L', json_strip_nulls(json_build_object('app_metadata', auth_user.raw_app_meta_data))::text);
 
-    raise notice '%', format( 'set role %I; -- logging in as %L (%L)', auth_user.role, auth_user.id, auth_user.email);
+    -- https://share.cleanshot.com/9Yrd6Zsg Not sure why we are getting this, temp workaround
+    -- raise notice '%', format('set role %I; -- logging in as %L (%L)', auth_user.role, auth_user.id, auth_user.email);
+    raise notice 'set role as user';
+
     execute format('set role %I', auth_user.role);
 end
 $$;

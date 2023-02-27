@@ -77,6 +77,8 @@ jobs:
 
       - name: Run migration check
         run: POSTGRES_OR_WEBHOOK_URL=postgres://postgres:test@localhost:5432/test pnpm migration up
+        # To test this with a locally install postgres, run
+        # psql postgres -c 'drop database if exists test;' && psql postgres -c 'create database test;' && POSTGRES_OR_WEBHOOK_URL=postgres://localhost:5432/test pnpm migration up
 
       - name: Run lint
         run: pnpm run lint
