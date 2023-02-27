@@ -5,29 +5,10 @@ import {useQuery} from '@tanstack/react-query'
 import {Loading} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
-import {restEndpoint, xPatUrlParamKey} from '@usevenice/app-config/constants'
-import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
+import {restEndpoint} from '@usevenice/app-config/constants'
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
 
-export const getServerSideProps = (async (ctx) => {
-  const [user] = await serverGetUser(ctx)
-  if (!user?.id) {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      },
-    }
-  }
-  const pat = await ensurePersonalAccessToken(user.id)
-  return {props: {pat}}
-}) satisfies GetServerSideProps
-
-export default function RestExplorerPage({
-  pat,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function RestExplorerPage() {
   const oasDocument = useQuery({
     queryKey: ['oasDocument'],
     queryFn: () => fetch(restEndpoint.href).then((r) => r.json()),
@@ -74,10 +55,6 @@ export default function RestExplorerPage({
 
   return (
     <div className="elements-container">
-      {/* TODO: Import xPatUrlParamKey to dedupe */}
-      <pre className="label-text">
-        [Header] {xPatUrlParamKey}: {pat}
-      </pre>
       <StoplightElements
         apiDescriptionDocument={oasDocument.data}
         router="hash"
