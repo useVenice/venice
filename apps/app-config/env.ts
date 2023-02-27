@@ -30,6 +30,9 @@ import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 export const zCommonEnv = zEnvVars({
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+
+  // TODO: Deprecate me?
   DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),
 
   // TODO: Make use of me...
@@ -49,7 +52,6 @@ export const zBackendEnv = zEnvVars({
     .optional()
     .describe('Used for validating authenticity of accessToken'),
 
-  SENTRY_DSN: z.string().optional(),
   SENTRY_CRON_MONITOR_ID: z
     .string()
     .optional()

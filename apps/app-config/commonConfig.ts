@@ -15,6 +15,7 @@ export const commonEnv = zParser(zCommonEnv).parse({
   // webpack DefineEnv that next.js uses to work
   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
+  NEXT_PUBLIC_SENTRY_DSN: process.env['NEXT_PUBLIC_SENTRY_DSN']!,
   DEFAULT_CONNECT_ENV: (
     {
       production: 'production',

@@ -1,6 +1,9 @@
-import {createHTTPClient} from '@usevenice/util'
+import {createHTTPClient, invariant} from '@usevenice/util'
 
 export function makeSentryClient(opts: {dsn: string}) {
+  // TODO: maybe use a zod function?
+  invariant(opts.dsn, 'dsn is required')
+
   // @see https://docs.sentry.io/product/crons/getting-started/
   const sentry = createHTTPClient({
     baseURL: 'https://sentry.io/api/0',

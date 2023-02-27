@@ -5,13 +5,14 @@ import {
   veniceBackendConfig,
   veniceRouter,
 } from '@usevenice/app-config/backendConfig'
+import {commonEnv} from '@usevenice/app-config/commonConfig'
 import type {UserId} from '@usevenice/cdk-core'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
 import {ensureDefaultLedger, getPool, sql} from '../server'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const sentry = makeSentryClient({dsn: backendEnv.SENTRY_DSN!})
+const sentry = makeSentryClient({dsn: commonEnv.NEXT_PUBLIC_SENTRY_DSN!})
 
 export const scheduleSyncs = inngest.createFunction(
   {name: 'Schedule pipeline syncs'},

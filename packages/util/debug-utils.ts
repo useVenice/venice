@@ -10,3 +10,5 @@ declare global {
     debugMe: typeof debugMe
   }
 }
+
+export {default as invariant} from 'tiny-invariant'
