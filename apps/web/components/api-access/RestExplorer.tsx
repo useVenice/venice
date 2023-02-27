@@ -5,13 +5,10 @@ import {useQuery} from '@tanstack/react-query'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {Loading, useConstant} from '@usevenice/ui'
 import {joinPath, R} from '@usevenice/util'
-import {useSession} from '../../contexts/session-context'
 
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'
 
 export function RestExplorer() {
-  const [session] = useSession()
-
   const apiUrl = useConstant(
     () => new URL(joinPath(commonEnv.NEXT_PUBLIC_SUPABASE_URL, '/rest/v1/')),
   )
@@ -57,20 +54,11 @@ export function RestExplorer() {
   }
 
   return (
-    <div>
-      <pre className="label-text mb-2 overflow-y-scroll">
-        API URL: {apiUrl.href}
-        <br />
-        [Header] apikey: {commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}
-        <br />
-        [Header] Authorization: Bearer {session?.access_token}
-      </pre>
-      <div className="rounded-xl bg-venice-black-300 p-2">
-        <StoplightElements
-          apiDescriptionDocument={oasDocument.data}
-          router="hash"
-        />
-      </div>
+    <div className="rounded-xl bg-venice-black-300 p-2">
+      <StoplightElements
+        apiDescriptionDocument={oasDocument.data}
+        router="hash"
+      />
     </div>
   )
 }
