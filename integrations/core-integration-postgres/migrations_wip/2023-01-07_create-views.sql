@@ -78,26 +78,6 @@ FROM "raw_transaction",
 	jsonb_each("raw_transaction".standard->'postingsMap') AS s;
 
 
--- Note once we drop view we will have to re-grant them to everyone in `public`, which is a bit annoying...
--- Needed to re-grant permission to all users to access the view whenever we re-construct it
-DO $$
-DECLARE
-	ele record;
-BEGIN
-	FOR ele IN
-		SELECT
-			usename
-		FROM
-			pg_user
-		WHERE
-			starts_with (usename, 'usr_')
-	LOOP
-		EXECUTE format('GRANT SELECT, UPDATE, DELETE ON public.transaction, public.account, public.transaction_split TO %I', ele.usename);
-	END LOOP;
-END;
-$$;
-
-
 -- CREATE OR REPLACE FUNCTION jsonb_array_to_text_array(_js jsonb)
 --   RETURNS text[]
 --   LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS

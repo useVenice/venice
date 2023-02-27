@@ -7,8 +7,8 @@ REVOKE ALL ON pg_catalog.pg_user FROM public;
 -- TODO: We ran this query on dev postgres accidentally, how do we revert it back?
 
 
-SELECT grantee, privilege_type 
-FROM information_schema.role_table_grants 
+SELECT grantee, privilege_type
+FROM information_schema.role_table_grants
 WHERE table_name='pg_user';
 
 SELECT
