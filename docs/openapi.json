@@ -1,0 +1,2036 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "@graphql({\n\t\"inflect_names\": true\n})",
+    "title": "PostgREST API",
+    "version": "10.1.2 (f56bed2)"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/rest",
+  "security": [{"PersonalAccessToken": []}],
+  "securityDefinitions": {
+    "PersonalAccessToken": {"type": "apiKey", "in": "header", "name": "x-token"}
+  },
+  "schemes": ["http"],
+  "consumes": [
+    "application/json",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "produces": [
+    "application/json",
+    "application/vnd.pgrst.object+json",
+    "text/csv"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Introspection"],
+        "summary": "OpenAPI description (this document)",
+        "produces": ["application/openapi+json", "application/json"],
+        "responses": {"200": {"description": "OK"}}
+      }
+    },
+    "/raw_transaction": {
+      "get": {
+        "tags": ["raw_transaction"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_transaction.id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.external"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.ledger_resource_id"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/raw_transaction"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["raw_transaction"],
+        "parameters": [
+          {"$ref": "#/parameters/body.raw_transaction"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["raw_transaction"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_transaction.id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.external"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.ledger_resource_id"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["raw_transaction"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_transaction.id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.external"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_transaction.ledger_resource_id"},
+          {"$ref": "#/parameters/body.raw_transaction"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/account": {
+      "get": {
+        "tags": ["account"],
+        "summary": "@graphql({",
+        "description": "\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": []\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.account.id"},
+          {"$ref": "#/parameters/rowFilter.account.name"},
+          {"$ref": "#/parameters/rowFilter.account.type"},
+          {"$ref": "#/parameters/rowFilter.account.last_four"},
+          {"$ref": "#/parameters/rowFilter.account.institution_name"},
+          {"$ref": "#/parameters/rowFilter.account.default_unit"},
+          {"$ref": "#/parameters/rowFilter.account.current_balance"},
+          {"$ref": "#/parameters/rowFilter.account.available_balance"},
+          {"$ref": "#/parameters/rowFilter.account.external"},
+          {"$ref": "#/parameters/rowFilter.account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.account.created_at"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/account"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["account"],
+        "summary": "@graphql({",
+        "description": "\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": []\n})",
+        "parameters": [
+          {"$ref": "#/parameters/body.account"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["account"],
+        "summary": "@graphql({",
+        "description": "\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": []\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.account.id"},
+          {"$ref": "#/parameters/rowFilter.account.name"},
+          {"$ref": "#/parameters/rowFilter.account.type"},
+          {"$ref": "#/parameters/rowFilter.account.last_four"},
+          {"$ref": "#/parameters/rowFilter.account.institution_name"},
+          {"$ref": "#/parameters/rowFilter.account.default_unit"},
+          {"$ref": "#/parameters/rowFilter.account.current_balance"},
+          {"$ref": "#/parameters/rowFilter.account.available_balance"},
+          {"$ref": "#/parameters/rowFilter.account.external"},
+          {"$ref": "#/parameters/rowFilter.account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.account.created_at"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["account"],
+        "summary": "@graphql({",
+        "description": "\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": []\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.account.id"},
+          {"$ref": "#/parameters/rowFilter.account.name"},
+          {"$ref": "#/parameters/rowFilter.account.type"},
+          {"$ref": "#/parameters/rowFilter.account.last_four"},
+          {"$ref": "#/parameters/rowFilter.account.institution_name"},
+          {"$ref": "#/parameters/rowFilter.account.default_unit"},
+          {"$ref": "#/parameters/rowFilter.account.current_balance"},
+          {"$ref": "#/parameters/rowFilter.account.available_balance"},
+          {"$ref": "#/parameters/rowFilter.account.external"},
+          {"$ref": "#/parameters/rowFilter.account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.account.created_at"},
+          {"$ref": "#/parameters/body.account"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/transaction": {
+      "get": {
+        "tags": ["transaction"],
+        "summary": "My summary",
+        "description": "Some comments here, before graphql\n@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": [\n\t\t{\n      \"local_name\": \"transactions\",\n      \"local_columns\": [\"account_id\"],\n      \"foreign_name\": \"account\",\n      \"foreign_schema\": \"public\",\n      \"foreign_table\": \"account\",\n      \"foreign_columns\": [\"id\"]\n\t\t}\n\t]\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.transaction.id"},
+          {"$ref": "#/parameters/rowFilter.transaction.date"},
+          {"$ref": "#/parameters/rowFilter.transaction.description"},
+          {"$ref": "#/parameters/rowFilter.transaction.payee"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_quantity"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_unit"},
+          {"$ref": "#/parameters/rowFilter.transaction.account_id"},
+          {"$ref": "#/parameters/rowFilter.transaction.external_category"},
+          {"$ref": "#/parameters/rowFilter.transaction.notes"},
+          {"$ref": "#/parameters/rowFilter.transaction.splits"},
+          {"$ref": "#/parameters/rowFilter.transaction.external"},
+          {"$ref": "#/parameters/rowFilter.transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.transaction.created_at"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/transaction"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["transaction"],
+        "summary": "",
+        "description": "Some comments here, before graphql\n@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": [\n\t\t{\n      \"local_name\": \"transactions\",\n      \"local_columns\": [\"account_id\"],\n      \"foreign_name\": \"account\",\n      \"foreign_schema\": \"public\",\n      \"foreign_table\": \"account\",\n      \"foreign_columns\": [\"id\"]\n\t\t}\n\t]\n})",
+        "parameters": [
+          {"$ref": "#/parameters/body.transaction"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["transaction"],
+        "summary": "",
+        "description": "Some comments here, before graphql\n@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": [\n\t\t{\n      \"local_name\": \"transactions\",\n      \"local_columns\": [\"account_id\"],\n      \"foreign_name\": \"account\",\n      \"foreign_schema\": \"public\",\n      \"foreign_table\": \"account\",\n      \"foreign_columns\": [\"id\"]\n\t\t}\n\t]\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.transaction.id"},
+          {"$ref": "#/parameters/rowFilter.transaction.date"},
+          {"$ref": "#/parameters/rowFilter.transaction.description"},
+          {"$ref": "#/parameters/rowFilter.transaction.payee"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_quantity"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_unit"},
+          {"$ref": "#/parameters/rowFilter.transaction.account_id"},
+          {"$ref": "#/parameters/rowFilter.transaction.external_category"},
+          {"$ref": "#/parameters/rowFilter.transaction.notes"},
+          {"$ref": "#/parameters/rowFilter.transaction.splits"},
+          {"$ref": "#/parameters/rowFilter.transaction.external"},
+          {"$ref": "#/parameters/rowFilter.transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.transaction.created_at"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["transaction"],
+        "summary": "",
+        "description": "Some comments here, before graphql\n@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": [\n\t\t{\n      \"local_name\": \"transactions\",\n      \"local_columns\": [\"account_id\"],\n      \"foreign_name\": \"account\",\n      \"foreign_schema\": \"public\",\n      \"foreign_table\": \"account\",\n      \"foreign_columns\": [\"id\"]\n\t\t}\n\t]\n})",
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.transaction.id"},
+          {"$ref": "#/parameters/rowFilter.transaction.date"},
+          {"$ref": "#/parameters/rowFilter.transaction.description"},
+          {"$ref": "#/parameters/rowFilter.transaction.payee"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_quantity"},
+          {"$ref": "#/parameters/rowFilter.transaction.amount_unit"},
+          {"$ref": "#/parameters/rowFilter.transaction.account_id"},
+          {"$ref": "#/parameters/rowFilter.transaction.external_category"},
+          {"$ref": "#/parameters/rowFilter.transaction.notes"},
+          {"$ref": "#/parameters/rowFilter.transaction.splits"},
+          {"$ref": "#/parameters/rowFilter.transaction.external"},
+          {"$ref": "#/parameters/rowFilter.transaction.updated_at"},
+          {"$ref": "#/parameters/rowFilter.transaction.created_at"},
+          {"$ref": "#/parameters/body.transaction"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/raw_commodity": {
+      "get": {
+        "tags": ["raw_commodity"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_commodity.id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.external"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.ledger_resource_id"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/raw_commodity"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["raw_commodity"],
+        "parameters": [
+          {"$ref": "#/parameters/body.raw_commodity"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["raw_commodity"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_commodity.id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.external"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.ledger_resource_id"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["raw_commodity"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_commodity.id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.external"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_commodity.ledger_resource_id"},
+          {"$ref": "#/parameters/body.raw_commodity"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/resource": {
+      "get": {
+        "tags": ["resource"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.resource.id"},
+          {"$ref": "#/parameters/rowFilter.resource.creator_id"},
+          {"$ref": "#/parameters/rowFilter.resource.integration_id"},
+          {"$ref": "#/parameters/rowFilter.resource.institution_id"},
+          {"$ref": "#/parameters/rowFilter.resource.env_name"},
+          {"$ref": "#/parameters/rowFilter.resource.settings"},
+          {"$ref": "#/parameters/rowFilter.resource.created_at"},
+          {"$ref": "#/parameters/rowFilter.resource.updated_at"},
+          {"$ref": "#/parameters/rowFilter.resource.provider_name"},
+          {"$ref": "#/parameters/rowFilter.resource.display_name"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/resource"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["resource"],
+        "parameters": [
+          {"$ref": "#/parameters/body.resource"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["resource"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.resource.id"},
+          {"$ref": "#/parameters/rowFilter.resource.creator_id"},
+          {"$ref": "#/parameters/rowFilter.resource.integration_id"},
+          {"$ref": "#/parameters/rowFilter.resource.institution_id"},
+          {"$ref": "#/parameters/rowFilter.resource.env_name"},
+          {"$ref": "#/parameters/rowFilter.resource.settings"},
+          {"$ref": "#/parameters/rowFilter.resource.created_at"},
+          {"$ref": "#/parameters/rowFilter.resource.updated_at"},
+          {"$ref": "#/parameters/rowFilter.resource.provider_name"},
+          {"$ref": "#/parameters/rowFilter.resource.display_name"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["resource"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.resource.id"},
+          {"$ref": "#/parameters/rowFilter.resource.creator_id"},
+          {"$ref": "#/parameters/rowFilter.resource.integration_id"},
+          {"$ref": "#/parameters/rowFilter.resource.institution_id"},
+          {"$ref": "#/parameters/rowFilter.resource.env_name"},
+          {"$ref": "#/parameters/rowFilter.resource.settings"},
+          {"$ref": "#/parameters/rowFilter.resource.created_at"},
+          {"$ref": "#/parameters/rowFilter.resource.updated_at"},
+          {"$ref": "#/parameters/rowFilter.resource.provider_name"},
+          {"$ref": "#/parameters/rowFilter.resource.display_name"},
+          {"$ref": "#/parameters/body.resource"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/pipeline": {
+      "get": {
+        "tags": ["pipeline"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.pipeline.id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.link_options"},
+          {"$ref": "#/parameters/rowFilter.pipeline.created_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.updated_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_started_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_completed_at"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/pipeline"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["pipeline"],
+        "parameters": [
+          {"$ref": "#/parameters/body.pipeline"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["pipeline"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.pipeline.id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.link_options"},
+          {"$ref": "#/parameters/rowFilter.pipeline.created_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.updated_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_started_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_completed_at"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["pipeline"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.pipeline.id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.source_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_id"},
+          {"$ref": "#/parameters/rowFilter.pipeline.destination_state"},
+          {"$ref": "#/parameters/rowFilter.pipeline.link_options"},
+          {"$ref": "#/parameters/rowFilter.pipeline.created_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.updated_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_started_at"},
+          {"$ref": "#/parameters/rowFilter.pipeline.last_sync_completed_at"},
+          {"$ref": "#/parameters/body.pipeline"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/integration": {
+      "get": {
+        "tags": ["integration"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.integration.id"},
+          {"$ref": "#/parameters/rowFilter.integration.config"},
+          {"$ref": "#/parameters/rowFilter.integration.created_at"},
+          {"$ref": "#/parameters/rowFilter.integration.updated_at"},
+          {"$ref": "#/parameters/rowFilter.integration.provider_name"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/integration"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["integration"],
+        "parameters": [
+          {"$ref": "#/parameters/body.integration"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["integration"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.integration.id"},
+          {"$ref": "#/parameters/rowFilter.integration.config"},
+          {"$ref": "#/parameters/rowFilter.integration.created_at"},
+          {"$ref": "#/parameters/rowFilter.integration.updated_at"},
+          {"$ref": "#/parameters/rowFilter.integration.provider_name"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["integration"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.integration.id"},
+          {"$ref": "#/parameters/rowFilter.integration.config"},
+          {"$ref": "#/parameters/rowFilter.integration.created_at"},
+          {"$ref": "#/parameters/rowFilter.integration.updated_at"},
+          {"$ref": "#/parameters/rowFilter.integration.provider_name"},
+          {"$ref": "#/parameters/body.integration"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/transaction_split": {
+      "get": {
+        "tags": ["transaction_split"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.transaction_split.transaction_id"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.key"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.amount_quantity"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.amount_unit"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.account_id"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.data"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.updated_at"},
+          {"$ref": "#/parameters/rowFilter.transaction_split.created_at"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/transaction_split"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      }
+    },
+    "/raw_account": {
+      "get": {
+        "tags": ["raw_account"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_account.id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_account.external"},
+          {"$ref": "#/parameters/rowFilter.raw_account.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_account.ledger_resource_id"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/raw_account"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["raw_account"],
+        "parameters": [
+          {"$ref": "#/parameters/body.raw_account"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["raw_account"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_account.id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_account.external"},
+          {"$ref": "#/parameters/rowFilter.raw_account.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_account.ledger_resource_id"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["raw_account"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.raw_account.id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.source_id"},
+          {"$ref": "#/parameters/rowFilter.raw_account.standard"},
+          {"$ref": "#/parameters/rowFilter.raw_account.external"},
+          {"$ref": "#/parameters/rowFilter.raw_account.created_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.updated_at"},
+          {"$ref": "#/parameters/rowFilter.raw_account.provider_name"},
+          {"$ref": "#/parameters/rowFilter.raw_account.ledger_resource_id"},
+          {"$ref": "#/parameters/body.raw_account"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/migrations": {
+      "get": {
+        "tags": ["migrations"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.migrations.name"},
+          {"$ref": "#/parameters/rowFilter.migrations.hash"},
+          {"$ref": "#/parameters/rowFilter.migrations.date"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/migrations"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["migrations"],
+        "parameters": [
+          {"$ref": "#/parameters/body.migrations"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["migrations"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.migrations.name"},
+          {"$ref": "#/parameters/rowFilter.migrations.hash"},
+          {"$ref": "#/parameters/rowFilter.migrations.date"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["migrations"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.migrations.name"},
+          {"$ref": "#/parameters/rowFilter.migrations.hash"},
+          {"$ref": "#/parameters/rowFilter.migrations.date"},
+          {"$ref": "#/parameters/body.migrations"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/institution": {
+      "get": {
+        "tags": ["institution"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.institution.id"},
+          {"$ref": "#/parameters/rowFilter.institution.standard"},
+          {"$ref": "#/parameters/rowFilter.institution.external"},
+          {"$ref": "#/parameters/rowFilter.institution.created_at"},
+          {"$ref": "#/parameters/rowFilter.institution.updated_at"},
+          {"$ref": "#/parameters/rowFilter.institution.provider_name"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/order"},
+          {"$ref": "#/parameters/range"},
+          {"$ref": "#/parameters/rangeUnit"},
+          {"$ref": "#/parameters/offset"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/preferCount"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {"$ref": "#/definitions/institution"},
+              "type": "array"
+            }
+          },
+          "206": {"description": "Partial Content"}
+        }
+      },
+      "post": {
+        "tags": ["institution"],
+        "parameters": [
+          {"$ref": "#/parameters/body.institution"},
+          {"$ref": "#/parameters/select"},
+          {"$ref": "#/parameters/preferPost"}
+        ],
+        "responses": {"201": {"description": "Created"}}
+      },
+      "delete": {
+        "tags": ["institution"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.institution.id"},
+          {"$ref": "#/parameters/rowFilter.institution.standard"},
+          {"$ref": "#/parameters/rowFilter.institution.external"},
+          {"$ref": "#/parameters/rowFilter.institution.created_at"},
+          {"$ref": "#/parameters/rowFilter.institution.updated_at"},
+          {"$ref": "#/parameters/rowFilter.institution.provider_name"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      },
+      "patch": {
+        "tags": ["institution"],
+        "parameters": [
+          {"$ref": "#/parameters/rowFilter.institution.id"},
+          {"$ref": "#/parameters/rowFilter.institution.standard"},
+          {"$ref": "#/parameters/rowFilter.institution.external"},
+          {"$ref": "#/parameters/rowFilter.institution.created_at"},
+          {"$ref": "#/parameters/rowFilter.institution.updated_at"},
+          {"$ref": "#/parameters/rowFilter.institution.provider_name"},
+          {"$ref": "#/parameters/body.institution"},
+          {"$ref": "#/parameters/preferReturn"}
+        ],
+        "responses": {"204": {"description": "No Content"}}
+      }
+    },
+    "/rpc/_uid": {
+      "post": {
+        "tags": ["(rpc) _uid"],
+        "produces": ["application/json", "application/vnd.pgrst.object+json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {"type": "object"}
+          },
+          {"$ref": "#/parameters/preferParams"}
+        ],
+        "responses": {"200": {"description": "OK"}}
+      }
+    },
+    "/rpc/jsonb_array_to_text_array": {
+      "post": {
+        "tags": ["(rpc) jsonb_array_to_text_array"],
+        "produces": ["application/json", "application/vnd.pgrst.object+json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {
+              "properties": {"_js": {"format": "jsonb"}},
+              "required": ["_js"],
+              "type": "object"
+            }
+          },
+          {"$ref": "#/parameters/preferParams"}
+        ],
+        "responses": {"200": {"description": "OK"}}
+      }
+    },
+    "/rpc/generate_ulid": {
+      "post": {
+        "tags": ["(rpc) generate_ulid"],
+        "produces": ["application/json", "application/vnd.pgrst.object+json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "args",
+            "required": true,
+            "schema": {"type": "object"}
+          },
+          {"$ref": "#/parameters/preferParams"}
+        ],
+        "responses": {"200": {"description": "OK"}}
+      }
+    }
+  },
+  "definitions": {
+    "raw_transaction": {
+      "required": [
+        "id",
+        "standard",
+        "external",
+        "created_at",
+        "updated_at",
+        "provider_name"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "source_id": {"format": "character varying", "type": "string"},
+        "standard": {"format": "jsonb"},
+        "external": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        },
+        "ledger_resource_id": {
+          "description": "Note:\nThis is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "account": {
+      "description": "@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": []\n})",
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "name": {"format": "text", "type": "string"},
+        "type": {"format": "text", "type": "string"},
+        "last_four": {"format": "text", "type": "string"},
+        "institution_name": {"format": "text", "type": "string"},
+        "default_unit": {"format": "text", "type": "string"},
+        "current_balance": {"format": "double precision", "type": "number"},
+        "available_balance": {"format": "double precision", "type": "number"},
+        "external": {"format": "jsonb"},
+        "updated_at": {"format": "timestamp with time zone", "type": "string"},
+        "created_at": {"format": "timestamp with time zone", "type": "string"}
+      },
+      "type": "object"
+    },
+    "transaction": {
+      "description": "\nSome comments here, before graphql\n@graphql({\n\t\"primary_key_columns\": [\"id\"],\n\t\"totalCount\": {\"enabled\": true},\n\t\"foreign_keys\": [\n\t\t{\n      \"local_name\": \"transactions\",\n      \"local_columns\": [\"account_id\"],\n      \"foreign_name\": \"account\",\n      \"foreign_schema\": \"public\",\n      \"foreign_table\": \"account\",\n      \"foreign_columns\": [\"id\"]\n\t\t}\n\t]\n})",
+      "properties": {
+        "id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "date": {"format": "text", "type": "string"},
+        "description": {"format": "text", "type": "string"},
+        "payee": {"format": "text", "type": "string"},
+        "amount_quantity": {"format": "double precision", "type": "number"},
+        "amount_unit": {"format": "text", "type": "string"},
+        "account_id": {"format": "text", "type": "string"},
+        "external_category": {"format": "text", "type": "string"},
+        "notes": {"format": "text", "type": "string"},
+        "splits": {"format": "jsonb"},
+        "external": {"format": "jsonb"},
+        "updated_at": {"format": "timestamp with time zone", "type": "string"},
+        "created_at": {"format": "timestamp with time zone", "type": "string"}
+      },
+      "type": "object"
+    },
+    "raw_commodity": {
+      "required": [
+        "id",
+        "standard",
+        "external",
+        "created_at",
+        "updated_at",
+        "provider_name"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "source_id": {"format": "character varying", "type": "string"},
+        "standard": {"format": "jsonb"},
+        "external": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        },
+        "ledger_resource_id": {
+          "description": "Note:\nThis is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "resource": {
+      "required": [
+        "id",
+        "settings",
+        "created_at",
+        "updated_at",
+        "provider_name"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "creator_id": {"format": "character varying", "type": "string"},
+        "integration_id": {
+          "description": "Note:\nThis is a Foreign Key to `integration.id`.<fk table='integration' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "institution_id": {
+          "description": "Note:\nThis is a Foreign Key to `institution.id`.<fk table='institution' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "env_name": {"format": "character varying", "type": "string"},
+        "settings": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        },
+        "display_name": {"format": "character varying", "type": "string"}
+      },
+      "type": "object"
+    },
+    "pipeline": {
+      "required": [
+        "id",
+        "source_state",
+        "destination_state",
+        "link_options",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "source_id": {
+          "description": "Note:\nThis is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "source_state": {"format": "jsonb"},
+        "destination_id": {
+          "description": "Note:\nThis is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "destination_state": {"format": "jsonb"},
+        "link_options": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "last_sync_started_at": {
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "last_sync_completed_at": {
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "integration": {
+      "required": ["id", "config", "created_at", "updated_at", "provider_name"],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "config": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "transaction_split": {
+      "properties": {
+        "transaction_id": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "key": {"format": "text", "type": "string"},
+        "amount_quantity": {"format": "text", "type": "string"},
+        "amount_unit": {"format": "text", "type": "string"},
+        "account_id": {"format": "text", "type": "string"},
+        "data": {"format": "jsonb"},
+        "updated_at": {"format": "timestamp with time zone", "type": "string"},
+        "created_at": {"format": "timestamp with time zone", "type": "string"}
+      },
+      "type": "object"
+    },
+    "raw_account": {
+      "required": [
+        "id",
+        "standard",
+        "external",
+        "created_at",
+        "updated_at",
+        "provider_name"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "source_id": {"format": "character varying", "type": "string"},
+        "standard": {"format": "jsonb"},
+        "external": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        },
+        "ledger_resource_id": {
+          "description": "Note:\nThis is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>",
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "migrations": {
+      "required": ["name", "hash", "date"],
+      "properties": {
+        "name": {
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "text",
+          "type": "string"
+        },
+        "hash": {"format": "text", "type": "string"},
+        "date": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "institution": {
+      "required": [
+        "id",
+        "standard",
+        "external",
+        "created_at",
+        "updated_at",
+        "provider_name"
+      ],
+      "properties": {
+        "id": {
+          "default": "public.generate_ulid()",
+          "description": "Note:\nThis is a Primary Key.<pk/>",
+          "format": "character varying",
+          "type": "string"
+        },
+        "standard": {"format": "jsonb"},
+        "external": {"format": "jsonb"},
+        "created_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "updated_at": {
+          "default": "now()",
+          "format": "timestamp with time zone",
+          "type": "string"
+        },
+        "provider_name": {
+          "default": "split_part((id)::text, '_'::text, 2)",
+          "format": "character varying",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "parameters": {
+    "preferParams": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": ["params=single-object"],
+      "in": "header",
+      "type": "string"
+    },
+    "preferReturn": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": ["return=representation", "return=minimal", "return=none"],
+      "in": "header",
+      "type": "string"
+    },
+    "preferCount": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": ["count=none"],
+      "in": "header",
+      "type": "string"
+    },
+    "preferPost": {
+      "name": "Prefer",
+      "description": "Preference",
+      "required": false,
+      "enum": [
+        "return=representation",
+        "return=minimal",
+        "return=none",
+        "resolution=ignore-duplicates",
+        "resolution=merge-duplicates"
+      ],
+      "in": "header",
+      "type": "string"
+    },
+    "select": {
+      "name": "select",
+      "description": "Filtering Columns",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "on_conflict": {
+      "name": "on_conflict",
+      "description": "On Conflict",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "order": {
+      "name": "order",
+      "description": "Ordering",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "range": {
+      "name": "Range",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
+    "rangeUnit": {
+      "name": "x-token222",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "default": "items",
+      "in": "header",
+      "type": "string"
+    },
+    "x-token": {
+      "name": "x-token",
+      "description": "Personal access token",
+      "required": true,
+      "in": "header",
+      "type": "string"
+    },
+    "offset": {
+      "name": "offset",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "limit": {
+      "name": "limit",
+      "description": "Limiting and Pagination",
+      "required": false,
+      "in": "query",
+      "type": "string"
+    },
+    "body.raw_transaction": {
+      "name": "raw_transaction",
+      "description": "raw_transaction",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/raw_transaction"}
+    },
+    "rowFilter.raw_transaction.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.source_id": {
+      "name": "source_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.standard": {
+      "name": "standard",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_transaction.ledger_resource_id": {
+      "name": "ledger_resource_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "body.account": {
+      "name": "account",
+      "description": "account",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/account"}
+    },
+    "rowFilter.account.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.name": {
+      "name": "name",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.type": {
+      "name": "type",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.last_four": {
+      "name": "last_four",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.institution_name": {
+      "name": "institution_name",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.default_unit": {
+      "name": "default_unit",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.current_balance": {
+      "name": "current_balance",
+      "required": false,
+      "format": "double precision",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.available_balance": {
+      "name": "available_balance",
+      "required": false,
+      "format": "double precision",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.account.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "body.transaction": {
+      "name": "transaction",
+      "description": "transaction",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/transaction"}
+    },
+    "rowFilter.transaction.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.date": {
+      "name": "date",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.description": {
+      "name": "description",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.payee": {
+      "name": "payee",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.amount_quantity": {
+      "name": "amount_quantity",
+      "required": false,
+      "format": "double precision",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.amount_unit": {
+      "name": "amount_unit",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.account_id": {
+      "name": "account_id",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.external_category": {
+      "name": "external_category",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.notes": {
+      "name": "notes",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.splits": {
+      "name": "splits",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "body.raw_commodity": {
+      "name": "raw_commodity",
+      "description": "raw_commodity",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/raw_commodity"}
+    },
+    "rowFilter.raw_commodity.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.source_id": {
+      "name": "source_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.standard": {
+      "name": "standard",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_commodity.ledger_resource_id": {
+      "name": "ledger_resource_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "body.resource": {
+      "name": "resource",
+      "description": "resource",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/resource"}
+    },
+    "rowFilter.resource.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.creator_id": {
+      "name": "creator_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.integration_id": {
+      "name": "integration_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.institution_id": {
+      "name": "institution_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.env_name": {
+      "name": "env_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.settings": {
+      "name": "settings",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.resource.display_name": {
+      "name": "display_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "body.pipeline": {
+      "name": "pipeline",
+      "description": "pipeline",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/pipeline"}
+    },
+    "rowFilter.pipeline.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.source_id": {
+      "name": "source_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.source_state": {
+      "name": "source_state",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.destination_id": {
+      "name": "destination_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.destination_state": {
+      "name": "destination_state",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.link_options": {
+      "name": "link_options",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.last_sync_started_at": {
+      "name": "last_sync_started_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.pipeline.last_sync_completed_at": {
+      "name": "last_sync_completed_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "body.integration": {
+      "name": "integration",
+      "description": "integration",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/integration"}
+    },
+    "rowFilter.integration.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.integration.config": {
+      "name": "config",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.integration.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.integration.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.integration.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "body.transaction_split": {
+      "name": "transaction_split",
+      "description": "transaction_split",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/transaction_split"}
+    },
+    "rowFilter.transaction_split.transaction_id": {
+      "name": "transaction_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.key": {
+      "name": "key",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.amount_quantity": {
+      "name": "amount_quantity",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.amount_unit": {
+      "name": "amount_unit",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.account_id": {
+      "name": "account_id",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.data": {
+      "name": "data",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.transaction_split.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "body.raw_account": {
+      "name": "raw_account",
+      "description": "raw_account",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/raw_account"}
+    },
+    "rowFilter.raw_account.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.source_id": {
+      "name": "source_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.standard": {
+      "name": "standard",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.raw_account.ledger_resource_id": {
+      "name": "ledger_resource_id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "body.migrations": {
+      "name": "migrations",
+      "description": "migrations",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/migrations"}
+    },
+    "rowFilter.migrations.name": {
+      "name": "name",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.migrations.hash": {
+      "name": "hash",
+      "required": false,
+      "format": "text",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.migrations.date": {
+      "name": "date",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "body.institution": {
+      "name": "institution",
+      "description": "institution",
+      "required": false,
+      "in": "body",
+      "schema": {"$ref": "#/definitions/institution"}
+    },
+    "rowFilter.institution.id": {
+      "name": "id",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.institution.standard": {
+      "name": "standard",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.institution.external": {
+      "name": "external",
+      "required": false,
+      "format": "jsonb",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.institution.created_at": {
+      "name": "created_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.institution.updated_at": {
+      "name": "updated_at",
+      "required": false,
+      "format": "timestamp with time zone",
+      "in": "query",
+      "type": "string"
+    },
+    "rowFilter.institution.provider_name": {
+      "name": "provider_name",
+      "required": false,
+      "format": "character varying",
+      "in": "query",
+      "type": "string"
+    }
+  },
+  "externalDocs": {
+    "description": "PostgREST Documentation",
+    "url": "https://postgrest.org/en/v10.1/api.html"
+  }
+}
