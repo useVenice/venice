@@ -31,7 +31,7 @@ A <strong>Pipeline</strong> simply connects a data <strong>Resource</strong> to/
 | <strong>Pipeline</strong> | Pipeline moves data from a <strong>Source</strong> to a destination <strong>Destination</strong> | <ul><li>A bank account associated with a <strong>Resource</strong> is selected as a <strong>Source</strong> of data for Venice to pull from</li><li>A table within a Coda document is selected as a <strong>Destination</strong> to write data to from Venice's unified <strong>Database</strong></li></ul> |
 | <strong>Integration</strong> | A specific configuration of a provider. (e.g. Plaid client ID / secret) |
 | <strong>Provider</strong> | Source code adhering to our protocol for reading or writing data into or out of Venice, including the schema for how data is transformed to be compatible with an external <strong>Resource</strong> | <ul><li>Plaid <strong>Pipeline</strong> enables Venice to read data from Plaid's API</li><li>Quickbooks <strong>Pipeline</strong> enables Venice to read data from Quickbooks</li></ul> |
-| <strong>Database</strong> | The primary data store connected to Venice where all of your unified data is stored | A PostgreSQL <strong>Database</strong> configured to act as Venice's primary data store. <strong>Database</strong> is also a <strong>Resource</strong> and acts as the default Source or Destination depending on the direction of the pipeline you are setting up. |
+| <strong>Database</strong> | The primary data store connected to Venice where all of your unified data is stored | A PostgreSQL <strong>Database</strong> configured to act as Venice's primary data store. <strong>Database</strong> can also be a <strong>Resource</strong> and act as a Source of data. |
 | <strong>API</strong> | A developer interface into Venice's unified <strong>Database</strong> that can be called to read or write data from or to Venice | <ul><li>A URL which can return data from Venice in JSON format</li><li>A URL which can return data from Venice in CSV format</li></ul> |
 | <strong>Export</strong> | A manual mechanism through which data can be downloaded from Venice's unified <strong>Database</strong> (e.g. powered by our <strong>API</strong>) | You filter transactions data stored within Venice and download it to a local CSV file |
 
@@ -42,5 +42,3 @@ When we say "connect" in the user interface, we typically mean to create a new r
 ## Data models
 
 For terminology used within our unified database schema, please refer to the [Data Models](/technical/data-models) documentation.
-
-

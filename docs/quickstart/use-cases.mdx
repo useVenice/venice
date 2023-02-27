@@ -1,16 +1,22 @@
 ---
 title: Use cases
-description: With Venice's unified & headless approach, easily pipe data into no code apps, spreadsheets, SQL dashboards, and much more!
+description: Venice is the last financial data integration you'll ever need.
 ---
 
-<Tip>Learn how to unify your data in 2 minutes & all our other [features](/features).</Tip>
+<Tip>Learn how to unify your financial data in 2 minutes & all our other [features](/features).</Tip>
 
 ## Give yourself superpowers
 
 <CardGroup>
+  <Card title="Startups" icon="code">
+    Use Venice to build all your financial data integrations so you can focus
+    on launching faster and building value for customers. Make faster decisions
+    and de-risk your company's future.
+  </Card>
   <Card title="Developers" icon="code">
-    Use Venice as a unified financial database for your teams & products, 
-    either with no code or full code.
+    Use Venice to avoid recreating the wheel by building all your
+    own financial data infrastructure. Easily add new integrations in a weekend,
+    not months, so you can ship faster.
   </Card>
   <Card title="Data analysts" icon="magnifying-glass-chart">
     Use Venice to consolidate revenue & reporting into a unified database, 
@@ -20,98 +26,32 @@ description: With Venice's unified & headless approach, easily pipe data into no
     Use Venice to keep your spreadsheets up-to-date, build more wealth, and 
     retire faster.
   </Card>
-  <Card title="Finance teams" icon="file-invoice-dollar">
-    Use Venice to remove hours of manual data updates & avoid costly mistakes.
-  </Card>
 </CardGroup>
 
 ### How are they using Venice?
+
+- **Startups:** Use Venice to collect customer-permissioned data to make informed
+decisions faster on underwriting & credit worthiness, aggregate financial data,
+and automate accounting for your customers.
 
 - **Developers:** Use Venice to connect financial data to their apps to provide 
 financial insights to their users and build financial tools such as budgeting 
 and forecasting apps, custom analysis scripts, and personal finance apps.
 
 - **Financial analysts and data scientists:** Use Venice to connect all their financial 
-data from various institutions into a single data model. With Venice, they can easily
+data from various institutions into a unified data schema. With Venice, they can easily
 analyze a company's revenue, invoices, and fiscal performance, and make 
 data-driven decisions.
 
-- **Small business owners:** Use Venice to manage their business and make 
-better financial decisions. With Venice, they can easily track revenue and expenses, 
-create budgets, and forecast future financial performance.
-
-- **Personal finance managers:** Use Venice to navigate themselves and their family 
-through complexities and avoid unnecessary tough times ahead. With Venice, they 
-can track their income, expenses, and investments, and easily create plans to 
-reach their financial goals faster.
-
-- **Accountants:** Use Venice to manage and analyze their client's financial data. 
-With Venice, they can easily track revenue and expenses, create budgets, and 
-forecast future financial performance. They can also use Venice to automate
- financial reports and reduce the time spent on manual data entry.
-
-These are just a few examples, but really anyone who wants to manage and analyze 
-financial data—for personal or professional purposes—can use Venice to simplify
-their life & unify all their data from multiple sources in a more comprehensive and 
-efficient way.
-
 ## Powerful ways to use Venice
 
-<Card title="Connect to Dashboards & Charting tools" icon="chart-pie">
-  Build custom queries and connect to your favorite dashboard tools to visualize
-  your financial data in new and powerful ways.
-</Card>
-
-With Venice's unified financial database, you can easily connect all of your 
-company's financial accounts from various institutions into a standardized data 
-model. This provides real-time, accurate financial data for analyzing revenue, 
-invoices, and overall fiscal performance & trends.
-
-By plugging directly into Venice's SQL layer, you can use your favorite tools 
-like Tableau, Microsoft Power BI, QlikView, Excel, Looker, and more to create 
-interactive visualizations and dashboards to share with stakeholders.
-
-Venice eliminates the need for manual data entry so you can spend time making 
-well-informed decisions & generating rich, up-to-date reports for colleagues.
-
-<Card title="Access data from Google Sheets or via CSV" icon="file-csv">
-  Say goodbye to manual copy/paste errors and never lose sleep over keeping 
-  spreadsheets up-to-date again.
-</Card>
-
-Venice comes with CSV exporting out-of-the-box for any queries you generate.
-Need to filter transactions by vendor? Done! Need to see overall account balance
-or burn rate? Easily create a separate query and export the data on a continuous 
-basis.
-
-There is a little known feature in Google Sheets that will change the way you 
-work with your financial data: the [IMPORTDATA](https://support.google.com/docs/answer/3093335?hl=en&ref_topic=9199554)
-function. Easily & automatically export your unified financial data from Venice 
-and back into your spreadsheets for whichever queries you can dream up.
-
-Here's how it works:
-
-1. Connect all your various accounts across different financial institutions 
-& let Venice do the hard work of standardizing & unifying the data.
-2. Go into Google Sheets and copy/paste the CSV export link from within your
-Venice dashboard:
-
-```excel-formula Google Sheets (spreadsheet formula)
-=IMPORTDATA("venice.is/api/sql?format=csv&q=SELECT data, amount FROM transaction")
-```
-
-3. Say goodbye to the headache of manually inputting financial data into 
-spreadsheets, and hello to real-time, accurate financial data at your fingertips.
-
-With Venice, your data is always up-to-date and you'll drastically reduce 
-common & costly copy/paste errors. There's a better way, and Venice is it.
-
-<Card title="Headless database for apps & scripts" icon="mobile-screen-button">
+<Card title="Unified API for apps & scripts" icon="mobile-screen-button">
   Build internal tools & scripts using Venice’s unified database to do the data 
   aggregation work for you
 </Card>
 
-**Venice is the backend for finance.** Build the next Mint.com in a weekend. With raw 
+**Venice is the backend for finance.** Let us build your B2B integrations,
+so you can launch faster or even build the next Mint.com in a weekend. With raw 
 access to Venice's financial database, developers can easily integrate rich 
 financial data into your apps, giving you back months of time to focus on de-risking 
 your startup & building user-friendly interfaces and features.
@@ -122,7 +62,7 @@ or internal team tool.
 
 <Tip>Simple things should be simple, but complex things should be possible.</Tip>
 
-Never want to touch code? We support that. Want to dive deep into SQL or add a
+Never want to touch code? We support that. Want to dive deep into GraphQL or add a
 custom pipeline into or out of Venice? We also support (& encourage) that!
 
 Let us handle the hard data engineering & complexity of sync pipelines across 
@@ -131,11 +71,13 @@ your customers superpowers and make manual data entry a thing of the past. Your
 customer's data will always be unified, standardized, and up-to-date.
 
 Here's what others are building with Venice:
+- Startups save themselves months of work by using Venice's built-in integrations to Plaid and other data sources
+- Underwriting analysis & credit worthiness
+- Data science reports & analysis, without the manual copy/pasting
 - Financial reports using custom Python scripts
 - Internal team expense & forecasting apps
 - Personal finance apps (build your own Mint.com in a weekend!)
 - Internal team dashboards
-- Continuously updated spreadsheets (your data, your way!)
 
 <Card title="Customize and extend" icon="screwdriver-wrench">
 Data source not supported? Teach Venice new things, or customize existing integrations.
@@ -143,7 +85,7 @@ Data source not supported? Teach Venice new things, or customize existing integr
 
 Venice is engineered from the ground up to be flexible and extensible. Regardless
 of where the data currently is or where you want to move it to, Venice is there
-to make it possible with **Pipelines**.
+to make it possible with **Integrations**.
 
 Want something custom? Reach out to our support team (hi@venice.is) and we're 
 happy to provide a quote, or roll up your sleeves and contribute to ever-expanding 
