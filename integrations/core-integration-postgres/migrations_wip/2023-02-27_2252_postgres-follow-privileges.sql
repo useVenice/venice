@@ -4,8 +4,9 @@
 -- Must run from supabase sql dashboard otherwise will get the following error
 -- Query 1 ERROR: ERROR:  "authenticator" is a reserved role, only superusers can modify it
 
-ALTER ROLE authenticator SET pgrst.openapi_mode TO 'follow-privileges';
-ALTER ROLE authenticated SET pgrst.openapi_mode TO 'follow-privileges';
-ALTER ROLE anon SET pgrst.openapi_mode TO 'follow-privileges';
+-- [x] venice-dev
+-- [x] venice-staging
+-- [x] venice-production
 
--- NOTE This doesn't currently work at the moment unfortunately...
+ALTER ROLE authenticator SET pgrst.openapi_mode TO 'follow-privileges';
+NOTIFY pgrst, 'reload config';

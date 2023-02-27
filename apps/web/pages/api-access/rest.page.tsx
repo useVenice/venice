@@ -30,19 +30,13 @@ export default function RestExplorerPage() {
       paths: R.pipe(
         data.paths,
         R.toPairs,
-        R.filter(
-          ([path]) =>
-            !path.startsWith('/rpc') && !path.startsWith('/migrations'),
-        ),
+        R.filter(([path]) => !path.startsWith('/rpc')),
         R.sortBy(([path]) => path),
         R.fromPairs,
       ) as Record<string, any>,
       definitions: R.pipe(
         data.definitions ?? {},
         R.toPairs,
-        // Unfortunately we have to filter here due to openapi-mode likely being set to ignore_privileges in postgREST
-        // @see https://usevenice.slack.com/archives/C04NUANB7FW/p1677488220098729
-        R.filter(([path]) => !path.startsWith('migrations')),
         R.sortBy(([name]) => name),
         R.fromPairs,
       ) as Record<string, any>,
