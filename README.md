@@ -1,4 +1,4 @@
-![Mission: Frictionless financial data](https://img.shields.io/badge/mission-Backend%20for%20finance-brightgreen)
+![Mission: Frictionless financial data](https://img.shields.io/badge/mission-Frictionless%20%20financial%20data-brightgreen)
 [![Venice Documentation](https://img.shields.io/badge/read-Documentation-yellow)](http://docs.venice.is)
 [![ELv2 License](https://img.shields.io/badge/license-ELv2-blue)](https://www.elastic.co/licensing/elastic-license)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
