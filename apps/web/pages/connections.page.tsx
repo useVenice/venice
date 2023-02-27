@@ -236,9 +236,9 @@ function VeniceDatabaseSection() {
       <ul className="absolute top-[12.8rem] left-[1.2rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
-            href="/export"
+            href="/explore-data"
             className="text-sm leading-4 text-green hover:text-opacity-70">
-            Export data
+            Explore data
           </Link>
         </li>
         <li>

@@ -28,7 +28,7 @@ export default function ExploreDataPage() {
         <div className="grid grid-cols-[1fr_auto]">
           <div className="flex items-center gap-4">
             <Select value={selectedTable} onValueChange={selectTable}>
-              <SelectTrigger className="max-w-[10rem]" />
+              <SelectTrigger className="max-w-[13rem]" />
               <SelectContent>
                 <SelectItem value="account">Account</SelectItem>
                 <SelectItem value="transaction">Transaction</SelectItem>
