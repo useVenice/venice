@@ -23,7 +23,7 @@ Join our community of founders and engineers building the future of finance
 
 <p>
   <a href="https://discord.gg/gTMch6Gn2u" rel="nofollow">
-    <img src="/github/join-discord.png" alt="Join us on Discord" width="200">
+    <img src="/github/join-community.png" alt="Join us on Discord" width="219">
   </a>
 </p>
 
