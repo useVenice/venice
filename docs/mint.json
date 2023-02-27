@@ -77,5 +77,10 @@
     "posthog": {
       "apiKey": "phc_T3BM4neZzi3z2ruDiN0pYpGHIYjd5AjZw0rSkhzAKSo"
     }
+  },
+  "api": {
+    "auth": {
+      "method": "bearer"
+    }
   }
 }
