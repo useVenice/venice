@@ -5,7 +5,7 @@ import {GraphiQL} from 'graphiql'
 import 'graphiql/graphiql.css'
 import React from 'react'
 
-export function GraphQLExplorer({pat}: {pat: string}) {
+export function GraphQLExplorer({pat}: {pat?: string}) {
   const fetcher = useConstant(() =>
     createGraphiQLFetcher({url: graphqlEndpoint.pathname}),
   )
