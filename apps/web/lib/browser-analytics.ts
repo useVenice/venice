@@ -1,15 +1,12 @@
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {zEvent} from '@usevenice/engine-backend/events'
-import {z} from '@usevenice/util'
+import {z, zFunction} from '@usevenice/util'
 import posthog from 'posthog-js'
 
 export const browserAnalytics = {
-  init: () =>
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    posthog.init(commonEnv.NEXT_PUBLIC_POSTHOG_WRITEKEY!, {
-      // api_host: '/metrics',
-      autocapture: true,
-    }),
+  // Divided on whether we should use zFunction or use the more verbose z.function()...
+  init: zFunction(z.string(), (writeKey) =>
+    posthog.init(writeKey, {api_host: '/metrics', autocapture: true}),
+  ),
   track: z
     .function()
     .args(zEvent)
@@ -23,3 +20,5 @@ export const browserAnalytics = {
     .implement((userId) => posthog.identify(userId)),
   reset: () => posthog.reset(),
 }
+;(globalThis as any).posthog = posthog
+;(globalThis as any).browserAnalytics = browserAnalytics

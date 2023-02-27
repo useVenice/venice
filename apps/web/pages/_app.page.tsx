@@ -13,7 +13,7 @@ import Head from 'next/head'
 import React from 'react'
 import {QueryParamProvider} from 'use-query-params'
 
-import {veniceCommonConfig} from '@usevenice/app-config/commonConfig'
+import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
@@ -21,13 +21,17 @@ import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
 import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
+import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
+
+import {browserAnalytics} from '../lib/browser-analytics'
 import {createQueryClient} from '../lib/query-client'
 import {getQueryKeys, usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
-import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
-import {browserAnalytics} from '../lib/browser-analytics'
 
-browserAnalytics.init()
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  browserAnalytics.init(commonEnv.NEXT_PUBLIC_POSTHOG_WRITEKEY!)
+}
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({
