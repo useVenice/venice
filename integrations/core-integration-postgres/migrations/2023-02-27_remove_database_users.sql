@@ -35,7 +35,20 @@ $function$;
 -- Setup helper functions for testing policies moving forward
 -- @see https://github.com/supabase/supabase/blob/master/apps/docs/pages/guides/auth/row-level-security.mdx#testing-policies
 
-grant anon, authenticated to postgres;
+DO
+$do$
+BEGIN
+-- Surround in a check so that this migration does not fail in a vanilla postgres instance
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles
+      WHERE  rolname = 'anon') THEN
+      RAISE NOTICE 'Role "anon" does not exists. Skipping grant.';
+   ELSE
+      grant anon, authenticated to postgres;
+   END IF;
+END
+$do$;
+
 
 create or replace procedure auth.login_as_user (user_email text)
     language plpgsql
