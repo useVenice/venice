@@ -18,20 +18,20 @@ export async function proxySupabase(
   {req, res}: {req: NextApiRequest; res: NextApiResponse},
   targetPath: string,
 ) {
-  // Is this necessary? Can be useful for admin console though
+  // Is this necessary? Or should we let the proxied endpoints determine this?
   if (respondToCORS(req, res)) {
     return
   }
-  const [userId, method] = await serverGetApiUserId({req, res})
+  const [userId] = await serverGetApiUserId({req, res})
 
-  if (!userId) {
-    res.status(401).json({error: `Invalid ${method}`})
-    return
-  }
-
-  const exp = DateTime.local().plus({seconds: 60}).toMillis() / 1000 // No request will be longer than 60 seconds
   // aud:apikey So we can check in logs if needed
-  const accessToken = jwtClient.sign({sub: userId, aud: 'apikey', exp})
+  const accessToken =
+    userId &&
+    jwtClient.sign({
+      sub: userId,
+      aud: 'apikey',
+      exp: DateTime.local().plus({seconds: 60}).toMillis() / 1000, // No request will be longer than 60 seconds
+    })
 
   return new Promise<void>((resolve, reject) => {
     proxy
@@ -51,7 +51,7 @@ export async function proxySupabase(
         ignorePath: true,
         headers: {
           apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-          authorization: `Bearer ${accessToken}`,
+          ...(accessToken && {authorization: `Bearer ${accessToken}`}),
         },
       })
   })
