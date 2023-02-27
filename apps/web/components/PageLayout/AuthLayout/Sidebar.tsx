@@ -2,6 +2,7 @@ import {
   ArrowLeftRightIcon,
   CodeIcon,
   DocsIcon,
+  ExportIcon,
   IntegrationsIcon,
   ProfileIcon,
   SupportIcon,
@@ -16,6 +17,7 @@ const mainNavigation = [
     href: '/connections',
     icon: ArrowLeftRightIcon,
   },
+  {name: 'Explore Data', href: '/explore-data', icon: ExportIcon},
   {
     name: 'API Access',
     href: '/api-access',

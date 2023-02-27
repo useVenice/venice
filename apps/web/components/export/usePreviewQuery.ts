@@ -11,7 +11,7 @@ export interface PreviewQuery {
   isFetching: boolean
   isInitial: boolean
 }
-
+/** @deprecated, Should use useQuery directly... */
 export function usePreviewQuery({
   limit,
   table,
