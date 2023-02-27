@@ -23,6 +23,12 @@ export default function RestExplorer() {
       ...data,
       host: apiUrl.host,
       basePath: apiUrl.pathname,
+      info: {
+        description:
+          'Venice: open source infrastructure to enable the frictionless movement of financial data.',
+        title: 'Venice REST API',
+        version: '2023-02-26',
+      },
       schemes: [apiUrl.protocol.replace(':', '')],
       // Stoplight does not interpret this correctly... https://github.com/stoplightio/elements/issues/2023
       security: [{ApiKeyAuth: [], BearerAuth: []}],
