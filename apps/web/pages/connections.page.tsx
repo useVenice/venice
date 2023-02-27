@@ -216,7 +216,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
 function VeniceDatabaseSection() {
   return (
     // padding top is used to align againsts the two sides
-    <section className="relative flex shrink-0 flex-col items-center pt-[2.625rem]">
+    <section className="relative flex shrink-0 flex-col items-center pt-[3.155rem]">
       <ArcherElement id={VENICE_DATABASE_IMAGE_ID}>
         <Image
           priority
@@ -234,7 +234,7 @@ function VeniceDatabaseSection() {
         src="/db-links-line.svg"
         alt="Line for links"
       />
-      <ul className="absolute top-[12.3rem] left-[1.2rem] flex min-w-[9rem] flex-col">
+      <ul className="absolute top-[12.8rem] left-[1.2rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
             href="/export"

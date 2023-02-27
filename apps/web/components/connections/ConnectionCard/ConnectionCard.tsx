@@ -136,14 +136,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
           <div className="flex flex-row">
             <div className="self-end">
               {labels.map((l) => (
-                <span className="text-xs font-medium text-venice-gray" key={l}>
+                <span className="text-sm font-medium text-venice-gray" key={l}>
                   {l}
                 </span>
               ))}
             </div>
             <div className="ml-auto text-right">
               {status ? <ConnectionStatus status={status} /> : null}
-              <p className="text-xs font-medium text-venice-gray">
+              <p className="text-sm font-medium text-venice-gray">
                 {syncInProgress ? (
                   <Loading text="Syncing" />
                 ) : lastSyncCompletedAt ? (
@@ -172,7 +172,7 @@ function ConnectionStatus({status}: {status: ConnectionStatus}) {
   return (
     <p className={clsx('inline-flex items-center gap-1', color)}>
       <CircleFilledIcon className="h-2 w-2 fill-current" />
-      <span className="inline-flex text-xs">{text}</span>
+      <span className="inline-flex text-sm">{text}</span>
     </p>
   )
 }
