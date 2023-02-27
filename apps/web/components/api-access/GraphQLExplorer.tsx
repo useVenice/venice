@@ -1,5 +1,5 @@
 import {createGraphiQLFetcher} from '@graphiql/toolkit'
-import {graphqlEndpoint, xPatHeaderKey} from '@usevenice/app-config/server-url'
+import {graphqlEndpoint, xPatHeaderKey} from '@usevenice/app-config/constants'
 import {useConstant} from '@usevenice/ui'
 import {GraphiQL} from 'graphiql'
 import 'graphiql/graphiql.css'

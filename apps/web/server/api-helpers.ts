@@ -8,7 +8,11 @@ import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {backendEnv} from '@usevenice/app-config/backendConfig'
-import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/server-url'
+import {
+  xPatHeaderKey,
+  xPatUrlParamKey,
+  xPatUserMetadataKey,
+} from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
@@ -20,11 +24,7 @@ export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
-export async function createSSRHelpers(
-  context:
-    | GetServerSidePropsContext
-    | {req: NextApiRequest; res: NextApiResponse},
-) {
+export async function createSSRHelpers(context: GetServerSidePropsContext) {
   const queryClient = new QueryClient()
 
   const [user, supabase] = await serverGetUser(context)
@@ -48,7 +48,7 @@ export async function createSSRHelpers(
   }
 }
 
-export async function serverGetUserId({
+export async function serverGetApiUserId({
   req,
   res,
 }: {
@@ -56,13 +56,14 @@ export async function serverGetUserId({
   res: NextApiResponse
 }) {
   const pat = fromMaybeArray(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
   )[0]
 
   if (pat) {
     const userId = await runAsAdmin((pool) =>
       pool.maybeOneFirst<string>(sql`
-        SELECT id FROM auth.users WHERE raw_user_meta_data ->> 'apiKey' = ${pat}
+        SELECT id FROM auth.users WHERE raw_user_meta_data ->> ${xPatUserMetadataKey} = ${pat}
       `),
     )
     return [userId, 'apiKey'] as const

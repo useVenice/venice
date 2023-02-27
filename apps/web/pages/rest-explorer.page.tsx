@@ -5,7 +5,7 @@ import {useQuery} from '@tanstack/react-query'
 import {Loading} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
-import {restEndpoint, xPatUrlParamKey} from '@usevenice/app-config/server-url'
+import {restEndpoint, xPatUrlParamKey} from '@usevenice/app-config/constants'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import type {Spec as Swagger2Spec} from 'swagger-schema-official'

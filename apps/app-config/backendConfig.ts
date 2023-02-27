@@ -15,7 +15,7 @@ import {joinPath, R, Rx, zParser} from '@usevenice/util'
 import {veniceCommonConfig} from './commonConfig'
 import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
-import {getServerUrl} from './server-url'
+import {getServerUrl} from './constants'
 
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'

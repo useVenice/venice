@@ -27,7 +27,7 @@ import {
   restEndpoint,
   xPatHeaderKey,
   xPatUrlParamKey,
-} from '@usevenice/app-config/server-url'
+} from '@usevenice/app-config/constants'
 import {ensurePersonalAccessToken, serverGetUser} from '../server'
 
 const tabLabelByKey = {

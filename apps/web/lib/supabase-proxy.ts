@@ -1,11 +1,11 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
-import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/server-url'
+import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/constants'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
-import {respondToCORS, serverGetUserId} from '../server'
+import {respondToCORS, serverGetApiUserId} from '../server'
 
 // TODO: Centralize this
 const jwtClient = makeJwtClient({
@@ -22,7 +22,7 @@ export async function proxySupabase(
   if (respondToCORS(req, res)) {
     return
   }
-  const [userId, method] = await serverGetUserId({req, res})
+  const [userId, method] = await serverGetApiUserId({req, res})
 
   if (!userId) {
     res.status(401).json({error: `Invalid ${method}`})
