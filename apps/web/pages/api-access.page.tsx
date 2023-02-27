@@ -3,6 +3,7 @@ import {
   BroadcastIcon,
   CodeIcon,
   DatabaseIcon,
+  DocsIcon,
   EmailIcon,
   InstructionCard,
   Tabs,
@@ -190,6 +191,12 @@ function APIKeysCard(props: APIKeysCardProps) {
           />
           <CopyTextButton content={restApiUrl} />
         </div>
+        <Button variant="primary" asChild className="w-[14rem] gap-2">
+          <Link href="/rest-explorer" target="_blank">
+            <DocsIcon className="h-4 w-4 fill-current text-offwhite" />
+            Explore the REST APIs
+          </Link>
+        </Button>
       </div>
 
       <span className="max-w-[50%] border-b border-venice-black-500" />
