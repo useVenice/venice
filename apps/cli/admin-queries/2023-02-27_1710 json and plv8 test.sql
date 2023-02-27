@@ -23,3 +23,10 @@ AS $function$
     }
     return o;
 $function$
+
+
+CREATE OR REPLACE FUNCTION public.jsonb_array_to_text_array(_js jsonb)
+ RETURNS text[]
+ LANGUAGE sql
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$SELECT ARRAY(SELECT jsonb_array_elements_text(_js))$function$
