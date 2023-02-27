@@ -20,7 +20,7 @@ export const scheduleSyncs = inngest.createFunction(
     ? {event: 'debug/schedule-pipeline-syncs'}
     : {cron: '* * * * *'},
   () =>
-    sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async () => {
+    sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
         secondsSinceLastSync: 1 * 60 * 60, // Every hour
       })
@@ -34,7 +34,12 @@ export const scheduleSyncs = inngest.createFunction(
         // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
         console.log(`Scheduled ${pipelines.length} pipeline syncs`)
       }
-      return {scheduledCount: pipelines.length}
+      return {
+        scheduledCount: pipelines.length,
+        // For debugging
+        sentryCheckinId: checkinId,
+        sentryMonitorId: backendEnv.SENTRY_CRON_MONITOR_ID,
+      }
     }),
 )
 
