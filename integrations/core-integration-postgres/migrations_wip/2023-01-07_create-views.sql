@@ -25,8 +25,8 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,created_at
 FROM
 	"raw_transaction";
-comment on view "transaction" is e'
-TODO: Add description of transaction data type here...
+comment on view "transaction" is e'TODO: Add description of transaction data type here...
+
 @graphql({
 	"primary_key_columns": ["id"],
 	"totalCount": {"enabled": true},
@@ -58,7 +58,9 @@ CREATE VIEW account WITH (security_invoker) AS SELECT
 FROM
 	"raw_account";
 
-comment on view "account" is e'@graphql({
+comment on view "account" is e'TODO: Add description of account data type here...
+
+@graphql({
 	"primary_key_columns": ["id"],
 	"totalCount": {"enabled": true},
 	"foreign_keys": []
