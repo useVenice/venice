@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/language-TypeScript-blue)
 
 <p align="center">
-  <img src="/github/github.png" alt="Venice is the backend for finance" width="600"> 
+  <img src="/github/etl.png" alt="Venice is frictionless financial data" width="600"> 
 </p>
 
 
