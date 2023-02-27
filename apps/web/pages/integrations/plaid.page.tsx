@@ -2,7 +2,7 @@ import type {GetServerSideProps} from 'next'
 import {useState} from 'react'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
-import {PlaidLogo} from '@usevenice/ui/logos'
+import Image from 'next/image'
 import {EditIcon} from '@usevenice/ui'
 
 import {
@@ -43,7 +43,12 @@ export default function Page() {
       <div className="p-6">
         <div className="flex flex-col gap-8">
           <div className="flex items-center gap-4">
-            <PlaidLogo className="h-10 w-10" />
+            <Image
+              width={85}
+              height={40}
+              src="/plaidLogo.png"
+              alt="Plaid Logo"
+            />
             <span className="text-center font-mono text-base text-offwhite">
               Settings: Plaid
             </span>

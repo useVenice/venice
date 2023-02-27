@@ -47,7 +47,7 @@ export default function ExploreDataPage() {
             <Button asChild className="gap-1">
               <Link href="/api-access">
                 <CodeIcon className="h-4 w-4 fill-current text-offwhite" />
-                Customize
+                Explore APIs
               </Link>
             </Button>
           </div>
