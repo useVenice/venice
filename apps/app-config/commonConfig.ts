@@ -3,7 +3,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
 import {PROVIDERS, zCommonEnv} from './env'
-import {getServerUrl} from './server-url'
+import {getServerUrl} from './constants'
 
 export {Papa} from '@usevenice/integration-import'
 

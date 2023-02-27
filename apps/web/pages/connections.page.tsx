@@ -81,7 +81,7 @@ export default function ConnectionsPage(props: ServerSideProps) {
           strokeColor="#3e3e3e"
           strokeWidth={2}
           endMarker={false}>
-          <div className="flex gap-36 p-16">
+          <div className="flex gap-36 px-16 pt-8">
             {connections.isLoading ? (
               <LoadingConnectionsColumn />
             ) : (
@@ -216,7 +216,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
 function VeniceDatabaseSection() {
   return (
     // padding top is used to align againsts the two sides
-    <section className="relative flex shrink-0 flex-col items-center pt-[2.625rem]">
+    <section className="relative flex shrink-0 flex-col items-center pt-[3.155rem]">
       <ArcherElement id={VENICE_DATABASE_IMAGE_ID}>
         <Image
           priority
@@ -234,7 +234,7 @@ function VeniceDatabaseSection() {
         src="/db-links-line.svg"
         alt="Line for links"
       />
-      <ul className="absolute top-[12.3rem] left-[1.2rem] flex min-w-[9rem] flex-col">
+      <ul className="absolute top-[12.8rem] left-[1.2rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
             href="/export"
@@ -244,16 +244,16 @@ function VeniceDatabaseSection() {
         </li>
         <li>
           <Link
-            href="/api-access"
+            href="/api-access-new"
             className="text-sm leading-4 text-green hover:text-opacity-70">
             Explore APIs
           </Link>
         </li>
         <li>
           <Link
-            href="/api-access"
+            href="/integrations"
             className="text-sm leading-4 text-green hover:text-opacity-70">
-            Access database
+            View integrations
           </Link>
         </li>
       </ul>

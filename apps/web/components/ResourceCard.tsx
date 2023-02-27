@@ -16,7 +16,7 @@ export function ResourceCard(props: ResourceCardProps) {
     <Card bgColor={bgColor}>
       <div
         className={clsx(
-          'relative min-h-[6.5rem] rounded-lg',
+          'relative min-h-[7.5rem] rounded-lg',
           // allow children to fill the height or align vertically center
           'grid',
         )}>

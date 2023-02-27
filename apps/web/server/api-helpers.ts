@@ -7,13 +7,19 @@ import {kAccessToken} from '../contexts/atoms'
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {
+  xPatHeaderKey,
+  xPatUrlParamKey,
+  xPatUserMetadataKey,
+} from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
+import {makeJwtClient} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
-import {makeJwtClient} from '@usevenice/engine-backend'
-import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {runAsAdmin, sql} from './procedures'
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
@@ -42,10 +48,41 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   }
 }
 
+export async function serverGetApiUserId({
+  req,
+  res,
+}: {
+  req: NextApiRequest
+  res: NextApiResponse
+}) {
+  const pat = fromMaybeArray(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
+  )[0]
+
+  if (pat) {
+    const userId = await runAsAdmin((pool) =>
+      pool.maybeOneFirst<string>(sql`
+        SELECT id FROM auth.users WHERE raw_user_meta_data ->> ${xPatUserMetadataKey} = ${pat}
+      `),
+    )
+    return [userId, 'apiKey'] as const
+  }
+  const [user] = await serverGetUser({req, res})
+
+  return [user?.id, 'accessToken'] as const
+}
+
 /** For serverSideProps */
-export async function serverGetUser(context: GetServerSidePropsContext) {
+export async function serverGetUser(
+  context:
+    | GetServerSidePropsContext
+    | {req: NextApiRequest; res: NextApiResponse},
+) {
   const supabase = createServerSupabaseClient<Database>(context)
+  // TODO: Consider returning access token
   const {data: sessionRes} = await supabase.auth.getSession()
+
   // console.log('[createSSRHelpers] session', {
   //   session: sessionRes.session,
   //   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
@@ -71,7 +108,7 @@ export async function serverGetUser(context: GetServerSidePropsContext) {
   }
 }
 
-/** For API endpoints. Consider using supabase nextjs auth helper too */
+/** @deprecated For API endpoints. Consider using supabase nextjs auth helper too */
 export function getAccessToken(req: NextApiRequest) {
   return (
     fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??

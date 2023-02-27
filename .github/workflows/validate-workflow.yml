@@ -21,7 +21,7 @@ jobs:
           # optional (defaults to `5432`)
           POSTGRES_PORT: 5432
           # optional (defaults to `postgres`)
-          POSTGRES_USER: test
+          POSTGRES_USER: postgres
         ports:
           # maps tcp port 5432 on service container to the host
           - 5432:5432
@@ -76,7 +76,9 @@ jobs:
         run: POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=noop node --loader tsx ./bin/venice.ts health
 
       - name: Run migration check
-        run: POSTGRES_OR_WEBHOOK_URL=postgres://test:test@localhost:5432/test pnpm migration up
+        run: POSTGRES_OR_WEBHOOK_URL=postgres://postgres:test@localhost:5432/test pnpm migration up
+        # To test this with a locally install postgres, run
+        # psql postgres -c 'drop database if exists test;' && psql postgres -c 'create database test;' && POSTGRES_OR_WEBHOOK_URL=postgres://localhost:5432/test pnpm migration up
 
       - name: Run lint
         run: pnpm run lint

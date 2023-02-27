@@ -15,7 +15,7 @@ export function TabsTriggers<K extends string>(props: TabsTriggersProps<K>) {
         <TabsPrimitive.Trigger
           key={key}
           value={key}
-          className="rounded-t border-b-2 border-transparent py-1 text-sm uppercase tracking-wide text-venice-gray hover:text-offwhite focus:outline-none data-[state=active]:border-venice-green data-[state=active]:text-offwhite">
+          className="flex-none rounded-t border-b-2 border-transparent py-1 text-sm uppercase tracking-wide text-venice-gray hover:text-offwhite focus:outline-none data-[state=active]:border-venice-green data-[state=active]:text-offwhite">
           {label}
         </TabsPrimitive.Trigger>
       ))}

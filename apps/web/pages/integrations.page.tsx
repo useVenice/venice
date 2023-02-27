@@ -29,11 +29,19 @@ export default function Page() {
     <PageLayout title="Integrations">
       <PageHeader title={['Integrations']} />
       <div className="p-10">
-        <Card className="grid h-[10rem] w-[8rem] justify-center gap-2 p-6">
-          <span className="text-center font-mono text-base text-offwhite">
+        <Card className="flex w-32 flex-col gap-4 p-2">
+          <span className="mt-2 text-center font-mono text-base text-offwhite">
             Plaid
           </span>
-          <PlaidLogo className="h-16 w-16" />
+          <div className="mb-6 flex items-center justify-center">
+            <PlaidLogo className="h-16 w-16" />
+          </div>
+          {/* <Button asChild className="mb-1">
+            <Link href="/integrations/plaid">
+              <SettingsIcon className="h-6 w-6 fill-current pr-2 text-gray" />
+              Settings
+            </Link>
+          </Button> */}
         </Card>
       </div>
     </PageLayout>
