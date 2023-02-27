@@ -31,6 +31,7 @@ export const zCommonEnv = zEnvVars({
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  NEXT_PUBLIC_POSTHOG_WRITEKEY: z.string().optional(),
 
   // TODO: Deprecate me?
   DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),

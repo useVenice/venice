@@ -13,9 +13,11 @@ type VercelEnv = 'production' | 'preview' | 'development'
 export const commonEnv = zParser(zCommonEnv).parse({
   // Need to use fully qualified form of process.env.$VAR for
   // webpack DefineEnv that next.js uses to work
+  // TODO: Maybe we define defaults inside env.ts to avoid duplicating ourselves?
   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL']!,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY']!,
   NEXT_PUBLIC_SENTRY_DSN: process.env['NEXT_PUBLIC_SENTRY_DSN']!,
+  NEXT_PUBLIC_POSTHOG_WRITEKEY: process.env['NEXT_PUBLIC_POSTHOG_WRITEKEY']!,
   DEFAULT_CONNECT_ENV: (
     {
       production: 'production',

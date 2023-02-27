@@ -25,6 +25,9 @@ import {createQueryClient} from '../lib/query-client'
 import {getQueryKeys, usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
 import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
+import {browserAnalytics} from '../lib/browser-analytics'
+
+browserAnalytics.init()
 
 /** Need this to be a separate function so we can have hooks... */
 function _VeniceProvider({

@@ -320,6 +320,7 @@ importers:
       node-loader: 2.0.0
       nprogress: ^0.2.0
       postcss: '*'
+      posthog-js: 1.47.0
       prop-types: ^15.6.2
       react: 18.2.0
       react-archer: ^4.2.2
@@ -376,6 +377,7 @@ importers:
       next-query-params: 4.1.0_siv5c6b7gmuo4qet7a3ayyekzm
       next-router-query: 0.1.3_next@13.1.5+react@18.2.0
       nprogress: 0.2.0
+      posthog-js: 1.47.0
       prop-types: 15.8.1
       react: 18.2.0
       react-archer: 4.2.2_4fqkawmkvfssrs2e2rhsnm35dy
@@ -8503,6 +8505,10 @@ packages:
     dependencies:
       pend: 1.2.0
 
+  /fflate/0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+    dev: false
+
   /file-entry-cache/6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
@@ -12918,6 +12924,13 @@ packages:
     resolution: {integrity: sha512-VdlZoocy5lCP0c/t66xAfclglEapXPCIVhqqJRncYpvbCgImF0w67aPKfbqUMr72tO2k5q0TdTZwCLjPTI6C9g==}
     dev: false
 
+  /posthog-js/1.47.0:
+    resolution: {integrity: sha512-3b2HQUeDds/ZKwyHqHaSpecChmtz3s/tqfIB8qBKW4cbB5/4L/Qd3MArgFyRHMx/E+0Hmrdvx30L6fGvjMK7RQ==}
+    dependencies:
+      fflate: 0.4.8
+      rrweb-snapshot: 1.1.14
+    dev: false
+
   /postman-collection/4.1.7:
     resolution: {integrity: sha512-fMICmDa6megCH/jKq66MZVcR26wrSn1G/rjIkqrtdB6Df4u/I+XLRbWueQnz91Jwm3FR+su1refy4gwIjLLGLg==}
     engines: {node: '>=10'}
@@ -13928,6 +13941,10 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+    dev: false
+
+  /rrweb-snapshot/1.1.14:
+    resolution: {integrity: sha512-eP5pirNjP5+GewQfcOQY4uBiDnpqxNRc65yKPW0eSoU1XamDfc4M8oqpXGMyUyvLyxFDB0q0+DChuxxiU2FXBQ==}
     dev: false
 
   /rsvp/4.8.5:

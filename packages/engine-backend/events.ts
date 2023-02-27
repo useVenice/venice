@@ -12,6 +12,11 @@ const eventMap = {
   'resource/sync-requested': {resourceId: zId('reso')},
   'webhook/received': {body: z.unknown(), headers: z.record(z.string())},
   'debug/schedule-pipeline-syncs': {},
+  'user/signup': {},
+  'user/login': {},
+  'connection/created': {},
+  'connection/deleted': {},
+  'api/copy-key': {},
 } satisfies Record<string, z.ZodRawShape>
 
 export const zEvent = z.discriminatedUnion(
