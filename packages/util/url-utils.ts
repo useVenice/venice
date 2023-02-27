@@ -24,8 +24,15 @@ export function parseQueryParams<T extends AnyRecord>(
   return _parseQueryParams(query, options) as T
 }
 
-export function joinPath(p1: string, p2: string) {
-  return p1.replace(/\/$/, '') + '/' + p2.replace(/^\//, '')
+/** Via https://stackoverflow.com/a/55142565/692499, How do we get identical behavior as require('node:path').join */
+export function joinPath(...optionalParts: Array<string | null | undefined>) {
+  const parts = optionalParts.filter((p): p is string => !!p)
+  const leading = parts[0]?.startsWith('/') ? '/' : ''
+  const trailing = parts[parts.length - 1]?.endsWith('/') ? '/' : ''
+  return `${leading}${parts
+    .map((p) => p.replace(/\/+$/, '').replace(/^\/+/, ''))
+    .filter((p) => !!p) // Removes duplicate `//`
+    .join('/')}${trailing}`
 }
 
 export function buildUrl(input: {
