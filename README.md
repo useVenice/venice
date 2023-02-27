@@ -1,4 +1,4 @@
-![Mission: Backend for finance](https://img.shields.io/badge/mission-Backend%20for%20finance-brightgreen)
+![Mission: Frictionless financial data](https://img.shields.io/badge/mission-Backend%20for%20finance-brightgreen)
 [![Venice Documentation](https://img.shields.io/badge/read-Documentation-yellow)](http://docs.venice.is)
 [![ELv2 License](https://img.shields.io/badge/license-ELv2-blue)](https://www.elastic.co/licensing/elastic-license)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
@@ -11,15 +11,15 @@
 
 ## Get started
 
-Get financial data in just a few minutes!
+Get frictionless financial data in just a few minutes!
 
 <p>
   <a href="https://app.venice.is" rel="nofollow">
-    <img src="/github/early-access.png" alt="Get started" width="200">
+    <img src="/github/sign-up.png" alt="Sign up" width="135">
   </a>
 </p>
 
-Join our community of founders and engineers building the future of finance.
+Join our community of founders and engineers building the future of finance
 
 <p>
   <a href="https://discord.gg/gTMch6Gn2u" rel="nofollow">
@@ -27,48 +27,90 @@ Join our community of founders and engineers building the future of finance.
   </a>
 </p>
 
+Read the docs to give yourself (& your customers) superpowers
+
+<p>
+  <a href="https://docs.venice.is" rel="nofollow">
+    <img src="/github/read-docs.png" alt="Read out docs" width="196">
+  </a>
+</p>
+
+## Why do I need Venice?
+
+🐌 Every fintech (& countless non-fintechs) **unintentionally builds a data engineering 
+company**. Along the way, everyone runs into the same massive headaches:
+
+- disparate data sources & schemas to try and unify
+- complex data pipelines & API upgrades to build & maintain
+- unreliable infrastructure because your focus is on business logic
+- data cleaning & enrichment, if you have any time left over that is
+
+These add massive risk & cost to all (especially to your customers if you're slow to launch).
+
+🚀😍💰 Startups should launch & validate quickly, not reinvent the wheel. That's where Venice comes in.
+
 ## What is Venice?
 
-**Venice is the backend for finance.** Build the next Mint.com in a weekend. With raw 
-access to Venice's financial database, you can easily integrate rich 
-financial data into your apps, giving you back months of time to focus on de-risking 
-your startup & building user-friendly interfaces and features.
+**Venice is building open source infrastructure to enable the frictionless movement 
+of financial data.** [Sign up](https://app.venice.is) to get financial data in minutes.
 
-Venice works great whether you have years of coding experience or you're using
-no-code platforms (Bubble, Glide, Retool) to build the next billion dollar company
-or internal team tool. 
+Our first product is a fully hosted backend with an integrated Plaid data pipeline 
+that enables developers (frontend devs / no code tools / data analysts) to build 
+fintech apps or internal tools in a weekend, saving them months of effort and cost. 
+
+We're building a future where developers can leave the hard stuff to us (data 
+engineering, enrichment, pipelines, normalization/unification, APIs, db admin, 
+security) and focus exclusively on de-risking their startups with great user 
+experiences & biz model + distribution innovation.
 
 > Simple things should be simple, but complex things should be possible.
 
-Never want to touch code? We support that. Want to dive deep into SQL or add a
+Never want to touch code? We support that. Want to dive deep into GraphQL or add a
 custom pipeline into or out of Venice? We also support (& encourage) that!
 
 Let us handle the hard data engineering & complexity of sync pipelines across 
 thousands of financial institutions and data sources. We're here to give you &
-your customers superpowers and make manual data entry a thing of the past. Your 
-customer's data will always be unified, standardized, and up-to-date.
+your customers superpowers and make building one-off infrastructure a thing of the 
+past. Your customer's data will always be unified, standardized, and up-to-date.
 
-Here's what others are building with Venice:
+Here's who uses Venice:
+- **Startups** use Venice to collect customer-permissioned data to make informed
+decisions faster on underwriting & credit worthiness, aggregate financial data,
+and automate accounting for your customers.
+- **Developers** use Venice to avoid recreating the wheel by building all your
+own financial data infrastructure. Easily add new integrations in a weekend,
+not months, so you can ship faster.
+- **Data analysts** use Venice to consolidate revenue & reporting into a unified database, 
+while easily piping it out to dashboards.
+- **Personal finance geeks** use Venice to keep your spreadsheets up-to-date, build more wealth, and 
+retire faster.
+
+And what they're building:
+- Customer-permissioned data integrations (e.g. collect accounting info)
+- Credit risk / underwriting tools 
 - Personal finance apps (build your own Mint.com in a weekend!)
 - Internal team dashboards using Mode or Redash
-- Internal apps using no-code platforms like Retool
+- Internal apps using no-code platforms like Retool or Bubble
 - Financial reports using custom Python scripts
 - Internal team expense & forecasting apps
-- Continuously updated spreadsheets (your data, your way!)
 
 ## Who is Venice for?
 
-You, probably. Venice supports a large variety of use cases, whether you're a data analyst, engineer, no-code dev, finance geek (like us), data scientist, accountant, small business owner, etc... we're here to help you get your data from A to B in a simple, unified way.
+You, probably. Venice supports a large variety of use cases, whether you're a 
+developer, data analyst, no-code dev, finance geek, data scientist, accountant, 
+small business owner, etc... we're here to help you get your data from A to B in 
+a simple, unified way.
 
 ## Custom integrations
 
 Venice already supports thousands of financial institutions (banks, investment 
 accounts, etc.) out-of-the-box, but our platform's flexibility doesn't end there.
 
-Venice can help build custom integrations to either pipe data into Venice 
-from a data source of your choosing or pipe data out of Venice into any tool or API you want. 
-This allows you to easily integrate your existing data sources with Venice and 
-make use of Venice's unified and standardized data engineering & infrastructure.
+Venice can help build custom integrations to pipe data into Venice 
+from a financial data source of your choosing. 
+This allows you to easily integrate your existing data source needs with Venice and 
+make use of Venice's unified and standardized data engineering & infrastructure
+to do all the heavy lifting.
 
 Your can request custom integration pipelines by contacting [Venice's support 
 team](mailto:hi@venice.is) and providing information about the data source you 
@@ -85,23 +127,22 @@ hard stuff.
 ### Examples
 
 - Importing from accounting software (Quickbooks, Xero, etc)
-- Exporting to your own SQL database or data lake / warehouse
+- Exporting to your own database
 - Importing from payments providers (Stripe, Paypal, etc.)
 - Importing from commerce software (Shopify) 
-- Exporting to financial planning / modeling software (Runway.com)
+
+## Looking for self-hosting?
+
+As an open source infrastructure platform, Venice works just as great in enterprise
+environments as it does for startups building from day 1. [Reach out](mailto:hi@venice.is)
+and let's work together on getting you launched faster!
 
 ## How do I contribute?
 
-Jump into our [documentation](https://docs.venice.is) and learn how you can easily extend Venice to add new financial data pipelines into and out of Venice.
+Jump into our [documentation](https://docs.venice.is) and learn how you can easily 
+extend Venice to add new financial data pipelines into Venice.
 
 ## How do I get help?
 
 - [Email us](mailto:hi@venice.is)
 - [Join our Discord](https://discord.gg/gTMch6Gn2u)
-
-## Looking for self-hosting?
-
-The current Venice `main` branch is focused on the Venice platform. The previous version
-focused on self-hosting can be found at the [self-hosting](https://github.com/useVenice/venice/tree/self-hosting) branch.
-Our goal is to bridge the gap (for specifically for the cloud platform to depend on self-hosting under the hood) and merge the codepath 
-so there is only a single branch. Ping us on Discord if you would like details.
