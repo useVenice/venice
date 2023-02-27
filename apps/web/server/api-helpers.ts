@@ -14,6 +14,7 @@ import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {runAsAdmin, sql} from './procedures'
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
@@ -44,6 +45,29 @@ export async function createSSRHelpers(
       dehydratedState: superjson.serialize(dehydrate(queryClient)),
     }),
   }
+}
+
+export async function serverGetUserId({
+  req,
+  res,
+}: {
+  req: NextApiRequest
+  res: NextApiResponse
+}) {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const apiKey = fromMaybeArray(req.query['token'] || req.headers['x-token'])[0]
+
+  if (apiKey) {
+    const userId = await runAsAdmin((pool) =>
+      pool.maybeOneFirst<string>(sql`
+        SELECT id FROM auth.users WHERE raw_user_meta_data ->> 'apiKey' = ${apiKey}
+      `),
+    )
+    return [userId, 'apiKey'] as const
+  }
+  const [user] = await serverGetUser({req, res})
+
+  return [user?.id, 'accessToken'] as const
 }
 
 /** For serverSideProps */
