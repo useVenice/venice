@@ -1,6 +1,6 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
-import {xPatUrlParamKey} from '@usevenice/app-config/server-url'
+import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/server-url'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
@@ -41,6 +41,7 @@ export async function proxySupabase(
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete parsed.query[xPatUrlParamKey]
         proxyReq.path = stringifyUrl(parsed)
+        proxyReq.removeHeader(xPatHeaderKey)
       })
       .once('proxyRes', resolve)
       .once('error', reject)
