@@ -42,10 +42,24 @@ create EXTENSION if not exists pg_net;
 drop trigger "pipeline-after-insert" on public.pipeline;
 
 -- Database webhoooks is just a special type of trigger, and is listed under `webhooks` while excluded from `triggers` section
-CREATE TRIGGER "pipeline-after-insert"
-	AFTER INSERT ON public.pipeline FOR ROW
-	EXECUTE FUNCTION supabase_functions.http_request ('https://webhook.site/b299d051-2f16-4a97-bdb8-6e2b70552d46', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
 
+
+drop trigger debug on auth.users;
+
+CREATE or replace TRIGGER "debug"
+	AFTER INSERT OR UPDATE OR DELETE ON auth.users FOR ROW
+	EXECUTE FUNCTION supabase_functions.http_request ('https://webhook.site/0f1b1a7d-6d4a-4e74-8daa-a04da104c41a', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
+
+
+update auth.users set raw_user_meta_data = raw_user_meta_data || jsonb_build_object('hello', now()) where id = '0c21d199-6dc5-4cc9-835e-953fde009380';
+
+SELECT
+	raw_user_meta_data
+FROM
+	auth.users
+WHERE
+	id = '0c21d199-6dc5-4cc9-835e-953fde009380';
+delete from auth.users where id = '0c21d199-6dc5-4cc9-835e-953fde009380';
 
 -- This does NOT work. No idea why. TODO: How to we get some variables in here?
 -- CREATE TRIGGER "pipeline-after-insert"

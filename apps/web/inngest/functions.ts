@@ -147,7 +147,8 @@ async function handleDatabaseWebhook(c: ChangePayload) {
       })
     }
   } else if (c.schema === 'public' && c.table === 'resource') {
-    if (c.type === 'INSERT') {
+    // Ignore postgres events for now...
+    if (c.type === 'INSERT' && c.record['provider_name'] !== 'postgres') {
       serverAnalytics.track(zUserId.parse(c.record['creator_id']), {
         name: 'resource/created',
         data: {resourceId: zId('reso').parse(c.record['id'])},
