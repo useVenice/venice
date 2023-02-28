@@ -30,6 +30,7 @@ comment on view "transaction" is e'TODO: Add description of transaction data typ
 @graphql({
 	"primary_key_columns": ["id"],
 	"totalCount": {"enabled": true},
+	"description": "Double entry transaction",
 	"foreign_keys": [
 		{
       "local_name": "transactions",
