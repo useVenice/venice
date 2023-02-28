@@ -1,6 +1,7 @@
 ![Mission: Frictionless financial data](https://img.shields.io/badge/mission-Frictionless%20%20financial%20data-brightgreen)
+[![MIT License](https://img.shields.io/badge/license-MIT-green)](https://tldrlegal.com/license/mit-license)
+[![ELv2 License](https://img.shields.io/badge/license-ELv2-green)](https://www.elastic.co/licensing/elastic-license)
 [![Venice Documentation](https://img.shields.io/badge/read-Documentation-yellow)](http://docs.venice.is)
-[![ELv2 License](https://img.shields.io/badge/license-ELv2-blue)](https://www.elastic.co/licensing/elastic-license)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 ![TypeScript](https://img.shields.io/badge/language-TypeScript-blue)
 
@@ -141,6 +142,37 @@ and let's work together on getting you launched faster!
 
 Jump into our [documentation](https://docs.venice.is) and learn how you can easily 
 extend Venice to add new financial data pipelines into Venice.
+
+## What licence is Venice released under?
+
+We have two licenses:
+
+[![MIT License](https://img.shields.io/badge/license-MIT-green)](https://tldrlegal.com/license/mit-license)
+[![ELv2 License](https://img.shields.io/badge/license-ELv2-green)](https://www.elastic.co/licensing/elastic-license)
+
+### Venice Connectors
+
+Connectors / integrations are licensed under [MIT](https://tldrlegal.com/license/mit-license), which is
+one of the most permissive open source licenses possible. We welcome you to fork
+our connectors to improve them, build new ones, and give back to yourself & others building on
+top of Venice.
+
+### Venice Hosted
+
+[ELv2](https://www.elastic.co/licensing/elastic-license) is a simple, non-copyleft 
+license, allowing you to “use, copy, distribute, make available, and prepare 
+derivative works of the software”. 
+
+Anyone can self-host Venice free of charge for now.
+
+The only limitations are, you cannot:
+- Provide Venice directly to others as a managed service (but you can sell access to applications built on top of Venice)
+- Circumvent any license key functionality or remove/obscure features protected by license keys; or
+- Remove or obscure any licensing, copyright, or other notices
+
+If you'd like to remove these limitations to use Venice, we offer alternative licenses
+for maintenance, support, and other commercial terms. Please 
+[contact us](mailto:hi@venice.is) for more information.
 
 ## How do I get help?
 
