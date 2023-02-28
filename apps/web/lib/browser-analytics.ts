@@ -6,7 +6,7 @@ import posthog from 'posthog-js'
 export const browserAnalytics = {
   // Divided on whether we should use zFunction or use the more verbose z.function()...
   init: zFunction(z.string(), (writeKey) =>
-    posthog.init(writeKey, {api_host: '/metrics', autocapture: true}),
+    posthog.init(writeKey, {api_host: '/_metrics', autocapture: true}),
   ),
   identify: z
     .function()

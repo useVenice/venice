@@ -56,7 +56,7 @@ const nextConfig = {
     beforeFiles: [
       // Proxy metrics requests to Posthog.
       // TODO: Where is this used? and rename to _posthog to be consistent with _sentry
-      {source: '/metrics/:p*', destination: 'https://app.posthog.com/:p*'},
+      {source: '/_metrics/:p*', destination: 'https://app.posthog.com/:p*'},
     ],
     afterFiles: [],
     fallback: [],
