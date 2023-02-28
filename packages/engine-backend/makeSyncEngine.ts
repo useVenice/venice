@@ -365,8 +365,8 @@ export const makeSyncEngine = <
       }),
     dispatch: authedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
       if (
-        input.name !== 'resource/sync-requested' &&
-        input.name !== 'pipeline/sync-requested'
+        input.name !== 'sync/resource-requested' &&
+        input.name !== 'sync/pipeline-requested'
       ) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
@@ -583,7 +583,7 @@ export const makeSyncEngine = <
               !syncInBackground && resoUpdate.triggerDefaultSync,
           })
           if (syncInBackground) {
-            await inngest.send('resource/sync-requested', {data: {resourceId}})
+            await inngest.send('sync/resource-requested', {data: {resourceId}})
           }
           console.log('didConnect finish', int.provider.name, input)
           return 'Resource successfully connected'

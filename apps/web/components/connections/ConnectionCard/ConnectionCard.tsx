@@ -97,7 +97,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 // TODO: show sync in progress and result (success/failure)
                 onClick={() =>
                   dispatch.mutate({
-                    name: 'pipeline/sync-requested',
+                    name: 'sync/pipeline-requested',
                     data: {pipelineId: id},
                   })
                 }

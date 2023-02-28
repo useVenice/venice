@@ -20,7 +20,7 @@ export const scheduleSyncs = inngest.createFunction(
   {name: 'Schedule pipeline syncs'},
   // Disable scheduling during development, can be explicitly triggered from /api/inngest UI
   process.env.NODE_ENV === 'development'
-    ? {event: 'debug/schedule-pipeline-syncs'}
+    ? {event: 'sync/scheduler-debug'}
     : {cron: '* * * * *'},
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
@@ -30,7 +30,7 @@ export const scheduleSyncs = inngest.createFunction(
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
       if (pipelines.length > 0) {
         await inngest.send(
-          'pipeline/sync-requested',
+          'sync/pipeline-requested',
           pipelines.map((pipe) => ({data: {pipelineId: pipe.id}})),
         )
         // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
@@ -48,7 +48,7 @@ export const scheduleSyncs = inngest.createFunction(
 
 export const syncPipeline = inngest.createFunction(
   {name: 'Sync pipeline'},
-  {event: 'pipeline/sync-requested'},
+  {event: 'sync/pipeline-requested'},
   async ({event}) => {
     const {pipelineId} = event.data
     console.log('Will sync pipeline', pipelineId)
@@ -65,7 +65,7 @@ export const syncPipeline = inngest.createFunction(
 
 export const syncResource = inngest.createFunction(
   {name: 'Sync resource'},
-  {event: 'resource/sync-requested'},
+  {event: 'sync/resource-requested'},
   async ({event}) => {
     try {
       const {resourceId} = event.data
@@ -137,12 +137,12 @@ async function handleDatabaseWebhook(c: ChangePayload) {
   if (c.schema === 'auth' && c.table === 'users') {
     if (c.type === 'INSERT') {
       serverAnalytics.track(zUserId.parse(c.record['id']), {
-        name: 'user/created',
+        name: 'db/user-created',
         data: {},
       })
     } else if (c.type === 'DELETE') {
       serverAnalytics.track(zUserId.parse(c.old_record['id']), {
-        name: 'user/deleted',
+        name: 'db/user-deleted',
         data: {},
       })
     }
@@ -150,12 +150,12 @@ async function handleDatabaseWebhook(c: ChangePayload) {
     // Ignore postgres events for now...
     if (c.type === 'INSERT' && c.record['provider_name'] !== 'postgres') {
       serverAnalytics.track(zUserId.parse(c.record['creator_id']), {
-        name: 'resource/created',
+        name: 'db/resource-created',
         data: {resourceId: zId('reso').parse(c.record['id'])},
       })
     } else if (c.type === 'DELETE') {
       serverAnalytics.track(zUserId.parse(c.old_record['creator_id']), {
-        name: 'resource/deleted',
+        name: 'db/resource-deleted',
         data: {resourceId: zId('reso').parse(c.old_record['id'])},
       })
     }

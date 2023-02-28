@@ -15,12 +15,13 @@ export const zUserTraits = z
   })
   .partial()
 
+// TODO: Can we learn from trpc to make all the events here easy to refactor across the codebase?
 const eventMap = {
   // Backend events
   'debug/debug': {},
-  'debug/schedule-pipeline-syncs': {},
-  'pipeline/sync-requested': {pipelineId: zId('pipe')},
-  'resource/sync-requested': {resourceId: zId('reso')},
+  'sync/scheduler-debug': {},
+  'sync/pipeline-requested': {pipelineId: zId('pipe')},
+  'sync/resource-requested': {resourceId: zId('reso')},
   'webhook/received': {
     /** For debugging requests */
     traceId: z.string(),
@@ -31,12 +32,12 @@ const eventMap = {
     body: z.unknown(),
   },
   // Analytics events
-  'user/created': {},
-  'user/deleted': {},
+  'db/user-created': {},
+  'db/user-deleted': {},
+  'db/resource-created': {resourceId: zId('reso')},
+  'db/resource-deleted': {resourceId: zId('reso')},
   'user/signin': {},
   'user/signout': {},
-  'resource/created': {resourceId: zId('reso')},
-  'resource/deleted': {resourceId: zId('reso')},
   'connect/session-started': {providerName: z.string(), meta: z.unknown()},
   'connect/session-cancelled': {providerName: z.string(), meta: z.unknown()},
   'connect/session-succeeded': {providerName: z.string(), meta: z.unknown()},
