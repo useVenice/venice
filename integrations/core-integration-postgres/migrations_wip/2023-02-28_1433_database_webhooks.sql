@@ -9,7 +9,7 @@ CREATE OR REPLACE TRIGGER "on-resource-write"
 	EXECUTE FUNCTION supabase_functions.http_request ('https://alka.ngrok.io/api/webhook/database', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
 
 
--- [ ] Staging
+-- [x] Staging
 CREATE OR REPLACE TRIGGER "on-users-write"
 	AFTER INSERT OR UPDATE OR DELETE ON auth.users FOR ROW
 	EXECUTE FUNCTION supabase_functions.http_request ('https://app-staging.venice.is/api/webhook/database', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
