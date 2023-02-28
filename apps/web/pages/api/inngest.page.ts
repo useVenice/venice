@@ -5,6 +5,7 @@ import * as functions from '../../inngest/functions'
 
 export default serve(inngest.name, Object.values(functions), {
   landingPage: process.env['VERCEL_ENV'] !== 'production',
+  logLevel: 'warn',
   // serveHost: 'http://localhost:3010',
   // servePath: 'api/inngest'
 })
