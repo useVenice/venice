@@ -134,7 +134,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
     } as const,
   ]
 
-  const {integrationsRes, veniceConnect}: UseVenice = useVenice({
+  const {integrationsRes, veniceConnect, checkResource}: UseVenice = useVenice({
     envName: 'sandbox',
     keywords: undefined,
   })
@@ -175,7 +175,25 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             key={source.id}
             id={`source-${source.id}`}
             relations={archerElementRelations}>
-            <ConnectionCard connection={source} />
+            <ConnectionCard
+              connection={source}
+              onReconnect={() => {
+                if (onlyIntegrationId) {
+                  void veniceConnect.connect(
+                    {id: onlyIntegrationId},
+                    {connectWith, resourceId: source.resource.id},
+                  )
+                } else {
+                  console.error('Missing onlyIntegrationId')
+                }
+              }}
+              onSandboxSimulateDisconnect={() =>
+                checkResource.mutate([
+                  {id: source.resource.id},
+                  {sandboxSimulateDisconnect: true},
+                ])
+              }
+            />
           </ArcherElement>
         ))
       ) : (

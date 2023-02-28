@@ -8,6 +8,7 @@ import {
 } from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
+import {LinkIcon, UnlinkIcon} from 'lucide-react'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
 import type {Connection} from '../../../lib/supabase-queries'
@@ -18,13 +19,15 @@ import {EditingDisplayName} from './EditingDisplayName'
 
 export interface ConnectionCardProps {
   connection: Connection
+  onReconnect?: () => void
+  onSandboxSimulateDisconnect?: () => void
 }
 
 type ConnectionStatus = Connection['resource']['status']
 
 export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
   function ConnectionCard(props, ref) {
-    const {connection} = props
+    const {connection, onReconnect} = props
     const {
       id,
       resource: {id: resourceId, displayName, institution, status, labels = []},
@@ -47,6 +50,8 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
     // action.delete
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+    // TODO: We really need a toast component...
 
     return (
       <ResourceCard
@@ -86,6 +91,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
             )}
 
             <ActionMenu>
+              {/* This is not working... */}
+              {/* <ActionMenuItem
+                icon={CopyIcon}
+                label="Copy Id"
+                onClick={() => {
+                  void copyToClipboard(resourceId)
+                }}
+              /> */}
               <ActionMenuItem
                 icon={EditIcon}
                 label="Rename"
@@ -102,6 +115,20 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                   })
                 }
               />
+              {status === 'disconnected' && (
+                <ActionMenuItem
+                  icon={LinkIcon}
+                  label="Reconnect"
+                  onClick={() => onReconnect?.()}
+                />
+              )}
+              {status === 'healthy' && labels.includes('sandbox') && (
+                <ActionMenuItem
+                  icon={UnlinkIcon}
+                  label="Simulate disconnect"
+                  onClick={() => props.onSandboxSimulateDisconnect?.()}
+                />
+              )}
               <ActionMenuItem
                 icon={DeleteIcon}
                 label="Delete"
