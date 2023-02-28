@@ -9,6 +9,7 @@ import {z} from '@usevenice/util'
 import {createTRPCClientProxy} from '@trpc/client'
 import {VeniceProvider} from './VeniceProvider'
 import {Button, ZodForm} from '@usevenice/ui'
+import {browserAnalytics} from '../../apps/web/lib/browser-analytics'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
 export const zUseVeniceOptions = z.object({
@@ -110,8 +111,13 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         return
       }
 
+      const providerName = extractId(int.id)[1]
+
       try {
-        const providerName = extractId(int.id)[1]
+        browserAnalytics.track({
+          name: 'connect/session-started',
+          data: {providerName},
+        })
 
         const preConnInputSchema =
           providerByName[providerName]?.def.preConnectInput
@@ -175,6 +181,8 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         //
         // setIsConnecting(false)
 
+        // TODO: Return inner connect status such as link_session_token to our analytics system
+
         const res: unknown = await innerConnect?.(preConnRes, opt)
         // e.g. Promise resolves once plaid modal closes successfully.
         // If user cancels CANCELLATION_TOKEN will be thrown and therefore
@@ -191,10 +199,22 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         setIsConnecting(false)
 
         console.log(`[useVeniceConnect] ${int.id} Did connect`)
+        browserAnalytics.track({
+          name: 'connect/session-succeeded',
+          data: {providerName},
+        })
       } catch (err) {
         if (err === CANCELLATION_TOKEN) {
+          browserAnalytics.track({
+            name: 'connect/session-cancelled',
+            data: {providerName},
+          })
           console.log(`[useVeniceConnect] ${int.id} Cancelled`)
         } else {
+          browserAnalytics.track({
+            name: 'connect/session-errored',
+            data: {providerName},
+          })
           console.error(`[useVeniceConnect] ${int.id} Connect failed`, err)
         }
       } finally {

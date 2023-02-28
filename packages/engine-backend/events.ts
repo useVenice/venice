@@ -16,6 +16,7 @@ export const zUserTraits = z
   .partial()
 
 const eventMap = {
+  // Backend events
   'debug/debug': {},
   'debug/schedule-pipeline-syncs': {},
   'pipeline/sync-requested': {pipelineId: zId('pipe')},
@@ -29,14 +30,20 @@ const eventMap = {
     headers: z.record(z.unknown()),
     body: z.unknown(),
   },
+  // Analytics events
   'user/created': {},
   'user/deleted': {},
+  'user/signin': {},
+  'user/signout': {},
   'resource/created': {resourceId: zId('reso')},
   'resource/deleted': {resourceId: zId('reso')},
-  'user/login': {},
-  'connection/created': {},
-  'connection/deleted': {},
-  'api/copy-key': {},
+  'connect/session-started': {providerName: z.string(), meta: z.unknown()},
+  'connect/session-cancelled': {providerName: z.string(), meta: z.unknown()},
+  'connect/session-succeeded': {providerName: z.string(), meta: z.unknown()},
+  'connect/session-errored': {providerName: z.string(), meta: z.unknown()},
+  'api/token-copied': {},
+  'api/graphql-request': {},
+  'api/rest-request': {},
 } satisfies Record<string, z.ZodRawShape>
 
 export const zEvent = z.discriminatedUnion(

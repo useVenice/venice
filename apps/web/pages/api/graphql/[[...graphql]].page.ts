@@ -2,6 +2,7 @@ import '@usevenice/app-config/register.node'
 import {joinPath} from '@usevenice/util'
 
 import {NextApiHandler} from 'next'
+import {serverAnalytics} from '../../../lib/server-analytics'
 
 import {proxySupabase} from '../../../lib/supabase-proxy.server'
 
@@ -12,6 +13,15 @@ export const config = {
 
 export default (async (req, res) =>
   proxySupabase(
-    {req, res},
+    {
+      req,
+      res,
+      onUserId: (userId) => {
+        if (userId) {
+          serverAnalytics.track(userId, {name: 'api/graphql-request', data: {}})
+        }
+        return serverAnalytics.flush()
+      },
+    },
     joinPath('graphql/v1', req.url?.replace('/api/graphql', '')),
   )) satisfies NextApiHandler

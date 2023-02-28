@@ -203,7 +203,10 @@ function APIKeysCard({pat}: APIKeysCardProps) {
           <CopyTextButton
             content={pat}
             onCopied={() =>
-              browserAnalytics.track({name: 'api/copy-key', data: {}})
+              browserAnalytics.track({
+                name: 'api/token-copied',
+                data: {},
+              })
             }
           />
         </div>

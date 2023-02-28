@@ -41,8 +41,13 @@ export function SessionContextProvider({
       })
 
     const {data: authListener} = supabaseClient.auth.onAuthStateChange(
-      (_event, session) => {
-        console.log('AuthChange event', _event)
+      (event, session) => {
+        if (event === 'SIGNED_IN') {
+          browserAnalytics.track({name: 'user/signin', data: {}})
+        } else if (event === 'SIGNED_OUT') {
+          browserAnalytics.track({name: 'user/signout', data: {}})
+        }
+        console.log('AuthChange event', event)
         setValue([session ?? null, {error: null, status: 'success'}])
       },
     )
