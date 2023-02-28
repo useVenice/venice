@@ -7,8 +7,10 @@ import {
 } from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import type {UserId} from '@usevenice/cdk-core'
+import {zId, zUserId} from '@usevenice/cdk-core'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
+import {serverAnalytics} from '../lib/server-analytics'
 import {ensureDefaultLedger, getPool, sql} from '../server'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -91,3 +93,71 @@ export const syncResource = inngest.createFunction(
     }
   },
 )
+
+export const handleWebhook = inngest.createFunction(
+  'Handle webhook',
+  'webhook/received',
+  async ({event: {data}}) => {
+    if (data.path.startsWith('database')) {
+      console.log('handle database event', data)
+      await handleDatabaseWebhook(data.body as any)
+    } else if (data.path.startsWith('integration/')) {
+      console.log('handle integration event', data.path)
+    } else {
+      console.warn('Unexpected webhook received', data)
+    }
+  },
+)
+
+interface InsertPayload {
+  type: 'INSERT'
+  table: string
+  schema: string
+  record: Record<string, unknown> // TableRecord<T>
+  old_record: null
+}
+interface UpdatePayload {
+  type: 'UPDATE'
+  table: string
+  schema: string
+  record: Record<string, unknown> // TableRecord<T>
+  old_record: Record<string, unknown> // TableRecord<T>
+}
+interface DeletePayload {
+  type: 'DELETE'
+  table: string
+  schema: string
+  record: null
+  old_record: Record<string, unknown> // TableRecord<T>
+}
+type ChangePayload = InsertPayload | UpdatePayload | DeletePayload
+
+async function handleDatabaseWebhook(c: ChangePayload) {
+  // Consider using pattern matching for this, assuming does not impact ts perf too muach
+  if (c.schema === 'auth' && c.table === 'users') {
+    if (c.type === 'INSERT') {
+      serverAnalytics.track(zUserId.parse(c.record['id']), {
+        name: 'user/created',
+        data: {},
+      })
+    } else if (c.type === 'DELETE') {
+      serverAnalytics.track(zUserId.parse(c.old_record['id']), {
+        name: 'user/deleted',
+        data: {},
+      })
+    }
+  } else if (c.schema === 'public' && c.table === 'resource') {
+    if (c.type === 'INSERT') {
+      serverAnalytics.track(zUserId.parse(c.record['creator_id']), {
+        name: 'resource/created',
+        data: {resourceId: zId('reso').parse(c.record['id'])},
+      })
+    } else if (c.type === 'DELETE') {
+      serverAnalytics.track(zUserId.parse(c.old_record['creator_id']), {
+        name: 'resource/deleted',
+        data: {resourceId: zId('reso').parse(c.old_record['id'])},
+      })
+    }
+  }
+  await serverAnalytics.flush()
+}
