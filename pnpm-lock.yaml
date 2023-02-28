@@ -308,7 +308,7 @@ importers:
       graphql: ^16.6.0
       graphql-ws: ^5.11.3
       http-proxy: 1.18.1
-      inngest: 1.0.0
+      inngest: 1.2.0
       jotai: 1.8.3
       lodash: 4.17.21
       lucide-react: 0.115.0
@@ -368,7 +368,7 @@ importers:
       graphql: 16.6.0
       graphql-ws: 5.11.3_graphql@16.6.0
       http-proxy: 1.18.1
-      inngest: 1.0.0
+      inngest: 1.2.0
       jotai: 1.8.3_react@18.2.0
       lodash: 4.17.21
       lucide-react: 0.115.0_react@18.2.0
@@ -883,14 +883,14 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/util': workspace:*
-      inngest: 1.0.0
+      inngest: 1.2.0
       jsonwebtoken: 8.5.1
     dependencies:
       '@trpc/server': 10.9.1
       '@usevenice/cdk-core': link:../cdk-core
       '@usevenice/cdk-ledger': link:../cdk-ledger
       '@usevenice/util': link:../util
-      inngest: 1.0.0
+      inngest: 1.2.0
       jsonwebtoken: 8.5.1
     devDependencies:
       '@types/jsonwebtoken': 8.5.9
@@ -9658,8 +9658,8 @@ packages:
       fast-loops: 1.1.3
     dev: false
 
-  /inngest/1.0.0:
-    resolution: {integrity: sha512-q5Q/7CK95Di3/gkuCryCamNVpLSxryOdWhXtjlejHYjtI+5gk2V24I/bIp0QfPk9jEDLIbrjS4jEusFjxY+lMg==}
+  /inngest/1.2.0:
+    resolution: {integrity: sha512-IBagpcMl9f/KWdhkHgK6zLYp9G0KZ+SNvN5OTAXsYNmNgJyb3NQihhZy4os7YLAta7psIIue7IRb6TNDdY89Hg==}
     hasBin: true
     dependencies:
       buffer: 6.0.3

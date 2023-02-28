@@ -16,11 +16,19 @@ export const zUserTraits = z
   .partial()
 
 const eventMap = {
+  'debug/debug': {},
+  'debug/schedule-pipeline-syncs': {},
   'pipeline/sync-requested': {pipelineId: zId('pipe')},
   'resource/sync-requested': {resourceId: zId('reso')},
-  'webhook/received': {body: z.unknown(), headers: z.record(z.string())},
-  'debug/schedule-pipeline-syncs': {},
-  'debug/debug': {},
+  'webhook/received': {
+    /** For debugging requests */
+    traceId: z.string(),
+    method: z.string(),
+    path: z.string(),
+    query: z.record(z.unknown()),
+    headers: z.record(z.unknown()),
+    body: z.unknown(),
+  },
   'user/signup': {},
   'user/login': {},
   'connection/created': {},
@@ -49,7 +57,9 @@ type ToInngestEventMap<TEvent extends {name: string}> = {
     Extract<TEvent, {name: k}>
 }
 
-export const inngest = new Inngest<ToInngestEventMap<Event>>({
+type InngestEventMap = ToInngestEventMap<Event>
+
+export const inngest = new Inngest<InngestEventMap>({
   name: 'Venice',
   // TODO: have a dedicated browser inngest key
   eventKey: process.env['INNGEST_EVENT_KEY'] ?? 'local',
