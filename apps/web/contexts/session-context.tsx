@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
 
 import React from 'react'
+import {browserAnalytics} from '../lib/browser-analytics'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'
@@ -47,6 +49,19 @@ export function SessionContextProvider({
     return () => authListener?.subscription.unsubscribe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const user = value[0]?.user
+
+  React.useEffect(() => {
+    if (user) {
+      browserAnalytics.identify(user.id, {
+        email: user.email || undefined,
+        phone: user.phone || undefined,
+      })
+    } else {
+      browserAnalytics.reset()
+    }
+  }, [user])
 
   return <SessionContext.Provider {...props} value={value} />
 }

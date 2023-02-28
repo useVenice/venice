@@ -8,7 +8,10 @@ import {Inngest} from 'inngest'
 
 export const zUserTraits = z
   .object({
+    /** Also sets the display name in posthog ui */
+    name: z.string(),
     email: z.string(),
+    phone: z.string(),
   })
   .partial()
 
