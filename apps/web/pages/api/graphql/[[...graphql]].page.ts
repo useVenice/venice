@@ -20,6 +20,6 @@ export default (async (req, res) =>
       if (userId) {
         serverAnalytics.track(userId, {name: 'api/graphql-request', data: {}})
       }
-      return serverAnalytics.flush()
+      return serverAnalytics.flush({ignoreErrors: true})
     },
   })) satisfies NextApiHandler

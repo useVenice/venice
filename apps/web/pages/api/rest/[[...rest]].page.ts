@@ -28,7 +28,7 @@ export default (async (req, res) => {
       if (userId) {
         serverAnalytics.track(userId, {name: 'api/rest-request', data: {}})
       }
-      return serverAnalytics.flush()
+      return serverAnalytics.flush({ignoreErrors: true})
     },
     onProxyRes: (proxyRes) => {
       // Only modify the open API response document, let others pass through

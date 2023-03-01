@@ -27,11 +27,16 @@ export const makeServerAnalytics = zFunction(z.string(), (writeKey: string) => {
           properties: event.data,
         }),
       ),
-    flush: async () => {
+    flush: async (opts = {ignoreErrors: true}) => {
       // FlushAsync does not appear documented.
       // Instead we need to use shutdownAsync
       // await posthog.flushAsync()
-      await posthog.shutdownAsync()
+      await posthog.shutdownAsync().catch((err) => {
+        if (!opts.ignoreErrors) {
+          throw err
+        }
+        console.warn('Failed to flush to posthog', err)
+      })
     },
   }
 })
