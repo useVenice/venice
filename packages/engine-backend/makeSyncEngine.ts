@@ -471,18 +471,27 @@ export const makeSyncEngine = <
       .input(
         z.tuple([
           zReso,
-          z.object({revokeOnly: z.boolean().nullish()}).optional(),
+          z
+            .object({
+              skipRevoke: z.boolean().nullish(),
+              todo_deleteAssociatedData: z.boolean().nullish(),
+            })
+            .optional(),
         ]),
       )
       .mutation(
         async ({input: [{settings, integration, ...reso}, opts], ctx}) => {
           authorizeOrThrow(ctx, 'resource', reso)
-          await integration.provider.revokeResource?.(
-            settings,
-            integration.config,
-          )
-          if (opts?.revokeOnly) {
-            return
+          if (!opts?.skipRevoke) {
+            await integration.provider.revokeResource?.(
+              settings,
+              integration.config,
+            )
+          }
+          if (opts?.todo_deleteAssociatedData) {
+            // TODO: Figure out how to delete... Destination is not part of meta service
+            // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
+            // We should probably introduce a reset / delete event...
           }
           await metaService.tables.resource.delete(reso.id)
         },
