@@ -10,7 +10,7 @@ interface DeleteConnectionDialogProps {
   isConnectionDeleting?: boolean
   name?: Connection['resource']['displayName']
   onCancel: () => void
-  onDeletionConfirmed: () => void
+  onDeletionConfirmed: (options?: {deleteAssociatedData?: boolean}) => void
 }
 
 export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {

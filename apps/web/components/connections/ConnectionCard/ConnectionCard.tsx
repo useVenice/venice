@@ -1,3 +1,4 @@
+import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {DialogPrimitive, Loading} from '@usevenice/ui'
 import {
@@ -11,6 +12,7 @@ import {formatDistanceToNowStrict} from 'date-fns'
 import {LinkIcon, UnlinkIcon} from 'lucide-react'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
+import {browserSupabase} from '../../../contexts/common-contexts'
 import type {Connection} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
@@ -47,6 +49,25 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
       onError: console.error,
       onSettled: () => setDeleteDialogOpen(false),
     })
+
+    const deleteAssociatedData = useMutation(
+      () =>
+        Promise.all([
+          browserSupabase
+            .from('raw_transaction')
+            .delete({count: 'exact'})
+            .eq('source_id', resourceId),
+          browserSupabase
+            .from('raw_account')
+            .delete({count: 'exact'})
+            .eq('source_id', resourceId),
+          browserSupabase
+            .from('raw_commodity')
+            .delete({count: 'exact'})
+            .eq('source_id', resourceId),
+        ]).then(() => undefined),
+      {mutationKey: ['resource', 'deleteAssociated', resourceId]},
+    )
 
     // action.delete
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -150,13 +171,20 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               open={isDeleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}>
               <DeleteConnectionDialog
-                isConnectionDeleting={deleteResource.isLoading}
+                isConnectionDeleting={
+                  deleteAssociatedData.isLoading || deleteResource.isLoading
+                }
                 institution={institution}
                 name={displayName}
                 onCancel={() => setDeleteDialogOpen(false)}
-                onDeletionConfirmed={() =>
-                  deleteResource.mutate([{id: resourceId}, {}])
-                }
+                onDeletionConfirmed={(opts) => {
+                  if (opts?.deleteAssociatedData) {
+                    deleteAssociatedData.mutate(undefined, {
+                      onSuccess: () =>
+                        deleteResource.mutate([{id: resourceId}, {}]),
+                    })
+                  }
+                }}
               />
             </DialogPrimitive.Root>
           </div>
