@@ -178,3 +178,7 @@ for maintenance, support, and other commercial terms. Please
 
 - [Email us](mailto:hi@venice.is)
 - [Join our Discord](https://discord.gg/gTMch6Gn2u)
+
+## Contributors
+
+<img src="https://contributors-img.web.app/image?repo=usevenice/venice"/>
