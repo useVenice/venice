@@ -119,40 +119,6 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           data: {providerName},
         })
 
-        const preConnInputSchema =
-          providerByName[providerName]?.def.preConnectInput
-
-        const ENABLE_PRECONNECT_PROMPT =
-          !!window.localStorage['ENABLE_PRECONNECT_PROMPT']
-        const preConnIpt = !ENABLE_PRECONNECT_PROMPT
-          ? {}
-          : preConnInputSchema
-          ? await new Promise((resolve, reject) => {
-              openDialog(({close}) => (
-                <ZodForm
-                  schema={preConnInputSchema as any}
-                  onSubmit={(values) => {
-                    close()
-                    resolve(values)
-                  }}
-                  renderAfter={({submit}) => (
-                    <>
-                      <Button
-                        onClick={(e) => {
-                          e.preventDefault()
-                          close()
-                          reject(CANCELLATION_TOKEN)
-                        }}>
-                        Cancel
-                      </Button>
-                      <Button onClick={submit}>Launch</Button>
-                    </>
-                  )}
-                />
-              ))
-            })
-          : undefined
-
         const opt: ConnectOptions = {
           institutionExternalId: opts.institutionId
             ? extractId(opts.institutionId)[2]
@@ -162,6 +128,44 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
             : undefined,
           envName,
         }
+
+        const preConnInputSchema =
+          providerByName[providerName]?.def.preConnectInput
+
+        const ENABLE_PRECONNECT_PROMPT =
+          !!window.localStorage['ENABLE_PRECONNECT_PROMPT']
+
+        // Do not show pre-connect dialog if we are re-connecting
+        const preConnIpt =
+          !ENABLE_PRECONNECT_PROMPT ||
+          opt.resourceExternalId ||
+          !preConnInputSchema
+            ? {}
+            : await new Promise((resolve, reject) => {
+                openDialog(({close}) => (
+                  <ZodForm
+                    schema={preConnInputSchema as any}
+                    onSubmit={(values) => {
+                      close()
+                      resolve(values)
+                    }}
+                    renderAfter={({submit}) => (
+                      <>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault()
+                            close()
+                            reject(CANCELLATION_TOKEN)
+                          }}>
+                          Cancel
+                        </Button>
+                        <Button onClick={submit}>Launch</Button>
+                      </>
+                    )}
+                  />
+                ))
+              })
+
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} Will connect`)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
