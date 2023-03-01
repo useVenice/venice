@@ -55,18 +55,18 @@ export function SessionContextProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const user = value[0]?.user
+  const {id: userId, email, phone} = value[0]?.user ?? {}
 
   React.useEffect(() => {
-    if (user) {
-      browserAnalytics.identify(user.id, {
-        email: user.email || undefined,
-        phone: user.phone || undefined,
+    if (userId) {
+      browserAnalytics.identify(userId, {
+        email: email || undefined,
+        phone: phone || undefined,
       })
     } else {
       browserAnalytics.reset()
     }
-  }, [user])
+  }, [email, phone, userId])
 
   return <SessionContext.Provider {...props} value={value} />
 }

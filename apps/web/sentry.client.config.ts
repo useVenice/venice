@@ -41,3 +41,5 @@ Sentry.setTags({
 })
 
 console.log('sentry initialized')
+
+export {Sentry}
