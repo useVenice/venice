@@ -291,6 +291,7 @@ importers:
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
       '@types/swagger-schema-official': 2.0.22
+      '@types/swagger2openapi': 7.0.0
       '@usevenice/app-config': workspace:*
       '@usevenice/cdk-core': workspace:*
       '@usevenice/engine-backend': workspace:*
@@ -320,6 +321,7 @@ importers:
       node-http-proxy-json: 0.1.9
       node-loader: 2.0.0
       nprogress: ^0.2.0
+      openapi-typescript: 6.1.1
       postcss: '*'
       posthog-js: 1.47.0
       posthog-node: 2.5.4
@@ -330,6 +332,7 @@ importers:
       react-hook-form: ^7.43.1
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
+      swagger2openapi: 7.0.8
       tailwind-merge: 1.6.0
       tailwindcss: 3.2.4
       tailwindcss-animate: ^1.0.5
@@ -355,6 +358,7 @@ importers:
       '@trpc/server': 10.9.1
       '@types/http-proxy': 1.17.10
       '@types/swagger-schema-official': 2.0.22
+      '@types/swagger2openapi': 7.0.0
       '@usevenice/app-config': link:../app-config
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/engine-backend': link:../../packages/engine-backend
@@ -389,6 +393,7 @@ importers:
       react-hook-form: 7.43.1_react@18.2.0
       react-responsive-carousel: 3.2.23
       superjson: 1.9.1
+      swagger2openapi: 7.0.8
       tailwind-merge: 1.6.0
       tailwindcss-animate: 1.0.5_tailwindcss@3.2.4
       ts-pattern: 4.0.5
@@ -402,6 +407,7 @@ importers:
       csstype: 3.1.1
       daisyui: 2.24.2_gbtt6ss3tbiz4yjtvdr6fbrj44
       node-loader: 2.0.0_webpack@5.74.0
+      openapi-typescript: 6.1.1
       postcss: 8.4.21
       tailwindcss: 3.2.4_postcss@8.4.21
       tailwindcss-radix: 2.5.0
@@ -628,7 +634,7 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/util': workspace:*
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
       react: 18.2.0
     dependencies:
       '@usevenice/cdk-core': link:../../packages/cdk-core
@@ -637,7 +643,7 @@ importers:
       react: 18.2.0
     devDependencies:
       '@types/react': 18.0.27
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
 
   integrations/integration-plaid:
     specifiers:
@@ -646,7 +652,7 @@ importers:
       '@usevenice/cdk-ledger': workspace:*
       '@usevenice/standard': workspace:*
       '@usevenice/util': workspace:*
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
       plaid: 12.3.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -662,7 +668,7 @@ importers:
       react-plaid-link: 3.3.2_biqbaboplfbrettd7655fr4n2y
     devDependencies:
       '@types/react': 18.0.27
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
 
   integrations/integration-postgres:
     specifiers:
@@ -835,7 +841,7 @@ importers:
       '@usevenice/standard': workspace:*
       '@usevenice/util': workspace:*
       csstype: '*'
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
       openapi-typescript-codegen: 0.23.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -850,7 +856,7 @@ importers:
     devDependencies:
       '@cfworker/json-schema': 1.12.4
       '@types/react': 18.0.27
-      openapi-typescript: 6.1.0
+      openapi-typescript: 6.1.1
       openapi-typescript-codegen: 0.23.0
 
   packages/cdk-core:
@@ -1722,6 +1728,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@exodus/schemasafe/1.0.0-rc.9:
+    resolution: {integrity: sha512-dGGHpb61hLwifAu7sotuHFDBw6GTdpG8aKC0fsK17EuTzMRvUrH7lEAr6LTJ+sx3AZYed9yZ77rltVDHyg2hRg==}
+    dev: false
 
   /@faker-js/faker/5.5.3:
     resolution: {integrity: sha512-R11tGE6yIFwqpaIqcfkcg7AICXzFg14+5h5v0TfF/9+RMDL6jhzCy/pxHVOfbALGdtVYdt6JdR21tuxEgl34dw==}
@@ -5535,6 +5545,13 @@ packages:
     resolution: {integrity: sha512-7yQiX6MWSFSvc/1wW5smJMZTZ4fHOd+hqLr3qr/HONDxHEa2bnYAsOcGBOEqFIjd4yetwMOdEDdeW+udRAQnHA==}
     dev: false
 
+  /@types/swagger2openapi/7.0.0:
+    resolution: {integrity: sha512-jbjunFpBQqbYt9JZYPDe1G9TkTVzQ8MqT1z7qMq/f7EZzdoA/G8WCZt8dr5gLkATkaE2n8FX7HlrBUTNyYRAJA==}
+    dependencies:
+      '@types/node': 18.11.18
+      openapi-types: 12.1.0
+    dev: false
+
   /@types/tunnel/0.0.3:
     resolution: {integrity: sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==}
     dependencies:
@@ -7775,6 +7792,10 @@ packages:
       es6-symbol: 3.1.3
     dev: false
 
+  /es6-promise/3.3.1:
+    resolution: {integrity: sha512-SOp9Phqvqn7jtEUxPWdWfWoLmyt2VaJ6MpvP9Comy1MceMXqE6bxvaTu4iaxpYYPzhny28Lc+M87/c2cPK6lDg==}
+    dev: false
+
   /es6-symbol/3.1.3:
     resolution: {integrity: sha512-NJ6Yn3FuDinBaBRWl/q5X/s4koRHBrgKAu+yGI6JCBeiu3qrcbJhwT2GeR/EXVfylRk8dpQVJoLEFhK+Mu31NA==}
     dependencies:
@@ -9531,6 +9552,10 @@ packages:
       assert-plus: 1.0.0
       jsprim: 1.4.2
       sshpk: 1.17.0
+    dev: false
+
+  /http2-client/1.3.5:
+    resolution: {integrity: sha512-EC2utToWl4RKfs5zd36Mxq7nzHHBuomZboI0yYL6Y0RmBgT7Sgkq4rQ0ezFTYoIsSs7Tm9SJe+o2FcAg6GBhGA==}
     dev: false
 
   /http2-wrapper/1.0.3:
@@ -12118,6 +12143,13 @@ packages:
     resolution: {integrity: sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==}
     dev: false
 
+  /node-fetch-h2/2.3.0:
+    resolution: {integrity: sha512-ofRW94Ab0T4AOh5Fk8t0h8OBWrmjb0SSB20xh1H8YnPV9EJ+f5AMoYSUQ2zgJ4Iq2HAK0I2l5/Nequ8YzFS3Hg==}
+    engines: {node: 4.x || >=6.0.0}
+    dependencies:
+      http2-client: 1.3.5
+    dev: false
+
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -12159,6 +12191,12 @@ packages:
       loader-utils: 2.0.2
       webpack: 5.74.0
     dev: true
+
+  /node-readfiles/0.2.0:
+    resolution: {integrity: sha512-SU00ZarexNlE4Rjdm83vglt5Y9yiQ+XI1XpflWlb7q7UTN1JUItm69xMeiQCTxtTfnzt+83T8Cx+vI2ED++VDA==}
+    dependencies:
+      es6-promise: 3.3.1
+    dev: false
 
   /node-releases/2.0.6:
     resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==}
@@ -12261,6 +12299,48 @@ packages:
   /number-is-nan/1.0.1:
     resolution: {integrity: sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /oas-kit-common/1.0.8:
+    resolution: {integrity: sha512-pJTS2+T0oGIwgjGpw7sIRU8RQMcUoKCDWFLdBqKB2BNmGpbBMH2sdqAaOXUg8OzonZHU0L7vfJu1mJFEiYDWOQ==}
+    dependencies:
+      fast-safe-stringify: 2.1.1
+    dev: false
+
+  /oas-linter/3.2.2:
+    resolution: {integrity: sha512-KEGjPDVoU5K6swgo9hJVA/qYGlwfbFx+Kg2QB/kd7rzV5N8N5Mg6PlsoCMohVnQmo+pzJap/F610qTodKzecGQ==}
+    dependencies:
+      '@exodus/schemasafe': 1.0.0-rc.9
+      should: 13.2.3
+      yaml: 1.10.2
+    dev: false
+
+  /oas-resolver/2.5.6:
+    resolution: {integrity: sha512-Yx5PWQNZomfEhPPOphFbZKi9W93CocQj18NlD2Pa4GWZzdZpSJvYwoiuurRI7m3SpcChrnO08hkuQDL3FGsVFQ==}
+    hasBin: true
+    dependencies:
+      node-fetch-h2: 2.3.0
+      oas-kit-common: 1.0.8
+      reftools: 1.1.9
+      yaml: 1.10.2
+      yargs: 17.6.0
+    dev: false
+
+  /oas-schema-walker/1.1.5:
+    resolution: {integrity: sha512-2yucenq1a9YPmeNExoUa9Qwrt9RFkjqaMAA1X+U7sbb0AqBeTIdMHky9SQQ6iN94bO5NW0W4TRYXerG+BdAvAQ==}
+    dev: false
+
+  /oas-validator/5.0.8:
+    resolution: {integrity: sha512-cu20/HE5N5HKqVygs3dt94eYJfBi0TsZvPVXDhbXQHiEityDN+RROTleefoKRKKJ9dFAF2JBkDHgvWj0sjKGmw==}
+    dependencies:
+      call-me-maybe: 1.0.1
+      oas-kit-common: 1.0.8
+      oas-linter: 3.2.2
+      oas-resolver: 2.5.6
+      oas-schema-walker: 1.1.5
+      reftools: 1.1.9
+      should: 13.2.3
+      yaml: 1.10.2
     dev: false
 
   /oauth-sign/0.9.0:
@@ -12384,6 +12464,10 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
+  /openapi-types/12.1.0:
+    resolution: {integrity: sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==}
+    dev: false
+
   /openapi-typescript-codegen/0.23.0:
     resolution: {integrity: sha512-gOJXy5g3H3HlLpVNN+USrNK2i2KYBmDczk9Xk34u6JorwrGiDJZUj+al4S+i9TXdfUQ/ZaLxE59Xf3wqkxGfqA==}
     hasBin: true
@@ -12404,6 +12488,18 @@ packages:
       js-yaml: 4.1.0
       supports-color: 9.3.1
       undici: 5.16.0
+      yargs-parser: 21.1.1
+    dev: true
+
+  /openapi-typescript/6.1.1:
+    resolution: {integrity: sha512-KKoe2ZfALfMRo7hbi7T7fP6hr7770l6/FbwGPNMCLwMj4gYqLIGf49bR2gnPrCDQG1XbC65M8XGCnvF/E+aI9g==}
+    hasBin: true
+    dependencies:
+      ansi-colors: 4.1.3
+      fast-glob: 3.2.12
+      js-yaml: 4.1.0
+      supports-color: 9.3.1
+      undici: 5.20.0
       yargs-parser: 21.1.1
     dev: true
 
@@ -13725,6 +13821,10 @@ packages:
       redis-parser: 3.0.0
     dev: false
 
+  /reftools/1.1.9:
+    resolution: {integrity: sha512-OVede/NQE13xBQ+ob5CKd5KyeJYU2YInb1bmV4nRoOfquZPkAkxuOXicSe1PvqIuZZ4kD13sPKBbR7UFDmli6w==}
+    dev: false
+
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
 
@@ -14218,6 +14318,44 @@ packages:
 
   /shell-quote/1.7.3:
     resolution: {integrity: sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw==}
+
+  /should-equal/2.0.0:
+    resolution: {integrity: sha512-ZP36TMrK9euEuWQYBig9W55WPC7uo37qzAEmbjHz4gfyuXrEUgF8cUvQVO+w+d3OMfPvSRQJ22lSm8MQJ43LTA==}
+    dependencies:
+      should-type: 1.4.0
+    dev: false
+
+  /should-format/3.0.3:
+    resolution: {integrity: sha512-hZ58adtulAk0gKtua7QxevgUaXTTXxIi8t41L3zo9AHvjXO1/7sdLECuHeIN2SRtYXpNkmhoUP2pdeWgricQ+Q==}
+    dependencies:
+      should-type: 1.4.0
+      should-type-adaptors: 1.1.0
+    dev: false
+
+  /should-type-adaptors/1.1.0:
+    resolution: {integrity: sha512-JA4hdoLnN+kebEp2Vs8eBe9g7uy0zbRo+RMcU0EsNy+R+k049Ki+N5tT5Jagst2g7EAja+euFuoXFCa8vIklfA==}
+    dependencies:
+      should-type: 1.4.0
+      should-util: 1.0.1
+    dev: false
+
+  /should-type/1.4.0:
+    resolution: {integrity: sha512-MdAsTu3n25yDbIe1NeN69G4n6mUnJGtSJHygX3+oN0ZbO3DTiATnf7XnYJdGT42JCXurTb1JI0qOBR65shvhPQ==}
+    dev: false
+
+  /should-util/1.0.1:
+    resolution: {integrity: sha512-oXF8tfxx5cDk8r2kYqlkUJzZpDBqVY/II2WhvU0n9Y3XYvAYRmeaf1PvvIvTgPnv4KJ+ES5M0PyDq5Jp+Ygy2g==}
+    dev: false
+
+  /should/13.2.3:
+    resolution: {integrity: sha512-ggLesLtu2xp+ZxI+ysJTmNjh2U0TsC+rQ/pfED9bUZZ4DKefP27D+7YJVVTvKsmjLpIi9jAa7itwDGkDDmt1GQ==}
+    dependencies:
+      should-equal: 2.0.0
+      should-format: 3.0.3
+      should-type: 1.4.0
+      should-type-adaptors: 1.1.0
+      should-util: 1.0.1
+    dev: false
 
   /shvl/2.0.3:
     resolution: {integrity: sha512-V7C6S9Hlol6SzOJPnQ7qzOVEWUQImt3BNmmzh40wObhla3XOYMe4gGiYzLrJd5TFa+cI2f9LKIRJTTKZSTbWgw==}
@@ -14990,6 +15128,25 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  /swagger2openapi/7.0.8:
+    resolution: {integrity: sha512-upi/0ZGkYgEcLeGieoz8gT74oWHA0E7JivX7aN9mAf+Tc7BQoRBvnIGHoPDw+f9TXTW4s6kGYCZJtauP6OYp7g==}
+    hasBin: true
+    dependencies:
+      call-me-maybe: 1.0.1
+      node-fetch: 2.6.7
+      node-fetch-h2: 2.3.0
+      node-readfiles: 0.2.0
+      oas-kit-common: 1.0.8
+      oas-resolver: 2.5.6
+      oas-schema-walker: 1.1.5
+      oas-validator: 5.0.8
+      reftools: 1.1.9
+      yaml: 1.10.2
+      yargs: 17.6.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /synckit/0.8.4:
     resolution: {integrity: sha512-Dn2ZkzMdSX827QbowGbU/4yjWuvNaCoScLLoMo/yKbu+P4GBR6cRGKZH27k6a9bRzdqcyd1DE96pQtQ6uNkmyw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -15500,6 +15657,13 @@ packages:
 
   /undici/5.16.0:
     resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
+    engines: {node: '>=12.18'}
+    dependencies:
+      busboy: 1.6.0
+    dev: true
+
+  /undici/5.20.0:
+    resolution: {integrity: sha512-J3j60dYzuo6Eevbawwp1sdg16k5Tf768bxYK4TUJRH7cBM4kFCbf3mOnM/0E3vQYXvpxITbbWmBafaDbxLDz3g==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0

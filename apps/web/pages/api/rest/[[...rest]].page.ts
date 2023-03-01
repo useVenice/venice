@@ -1,13 +1,15 @@
 import '@usevenice/app-config/register.node'
-import {joinPath, R} from '@usevenice/util'
 
+import converter from 'swagger2openapi'
+
+import {getRestEndpoint} from '@usevenice/app-config/constants'
+import {joinPath, R} from '@usevenice/util'
 import {NextApiHandler} from 'next'
 import modifyResponse from 'node-http-proxy-json'
 import {serverAnalytics} from '../../../lib/server-analytics'
-
-import {getRestEndpoint} from '@usevenice/app-config/constants'
-import type {Spec as Swagger2Spec} from 'swagger-schema-official'
 import {proxySupabase} from '../../../lib/supabase-proxy.server'
+
+type Swagger2Spec = Parameters<(typeof converter)['convertObj']>[0]
 
 // Enable `externalResolver` option in Next.js
 export const config = {
@@ -33,32 +35,36 @@ export default (async (req, res) => {
       if (path !== '') {
         return
       }
-      modifyResponse<Swagger2Spec>(res, proxyRes, (data) => ({
-        ...data,
-        host: restEndpoint.host,
-        basePath: restEndpoint.pathname,
-        info: {
-          description:
-            'Venice: open source infrastructure to enable the frictionless movement of financial data.',
-          title: 'Venice REST API',
-          version: '2023-02-26',
-        },
-        schemes: [restEndpoint.protocol.replace(':', '')],
-        // Remove RPC calls to be less confusing for users
-        paths: R.pipe(
-          data.paths,
-          R.toPairs,
-          R.filter(([path]) => !path.startsWith('/rpc')),
-          R.sortBy(([path]) => path),
-          R.fromPairs,
-        ) as Record<string, any>,
-        definitions: R.pipe(
-          data.definitions ?? {},
-          R.toPairs,
-          R.sortBy(([name]) => name),
-          R.fromPairs,
-        ) as Record<string, any>,
-      }))
+      modifyResponse(res, proxyRes, async (data: Swagger2Spec) => {
+        const openapi2: Swagger2Spec = {
+          ...data,
+          host: restEndpoint.host,
+          basePath: restEndpoint.pathname,
+          info: {
+            description:
+              'Venice: open source infrastructure to enable the frictionless movement of financial data.',
+            title: 'Venice REST API',
+            version: '2023-02-26',
+          },
+          schemes: [restEndpoint.protocol.replace(':', '')],
+          // Remove RPC calls to be less confusing for users
+          paths: R.pipe(
+            data.paths,
+            R.toPairs,
+            R.filter(([path]) => !path.startsWith('/rpc')),
+            R.sortBy(([path]) => path),
+            R.fromPairs,
+          ) as Record<string, any>,
+          definitions: R.pipe(
+            data.definitions ?? {},
+            R.toPairs,
+            R.sortBy(([name]) => name),
+            R.fromPairs,
+          ) as Record<string, any>,
+        }
+        const converted = await converter.convertObj(openapi2, {})
+        return converted.openapi
+      })
     },
   })
 }) satisfies NextApiHandler

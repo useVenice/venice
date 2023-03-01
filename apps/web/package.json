@@ -8,6 +8,7 @@
     "build:next": "next build",
     "dev": "next dev",
     "gen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
+    "sdk-codegen": "openapi-typescript http://localhost:3000/api/rest --output venice.gen.ts",
     "start": "next start"
   },
   "dependencies": {
@@ -26,7 +27,7 @@
     "@trpc/react-query": "10.9.1",
     "@trpc/server": "10.9.1",
     "@types/http-proxy": "1.17.10",
-    "@types/swagger-schema-official": "2.0.22",
+    "@types/swagger2openapi": "7.0.0",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
@@ -61,6 +62,7 @@
     "react-hook-form": "^7.43.1",
     "react-responsive-carousel": "3.2.23",
     "superjson": "1.9.1",
+    "swagger2openapi": "7.0.8",
     "tailwind-merge": "1.6.0",
     "tailwindcss-animate": "^1.0.5",
     "ts-pattern": "4.0.5",
@@ -75,6 +77,7 @@
     "csstype": "*",
     "daisyui": "2.24.2",
     "node-loader": "2.0.0",
+    "openapi-typescript": "6.1.1",
     "postcss": "*",
     "tailwindcss": "3.2.4",
     "tailwindcss-radix": "2.5.0",

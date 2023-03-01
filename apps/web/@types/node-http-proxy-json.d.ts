@@ -8,6 +8,6 @@ declare module 'node-http-proxy-json' {
   export default function modifyResponse<T = unknown, U = T>(
     res: import('http').ServerResponse,
     proxyRes: unknown,
-    callback: (json: T) => U,
+    callback: (json: T) => U | Promise<U>,
   ): void
 }
