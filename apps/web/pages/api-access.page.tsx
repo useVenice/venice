@@ -23,13 +23,13 @@ import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
 
 // for server-side
 import {
-  graphqlEndpoint,
-  restEndpoint,
+  getGraphqlEndpoint,
+  getRestEndpoint,
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
 import {browserAnalytics} from '../lib/browser-analytics'
+import {ensurePersonalAccessToken, serverGetUser} from '../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
@@ -158,10 +158,10 @@ function APIKeysCard({pat}: APIKeysCardProps) {
         <div className="flex gap-4">
           <input
             className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={graphqlEndpoint.href}
+            value={getGraphqlEndpoint(null).href}
             readOnly
           />
-          <CopyTextButton content={graphqlEndpoint.href} />
+          <CopyTextButton content={getGraphqlEndpoint(null).href} />
         </div>
       </div>
 
@@ -173,10 +173,10 @@ function APIKeysCard({pat}: APIKeysCardProps) {
         <div className="flex gap-4">
           <input
             className="w-1/3 resize-none rounded-lg bg-venice-black-400 p-2 font-mono text-xs text-venice-gray/75 ring-1 ring-inset ring-venice-black-300 focus:outline-none"
-            value={restEndpoint.href}
+            value={getRestEndpoint(null).href}
             readOnly
           />
-          <CopyTextButton content={restEndpoint.href} />
+          <CopyTextButton content={getRestEndpoint(null).href} />
         </div>
         <Button variant="primary" asChild className="w-[14rem] gap-2">
           <Link href="/api-access/rest" target="_blank">

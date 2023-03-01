@@ -3,44 +3,13 @@ import '@stoplight/elements/styles.min.css' // this pollutes the global CSS spac
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
 import {Loading} from '@usevenice/ui'
-import {R} from '@usevenice/util'
 
-import {restEndpoint} from '@usevenice/app-config/constants'
-import type {Spec as Swagger2Spec} from 'swagger-schema-official'
+import {getRestEndpoint} from '@usevenice/app-config/constants'
 
 export default function RestExplorerPage() {
   const oasDocument = useQuery({
     queryKey: ['oasDocument'],
-    queryFn: () => fetch(restEndpoint.href).then((r) => r.json()),
-    select: (data: Swagger2Spec): Swagger2Spec => ({
-      // TODO: move this logic to server side [[...rest]] endpoint later.
-      // Need ot use selfHandleResponse and modify the response body json before
-      // being sent back down to the client...
-      ...data,
-      host: restEndpoint.host,
-      basePath: restEndpoint.pathname,
-      info: {
-        description:
-          'Venice: open source infrastructure to enable the frictionless movement of financial data.',
-        title: 'Venice REST API',
-        version: '2023-02-26',
-      },
-      schemes: [restEndpoint.protocol.replace(':', '')],
-      // Remove RPC calls to be less confusing for users
-      paths: R.pipe(
-        data.paths,
-        R.toPairs,
-        R.filter(([path]) => !path.startsWith('/rpc')),
-        R.sortBy(([path]) => path),
-        R.fromPairs,
-      ) as Record<string, any>,
-      definitions: R.pipe(
-        data.definitions ?? {},
-        R.toPairs,
-        R.sortBy(([name]) => name),
-        R.fromPairs,
-      ) as Record<string, any>,
-    }),
+    queryFn: () => fetch(getRestEndpoint(null).href).then((r) => r.json()),
   })
   // console.log('oas', oasDocument.data)
   if (!oasDocument.data) {

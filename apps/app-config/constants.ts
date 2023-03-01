@@ -16,9 +16,12 @@ export function getServerUrl(req: GetServerSidePropsContext['req'] | null) {
   )
 }
 
-export const graphqlEndpoint = new URL('/api/graphql', getServerUrl(null))
+export const getGraphqlEndpoint = (
+  req: GetServerSidePropsContext['req'] | null,
+) => new URL('/api/graphql', getServerUrl(req))
 
-export const restEndpoint = new URL('/api/rest', getServerUrl(null))
+export const getRestEndpoint = (req: GetServerSidePropsContext['req'] | null) =>
+  new URL('/api/rest', getServerUrl(req))
 
 export const xPatHeaderKey = 'x-token'
 export const xPatUrlParamKey = 'token'

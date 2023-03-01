@@ -12,16 +12,14 @@ export const config = {
 }
 
 export default (async (req, res) =>
-  proxySupabase(
-    {
-      req,
-      res,
-      onUserId: (userId) => {
-        if (userId) {
-          serverAnalytics.track(userId, {name: 'api/graphql-request', data: {}})
-        }
-        return serverAnalytics.flush()
-      },
+  proxySupabase({
+    req,
+    res,
+    targetPath: joinPath('graphql/v1', req.url?.replace('/api/graphql', '')),
+    onUserId: (userId) => {
+      if (userId) {
+        serverAnalytics.track(userId, {name: 'api/graphql-request', data: {}})
+      }
+      return serverAnalytics.flush()
     },
-    joinPath('graphql/v1', req.url?.replace('/api/graphql', '')),
-  )) satisfies NextApiHandler
+  })) satisfies NextApiHandler

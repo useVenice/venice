@@ -3,6 +3,7 @@ import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/constants'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
+import type {IncomingMessage} from 'node:http'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
 import {respondToCORS, serverGetApiUserId} from '../server'
@@ -14,18 +15,19 @@ const jwtClient = makeJwtClient({
 
 const proxy = createProxy()
 
-export async function proxySupabase(
-  {
-    req,
-    res,
-    onUserId,
-  }: {
-    req: NextApiRequest
-    res: NextApiResponse
-    onUserId?: (userId: string | null | undefined) => unknown
-  },
-  targetPath: string,
-) {
+export async function proxySupabase({
+  req,
+  res,
+  targetPath,
+  onUserId,
+  onProxyRes,
+}: {
+  req: NextApiRequest
+  res: NextApiResponse
+  targetPath: string
+  onUserId?: (userId: string | null | undefined) => unknown
+  onProxyRes?: (proxyRes: IncomingMessage) => void
+}) {
   // Is this necessary? Or should we let the proxied endpoints determine this?
   if (respondToCORS(req, res)) {
     return
@@ -53,11 +55,15 @@ export async function proxySupabase(
           proxyReq.path = stringifyUrl(parsed)
           proxyReq.removeHeader(xPatHeaderKey)
         })
-        .once('proxyRes', resolve)
+        .once('proxyRes', (proxyRes) => {
+          onProxyRes?.(proxyRes)
+          resolve(undefined)
+        })
         .once('error', reject)
         .web(req, res, {
           changeOrigin: true,
           target: new URL(targetPath, commonEnv.NEXT_PUBLIC_SUPABASE_URL).href,
+          // target: 'http://localhost:3010/api/debug',
           ignorePath: true,
           headers: {
             apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
