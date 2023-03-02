@@ -14,7 +14,7 @@ import {
   SelectTrigger,
 } from '@usevenice/ui'
 
-import {CodeIcon, SyncIcon} from '@usevenice/ui/icons'
+import {CodeIcon, DownloadIcon, SyncIcon} from '@usevenice/ui/icons'
 import {joinPath} from '@usevenice/util'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
@@ -22,7 +22,6 @@ import Link from 'next/link'
 import {useState} from 'react'
 import {CopyTextButton} from '../components/CopyTextButton'
 import {PreviewResult, usePreviewQuery} from '../components/export'
-import {ExternalLink} from '../components/ExternalLink'
 import {PageHeader} from '../components/PageHeader'
 import {PageLayout} from '../components/PageLayout'
 import {ensurePersonalAccessToken, serverGetUser} from '../server'
@@ -90,10 +89,7 @@ export default function ExploreDataPage({
           <PreviewResult {...preview} />
         </div>
         <div className="mt-6 max-w-[50rem]">
-          <SyncSpreadsheetCard
-            csvUrl={csvUrl.href}
-            isEmptyResult={preview.data.isEmpty}
-          />
+          <SyncSpreadsheetCard csvUrl={csvUrl.href} />
         </div>
       </div>
     </PageLayout>
@@ -102,17 +98,16 @@ export default function ExploreDataPage({
 
 interface SyncSpreadsheetCardProps {
   csvUrl: string
-  isEmptyResult: boolean
 }
 
 function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
-  const {csvUrl: csvQuery, isEmptyResult} = props
-  const googleSheetImport = `=IMPORTDATA("${csvQuery}")`
+  const {csvUrl} = props
+  const googleSheetImport = `=IMPORTDATA("${csvUrl}")`
   return (
     <InstructionCard icon={SyncIcon} title="Explore your data in a spreadsheet">
       <section className="grid gap-2">
         <p>
-          <span className="text-venice-green">(3 seconds)</span> Google Sheets
+          <span className="text-venice-green">(Continuous)</span> Google Sheets
           with automatic refresh:
         </p>
         <ol className="grid list-decimal gap-2 pl-8">
@@ -129,44 +124,49 @@ function SyncSpreadsheetCard(props: SyncSpreadsheetCardProps) {
             />
             <CopyTextButton content={googleSheetImport} />
           </div>
+
           <li>
-            Check out the{' '}
-            <Link
-              className="text-venice-green hover:text-venice-green-darkened"
-              href="https://postgrest.org/en/stable/api.html#">
-              PostgREST
-            </Link>{' '}
-            docs for url parameters you can use to adjust the response fields
-            and shape. Can even do powerful things such as joins!
-          </li>
-          <li>
-            There is no step 3! Congratulations, your spreadsheet will now
+            There is no step 2! Congratulations, your spreadsheet will now
             always be up-to-date with Venice!
           </li>
         </ol>
       </section>
       <section className="grid gap-2">
         <p>
-          <span className="text-venice-green">(2 minutes)</span> Microsoft Excel
-          with manual refresh:
+          <span className="text-venice-green">(One time)</span> Download csv as
+          one time export
         </p>
         <p className="pl-4">
-          Using Excel, you can treat a Venice CSV file as a local &quot;source
-          of truth&quot; which refreshes your spreadsheet every time that CSV
-          file is overwritten.{' '}
-          <button
-            className="text-venice-green hover:text-venice-green-darkened disabled:cursor-default disabled:hover:text-venice-green"
-            disabled={isEmptyResult}
-            onClick={() => window.open(csvQuery)}>
-            Download your data as a CSV
-          </button>{' '}
-          file and then{' '}
-          <ExternalLink
-            href="https://docs.venice.is"
-            className="text-venice-green hover:text-venice-green-darkened">
-            read our docs
-          </ExternalLink>{' '}
-          for more info!
+          <div className="-ml-4 flex gap-2 py-2">
+            <Input className="grow truncate" value={csvUrl} readOnly />
+            <Button
+              variant="primary"
+              className="shrink-0 gap-1 disabled:opacity-100">
+              <DownloadIcon className="h-4 w-4 fill-current" />
+              <Link target="_blank" href={csvUrl}>
+                Open
+              </Link>
+            </Button>
+            <CopyTextButton content={csvUrl} />
+          </div>
+        </p>
+      </section>
+      <section className="grid gap-2">
+        <p>
+          <span className="text-venice-green">
+            Customizing the csv response
+          </span>
+        </p>
+        <p>
+          The csv url is just our rest API with url param `_accept=csv` added.
+          Check out the{' '}
+          <Link
+            className="text-venice-green hover:text-venice-green-darkened"
+            href="https://postgrest.org/en/stable/api.html#">
+            PostgREST
+          </Link>{' '}
+          docs for url parameters you can use to adjust the response fields and
+          shape. Can even do powerful things such as joins!
         </p>
       </section>
     </InstructionCard>
