@@ -24,5 +24,7 @@ export const getRestEndpoint = (req: GetServerSidePropsContext['req'] | null) =>
   new URL('/api/rest', getServerUrl(req))
 
 export const xPatHeaderKey = 'x-token'
-export const xPatUrlParamKey = 'token'
+export const xPatUrlParamKey = '_token'
 export const xPatUserMetadataKey = 'apiKey'
+
+export const kAcceptUrlParam = '_accept'

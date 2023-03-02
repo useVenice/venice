@@ -1,11 +1,15 @@
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
-import {xPatHeaderKey, xPatUrlParamKey} from '@usevenice/app-config/constants'
+import {
+  kAcceptUrlParam,
+  xPatHeaderKey,
+  xPatUrlParamKey,
+} from '@usevenice/app-config/constants'
 import {makeJwtClient} from '@usevenice/engine-backend'
 import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
-import type {IncomingMessage} from 'node:http'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
+import type {IncomingMessage} from 'node:http'
 import {respondToCORS, serverGetApiUserId} from '../server'
 
 // TODO: Centralize this
@@ -47,15 +51,26 @@ export async function proxySupabase({
     onUserId?.(userId),
     new Promise((resolve, reject) => {
       proxy
-        // Do not pass the personal access token param onwards
+        // Do not pass our custom param onwards otherwise could cause pgRest to complain
+        // plus better for security (in case of apiKey)
         .on('proxyReq', function (proxyReq) {
           const parsed = parseUrl(proxyReq.path)
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete parsed.query[xPatUrlParamKey]
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete parsed.query[kAcceptUrlParam]
           proxyReq.path = stringifyUrl(parsed)
           proxyReq.removeHeader(xPatHeaderKey)
         })
         .once('proxyRes', (proxyRes) => {
+          if (proxyRes.headers['content-type']?.startsWith('text/csv')) {
+            // Make it easier to debug in chrome
+            // Tried the content-disposition = inline approach but it didn't work
+            // So we just delete the content-type header for now
+            // https://stackoverflow.com/questions/67810068/open-url-with-content-type-text-csv-in-browser-at-least-chrome-without-downloa
+            delete proxyRes.headers['content-type']
+          }
+
           onProxyRes?.(proxyRes)
           resolve(undefined)
         })
@@ -68,6 +83,10 @@ export async function proxySupabase({
           headers: {
             apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
             ...(accessToken && {authorization: `Bearer ${accessToken}`}),
+            // Technically this is only for pgREST. However it's not as convenient to
+            // handle this within [[...rest]].page for now so we do it here.
+            // @see https://postgrest.org/en/stable/api.html?highlight=csv#response-format
+            ...(req.query[kAcceptUrlParam] === 'csv' && {accept: 'text/csv'}),
           },
         })
     }),
