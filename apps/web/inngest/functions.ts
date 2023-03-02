@@ -21,7 +21,7 @@ export const scheduleSyncs = inngest.createFunction(
   // Disable scheduling during development, can be explicitly triggered from /api/inngest UI
   process.env.NODE_ENV === 'development'
     ? {event: 'sync/scheduler-debug'}
-    : {cron: '* * * * *'},
+    : {cron: '0 * * * *'}, // Once an hour
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
       const pipelines = await veniceBackendConfig.metaService.findPipelines({
