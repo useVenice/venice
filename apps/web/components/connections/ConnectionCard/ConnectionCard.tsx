@@ -183,6 +183,8 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                       onSuccess: () =>
                         deleteResource.mutate([{id: resourceId}, {}]),
                     })
+                  } else {
+                    deleteResource.mutate([{id: resourceId}, {}])
                   }
                 }}
               />
