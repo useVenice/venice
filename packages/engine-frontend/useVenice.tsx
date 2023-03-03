@@ -132,12 +132,12 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
         const preConnInputSchema =
           providerByName[providerName]?.def.preConnectInput
 
-        const ENABLE_PRECONNECT_PROMPT =
-          !!window.localStorage['ENABLE_PRECONNECT_PROMPT']
+        const enablePreconnectPrompt =
+          !window.localStorage['DISABLE_PRECONNECT_PROMPT']
 
         // Do not show pre-connect dialog if we are re-connecting
         const preConnIpt =
-          !ENABLE_PRECONNECT_PROMPT ||
+          !enablePreconnectPrompt ||
           opt.resourceExternalId ||
           !preConnInputSchema
             ? {}
