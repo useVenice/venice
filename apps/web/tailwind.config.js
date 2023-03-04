@@ -96,37 +96,5 @@ module.exports = {
       transparent: 'transparent',
     },
   },
-  daisyui: {
-    logs: false,
-    themes: [
-      {
-        light: {
-          primary: VeniceTheme._green,
-          'primary-content': VeniceTheme.offwhite,
-          secondary: VeniceTheme._green,
-          'secondary-content': VeniceTheme.offwhite,
-          accent: VeniceTheme._green,
-          'accent-content': VeniceTheme.white,
-          neutral: colors.gray[700],
-          'neutral-content': colors.white,
-          'base-100': colors.white,
-          'base-200': colors.gray[100],
-          'base-300': colors.gray[200],
-          'base-content': colors.gray[500],
-
-          '--rounded-box': '0.5rem',
-          '--rounded-btn': '0.25rem',
-          '--animation-btn': '0.25s',
-          '--animation-input': '0.2s',
-          '--btn-text-case': 'none',
-          '--tab-radius': '0.25rem',
-        },
-      },
-    ],
-  },
-  plugins: [
-    require('tailwindcss-animate'),
-    require('tailwindcss-radix')(),
-    require('daisyui'),
-  ],
+  plugins: [require('tailwindcss-animate'), require('tailwindcss-radix')()],
 }

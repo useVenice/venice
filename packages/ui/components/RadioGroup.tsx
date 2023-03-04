@@ -3,6 +3,7 @@ import {titleCase} from '@usevenice/util'
 import React from 'react'
 import {twMerge} from 'tailwind-merge'
 import {useConstant} from '../hooks'
+import {Label} from './Label'
 
 export interface RadioGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
@@ -18,11 +19,8 @@ export function RadioGroup({
   ...restProps
 }: RadioGroupProps) {
   return (
-    <div className="form-control">
-      <legend className="label">
-        <span className="label-text">{label}</span>
-      </legend>
-
+    <div className="flex flex-col gap-1">
+      <Label>{label}</Label>
       <RadioGroupPrimitive.Root
         className={twMerge(
           'flex',

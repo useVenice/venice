@@ -8,6 +8,7 @@ import {twMerge} from 'tailwind-merge'
 import {useConstant} from '../hooks'
 
 import {cn} from '../utils'
+import {Label} from './Label'
 
 export const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
@@ -45,11 +46,8 @@ export function CheckboxGroup({
   ...restProps
 }: CheckboxGroupProps) {
   return (
-    <div className="form-control">
-      <legend className="label">
-        <span className="label-text">{label}</span>
-      </legend>
-
+    <div className="flex flex-col gap-1">
+      <Label>{label}</Label>
       <div
         className={twMerge(
           'flex',

@@ -58,8 +58,11 @@ export function CheckboxField({label, name}: FieldProps) {
   const id = useConstant(() => `checkbox-${Math.random()}`)
   return (
     <>
-      <Label htmlFor={id}>{label ?? titleCase(name)}</Label>
+      <Label className="mr-2" htmlFor={id}>
+        {label ?? titleCase(name)}
+      </Label>
       <Checkbox
+        className="mb-2"
         checked={field.value}
         onCheckedChange={(state) => field.onChange(!!state)}
       />
@@ -88,6 +91,8 @@ export function SelectField({enumValues, label, name}: FieldProps) {
         </SelectContent>
       </Select>
       <span>{error?.errorMessage && error.errorMessage}</span>
+      {/* Workaround for not having className on Select component... */}
+      <div className="mb-2" />
     </>
   )
 }
@@ -104,7 +109,8 @@ export function RadioGroupField({enumValues, label, name}: FieldProps) {
         label={label ?? titleCase(name)}
         value={field.value}
         onValueChange={field.onChange}
-        orientation="horizontal">
+        orientation="horizontal"
+        className="m-2">
         {enumValues?.map((e) => (
           <RadioGroupItem key={e} value={e}>
             {titleCase(e)}
@@ -129,7 +135,8 @@ export function CheckboxGroupField({...props}: FieldProps) {
     <>
       <CheckboxGroup
         label={props.label ?? titleCase(props.name)}
-        orientation="horizontal">
+        orientation="horizontal"
+        className="m-2">
         {enumValues.map((v) => (
           <CheckboxGroupItem
             key={v}
