@@ -5,11 +5,13 @@ import {X} from 'lucide-react'
 import * as React from 'react'
 import {cn} from '../utils'
 
-const Dialog = DialogPrimitive.Root
+export const DialogRoot = DialogPrimitive.Root
 
-const DialogTrigger = DialogPrimitive.Trigger
+export const DialogClose = DialogPrimitive.Close
 
-const DialogPortal = ({
+export const DialogTrigger = DialogPrimitive.Trigger
+
+export const DialogPortal = ({
   className,
   children,
   ...props
@@ -22,7 +24,7 @@ const DialogPortal = ({
 )
 DialogPortal.displayName = DialogPrimitive.Portal.displayName
 
-const DialogOverlay = React.forwardRef<
+export const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({className, children, ...props}, ref) => (
@@ -37,7 +39,7 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
-const DialogContent = React.forwardRef<
+export const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({className, children, ...props}, ref) => (
@@ -45,10 +47,17 @@ const DialogContent = React.forwardRef<
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      // Original code from shadcn/ui, does not work with light mode somehow...
+      // className={cn(
+      //   'fixed z-50 grid w-full gap-4 rounded-b-lg bg-white p-6 animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:max-w-lg sm:rounded-lg sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0',
+      //   'dark:bg-slate-900',
+      //   className,
+      // )}
+
       className={cn(
-        'fixed z-50 grid w-full gap-4 rounded-b-lg bg-white p-6 animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:max-w-lg sm:rounded-lg sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0',
-        'dark:bg-slate-900',
-        className,
+        'fixed top-1/2 left-1/2 z-50 flex max-h-[95vh] w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col md:w-full',
+        'overflow-hidden rounded-lg bg-venice-black',
+        'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
       )}
       {...props}>
       {children}
@@ -61,7 +70,7 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
-const DialogHeader = ({
+export const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -75,7 +84,7 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = 'DialogHeader'
 
-const DialogFooter = ({
+export const DialogFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -89,7 +98,7 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = 'DialogFooter'
 
-const DialogTitle = React.forwardRef<
+export const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({className, ...props}, ref) => (
@@ -105,7 +114,7 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
-const DialogDescription = React.forwardRef<
+export const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({className, ...props}, ref) => (
@@ -116,13 +125,3 @@ const DialogDescription = React.forwardRef<
   />
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
-
-export {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-}

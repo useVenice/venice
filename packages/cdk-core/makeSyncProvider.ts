@@ -42,7 +42,10 @@ export const zPostConnectOptions = zConnectOptions.extend({
 
 export type OpenDialogFn = (
   Component: React.ComponentType<{close: () => void}>,
-  options?: {onClose?: () => void},
+  options?: {
+    dismissOnClickOutside?: boolean
+    onClose?: () => void
+  },
 ) => void
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {

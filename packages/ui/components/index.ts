@@ -17,3 +17,6 @@ export * from './Select'
 export * from './Tabs'
 export * from './Toast'
 // codegen:end
+
+// import * as Dialog from './Dialog'
+// export {Dialog}

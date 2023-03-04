@@ -2,16 +2,18 @@ import {plaidProvider} from '@usevenice/app-config/env'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {
   Button,
-  Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogRoot,
   DialogTitle,
   DialogTrigger,
   ZodForm,
 } from '@usevenice/ui'
 import {GetServerSideProps} from 'next'
+import {useState} from 'react'
 import {serverAnalytics} from '../lib/server-analytics'
 import {serverGetUser} from '../server'
 
@@ -28,14 +30,15 @@ export const getServerSideProps = (async (ctx) => {
 
 export default function DebugPage() {
   const {openDialog} = VeniceProvider.useContext()
+  const [open, setOpen] = useState(false)
 
-  console.log('plaidProvider.def', plaidProvider.def.preConnectInput.shape)
-  // debugger
+  console.log('open', open)
+
   return (
     <div className="p-9">
       <Button
         onClick={() => {
-          openDialog(({close}) => (
+          openDialog(() => (
             <ZodForm
               schema={plaidProvider.def.preConnectInput}
               onSubmit={(vals) => {
@@ -43,13 +46,9 @@ export default function DebugPage() {
               }}
               renderAfter={({submit}) => (
                 <>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      close()
-                    }}>
-                    Cancel
-                  </Button>
+                  <DialogClose asChild>
+                    <Button>Cancel</Button>
+                  </DialogClose>
                   <Button onClick={submit}>Launch</Button>
                 </>
               )}
@@ -58,13 +57,19 @@ export default function DebugPage() {
         }}>
         Show dialog
       </Button>
-      <Dialog modal={false}>
+      <DialogRoot
+        open={open}
+        onOpenChange={(newOpen) => {
+          console.log('onOpenChange', newOpen)
+          setOpen(newOpen)
+        }}>
         <DialogTrigger asChild>
           <Button>Edit Profile</Button>
         </DialogTrigger>
         <DialogContent
           className="sm:max-w-[425px]"
-          onInteractOutside={(e) => {
+          onPointerDownOutside={(e) => {
+            console.log('pointer outside', e)
             e.preventDefault()
           }}>
           <DialogHeader>
@@ -80,10 +85,14 @@ export default function DebugPage() {
             }}
           />
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            {/* <DialogClose asChild> */}
+            <Button onClick={() => setOpen(false)} type="submit">
+              Save changes
+            </Button>
+            {/* </DialogClose> */}
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </DialogRoot>
     </div>
   )
 }

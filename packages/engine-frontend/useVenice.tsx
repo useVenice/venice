@@ -142,28 +142,31 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           !preConnInputSchema
             ? {}
             : await new Promise((resolve, reject) => {
-                openDialog(({close}) => (
-                  <ZodForm
-                    schema={preConnInputSchema as any}
-                    onSubmit={(values) => {
-                      close()
-                      resolve(values)
-                    }}
-                    renderAfter={({submit}) => (
-                      <>
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault()
-                            close()
-                            reject(CANCELLATION_TOKEN)
-                          }}>
-                          Cancel
-                        </Button>
-                        <Button onClick={submit}>Launch</Button>
-                      </>
-                    )}
-                  />
-                ))
+                openDialog(
+                  ({close}) => (
+                    <ZodForm
+                      schema={preConnInputSchema as any}
+                      onSubmit={(values) => {
+                        close()
+                        resolve(values)
+                      }}
+                      renderAfter={({submit}) => (
+                        <>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              close()
+                              reject(CANCELLATION_TOKEN)
+                            }}>
+                            Cancel
+                          </Button>
+                          <Button onClick={submit}>Launch</Button>
+                        </>
+                      )}
+                    />
+                  ),
+                  {dismissOnClickOutside: true},
+                )
               })
 
         setIsConnecting(true)

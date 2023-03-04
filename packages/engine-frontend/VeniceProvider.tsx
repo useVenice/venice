@@ -12,8 +12,7 @@ import type {
 } from '@usevenice/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
 import {_zContext} from '@usevenice/engine-backend/auth-utils'
-import type {AnimatedDialogInstance} from '@usevenice/ui'
-import {AnimatedDialog} from '@usevenice/ui'
+import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
 export type {CreateTRPCReact} from '@trpc/react-query'
@@ -104,17 +103,17 @@ export function VeniceProvider<
     [__DEBUG__, accessToken, url],
   )
 
-  const dialogRef = React.useRef<AnimatedDialogInstance>(null)
   const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )
 
+  // TODO: It would be nice if we could figure out how to have a DialogTrigger
+  // for focus management and accessibility, rather than callback only
   const openDialog: OpenDialogFn = React.useCallback(
     (render, options) => {
       setDialogConfig({Component: render, options})
-      dialogRef.current?.open()
     },
-    [dialogRef, setDialogConfig],
+    [setDialogConfig],
   )
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
@@ -153,7 +152,7 @@ export function VeniceProvider<
           ],
         )}>
         {children}
-
+        {/*
         {dialogConfig && (
           <AnimatedDialog
             ref={dialogRef}
@@ -168,7 +167,33 @@ export function VeniceProvider<
             }}>
             <dialogConfig.Component close={() => dialogRef.current?.close()} />
           </AnimatedDialog>
-        )}
+        )} */}
+        <DialogRoot
+          open={!!dialogConfig}
+          onOpenChange={(newOpen) => {
+            if (!newOpen) {
+              dialogConfig?.options?.onClose?.()
+              setDialogConfig(null)
+            }
+          }}>
+          <DialogContent
+            onPointerDownOutside={
+              dialogConfig?.options?.dismissOnClickOutside
+                ? undefined
+                : (e) => e.preventDefault()
+            }>
+            {dialogConfig && (
+              <dialogConfig.Component
+                close={() => {
+                  // onOpenChange is not called when `open` prop changes from parent
+                  // Thus have to call the .options.onClose ourselves
+                  dialogConfig?.options?.onClose?.()
+                  setDialogConfig(null)
+                }}
+              />
+            )}
+          </DialogContent>
+        </DialogRoot>
       </VeniceContext.Provider>
     </trpc.Provider>
   )
