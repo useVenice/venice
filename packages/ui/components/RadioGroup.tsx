@@ -59,13 +59,13 @@ export function RadioGroupItem({
         value={value}
         id={id}
         className={twMerge(
-          'relative h-4 w-4 rounded-full border border-transparent text-white',
-          'radix-state-checked:bg-secondary radix-state-unchecked:bg-venice-black-400',
+          'relative h-4 w-4 rounded-full border border-venice-black-300',
+          'radix-state-checked:bg-secondary radix-state-unchecked:bg-venice-black-500',
           'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
           className,
         )}>
         <RadioGroupPrimitive.Indicator className="absolute inset-0 flex items-center justify-center leading-none">
-          <div className="h-2 w-2 rounded-full bg-black" />
+          <div className="h-2 w-2 rounded-full bg-black-500" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
 

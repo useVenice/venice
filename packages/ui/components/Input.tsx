@@ -17,8 +17,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const defaultId = useConstant(() => `input-${Math.random()}`)
   const {id = defaultId, label, className, errorMessage, ...inputProps} = props
   return (
-    <div className="grid w-full gap-1">
-      {label && <Label htmlFor={id}>{label}</Label>}
+    <div className="grid w-full gap-2">
+      {label && (
+        <Label className="text-base" htmlFor={id}>
+          {label}
+        </Label>
+      )}
       <input
         {...inputProps}
         id={id}

@@ -17,7 +17,7 @@ export const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      'peer h-6 w-6 shrink-0 rounded-md bg-venice-black-500 ring-1 ring-inset ring-venice-black-200 focus:outline-none focus:ring-venice-green disabled:cursor-default disabled:opacity-50',
+      'peer h-6 w-6 shrink-0 rounded-md bg-venice-black-500 ring-1 ring-inset ring-venice-black-300 focus:outline-none focus:ring-venice-green disabled:cursor-default disabled:opacity-50',
       className,
     )}
     {...props}>
@@ -46,7 +46,7 @@ export function CheckboxGroup({
   ...restProps
 }: CheckboxGroupProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       <Label>{label}</Label>
       <div
         className={twMerge(
@@ -84,7 +84,7 @@ export function CheckboxGroupItem({
       <Checkbox {...restProps} id={id} />
       <label
         htmlFor={id}
-        className="h-6 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        className="mt-2 h-6 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         {label}
       </label>
     </div>

@@ -43,13 +43,15 @@ interface FieldProps {
 export function TextField(props: FieldProps) {
   const {field, error} = useTsController<string>()
   return (
-    <Input
-      label={props.label ?? titleCase(props.name)}
-      placeholder={props.placeholder}
-      value={field.value}
-      onChange={(e) => field.onChange(e.target.value)}
-      errorMessage={error?.errorMessage}
-    />
+    <div className="m-4 flex items-center gap-4">
+      <Input
+        label={props.label ?? titleCase(props.name)}
+        placeholder={props.placeholder}
+        value={field.value}
+        onChange={(e) => field.onChange(e.target.value)}
+        errorMessage={error?.errorMessage}
+      />
+    </div>
   )
 }
 
@@ -57,9 +59,9 @@ export function CheckboxField({label, name}: FieldProps) {
   const {field, error} = useTsController<boolean>()
   const id = useConstant(() => `checkbox-${Math.random()}`)
   return (
-    <div className="m-4 flex items-center gap-4">
+    <div className="m-4 flex items-center gap-3">
       <Checkbox
-        className="mb-2"
+        className="mb-2 ml-1"
         checked={field.value}
         onCheckedChange={(state) => field.onChange(!!state)}
       />
@@ -78,7 +80,7 @@ export function SelectField({enumValues, label, name}: FieldProps) {
   // not even sure if it is meant to work with radix select component at all
   // Though it seems to be supported in the html layer.
   return (
-    <>
+    <div className="m-4 flex items-center gap-4">
       <Label htmlFor={id}>{label ?? titleCase(name)}</Label>
       <Select value={field.value} onValueChange={field.onChange}>
         <SelectTrigger className="max-w-[10rem]" />
@@ -93,7 +95,7 @@ export function SelectField({enumValues, label, name}: FieldProps) {
       <span>{error?.errorMessage && error.errorMessage}</span>
       {/* Workaround for not having className on Select component... */}
       <div className="mb-2" />
-    </>
+    </div>
   )
 }
 
@@ -132,7 +134,7 @@ export function CheckboxGroupField({...props}: FieldProps) {
   const {field, error} = useTsController<string[]>()
 
   return (
-    <>
+    <div className="m-4 flex items-center gap-4">
       <CheckboxGroup
         label={props.label ?? titleCase(props.name)}
         orientation="horizontal"
@@ -153,7 +155,7 @@ export function CheckboxGroupField({...props}: FieldProps) {
         ))}
       </CheckboxGroup>
       <span>{error?.errorMessage && error.errorMessage}</span>
-    </>
+    </div>
   )
 }
 
@@ -161,7 +163,7 @@ const mapping = [
   // z.number() is also viable. You'll probably have to use "createUniqueFieldSchema" (since you probably already have a Text Field)
   [z.string(), TextField],
   [z.boolean(), CheckboxField],
-  [z.enum(['placeholder']), RadioGroupField],
+  [z.enum(['placeholder']), RadioGroupField], // TODO: change to select field w/ a default value set
   [z.array(z.enum(['placeholder'])), CheckboxGroupField],
 ] as const
 
