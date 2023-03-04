@@ -20,7 +20,7 @@ export function RadioGroup({
 }: RadioGroupProps) {
   return (
     <div className="flex flex-col gap-1">
-      <Label>{label}</Label>
+      <Label className="text-base">{label}</Label>
       <RadioGroupPrimitive.Root
         className={twMerge(
           'flex',
@@ -60,16 +60,16 @@ export function RadioGroupItem({
         id={id}
         className={twMerge(
           'relative h-4 w-4 rounded-full border border-transparent text-white',
-          'radix-state-checked:bg-secondary radix-state-unchecked:bg-offwhite',
+          'radix-state-checked:bg-secondary radix-state-unchecked:bg-venice-black-400',
           'ring-0 ring-primary/75 focus:outline-none focus:ring-offset-0 focus-visible:ring focus-visible:ring-offset-2',
           className,
         )}>
         <RadioGroupPrimitive.Indicator className="absolute inset-0 flex items-center justify-center leading-none">
-          <div className="h-1.5 w-1.5 rounded-full bg-white" />
+          <div className="h-2 w-2 rounded-full bg-black" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
 
-      <label htmlFor={id} className="text-sm">
+      <label htmlFor={id} className="text-base">
         {label}
       </label>
     </div>

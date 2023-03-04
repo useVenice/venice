@@ -57,17 +57,17 @@ export function CheckboxField({label, name}: FieldProps) {
   const {field, error} = useTsController<boolean>()
   const id = useConstant(() => `checkbox-${Math.random()}`)
   return (
-    <>
-      <Label className="mr-2" htmlFor={id}>
-        {label ?? titleCase(name)}
-      </Label>
+    <div className="m-4 flex items-center gap-4">
       <Checkbox
         className="mb-2"
         checked={field.value}
         onCheckedChange={(state) => field.onChange(!!state)}
       />
+      <Label className="mb-1 h-6 text-base leading-normal" htmlFor={id}>
+        {label ?? titleCase(name)}
+      </Label>
       <span>{error?.errorMessage && error.errorMessage}</span>
-    </>
+    </div>
   )
 }
 
@@ -104,7 +104,7 @@ export function RadioGroupField({enumValues, label, name}: FieldProps) {
   // not even sure if it is meant to work with radix select component at all
   // Though it seems to be supported in the html layer.
   return (
-    <>
+    <div className="m-4 flex items-center gap-4">
       <RadioGroup
         label={label ?? titleCase(name)}
         value={field.value}
@@ -118,7 +118,7 @@ export function RadioGroupField({enumValues, label, name}: FieldProps) {
         ))}
       </RadioGroup>
       <span>{error?.errorMessage && error.errorMessage}</span>
-    </>
+    </div>
   )
 }
 

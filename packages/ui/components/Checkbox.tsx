@@ -17,12 +17,12 @@ export const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      'peer h-4 w-4 shrink-0 rounded-sm border border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900',
+      'peer h-6 w-6 shrink-0 rounded-md bg-venice-black-500 ring-1 ring-inset ring-venice-black-200 focus:outline-none focus:ring-venice-green disabled:cursor-default disabled:opacity-50',
       className,
     )}
     {...props}>
     <CheckboxPrimitive.Indicator
-      className={cn('flex items-center justify-center')}>
+      className={cn('flex h-6 w-6 items-center justify-center')}>
       <LucideCheck className="h-4 w-4" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
@@ -80,11 +80,11 @@ export function CheckboxGroupItem({
   const defaultId = useConstant(() => `checkbox-${Math.random()}`)
   const id = _id ?? defaultId
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center justify-center space-x-2">
       <Checkbox {...restProps} id={id} />
       <label
         htmlFor={id}
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        className="h-6 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
         {label}
       </label>
     </div>

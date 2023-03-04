@@ -8,7 +8,7 @@ import {z} from '@usevenice/util'
 
 import {createTRPCClientProxy} from '@trpc/client'
 import {VeniceProvider} from './VeniceProvider'
-import {Button, ZodForm} from '@usevenice/ui'
+import {Button, Card, SettingsIcon, ZodForm} from '@usevenice/ui'
 import {browserAnalytics} from '../../apps/web/lib/browser-analytics'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
@@ -144,26 +144,38 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
             : await new Promise((resolve, reject) => {
                 openDialog(
                   ({close}) => (
-                    <ZodForm
-                      schema={preConnInputSchema as any}
-                      onSubmit={(values) => {
-                        close()
-                        resolve(values)
-                      }}
-                      renderAfter={({submit}) => (
-                        <>
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault()
-                              close()
-                              reject(CANCELLATION_TOKEN)
-                            }}>
-                            Cancel
-                          </Button>
-                          <Button onClick={submit}>Launch</Button>
-                        </>
-                      )}
-                    />
+                    <Card className="grid gap-6 p-6">
+                      <h2 className="grid grid-cols-[auto_1fr] items-center gap-2">
+                        <SettingsIcon className="h-5 w-5 fill-venice-gray-muted" />
+                        <span className="text-base text-offwhite">
+                          Plaid Connection Settings
+                        </span>
+                      </h2>
+                      <ZodForm
+                        schema={preConnInputSchema as any}
+                        onSubmit={(values) => {
+                          close()
+                          resolve(values)
+                        }}
+                        renderAfter={({submit}) => (
+                          <>
+                            <div className="mt-12 flex justify-center gap-4">
+                              <Button
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  close()
+                                  reject(CANCELLATION_TOKEN)
+                                }}>
+                                Cancel
+                              </Button>
+                              <Button variant="primary" onClick={submit}>
+                                Continue
+                              </Button>
+                            </div>
+                          </>
+                        )}
+                      />
+                    </Card>
                   ),
                   {dismissOnClickOutside: true},
                 )

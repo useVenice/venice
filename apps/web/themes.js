@@ -4,6 +4,7 @@ const VeniceTheme = {
   background: '#1e1e1e',
   black: {
     DEFAULT: '#1e1e1e',
+    200: '#7d7d7d',
     300: '#4e4e4e',
     400: '#3e3e3e',
     500: '#2e2e2e',
