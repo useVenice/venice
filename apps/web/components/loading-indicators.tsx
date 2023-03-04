@@ -1,4 +1,5 @@
 import {createPortal} from 'react-dom'
+import * as Progress from '@radix-ui/react-progress'
 
 // Full screen overlay with loading indicator
 export function LoadingIndicatorOverlay() {
@@ -32,7 +33,16 @@ export function LoadingIndicator() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="w-40">
         <p className="text-center text-sm text-offwhite">Loading...</p>
-        <progress className="progress progress-primary mt-4"></progress>
+        <Progress.Root
+          value={null}
+          className="relative mt-4 h-1 w-full overflow-hidden rounded-full bg-black-400">
+          <Progress.Indicator
+            className="absolute h-full w-full rounded-full bg-venice-green"
+            style={{
+              animation: 'loading-indicator-indeterminate 2s ease-out infinite',
+            }}
+          />
+        </Progress.Root>
       </div>
     </div>
   )

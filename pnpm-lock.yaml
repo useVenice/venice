@@ -275,6 +275,7 @@ importers:
       '@graphiql/toolkit': ^0.8.0
       '@lukemorales/query-key-factory': 1.1.0
       '@monaco-editor/react': ^4.4.6
+      '@radix-ui/react-progress': ^1.0.1
       '@sentry/cli': 2.13.0
       '@sentry/nextjs': 7.39.0
       '@stoplight/elements': 7.7.10
@@ -345,6 +346,7 @@ importers:
       '@graphiql/toolkit': 0.8.0_v7q3lfq66aj3bc2gojm44cb3xi
       '@lukemorales/query-key-factory': 1.1.0
       '@monaco-editor/react': 4.4.6_3vguicescx7w3divwtpzvtv5wy
+      '@radix-ui/react-progress': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@sentry/nextjs': 7.39.0_yrisq2kkn5ai44qx4uoxveaxsy
       '@stoplight/elements': 7.7.10_biqbaboplfbrettd7655fr4n2y
       '@supabase/auth-helpers-nextjs': 0.5.4_cuu76bm7225ei4sq5x2iikmd2y
@@ -3594,6 +3596,19 @@ packages:
     dependencies:
       '@babel/runtime': 7.19.0
       '@radix-ui/react-slot': 1.0.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@radix-ui/react-progress/1.0.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-QbDf9eguM5QtkvGcGHe/nUgloM9yfRGpJTB/Te5cn4WmVHvcbhHyHw39/rbCZxNX4E+GEPp5Vs6+mEoyIotUbg==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.19.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-primitive': 1.0.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

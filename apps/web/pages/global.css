@@ -91,3 +91,18 @@ body.graphiql-dark reach-portal {
   :is(.token.string, .token.function, .token.property) {
   color: var(--ifm-color-primary) !important;
 }
+
+@keyframes loading-indicator-indeterminate {
+  0% {
+    left: -100%;
+    right: 100%;
+  }
+  50% {
+    left: 100%;
+    right: -100%;
+  }
+  100% {
+    left: 100%;
+    right: -100%;
+  }
+}

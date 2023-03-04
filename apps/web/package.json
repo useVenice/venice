@@ -16,6 +16,7 @@
     "@graphiql/toolkit": "^0.8.0",
     "@lukemorales/query-key-factory": "1.1.0",
     "@monaco-editor/react": "^4.4.6",
+    "@radix-ui/react-progress": "^1.0.1",
     "@sentry/nextjs": "7.39.0",
     "@stoplight/elements": "7.7.10",
     "@supabase/auth-helpers-nextjs": "0.5.4",
