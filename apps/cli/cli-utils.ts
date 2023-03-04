@@ -87,6 +87,7 @@ export interface CliOpts<TContext = unknown> {
   context?: TContext
   defaultHelpCommand?: boolean
 
+  readStdin?: boolean
   jsonOutput?: boolean
   consoleLog?: boolean
 }
@@ -120,7 +121,9 @@ export function cliFromRouter<T extends AnyRouter>(
       .allowUnknownOptions() // No args supported, only options...
       .action(async (args: string[], {'--': _, ...options} = {}) => {
         const input = R.pipe(
-          await readStdin().then(safeJSONParse),
+          cliOpts?.readStdin !== false
+            ? await readStdin().then(safeJSONParse)
+            : '',
           (stdin) => deepMerge(stdin ?? {}, options),
           (opts) => R.compact([...args, Object.keys(opts).length > 0 && opts]),
           (arr) => (arr.length <= 1 ? arr[0] : arr),

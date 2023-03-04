@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import {initTRPC} from '@trpc/server'
@@ -23,7 +25,22 @@ export const router = trpcServer.router({
     (): ABMessageStream<'SPEC'> =>
       rxjs.of(
         abMessage('SPEC', {
-          connectionSpecification: {},
+          documentationUrl:
+            'https://docs.airbyte.io/integrations/sources/pokeapi',
+          connectionSpecification: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'Pokeapi Spec',
+            type: 'object',
+            required: ['pokemon_name'],
+            properties: {
+              pokemon_name: {
+                type: 'string',
+                description: 'Pokemon requested from the API.',
+                pattern: '^[a-z0-9_\\-]+$',
+                examples: ['ditto', 'luxray', 'snorlax'],
+              },
+            },
+          },
         }),
       ),
   ),
@@ -45,7 +62,12 @@ export const router = trpcServer.router({
           streams: [
             {
               name: 'pokemon',
-              json_schema: {},
+              json_schema: {
+                properties: {
+                  id: {type: 'string'},
+                  haha: {type: 'string'},
+                },
+              },
               supported_sync_modes: ['full_refresh'],
             },
           ],
@@ -85,7 +107,11 @@ export const router = trpcServer.router({
     }),
 })
 
-export const cli = cliFromRouter(router, {jsonOutput: true, consoleLog: false})
+export const cli = cliFromRouter(router, {
+  jsonOutput: true,
+  consoleLog: false,
+  readStdin: false,
+})
 
 if (require.main === module) {
   cli.parse(process.argv)
