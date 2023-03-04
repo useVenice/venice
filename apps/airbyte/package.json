@@ -1,0 +1,13 @@
+{
+  "name": "@usevenice/airbyte",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@trpc/server": "10.9.1",
+    "@usevenice/app-config": "workspace:*",
+    "@usevenice/cli": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {}
+}
