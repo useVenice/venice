@@ -5,13 +5,17 @@ import {X} from 'lucide-react'
 import * as React from 'react'
 import {cn} from '../utils'
 
+// TODO: Remove reference to DialogPrimitive when we refactor...
+// Should use a single consistent Dialog component
+export {DialogPrimitive}
+
 export const DialogRoot = DialogPrimitive.Root
 
 export const DialogClose = DialogPrimitive.Close
 
 export const DialogTrigger = DialogPrimitive.Trigger
 
-export const DialogPortal = ({
+const DialogPortal = ({
   className,
   children,
   ...props
@@ -24,7 +28,7 @@ export const DialogPortal = ({
 )
 DialogPortal.displayName = DialogPrimitive.Portal.displayName
 
-export const DialogOverlay = React.forwardRef<
+const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({className, children, ...props}, ref) => (
@@ -39,6 +43,7 @@ export const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+/** Includes Portal and overlay already */
 export const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>

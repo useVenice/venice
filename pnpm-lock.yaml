@@ -938,7 +938,6 @@ importers:
 
   packages/ui:
     specifiers:
-      '@headlessui/react': 1.7.0
       '@hookform/resolvers': 2.9.11
       '@radix-ui/react-checkbox': 1.0.1
       '@radix-ui/react-dialog': 1.0.0
@@ -949,7 +948,6 @@ importers:
       '@radix-ui/react-slot': 1.0.0
       '@radix-ui/react-tabs': 1.0.0
       '@radix-ui/react-toast': 1.0.0
-      '@radix-ui/react-use-controllable-state': 1.0.0
       '@react-hookz/web': '*'
       '@ts-react/form': 1.2.0
       '@types/react': 18.0.27
@@ -963,7 +961,6 @@ importers:
       react-hook-form: 7.43.1
       tailwind-merge: '*'
     dependencies:
-      '@headlessui/react': 1.7.0_biqbaboplfbrettd7655fr4n2y
       '@hookform/resolvers': 2.9.11_react-hook-form@7.43.1
       '@radix-ui/react-checkbox': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-dialog': 1.0.0_5ndqzdd6t4rivxsukjv3i3ak2q
@@ -974,7 +971,6 @@ importers:
       '@radix-ui/react-slot': 1.0.0_react@18.2.0
       '@radix-ui/react-tabs': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-toast': 1.0.0_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
       '@react-hookz/web': 16.0.0_biqbaboplfbrettd7655fr4n2y
       '@ts-react/form': 1.2.0_43jaix5k6en3ddpeagttdgt6yy
       clsx: 1.2.1
@@ -2542,17 +2538,6 @@ packages:
       long: 4.0.0
       protobufjs: 7.1.2
       yargs: 16.2.0
-    dev: false
-
-  /@headlessui/react/1.7.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-/nDsijOXRwXVLpUBEiYuWguIBSIN3ZbKyah+KPUiD8bdIKtX1U/k+qLYUEr7NCQnSF2e4w1dr8me42ECuG3cvw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@hookform/resolvers/2.9.11_react-hook-form@7.43.1:

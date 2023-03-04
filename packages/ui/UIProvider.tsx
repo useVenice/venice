@@ -1,12 +1,5 @@
-import React from 'react'
-
-import {ToastProvider, ToastViewport} from './components'
-
 export function UIProvider({children}: {children: React.ReactNode}) {
-  return (
-    <ToastProvider duration={4000}>
-      {children}
-      <ToastViewport />
-    </ToastProvider>
-  )
+  return <>{children}</>
+
+  // TODO: Add toast back from https://ui.shadcn.com/docs/primitives/toast when we need it
 }
