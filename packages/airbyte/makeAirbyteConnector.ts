@@ -1,16 +1,12 @@
-#!/usr/bin/env tsx
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// Airbyte connectors will only run in node env anyways.
-import '@usevenice/app-config/register.node'
 
 import {initTRPC} from '@trpc/server'
 import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
 import {fromMaybePromise, R, Rx, rxjs, z} from '@usevenice/util'
 import zodToJsonSchema from 'zod-to-json-schema'
-import {cliFromRouter} from '../cli/cli-utils'
-import type {ABMessage, ABMessageStream} from './airbyte-protocol'
-import {abMessage} from './airbyte-protocol'
-import type {AirbyteStream} from './airbyte-protocol.gen'
+import type {ABMessage, ABMessageStream} from './protocol/airbyte-protocol'
+import {abMessage} from './protocol/airbyte-protocol'
+import type {AirbyteStream} from './protocol/airbyte-protocol.gen'
 import {defaultTitleAsJsonPath, readJson} from './utils'
 
 const trpcServer = initTRPC.create()
@@ -147,11 +143,5 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
       }),
   })
 
-  const cli = cliFromRouter(router, {
-    jsonOutput: true,
-    consoleLog: false,
-    readStdin: false,
-  })
-
-  return {router, cli}
+  return router
 }

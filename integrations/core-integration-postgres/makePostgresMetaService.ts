@@ -64,9 +64,10 @@ export const makePostgresMetaService = zFunction(
   ({databaseUrl}): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
-      resource: metaTable('resource', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),
       integration: metaTable('integration', _getDeps(databaseUrl)),
+      // Go into airbyte
+      resource: metaTable('resource', _getDeps(databaseUrl)),
       pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
     }
     return {

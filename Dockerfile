@@ -46,12 +46,12 @@ COPY ./packages/standard/package.json ./packages/standard/package.json
 COPY ./packages/engine-frontend/package.json ./packages/engine-frontend/package.json
 COPY ./packages/cdk-core/package.json ./packages/cdk-core/package.json
 COPY ./packages/cdk-ledger/package.json ./packages/cdk-ledger/package.json
+COPY ./packages/airbyte/package.json ./packages/airbyte/package.json
 # Specifically excluded
 # COPY ./apps/web/.next/package.json ./apps/web/.next/package.json
 # COPY ./apps/web/package.json ./apps/web/package.json
 # COPY ./apps/tests/package.json ./apps/tests/package.json
 COPY ./apps/cli/package.json ./apps/cli/package.json
-COPY ./apps/airbyte/package.json ./apps/airbyte/package.json
 COPY ./apps/app-config/package.json ./apps/app-config/package.json
 
 # Before copying the rest of the app so we don't need to reinstall pnpm on every build
@@ -62,4 +62,4 @@ COPY ./packages/ ./packages
 COPY ./integrations/ ./integrations
 
 
-ENTRYPOINT ["node",  "--no-warnings", "--loader", "/venice/node_modules/tsx/dist/loader.js", "/venice/apps/airbyte/plaid-connector.ts"]
+ENTRYPOINT ["node",  "--no-warnings", "--loader", "/venice/node_modules/tsx/dist/loader.js", "/venice/apps/cli/plaid-connector.ts"]
