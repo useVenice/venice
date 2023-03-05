@@ -61,6 +61,7 @@ export function CheckboxField({label, name}: FieldProps) {
   return (
     <div className="m-4 flex items-center gap-3">
       <Checkbox
+        id={id}
         className="mb-2 ml-1"
         checked={field.value}
         onCheckedChange={(state) => field.onChange(!!state)}

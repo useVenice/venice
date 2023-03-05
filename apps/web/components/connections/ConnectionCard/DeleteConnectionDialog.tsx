@@ -1,5 +1,5 @@
 import type {ZStandard} from '@usevenice/cdk-core'
-import {DialogPrimitive} from '@usevenice/ui'
+import {Button, DialogPrimitive} from '@usevenice/ui'
 import {DeleteIcon} from '@usevenice/ui/icons'
 import Image from 'next/image'
 import {useState} from 'react'
@@ -73,22 +73,19 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
 
           <div className="mx-auto">
             <ZodForm
-              schema={deleteFormSchema as any}
+              schema={deleteFormSchema}
               onSubmit={(values) => {
-                const submittedValues = deleteFormSchema.parse(values)
-                handleDeletionConfirmed(
-                  submittedValues.deleteAssociatedData ?? false,
-                )
+                handleDeletionConfirmed(values.deleteAssociatedData ?? false)
               }}
               renderAfter={({submit}) => (
                 <div className="mt-8 flex justify-center gap-4">
-                  <button
+                  <Button
                     onClick={onCancel}
                     disabled={isDeleting || isConnectionDeleting}
                     className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={submit}
                     disabled={isDeleting || isConnectionDeleting}
                     className="flex min-w-[6rem] items-center gap-2 rounded-lg bg-venice-red px-3 py-2 text-sm text-offwhite hover:bg-[#ac2039] focus:outline-none focus-visible:bg-[#ac2039] disabled:opacity-30 disabled:hover:bg-venice-red">
@@ -98,7 +95,7 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
                     ) : (
                       <span>Delete</span>
                     )}
-                  </button>
+                  </Button>
                 </div>
               )}
             />
