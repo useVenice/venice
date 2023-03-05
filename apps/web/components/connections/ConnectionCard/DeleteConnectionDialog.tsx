@@ -81,7 +81,7 @@ export function DeleteConnectionDialog(props: DeleteConnectionDialogProps) {
                 )
               }}
               renderAfter={({submit}) => (
-                <div className="mt-12 flex justify-center gap-4">
+                <div className="mt-8 flex justify-center gap-4">
                   <button
                     onClick={onCancel}
                     disabled={isDeleting || isConnectionDeleting}
