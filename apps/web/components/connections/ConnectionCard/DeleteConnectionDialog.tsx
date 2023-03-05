@@ -11,7 +11,7 @@ const deleteFormSchema = z.object({
   deleteAssociatedData: z
     .boolean()
     .optional()
-    .describe('Delete associated data?'),
+    .describe('Delete previously synced data?'),
 })
 
 interface DeleteConnectionDialogProps {
