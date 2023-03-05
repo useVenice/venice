@@ -1,11 +1,13 @@
-import type {ConnectWith, Id, UserId} from '@usevenice/cdk-core'
+import type {ConnectWith, UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
+import {VeniceProvider} from '@usevenice/engine-frontend'
 import {useVenice} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import type {NonEmptyArray} from '@usevenice/util'
-import type {GetServerSideProps} from 'next'
+import {GetServerSideProps} from 'next'
+import type {InferGetServerSidePropsType} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import React from 'react'
 import {ArcherContainer, ArcherElement} from 'react-archer'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
@@ -14,20 +16,12 @@ import {PageLayout} from '../components/PageLayout'
 import {ResourceCard} from '../components/ResourceCard'
 import type {Connection} from '../lib/supabase-queries'
 import {getQueryKeys, queries} from '../lib/supabase-queries'
-import type {PageProps} from '../server'
 import {createSSRHelpers, ensureDefaultLedger} from '../server'
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
-type ServerSideProps = PageProps & {
-  ledgerIds: NonEmptyArray<Id['reso']>
-  userId: UserId
-}
-
 // Should this be moved to _app getInitialProps?
-export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
-  context,
-) => {
+export const getServerSideProps = (async (context) => {
   const {user, getPageProps, supabase, queryClient, ssg} =
     await createSSRHelpers(context)
   if (!user?.id) {
@@ -44,19 +38,6 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
     ssg.searchInstitutions.prefetch({keywords: undefined}),
     queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
   ])
-  // console.log('integrations', integrations, getPageProps())
-
-  // TODO: Need to have default preConnectInput values for prefetch to work properly
-  // Get on this performance improvement when we can address it later...
-  await Promise.all(
-    integrations.map((int) =>
-      ssg.preConnect.prefetch([
-        {id: int.id as never},
-        {envName: 'sandbox'},
-        {},
-      ]),
-    ),
-  )
 
   const ledgerIds = await ensureDefaultLedger(user.id)
   return {
@@ -64,12 +45,34 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
       ...getPageProps(),
       ledgerIds,
       userId: user.id as UserId,
+      integrations,
     },
   }
-}
+}) satisfies GetServerSideProps
 
-export default function ConnectionsPage(props: ServerSideProps) {
+export default function ConnectionsPage(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) {
   const connections = queries.useConnectionsList()
+  const {trpc} = VeniceProvider.useContext()
+  const trpcCtx = trpc.useContext()
+
+  // TODO: Need to have default preConnectInput values for prefetch to work properly
+  // Ideally this can work like a streaming react server component where we start
+  // prefetching server side and then send down to the client when data is ready async
+  // but not block the initial page load. Currently we have to wait for the client to
+  // load the page and then issue the prefetch request, wasting a roundtrip time
+  // but still better than blocking page load as users are probably not going to
+  // connect immediately, until we have a dedicated screen for immediate connect anyways.
+  React.useEffect(() => {
+    props.integrations.forEach((int) =>
+      trpcCtx.preConnect.prefetch([
+        {id: int.id as never},
+        {envName: 'sandbox'},
+        {},
+      ]),
+    )
+  }, [props.integrations, trpcCtx])
 
   return (
     <PageLayout title="Connections">
