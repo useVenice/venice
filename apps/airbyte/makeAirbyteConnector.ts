@@ -4,10 +4,10 @@
 import '@usevenice/app-config/register.node'
 
 import {initTRPC} from '@trpc/server'
-import {fromMaybePromise, rxjs, z} from '@usevenice/util'
-import type {AnySyncProvider} from '@usevenice/cdk-core'
+import {fromMaybePromise, R, Rx, rxjs, z} from '@usevenice/util'
+import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
 import {cliFromRouter} from '../cli/cli-utils'
-import type {ABMessageStream} from './airbyte-protocol'
+import type {ABMessage, ABMessageStream} from './airbyte-protocol'
 import {abMessage} from './airbyte-protocol'
 import type {
   AirbyteStream,
@@ -81,6 +81,9 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
     discover: procedure
       .input(z.object({config: z.string()}))
       .subscription(({input: args}): ABMessageStream<'CATALOG'> => {
+        if (!provider.sourceSync) {
+          throw new Error(`${provider.name} is not a source`)
+        }
         const config = readJson<ConnectionSpecification>(args.config)
         const union = provider.def.sourceOutputEntity as
           | z.ZodDiscriminatedUnion<string, []>
@@ -97,6 +100,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
                   json_schema: zodToJsonSchema(o),
                   // Only full refresh for now
                   supported_sync_modes: ['full_refresh'],
+                  source_defined_primary_key: [['_id']],
                 }),
               ) ?? [],
           }),
@@ -111,27 +115,45 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
         }),
       )
       .subscription(({input: args}): ABMessageStream<'RECORD' | 'STATE'> => {
-        const config = readJson<ConnectionSpecification>(args.config)
-        const catalog = readJson<ConfiguredAirbyteCatalog>(args.catalog)
-        const state = args.state ? readJson(args.state) : {}
+        if (!provider.sourceSync) {
+          throw new Error(`${provider.name} is not a source`)
+        }
 
-        return rxjs.from(
-          Array(10)
-            .fill(0)
-            .map((_, i) =>
-              abMessage('RECORD', {
-                stream: 'pokemon',
-                data: {
-                  id: `rec_${i}`,
-                  haha: 'ssup',
-                },
-                emitted_at: Date.now(),
-                config,
-                catalog,
-                state,
-              }),
-            ),
-        )
+        const config = readJson<ConnectionSpecification>(args.config)
+        const state = args.state ? readJson(args.state) : {}
+        // const catalog = readJson<ConfiguredAirbyteCatalog>(args.catalog)
+        // TODO: Add configuredCatalog into provider sourceSync
+
+        return provider
+          .sourceSync({
+            id: 'reso_todo',
+            config: config.config,
+            settings: config.settings,
+            state,
+          })
+          .pipe(
+            Rx.map((op): ABMessage<'RECORD' | 'STATE' | 'LOG'> => {
+              switch (op.type) {
+                case 'data':
+                  return R.pipe(op.data as AnyEntityPayload, (data) =>
+                    abMessage('RECORD', {
+                      stream: data.entityName,
+                      // How do we do change data capture here to sync deleted entities via Airbyte?
+                      // @ts-expect-error
+                      data: {...data.entity, _id: data.id},
+                      emitted_at: Date.now(),
+                    }),
+                  )
+                case 'stateUpdate':
+                  return abMessage('STATE', {
+                    type: 'LEGACY',
+                    data: op.sourceState,
+                  })
+                default:
+                  return abMessage('LOG', {message: op.type, level: 'WARN', op})
+              }
+            }),
+          )
       }),
   })
 

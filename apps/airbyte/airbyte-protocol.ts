@@ -6,11 +6,13 @@ import type {
   AirbyteControlMessage,
   AirbyteLogMessage,
   AirbyteRecordMessage,
+  AirbyteStateMessage,
   AirbyteTraceMessage,
   ConnectorSpecification,
   Type,
 } from './airbyte-protocol.gen'
 
+/** TODO: How do we make sure ABMessage satisfies AirbyteMessage? */
 export type ABMessage<T extends Type = Type> = Extract<
   | {type: 'CATALOG'; catalog: AirbyteCatalog; [k: string]: unknown}
   | {
@@ -22,7 +24,7 @@ export type ABMessage<T extends Type = Type> = Extract<
   | {type: 'LOG'; log: AirbyteLogMessage; [k: string]: unknown}
   | {type: 'RECORD'; record: AirbyteRecordMessage; [k: string]: unknown}
   | {type: 'SPEC'; spec: ConnectorSpecification; [k: string]: unknown}
-  | {type: 'STATE'; state: AirbyteCatalog; [k: string]: unknown}
+  | {type: 'STATE'; state: AirbyteStateMessage; [k: string]: unknown}
   | {type: 'TRACE'; trace: AirbyteTraceMessage; [k: string]: unknown},
   {type: T}
 >
