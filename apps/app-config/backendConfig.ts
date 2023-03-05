@@ -7,19 +7,19 @@ import {
   mapStandardEntityLink,
   renameAccountLink,
 } from '@usevenice/cdk-ledger'
-import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
+
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {makeSyncEngine} from '@usevenice/engine-backend'
 import {joinPath, R, Rx, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
+import {getServerUrl} from './constants'
 import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
-import {getServerUrl} from './constants'
 
+export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'
-export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
 
 const env = zParser(zAllEnv).parseUnknown(process.env)
 
@@ -27,6 +27,7 @@ export const backendEnv = env
 
 const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 
+import {makeAirbyteMetaService} from '@usevenice/airbyte'
 /**
  * This requires the env vars to exist...
  * TODO: Separate it so that the entire config isn't constructed client side
@@ -37,7 +38,12 @@ export const veniceBackendConfig = makeSyncEngine.config({
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
   metaService: usePg
-    ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
+    ? makeAirbyteMetaService({
+        postgresUrl: env.POSTGRES_OR_WEBHOOK_URL,
+        _temp_workspaceId: '329b673d-ebe2-4b8d-ab95-256734139b98',
+        apiUrl: 'http://localhost:8000/api',
+        auth: {username: 'airbyte', password: 'password'},
+      })
     : noopMetaService,
   // TODO: Support other config service such as fs later...
   linkMap: {

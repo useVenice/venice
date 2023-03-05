@@ -9,6 +9,7 @@
     "dev": "pnpm tsx watch ./_generateDocs.bin.ts"
   },
   "dependencies": {
+    "@usevenice/airbyte": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/core-integration-airtable": "workspace:*",
