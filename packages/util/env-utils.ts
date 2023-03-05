@@ -1,5 +1,5 @@
-import * as R from 'remeda'
 import {sort} from 'fast-sort'
+import * as R from 'remeda'
 import type {JsonValue} from 'type-fest'
 import {z} from 'zod'
 
@@ -37,13 +37,19 @@ export function zFlattenForEnv<T extends z.ZodTypeAny>(
   {
     prefix,
     separator = '.',
+    stringify = true,
   }: {
     prefix?: string
     separator?: string
+    stringify?: boolean
   },
 ) {
   const flatSchema = z.object(
-    flattenShapeForEnv(schema, {prefixes: prefix ? [prefix] : [], separator}),
+    flattenShapeForEnv(schema, {
+      prefixes: prefix ? [prefix] : [],
+      separator,
+      stringify,
+    }),
   )
 
   return flatSchema.transform(
@@ -56,32 +62,44 @@ export function zFlattenForEnv<T extends z.ZodTypeAny>(
   )
 }
 
+// TODO: Can we convert to JSON schema and flatten that instead?
+// Maybe there are tools that would help
 /** Get a flat shape suitable for passing into z.object  */
 function flattenShapeForEnv<T extends z.ZodTypeAny>(
   schema: T,
   {
     prefixes,
     separator,
+    stringify,
   }: {
     prefixes: string[]
     separator: string
+    stringify: boolean
   },
 ): z.ZodRawShape {
-  // console.log('flattenZObject', schema, prefixes)
+  // console.log('flattenShapeForEnv', schema, prefixes)
   // if (!schema) {
   //   return {}
   // }
   // Need better solution here...
   if (schema instanceof z.ZodOptional || schema instanceof z.ZodNullable) {
-    return flattenShapeForEnv(
-      (schema.unwrap() as z.ZodTypeAny).describe(
-        // TODO: Get '(required)' working too , right now this is only ever optional...
-        `${schema.isOptional() ? '(Optional)' : '(Required)'} ${
-          schema.description ?? ''
-        }`,
-      ),
-      {separator, prefixes},
-    )
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const unwrapped = schema.unwrap()
+    if (
+      unwrapped instanceof z.ZodObject ||
+      unwrapped instanceof z.ZodRecord ||
+      stringify
+    ) {
+      return flattenShapeForEnv(
+        (unwrapped as z.ZodTypeAny).describe(
+          // TODO: Get '(required)' working too , right now this is only ever optional...
+          `${schema.isOptional() ? '(Optional)' : '(Required)'} ${
+            schema.description ?? ''
+          }`,
+        ),
+        {stringify, separator, prefixes},
+      )
+    }
   }
   if (schema instanceof z.ZodObject || schema instanceof z.ZodRecord) {
     const shape: z.ZodRawShape =
@@ -95,32 +113,41 @@ function flattenShapeForEnv<T extends z.ZodTypeAny>(
               (schema.valueSchema as z.ZodTypeAny).optional(),
             ]),
           )
+
+    // console.log('shape', shape)
     return R.pipe(
       shape,
       R.toPairs,
       R.map(([key, value]) =>
-        flattenShapeForEnv(value, {separator, prefixes: [...prefixes, key]}),
+        flattenShapeForEnv(value, {
+          stringify,
+          separator,
+          prefixes: [...prefixes, key],
+        }),
       ),
       R.mergeAll,
     ) as z.ZodRawShape
   }
 
   const hint = schemaHint(schema)
+  // console.log('prefixes', prefixes.join('.'), schema)
   return {
-    [prefixes.join(separator)]: z
-      .string()
-      .optional()
-      // Handle things like array etc.
-      .transform((str) => safeJSONParse(str) ?? str)
-      .describe(
-        R.compact([
-          hint && '`',
-          hint,
-          hint && '`',
-          hint && schema.description && ' - ',
-          schema.description,
-        ]).join(''),
-      ),
+    [prefixes.join(separator)]: !stringify
+      ? schema
+      : z
+          .string()
+          .optional()
+          // Handle things like array etc.
+          .transform((str) => safeJSONParse(str) ?? str)
+          .describe(
+            R.compact([
+              hint && '`',
+              hint,
+              hint && '`',
+              hint && schema.description && ' - ',
+              schema.description,
+            ]).join(''),
+          ),
   }
 }
 
