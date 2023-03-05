@@ -4,17 +4,14 @@
 import '@usevenice/app-config/register.node'
 
 import {initTRPC} from '@trpc/server'
-import {fromMaybePromise, R, Rx, rxjs, z} from '@usevenice/util'
 import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
+import {fromMaybePromise, R, Rx, rxjs, z} from '@usevenice/util'
+import zodToJsonSchema from 'zod-to-json-schema'
 import {cliFromRouter} from '../cli/cli-utils'
 import type {ABMessage, ABMessageStream} from './airbyte-protocol'
 import {abMessage} from './airbyte-protocol'
-import type {
-  AirbyteStream,
-  ConfiguredAirbyteCatalog,
-} from './airbyte-protocol.gen'
+import type {AirbyteStream} from './airbyte-protocol.gen'
 import {readJson} from './utils'
-import zodToJsonSchema from 'zod-to-json-schema'
 
 const trpcServer = initTRPC.create()
 const procedure = trpcServer.procedure
@@ -29,6 +26,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
     // made a secret field too
     config: provider.def.integrationConfig ?? z.object({}),
   })
+
   type ConnectionSpecification = z.infer<typeof connSpec>
 
   /** Implements https://docs.airbyte.com/understanding-airbyte/airbyte-protocol-docker/ */
@@ -41,17 +39,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
             protocol_version: '0.2.0',
             documentationUrl: `https://github.com/useVenice/venice/tree/main/integrations/integration-${provider.name}`,
             // Add all the other stuff we support
-            connectionSpecification: zodToJsonSchema(
-              z.object({
-                settings: provider.def.resourceSettings ?? z.object({}),
-                // For now, unclear whether it should actually live in airbyte config
-                // or perhaps it should just have a `veniceIntegrationId` field
-                // so the data is not duplicated across dozens of integrations
-                // but then we'd have to think about "auth", or at least the integrationId would have to be
-                // made a secret field too
-                config: provider.def.integrationConfig ?? z.object({}),
-              }),
-            ),
+            connectionSpecification: zodToJsonSchema(connSpec),
           }),
         ),
     ),

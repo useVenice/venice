@@ -38,7 +38,12 @@ export const zLanguage = z.enum([
 
 export const zPlaidClientConfig = z.object({
   clientId: z.string(),
-  secrets: z.record(zPlaidEnvName, z.string()),
+  // Cannot use record type because hard to convert to json schema
+  secrets: z.object({
+    sandbox: z.string().optional(),
+    development: z.string().optional(),
+    production: z.string().optional(),
+  }),
 })
 
 export const zWebhook = zCast<WebhookShape>()
