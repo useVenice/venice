@@ -24,19 +24,27 @@ import {
   safeJSONParse,
 } from '@usevenice/util'
 
+function printLine(line: unknown, opts?: {json?: boolean}) {
+  if (opts?.json) {
+    process.stdout.write(`${JSON.stringify(line)}\n`)
+  } else {
+    console.log(line)
+  }
+}
+
 export async function printResult(
   res: unknown,
   opts?: {json?: boolean; minimal?: boolean},
 ) {
   if (isAsyncIterable(res) || isIterable(res)) {
     for await (const r of res) {
-      process.stdout.write(`${opts?.json ? JSON.stringify(r) : r}\n`)
+      printLine(r, opts)
     }
   } else if (res instanceof rxjs.Observable) {
     return new Promise<void>((resolve, reject) => {
       res.subscribe({
         next: (r) => {
-          process.stdout.write(`${opts?.json ? JSON.stringify(r) : r}\n`)
+          printLine(r, opts)
         },
         complete: resolve,
         error: reject,
