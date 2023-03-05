@@ -75,8 +75,16 @@ export interface ConnectContext<TSettings>
   } | null
 }
 
+// TODO: We should rename `provider` to `integration` given that they are both
+// Sources AND destinations. Provider only makes sense for sources.
+// An integration can have `connect[UI]`, `src[Connector]` and `dest[Connector]`
 export type CheckResourceOptions = z.infer<typeof zCheckResourceOptions>
 export const zCheckResourceOptions = z.object({
+  /**
+   * Always make a request to the provider. Perhaps should be the default?
+   * Will have to refactor `checkResource` to be a bit different
+   */
+  skipCache: z.boolean().nullish(),
   /** Persist input into connection storage */
   import: z.boolean().nullish(),
   /**

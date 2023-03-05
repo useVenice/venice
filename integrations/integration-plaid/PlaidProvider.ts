@@ -401,11 +401,23 @@ export const plaidProvider = makeSyncProvider({
     const client = makePlaidClient(config).fromToken(settings.accessToken)
     const envName = inferPlaidEnvFromToken(settings.accessToken)
     const itemId: string =
-      settings.itemId ??
-      settings.item?.item_id ??
+      (options.skipCache
+        ? undefined
+        : settings.itemId ?? settings.item?.item_id) ??
       (await client
         .itemGet({access_token: settings.accessToken})
-        .then((r) => r.data.item.item_id))
+        .then((r) => r.data.item.item_id)
+        .catch((err: IAxiosError) => {
+          // TODO: Centralize me inside PlaidClient...
+          // And make use of verror library
+          if (
+            err.isAxiosError &&
+            (err.response?.data as PlaidError | undefined)?.error_code
+          ) {
+            throw new Error((err.response?.data as PlaidError).error_message)
+          }
+          throw err
+        }))
     const resoUpdate = {envName, resourceExternalId: itemId}
 
     if (options.updateWebhook) {

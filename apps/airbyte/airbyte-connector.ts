@@ -1,18 +1,12 @@
 #!/usr/bin/env tsx
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import {initTRPC} from '@trpc/server'
 import {rxjs, z} from '@usevenice/util'
-import * as path from 'node:path'
 import {cliFromRouter} from '../cli/cli-utils'
 import type {ABMessageStream} from './airbyte-protocol'
 import {abMessage} from './airbyte-protocol'
 import type {ConfiguredAirbyteCatalog} from './airbyte-protocol.gen'
-
-function readJson<T>(filepath: string): T {
-  return require(path.resolve(process.cwd(), filepath))
-}
+import {readJson} from './utils'
 
 type ConnectionSpecification = unknown // Infer from ConnectorSpecifiction['connectionSpecification']
 

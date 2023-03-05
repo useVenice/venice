@@ -14,4 +14,4 @@ COPY ./integrations/ ./integrations
 
 RUN pnpm install
 
-ENTRYPOINT ["node",  "--no-warnings", "--loader", "/venice/node_modules/tsx/dist/loader.js", "/venice/apps/airbyte/airbyte-connector.ts"]
+ENTRYPOINT ["node",  "--no-warnings", "--loader", "/venice/node_modules/tsx/dist/loader.js", "/venice/apps/airbyte/plaid-connector.ts"]

@@ -1,5 +1,6 @@
 // Adapted from https://github.com/blend/promise-utils/blob/6ca9c71c55781b6db20a5d196e61b58489ed0478/src/delay.ts#L9
 import {Sema} from 'async-sema'
+import type {MaybePromise} from './type-utils'
 
 export {RateLimit} from 'async-sema'
 
@@ -43,4 +44,12 @@ export function withConcurrency<Args extends unknown[], T>(
       sema.release()
     }
   }
+}
+
+export function fromMaybePromise<T>(maybePromise: MaybePromise<T>) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  if (maybePromise && typeof (maybePromise as any).then === 'function') {
+    return maybePromise as Promise<T>
+  }
+  return Promise.resolve(maybePromise) as Promise<T>
 }

@@ -109,13 +109,17 @@ importers:
     specifiers:
       '@trpc/server': 10.9.1
       '@usevenice/app-config': workspace:*
+      '@usevenice/cdk-core': workspace:*
       '@usevenice/cli': workspace:*
       '@usevenice/util': workspace:*
+      zod-to-json-schema: 3.20.4
     dependencies:
       '@trpc/server': 10.9.1
       '@usevenice/app-config': link:../app-config
+      '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/cli': link:../cli
       '@usevenice/util': link:../../packages/util
+      zod-to-json-schema: 3.20.4
 
   apps/app-config:
     specifiers:
@@ -1008,6 +1012,7 @@ importers:
   packages/util:
     specifiers:
       '@blossomfinance/iso-4217-currencies': 0.2.5
+      '@trpc/server': 10.9.1
       '@types/accounting': 0.4.2
       '@types/json-stable-stringify': 1.0.34
       '@types/lodash': 4.14.184
@@ -1050,6 +1055,7 @@ importers:
       zod: 3.20.2
     dependencies:
       '@blossomfinance/iso-4217-currencies': 0.2.5
+      '@trpc/server': 10.9.1
       accounting: 0.4.1
       async-sema: 3.1.1
       awilix: 7.0.3
@@ -16559,6 +16565,12 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod-to-json-schema/3.20.4:
+    resolution: {integrity: sha512-Un9+kInJ2Zt63n6Z7mLqBifzzPcOyX+b+Exuzf7L1+xqck9Q2EPByyTRduV3kmSPaXaRer1JCsucubpgL1fipg==}
+    peerDependencies:
+      zod: ^3.20.0
+    dev: false
 
   /zod/3.20.2_6o55l5jjmzhdiwsempa52rp2y4:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
