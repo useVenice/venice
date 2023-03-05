@@ -55,6 +55,7 @@ import {
   zWebhook,
 } from './PlaidClient'
 
+// TODO: Make use of typescript 4.9 satisfies is going to make this a lot cleaner!!!
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('plaid'),
@@ -137,7 +138,9 @@ const _def = makeSyncProvider.def({
   webhookInput: zWebhookInput,
 })
 const def = makeSyncProvider.def.helpers(_def)
-
+def.sourceOutputEntity.options.map(
+  (o) => o.shape[def.sourceOutputEntity.discriminator].value,
+)
 export const plaidProvider = makeSyncProvider({
   ...veniceProviderBase(def, {
     sourceMapEntity: {

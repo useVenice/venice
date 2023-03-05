@@ -9,7 +9,10 @@ import type {AnySyncProvider} from '@usevenice/cdk-core'
 import {cliFromRouter} from '../cli/cli-utils'
 import type {ABMessageStream} from './airbyte-protocol'
 import {abMessage} from './airbyte-protocol'
-import type {ConfiguredAirbyteCatalog} from './airbyte-protocol.gen'
+import type {
+  AirbyteStream,
+  ConfiguredAirbyteCatalog,
+} from './airbyte-protocol.gen'
 import {readJson} from './utils'
 import zodToJsonSchema from 'zod-to-json-schema'
 
@@ -79,21 +82,23 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
       .input(z.object({config: z.string()}))
       .subscription(({input: args}): ABMessageStream<'CATALOG'> => {
         const config = readJson<ConnectionSpecification>(args.config)
+        const union = provider.def.sourceOutputEntity as
+          | z.ZodDiscriminatedUnion<string, []>
+          | undefined
         return rxjs.of(
           abMessage('CATALOG', {
             config,
-            streams: [
-              {
-                name: 'pokemon',
-                json_schema: {
-                  properties: {
-                    id: {type: 'string'},
-                    haha: {type: 'string'},
-                  },
-                },
-                supported_sync_modes: ['full_refresh'],
-              },
-            ],
+            streams:
+              union?.options.map(
+                (o): AirbyteStream => ({
+                  // @ts-expect-error
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                  name: o.shape[union.discriminator].value as string,
+                  json_schema: zodToJsonSchema(o),
+                  // Only full refresh for now
+                  supported_sync_modes: ['full_refresh'],
+                }),
+              ) ?? [],
           }),
         )
       }),
