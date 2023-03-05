@@ -112,6 +112,7 @@ importers:
       '@usevenice/cdk-core': workspace:*
       '@usevenice/cli': workspace:*
       '@usevenice/util': workspace:*
+      jsonschema-nodewalker: 1.0.6
       zod-to-json-schema: 3.20.4
     dependencies:
       '@trpc/server': 10.9.1
@@ -119,6 +120,7 @@ importers:
       '@usevenice/cdk-core': link:../../packages/cdk-core
       '@usevenice/cli': link:../cli
       '@usevenice/util': link:../../packages/util
+      jsonschema-nodewalker: 1.0.6
       zod-to-json-schema: 3.20.4
 
   apps/app-config:
@@ -11059,6 +11061,10 @@ packages:
 
   /jsonify/0.0.0:
     resolution: {integrity: sha512-trvBk1ki43VZptdBI5rIlG4YOzyeH/WefQt5rj1grasPn4iiZWKet8nkgc4GlsAylaztn0qZfUYOiTsASJFdNA==}
+    dev: false
+
+  /jsonschema-nodewalker/1.0.6:
+    resolution: {integrity: sha512-F7/B9BSAsY8EYenI48qj6/tJRjJv3Jc63MKhLV9jD126dta7BQOmVI3OzbWsEzcSQEq5wK6FL73cg/1NE3TYlw==}
     dev: false
 
   /jsonwebtoken/8.5.1:

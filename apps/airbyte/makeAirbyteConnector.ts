@@ -11,7 +11,7 @@ import {cliFromRouter} from '../cli/cli-utils'
 import type {ABMessage, ABMessageStream} from './airbyte-protocol'
 import {abMessage} from './airbyte-protocol'
 import type {AirbyteStream} from './airbyte-protocol.gen'
-import {readJson} from './utils'
+import {defaultTitleAsJsonPath, readJson} from './utils'
 
 const trpcServer = initTRPC.create()
 const procedure = trpcServer.procedure
@@ -39,7 +39,9 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
             protocol_version: '0.2.0',
             documentationUrl: `https://github.com/useVenice/venice/tree/main/integrations/integration-${provider.name}`,
             // Add all the other stuff we support
-            connectionSpecification: zodToJsonSchema(connSpec),
+            connectionSpecification: defaultTitleAsJsonPath(
+              zodToJsonSchema(connSpec),
+            ),
           }),
         ),
     ),

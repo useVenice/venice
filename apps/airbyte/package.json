@@ -9,6 +9,7 @@
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cli": "workspace:*",
     "@usevenice/util": "workspace:*",
+    "jsonschema-nodewalker": "1.0.6",
     "zod-to-json-schema": "3.20.4"
   },
   "devDependencies": {}
