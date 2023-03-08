@@ -20,20 +20,43 @@ import {
   parseIf,
   R,
   routerFromZFunctionMap,
+  rxjs,
   safeJSONParse,
 } from '@usevenice/util'
 
-export async function printResult(res: unknown, opts?: {json: boolean}) {
+function printLine(line: unknown, opts?: {json?: boolean}) {
+  if (opts?.json) {
+    process.stdout.write(`${JSON.stringify(line)}\n`)
+  } else {
+    console.log(line)
+  }
+}
+
+export async function printResult(
+  res: unknown,
+  opts?: {json?: boolean; minimal?: boolean},
+) {
   if (isAsyncIterable(res) || isIterable(res)) {
     for await (const r of res) {
-      console.log('[printResult]', opts?.json ? JSON.stringify(r) : r)
+      printLine(r, opts)
     }
+  } else if (res instanceof rxjs.Observable) {
+    return new Promise<void>((resolve, reject) => {
+      res.subscribe({
+        next: (r) => {
+          printLine(r, opts)
+        },
+        complete: resolve,
+        error: reject,
+      })
+    })
   } else {
+    console.log(res)
     const out = opts?.json ? JSON.stringify(await res) : await res
-    if (process.env['SILENT']) {
-      console.log('[printResult]')
-      process.stdout.write(`${out}`)
-      process.stdout.write('\n')
+    if (opts?.minimal || process.env['SILENT']) {
+      // console.log('[printResult]')
+      process.stdout.write(`${out}\n`)
+      // process.stdout.write('\n')
     } else {
       console.log('[printResult]', out)
     }
@@ -71,6 +94,10 @@ export interface CliOpts<TContext = unknown> {
   cleanup?: () => MaybePromise<void>
   context?: TContext
   defaultHelpCommand?: boolean
+
+  readStdin?: boolean
+  jsonOutput?: boolean
+  consoleLog?: boolean
 }
 const globalStart = Date.now() // Not entirely accurate...
 export function cliFromRouter<T extends AnyRouter>(
@@ -78,6 +105,11 @@ export function cliFromRouter<T extends AnyRouter>(
   cliOpts?: CliOpts<Parameters<T['createCaller']>[0]>,
 ) {
   const cli = cac()
+  const log: typeof console.log = (...args) => {
+    if (cliOpts?.consoleLog !== false) {
+      console.log(...args)
+    }
+  }
   Object.entries(router._def.procedures).forEach(([name, _procedure]) => {
     // console.debug(`Adding command ${name}`)
     // sub-command is not really working, let's hope we don't have naming conflicts...
@@ -97,7 +129,9 @@ export function cliFromRouter<T extends AnyRouter>(
       .allowUnknownOptions() // No args supported, only options...
       .action(async (args: string[], {'--': _, ...options} = {}) => {
         const input = R.pipe(
-          await readStdin().then(safeJSONParse),
+          cliOpts?.readStdin !== false
+            ? await readStdin().then(safeJSONParse)
+            : '',
           (stdin) => deepMerge(stdin ?? {}, options),
           (opts) => R.compact([...args, Object.keys(opts).length > 0 && opts]),
           (arr) => (arr.length <= 1 ? arr[0] : arr),
@@ -129,15 +163,23 @@ export function cliFromRouter<T extends AnyRouter>(
           },
         )
 
-        console.log(`[cli] ${name} input`, input)
-        console.log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
+        log(`[cli] ${name} input`, input)
+        log(`[cli] ${name} start at ${Date.now() - globalStart}ms`)
         const start = Date.now()
         await cliOpts?.prepare?.()
+        // We use await here because trpc always return resolver response wrapped in Promise
+        // even Observables from subscriptions are wrapped in promise, which
+        // does not work very well. Double awaiting shall have no net negative effect
+        // so we shall prefer that instead
         // @ts-expect-error
-        const res = router.createCaller(cliOpts?.context)[name](input)
-        await printResult(res)
+        const res = await router.createCaller(cliOpts?.context)[name](input)
+
+        await printResult(res, {
+          json: cliOpts?.jsonOutput,
+          minimal: cliOpts?.jsonOutput,
+        })
         await cliOpts?.cleanup?.()
-        console.log(`[cli] ${name} done in ${Date.now() - start}ms`)
+        log(`[cli] ${name} done in ${Date.now() - start}ms`)
       })
   })
   // This becomes the default command if user enters nothing at all

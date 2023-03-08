@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@trpc/server": "10.9.1",
+    "@usevenice/airbyte": "workspace:*",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/core-integration-firebase": "workspace:*",

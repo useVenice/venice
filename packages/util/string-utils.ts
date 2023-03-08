@@ -1,4 +1,5 @@
-import {startCase} from 'lodash'
+import {startCase, camelCase as _camelCase} from 'lodash'
+import type {CamelCase} from 'type-fest'
 
 export {
   padStart as leftPad,
@@ -15,4 +16,8 @@ export function titleCase(str: string | undefined) {
   return startCase(str)
     .toLowerCase()
     .replace(/(?:^|\s|-)\S/g, (c) => c.toUpperCase())
+}
+
+export function camelCase<T extends string>(str: T) {
+  return _camelCase(str) as CamelCase<T>
 }

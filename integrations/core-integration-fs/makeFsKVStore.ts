@@ -4,7 +4,7 @@ import {
   joinPath,
   R,
   readDir,
-  readJson,
+  safeReadJson,
   writeJson,
   z,
   zFunction,
@@ -22,12 +22,15 @@ export const makeFsKVStore = zFunction(
   zKVStore,
   ({basePath}) => ({
     get: (id) =>
-      readJson(_pathFromId(basePath, id)) as unknown as Record<string, unknown>,
+      safeReadJson(_pathFromId(basePath, id)) as unknown as Record<
+        string,
+        unknown
+      >,
     list: async () => {
       const filenames = await readDir(basePath)
       const results = await Promise.all(
         filenames.map(async (filename) => {
-          const data = await readJson(joinPath(basePath, filename))
+          const data = await safeReadJson(joinPath(basePath, filename))
           return [
             _idFromPath(filename),
             data as Record<string, unknown>,
