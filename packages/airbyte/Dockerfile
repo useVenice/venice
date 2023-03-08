@@ -1,3 +1,6 @@
+# This needs to be run from the root of the repo, run like so
+# docker build . -f ./packages/airbyte/Dockerfile  -t venice/source-plaid:dev --progress plain
+
 FROM node:18-alpine as base
 
 RUN npm install -g pnpm

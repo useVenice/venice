@@ -1,10 +1,13 @@
-import './register.node'
+import '@usevenice/app-config/register.node'
 
+import {fsProvider} from '@usevenice/app-config/env'
 import {sync} from '@usevenice/cdk-core'
-import {fsProvider} from '@usevenice/core-integration-fs'
 
-import readline from 'node:readline'
 import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
+import readline from 'node:readline'
+
+const srcPath = './apps/tests/__encrypted__/meta'
+const destPath = './temp'
 
 // Output sync messages to standard out
 
@@ -12,10 +15,7 @@ if (process.argv[2] === 'source') {
   sync({
     source: fsProvider.sourceSync({
       id: 'reso_1',
-      settings: {
-        basePath:
-          '/Users/tony/Code/usevenice/venice/apps/tests/__encrypted__/meta',
-      },
+      settings: {basePath: srcPath},
       state: {},
     }),
     destination: (obs) =>
@@ -53,9 +53,21 @@ if (process.argv[2] === 'destination') {
     }),
     destination: fsProvider.destinationSync({
       id: 'reso_1',
-      settings: {
-        basePath: '/Users/tony/Code/usevenice/venice/apps/app-config/sample',
-      },
+      settings: {basePath: destPath},
+    }),
+  }).catch(console.error)
+}
+
+if ((process.argv[2] = 'direct')) {
+  sync({
+    source: fsProvider.sourceSync({
+      id: 'reso_1',
+      settings: {basePath: srcPath},
+      state: {},
+    }),
+    destination: fsProvider.destinationSync({
+      id: 'reso_1',
+      settings: {basePath: destPath},
     }),
   }).catch(console.error)
 }

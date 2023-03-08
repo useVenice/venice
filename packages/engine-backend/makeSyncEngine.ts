@@ -392,10 +392,6 @@ export const makeSyncEngine = <
               (type === 'destination' && int.isDestination),
           )
       }),
-    // eslint-disable-next-line arrow-body-style
-    listConnections: publicProcedure.query(async () => {
-      return metaService.tables.pipeline.list({})
-    }),
     // Implement this directly via supabase?
     searchInstitutions: authedProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
