@@ -72,7 +72,7 @@ type FSDataEvent = SyncOperation
 function _fsWatchPaths$({basePath, paths}: z.infer<typeof zWatchPathsInput>) {
   return new rxjs.Observable<FSPathEvent>((sub) => {
     console.log('[fsWatchLedger] Start watching', paths)
-    const watcher = $chokidar()
+    const watcher = $chokidar() // Can we do await import('chodikar')?
       .watch(paths?.map((p) => $path().join(basePath, p)) ?? basePath, {
         awaitWriteFinish: {stabilityThreshold: 1000},
       })

@@ -20,7 +20,12 @@ export type {AxiosError as IAxiosError} from 'axios'
 
 export const $makeProxyAgent = defineProxyFn<
   (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
->('$makeProxyAgent', () => undefined)
+>('$makeProxyAgent', () => {
+  console.warn(
+    '$makeProxyAgent stub invoked, proxy will be undefined. Did you forget to regiser.node?',
+  )
+  return undefined
+})
 
 export function getDefaultProxyAgent() {
   return process.env['USE_PROXY_AGENT']

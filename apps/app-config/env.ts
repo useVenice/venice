@@ -61,7 +61,7 @@ export const zBackendEnv = zEnvVars({
 
 // MARK: - Integration env vars
 
-export {plaidProvider}
+export {plaidProvider, fsProvider}
 
 export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
 

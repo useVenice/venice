@@ -4,7 +4,7 @@ import {memoize} from './function-utils'
 import {$fs, $path, $readFile, $writeFile} from './injected-utils'
 import {safeJSONParse, stableStringify} from './json-utils'
 
-export async function readJson(absPath: string) {
+export async function safeReadJson(absPath: string) {
   try {
     return await $readFile(absPath).catch(catchENOENT(null)).then(safeJSONParse)
   } catch (err) {

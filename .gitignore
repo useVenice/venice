@@ -44,3 +44,5 @@ yarn-error.log*
 
 # tailwind
 /apps/web/__generated__/tailwind.css
+
+*.secret.json

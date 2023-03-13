@@ -1,0 +1,21 @@
+{
+  "name": "@usevenice/airbyte",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "codegen:airbyte-client": "openapi-zod-client https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-client.ts"
+  },
+  "dependencies": {
+    "@trpc/server": "10.9.1",
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/core-integration-postgres": "workspace:*",
+    "@usevenice/util": "workspace:*",
+    "@zodios/core": "10.7.7",
+    "jsonschema-nodewalker": "1.0.6",
+    "zod": "3.20.2",
+    "zod-to-json-schema": "3.20.4"
+  },
+  "devDependencies": {
+    "openapi-zod-client": "1.5.8"
+  }
+}
