@@ -9,7 +9,7 @@ export const browserSupabase = createBrowserSupabaseClient<Database>({
   // @see https://github.com/supabase/auth-helpers/pull/449
   // auth: {autoRefreshToken: true}, // auth-helpers-nextjs does not allow passing options to auth: at the moment
 })
-;(globalThis as any).supabaseBrowser = browserSupabase
+;(globalThis as any).browserSupabase = browserSupabase
 
 export async function copyToClipboard(content: string) {
   console.debug('Will save to clipboard', content)
