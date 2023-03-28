@@ -1,8 +1,9 @@
-import {createHTTPClient, invariant} from '@usevenice/util'
+import {createHTTPClient} from '@usevenice/util'
 
 export function makeSentryClient(opts: {dsn: string}) {
-  // TODO: maybe use a zod function?
-  invariant(opts.dsn, 'dsn is required')
+  if (!opts.dsn) {
+    console.warn('Sentry DSN missing, sentry calls will be noop')
+  }
 
   // @see https://docs.sentry.io/product/crons/getting-started/
   const sentry = createHTTPClient({
@@ -43,10 +44,10 @@ export function makeSentryClient(opts: {dsn: string}) {
       monitorId: string | undefined,
       fn: (checkinId: string | undefined) => T | Promise<T>,
     ): Promise<T> => {
-      if (!monitorId) {
-        if (process.env['VERCEL_ENV'] === 'production') {
-          throw new Error('monitorId missing for withCheckin')
-        }
+      if (!monitorId || !opts.dsn) {
+        // if (process.env['VERCEL_ENV'] === 'production') {
+        //   throw new Error('monitorId missing for withCheckin')
+        // }
         return fn(undefined)
       }
       const {id: checkinId} = await client.createCheckin(monitorId, {
