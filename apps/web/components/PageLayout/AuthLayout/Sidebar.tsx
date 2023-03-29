@@ -54,7 +54,7 @@ export function Sidebar() {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-venice-black-500">
       <header className="shrink-0 p-6">
-        <Link className="hover:opacity-90" href="/">
+        <Link className="hover:opacity-90" href="/admin">
           <Image
             width={102}
             height={32}
@@ -67,7 +67,7 @@ export function Sidebar() {
       <SidebarMain />
 
       <footer className="shrink-0 py-6">
-        <NavLink name="Account" href="/account" icon={ProfileIcon} />
+        <NavLink name="Account" href="/admin/account" icon={ProfileIcon} />
       </footer>
     </div>
   )

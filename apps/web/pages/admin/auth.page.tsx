@@ -12,7 +12,7 @@ export default function AuthScreen() {
   const [session] = useSession()
 
   if (session) {
-    return <RedirectTo url="/admin/connections" />
+    return <RedirectTo url="/admin" />
   }
 
   return (
