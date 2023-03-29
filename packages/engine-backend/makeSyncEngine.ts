@@ -375,6 +375,22 @@ export const makeSyncEngine = <
       }
       await inngest.send(input.name, {data: input.data, user: {id: ctx.userId}})
     }),
+    // TODO: This should probably be renamed to adminCreateConnectToken
+    createConnectToken: authedProcedure
+      .input(z.object({ledgerId: z.string()}))
+      .mutation(({input: {ledgerId}}) => {
+        if (!jwtClient) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'JWT secret not set',
+          })
+        }
+        // TODO: Handle having jwtPublicKey rather than secret
+        return jwtClient.sign({
+          sub: ledgerId,
+          exp: Math.floor(Date.now() / 1000) + 3600,
+        })
+      }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
       .query(async ({input: {type}}) => {

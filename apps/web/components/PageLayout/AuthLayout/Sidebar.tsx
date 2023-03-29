@@ -12,9 +12,14 @@ import Link from 'next/link'
 import {NavLink} from './NavLink'
 
 const mainNavigation = [
+  // {
+  //   name: 'Connections',
+  //   href: '/admin/connections',
+  //   icon: ArrowLeftRightIcon,
+  // },
   {
-    name: 'Connections',
-    href: '/admin/connections',
+    name: 'Magic link',
+    href: '/admin/magic-link',
     icon: ArrowLeftRightIcon,
   },
   {name: 'Explore Data', href: '/admin/explore-data', icon: SearchIcon},
