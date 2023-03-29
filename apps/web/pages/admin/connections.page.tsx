@@ -9,14 +9,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import {ArcherContainer, ArcherElement} from 'react-archer'
-import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
-import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {ResourceCard} from '../components/ResourceCard'
-import type {Connection} from '../lib/supabase-queries'
-import {getQueryKeys, queries} from '../lib/supabase-queries'
-import {createSSRHelpers, ensureDefaultLedger} from '../server'
+import {
+  ConnectionCard,
+  ConnectionCardSkeleton,
+} from '../../components/connections'
+import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
+import {PageHeader} from '../../components/PageHeader'
+import {PageLayout} from '../../components/PageLayout'
+import {ResourceCard} from '../../components/ResourceCard'
+import type {Connection} from '../../lib/supabase-queries'
+import {getQueryKeys, queries} from '../../lib/supabase-queries'
+import {createSSRHelpers, ensureDefaultLedger} from '../../server'
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 

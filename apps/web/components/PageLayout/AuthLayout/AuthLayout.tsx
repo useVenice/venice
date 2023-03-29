@@ -16,7 +16,7 @@ export function AuthLayout({children}: AuthLayoutProps) {
   }
 
   if (!isLoadingSession && !session) {
-    return <RedirectTo url="/auth" />
+    return <RedirectTo url="/admin/auth" />
   }
 
   return (

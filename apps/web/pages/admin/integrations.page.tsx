@@ -1,12 +1,12 @@
 import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
+import {PageHeader} from '../../components/PageHeader'
+import {PageLayout} from '../../components/PageLayout'
 import {Button, Card, EmailIcon, SettingsIcon} from '@usevenice/ui'
 
 // for server-side
-import {serverGetUser} from '../server'
+import {serverGetUser} from '../../server'
 
 interface ServerSideProps {}
 

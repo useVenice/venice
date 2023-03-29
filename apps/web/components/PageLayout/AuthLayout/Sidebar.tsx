@@ -14,18 +14,18 @@ import {NavLink} from './NavLink'
 const mainNavigation = [
   {
     name: 'Connections',
-    href: '/connections',
+    href: '/admin/connections',
     icon: ArrowLeftRightIcon,
   },
-  {name: 'Explore Data', href: '/explore-data', icon: SearchIcon},
+  {name: 'Explore Data', href: '/admin/explore-data', icon: SearchIcon},
   {
     name: 'API Access',
-    href: '/api-access',
+    href: '/admin/api-access',
     icon: CodeIcon,
   },
   {
     name: 'Integrations',
-    href: '/integrations',
+    href: '/admin/integrations',
     icon: IntegrationsIcon,
   },
 ]

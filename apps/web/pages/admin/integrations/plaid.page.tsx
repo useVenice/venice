@@ -1,7 +1,7 @@
 import type {GetServerSideProps} from 'next'
 import {useState} from 'react'
-import {PageHeader} from '../../components/PageHeader'
-import {PageLayout} from '../../components/PageLayout'
+import {PageHeader} from '../../../components/PageHeader'
+import {PageLayout} from '../../../components/PageLayout'
 import Image from 'next/image'
 import {EditIcon} from '@usevenice/ui'
 
@@ -14,7 +14,7 @@ import {
 } from '@usevenice/ui'
 
 // for server-side
-import {serverGetUser} from '../../server'
+import {serverGetUser} from '../../../server'
 
 interface ServerSideProps {}
 

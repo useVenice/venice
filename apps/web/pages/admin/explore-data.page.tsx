@@ -20,11 +20,11 @@ import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {useState} from 'react'
-import {CopyTextButton} from '../components/CopyTextButton'
-import {PreviewResult, usePreviewQuery} from '../components/export'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
+import {CopyTextButton} from '../../components/CopyTextButton'
+import {PreviewResult, usePreviewQuery} from '../../components/export'
+import {PageHeader} from '../../components/PageHeader'
+import {PageLayout} from '../../components/PageLayout'
+import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const PREVIEW_LIMIT = 10
 

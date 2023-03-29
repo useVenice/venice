@@ -15,11 +15,11 @@ import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
-import {GraphQLExplorer} from '../components/api-access'
-import {CopyTextButton} from '../components/CopyTextButton'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
+import {GraphQLExplorer} from '../../components/api-access'
+import {CopyTextButton} from '../../components/CopyTextButton'
+import {PageHeader} from '../../components/PageHeader'
+import {PageLayout} from '../../components/PageLayout'
+import {atomWithQueryParam} from '../../contexts/utils/atomWithQueryParam'
 
 // for server-side
 import {
@@ -28,8 +28,8 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import {browserAnalytics} from '../lib/browser-analytics'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
+import {browserAnalytics} from '../../lib/browser-analytics'
+import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',

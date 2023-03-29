@@ -2,17 +2,17 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {RedirectTo} from '../components/RedirectTo'
-import {browserSupabase} from '../contexts/common-contexts'
-import {useSession} from '../contexts/session-context'
-import {PageLayout} from '../components/PageLayout'
-import {VeniceTheme} from '../themes'
+import {RedirectTo} from '../../components/RedirectTo'
+import {browserSupabase} from '../../contexts/common-contexts'
+import {useSession} from '../../contexts/session-context'
+import {PageLayout} from '../../components/PageLayout'
+import {VeniceTheme} from '../../themes'
 
 export default function AuthScreen() {
   const [session] = useSession()
 
   if (session) {
-    return <RedirectTo url="/connections" />
+    return <RedirectTo url="/admin/connections" />
   }
 
   return (

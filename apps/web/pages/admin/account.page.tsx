@@ -1,9 +1,9 @@
 import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {serverGetUser} from '../server'
+import {PageHeader} from '../../components/PageHeader'
+import {PageLayout} from '../../components/PageLayout'
+import {serverGetUser} from '../../server'
 import {Profile} from './account'
 
 enum PrimaryTabsKey {
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }
