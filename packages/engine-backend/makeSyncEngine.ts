@@ -45,6 +45,7 @@ import {
   zSyncOptions,
 } from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
+import {VeniceConnectJwtPayload} from './safeForFrontend'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -377,8 +378,10 @@ export const makeSyncEngine = <
     }),
     // TODO: This should probably be renamed to adminCreateConnectToken
     createConnectToken: authedProcedure
-      .input(z.object({ledgerId: z.string()}))
-      .mutation(({input: {ledgerId}}) => {
+      .input(
+        z.object({ledgerId: z.string(), displayName: z.string().nullish()}),
+      )
+      .mutation(({input: {ledgerId, displayName}, ctx}) => {
         if (!jwtClient) {
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
@@ -387,9 +390,14 @@ export const makeSyncEngine = <
         }
         // TODO: Handle having jwtPublicKey rather than secret
         return jwtClient.sign({
-          sub: ledgerId,
+          sub: `ledger/${ledgerId}`,
           exp: Math.floor(Date.now() / 1000) + 3600,
-        })
+          veniceConnect: {
+            tenantId: ctx.userId!,
+            ledgerId,
+            displayName,
+          },
+        } satisfies VeniceConnectJwtPayload)
       }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))

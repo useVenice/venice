@@ -1,44 +1,68 @@
-import type {ConnectWith, UserId} from '@usevenice/cdk-core'
+import {dehydrate, QueryClient} from '@tanstack/react-query'
+import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import type {ConnectWith} from '@usevenice/cdk-core'
+import {makeJwtClient} from '@usevenice/engine-backend'
+import {zVeniceConnectJwtPayload} from '@usevenice/engine-backend/safeForFrontend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
+import {fromMaybeArray} from '@usevenice/util'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import React from 'react'
+import superjson from 'superjson'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
 import {ResourceCard} from '../components/ResourceCard'
+import {PageHeader} from '../components/PageHeader'
 import type {Connection} from '../lib/supabase-queries'
-import {getQueryKeys, queries} from '../lib/supabase-queries'
-import {createSSRHelpers, ensureDefaultLedger} from '../server'
+import {queries} from '../lib/supabase-queries'
+import {ensureDefaultLedger} from '../server'
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {user, getPageProps, supabase, queryClient, ssg} =
-    await createSSRHelpers(context)
-  if (!user?.id) {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      },
-    }
+  await import('@usevenice/app-config/register.node')
+  const {veniceRouter, backendEnv} = await import(
+    '@usevenice/app-config/backendConfig'
+  )
+  const jwtClient = makeJwtClient({
+    secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY!,
+  })
+  const token = fromMaybeArray(context.query['token'])[0]
+  if (!token) {
+    // Need to figure out how to properly return an unauthorized response
+    throw new Error('Unauthorized')
   }
+
+  const {veniceConnect: data} = zVeniceConnectJwtPayload.parse(
+    jwtClient.verify(token),
+  )
+
+  const queryClient = new QueryClient()
+
+  const ssg = createProxySSGHelpers({
+    queryClient,
+    router: veniceRouter,
+    ctx: {userId: data.tenantId},
+    // transformer: superjson,
+  })
 
   const [integrations] = await Promise.all([
     ssg.listIntegrations.fetch({}),
     ssg.searchInstitutions.prefetch({keywords: undefined}),
-    queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
+
+    // queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
   ])
 
-  const ledgerIds = await ensureDefaultLedger(user.id)
+  const ledgerIds = await ensureDefaultLedger(data.tenantId)
   return {
     props: {
-      ...getPageProps(),
+      dehydratedState: superjson.serialize(dehydrate(queryClient)),
       ledgerIds,
-      userId: user.id as UserId,
       integrations,
+      displayName: data.displayName,
+      ledgerId: data.ledgerId,
     },
   }
 }) satisfies GetServerSideProps
@@ -68,15 +92,18 @@ export default function ConnectPage(
   }, [props.integrations, trpcCtx])
 
   return (
-    <div className="flex gap-36 px-16 pt-8">
-      {connections.isLoading ? (
-        <LoadingConnectionsColumn />
-      ) : (
-        <ConnectionsColumn
-          connections={connections.data?.source ?? []}
-          connectWith={{destinationId: props.ledgerIds[0]}}
-        />
-      )}
+    <div>
+      <PageHeader title={[props.displayName ?? '']}></PageHeader>
+      <div className="flex gap-36 px-16 pt-8">
+        {connections.isLoading ? (
+          <LoadingConnectionsColumn />
+        ) : (
+          <ConnectionsColumn
+            connections={connections.data?.source ?? []}
+            connectWith={{destinationId: props.ledgerIds[0]}}
+          />
+        )}
+      </div>
     </div>
   )
 }

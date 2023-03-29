@@ -30,7 +30,7 @@ export const getServerSideProps = (async (context) => {
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }

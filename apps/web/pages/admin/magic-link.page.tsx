@@ -6,6 +6,8 @@ import {serverGetUser} from '../../server'
 import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 import {VeniceProvider} from '@usevenice/engine-frontend'
+import {getServerUrl} from '@usevenice/app-config/constants'
+import {copyToClipboard} from '../../contexts/common-contexts'
 
 export const getServerSideProps = (async (ctx) => {
   const [user] = await serverGetUser(ctx)
@@ -28,7 +30,12 @@ export default function MagicLinkPage(
   const {trpc} = VeniceProvider.useContext()
   const createToken = trpc.createConnectToken.useMutation({
     onError: console.error,
-    // onSettled: () => setDeleteDialogOpen(false),
+    onSuccess: async (data) => {
+      const url = new URL('/connect', getServerUrl(null))
+      url.searchParams.set('token', data)
+      await copyToClipboard(url.toString())
+      alert('Magic link copied to clipboard')
+    },
   })
   return (
     <PageLayout title="Magic link">
@@ -37,14 +44,9 @@ export default function MagicLinkPage(
         <ZodForm
           schema={z.object({
             ledgerId: z.string(),
+            displayName: z.string().nullish(),
           })}
-          onSubmit={(values) => {
-            createToken.mutate(values, {
-              onSuccess: (data, _variables, _context) => {
-                console.log('Success data', data)
-              },
-            })
-          }}
+          onSubmit={(values) => createToken.mutate(values)}
           renderAfter={({submit}) => (
             <div className="mt-8 flex justify-center gap-4">
               <Button
