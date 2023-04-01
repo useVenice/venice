@@ -13,6 +13,7 @@ import type {
   Source,
   UserId,
 } from '@usevenice/cdk-core'
+import {zUserId} from '@usevenice/cdk-core'
 import {
   extractId,
   handlersLink,
@@ -376,29 +377,6 @@ export const makeSyncEngine = <
       }
       await inngest.send(input.name, {data: input.data, user: {id: ctx.userId}})
     }),
-    // TODO: This should probably be renamed to adminCreateConnectToken
-    createConnectToken: authedProcedure
-      .input(
-        z.object({ledgerId: z.string(), displayName: z.string().nullish()}),
-      )
-      .mutation(({input: {ledgerId, displayName}, ctx}) => {
-        if (!jwtClient) {
-          throw new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'JWT secret not set',
-          })
-        }
-        // TODO: Handle having jwtPublicKey rather than secret
-        return jwtClient.sign({
-          sub: `ledger/${ledgerId}`,
-          exp: Math.floor(Date.now() / 1000) + 3600,
-          veniceConnect: {
-            tenantId: ctx.userId!,
-            ledgerId,
-            displayName,
-          },
-        } satisfies VeniceConnectJwtPayload)
-      }),
     listConnections: authedProcedure
       .input(z.object({}).optional())
       .query(async ({ctx}) => {
@@ -758,6 +736,23 @@ export const makeSyncEngine = <
         console.log('[syncPipeline]', pipeline)
         authorizeOrThrow(ctx, 'pipeline', pipeline)
         return _syncPipeline(pipeline, opts)
+      }),
+    // TODO: Make me admin only...
+    adminCreateConnectToken: authedProcedure
+      .input(z.object({userId: zUserId, displayName: z.string().nullish()}))
+      .mutation(({input: {userId, displayName}}) => {
+        if (!jwtClient) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'JWT secret not set',
+          })
+        }
+        // TODO: Handle having jwtPublicKey rather than secret
+        return jwtClient.sign({
+          sub: userId,
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          veniceConnect: {displayName},
+        } satisfies VeniceConnectJwtPayload)
       }),
     adminSearchCreatorIds: adminProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())

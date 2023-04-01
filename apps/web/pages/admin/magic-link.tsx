@@ -8,6 +8,7 @@ import {z} from '@usevenice/util'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {copyToClipboard} from '../../contexts/common-contexts'
+import {zUserId} from '@usevenice/cdk-core'
 
 export const getServerSideProps = (async (ctx) => {
   const [user] = await serverGetUser(ctx)
@@ -28,7 +29,7 @@ export default function MagicLinkPage(
   _props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
   const {trpc} = VeniceProvider.useContext()
-  const createToken = trpc.createConnectToken.useMutation({
+  const createToken = trpc.adminCreateConnectToken.useMutation({
     onError: console.error,
     onSuccess: async (data) => {
       const url = new URL('/connect', getServerUrl(null))
@@ -43,7 +44,7 @@ export default function MagicLinkPage(
       <div className="p-6">
         <ZodForm
           schema={z.object({
-            ledgerId: z.string(),
+            userId: zUserId,
             displayName: z.string().nullish(),
           })}
           onSubmit={(values) => createToken.mutate(values)}

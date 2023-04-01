@@ -1,17 +1,19 @@
 import '@usevenice/app-config/register.node'
 
 import {backendEnv, veniceRouter} from '@usevenice/app-config/backendConfig'
-import type {UserId} from '@usevenice/cdk-core'
 
-import {makeJwtClient} from '@usevenice/engine-backend'
+import {
+  makeJwtClient,
+  zVeniceConnectJwtPayload,
+} from '@usevenice/engine-backend'
 
 import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {z} from '@usevenice/util'
 import superjson from 'superjson'
+import {ensureDefaultLedger} from '../../server'
 import {ClientRoot} from '../ClientRoot'
 import {Connect} from './Connect'
-import {ensureDefaultLedger} from '../../server'
 
 export const metadata = {
   title: 'Venice Connect',
@@ -30,8 +32,8 @@ export default async function ConnectPage({
 }) {
   const token = z.string().parse(searchParams['token'])
 
-  const payload = jwtClient.verify(token)
-  const userId = payload.sub as UserId
+  const payload = zVeniceConnectJwtPayload.parse(jwtClient.verify(token))
+  const userId = payload.sub
   const queryClient = new QueryClient()
   const ssg = createProxySSGHelpers({
     queryClient,
@@ -52,7 +54,7 @@ export default async function ConnectPage({
       accessToken={token}>
       <Connect
         integrations={integrations}
-        displayName={userId}
+        displayName={payload.veniceConnect.displayName ?? userId}
         ledgerIds={ledgerIds}
       />
     </ClientRoot>

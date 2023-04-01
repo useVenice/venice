@@ -4,11 +4,9 @@ import {zUserId} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
 
 export const zVeniceConnectJwtPayload = z.object({
-  sub: z.string(),
+  sub: zUserId,
   exp: z.number(),
   veniceConnect: z.object({
-    tenantId: zUserId,
-    ledgerId: z.string(),
     displayName: z.string().nullish(),
   }),
 })

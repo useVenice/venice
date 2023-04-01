@@ -9,7 +9,7 @@ import {
 } from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
-import {LinkIcon, UnlinkIcon} from 'lucide-react'
+import * as Lucide from 'lucide-react'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
 import {browserSupabase} from '../../../contexts/common-contexts'
@@ -138,14 +138,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               />
               {status === 'disconnected' && (
                 <ActionMenuItem
-                  icon={LinkIcon}
+                  icon={Lucide.Link}
                   label="Reconnect"
                   onClick={() => onReconnect?.()}
                 />
               )}
               {status === 'healthy' && labels.includes('sandbox') && (
                 <ActionMenuItem
-                  icon={UnlinkIcon}
+                  icon={Lucide.Unlink}
                   label="Simulate disconnect"
                   onClick={() => props.onSandboxSimulateDisconnect?.()}
                 />
