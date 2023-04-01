@@ -6,6 +6,10 @@ import type {UserId} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/engine-backend'
 
 import {z} from '@usevenice/util'
+import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {dehydrate, QueryClient} from '@tanstack/query-core'
+import {ConnectPage} from './connect.client'
+import superjson from 'superjson'
 
 export const metadata = {
   title: 'Venice Connect',
@@ -26,8 +30,18 @@ export default async function Connect({
   const payload = jwtClient.verify(token)
 
   const caller = veniceRouter.createCaller({userId: payload.sub as UserId})
+  const queryClient = new QueryClient()
+  const ssg = createProxySSGHelpers({
+    queryClient,
+    router: veniceRouter,
+    ctx: {userId: payload.sub as UserId},
+    // transformer: superjson,
+  })
+
   const integrations = await caller.listIntegrations({})
-  const connections = await caller.listConnections({})
+  // const connections = await caller.listConnections({})
+  //
+  await ssg.listConnections.prefetch({})
 
   // const caller = veniceRouter
 
@@ -36,7 +50,10 @@ export default async function Connect({
       <h1>Venice connect </h1>
       <pre>{JSON.stringify(payload, null, 2)}</pre>
       <pre>{JSON.stringify(integrations, null, 2)}</pre>
-      <pre>{JSON.stringify(connections, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(connections, null, 2)}</pre> */}
+      <ConnectPage
+        dehydratedState={superjson.serialize(dehydrate(queryClient))}
+      />
     </div>
   )
 }
