@@ -28,23 +28,19 @@ export default async function ConnectPage({
   searchParams: Record<string, string | string[] | undefined>
 }) {
   const token = z.string().parse(searchParams['token'])
-  const payload = jwtClient.verify(token)
 
-  const caller = veniceRouter.createCaller({userId: payload.sub as UserId})
+  const payload = jwtClient.verify(token)
   const queryClient = new QueryClient()
   const ssg = createProxySSGHelpers({
     queryClient,
     router: veniceRouter,
     ctx: {userId: payload.sub as UserId},
-    // transformer: superjson,
   })
 
-  const integrations = await caller.listIntegrations({})
-  // const connections = await caller.listConnections({})
-  //
-  await ssg.listConnections.prefetch({})
-
-  // const caller = veniceRouter
+  const [integrations] = await Promise.all([
+    ssg.listIntegrations.fetch({}),
+    ssg.listConnections.prefetch({}),
+  ])
 
   return (
     <div>

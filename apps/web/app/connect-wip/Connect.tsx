@@ -4,12 +4,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 
 export function Connect() {
   const {trpc} = VeniceProvider.useContext()
-  const connections = trpc.listConnections.useQuery(
-    {},
-    {
-      staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
-    },
-  )
+  const connections = trpc.listConnections.useQuery({})
 
   return (
     <div>
