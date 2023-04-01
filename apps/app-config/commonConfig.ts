@@ -1,9 +1,10 @@
-import {EnvName} from '@usevenice/cdk-core'
-import {VeniceProvider} from '@usevenice/engine-frontend'
+import {AnySyncProvider, EnvName, LinkFactory} from '@usevenice/cdk-core'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import type {SyncEngineCommonConfig} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
-import {PROVIDERS, zCommonEnv} from './env'
 import {getServerUrl} from './constants'
+import {PROVIDERS, zCommonEnv} from './env'
 
 export {Papa} from '@usevenice/integration-import'
 
@@ -31,7 +32,7 @@ export const commonEnv = zParser(zCommonEnv).parse({
 // TODO: Removing providers we are not using so we don't have nearly as much code, at least on the frontend!
 // Further perhaps code from supported providers can be loaded dynamically based on
 // listIntegrations output.
-export const veniceCommonConfig = VeniceProvider.config({
+export const veniceCommonConfig = {
   // Turn providers into a map rather than array so that we can prevent from
   // a data-structure level multiple providers with the same `name` being passed in?
   providers: PROVIDERS,
@@ -40,6 +41,9 @@ export const veniceCommonConfig = VeniceProvider.config({
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
 
   // parseJwtPayload // use default here
-})
+} satisfies SyncEngineCommonConfig<
+  readonly AnySyncProvider[],
+  Record<string, LinkFactory>
+>
 
 // console.log('Using config', veniceConfig) // Too verbose...
