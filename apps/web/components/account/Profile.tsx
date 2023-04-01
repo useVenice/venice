@@ -12,7 +12,7 @@ export function Profile(props: ProfileProps) {
   const router = useRouter()
   const logout = useMutation<void, Error>(async () => {
     await browserSupabase.auth.signOut()
-    await router.push('/auth')
+    await router.push('/admin/auth')
   })
 
   return (

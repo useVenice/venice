@@ -737,8 +737,9 @@ export const makeSyncEngine = <
         authorizeOrThrow(ctx, 'pipeline', pipeline)
         return _syncPipeline(pipeline, opts)
       }),
-    // TODO: Make me admin only...
-    adminCreateConnectToken: authedProcedure
+
+    // Admin procedures...
+    adminCreateConnectToken: adminProcedure
       .input(z.object({userId: zUserId, displayName: z.string().nullish()}))
       .mutation(({input: {userId, displayName}}) => {
         if (!jwtClient) {
