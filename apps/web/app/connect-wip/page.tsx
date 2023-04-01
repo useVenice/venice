@@ -5,11 +5,12 @@ import type {UserId} from '@usevenice/cdk-core'
 
 import {makeJwtClient} from '@usevenice/engine-backend'
 
-import {z} from '@usevenice/util'
-import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {dehydrate, QueryClient} from '@tanstack/query-core'
-import {ConnectPage} from './connect.client'
+import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {z} from '@usevenice/util'
 import superjson from 'superjson'
+import {SuperHydrate} from '../../components/SuperHydrate'
+import {ConnectPageInner} from './connect.client'
 
 export const metadata = {
   title: 'Venice Connect',
@@ -51,9 +52,10 @@ export default async function Connect({
       <pre>{JSON.stringify(payload, null, 2)}</pre>
       <pre>{JSON.stringify(integrations, null, 2)}</pre>
       {/* <pre>{JSON.stringify(connections, null, 2)}</pre> */}
-      <ConnectPage
-        dehydratedState={superjson.serialize(dehydrate(queryClient))}
-      />
+      <SuperHydrate
+        dehydratedState={superjson.serialize(dehydrate(queryClient))}>
+        <ConnectPageInner />
+      </SuperHydrate>
     </div>
   )
 }
