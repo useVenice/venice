@@ -9,8 +9,8 @@ import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {z} from '@usevenice/util'
 import superjson from 'superjson'
-import {SuperHydrate} from '../../components/SuperHydrate'
-import {ConnectPageInner} from './connect.client'
+import {ClientRoot} from '../ClientRoot'
+import {Connect} from './Connect'
 
 export const metadata = {
   title: 'Venice Connect',
@@ -22,7 +22,7 @@ const jwtClient = makeJwtClient({
 })
 
 /** https://beta.nextjs.org/docs/api-reference/file-conventions/page#searchparams-optional */
-export default async function Connect({
+export default async function ConnectPage({
   searchParams,
 }: {
   searchParams: Record<string, string | string[] | undefined>
@@ -52,10 +52,11 @@ export default async function Connect({
       <pre>{JSON.stringify(payload, null, 2)}</pre>
       <pre>{JSON.stringify(integrations, null, 2)}</pre>
       {/* <pre>{JSON.stringify(connections, null, 2)}</pre> */}
-      <SuperHydrate
-        dehydratedState={superjson.serialize(dehydrate(queryClient))}>
-        <ConnectPageInner />
-      </SuperHydrate>
+      <ClientRoot
+        dehydratedState={superjson.serialize(dehydrate(queryClient))}
+        accessToken={token}>
+        <Connect />
+      </ClientRoot>
     </div>
   )
 }

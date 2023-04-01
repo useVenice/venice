@@ -5,9 +5,11 @@ import React from 'react'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 
+export type DehydratedState = SuperJSONResult
+
 /** Hydrate using superjson */
 export function SuperHydrate(props: {
-  dehydratedState?: SuperJSONResult
+  dehydratedState?: DehydratedState
   children: React.ReactNode
 }) {
   return (

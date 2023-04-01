@@ -2,7 +2,7 @@
 
 import {VeniceProvider} from '@usevenice/engine-frontend'
 
-export function ConnectPageInner() {
+export function Connect() {
   const {trpc} = VeniceProvider.useContext()
   const connections = trpc.listConnections.useQuery(
     {},
