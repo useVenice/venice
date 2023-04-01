@@ -50,7 +50,7 @@ const nextConfig = {
   },
   // suppress error where 'debug' module requires 'supports-color' module dynamically
   // @see https://share.cleanshot.com/dWSLnpnS
-  experimental: {esmExternals: 'loose'},
+  experimental: {esmExternals: 'loose', appDir: true},
   reactStrictMode: true,
   rewrites: async () => ({
     beforeFiles: [
