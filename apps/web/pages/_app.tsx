@@ -1,11 +1,7 @@
 import './global.css'
 
 import type {QueryClient} from '@tanstack/react-query'
-import {
-  Hydrate,
-  QueryClientProvider,
-  useQueryClient,
-} from '@tanstack/react-query'
+import {Hydrate, QueryClientProvider} from '@tanstack/react-query'
 import {useAtomValue} from 'jotai'
 import {NextAdapter} from 'next-query-params'
 import type {AppProps} from 'next/app'
@@ -25,7 +21,7 @@ import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionE
 
 import {browserAnalytics} from '../lib/browser-analytics'
 import {createQueryClient} from '../lib/query-client'
-import {getQueryKeys, usePostgresChanges} from '../lib/supabase-queries'
+import {usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
 
 if (typeof window !== 'undefined') {
@@ -69,13 +65,12 @@ function _VeniceProvider({
 }
 
 function InvalidateQueriesOnPostgresChanges() {
-  const queryClient = useQueryClient()
+  const {trpc} = VeniceProvider.useContext()
+  const trpcUtils = trpc.useContext()
+
   const invalidate = React.useCallback(
-    () =>
-      queryClient.invalidateQueries(
-        getQueryKeys(browserSupabase).connections._def,
-      ),
-    [queryClient],
+    () => trpcUtils.listConnections.invalidate(),
+    [trpcUtils],
   )
   usePostgresChanges('resource', invalidate)
   usePostgresChanges('pipeline', invalidate)
@@ -100,9 +95,9 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
               pageProps.dehydratedState &&
               superjson.deserialize(pageProps.dehydratedState)
             }>
-            <InvalidateQueriesOnPostgresChanges />
             <SessionContextProvider supabaseClient={browserSupabase}>
               <_VeniceProvider queryClient={queryClient}>
+                <InvalidateQueriesOnPostgresChanges />
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>

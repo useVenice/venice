@@ -27,6 +27,7 @@ export default async function Connect({
 
   const caller = veniceRouter.createCaller({userId: payload.sub as UserId})
   const integrations = await caller.listIntegrations({})
+  const connections = await caller.listConnections({})
 
   // const caller = veniceRouter
 
@@ -35,6 +36,7 @@ export default async function Connect({
       <h1>Venice connect </h1>
       <pre>{JSON.stringify(payload, null, 2)}</pre>
       <pre>{JSON.stringify(integrations, null, 2)}</pre>
+      <pre>{JSON.stringify(connections, null, 2)}</pre>
     </div>
   )
 }

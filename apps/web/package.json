@@ -14,7 +14,6 @@
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
     "@graphiql/toolkit": "^0.8.0",
-    "@lukemorales/query-key-factory": "1.1.0",
     "@monaco-editor/react": "^4.4.6",
     "@radix-ui/react-progress": "^1.0.1",
     "@sentry/nextjs": "7.39.0",
@@ -35,7 +34,6 @@
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "camelcase-keys": "8.0.2",
     "clsx": "^1.2.1",
     "cookies-next": "2.1.1",
     "date-fns": "^2.29.3",

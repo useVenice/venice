@@ -14,10 +14,9 @@ import React from 'react'
 import superjson from 'superjson'
 import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
 import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
-import {ResourceCard} from '../components/ResourceCard'
 import {PageHeader} from '../components/PageHeader'
+import {ResourceCard} from '../components/ResourceCard'
 import type {Connection} from '../lib/supabase-queries'
-import {queries} from '../lib/supabase-queries'
 import {ensureDefaultLedger} from '../server'
 
 // Should this be moved to _app getInitialProps?
@@ -27,7 +26,7 @@ export const getServerSideProps = (async (context) => {
     '@usevenice/app-config/backendConfig'
   )
   const jwtClient = makeJwtClient({
-    secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY!,
+    secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
   })
   const token = fromMaybeArray(context.query['token'])[0]
   if (!token) {
@@ -70,9 +69,9 @@ export const getServerSideProps = (async (context) => {
 export default function ConnectPage(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  const connections = queries.useConnectionsList()
   const {trpc} = VeniceProvider.useContext()
   const trpcCtx = trpc.useContext()
+  const connections = trpc.listConnections.useQuery()
 
   // TODO: Need to have default preConnectInput values for prefetch to work properly
   // Ideally this can work like a streaming react server component where we start
@@ -99,7 +98,9 @@ export default function ConnectPage(
           <LoadingConnectionsColumn />
         ) : (
           <ConnectionsColumn
-            connections={connections.data?.source ?? []}
+            connections={
+              connections.data?.filter((c) => c.type === 'source') ?? []
+            }
             connectWith={{destinationId: props.ledgerIds[0]}}
           />
         )}

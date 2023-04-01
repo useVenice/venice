@@ -1,10 +1,9 @@
 import type {ConnectWith, UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
-import {VeniceProvider} from '@usevenice/engine-frontend'
-import {useVenice} from '@usevenice/engine-frontend'
+import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import {GetServerSideProps} from 'next'
 import type {InferGetServerSidePropsType} from 'next'
+import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -18,15 +17,13 @@ import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {ResourceCard} from '../../components/ResourceCard'
 import type {Connection} from '../../lib/supabase-queries'
-import {getQueryKeys, queries} from '../../lib/supabase-queries'
 import {createSSRHelpers, ensureDefaultLedger} from '../../server'
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {user, getPageProps, supabase, queryClient, ssg} =
-    await createSSRHelpers(context)
+  const {user, getPageProps, ssg} = await createSSRHelpers(context)
   if (!user?.id) {
     return {
       redirect: {
@@ -38,8 +35,8 @@ export const getServerSideProps = (async (context) => {
 
   const [integrations] = await Promise.all([
     ssg.listIntegrations.fetch({}),
+    ssg.listConnections.fetch({}),
     ssg.searchInstitutions.prefetch({keywords: undefined}),
-    queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
   ])
 
   const ledgerIds = await ensureDefaultLedger(user.id)
@@ -56,9 +53,9 @@ export const getServerSideProps = (async (context) => {
 export default function ConnectionsPage(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  const connections = queries.useConnectionsList()
   const {trpc} = VeniceProvider.useContext()
   const trpcCtx = trpc.useContext()
+  const connections = trpc.listConnections.useQuery({})
 
   // TODO: Need to have default preConnectInput values for prefetch to work properly
   // Ideally this can work like a streaming react server component where we start
@@ -91,7 +88,9 @@ export default function ConnectionsPage(
               <LoadingConnectionsColumn />
             ) : (
               <ConnectionsColumn
-                connections={connections.data?.source ?? []}
+                connections={
+                  connections.data?.filter((c) => c.type === 'source') ?? []
+                }
                 connectWith={{destinationId: props.ledgerIds[0]}}
               />
             )}
