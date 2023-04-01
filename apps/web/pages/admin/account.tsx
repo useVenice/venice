@@ -4,7 +4,7 @@ import type {GetServerSideProps} from 'next'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {serverGetUser} from '../../server'
-import {Profile} from './account'
+import {Profile} from '../../components/account'
 
 enum PrimaryTabsKey {
   profile = 'profile',

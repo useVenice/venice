@@ -2,7 +2,7 @@ import {useMutation} from '@tanstack/react-query'
 import {Button, CircularProgress, Input} from '@usevenice/ui'
 import {FrownIcon} from '@usevenice/ui/icons'
 import {useRouter} from 'next/router'
-import {browserSupabase} from '../../../contexts/common-contexts'
+import {browserSupabase} from '../../contexts/common-contexts'
 
 interface ProfileProps {
   username: string
