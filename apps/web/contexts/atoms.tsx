@@ -1,3 +1,5 @@
+'use client'
+
 import {useRouter} from 'next/router'
 import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 

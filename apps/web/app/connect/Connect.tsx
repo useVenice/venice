@@ -1,77 +1,29 @@
-import {dehydrate, QueryClient} from '@tanstack/react-query'
-import {createProxySSGHelpers} from '@trpc/react-query/ssg'
-import type {ConnectWith} from '@usevenice/cdk-core'
-import {makeJwtClient} from '@usevenice/engine-backend'
-import {zVeniceConnectJwtPayload} from '@usevenice/engine-backend/safeForFrontend'
+'use client'
+
+import type {ConnectWith, Id} from '@usevenice/cdk-core'
+import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import {fromMaybeArray} from '@usevenice/util'
-import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import React from 'react'
-import superjson from 'superjson'
-import {ConnectionCard, ConnectionCardSkeleton} from '../components/connections'
-import {LoadingIndicatorOverlayV2} from '../components/loading-indicators'
-import {PageHeader} from '../components/PageHeader'
-import {ResourceCard} from '../components/ResourceCard'
-import type {Connection} from '../lib/supabase-queries'
-import {ensureDefaultLedger} from '../server'
+import {
+  ConnectionCard,
+  ConnectionCardSkeleton,
+} from '../../components/connections'
+import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
+import {PageHeader} from '../../components/PageHeader'
+import {ResourceCard} from '../../components/ResourceCard'
+import type {Connection} from '../../lib/supabase-queries'
 
-// Should this be moved to _app getInitialProps?
-export const getServerSideProps = (async (context) => {
-  await import('@usevenice/app-config/register.node')
-  const {veniceRouter, backendEnv} = await import(
-    '@usevenice/app-config/backendConfig'
-  )
-  const jwtClient = makeJwtClient({
-    secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-  })
-  const token = fromMaybeArray(context.query['token'])[0]
-  if (!token) {
-    // Need to figure out how to properly return an unauthorized response
-    throw new Error('Unauthorized')
-  }
-
-  const {veniceConnect: data} = zVeniceConnectJwtPayload.parse(
-    jwtClient.verify(token),
-  )
-
-  const queryClient = new QueryClient()
-
-  const ssg = createProxySSGHelpers({
-    queryClient,
-    router: veniceRouter,
-    ctx: {userId: data.tenantId},
-    // transformer: superjson,
-  })
-
-  const [integrations] = await Promise.all([
-    ssg.listIntegrations.fetch({}),
-    ssg.searchInstitutions.prefetch({keywords: undefined}),
-
-    // queryClient.prefetchQuery(getQueryKeys(supabase).connections.list),
-  ])
-
-  const ledgerIds = await ensureDefaultLedger(data.tenantId)
-  return {
-    props: {
-      dehydratedState: superjson.serialize(dehydrate(queryClient)),
-      ledgerIds,
-      integrations,
-      displayName: data.displayName,
-      ledgerId: data.ledgerId,
-    },
-  }
-}) satisfies GetServerSideProps
-
-export default function ConnectPage(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function Connect(props: {
+  integrations: AnySyncRouterOutput['listIntegrations']
+  displayName?: string
+  ledgerIds: Array<Id['reso']>
+}) {
   const {trpc} = VeniceProvider.useContext()
   const trpcCtx = trpc.useContext()
-  const connections = trpc.listConnections.useQuery()
+  const connections = trpc.listConnections.useQuery({})
 
   // TODO: Need to have default preConnectInput values for prefetch to work properly
   // Ideally this can work like a streaming react server component where we start

@@ -11,6 +11,7 @@ import {z} from '@usevenice/util'
 import superjson from 'superjson'
 import {ClientRoot} from '../ClientRoot'
 import {Connect} from './Connect'
+import {ensureDefaultLedger} from '../../server'
 
 export const metadata = {
   title: 'Venice Connect',
@@ -30,11 +31,12 @@ export default async function ConnectPage({
   const token = z.string().parse(searchParams['token'])
 
   const payload = jwtClient.verify(token)
+  const userId = payload.sub as UserId
   const queryClient = new QueryClient()
   const ssg = createProxySSGHelpers({
     queryClient,
     router: veniceRouter,
-    ctx: {userId: payload.sub as UserId},
+    ctx: {userId},
   })
 
   const [integrations] = await Promise.all([
@@ -42,17 +44,17 @@ export default async function ConnectPage({
     ssg.listConnections.prefetch({}),
   ])
 
+  const ledgerIds = await ensureDefaultLedger(userId)
+
   return (
-    <div>
-      <h1>Venice connect </h1>
-      <pre>{JSON.stringify(payload, null, 2)}</pre>
-      <pre>{JSON.stringify(integrations, null, 2)}</pre>
-      {/* <pre>{JSON.stringify(connections, null, 2)}</pre> */}
-      <ClientRoot
-        dehydratedState={superjson.serialize(dehydrate(queryClient))}
-        accessToken={token}>
-        <Connect />
-      </ClientRoot>
-    </div>
+    <ClientRoot
+      dehydratedState={superjson.serialize(dehydrate(queryClient))}
+      accessToken={token}>
+      <Connect
+        integrations={integrations}
+        displayName={userId}
+        ledgerIds={ledgerIds}
+      />
+    </ClientRoot>
   )
 }
