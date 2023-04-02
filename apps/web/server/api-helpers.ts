@@ -48,6 +48,7 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   }
 }
 
+/** Get user based on accessToken, apiKey, cookie in that order */
 export async function serverGetApiUserId({
   req,
   res,
@@ -55,6 +56,14 @@ export async function serverGetApiUserId({
   req: NextApiRequest
   res: NextApiResponse
 }) {
+  const token = getAccessToken(req)
+  if (token) {
+    const data = makeJwtClient({
+      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
+    }).verify(token)
+    return [data.sub, 'accessToken'] as const
+  }
+
   const pat = fromMaybeArray(
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
@@ -70,7 +79,7 @@ export async function serverGetApiUserId({
   }
   const [user] = await serverGetUser({req, res})
 
-  return [user?.id, 'accessToken'] as const
+  return [user?.id, 'cookie'] as const
 }
 
 /** For serverSideProps */
@@ -95,7 +104,7 @@ export async function serverGetUser(
   // Should we rely on supabase at all given that they don't verify against JWT token?
   try {
     makeJwtClient({
-      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY!,
+      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
     }).verify(access_token)
     return [user, supabase] as const
   } catch (err) {
@@ -108,7 +117,6 @@ export async function serverGetUser(
   }
 }
 
-/** @deprecated For API endpoints. Consider using supabase nextjs auth helper too */
 export function getAccessToken(req: NextApiRequest) {
   return (
     fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??

@@ -10,7 +10,7 @@ import {parseQueryParams, shallowOmitUndefined} from '@usevenice/util'
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 
-export const kAccessToken = 'accessToken' as const
+export const kAccessToken = '_token' as const
 export const kEnv = 'env' as const
 
 export const kLedgerId = 'ledgerId'
