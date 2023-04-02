@@ -9,7 +9,6 @@
     "docs": "pnpm run --filter app-config dev",
     "lint": "eslint --ext .js,.ts,.tsx --cache .",
     "mitm": "mitmweb --listen-port 3010 --web-port 3011 --mode reverse:http://localhost:3000",
-    "install-pnpm": "npm i pnpm@8",
     "preinstall": "npx only-allow pnpm",
     "test::ci": "pnpm run test --ci --forceExit --detectOpenHandles --runInBand",
     "test::debug": "node --inspect-brk $(pnpm bin)/jest --runInBand --watch",
@@ -65,7 +64,6 @@
     "tsx": "3.12.2",
     "typescript": "4.9.4"
   },
-  "packageManager": "pnpm@7.26.2",
   "engines": {
     "node": "18",
     "pnpm": "8"
