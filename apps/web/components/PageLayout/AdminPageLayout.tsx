@@ -2,16 +2,17 @@ import Head from 'next/head'
 import type {PropsWithChildren} from 'react'
 import {AuthLayout} from './AuthLayout'
 
-interface PageLayoutProps extends PropsWithChildren {
+interface AdminPageLayoutProps extends PropsWithChildren {
   requiresAuthentication?: boolean
   title: string
 }
 
-export function PageLayout({
+/** TODO: Rename to AdminPageLayout */
+export function AdminPageLayout({
   children,
   requiresAuthentication = true,
   title,
-}: PageLayoutProps) {
+}: AdminPageLayoutProps) {
   const pageTitle = `Venice - ${title}`
   return (
     <>
@@ -19,7 +20,11 @@ export function PageLayout({
         <title>{pageTitle}</title>
       </Head>
 
-      {requiresAuthentication ? <AuthLayout>{children}</AuthLayout> : children}
+      {requiresAuthentication ? (
+        <AuthLayout adminOnly>{children}</AuthLayout>
+      ) : (
+        children
+      )}
     </>
   )
 }

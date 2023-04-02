@@ -1,22 +1,71 @@
 import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
-import {Container} from '@usevenice/ui'
+import {useMutation} from '@tanstack/react-query'
+import {xAdminUserMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
+import {
+  Button,
+  CircularProgress,
+  Container,
+  FrownIcon,
+  Input,
+  Label,
+} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {PageLayout} from '../../components/PageLayout'
+import {AdminPageLayout} from '../../components/PageLayout'
 import {RedirectTo} from '../../components/RedirectTo'
 import {useSession, useSupabase} from '../../contexts/session-context'
 import {VeniceTheme} from '../../themes'
 
-export default function AuthScreen() {
+export default function AdminAuthScreen() {
   const [session] = useSession()
   const supabase = useSupabase()
 
-  if (session) {
+  const isAdmin = session?.user.user_metadata[xAdminUserMetadataKey] === true
+
+  const logout = useMutation<void, Error>(async () => {
+    await supabase.auth.signOut()
+  })
+
+  if (session && isAdmin) {
     return <RedirectTo url="/admin" />
+  }
+  if (session && !isAdmin) {
+    return (
+      <AdminPageLayout title="Admin only" requiresAuthentication={false}>
+        <Container className="min-h-screen justify-center">
+          <p>
+            This portal is only accessible to admins. Please contact an existing
+            admin to grant you permission.
+          </p>
+          <form
+            className="flex flex-col items-start gap-6"
+            onSubmit={(event) => {
+              event.preventDefault()
+              logout.mutate()
+            }}>
+            <div className="grid w-full max-w-[20rem] gap-3">
+              <Label>You are logged in as</Label>
+              <Input value={session?.user.email ?? session.user.id} readOnly />
+            </div>
+            <Button
+              variant="primary"
+              className="gap-2"
+              disabled={logout.isLoading}>
+              {logout.isLoading ? (
+                <CircularProgress className="h-4 w-4 fill-offwhite text-offwhite/50" />
+              ) : (
+                <FrownIcon className="h-4 w-4 fill-current" />
+              )}
+              Log out
+            </Button>
+          </form>
+        </Container>
+      </AdminPageLayout>
+    )
   }
 
   return (
-    <PageLayout title="Login" requiresAuthentication={false}>
+    <AdminPageLayout title="Login" requiresAuthentication={false}>
       <Container className="min-h-screen justify-center">
         <div className="mx-auto grid w-80 grid-cols-1">
           <Image
@@ -51,7 +100,7 @@ export default function AuthScreen() {
             theme="dark"></Auth>
         </div>
       </Container>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }
 

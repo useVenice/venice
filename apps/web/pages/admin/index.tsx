@@ -1,10 +1,10 @@
 import {RedirectTo} from '../../components/RedirectTo'
-import {PageLayout} from '../../components/PageLayout'
+import {AdminPageLayout} from '../../components/PageLayout'
 
 export default function Page() {
   return (
-    <PageLayout title="Home">
+    <AdminPageLayout title="Home">
       <RedirectTo url="/admin/integrations" />
-    </PageLayout>
+    </AdminPageLayout>
   )
 }

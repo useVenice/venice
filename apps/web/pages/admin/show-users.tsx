@@ -2,7 +2,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import {PageHeader} from '../../components/PageHeader'
-import {PageLayout} from '../../components/PageLayout'
+import {AdminPageLayout} from '../../components/PageLayout'
 import {DataTable} from '../../components/DataTable'
 import {createSSRHelpers} from '../../server'
 
@@ -22,7 +22,7 @@ export default function ShowUsers(
 
   const creatorIdRes = trpc.adminSearchCreatorIds.useQuery({})
   return (
-    <PageLayout title="Connected users">
+    <AdminPageLayout title="Connected users">
       <PageHeader title={['Connected users']} />
       <div className="p-6">
         <p>A list of users who have at least one connection</p>
@@ -31,6 +31,6 @@ export default function ShowUsers(
           isFetching={creatorIdRes.isFetching}
         />
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }

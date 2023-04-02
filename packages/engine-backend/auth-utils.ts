@@ -1,8 +1,9 @@
-import * as jwt from 'jsonwebtoken'
 import {TRPCError} from '@trpc/server'
+import * as jwt from 'jsonwebtoken'
 
 import {zUserId} from '@usevenice/cdk-core'
 import {z, zFunction, zGuard} from '@usevenice/util'
+import {xAdminUserMetadataKey} from './safeForFrontend'
 
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
@@ -37,8 +38,8 @@ export const _zUserInfo = (options: {
     options.parseJwtPayload ??
     ((jwt) => ({
       userId: jwt.sub,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-      isAdmin: jwt['user_metadata']?.['isAdmin'] === true,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      isAdmin: jwt['user_metadata']?.[xAdminUserMetadataKey] === true,
     }))
 
   // Still need to return userId... JWT decode?

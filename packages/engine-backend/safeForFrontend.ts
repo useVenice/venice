@@ -19,3 +19,5 @@ export const zVeniceConnectJwtPayload = z.object({
 export type VeniceConnectJwtPayload = z.infer<typeof zVeniceConnectJwtPayload>
 
 export {jwt}
+
+export const xAdminUserMetadataKey = 'isAdmin'

@@ -2,7 +2,7 @@ import {Tabs, TabsContent, TabsTriggers} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
 import {PageHeader} from '../../components/PageHeader'
-import {PageLayout} from '../../components/PageLayout'
+import {AdminPageLayout} from '../../components/PageLayout'
 import {serverGetUser} from '../../server'
 import {Profile} from '../../components/account'
 
@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 export default function Page(props: ServerSideProps) {
   const {username} = props
   return (
-    <PageLayout title="Account">
+    <AdminPageLayout title="Account">
       <PageHeader title={['Account']} />
       <div className="p-6">
         <Tabs className="grid gap-6" defaultValue={PrimaryTabsKey.profile}>
@@ -52,6 +52,6 @@ export default function Page(props: ServerSideProps) {
           </TabsContent>
         </Tabs>
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }

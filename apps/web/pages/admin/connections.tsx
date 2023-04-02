@@ -14,7 +14,7 @@ import {
 } from '../../components/connections'
 import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
 import {PageHeader} from '../../components/PageHeader'
-import {PageLayout} from '../../components/PageLayout'
+import {AdminPageLayout} from '../../components/PageLayout'
 import {ResourceCard} from '../../components/ResourceCard'
 import type {Connection} from '../../lib/supabase-queries'
 import {createSSRHelpers, ensureDefaultLedger} from '../../server'
@@ -75,7 +75,7 @@ export default function ConnectionsPage(
   }, [props.integrations, trpcCtx])
 
   return (
-    <PageLayout title="Connections">
+    <AdminPageLayout title="Connections">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
         <PageHeader title={['Connections']} />
         <ArcherContainer
@@ -99,7 +99,7 @@ export default function ConnectionsPage(
           </div>
         </ArcherContainer>
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }
 
