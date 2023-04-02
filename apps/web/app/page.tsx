@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 import {runAsAdmin, sql} from '../server'
 import {Scratchpad} from './scratchpad'
 
-export default async function Home() {
+export async function ScratchpadPage() {
   // This should be made into a trpc function which can be refreshed...
   const res = await runAsAdmin((trxn) =>
     trxn.query<{
@@ -23,5 +23,14 @@ export default async function Home() {
         type: row.table_type === 'BASE TABLE' ? 'table' : 'view',
       }))}
     />
+  )
+}
+
+export default function Home() {
+  return (
+    <h1>
+      Your Venice deployment is successful. See docs for details on how to use
+      it
+    </h1>
   )
 }

@@ -27,16 +27,17 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
+import type {SqlExplorerProps} from '../../components/api-access/SqlExplorer'
 import {SqlExplorer} from '../../components/api-access/SqlExplorer'
 import {browserAnalytics} from '../../lib/browser-analytics'
 import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
+  sql: 'SQL API',
   rest: 'REST API',
   graphql: 'GraphQL API',
   realtime: 'Real time API',
-  sql: 'Raw SQL API',
 } as const
 
 const tabKey = (k: keyof typeof tabLabelByKey) => k
@@ -57,12 +58,34 @@ export const getServerSideProps = (async (ctx) => {
       },
     }
   }
-  const pat = await ensurePersonalAccessToken(user.id)
-  return {props: {pat}}
+  const [pat, res] = await Promise.all([
+    ensurePersonalAccessToken(user.id),
+    import('../../server').then(({runAsAdmin, sql}) =>
+      runAsAdmin((trxn) =>
+        trxn.query<{table_name: string; table_type: 'BASE TABLE' | 'VIEW'}>(sql`
+          SELECT table_name, table_type FROM information_schema.tables
+          WHERE table_schema = 'public' ORDER BY table_name
+        `),
+      ),
+    ),
+  ])
+
+  return {
+    props: {
+      pat,
+      selectables: res.rows.map(
+        (row): SqlExplorerProps['selectables'][number] => ({
+          name: row.table_name,
+          type: row.table_type === 'BASE TABLE' ? 'table' : 'view',
+        }),
+      ),
+    },
+  }
 }) satisfies GetServerSideProps
 
 export default function ApiAccessNewPage({
   pat,
+  selectables,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
 
@@ -85,8 +108,8 @@ export default function ApiAccessNewPage({
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
             <APIKeysCard pat={pat} />
           </TabsContent>
-          <TabsContent className="max-w-[30rem]" value={tabKey('sql')}>
-            <SqlExplorer pat={pat} />
+          <TabsContent value={tabKey('sql')}>
+            <SqlExplorer pat={pat} selectables={selectables} />
           </TabsContent>
           {/* We need to hide during inative because
               1) radix tab contents are still kept on screen, thus flex-1 is

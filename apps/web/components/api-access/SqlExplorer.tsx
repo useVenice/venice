@@ -15,6 +15,9 @@ export interface SqlExplorerProps {
 const queryTextForTable = (tableName: string | undefined | null) =>
   tableName ? `SELECT * from "${tableName}" LIMIT 10` : ''
 
+/**
+ * TODO: 1) Allow copy database url 2) Allow download sql
+ */
 export function SqlExplorer({selectables}: SqlExplorerProps) {
   const [queryText, setQueryText] = useState(
     queryTextForTable(selectables[0]?.name),
