@@ -25,6 +25,9 @@ export default async function ConnectPage({
 }: {
   searchParams: Record<string, string | string[] | undefined>
 }) {
+  if (!searchParams['token']) {
+    return <div>Missing token</div>
+  }
   const token = z.string().parse(searchParams['token'])
 
   // Need to create jwtClient in here vecause otherwise during vercel static pre-render
