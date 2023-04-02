@@ -14,7 +14,7 @@ import {
   xPatAppMetadataKey,
 } from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
-import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeJwtClient, xAdminAppMetadataKey} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
@@ -61,7 +61,9 @@ export async function serverGetApiUserId({
     const data = makeJwtClient({
       secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
     }).verify(token)
-    return [data.sub, 'accessToken'] as const
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const isAdmin = data['app_metadata']?.[xAdminAppMetadataKey] == true
+    return [data.sub, {isAdmin, from: 'accessToken'} as const] as const
   }
 
   const pat = fromMaybeArray(
@@ -70,16 +72,23 @@ export async function serverGetApiUserId({
   )[0]
 
   if (pat) {
-    const userId = await runAsAdmin((pool) =>
-      pool.maybeOneFirst<string>(sql`
-        SELECT id FROM auth.users WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${pat}
+    const row = await runAsAdmin((pool) =>
+      pool.maybeOne<{
+        id: string
+        raw_app_metadata: Record<string, unknown>
+      }>(sql`
+        SELECT id, raw_app_meta_data FROM auth.users
+        WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${pat}
       `),
     )
-    return [userId, 'apiKey'] as const
+    const isAdmin = row?.raw_app_metadata?.[xAdminAppMetadataKey] == true
+
+    return [row?.id, {isAdmin, from: 'apiKey'} as const] as const
   }
   const [user] = await serverGetUser({req, res})
+  const isAdmin = user?.app_metadata?.[xAdminAppMetadataKey] == true
 
-  return [user?.id, 'cookie'] as const
+  return [user?.id, {isAdmin, from: 'cookie'} as const] as const
 }
 
 /** For serverSideProps */
