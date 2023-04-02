@@ -9,6 +9,7 @@
     "docs": "pnpm run --filter app-config dev",
     "lint": "eslint --ext .js,.ts,.tsx --cache .",
     "mitm": "mitmweb --listen-port 3010 --web-port 3011 --mode reverse:http://localhost:3000",
+    "install-pnpm": "npm i pnpm@8",
     "preinstall": "npx only-allow pnpm",
     "test::ci": "pnpm run test --ci --forceExit --detectOpenHandles --runInBand",
     "test::debug": "node --inspect-brk $(pnpm bin)/jest --runInBand --watch",
