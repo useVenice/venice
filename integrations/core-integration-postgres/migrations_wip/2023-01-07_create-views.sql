@@ -21,6 +21,7 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,standard->> 'notes'  as notes
 	,(standard-> 'postingsMap')::graphql_json as splits -- keep type as jsonb rather than turn into string
 	,external :: graphql_json
+	,ledger_resource_id
 	,updated_at
 	,created_at
 FROM
@@ -53,7 +54,8 @@ CREATE VIEW account WITH (security_invoker) AS SELECT
 	,standard->> 'defaultUnit' as default_unit
 	,(standard#> '{informationalBalances,current,quantity}') :: double precision as current_balance
 	,(standard#> '{informationalBalances,available,quantity}') :: double precision as available_balance
-  ,external :: graphql_json
+	,external :: graphql_json
+	,ledger_resource_id
 	,updated_at
 	,created_at
 FROM
@@ -75,6 +77,7 @@ CREATE VIEW transaction_split WITH (security_invoker) AS SELECT
 	,s.value #>>'{amount,unit}' as amount_unit
 	,s.value ->>'accountId' as account_id
 	,s.value :: graphql_json as data
+	,ledger_resource_id
 	,updated_at
 	,created_at
 FROM "raw_transaction",
