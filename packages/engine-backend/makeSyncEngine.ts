@@ -752,6 +752,7 @@ export const makeSyncEngine = <
         return jwtClient.sign({
           sub: userId,
           exp: Math.floor(Date.now() / 1000) + 3600,
+          role: 'authenticated',
           veniceConnect: {displayName},
         } satisfies VeniceConnectJwtPayload)
       }),

@@ -1,6 +1,8 @@
-import type {RealtimePostgresChangesPayload} from '@supabase/supabase-js'
+import type {
+  RealtimePostgresChangesPayload,
+  SupabaseClient,
+} from '@supabase/supabase-js'
 import React from 'react'
-import {browserSupabase} from '../contexts/common-contexts'
 import type {Database} from '../supabase/supabase.gen'
 
 import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
@@ -13,10 +15,11 @@ export type Connection = AnySyncRouterOutput['listConnections'][number]
 // MARK: Subscriptions
 
 export function subscribePostgresChanges(
+  supabase: SupabaseClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
-  const sub = browserSupabase
+  const sub = supabase
     // Unique channel name otherwise multiple calls to subscribe would overwrite each other
     .channel(`pg/public.${tableName}.${Date.now()}`)
     .on(
@@ -40,8 +43,9 @@ export function subscribePostgresChanges(
 
 /** Ties to component lifecycle. Prefer global ones for subscription */
 export function usePostgresChanges(
+  supabase: SupabaseClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
-  React.useEffect(() => subscribePostgresChanges(tableName, fn).unsub)
+  React.useEffect(() => subscribePostgresChanges(supabase, tableName, fn).unsub)
 }

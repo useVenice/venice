@@ -6,7 +6,11 @@ import {z} from '@usevenice/util'
 
 export const zVeniceConnectJwtPayload = z.object({
   sub: zUserId,
+  /** Required by supabase/goTrue-js and supabase/realtime */
   exp: z.number(),
+  /** Required by supabase/realtime */
+  role: z.string(),
+  /** Extra metadata for us, though may be better off specified via url params as they do not need to be secure */
   veniceConnect: z.object({
     displayName: z.string().nullish(),
   }),

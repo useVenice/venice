@@ -72,8 +72,8 @@ function InvalidateQueriesOnPostgresChanges() {
     () => trpcUtils.listConnections.invalidate(),
     [trpcUtils],
   )
-  usePostgresChanges('resource', invalidate)
-  usePostgresChanges('pipeline', invalidate)
+  usePostgresChanges(browserSupabase, 'resource', invalidate)
+  usePostgresChanges(browserSupabase, 'pipeline', invalidate)
   return null
 }
 
