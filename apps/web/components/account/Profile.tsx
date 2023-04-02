@@ -2,7 +2,7 @@ import {useMutation} from '@tanstack/react-query'
 import {Button, CircularProgress, Input} from '@usevenice/ui'
 import {FrownIcon} from '@usevenice/ui/icons'
 import {useRouter} from 'next/router'
-import {browserSupabase} from '../../contexts/common-contexts'
+import {useSupabase} from '../../contexts/session-context'
 
 interface ProfileProps {
   username: string
@@ -10,8 +10,9 @@ interface ProfileProps {
 
 export function Profile(props: ProfileProps) {
   const router = useRouter()
+  const supabase = useSupabase()
   const logout = useMutation<void, Error>(async () => {
-    await browserSupabase.auth.signOut()
+    await supabase.auth.signOut()
     await router.push('/admin/auth')
   })
 

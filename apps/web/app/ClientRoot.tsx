@@ -1,6 +1,5 @@
 'use client'
 
-import type {SupabaseClient} from '@supabase/supabase-js'
 import {createClient} from '@supabase/supabase-js'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
@@ -9,21 +8,9 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import React from 'react'
 import type {DehydratedState} from '../components/SuperHydrate'
 import {SuperHydrate} from '../components/SuperHydrate'
+import {InvalidateQueriesOnPostgresChanges} from '../contexts/realtime'
+import {SessionContextProvider} from '../contexts/session-context'
 import {createQueryClient} from '../lib/query-client'
-import {usePostgresChanges} from '../lib/supabase-queries'
-
-function InvalidateQueriesOnPostgresChanges(props: {supabase: SupabaseClient}) {
-  const {trpc} = VeniceProvider.useContext()
-  const trpcUtils = trpc.useContext()
-
-  const invalidate = React.useCallback(
-    () => trpcUtils.listConnections.invalidate(),
-    [trpcUtils],
-  )
-  usePostgresChanges(props.supabase, 'resource', invalidate)
-  usePostgresChanges(props.supabase, 'pipeline', invalidate)
-  return null
-}
 
 export function ClientRoot(props: {
   children: React.ReactNode
@@ -72,7 +59,9 @@ export function ClientRoot(props: {
           accessToken={props.accessToken}
           developerMode={false}>
           <InvalidateQueriesOnPostgresChanges supabase={supabase} />
-          {props.children}
+          <SessionContextProvider supabase={supabase}>
+            {props.children}
+          </SessionContextProvider>
         </VeniceProvider>
       </SuperHydrate>
     </QueryClientProvider>

@@ -5,8 +5,8 @@ import {delay} from '@usevenice/util'
 import {CloseIcon} from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {useEffect, useRef, useState} from 'react'
-import {browserSupabase} from '../../../contexts/common-contexts'
 import {useOnClickOutside} from '../../../hooks/useOnClickOutside'
+import {useSupabase} from '../../../contexts/session-context'
 
 interface EditingDisplayNameProps {
   displayName: string
@@ -19,9 +19,10 @@ export function EditingDisplayName(props: EditingDisplayNameProps) {
   const {onCancel, onUpdateSuccess, resourceId} = props
   const [displayName, setDisplayName] = useState(props.displayName)
 
+  const supabase = useSupabase()
   const {mutate: updateDisplayName, isLoading: isUpdating} = useMutation(
     async () => {
-      const {error} = await browserSupabase
+      const {error} = await supabase
         .from('resource')
         .update({display_name: displayName})
         .eq('id', resourceId)

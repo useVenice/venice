@@ -13,16 +13,17 @@ import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Loading, UIProvider} from '@usevenice/ui'
 
+import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
-import {browserSupabase} from '../contexts/common-contexts'
 import {SessionContextProvider, useSession} from '../contexts/session-context'
 import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
 
+import {InvalidateQueriesOnPostgresChanges} from '../contexts/realtime'
 import {browserAnalytics} from '../lib/browser-analytics'
 import {createQueryClient} from '../lib/query-client'
-import {usePostgresChanges} from '../lib/supabase-queries'
 import type {PageProps} from '../server'
+import type {Database} from '../supabase/supabase.gen'
 
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -64,21 +65,17 @@ function _VeniceProvider({
   )
 }
 
-function InvalidateQueriesOnPostgresChanges() {
-  const {trpc} = VeniceProvider.useContext()
-  const trpcUtils = trpc.useContext()
-
-  const invalidate = React.useCallback(
-    () => trpcUtils.listConnections.invalidate(),
-    [trpcUtils],
-  )
-  usePostgresChanges(browserSupabase, 'resource', invalidate)
-  usePostgresChanges(browserSupabase, 'pipeline', invalidate)
-  return null
-}
-
 export function MyApp({Component, pageProps}: AppProps<PageProps>) {
   const {current: queryClient} = React.useRef(createQueryClient())
+  const {current: supabase} = React.useRef(
+    // https://app.supabase.com/project/hhnxsazpojeczkeeifli/settings/api
+    createBrowserSupabaseClient<Database>({
+      // supabaseUrl: commonEnv.NEXT_PUBLIC_SUPABASE_URL,
+      // supabaseKey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      // @see https://github.com/supabase/auth-helpers/pull/449
+      // auth: {autoRefreshToken: true}, // auth-helpers-nextjs does not allow passing options to auth: at the moment
+    }),
+  )
   useGlobalRouteTransitionEffect()
 
   return (
@@ -95,9 +92,9 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
               pageProps.dehydratedState &&
               superjson.deserialize(pageProps.dehydratedState)
             }>
-            <SessionContextProvider supabaseClient={browserSupabase}>
+            <SessionContextProvider supabase={supabase}>
               <_VeniceProvider queryClient={queryClient}>
-                <InvalidateQueriesOnPostgresChanges />
+                <InvalidateQueriesOnPostgresChanges supabase={supabase} />
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>

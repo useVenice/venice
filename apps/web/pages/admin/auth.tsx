@@ -2,14 +2,14 @@ import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
-import {RedirectTo} from '../../components/RedirectTo'
-import {browserSupabase} from '../../contexts/common-contexts'
-import {useSession} from '../../contexts/session-context'
 import {PageLayout} from '../../components/PageLayout'
+import {RedirectTo} from '../../components/RedirectTo'
+import {useSession, useSupabase} from '../../contexts/session-context'
 import {VeniceTheme} from '../../themes'
 
 export default function AuthScreen() {
   const [session] = useSession()
+  const supabase = useSupabase()
 
   if (session) {
     return <RedirectTo url="/admin" />
@@ -30,7 +30,7 @@ export default function AuthScreen() {
             You&apos;ll be up and running in 2 minutes!
           </p>
           <Auth
-            supabaseClient={browserSupabase}
+            supabaseClient={supabase}
             appearance={{
               theme: ThemeSupa,
               variables: veniceThemeTweaks,
