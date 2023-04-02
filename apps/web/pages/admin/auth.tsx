@@ -1,6 +1,6 @@
 import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 import {useMutation} from '@tanstack/react-query'
-import {xAdminUserMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
+import {xAdminAppMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
 import {
   Button,
   CircularProgress,
@@ -20,7 +20,7 @@ export default function AdminAuthScreen() {
   const [session] = useSession()
   const supabase = useSupabase()
 
-  const isAdmin = session?.user.user_metadata[xAdminUserMetadataKey] === true
+  const isAdmin = session?.user.app_metadata[xAdminAppMetadataKey] === true
 
   const logout = useMutation<void, Error>(async () => {
     await supabase.auth.signOut()

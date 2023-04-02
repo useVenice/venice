@@ -76,6 +76,8 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
       // auth: {autoRefreshToken: true}, // auth-helpers-nextjs does not allow passing options to auth: at the moment
     }),
   )
+  ;(globalThis as any).supabase = supabase
+
   useGlobalRouteTransitionEffect()
 
   return (

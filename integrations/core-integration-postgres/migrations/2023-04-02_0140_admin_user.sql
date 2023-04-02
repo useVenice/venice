@@ -7,7 +7,7 @@ begin
 	UPDATE
 		auth.users
 	SET
-		raw_user_meta_data = raw_user_meta_data || jsonb_build_object('isAdmin', admin)
+		raw_app_meta_data = raw_app_meta_data || jsonb_build_object('isAdmin', admin)
 	WHERE
 		email = user_email;
 end
@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION auth.is_admin() RETURNS boolean LANGUAGE sql STABLE
 AS $function$
   select coalesce(
     (
-      nullif(current_setting('request.jwt.claims', true), '')::jsonb #> '{user_metadata,isAdmin}'
+      nullif(current_setting('request.jwt.claims', true), '')::jsonb #> '{app_metadata,isAdmin}'
     ) :: boolean, FALSE
   )
 $function$;
@@ -32,3 +32,13 @@ CREATE POLICY "admin_access" ON "public"."resource" USING (auth.is_admin());
 CREATE POLICY "admin_access" ON "public"."pipeline" USING (auth.is_admin());
 
 CREATE POLICY "admin_access" ON "public"."migrations" USING (auth.is_admin());
+
+DO $$
+BEGIN
+  IF (SELECT to_regclass('auth.users') IS NOT null)
+  THEN
+    DROP INDEX IF EXISTS auth.users_api_key;
+    CREATE INDEX IF NOT EXISTS users_api_key
+    ON "auth"."users" ((raw_app_meta_data ->> 'apiKey'));
+  END IF;
+END $$

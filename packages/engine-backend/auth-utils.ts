@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken'
 
 import {zUserId} from '@usevenice/cdk-core'
 import {z, zFunction, zGuard} from '@usevenice/util'
-import {xAdminUserMetadataKey} from './safeForFrontend'
+import {xAdminAppMetadataKey} from './safeForFrontend'
 
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
@@ -39,7 +39,7 @@ export const _zUserInfo = (options: {
     ((jwt) => ({
       userId: jwt.sub,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      isAdmin: jwt['user_metadata']?.[xAdminUserMetadataKey] === true,
+      isAdmin: jwt['app_metadata']?.[xAdminAppMetadataKey] === true,
     }))
 
   // Still need to return userId... JWT decode?

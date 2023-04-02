@@ -4,7 +4,7 @@ import {RedirectTo} from '../../RedirectTo'
 import {LoadingIndicatorOverlay} from '../../loading-indicators'
 import {useSession} from '../../../contexts/session-context'
 import {Sidebar} from './Sidebar'
-import {xAdminUserMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
+import {xAdminAppMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
 
 interface AuthLayoutProps extends PropsWithChildren {
   adminOnly?: boolean
@@ -13,7 +13,7 @@ interface AuthLayoutProps extends PropsWithChildren {
 export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
   const [session, {status}] = useSession()
   const isLoadingSession = status === 'loading'
-  const isAdmin = session?.user.user_metadata[xAdminUserMetadataKey] === true
+  const isAdmin = session?.user.app_metadata[xAdminAppMetadataKey] === true
 
   if (isLoadingSession) {
     return <LoadingIndicatorOverlay />

@@ -11,7 +11,7 @@ import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {
   xPatHeaderKey,
   xPatUrlParamKey,
-  xPatUserMetadataKey,
+  xPatAppMetadataKey,
 } from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/engine-backend'
@@ -72,7 +72,7 @@ export async function serverGetApiUserId({
   if (pat) {
     const userId = await runAsAdmin((pool) =>
       pool.maybeOneFirst<string>(sql`
-        SELECT id FROM auth.users WHERE raw_user_meta_data ->> ${xPatUserMetadataKey} = ${pat}
+        SELECT id FROM auth.users WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${pat}
       `),
     )
     return [userId, 'apiKey'] as const

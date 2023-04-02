@@ -9,7 +9,7 @@ import {makeUlid} from '@usevenice/util'
 
 import type {Id} from '@usevenice/cdk-core'
 import {makeId} from '@usevenice/cdk-core'
-import {xPatUserMetadataKey} from '@usevenice/app-config/constants'
+import {xPatAppMetadataKey} from '@usevenice/app-config/constants'
 
 export const {getPool, sql} = makePostgresClient({
   databaseUrl: backendEnv.POSTGRES_OR_WEBHOOK_URL,
@@ -35,16 +35,16 @@ export async function ensurePersonalAccessToken(userId: string) {
 
   return runAsAdmin(async (trxn) => {
     let pat = await trxn.maybeOneFirst<string>(sql`
-      SELECT raw_user_meta_data ->> ${xPatUserMetadataKey} FROM auth.users
-      WHERE id = ${userId} AND starts_with (raw_user_meta_data ->> ${xPatUserMetadataKey}, 'key_')
+      SELECT raw_app_meta_data ->> ${xPatAppMetadataKey} FROM auth.users
+      WHERE id = ${userId} AND starts_with (raw_app_meta_data ->> ${xPatAppMetadataKey}, 'key_')
     `)
 
     if (!pat) {
       pat = `key_${makeUlid()}`
       await trxn.query(
         sql`
-          UPDATE auth.users SET raw_user_meta_data = raw_user_meta_data ||
-            ${sql.jsonb({[xPatUserMetadataKey]: pat})}
+          UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data ||
+            ${sql.jsonb({[xPatAppMetadataKey]: pat})}
           WHERE id = ${userId}
         `,
       )
