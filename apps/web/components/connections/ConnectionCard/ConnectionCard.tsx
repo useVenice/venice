@@ -42,10 +42,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
     // action.sync
     const {trpc} = VeniceProvider.useContext()
+    const trpcCtx = trpc.useContext()
     const dispatch = trpc.dispatch.useMutation()
 
     const deleteResource = trpc.deleteResource.useMutation({
-      onSuccess: () => console.log('Delete success', id),
+      onSuccess: () => {
+        console.log('Delete success', id)
+        void trpcCtx.listConnections.invalidate()
+      },
       onError: console.error,
       onSettled: () => setDeleteDialogOpen(false),
     })
