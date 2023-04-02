@@ -7,6 +7,7 @@ import {
   ProfileIcon,
   SupportIcon,
 } from '@usevenice/ui/icons'
+import {UsersIcon} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {NavLink} from './NavLink'
@@ -17,6 +18,11 @@ const mainNavigation = [
   //   href: '/admin/connections',
   //   icon: ArrowLeftRightIcon,
   // },
+  {
+    name: 'Show users',
+    href: '/admin/show-users',
+    icon: UsersIcon,
+  },
   {
     name: 'Magic link',
     href: '/admin/magic-link',
