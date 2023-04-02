@@ -1,16 +1,24 @@
 'use client'
 
 import {useQuery} from '@tanstack/react-query'
-import React, {useState} from 'react'
+import {Button, CircularProgress} from '@usevenice/ui'
+import {PlayIcon} from '@usevenice/ui/icons'
+import React, {useEffect, useState} from 'react'
 import {DataTable} from '../DataTable'
 import {Editor} from '../Editor'
 
-interface SqlExplorerProps {
+export interface SqlExplorerProps {
   pat?: string
+  selectables: Array<{name: string; type: 'table' | 'view'}>
 }
 
-export function SqlExplorer(_props: SqlExplorerProps) {
-  const [queryText, setQueryText] = useState('select * from transaction')
+const queryTextForTable = (tableName: string | undefined | null) =>
+  tableName ? `SELECT * from "${tableName}" LIMIT 10` : ''
+
+export function SqlExplorer({selectables}: SqlExplorerProps) {
+  const [queryText, setQueryText] = useState(
+    queryTextForTable(selectables[0]?.name),
+  )
 
   const sqlQuery = useQuery<Array<Record<string, unknown>>>({
     queryKey: ['sql', queryText],
@@ -25,8 +33,11 @@ export function SqlExplorer(_props: SqlExplorerProps) {
     keepPreviousData: true,
   })
 
-  function handleNavItemClick(item: string): void {
-    setQueryText(item)
+  function handleTableClick(tableName: string) {
+    setQueryText(queryTextForTable(tableName))
+    setTimeout(() => {
+      void sqlQuery.refetch()
+    }, 0)
   }
 
   const resultTable = React.useMemo(
@@ -44,18 +55,24 @@ export function SqlExplorer(_props: SqlExplorerProps) {
           <nav className="grid gap-2 overflow-y-auto border-r border-venice-black-300 bg-venice-black py-3">
             <NavGroup
               title="Views"
-              items={['account', 'transaction', 'transaction_split']}
-              onItemClick={handleNavItemClick}
+              items={selectables
+                .filter((s) => s.type === 'view')
+                .map((s) => s.name)}
+              onItemClick={handleTableClick}
             />
             <NavGroup
               title="Raw data"
-              items={['raw_account', 'raw_commodity', 'raw_transaction']}
-              onItemClick={handleNavItemClick}
+              items={selectables
+                .filter((s) => s.type === 'table' && s.name.startsWith('raw_'))
+                .map((s) => s.name)}
+              onItemClick={handleTableClick}
             />
             <NavGroup
               title="Meta data"
-              items={['institution', 'pipeline', 'resource']}
-              onItemClick={handleNavItemClick}
+              items={selectables
+                .filter((s) => s.type === 'table' && !s.name.startsWith('raw_'))
+                .map((s) => s.name)}
+              onItemClick={handleTableClick}
             />
           </nav>
           <div className="p-3">
@@ -72,9 +89,12 @@ export function SqlExplorer(_props: SqlExplorerProps) {
             />
           </div>
         </div>
-        <ActionsBar isFetching={sqlQuery.isFetching} />
+        <ActionsBar
+          isFetching={sqlQuery.isFetching}
+          executeQuery={() => sqlQuery.refetch()}
+        />
       </div>
-      <div className="flex-1 overflow-scroll bg-yellow-50">{resultTable}</div>
+      <div className="mt-2 flex-1 overflow-scroll">{resultTable}</div>
     </div>
   )
 }
@@ -102,22 +122,12 @@ function NavGroup(props: NavGroupProps) {
     </div>
   )
 }
+interface ActionsBarProps extends ExecuteQueryActionGroupProps {}
 
-import {Button, CircularProgress} from '@usevenice/ui'
-import {PlayIcon} from '@usevenice/ui/icons'
-import {useEffect} from 'react'
-
-interface ActionsBarProps {
-  isFetching: boolean
-}
-
-export function ActionsBar({isFetching}: ActionsBarProps) {
+export function ActionsBar(props: ActionsBarProps) {
   return (
     <section className="flex justify-between gap-4">
-      <ExecuteQueryActionGroup
-        executeQuery={() => {}}
-        isFetching={isFetching}
-      />
+      <ExecuteQueryActionGroup {...props} />
       {/* OutputControlsActionGroup */}
       <div className="flex items-center gap-3">
         {/* <OutputFormatTabs

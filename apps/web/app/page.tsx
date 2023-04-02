@@ -1,17 +1,27 @@
-'use client'
+import '@usevenice/app-config/register.node'
 
-import {QueryClientProvider} from '@tanstack/react-query'
-import React from 'react'
-import {SqlExplorer} from '../components/api-access/SqlExplorer'
-import {createQueryClient} from '../lib/query-client'
+import {runAsAdmin, sql} from '../server'
+import {Scratchpad} from './scratchpad'
 
-export default function Home() {
-  const {current: queryClient} = React.useRef(createQueryClient())
+export default async function Home() {
+  // This should be made into a trpc function which can be refreshed...
+  const res = await runAsAdmin((trxn) =>
+    trxn.query<{
+      table_name: string
+      table_type: 'BASE TABLE' | 'VIEW'
+    }>(sql`
+      SELECT table_name, table_type
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+      ORDER BY table_name
+    `),
+  )
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex h-screen w-screen">
-        <SqlExplorer />
-      </div>
-    </QueryClientProvider>
+    <Scratchpad
+      selectables={res.rows.map((row) => ({
+        name: row.table_name,
+        type: row.table_type === 'BASE TABLE' ? 'table' : 'view',
+      }))}
+    />
   )
 }
