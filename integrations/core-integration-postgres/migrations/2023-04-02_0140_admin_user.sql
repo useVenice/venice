@@ -13,13 +13,16 @@ begin
 end
 $$;
 
+
+-- Performance is really bad as an admin user using RLS due to auth.is_admin() check being
+-- enforced on every row rather than being treated as a constant...We don't want to
+-- use IMMUTABLE function because of the dependency on current_setting, which is not immutable
+-- even though empirically it works because this is security we are gonna be more cautious.
+-- Will see if the supabase team has any ideas...
+-- @see https://usevenice.slack.com/archives/C04NUANB7FW/p1680462683033239
 CREATE OR REPLACE FUNCTION auth.is_admin() RETURNS boolean LANGUAGE sql STABLE
 AS $function$
-  select coalesce(
-    (
-      nullif(current_setting('request.jwt.claims', true), '')::jsonb #> '{app_metadata,isAdmin}'
-    ) :: boolean, FALSE
-  )
+  select nullif(current_setting('request.jwt.claims', true), '')::jsonb #> '{app_metadata,isAdmin}' = true::text::jsonb
 $function$;
 
 CREATE POLICY "admin_access" ON "public"."raw_commodity" USING (auth.is_admin());

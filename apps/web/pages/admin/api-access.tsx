@@ -179,7 +179,7 @@ function APIKeysCard({pat}: APIKeysCardProps) {
           <CopyTextButton content={getRestEndpoint(null).href} />
         </div>
         <Button variant="primary" asChild className="w-[14rem] gap-2">
-          <Link href="/api-access/rest" target="_blank">
+          <Link href="/admin/api-access/rest" target="_blank">
             <DocsIcon className="h-4 w-4 fill-current text-offwhite" />
             Explore the REST APIs
           </Link>
