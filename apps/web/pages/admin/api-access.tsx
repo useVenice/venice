@@ -33,7 +33,8 @@ import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
-  graphql: 'GraphQL Explorer',
+  rest: 'REST API',
+  graphql: 'GraphQL API',
   realtime: 'Real time API',
   sql: 'Raw SQL API',
 } as const
@@ -68,11 +69,11 @@ export default function ApiAccessNewPage({
   return (
     <AdminPageLayout title="API Access">
       <PageHeader title={['API Access']} />
-      <div className="p-6">
+      <div className="flex flex-1 flex-col p-6">
         <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
-          className="flex flex-col"
+          className="flex flex-1 flex-col"
           value={tab}
           onValueChange={setTab}>
           <TabsTriggers
@@ -83,6 +84,23 @@ export default function ApiAccessNewPage({
           />
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
             <APIKeysCard pat={pat} />
+          </TabsContent>
+          {/* We need to hide during inative because
+              1) radix tab contents are still kept on screen, thus flex-1 is
+              will cause other tabs to be pushed down
+              2) Together with forceMount, prevent iframe from being unloaded as we switch between tabs
+              @see https://github.com/radix-ui/primitives/discussions/855
+              TODO: Add loading animation while iframe itself is loading...
+              */}
+          <TabsContent
+            forceMount
+            className="flex flex-1 flex-col data-[state=inactive]:hidden"
+            value={tabKey('rest')}>
+            <Link href="/admin/api-access/rest" target="_blank">
+              <DocsIcon className="mr-2 inline-block h-4 w-4 fill-current text-offwhite" />
+              Open in separate window
+            </Link>
+            <iframe className="flex-1" src="/admin/api-access/rest"></iframe>
           </TabsContent>
           <TabsContent className="flex flex-col" value={tabKey('graphql')}>
             <GraphQLExplorer pat={pat} />
@@ -178,12 +196,6 @@ function APIKeysCard({pat}: APIKeysCardProps) {
           />
           <CopyTextButton content={getRestEndpoint(null).href} />
         </div>
-        <Button variant="primary" asChild className="w-[14rem] gap-2">
-          <Link href="/admin/api-access/rest" target="_blank">
-            <DocsIcon className="h-4 w-4 fill-current text-offwhite" />
-            Explore the REST APIs
-          </Link>
-        </Button>
       </div>
 
       <span className="max-w-[50%] border-b border-venice-black-500" />

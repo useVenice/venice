@@ -28,8 +28,8 @@ export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
       <div className="fixed inset-y-0 flex w-56 flex-col">
         <Sidebar />
       </div>
-      <div className="flex flex-1 flex-col overflow-x-hidden pl-56">
-        <main className="flex-1">{children}</main>
+      <div className="flex h-screen flex-1 flex-col overflow-x-hidden pl-56">
+        <main className="flex flex-1 flex-col">{children}</main>
       </div>
     </div>
   )
