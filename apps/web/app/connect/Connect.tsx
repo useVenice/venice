@@ -5,6 +5,7 @@ import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
+import {ChevronLeftIcon} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import {
@@ -45,7 +46,16 @@ export function Connect(props: {
 
   return (
     <div>
-      <PageHeader title={[props.displayName ?? '']}></PageHeader>
+      <PageHeader title={[props.displayName ?? '']}>
+        {props.redirectUrl && (
+          <a
+            href={props.redirectUrl}
+            className="flex h-8 shrink-0 items-center gap-1 rounded bg-venice-black-500 px-2 hover:opacity-90">
+            <ChevronLeftIcon className="inline-flex h-4 w-4 fill-current text-offwhite" />
+            <span className="text-xs uppercase">Back</span>
+          </a>
+        )}
+      </PageHeader>
       <div className="flex gap-36 px-16 pt-8">
         {connections.isLoading ? (
           <LoadingConnectionsColumn />
