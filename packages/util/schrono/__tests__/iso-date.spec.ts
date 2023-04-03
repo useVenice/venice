@@ -63,11 +63,14 @@ test.each([
   ['2020', '2020'],
   ['2020-05', 'May 2020'],
   ['2020-05-05', 'May 5, 2020'],
-  ['2020-05-05T01', 'May 4, 2020, 8:00 PM'], // Since node 18 we are getting strange character rather than simple space... https://share.cleanshot.com/s46bs1mf
-  ['2020-05-05T00:00:00', 'May 4, 2020, 7:00 PM'],
-  ['2020-05-05T00:00:00.000', 'May 4, 2020, 7:00 PM'],
-  ['2020-05-05T00:00:00.000+0800', 'May 4, 2020, 11:00 AM'],
-  ['2021-03-15T19:45:04.231Z', 'Mar 15, 2021, 2:45 PM'],
+  ['2020-05-05T01', 'May 4, 2020, 8:00 PM'], // Since node 18 we are getting strange character rather than simple space... https://share.cleanshot.com/s46bs1mf
+  ['2020-05-05T00:00:00', 'May 4, 2020, 7:00 PM'],
+  ['2020-05-05T00:00:00.000', 'May 4, 2020, 7:00 PM'],
+  ['2020-05-05T00:00:00.000+0800', 'May 4, 2020, 11:00 AM'],
+  ['2021-03-15T19:45:04.231Z', 'Mar 15, 2021, 2:45 PM'],
 ])('formatMixedPrecisionDate(%s) -> %s', (raw, formatted) => {
-  expect(MPDate.fromISO(raw).toDisplay()).toEqual(formatted)
+  // Try to fix non simply whitespace character with simple space
+  expect(MPDate.fromISO(raw).toDisplay().replaceAll(/\s/g, ' ')).toEqual(
+    formatted,
+  )
 })

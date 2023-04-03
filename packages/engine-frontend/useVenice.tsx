@@ -90,7 +90,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
   } = VeniceProvider.useContext()
   // Move this inside the context
   const client = React.useMemo(() => createTRPCClientProxy(_client), [_client])
-  const ctx = trpc.useContext()
+  const trpcCtx = trpc.useContext()
 
   // indicate whether the connecting (both pre- and post-) is in-flight
   const [isConnecting, setIsConnecting] = useState(false)
@@ -182,11 +182,12 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
               })
 
         setIsConnecting(true)
-        console.log(`[useVeniceConnect] ${int.id} Will connect`)
+        console.log(`[useVeniceConnect] ${int.id} Pre connect`, preConnIpt)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const preConnRes = await ctx.preConnect.fetch([int, opt, preConnIpt], {
-          staleTime: 15 * 60 * 1000, // Good for 15 minutes
-        })
+        const preConnRes = await trpcCtx.preConnect.fetch(
+          [int, opt, preConnIpt],
+          {staleTime: 15 * 60 * 1000}, // Good for 15 minutes
+        )
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
 
         const innerConnect = connectFnMapRef.current?.[providerName]
@@ -213,10 +214,11 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           int,
           {...opt, connectWith: opts.connectWith},
         ])
+        await trpcCtx.listConnections.invalidate()
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
         setIsConnecting(false)
 
-        console.log(`[useVeniceConnect] ${int.id} Did connect`)
+        console.log(`[useVeniceConnect] ${int.id} Post connect`)
         browserAnalytics.track({
           name: 'connect/session-succeeded',
           data: {providerName},
@@ -243,7 +245,8 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
       envName,
       userId,
       providerByName,
-      ctx.preConnect,
+      trpcCtx.preConnect,
+      trpcCtx.listConnections,
       connectFnMapRef,
       client.postConnect,
       openDialog,

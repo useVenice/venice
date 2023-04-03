@@ -20,11 +20,11 @@ import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {useState} from 'react'
-import {CopyTextButton} from '../components/CopyTextButton'
-import {PreviewResult, usePreviewQuery} from '../components/export'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
+import {CopyTextButton} from '../../components/CopyTextButton'
+import {PreviewResult, usePreviewQuery} from '../../components/export'
+import {PageHeader} from '../../components/PageHeader'
+import {AdminPageLayout} from '../../components/PageLayout'
+import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const PREVIEW_LIMIT = 10
 
@@ -33,7 +33,7 @@ export const getServerSideProps = (async (ctx) => {
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }
@@ -55,7 +55,7 @@ export default function ExploreDataPage({
   csvUrl.searchParams.set(kAcceptUrlParam, 'csv')
 
   return (
-    <PageLayout title="Explore Data">
+    <AdminPageLayout title="Explore Data">
       <PageHeader title={['Explore Data']} />
       <div className="p-6">
         <div className="grid grid-cols-[1fr_auto]">
@@ -92,7 +92,7 @@ export default function ExploreDataPage({
           <SyncSpreadsheetCard csvUrl={csvUrl.href} />
         </div>
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }
 

@@ -50,7 +50,6 @@ export const zBackendEnv = zEnvVars({
   JWT_SECRET_OR_PUBLIC_KEY: z
     .string()
     .trim()
-    .optional()
     .describe('Used for validating authenticity of accessToken'),
 
   SENTRY_CRON_MONITOR_ID: z

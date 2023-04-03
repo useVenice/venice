@@ -12,4 +12,5 @@ export * from './makeMetaLinks'
 export * from './makeSyncEngine'
 export * from './makeSyncParsers'
 export * from './parseWebhookRequest'
+export * from './safeForFrontend'
 // codegen:end

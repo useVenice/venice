@@ -1,6 +1,6 @@
 import {useQuery} from '@tanstack/react-query'
 import {useMemo} from 'react'
-import {browserSupabase} from '../../contexts/common-contexts'
+import {useSupabase} from '../../contexts/session-context'
 
 export interface PreviewQuery {
   data: {
@@ -23,6 +23,7 @@ export function usePreviewQuery({
     rows: Array<Record<string, string | number | null>>
     totalCount: number
   }
+  const supabase = useSupabase()
 
   const query = useQuery<QueryResult>({
     queryKey: ['export.preview', table],
@@ -34,7 +35,7 @@ export function usePreviewQuery({
         }
       }
 
-      const {count, data, error} = await browserSupabase
+      const {count, data, error} = await supabase
         .from(table)
         .select('*', {count: 'exact'})
         .limit(limit)

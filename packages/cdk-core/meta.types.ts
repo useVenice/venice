@@ -79,6 +79,7 @@ export const zRaw = {
     /** Development env often allows connection to production institutions */
     envName: zEnvName.nullish(),
     standard: zStandard.resource.omit({id: true}).nullish(),
+    displayName: z.string().nullish(),
   }),
   pipeline: z.object({
     id: zId('pipe'),

@@ -2,7 +2,6 @@ import {
   BroadcastIcon,
   Button,
   CodeIcon,
-  DatabaseIcon,
   DocsIcon,
   EmailIcon,
   InstructionCard,
@@ -15,11 +14,11 @@ import type {InferGetServerSidePropsType} from 'next'
 import {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
-import {GraphQLExplorer} from '../components/api-access'
-import {CopyTextButton} from '../components/CopyTextButton'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
-import {atomWithQueryParam} from '../contexts/utils/atomWithQueryParam'
+import {GraphQLExplorer} from '../../components/api-access'
+import {CopyTextButton} from '../../components/CopyTextButton'
+import {PageHeader} from '../../components/PageHeader'
+import {AdminPageLayout} from '../../components/PageLayout'
+import {atomWithQueryParam} from '../../contexts/utils/atomWithQueryParam'
 
 // for server-side
 import {
@@ -28,14 +27,17 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import {browserAnalytics} from '../lib/browser-analytics'
-import {ensurePersonalAccessToken, serverGetUser} from '../server'
+import type {SqlExplorerProps} from '../../components/api-access/SqlExplorer'
+import {SqlExplorer} from '../../components/api-access/SqlExplorer'
+import {browserAnalytics} from '../../lib/browser-analytics'
+import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
-  graphql: 'GraphQL Explorer',
+  sql: 'SQL API',
+  rest: 'REST API',
+  graphql: 'GraphQL API',
   realtime: 'Real time API',
-  sql: 'Raw SQL API',
 } as const
 
 const tabKey = (k: keyof typeof tabLabelByKey) => k
@@ -51,28 +53,50 @@ export const getServerSideProps = (async (ctx) => {
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }
   }
-  const pat = await ensurePersonalAccessToken(user.id)
-  return {props: {pat}}
+  const [pat, res] = await Promise.all([
+    ensurePersonalAccessToken(user.id),
+    import('../../server').then(({runAsAdmin, sql}) =>
+      runAsAdmin((trxn) =>
+        trxn.query<{table_name: string; table_type: 'BASE TABLE' | 'VIEW'}>(sql`
+          SELECT table_name, table_type FROM information_schema.tables
+          WHERE table_schema = 'public' ORDER BY table_name
+        `),
+      ),
+    ),
+  ])
+
+  return {
+    props: {
+      pat,
+      selectables: res.rows.map(
+        (row): SqlExplorerProps['selectables'][number] => ({
+          name: row.table_name,
+          type: row.table_type === 'BASE TABLE' ? 'table' : 'view',
+        }),
+      ),
+    },
+  }
 }) satisfies GetServerSideProps
 
 export default function ApiAccessNewPage({
   pat,
+  selectables,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
 
   return (
-    <PageLayout title="API Access">
+    <AdminPageLayout title="API Access">
       <PageHeader title={['API Access']} />
-      <div className="p-6">
+      <div className="flex flex-1 flex-col p-6">
         <Tabs
           // the id doesn't do anything, just for readability
           id="PrimaryTabs"
-          className="flex flex-col"
+          className="flex flex-1 flex-col"
           value={tab}
           onValueChange={setTab}>
           <TabsTriggers
@@ -83,6 +107,26 @@ export default function ApiAccessNewPage({
           />
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
             <APIKeysCard pat={pat} />
+          </TabsContent>
+          <TabsContent value={tabKey('sql')}>
+            <SqlExplorer pat={pat} selectables={selectables} />
+          </TabsContent>
+          {/* We need to hide during inative because
+              1) radix tab contents are still kept on screen, thus flex-1 is
+              will cause other tabs to be pushed down
+              2) Together with forceMount, prevent iframe from being unloaded as we switch between tabs
+              @see https://github.com/radix-ui/primitives/discussions/855
+              TODO: Add loading animation while iframe itself is loading...
+              */}
+          <TabsContent
+            forceMount
+            className="flex flex-1 flex-col data-[state=inactive]:hidden"
+            value={tabKey('rest')}>
+            <Link href="/admin/api-access/rest" target="_blank">
+              <DocsIcon className="mr-2 inline-block h-4 w-4 fill-current text-offwhite" />
+              Open in separate window
+            </Link>
+            <iframe className="flex-1" src="/admin/api-access/rest"></iframe>
           </TabsContent>
           <TabsContent className="flex flex-col" value={tabKey('graphql')}>
             <GraphQLExplorer pat={pat} />
@@ -113,31 +157,9 @@ export default function ApiAccessNewPage({
               </div>
             </InstructionCard>
           </TabsContent>
-          <TabsContent className="max-w-[30rem]" value={tabKey('sql')}>
-            <InstructionCard
-              icon={DatabaseIcon}
-              title="Dedicated database package">
-              <p className="text-venice-green">
-                Please reach out if you&apos;re interested in:
-              </p>
-              <ul className="list-disc pl-4">
-                <li>Dedicated Postgres database (or bring your own)</li>
-                <li>Control scaleability, backups, compute, and more</li>
-                <li>Raw SQL access (for backends, data analysis, etc.)</li>
-              </ul>
-              <div className="flex gap-2 py-2 pr-7">
-                <Button variant="primary" asChild className="gap-2">
-                  <Link href="mailto:hi@venice.is">
-                    <EmailIcon className="h-4 w-4 fill-current text-offwhite" />
-                    Contact Us
-                  </Link>
-                </Button>
-              </div>
-            </InstructionCard>
-          </TabsContent>
         </Tabs>
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }
 
@@ -178,12 +200,6 @@ function APIKeysCard({pat}: APIKeysCardProps) {
           />
           <CopyTextButton content={getRestEndpoint(null).href} />
         </div>
-        <Button variant="primary" asChild className="w-[14rem] gap-2">
-          <Link href="/api-access/rest" target="_blank">
-            <DocsIcon className="h-4 w-4 fill-current text-offwhite" />
-            Explore the REST APIs
-          </Link>
-        </Button>
       </div>
 
       <span className="max-w-[50%] border-b border-venice-black-500" />

@@ -3,44 +3,48 @@ import type {Session, SupabaseClient} from '@supabase/supabase-js'
 
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
+import type {Database} from '../supabase/supabase.gen'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'
 type SessionContextValue = [
   session: Session | null | undefined,
-  info: {status: AsyncStatus; error: unknown},
+  info: {status: AsyncStatus; error: unknown; supabase: SupabaseClient | null},
 ]
 export const SessionContext = React.createContext<SessionContextValue>([
   undefined,
-  {status: 'loading', error: null},
+  {status: 'loading', error: null, supabase: null},
 ])
 
 export interface SessionContextProps {
-  supabaseClient: SupabaseClient
+  supabase: SupabaseClient<Database>
   [propName: string]: unknown
 }
 
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
 export function SessionContextProvider({
-  supabaseClient,
+  supabase: supabase,
   ...props
 }: SessionContextProps) {
   const [value, setValue] = React.useState<SessionContextValue>([
     undefined,
-    {status: 'loading', error: null},
+    {status: 'loading', error: null, supabase},
   ])
   React.useEffect(() => {
-    supabaseClient.auth
+    supabase.auth
       .getSession()
       .then(({data}) => {
-        setValue([data.session ?? null, {error: null, status: 'success'}])
+        setValue([
+          data.session ?? null,
+          {error: null, status: 'success', supabase},
+        ])
       })
       .catch((err) => {
-        setValue([null, {error: err, status: 'error'}])
+        setValue([null, {error: err, status: 'error', supabase}])
       })
 
-    const {data: authListener} = supabaseClient.auth.onAuthStateChange(
+    const {data: authListener} = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN') {
           browserAnalytics.track({name: 'user/signin', data: {}})
@@ -48,7 +52,7 @@ export function SessionContextProvider({
           browserAnalytics.track({name: 'user/signout', data: {}})
         }
         console.log('AuthChange event', event)
-        setValue([session ?? null, {error: null, status: 'success'}])
+        setValue([session ?? null, {error: null, status: 'success', supabase}])
       },
     )
     return () => authListener?.subscription.unsubscribe()
@@ -82,4 +86,12 @@ export function useSession() {
 export function useUser() {
   const [session, info] = useSession()
   return [session === undefined ? undefined : session?.user, info] as const
+}
+
+export function useSupabase() {
+  const [, {supabase}] = useSession()
+  if (!supabase) {
+    throw new Error('Missing supabase in SessionContext')
+  }
+  return supabase
 }

@@ -1,7 +1,7 @@
 import type {GetServerSideProps} from 'next'
 import {useState} from 'react'
-import {PageHeader} from '../../components/PageHeader'
-import {PageLayout} from '../../components/PageLayout'
+import {PageHeader} from '../../../components/PageHeader'
+import {AdminPageLayout} from '../../../components/PageLayout'
 import Image from 'next/image'
 import {EditIcon} from '@usevenice/ui'
 
@@ -14,7 +14,7 @@ import {
 } from '@usevenice/ui'
 
 // for server-side
-import {serverGetUser} from '../../server'
+import {serverGetUser} from '../../../server'
 
 interface ServerSideProps {}
 
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }
@@ -38,7 +38,7 @@ export default function Page() {
   const [selectedLanguage, setSelectedLanguage] = useState('en')
 
   return (
-    <PageLayout title="Plaid Settings">
+    <AdminPageLayout title="Plaid Settings">
       <PageHeader title={['Integrations', 'Plaid']} />
       <div className="p-6">
         <div className="flex flex-col gap-8">
@@ -96,6 +96,6 @@ export default function Page() {
           </Button>
         </div>
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }

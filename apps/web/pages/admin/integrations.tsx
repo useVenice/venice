@@ -1,12 +1,12 @@
 import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import {PageHeader} from '../components/PageHeader'
-import {PageLayout} from '../components/PageLayout'
+import {PageHeader} from '../../components/PageHeader'
+import {AdminPageLayout} from '../../components/PageLayout'
 import {Button, Card, EmailIcon, SettingsIcon} from '@usevenice/ui'
 
 // for server-side
-import {serverGetUser} from '../server'
+import {serverGetUser} from '../../server'
 
 interface ServerSideProps {}
 
@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   if (!user?.id) {
     return {
       redirect: {
-        destination: '/auth',
+        destination: '/admin/auth',
         permanent: false,
       },
     }
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 
 export default function Page() {
   return (
-    <PageLayout title="Integrations">
+    <AdminPageLayout title="Integrations">
       <PageHeader title={['Integrations']} />
       <div className="flex gap-8 p-10">
         <PlaidCard />
@@ -36,7 +36,7 @@ export default function Page() {
         <StripeCard />
         <RequestIntegrationCard />
       </div>
-    </PageLayout>
+    </AdminPageLayout>
   )
 }
 

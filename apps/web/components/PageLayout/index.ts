@@ -1,1 +1,1 @@
-export {PageLayout} from './PageLayout'
+export {AdminPageLayout} from './AdminPageLayout'

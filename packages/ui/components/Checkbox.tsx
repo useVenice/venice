@@ -2,7 +2,7 @@
 
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import {titleCase} from '@usevenice/util'
-import {LucideCheck} from 'lucide-react'
+import {Check} from 'lucide-react'
 import * as React from 'react'
 import {twMerge} from 'tailwind-merge'
 import {useConstant} from '../hooks'
@@ -23,7 +23,7 @@ export const Checkbox = React.forwardRef<
     {...props}>
     <CheckboxPrimitive.Indicator
       className={cn('flex h-6 w-6 items-center justify-center')}>
-      <LucideCheck className="h-4 w-4" />
+      <Check className="h-4 w-4" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ))

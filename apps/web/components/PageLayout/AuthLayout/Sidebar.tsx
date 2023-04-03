@@ -7,25 +7,36 @@ import {
   ProfileIcon,
   SupportIcon,
 } from '@usevenice/ui/icons'
+import {UsersIcon} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {NavLink} from './NavLink'
 
 const mainNavigation = [
   {
-    name: 'Connections',
-    href: '/connections',
+    name: 'Magic link',
+    href: '/admin/magic-link',
     icon: ArrowLeftRightIcon,
   },
-  {name: 'Explore Data', href: '/explore-data', icon: SearchIcon},
+  {
+    name: 'Show users',
+    href: '/admin/show-users',
+    icon: UsersIcon,
+  },
+  {
+    name: 'Test connections',
+    href: '/admin/connections',
+    icon: ArrowLeftRightIcon,
+  },
+  {name: 'Explore Data', href: '/admin/explore-data', icon: SearchIcon},
   {
     name: 'API Access',
-    href: '/api-access',
+    href: '/admin/api-access',
     icon: CodeIcon,
   },
   {
     name: 'Integrations',
-    href: '/integrations',
+    href: '/admin/integrations',
     icon: IntegrationsIcon,
   },
 ]
@@ -49,7 +60,7 @@ export function Sidebar() {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-venice-black-500">
       <header className="shrink-0 p-6">
-        <Link className="hover:opacity-90" href="/">
+        <Link className="hover:opacity-90" href="/admin">
           <Image
             width={102}
             height={32}
@@ -62,7 +73,7 @@ export function Sidebar() {
       <SidebarMain />
 
       <footer className="shrink-0 py-6">
-        <NavLink name="Account" href="/account" icon={ProfileIcon} />
+        <NavLink name="Account" href="/admin/account" icon={ProfileIcon} />
       </footer>
     </div>
   )

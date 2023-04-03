@@ -48,7 +48,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 7
+          version: 8 # Ideally we should get this from engine field too...
           run_install: false
 
       - name: Get pnpm store directory
@@ -73,7 +73,7 @@ jobs:
         # TODO: Figure out a pattern to make environment variables parsed / required on demand rather than on startup time
         # Ideally have a way to switch between the two... Where we can also choose proactive parsing for sanity checking...
       - name: Run health check
-        run: POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=noop node --loader tsx ./bin/venice.ts health
+        run: JWT_SECRET_OR_PUBLIC_KEY=NOOP POSTGRES_OR_WEBHOOK_URL=noop NEXT_PUBLIC_SUPABASE_URL=noop NEXT_PUBLIC_SUPABASE_ANON_KEY=noop node --loader tsx ./bin/venice.ts health
 
       - name: Run migration check
         run: POSTGRES_OR_WEBHOOK_URL=postgres://postgres:test@localhost:5432/test pnpm migration up

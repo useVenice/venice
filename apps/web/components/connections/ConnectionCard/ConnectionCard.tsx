@@ -9,10 +9,11 @@ import {
 } from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
-import {LinkIcon, UnlinkIcon} from 'lucide-react'
+import * as Lucide from 'lucide-react'
 import Image from 'next/image'
 import {forwardRef, useState} from 'react'
-import {browserSupabase} from '../../../contexts/common-contexts'
+import {useSupabase} from '../../../contexts/session-context'
+
 import type {Connection} from '../../../lib/supabase-queries'
 import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
@@ -42,26 +43,31 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
     // action.sync
     const {trpc} = VeniceProvider.useContext()
+    const trpcCtx = trpc.useContext()
     const dispatch = trpc.dispatch.useMutation()
 
     const deleteResource = trpc.deleteResource.useMutation({
-      onSuccess: () => console.log('Delete success', id),
+      onSuccess: () => {
+        console.log('Delete success', id)
+        void trpcCtx.listConnections.invalidate()
+      },
       onError: console.error,
       onSettled: () => setDeleteDialogOpen(false),
     })
 
+    const supabase = useSupabase()
     const deleteAssociatedData = useMutation(
       () =>
         Promise.all([
-          browserSupabase
+          supabase
             .from('raw_transaction')
             .delete({count: 'exact'})
             .eq('source_id', resourceId),
-          browserSupabase
+          supabase
             .from('raw_account')
             .delete({count: 'exact'})
             .eq('source_id', resourceId),
-          browserSupabase
+          supabase
             .from('raw_commodity')
             .delete({count: 'exact'})
             .eq('source_id', resourceId),
@@ -138,14 +144,14 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               />
               {status === 'disconnected' && (
                 <ActionMenuItem
-                  icon={LinkIcon}
+                  icon={Lucide.Link}
                   label="Reconnect"
                   onClick={() => onReconnect?.()}
                 />
               )}
               {status === 'healthy' && labels.includes('sandbox') && (
                 <ActionMenuItem
-                  icon={UnlinkIcon}
+                  icon={Lucide.Unlink}
                   label="Simulate disconnect"
                   onClick={() => props.onSandboxSimulateDisconnect?.()}
                 />

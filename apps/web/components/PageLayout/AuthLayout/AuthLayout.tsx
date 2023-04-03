@@ -4,19 +4,23 @@ import {RedirectTo} from '../../RedirectTo'
 import {LoadingIndicatorOverlay} from '../../loading-indicators'
 import {useSession} from '../../../contexts/session-context'
 import {Sidebar} from './Sidebar'
+import {xAdminAppMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
 
-interface AuthLayoutProps extends PropsWithChildren {}
+interface AuthLayoutProps extends PropsWithChildren {
+  adminOnly?: boolean
+}
 
-export function AuthLayout({children}: AuthLayoutProps) {
+export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
   const [session, {status}] = useSession()
   const isLoadingSession = status === 'loading'
+  const isAdmin = session?.user.app_metadata[xAdminAppMetadataKey] === true
 
   if (isLoadingSession) {
     return <LoadingIndicatorOverlay />
   }
 
-  if (!isLoadingSession && !session) {
-    return <RedirectTo url="/auth" />
+  if ((!isLoadingSession && !session) || (adminOnly && !isAdmin)) {
+    return <RedirectTo url="/admin/auth" />
   }
 
   return (
@@ -24,8 +28,8 @@ export function AuthLayout({children}: AuthLayoutProps) {
       <div className="fixed inset-y-0 flex w-56 flex-col">
         <Sidebar />
       </div>
-      <div className="flex flex-1 flex-col overflow-x-hidden pl-56">
-        <main className="flex-1">{children}</main>
+      <div className="flex h-screen flex-1 flex-col overflow-x-hidden pl-56">
+        <main className="flex flex-1 flex-col">{children}</main>
       </div>
     </div>
   )
