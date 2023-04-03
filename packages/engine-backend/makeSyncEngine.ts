@@ -740,8 +740,8 @@ export const makeSyncEngine = <
 
     // Admin procedures...
     adminCreateConnectToken: adminProcedure
-      .input(z.object({userId: zUserId, displayName: z.string().nullish()}))
-      .mutation(({input: {userId, displayName}}) => {
+      .input(z.object({userId: zUserId}))
+      .mutation(({input: {userId}}) => {
         if (!jwtClient) {
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
@@ -753,7 +753,6 @@ export const makeSyncEngine = <
           sub: userId,
           exp: Math.floor(Date.now() / 1000) + 3600,
           role: 'authenticated',
-          veniceConnect: {displayName},
         } satisfies VeniceConnectJwtPayload)
       }),
     adminSearchCreatorIds: adminProcedure

@@ -11,9 +11,9 @@ export const zVeniceConnectJwtPayload = z.object({
   /** Required by supabase/realtime */
   role: z.string(),
   /** Extra metadata for us, though may be better off specified via url params as they do not need to be secure */
-  veniceConnect: z.object({
-    displayName: z.string().nullish(),
-  }),
+  // veniceConnect: z.object({
+  //   displayName: z.string().nullish(),
+  // }),
 })
 
 export type VeniceConnectJwtPayload = z.infer<typeof zVeniceConnectJwtPayload>

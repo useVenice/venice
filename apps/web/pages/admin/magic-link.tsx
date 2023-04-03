@@ -31,12 +31,6 @@ export default function MagicLinkPage(
   const {trpc} = VeniceProvider.useContext()
   const createToken = trpc.adminCreateConnectToken.useMutation({
     onError: console.error,
-    onSuccess: async (data) => {
-      const url = new URL('/connect', getServerUrl(null))
-      url.searchParams.set('token', data)
-      await copyToClipboard(url.toString())
-      alert('Magic link copied to clipboard')
-    },
   })
   return (
     <AdminPageLayout title="Magic link">
@@ -45,9 +39,30 @@ export default function MagicLinkPage(
         <ZodForm
           schema={z.object({
             userId: zUserId,
-            displayName: z.string().nullish(),
+            displayName: z
+              .string()
+              .nullish()
+              .describe('displayName: What to call user by'),
+            redirectUrl: z
+              .string()
+              .nullish()
+              .describe(
+                'redirectUrl: Where to send user to after connect / if they press back button',
+              ),
           })}
-          onSubmit={(values) => createToken.mutate(values)}
+          onSubmit={(values) =>
+            createToken.mutate(values, {
+              onSuccess: async (data) => {
+                const url = new URL('/connect', getServerUrl(null))
+                url.searchParams.set('token', data)
+                url.searchParams.set('displayName', values.displayName ?? '')
+                url.searchParams.set('redirectUrl', values.redirectUrl ?? '')
+
+                await copyToClipboard(url.toString())
+                alert('Magic link copied to clipboard')
+              },
+            })
+          }
           renderAfter={({submit}) => (
             <div className="mt-8 flex justify-center gap-4">
               <Button

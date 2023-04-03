@@ -9,7 +9,7 @@ import {
 
 import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
-import {z} from '@usevenice/util'
+import {fromMaybeArray, z} from '@usevenice/util'
 import superjson from 'superjson'
 import {ensureDefaultLedger} from '../../server'
 import {ClientRoot} from '../ClientRoot'
@@ -58,7 +58,8 @@ export default async function ConnectPage({
       accessToken={token}>
       <Connect
         integrations={integrations}
-        displayName={payload.veniceConnect.displayName ?? userId}
+        displayName={fromMaybeArray(searchParams['displayName'])[0] ?? userId}
+        redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
         ledgerIds={ledgerIds}
       />
     </ClientRoot>

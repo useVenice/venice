@@ -19,6 +19,7 @@ import type {Connection} from '../../lib/supabase-queries'
 export function Connect(props: {
   integrations: AnySyncRouterOutput['listIntegrations']
   displayName?: string
+  redirectUrl?: string
   ledgerIds: Array<Id['reso']>
 }) {
   const {trpc} = VeniceProvider.useContext()
