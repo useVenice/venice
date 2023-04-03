@@ -10,6 +10,7 @@ import {
 import {UsersIcon} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {useAuthState} from '../../../contexts/session-context'
 import {NavLink} from './NavLink'
 
 const mainNavigation = [
@@ -17,14 +18,16 @@ const mainNavigation = [
     name: 'Magic link',
     href: '/admin/magic-link',
     icon: ArrowLeftRightIcon,
+    adminOnly: true,
   },
   {
     name: 'Show users',
     href: '/admin/show-users',
     icon: UsersIcon,
+    adminOnly: true,
   },
   {
-    name: 'Test connections',
+    name: 'Connections',
     href: '/admin/connections',
     icon: ArrowLeftRightIcon,
   },
@@ -38,6 +41,7 @@ const mainNavigation = [
     name: 'Integrations',
     href: '/admin/integrations',
     icon: IntegrationsIcon,
+    adminOnly: true,
   },
 ]
 
@@ -80,12 +84,15 @@ export function Sidebar() {
 }
 
 function SidebarMain() {
+  const {isAdmin} = useAuthState()
   return (
     <div className="flex flex-1 flex-col overflow-y-auto py-6">
       <nav className="space-y-1">
-        {mainNavigation.map((props) => (
-          <NavLink key={props.name} {...props} />
-        ))}
+        {mainNavigation
+          .filter((n) => !n.adminOnly || isAdmin)
+          .map((n) => (
+            <NavLink key={n.name} {...n} />
+          ))}
       </nav>
       <NavSectionSeparator />
       <nav className="space-y-1">

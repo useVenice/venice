@@ -38,7 +38,7 @@ export default function Page() {
   const [selectedLanguage, setSelectedLanguage] = useState('en')
 
   return (
-    <PageLayout title="Plaid Settings">
+    <PageLayout title="Plaid Settings" auth="user">
       <PageHeader title={['Integrations', 'Plaid']} />
       <div className="p-6">
         <div className="flex flex-col gap-8">

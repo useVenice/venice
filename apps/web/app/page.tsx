@@ -1,4 +1,5 @@
 import '@usevenice/app-config/register.node'
+import {redirect} from 'next/navigation'
 
 import {runAsAdmin, sql} from '../server'
 import {Scratchpad} from './scratchpad'
@@ -27,10 +28,11 @@ export async function ScratchpadPage() {
 }
 
 export default function Home() {
-  return (
-    <h1>
-      Your Venice deployment is successful. See docs for details on how to use
-      it
-    </h1>
-  )
+  redirect('/admin/auth')
+  // return (
+  //   <h1>
+  //     Your Venice deployment is successful. See docs for details on how to use
+  //     it
+  //   </h1>
+  // )
 }

@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
 export default function Page(props: ServerSideProps) {
   const {username} = props
   return (
-    <PageLayout title="Account">
+    <PageLayout title="Account" auth="user">
       <PageHeader title={['Account']} />
       <div className="p-6">
         <Tabs className="grid gap-6" defaultValue={PrimaryTabsKey.profile}>

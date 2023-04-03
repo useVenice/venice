@@ -2,6 +2,7 @@ import {
   BroadcastIcon,
   Button,
   CodeIcon,
+  DatabaseIcon,
   DocsIcon,
   EmailIcon,
   InstructionCard,
@@ -31,6 +32,7 @@ import type {SqlExplorerProps} from '../../components/api-access/SqlExplorer'
 import {SqlExplorer} from '../../components/api-access/SqlExplorer'
 import {browserAnalytics} from '../../lib/browser-analytics'
 import {ensurePersonalAccessToken, serverGetUser} from '../../server'
+import {useAuthState} from '../../contexts/session-context'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
@@ -88,9 +90,10 @@ export default function ApiAccessNewPage({
   selectables,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
+  const {isAdmin} = useAuthState()
 
   return (
-    <PageLayout title="API Access">
+    <PageLayout title="API Access" auth="user">
       <PageHeader title={['API Access']} />
       <div className="flex flex-1 flex-col p-6">
         <Tabs
@@ -100,7 +103,14 @@ export default function ApiAccessNewPage({
           value={tab}
           onValueChange={setTab}>
           <TabsTriggers
-            options={Object.entries(tabLabelByKey).map(([key, label]) => ({
+            options={(isAdmin
+              ? Object.entries(tabLabelByKey)
+              : [
+                  // Sort sql to the end if we aren't admin. Could use some cleanup
+                  ...Object.entries(tabLabelByKey).filter(([k]) => k !== 'sql'),
+                  ['sql', tabLabelByKey.sql] as const,
+                ]
+            ).map(([key, label]) => ({
               key,
               label,
             }))}
@@ -108,9 +118,34 @@ export default function ApiAccessNewPage({
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
             <APIKeysCard pat={pat} />
           </TabsContent>
-          <TabsContent value={tabKey('sql')}>
-            <SqlExplorer pat={pat} selectables={selectables} />
-          </TabsContent>
+          {isAdmin ? (
+            <TabsContent value={tabKey('sql')}>
+              <SqlExplorer pat={pat} selectables={selectables} />
+            </TabsContent>
+          ) : (
+            <TabsContent className="max-w-[30rem]" value={tabKey('sql')}>
+              <InstructionCard
+                icon={DatabaseIcon}
+                title="Dedicated database package">
+                <p className="text-venice-green">
+                  Please reach out if you&apos;re interested in:
+                </p>
+                <ul className="list-disc pl-4">
+                  <li>Dedicated Postgres database (or bring your own)</li>
+                  <li>Control scaleability, backups, compute, and more</li>
+                  <li>Raw SQL access (for backends, data analysis, etc.)</li>
+                </ul>
+                <div className="flex gap-2 py-2 pr-7">
+                  <Button variant="primary" asChild className="gap-2">
+                    <Link href="mailto:hi@venice.is">
+                      <EmailIcon className="h-4 w-4 fill-current text-offwhite" />
+                      Contact Us
+                    </Link>
+                  </Button>
+                </div>
+              </InstructionCard>
+            </TabsContent>
+          )}
           {/* We need to hide during inative because
               1) radix tab contents are still kept on screen, thus flex-1 is
               will cause other tabs to be pushed down

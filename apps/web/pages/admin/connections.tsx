@@ -75,7 +75,7 @@ export default function ConnectionsPage(
   }, [props.integrations, trpcCtx])
 
   return (
-    <PageLayout title="Connections">
+    <PageLayout title="Connections" auth="user">
       <div className="grid min-h-screen grid-rows-[auto_1fr]">
         <PageHeader title={['Connections']} />
         <ArcherContainer

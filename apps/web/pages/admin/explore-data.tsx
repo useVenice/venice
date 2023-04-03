@@ -55,7 +55,7 @@ export default function ExploreDataPage({
   csvUrl.searchParams.set(kAcceptUrlParam, 'csv')
 
   return (
-    <PageLayout title="Explore Data">
+    <PageLayout title="Explore Data" auth="user">
       <PageHeader title={['Explore Data']} />
       <div className="p-6">
         <div className="grid grid-cols-[1fr_auto]">

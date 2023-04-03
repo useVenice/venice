@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
+import {xAdminAppMetadataKey} from '@usevenice/engine-backend'
 
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
@@ -83,9 +84,10 @@ export function useSession() {
   return context
 }
 
-export function useUser() {
-  const [session, info] = useSession()
-  return [session === undefined ? undefined : session?.user, info] as const
+export function useAuthState() {
+  const [session] = useSession()
+  const isAdmin = session?.user.app_metadata?.[xAdminAppMetadataKey] === true
+  return {user: session?.user, isAdmin}
 }
 
 export function useSupabase() {
