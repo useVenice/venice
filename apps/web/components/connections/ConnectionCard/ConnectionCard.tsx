@@ -61,15 +61,15 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
         Promise.all([
           supabase
             .from('raw_transaction')
-            .delete({count: 'exact'})
+            .delete({count: 'estimated'})
             .eq('source_id', resourceId),
           supabase
             .from('raw_account')
-            .delete({count: 'exact'})
+            .delete({count: 'estimated'})
             .eq('source_id', resourceId),
           supabase
             .from('raw_commodity')
-            .delete({count: 'exact'})
+            .delete({count: 'estimated'})
             .eq('source_id', resourceId),
         ]).then(() => undefined),
       {mutationKey: ['resource', 'deleteAssociated', resourceId]},

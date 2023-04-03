@@ -35,7 +35,7 @@ export function PreviewResult(props: PreviewQuery) {
     <>
       <DataTable isFetching={isFetching} rows={rows} />
       <p className="mt-2 text-end font-mono text-xs text-venice-gray-muted">
-        {rows.length} of {totalCount} shown
+        {rows.length} of {totalCount} (estimated) shown
       </p>
     </>
   )
