@@ -1,7 +1,7 @@
 import type {GetServerSideProps} from 'next'
 import {useState} from 'react'
 import {PageHeader} from '../../../components/PageHeader'
-import {AdminPageLayout} from '../../../components/PageLayout'
+import {PageLayout} from '../../../components/PageLayout'
 import Image from 'next/image'
 import {EditIcon} from '@usevenice/ui'
 
@@ -38,7 +38,7 @@ export default function Page() {
   const [selectedLanguage, setSelectedLanguage] = useState('en')
 
   return (
-    <AdminPageLayout title="Plaid Settings">
+    <PageLayout title="Plaid Settings">
       <PageHeader title={['Integrations', 'Plaid']} />
       <div className="p-6">
         <div className="flex flex-col gap-8">
@@ -96,6 +96,6 @@ export default function Page() {
           </Button>
         </div>
       </div>
-    </AdminPageLayout>
+    </PageLayout>
   )
 }

@@ -11,7 +11,7 @@ import {
 } from '@usevenice/ui'
 import Image from 'next/image'
 
-import {AdminPageLayout} from '../../components/PageLayout'
+import {PageLayout} from '../../components/PageLayout'
 import {RedirectTo} from '../../components/RedirectTo'
 import {useSession, useSupabase} from '../../contexts/session-context'
 import {VeniceTheme} from '../../themes'
@@ -34,7 +34,7 @@ export default function AdminAuthScreen() {
   }
   if (session && !isAdmin) {
     return (
-      <AdminPageLayout title="Admin only" requiresAuthentication={false}>
+      <PageLayout title="Admin only" auth="none">
         <Container className="min-h-screen justify-center">
           <p>
             This portal is only accessible to admins. Please contact an existing
@@ -70,12 +70,12 @@ export default function AdminAuthScreen() {
             </Button>
           </div>
         </Container>
-      </AdminPageLayout>
+      </PageLayout>
     )
   }
 
   return (
-    <AdminPageLayout title="Login" requiresAuthentication={false}>
+    <PageLayout title="Login" auth="none">
       <Container className="min-h-screen justify-center">
         <div className="mx-auto grid w-80 grid-cols-1">
           <Image
@@ -110,7 +110,7 @@ export default function AdminAuthScreen() {
             theme="dark"></Auth>
         </div>
       </Container>
-    </AdminPageLayout>
+    </PageLayout>
   )
 }
 

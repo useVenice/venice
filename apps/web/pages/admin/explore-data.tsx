@@ -23,7 +23,7 @@ import {useState} from 'react'
 import {CopyTextButton} from '../../components/CopyTextButton'
 import {PreviewResult, usePreviewQuery} from '../../components/export'
 import {PageHeader} from '../../components/PageHeader'
-import {AdminPageLayout} from '../../components/PageLayout'
+import {PageLayout} from '../../components/PageLayout'
 import {ensurePersonalAccessToken, serverGetUser} from '../../server'
 
 const PREVIEW_LIMIT = 10
@@ -55,7 +55,7 @@ export default function ExploreDataPage({
   csvUrl.searchParams.set(kAcceptUrlParam, 'csv')
 
   return (
-    <AdminPageLayout title="Explore Data">
+    <PageLayout title="Explore Data">
       <PageHeader title={['Explore Data']} />
       <div className="p-6">
         <div className="grid grid-cols-[1fr_auto]">
@@ -92,7 +92,7 @@ export default function ExploreDataPage({
           <SyncSpreadsheetCard csvUrl={csvUrl.href} />
         </div>
       </div>
-    </AdminPageLayout>
+    </PageLayout>
   )
 }
 

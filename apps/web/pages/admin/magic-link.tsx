@@ -1,7 +1,7 @@
 import {GetServerSideProps} from 'next'
 import type {InferGetServerSidePropsType} from 'next'
 import {PageHeader} from '../../components/PageHeader'
-import {AdminPageLayout} from '../../components/PageLayout'
+import {PageLayout} from '../../components/PageLayout'
 import {serverGetUser} from '../../server'
 import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
@@ -33,7 +33,7 @@ export default function MagicLinkPage(
     onError: console.error,
   })
   return (
-    <AdminPageLayout title="Magic link">
+    <PageLayout title="Magic link">
       <PageHeader title={['Magic link']} />
       <div className="p-6">
         <ZodForm
@@ -79,6 +79,6 @@ export default function MagicLinkPage(
           )}
         />
       </div>
-    </AdminPageLayout>
+    </PageLayout>
   )
 }

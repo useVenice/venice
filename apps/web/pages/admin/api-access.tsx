@@ -17,7 +17,7 @@ import {createEnumParam} from 'use-query-params'
 import {GraphQLExplorer} from '../../components/api-access'
 import {CopyTextButton} from '../../components/CopyTextButton'
 import {PageHeader} from '../../components/PageHeader'
-import {AdminPageLayout} from '../../components/PageLayout'
+import {PageLayout} from '../../components/PageLayout'
 import {atomWithQueryParam} from '../../contexts/utils/atomWithQueryParam'
 
 // for server-side
@@ -90,7 +90,7 @@ export default function ApiAccessNewPage({
   const [tab, setTab] = useAtom(tabAtom)
 
   return (
-    <AdminPageLayout title="API Access">
+    <PageLayout title="API Access">
       <PageHeader title={['API Access']} />
       <div className="flex flex-1 flex-col p-6">
         <Tabs
@@ -159,7 +159,7 @@ export default function ApiAccessNewPage({
           </TabsContent>
         </Tabs>
       </div>
-    </AdminPageLayout>
+    </PageLayout>
   )
 }
 
