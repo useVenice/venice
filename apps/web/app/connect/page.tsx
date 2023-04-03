@@ -19,6 +19,12 @@ export const metadata = {
   title: 'Venice Connect',
 }
 
+/**
+ * Workaround for searchParams being empty on production
+ * @see https://github.com/vercel/next.js/issues/43077#issuecomment-1383742153
+ */
+export const dynamic = 'force-dynamic'
+
 /** https://beta.nextjs.org/docs/api-reference/file-conventions/page#searchparams-optional */
 export default async function ConnectPage({
   searchParams,
