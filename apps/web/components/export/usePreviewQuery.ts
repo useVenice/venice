@@ -39,7 +39,7 @@ export function usePreviewQuery({
         .from(table)
         // Use estimated count to workaround issue with bad RLS performance for auth.is_admin()
         // https://usevenice.slack.com/archives/C04NUANB7FW/p1680462683033239
-        .select('*', {count: 'estimated'})
+        .select('*', {count: 'exact'})
         .limit(limit)
 
       if (error) {
