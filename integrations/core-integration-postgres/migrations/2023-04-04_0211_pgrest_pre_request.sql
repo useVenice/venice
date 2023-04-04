@@ -3,14 +3,22 @@
 -- @see https://usevenice.slack.com/archives/C04NUANB7FW/p1680566799056489?thread_ts=1680462683.033239&cid=C04NUANB7FW
 CREATE OR REPLACE FUNCTION auth.pre_request() RETURNS void AS $$
   select set_config(
-    'request.jwt.claims.resource_ids',
-    COALESCE((select jsonb_agg(id)::text from "resource" where creator_id = auth.uid()), '[]'),
-    true
+    'request.jwt.claims.resource_ids'
+    , COALESCE((select jsonb_agg(id)::text from "resource" where creator_id = auth.uid()), '[]')
+    , true
+  );
+  select set_config(
+    'request.jwt.claims.sub'
+    , (current_setting('request.jwt.claims', true))::jsonb->>'sub'
+    , true
   );
 $$ LANGUAGE sql;
 
-alter role authenticator set pgrst.db_pre_request = 'auth.pre_request';
-notify pgrst, 'reload config';
+DO $$ BEGIN IF (SELECT to_regclass('auth.users') IS NOT null) THEN
+  ALTER ROLE authenticator set pgrst.db_pre_request = 'auth.pre_request';
+END IF; END $$;
+
+NOTIFY pgrst, 'reload config';
 
 CREATE or replace FUNCTION auth.resource_ids() RETURNS character varying[]
     LANGUAGE sql stable AS $$
