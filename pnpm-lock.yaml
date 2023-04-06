@@ -569,8 +569,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(webpack@5.74.0)
       openapi-typescript:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.2.1
+        version: 6.2.1
       openapi-typescript-fetch:
         specifier: 1.1.3
         version: 1.1.3
@@ -843,6 +843,28 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
 
+  integrations/integration-merge:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
+      '@usevenice/standard':
+        specifier: workspace:*
+        version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+    devDependencies:
+      '@types/react':
+        specifier: 18.0.27
+        version: 18.0.27
+      openapi-typescript:
+        specifier: 6.2.1
+        version: 6.2.1
+
   integrations/integration-moota:
     dependencies:
       '@usevenice/cdk-core':
@@ -884,8 +906,8 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
       openapi-typescript:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.2.1
+        version: 6.2.1
 
   integrations/integration-plaid:
     dependencies:
@@ -918,8 +940,8 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
       openapi-typescript:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.2.1
+        version: 6.2.1
 
   integrations/integration-postgres:
     dependencies:
@@ -1160,8 +1182,8 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
       openapi-typescript:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.2.1
+        version: 6.2.1
       openapi-typescript-codegen:
         specifier: 0.23.0
         version: 0.23.0
@@ -13094,15 +13116,15 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /openapi-typescript@6.1.1:
-    resolution: {integrity: sha512-KKoe2ZfALfMRo7hbi7T7fP6hr7770l6/FbwGPNMCLwMj4gYqLIGf49bR2gnPrCDQG1XbC65M8XGCnvF/E+aI9g==}
+  /openapi-typescript@6.2.1:
+    resolution: {integrity: sha512-l0u3fWE7vOCSWl/FxNcB3zu/jDqi/NUCP7MSbffpCZdBwQAbljHbo+CAjPXpf47SAVE+F7ZQKOew+pnXfV1oGA==}
     hasBin: true
     dependencies:
       ansi-colors: 4.1.3
       fast-glob: 3.2.12
       js-yaml: 4.1.0
       supports-color: 9.3.1
-      undici: 5.20.0
+      undici: 5.21.0
       yargs-parser: 21.1.1
     dev: true
 
@@ -16312,8 +16334,8 @@ packages:
       busboy: 1.6.0
     dev: true
 
-  /undici@5.20.0:
-    resolution: {integrity: sha512-J3j60dYzuo6Eevbawwp1sdg16k5Tf768bxYK4TUJRH7cBM4kFCbf3mOnM/0E3vQYXvpxITbbWmBafaDbxLDz3g==}
+  /undici@5.21.0:
+    resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0

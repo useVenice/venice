@@ -1,0 +1,20 @@
+{
+  "name": "@usevenice/integration-merge",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "scripts": {
+    "codegen:next:accounting": "openapi-typescript https://api.merge.dev/api/accounting/v1/schema --make-paths-enum --output merge.accounting.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "openapi-typescript": "6.2.1"
+  }
+}
