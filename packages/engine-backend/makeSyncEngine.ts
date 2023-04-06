@@ -385,7 +385,7 @@ export const makeSyncEngine = <
         const resources = await metaService.tables.resource.list({
           creatorId: ctx.userId,
         })
-        const [institutions, pipelines] = await Promise.all([
+        const [institutions, _pipelines] = await Promise.all([
           metaService.tables.institution.list({
             ids: R.compact(resources.map((c) => c.institutionId)),
           }),
@@ -396,7 +396,6 @@ export const makeSyncEngine = <
         type ConnType = 'source' | 'destination'
 
         const insById = R.mapToObj(institutions, (ins) => [ins.id, ins])
-        const resoById = R.mapToObj(resources, (ins) => [ins.id, ins])
 
         function parseResource(reso?: (typeof resources)[number] | null) {
           if (!reso) {
@@ -430,37 +429,34 @@ export const makeSyncEngine = <
                 : null,
           }
         }
-
-        return (
-          pipelines
-            .map(({sourceId, destinationId, ...pipe}) => {
-              const type: ConnType | null =
-                !sourceId || sourceId?.startsWith('reso_postgres')
-                  ? 'destination'
-                  : !destinationId || destinationId?.startsWith('reso_postgres')
-                  ? 'source'
-                  : null
-              return {
-                ...pipe,
-                syncInProgress:
-                  (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
-                  (pipe.lastSyncStartedAt &&
-                    pipe.lastSyncCompletedAt &&
-                    pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
-                type,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                resource: parseResource(
-                  type === 'source'
-                    ? resoById[sourceId!]
-                    : type === 'destination'
-                    ? resoById[destinationId!]
-                    : null,
-                )!,
-              }
-            })
-            // This shouldn't happen, but just in case...
-            .filter((c) => !!c.resource)
-        )
+        const pipelines = _pipelines.map((pipe) => ({
+          ...pipe,
+          syncInProgress:
+            (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
+            (pipe.lastSyncStartedAt &&
+              pipe.lastSyncCompletedAt &&
+              pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
+        }))
+        return resources
+          .map(parseResource)
+          .filter((r): r is NonNullable<typeof r> => !!r)
+          .map((r) => {
+            const pipesOut = pipelines.filter((p) => p.sourceId === r.id)
+            const pipesIn = pipelines.filter((p) => p.destinationId === r.id)
+            const pipes = [...pipesOut, ...pipesIn]
+            // TODO: Look up based on provider name
+            const type: ConnType | null = r.id.startsWith('reso_postgres')
+              ? 'destination'
+              : 'source'
+            return {
+              ...r,
+              syncInProgress: pipes.some((p) => p.syncInProgress),
+              type,
+              // TODO: Fix me
+              lastSyncCompletedAt: pipes.find((p) => p.lastSyncCompletedAt)
+                ?.lastSyncCompletedAt,
+            }
+          })
       }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))

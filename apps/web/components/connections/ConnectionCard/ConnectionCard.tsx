@@ -26,14 +26,17 @@ export interface ConnectionCardProps {
   onSandboxSimulateDisconnect?: () => void
 }
 
-type ConnectionStatus = Connection['resource']['status']
+type ConnectionStatus = Connection['status']
 
 export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
   function ConnectionCard(props, ref) {
     const {connection, onReconnect} = props
     const {
-      id,
-      resource: {id: resourceId, displayName, institution, status, labels = []},
+      id: resourceId,
+      displayName,
+      institution,
+      status,
+      labels = [],
       lastSyncCompletedAt,
       syncInProgress,
     } = connection
@@ -48,7 +51,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
     const deleteResource = trpc.deleteResource.useMutation({
       onSuccess: () => {
-        console.log('Delete success', id)
+        console.log('Delete success', resourceId)
         void trpcCtx.listConnections.invalidate()
       },
       onError: console.error,
@@ -137,8 +140,8 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 // TODO: show sync in progress and result (success/failure)
                 onClick={() =>
                   dispatch.mutate({
-                    name: 'sync/pipeline-requested',
-                    data: {pipelineId: id},
+                    name: 'sync/resource-requested',
+                    data: {resourceId},
                   })
                 }
               />

@@ -145,7 +145,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               if (onlyIntegrationId) {
                 void veniceConnect.connect(
                   {id: onlyIntegrationId},
-                  {connectWith, resourceId: source.resource.id},
+                  {connectWith, resourceId: source.id},
                 )
               } else {
                 console.error('Missing onlyIntegrationId')
@@ -153,7 +153,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             }}
             onSandboxSimulateDisconnect={() =>
               checkResource.mutate([
-                {id: source.resource.id},
+                {id: source.id},
                 {sandboxSimulateDisconnect: true},
               ])
             }
