@@ -22,7 +22,7 @@ export const $makeProxyAgent = defineProxyFn<
   (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
 >('$makeProxyAgent', () => {
   console.warn(
-    '$makeProxyAgent stub invoked, proxy will be undefined. Did you forget to regiser.node?',
+    '$makeProxyAgent stub invoked, proxy will be undefined. Did you forget to register.node?',
   )
   return undefined
 })
