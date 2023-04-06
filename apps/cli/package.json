@@ -14,6 +14,7 @@
     "@usevenice/integration-beancount": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
+    "@usevenice/integration-merge": "workspace:*",
     "@usevenice/integration-moota": "workspace:*",
     "@usevenice/integration-onebrick": "workspace:*",
     "@usevenice/integration-plaid": "workspace:*",

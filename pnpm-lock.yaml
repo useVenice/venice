@@ -305,6 +305,9 @@ importers:
       '@usevenice/integration-lunchmoney':
         specifier: workspace:*
         version: link:../../integrations/integration-lunchmoney
+      '@usevenice/integration-merge':
+        specifier: workspace:*
+        version: link:../../integrations/integration-merge
       '@usevenice/integration-moota':
         specifier: workspace:*
         version: link:../../integrations/integration-moota
