@@ -1,15 +1,34 @@
 import type {Get} from 'type-fest'
-import type {HttpClientOptions, HTTPMethod} from './makeHttpClient'
+import type {z} from 'zod'
+import type {
+  HttpClientOptions,
+  HTTPMethod,
+  HttpRequestOptions,
+} from './makeHttpClient'
 import {makeHttpClient} from './makeHttpClient'
 
-type Strict<T> = unknown extends T ? never : T
-type OmitNever<T> = Pick<
-  T,
-  {
-    [K in keyof T]: T[K] extends never ? never : K
-  }[keyof T]
->
+// Defining endpoints inline
+interface _Endpoint {
+  input: {[k in keyof HttpRequestOptions]?: z.ZodTypeAny}
+  output: z.ZodTypeAny
+}
 
+export type Endpoints = {
+  [m in HTTPMethod]?: Record<string, _Endpoint>
+}
+
+export type InfoFromEndpoints<T extends Endpoints> = {
+  [m in keyof T]: {
+    [p in keyof T[m]]: T[m][p] extends _Endpoint
+      ? {
+          input: {[k in keyof T[m][p]['input']]: _infer<T[m][p]['input'][k]>}
+          output: _infer<T[m][p]['output']>
+        }
+      : never
+  }
+}
+
+// Defnining endpoints from openapi-typescript
 export type InfoFromPaths<T extends {}> = {
   [m in HTTPMethod]: OmitNever<{
     [p in keyof T]: m extends keyof T[p]
@@ -30,8 +49,12 @@ export type InfoFromPaths<T extends {}> = {
   }>
 }
 
-export function makeOpenApiClient<T extends {}>(options: HttpClientOptions) {
-  type Info = InfoFromPaths<T>
+/** TODO: Make this type obviously a lot better... */
+type OpenApiInfo = Record<string, {}>
+
+export function makeOpenApiClient<Info extends OpenApiInfo>(
+  options: HttpClientOptions,
+) {
   return makeHttpClient(options) as {
     [m in HTTPMethod]: <Path extends keyof Info[m]>(
       path: Path,
@@ -39,7 +62,7 @@ export function makeOpenApiClient<T extends {}>(options: HttpClientOptions) {
     ) => Promise<Get<Info[m][Path], 'output'>>
   } & {
     request: <
-      Method extends Uppercase<keyof Info>,
+      Method extends Uppercase<Extract<keyof Info, string>>,
       M extends Lowercase<Method>,
       Path extends keyof Info[M],
     >(
@@ -49,3 +72,14 @@ export function makeOpenApiClient<T extends {}>(options: HttpClientOptions) {
     ) => Promise<Get<Info[M][Path], 'output'>>
   }
 }
+
+// MARK: - Generic utils, consider moving into our own type-fest file
+
+type Strict<T> = unknown extends T ? never : T
+type OmitNever<T> = Pick<
+  T,
+  {
+    [K in keyof T]: T[K] extends never ? never : K
+  }[keyof T]
+>
+type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
