@@ -15,7 +15,7 @@ const zHttpMethod = z.enum([
 export declare type HTTPMethod = z.infer<typeof zHttpMethod>
 
 export interface HttpRequestOptions {
-  headers?: Record<string, unknown>
+  header?: Record<string, unknown>
   /** path substitution params */
   path?: Record<string, unknown>
   /** searchQuery params */
@@ -66,7 +66,7 @@ export function makeHttpClient(options: HttpClientOptions) {
           'Content-Type': 'application/json',
           ...(bearerToken && {Authorization: `Bearer ${bearerToken}`}),
           ...defaults.headers,
-          ...input.headers,
+          ...input.header,
         },
         body: input.body ? JSON.stringify(input.body) : defaults.body,
       })

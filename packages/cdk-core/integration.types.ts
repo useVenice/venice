@@ -1,6 +1,8 @@
 import type {MaybePromise, z} from '@usevenice/util'
 import type {Id} from './id.types'
 import type {
+  CheckResourceContext,
+  CheckResourceOptions,
   ConnectContext,
   ConnectOptions,
   OpenDialogFn,
@@ -17,7 +19,9 @@ import type {
 
 import {R} from '@usevenice/util'
 import {makeId} from './id.types'
+import type {ZStandard} from './meta.types'
 
+/** Maybe this should be renamed to `schemas` */
 export interface IntegrationDef {
   name: z.ZodLiteral<string>
   integrationConfig?: z.ZodTypeAny
@@ -44,6 +48,15 @@ export interface IntegrationImpl<
 > {
   def: TDef
   name: TDef['name']['_def']['value']
+
+  standardMappers?: {
+    institution?: (
+      data: T['_types']['institutionData'],
+    ) => Omit<ZStandard['institution'], 'id'>
+    resource: (
+      settings: T['_types']['resourceSettings'],
+    ) => Omit<ZStandard['resource'], 'id'>
+  }
 
   // MARK: - Connect
 
@@ -76,6 +89,29 @@ export interface IntegrationImpl<
     >
   >
 
+  checkResource?: (
+    input: OmitNever<{
+      settings: T['_types']['resourceSettings']
+      config: T['_types']['integrationConfig']
+      options: CheckResourceOptions
+      context: CheckResourceContext
+    }>,
+  ) => MaybePromise<
+    Omit<
+      ResourceUpdate<
+        T['_types']['sourceOutputEntity'],
+        T['_types']['resourceSettings']
+      >,
+      'creatorId'
+    >
+  >
+
+  // This probably need to also return an observable
+  revokeResource?: (
+    settings: T['_types']['resourceSettings'],
+    config: T['_types']['integrationConfig'],
+  ) => Promise<unknown>
+
   // MARK: - Sync
 
   sourceSync?: (
@@ -102,6 +138,19 @@ export interface IntegrationImpl<
       // options: T['_types']['sourceState']
     }>,
   ) => Source<T['_insOpType']['data']>
+
+  // MARK - Webhook
+  // Need to add a input schema for each provider to verify the shape of the received
+  // webhook requests...
+  handleWebhook?: (
+    webhookInput: T['_types']['webhookInput'],
+    config: T['_types']['integrationConfig'],
+  ) => MaybePromise<
+    WebhookReturnType<
+      T['_types']['sourceOutputEntity'],
+      T['_types']['resourceSettings']
+    >
+  >
 }
 
 // MARK: - Runtime helpers

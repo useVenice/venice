@@ -2,15 +2,16 @@
 import type {} from '@mergeapi/react-merge-link'
 
 import {
+  CANCELLATION_TOKEN,
   defHelpers,
   IntegrationDef,
   IntegrationImpl,
   useScript,
-  CANCELLATION_TOKEN,
 } from '@usevenice/cdk-core'
 
-import {Rx, rxjs, z} from '@usevenice/util'
-import {makeMergeClient, zCategory} from './MergeClient'
+import {Rx, rxjs, z, zCast} from '@usevenice/util'
+import type {components} from './merge.accounting.gen'
+import {makeMergeClient, zCategory, zIntegration} from './MergeClient'
 
 // TODO: Split into 3 files... Def aka common / Client / Server
 
@@ -19,18 +20,24 @@ export const mergeDef = {
   integrationConfig: z.object({
     apiKey: z.string(),
   }),
+  institutionData: zIntegration,
   resourceSettings: z.object({
     accountToken: z.string(),
+    accountDetails: zCast<components['schemas']['AccountDetails']>().optional(),
   }),
   preConnectInput: z.object({
-    categories: z.array(zCategory).nullish(),
+    categories: z.array(zCategory).default(['accounting']),
   }),
   connectInput: z.object({
     link_token: z.string(),
   }),
-  connectOutput: z.object({
-    publicToken: z.string(),
-  }),
+  connectOutput: z.union([
+    z.object({publicToken: z.string()}),
+    // Perfect example why this should be called postConnectInput
+    // Can only be provided via CLI...
+    // could this possibly eliminate the need for checkResource?
+    z.object({accountToken: z.string()}),
+  ]),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -50,6 +57,21 @@ const helpers = defHelpers(mergeDef)
 export const mergeImpl = {
   def: mergeDef,
   name: 'merge',
+
+  standardMappers: {
+    institution: (ins) => ({
+      name: ins.name,
+      logoUrl: ins.square_image,
+      envName: undefined,
+    }),
+    resource() {
+      return {
+        displayName: '',
+        // status: healthy vs. disconnected...
+        // labels: test vs. production
+      }
+    },
+  },
 
   preConnect: async (config, context, input) => {
     const client = makeMergeClient({apiKey: config.apiKey})
@@ -107,15 +129,64 @@ export const mergeImpl = {
   },
 
   postConnect: async (connectOutput, config) => {
-    const client = makeMergeClient({apiKey: config.apiKey})
-    const res = await client.integrations.post(
-      '/account-token/{public_token}',
-      {path: {public_token: connectOutput.publicToken}},
+    if ('publicToken' in connectOutput) {
+      const client = makeMergeClient({apiKey: config.apiKey})
+      const res = await client.integrations.get(
+        '/account-token/{public_token}',
+        {path: {public_token: connectOutput.publicToken}},
+      )
+
+      // TODO: Add support for HRIS integrations and better understand the behavior across them
+
+      const details = await client.accounting.get('/account-details', {
+        header: {'X-Account-Token': res.account_token},
+      })
+
+      return {
+        // There does not appear to be a unique id in addition to the access token...
+        resourceExternalId: details.id ?? '',
+        settings: {
+          accountToken: res.account_token,
+          accountDetails: details,
+        },
+        institution: {
+          externalId: res.integration.slug,
+          data: res.integration,
+        },
+      }
+    }
+    const client = makeMergeClient({
+      apiKey: config.apiKey,
+      accountToken: connectOutput.accountToken,
+    })
+    const details = await client.accounting.get('/account-details', {})
+    const integrations = await client.integrations.get('/', {})
+    const integration = integrations.find(
+      (i) => i.slug === details.integration_slug,
     )
+
     return {
-      resourceExternalId: res.account_token,
+      // There does not appear to be a unique id in addition to the access token...
+      resourceExternalId: details.id ?? '',
+      settings: {
+        accountToken: connectOutput.accountToken,
+        accountDetails: details,
+      },
+      institution: integration
+        ? {externalId: integration.slug, data: integration}
+        : undefined,
     }
   },
+
+  revokeResource: async (settings, config) => {
+    const client = makeMergeClient({
+      apiKey: config.apiKey,
+      accountToken: settings.accountToken,
+    })
+    await client.accounting.post('/delete-account', {})
+  },
+
+  // MARK: -
 
   sourceSync: ({config, settings}) => {
     const client = makeMergeClient({

@@ -12,7 +12,29 @@ export const zCategory = z.enum([
   'filestorage',
 ])
 
+export const zIntegration = z.object({
+  /* ["accounting"] */
+  categories: z.array(zCategory),
+  /** e.g. '#0FD46C' */
+  color: z.string(),
+  /** 'https://merge-api-production.s3.amazonaws.com/media/Quickbooks_Logo.png', */
+  image: z.string().url(),
+  /** 'QuickBooks Online' */
+  name: z.string(),
+  /** quickbooks-online */
+  slug: z.string(),
+  /** 'https://merge-api-production.s3.amazonaws.com/media/QuickBooks_Square_Logo.png' */
+  square_image: z.string().url(),
+})
+
 export const integrationsEndpoints = {
+  get: {
+    '/': {input: {}, output: z.array(zIntegration)},
+    '/account-token/{public_token}': {
+      input: {path: z.object({public_token: z.string()})},
+      output: z.object({account_token: z.string(), integration: zIntegration}),
+    },
+  },
   post: {
     '/create-link-token': {
       input: {
@@ -29,10 +51,6 @@ export const integrationsEndpoints = {
         link_token: z.string(),
         integration_name: z.string().nullish(),
       }),
-    },
-    '/account-token/{public_token}': {
-      input: {path: z.object({public_token: z.string()})},
-      output: z.object({account_token: z.string()}),
     },
   },
 } satisfies Endpoints

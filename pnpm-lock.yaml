@@ -854,9 +854,6 @@ importers:
 
   integrations/integration-merge:
     dependencies:
-      '@mergeapi/react-merge-link':
-        specifier: 2.0.6
-        version: 2.0.6(react-dom@18.2.0)(react@18.2.0)
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
@@ -873,6 +870,9 @@ importers:
         specifier: 1.1.3
         version: 1.1.3
     devDependencies:
+      '@mergeapi/react-merge-link':
+        specifier: 2.0.6
+        version: 2.0.6(react-dom@18.2.0)(react@18.2.0)
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
@@ -3599,7 +3599,7 @@ packages:
     transitivePeerDependencies:
       - react
       - react-dom
-    dev: false
+    dev: true
 
   /@monaco-editor/loader@1.3.2(monaco-editor@0.35.0):
     resolution: {integrity: sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==}
@@ -14125,7 +14125,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-easy-swipe@0.0.21:
     resolution: {integrity: sha512-OeR2jAxdoqUMHIn/nS9fgreI5hSpgGoL5ezdal4+oO7YSSgJR8ga+PkYGJrSrJ9MKlPcQjMQXnketrD7WNmNsg==}
@@ -14347,7 +14346,6 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    dev: false
 
   /react-style-singleton@2.2.1(@types/react@18.0.27)(react@18.2.0):
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
@@ -14863,7 +14861,6 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /schema-utils@3.1.1:
     resolution: {integrity: sha512-Y5PQxS4ITlC+EahLuXaY86TXfR7Dc5lw294alXOq86JAHCihAIZfqv8nNCWvaEJvaC51uN9hbLGeV0cFBdH+Fw==}
