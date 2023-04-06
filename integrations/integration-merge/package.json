@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "openapi-typescript": "6.2.1"
+    "openapi-typescript": "6.2.1",
+    "type-fest": "3.8.0"
   }
 }

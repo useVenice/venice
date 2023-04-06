@@ -870,6 +870,9 @@ importers:
       openapi-typescript:
         specifier: 6.2.1
         version: 6.2.1
+      type-fest:
+        specifier: 3.8.0
+        version: 3.8.0
 
   integrations/integration-moota:
     dependencies:
@@ -13323,7 +13326,7 @@ packages:
     dependencies:
       '@babel/core': 7.21.0
       ts-toolbelt: 9.6.0
-      type-fest: 3.5.3
+      type-fest: 3.8.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -16257,6 +16260,12 @@ packages:
   /type-fest@3.5.3:
     resolution: {integrity: sha512-V2+og4j/rWReWvaFrse3s9g2xvUv/K9Azm/xo6CjIuq7oeGqsoimC7+9/A3tfvNcbQf8RPSVj/HV81fB4DJrjA==}
     engines: {node: '>=14.16'}
+    dev: false
+
+  /type-fest@3.8.0:
+    resolution: {integrity: sha512-FVNSzGQz9Th+/9R6Lvv7WIAkstylfHN2/JYxkyhhmKFYh9At2DST8t6L6Lref9eYO8PXFTfG9Sg1Agg0K3vq3Q==}
+    engines: {node: '>=14.16'}
+    dev: true
 
   /type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
