@@ -1,14 +1,8 @@
 /** Used for the side effect of window.MergeLink */
 import type {UseMergeLinkProps} from '@mergeapi/react-merge-link/dist/types'
+import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
 
-import {
-  CANCELLATION_TOKEN,
-  defHelpers,
-  IntegrationDef,
-  IntegrationImpl,
-  useScript,
-} from '@usevenice/cdk-core'
-
+import {CANCELLATION_TOKEN, defHelpers, useScript} from '@usevenice/cdk-core'
 import {Rx, rxjs, z, zCast} from '@usevenice/util'
 import React from 'react'
 import type {components} from './merge.accounting.gen'
