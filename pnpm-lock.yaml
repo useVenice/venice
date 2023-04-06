@@ -870,9 +870,6 @@ importers:
       openapi-typescript:
         specifier: 6.2.1
         version: 6.2.1
-      type-fest:
-        specifier: 3.8.0
-        version: 3.8.0
 
   integrations/integration-moota:
     dependencies:
@@ -1487,8 +1484,8 @@ importers:
         specifier: 0.0.2
         version: 0.0.2
       type-fest:
-        specifier: 2.19.0
-        version: 2.19.0
+        specifier: 3.8.0
+        version: 3.8.0
       ulidx:
         specifier: 0.4.0
         version: 0.4.0
@@ -16265,7 +16262,6 @@ packages:
   /type-fest@3.8.0:
     resolution: {integrity: sha512-FVNSzGQz9Th+/9R6Lvv7WIAkstylfHN2/JYxkyhhmKFYh9At2DST8t6L6Lref9eYO8PXFTfG9Sg1Agg0K3vq3Q==}
     engines: {node: '>=14.16'}
-    dev: true
 
   /type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

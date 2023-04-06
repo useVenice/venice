@@ -9,7 +9,7 @@ globalThis.Headers = Headers
 globalThis.Request = Request
 globalThis.Response = Response
 
-import {makeOpenApiClient} from './makeOpenApiClient'
+import {makeOpenApiClient} from '@usevenice/util'
 import type {paths} from './merge.accounting.gen'
 
 export function makeMergeClient(opts: {apiKey: string; accountToken?: string}) {

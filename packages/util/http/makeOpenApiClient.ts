@@ -45,7 +45,7 @@ export function makeOpenApiClient<T extends {}>(options: HttpClientOptions) {
     >(
       method: Method,
       path: Path,
-      _input: Get<Info[M][Path], 'input'>,
+      input: Get<Info[M][Path], 'input'>,
     ) => Promise<Get<Info[M][Path], 'output'>>
   }
 }

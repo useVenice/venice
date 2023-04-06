@@ -1,5 +1,5 @@
 import {Interval} from 'luxon'
-import type {Mutable} from 'type-fest'
+import type {Writable} from 'type-fest'
 
 import {MPDate} from './MPDate'
 import {SCHelpers} from './schrono-utils'
@@ -21,7 +21,7 @@ export interface MPInterval extends Interval {
 
 export const MPInterval = {
   create(_int: Interval, exp: MPIntervalExpression | undefined): MPInterval {
-    const interval = _int as Mutable<MPInterval>
+    const interval = _int as Writable<MPInterval>
     interval.expression = exp
     interval.unparse = function (opts) {
       return this.expression != null && !opts?.abs

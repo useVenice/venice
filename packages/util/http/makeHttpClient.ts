@@ -1,4 +1,6 @@
-import {getDefaultProxyAgent, R, z} from '@usevenice/util'
+import {getDefaultProxyAgent} from './http-utils'
+import z from 'zod'
+import * as R from 'remeda'
 
 const zHttpMethod = z.enum([
   'get',

@@ -1,7 +1,7 @@
 import type * as Chrono from 'chrono-node'
 import type {DateTimeJSOptions, DateTimeOptions} from 'luxon'
 import {DateTime, FixedOffsetZone, Interval, Settings} from 'luxon'
-import type {Mutable} from 'type-fest'
+import type {Writable} from 'type-fest'
 
 import {SCHelpers} from './schrono-utils'
 
@@ -40,7 +40,7 @@ export const MPDate = {
     precision: DateTimePrecision,
     raw: string | undefined,
   ): MPDate {
-    const mpd = dateTime as Mutable<MPDate>
+    const mpd = dateTime as Writable<MPDate>
     mpd.expression = raw
     mpd.precision = precision
     mpd.toISOMPDate = function () {

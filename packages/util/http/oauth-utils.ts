@@ -2,7 +2,7 @@ import {pickBy} from 'lodash'
 
 import type {HTTPClient, HTTPError} from './http-utils'
 import {createHTTPClient} from './http-utils'
-import {stringifyQueryParams} from './url-utils'
+import {stringifyQueryParams} from '../url-utils'
 
 export interface OAuth2ClientConfig<TError = unknown> {
   clientId: string
