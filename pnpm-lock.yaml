@@ -26,9 +26,9 @@ patchedDependencies:
   micro-memoize@4.0.10:
     hash: hko3q5jvea7ey3trpjtkqgcale
     path: patches/micro-memoize@4.0.10.patch
-  zod@3.20.2:
-    hash: 6o55l5jjmzhdiwsempa52rp2y4
-    path: patches/zod@3.20.2.patch
+  zod@3.21.4:
+    hash: bzwjzhue3hmpww5lnv24u5k2ru
+    path: patches/zod@3.21.4.patch
 
 importers:
 
@@ -257,8 +257,8 @@ importers:
         specifier: 1.3.1
         version: 1.3.1
       zod:
-        specifier: 3.20.2
-        version: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     devDependencies:
       '@types/find-config':
         specifier: 1.0.1
@@ -857,6 +857,12 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
+      '@zodios/core':
+        specifier: 10.9.0
+        version: 10.9.0(axios@0.21.1)(zod@3.21.4)
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     devDependencies:
       '@types/react':
         specifier: 18.0.27
@@ -955,8 +961,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
       zod:
-        specifier: 3.20.2
-        version: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     devDependencies:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
@@ -1204,16 +1210,16 @@ importers:
         version: link:../util
       '@zodios/core':
         specifier: 10.7.7
-        version: 10.7.7(axios@0.21.1)(zod@3.20.2)
+        version: 10.7.7(axios@0.21.1)(zod@3.21.4)
       jsonschema-nodewalker:
         specifier: 1.0.6
         version: 1.0.6
       zod:
-        specifier: 3.20.2
-        version: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
       zod-to-json-schema:
         specifier: 3.20.4
-        version: 3.20.4(zod@3.20.2)
+        version: 3.20.4(zod@3.21.4)
     devDependencies:
       openapi-zod-client:
         specifier: 1.5.8
@@ -1355,7 +1361,7 @@ importers:
         version: 16.0.0(react-dom@18.2.0)(react@18.2.0)
       '@ts-react/form':
         specifier: 1.2.0
-        version: 1.2.0(@hookform/resolvers@2.9.11)(react-hook-form@7.43.1)(react@18.2.0)(zod@3.20.2)
+        version: 1.2.0(@hookform/resolvers@2.9.11)(react-hook-form@7.43.1)(react@18.2.0)(zod@3.21.4)
       clsx:
         specifier: 1.2.1
         version: 1.2.1
@@ -1484,11 +1490,11 @@ importers:
         specifier: 0.4.0
         version: 0.4.0
       zod:
-        specifier: 3.20.2
-        version: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
       zod-to-json-schema:
         specifier: 3.20.4
-        version: 3.20.4(zod@3.20.2)
+        version: 3.20.4(zod@3.21.4)
     devDependencies:
       '@types/accounting':
         specifier: 0.4.2
@@ -5818,7 +5824,7 @@ packages:
     resolution: {integrity: sha512-nVMqdDIF9YLOeC3g6RdAvdCPqkHFjpshSqZGThZ+fyjiWSUXj2ZKCduhJFnY77TjtgODojeaaghmzcnjxb+Onw==}
     dev: false
 
-  /@ts-react/form@1.2.0(@hookform/resolvers@2.9.11)(react-hook-form@7.43.1)(react@18.2.0)(zod@3.20.2):
+  /@ts-react/form@1.2.0(@hookform/resolvers@2.9.11)(react-hook-form@7.43.1)(react@18.2.0)(zod@3.21.4):
     resolution: {integrity: sha512-QeuNcFIffYquC4eE4xki7c2Qmk2YEx1q/OFarfdFWAkVCVdtawgbvKh7zvuN0Gun7kreOW6En0nvaEsfecpRZw==}
     peerDependencies:
       '@hookform/resolvers': ^2.8.0
@@ -5829,7 +5835,7 @@ packages:
       '@hookform/resolvers': 2.9.11(react-hook-form@7.43.1)
       react: 18.2.0
       react-hook-form: 7.43.1(react@18.2.0)
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     dev: false
 
   /@tsconfig/strictest@1.0.2:
@@ -6568,14 +6574,24 @@ packages:
   /@xtuc/long@4.2.2:
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
 
-  /@zodios/core@10.7.7(axios@0.21.1)(zod@3.20.2):
+  /@zodios/core@10.7.7(axios@0.21.1)(zod@3.21.4):
     resolution: {integrity: sha512-Lc9HJM1n3zMcJUQ4+4649sH77V+juZRC66k5YD1gxhKRayucguXvSj05M5wBOYXdvcvSQ1Ac1A/wQ5dFJyH26A==}
     peerDependencies:
       axios: ^0.x || ^1.0.0
       zod: ^3.x
     dependencies:
       axios: 0.21.1
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    dev: false
+
+  /@zodios/core@10.9.0(axios@0.21.1)(zod@3.21.4):
+    resolution: {integrity: sha512-vfj1vbVuA+S7sRX7nSzkW4cf35R1AFFHHYfCb1rUdEHWlBrc7YLjbjoQiijHEVloCX97TtuVrzSYCU0yu8bmrQ==}
+    peerDependencies:
+      axios: ^0.x || ^1.0.0
+      zod: ^3.x
+    dependencies:
+      axios: 0.21.1
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
 
   /abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -10298,7 +10314,7 @@ packages:
       ms: 2.1.3
       serialize-error-cjs: 0.1.3
       type-fest: 3.5.3
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -13134,7 +13150,7 @@ packages:
     dependencies:
       '@apidevtools/swagger-parser': 10.1.0(openapi-types@12.1.0)
       '@liuli-util/fs-extra': 0.1.0
-      '@zodios/core': 10.7.7(axios@0.21.1)(zod@3.20.2)
+      '@zodios/core': 10.9.0(axios@0.21.1)(zod@3.21.4)
       axios: 0.21.1
       cac: 6.7.14
       handlebars: 4.7.7
@@ -13145,7 +13161,7 @@ packages:
       tanu: 0.1.13
       ts-pattern: 4.0.5
       whence: 2.0.0
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     transitivePeerDependencies:
       - debug
       - react
@@ -15181,7 +15197,7 @@ packages:
       roarr: 7.13.0
       serialize-error: 8.1.0
       through2: 4.0.2
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     transitivePeerDependencies:
       - pg-native
     dev: false
@@ -17123,16 +17139,16 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod-to-json-schema@3.20.4(zod@3.20.2):
+  /zod-to-json-schema@3.20.4(zod@3.21.4):
     resolution: {integrity: sha512-Un9+kInJ2Zt63n6Z7mLqBifzzPcOyX+b+Exuzf7L1+xqck9Q2EPByyTRduV3kmSPaXaRer1JCsucubpgL1fipg==}
     peerDependencies:
       zod: ^3.20.0
     dependencies:
-      zod: 3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4)
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     dev: false
 
-  /zod@3.20.2(patch_hash=6o55l5jjmzhdiwsempa52rp2y4):
-    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+  /zod@3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru):
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     patched: true
 
   /zustand@3.7.2(react@18.2.0):
