@@ -4,7 +4,6 @@ import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
 
 import {CANCELLATION_TOKEN, defHelpers, useScript} from '@usevenice/cdk-core'
 import {Rx, rxjs, z, zCast} from '@usevenice/util'
-import React from 'react'
 import type {components} from './merge.accounting.gen'
 import {makeMergeClient, zCategory, zIntegration} from './MergeClient'
 
@@ -87,16 +86,6 @@ export const mergeImpl = {
 
   useConnectHook: () => {
     const scriptLoaded = useScript('https://cdn.merge.dev/initialize.js')
-
-    // For debugging
-    React.useEffect(() => {
-      const listener = (event: MessageEvent) => {
-        console.log('[MergeLink] iframe window message', event.data)
-      }
-      console.log('[MergeLink] Listen for iframe window messages')
-      window.addEventListener('message', listener)
-      return () => window.removeEventListener('message', listener)
-    }, [])
 
     // TODO: Improve the useConnectHook api with a separate "prefetch" vs "open" fn
     // To take into account the fact that we can initialize the link eagerly
