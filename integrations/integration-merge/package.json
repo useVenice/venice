@@ -12,8 +12,7 @@
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "@zodios/core": "10.9.0",
-    "zod": "3.21.4"
+    "openapi-typescript-fetch": "1.1.3"
   },
   "devDependencies": {
     "@types/react": "*",
