@@ -15,8 +15,8 @@ import type {paths} from './merge.accounting.gen'
 export function makeMergeClient(opts: {apiKey: string; accountToken?: string}) {
   const accounting = makeOpenApiClient<paths>({
     baseUrl: 'https://api.merge.dev/api/accounting/v1',
+    bearerToken: opts.apiKey,
     headers: {
-      Authorization: `Bearer ${opts.apiKey}`,
       ...(opts.accountToken && {'X-Account-Token': `${opts.accountToken}`}),
     },
   })
