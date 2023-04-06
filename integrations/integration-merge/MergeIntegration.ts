@@ -1,5 +1,5 @@
 /** Used for the side effect of window.MergeLink */
-import type {} from '@mergeapi/react-merge-link'
+import type {UseMergeLinkProps} from '@mergeapi/react-merge-link/dist/types'
 
 import {
   CANCELLATION_TOKEN,
@@ -10,6 +10,7 @@ import {
 } from '@usevenice/cdk-core'
 
 import {Rx, rxjs, z, zCast} from '@usevenice/util'
+import React from 'react'
 import type {components} from './merge.accounting.gen'
 import {makeMergeClient, zCategory, zIntegration} from './MergeClient'
 
@@ -26,7 +27,9 @@ export const mergeDef = {
     accountDetails: zCast<components['schemas']['AccountDetails']>().optional(),
   }),
   preConnectInput: z.object({
-    categories: z.array(zCategory).default(['accounting']),
+    categories: z.array(zCategory),
+    end_user_email_address: z.string().optional(),
+    end_user_organization_name: z.string().optional(),
   }),
   connectInput: z.object({
     link_token: z.string(),
@@ -78,8 +81,10 @@ export const mergeImpl = {
     const res = await client.integrations.post('/create-link-token', {
       body: {
         end_user_origin_id: context.userId,
-        end_user_email_address: 'test@example.com',
-        end_user_organization_name: 'Test Org',
+        end_user_email_address:
+          input.end_user_email_address ?? 'test@example.com',
+        end_user_organization_name:
+          input.end_user_organization_name ?? 'Test Org',
         categories: input.categories ?? ['accounting'],
       },
     })
@@ -87,45 +92,53 @@ export const mergeImpl = {
   },
 
   useConnectHook: () => {
-    const loaded = useScript('https://cdn.merge.dev/initialize.js')
-    return async ({link_token}) => {
-      await loaded
-      // TODO: Improve the useConnectHook api with a separate "prefetch" vs "open" fn
-      await new Promise<void>((resolve) => {
-        window.MergeLink.initialize({
+    const scriptLoaded = useScript('https://cdn.merge.dev/initialize.js')
+
+    // For debugging
+    React.useEffect(() => {
+      const listener = (event: MessageEvent) => {
+        console.log('[MergeLink] iframe window message', event.data)
+      }
+      console.log('[MergeLink] Listen for iframe window messages')
+      window.addEventListener('message', listener)
+      return () => window.removeEventListener('message', listener)
+    }, [])
+
+    // TODO: Improve the useConnectHook api with a separate "prefetch" vs "open" fn
+    // To take into account the fact that we can initialize the link eagerly
+    return ({link_token}) =>
+      new Promise(async (resolve, reject) => {
+        await scriptLoaded
+
+        const options = {
+          shouldSendTokenOnSuccessfulLink: true,
+          // Will need to be passed into both initialize and openLink
+          // otherwise will not open the oauth dialog
           linkToken: link_token,
           onSuccess(publicToken, additionalInfo) {
-            console.log('MergeLink onSuccess', publicToken, additionalInfo)
-          },
-          onValidationError: (error) => {
-            console.log('MergeLink onValidationError', error)
-          },
-          onExit() {
-            console.log('MergeLink onExit')
-          },
-          onReady: () => {
-            console.log('onReady')
-            resolve()
-          },
-        })
-      })
-      return new Promise((resolve, reject) => {
-        window.MergeLink.openLink({
-          onSuccess(publicToken, additionalInfo) {
+            console.log('[MergeLink] onSuccess', publicToken, additionalInfo)
             resolve({publicToken})
-            console.log('MergeLink onSuccess2', publicToken, additionalInfo)
           },
           onValidationError: (error) => {
-            console.log('MergeLink onValidationError', error)
+            console.log('[MergeLink] onValidationError', error)
             reject(error)
           },
           onExit() {
-            console.log('MergeLink onExit')
+            console.log('[MergeLink] onExit')
             reject(CANCELLATION_TOKEN)
           },
+        } satisfies UseMergeLinkProps
+        await new Promise<void>((_resolve) => {
+          window.MergeLink.initialize({
+            ...options,
+            onReady: () => {
+              console.log('[MergeLink] onReady')
+              _resolve()
+            },
+          })
         })
+        window.MergeLink.openLink(options)
       })
-    }
   },
 
   postConnect: async (connectOutput, config) => {
