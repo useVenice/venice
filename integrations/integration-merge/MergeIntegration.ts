@@ -38,12 +38,12 @@ export const mergeDef = {
     z.object({
       id: z.string(),
       entityName: z.literal('account'),
-      entity: z.object({}),
+      entity: zCast<components['schemas']['Account']>(),
     }),
     z.object({
       id: z.string(),
       entityName: z.literal('transaction'),
-      entity: z.object({}),
+      entity: zCast<components['schemas']['Transaction']>(),
     }),
   ]),
 } satisfies IntegrationDef
@@ -66,6 +66,20 @@ export const mergeImpl = {
         // status: healthy vs. disconnected...
         // labels: test vs. production
       }
+    },
+  },
+  extension: {
+    sourceMapEntity: {
+      account: (entity) => ({
+        id: entity.id,
+        entityName: 'account',
+        entity: {name: entity.entity.name ?? ''},
+      }),
+      // transaction: (entity) => ({
+      //   id: entity.id,
+      //   entityName: 'transaction',
+      //   entity: {date: entity.entity.transaction_date},
+      // }),
     },
   },
 
@@ -149,6 +163,7 @@ export const mergeImpl = {
           externalId: res.integration.slug,
           data: res.integration,
         },
+        triggerDefaultSync: true,
       }
     }
     const client = makeMergeClient({
@@ -171,6 +186,7 @@ export const mergeImpl = {
       institution: integration
         ? {externalId: integration.slug, data: integration}
         : undefined,
+      triggerDefaultSync: true,
     }
   },
 

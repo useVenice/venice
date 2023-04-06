@@ -57,6 +57,22 @@ export interface IntegrationImpl<
       settings: T['_types']['resourceSettings'],
     ) => Omit<ZStandard['resource'], 'id'>
   }
+  extension?: {
+    // TODO: Should this be wrapped into the core? Does cdk-ledger even make sense?
+    sourceMapEntity?:
+      | Partial<{
+          // Simpler
+          [k in T['_types']['sourceOutputEntity']['entityName']]: (
+            entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
+            settings: T['_types']['resourceSettings'],
+          ) => import('../cdk-ledger').EntityPayload | null
+        }>
+      // More powerful
+      | ((
+          entity: T['_types']['sourceOutputEntity'],
+          settings: T['_types']['resourceSettings'],
+        ) => import('../cdk-ledger').EntityPayload | null)
+  }
 
   // MARK: - Connect
 
