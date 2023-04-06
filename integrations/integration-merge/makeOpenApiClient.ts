@@ -1,19 +1,28 @@
-import {getDefaultProxyAgent} from '@usevenice/util'
+import {getDefaultProxyAgent, R, z} from '@usevenice/util'
 import type {Get} from 'type-fest'
 
-export declare type HTTPMethod =
-  | 'get'
-  | 'post'
-  | 'put'
-  | 'patch'
-  | 'delete'
-  | 'head'
-  | 'options'
+const zHttpMethod = z.enum([
+  'get',
+  'post',
+  'put',
+  'patch',
+  'delete',
+  'head',
+  'options',
+])
+
+export declare type HTTPMethod = z.infer<typeof zHttpMethod>
 
 type Strict<T> = unknown extends T ? never : T
+type OmitNever<T> = Pick<
+  T,
+  {
+    [K in keyof T]: T[K] extends never ? never : K
+  }[keyof T]
+>
 
-type InfoFromPaths<T extends {}> = {
-  [m in HTTPMethod]: {
+export type InfoFromPaths<T extends {}> = {
+  [m in HTTPMethod]: OmitNever<{
     [p in keyof T]: m extends keyof T[p]
       ? T[p][m] extends {
           parameters?: infer Params
@@ -29,7 +38,7 @@ type InfoFromPaths<T extends {}> = {
         : never
       : never
     // TODO: Add support for error here...
-  }
+  }>
 }
 
 export function makeOpenApiClient<T extends {}>(
@@ -96,20 +105,25 @@ export function makeOpenApiClient<T extends {}>(
     )
   }
 
-  function get<Path extends keyof Info['get']>(
-    path: Path,
-    input: Get<Info['get'][Path], 'input'>,
-  ) {
-    return request('GET', path, input)
+  const methods = R.mapToObj(zHttpMethod.options, (method) => [
+    method,
+    (path: any, input: any) =>
+      request(method.toUpperCase() as Uppercase<typeof method>, path, input),
+  ]) as {
+    [m in HTTPMethod]: <Path extends keyof Info[m]>(
+      path: Path,
+      info: Get<Info[m][Path], 'input'>,
+    ) => Promise<Get<Info[m][Path], 'output'>>
   }
 
-  return {request, get}
+  return {...methods, request}
 }
 
 function getPath(path: string, pathParams: Record<string, any>) {
   return path.replace(/\{([^}]+)\}/g, (_, key) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     const value = encodeURIComponent(pathParams[key])
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, @typescript-eslint/no-unsafe-member-access
     delete pathParams[key]
     return value
   })

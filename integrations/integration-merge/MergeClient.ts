@@ -38,3 +38,7 @@ client.accounting
     path: {id: 'a3b3a1e4-14e9-4532-8af5-9a9dc75f79f3'},
   })
   .then(console.log)
+
+// client.accounting
+//   .post('/accounts', {body: {model: {account_number: ''}}})
+//   .then(console.log)
