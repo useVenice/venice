@@ -1,6 +1,7 @@
-import {getDefaultProxyAgent} from './http-utils'
+import {getDefaultProxyAgent, HTTPError} from './http-utils'
 import z from 'zod'
 import * as R from 'remeda'
+import {safeJSONParse} from '../json-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -52,28 +53,41 @@ export function makeHttpClient(options: HttpClientOptions) {
     Object.entries(input.query ?? {}).forEach(([key, value]) =>
       url.searchParams.set(key, `${value}`),
     )
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(bearerToken && {Authorization: `Bearer ${bearerToken}`}),
+      ...defaults.headers,
+      ...input.header,
+    } as Record<string, string>
+    const body = input.body ? JSON.stringify(input.body) : defaults.body
 
-    return (
-      // NOTE: Implement proxyAgent as a middleware
-      // This way we can transparently use reverse proxies also in addition to forward proxy
-      // as well as just simple in-app logging.
-      fetch(url, {
-        // @ts-expect-error Node fetch specific option... Noop on other platforms.
-        agent: getDefaultProxyAgent(),
-        ...defaults,
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...(bearerToken && {Authorization: `Bearer ${bearerToken}`}),
-          ...defaults.headers,
-          ...input.header,
-        },
-        body: input.body ? JSON.stringify(input.body) : defaults.body,
-      })
-        .then((res) => res.text())
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        .then((text) => (text ? JSON.parse(text) : null))
-    )
+    // NOTE: Implement proxyAgent as a middleware
+    // This way we can transparently use reverse proxies also in addition to forward proxy
+    // as well as just simple in-app logging.
+    return fetch(url, {
+      // @ts-expect-error Node fetch specific option... Noop on other platforms.
+      agent: getDefaultProxyAgent(),
+      ...defaults,
+      method,
+      headers,
+      body,
+    }).then(async (res) => {
+      const text = await res.text()
+      const json = safeJSONParse(text)
+      if (res.status < 200 || res.status >= 300) {
+        throw new HTTPError(
+          {url: url.toString(), method, headers, data: body},
+          {
+            data: json,
+            headers: Object.fromEntries(res.headers.entries()),
+            status: res.status,
+            statusText: res.statusText,
+          },
+          res.statusText,
+        )
+      }
+      return json
+    })
   }
 
   const methods = R.mapToObj(zHttpMethod.options, (method) => [
