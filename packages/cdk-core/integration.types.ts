@@ -1,6 +1,12 @@
-import type {z} from '@usevenice/util'
+import type {MaybePromise, z} from '@usevenice/util'
 import type {Id} from './id.types'
-import type {ResourceUpdate, WebhookReturnType} from './makeSyncProvider'
+import type {
+  ConnectContext,
+  ConnectOptions,
+  OpenDialogFn,
+  ResourceUpdate,
+  WebhookReturnType,
+} from './makeSyncProvider'
 import type {
   Destination,
   ResoUpdateData,
@@ -20,6 +26,7 @@ export interface IntegrationDef {
   webhookInput?: z.ZodTypeAny
   preConnectInput?: z.ZodTypeAny
   connectInput?: z.ZodTypeAny
+  /** aka postConnectInput... Should we rename? */
   connectOutput?: z.ZodTypeAny
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
   sourceState?: z.ZodTypeAny
@@ -36,6 +43,41 @@ export interface IntegrationImpl<
   T extends ExtendDef<TDef> = ExtendDef<TDef>,
 > {
   def: TDef
+  name: TDef['name']['_def']['value']
+
+  // MARK: - Connect
+
+  preConnect?: (
+    config: T['_types']['integrationConfig'],
+    context: ConnectContext<T['_types']['resourceSettings']>,
+    // TODO: Turn this into an object instead
+    input: T['_types']['preConnectInput'],
+  ) => Promise<T['_types']['connectInput']>
+
+  useConnectHook?: (scope: {
+    userId: UserId | undefined
+    openDialog: OpenDialogFn
+  }) => (
+    connectInput: T['_types']['connectInput'],
+    context: ConnectOptions,
+  ) => Promise<T['_types']['connectOutput']>
+
+  postConnect?: (
+    connectOutput: T['_types']['connectOutput'],
+    config: T['_types']['integrationConfig'],
+    context: ConnectContext<T['_types']['resourceSettings']>,
+  ) => MaybePromise<
+    Omit<
+      ResourceUpdate<
+        T['_types']['sourceOutputEntity'],
+        T['_types']['resourceSettings']
+      >,
+      'creatorId'
+    >
+  >
+
+  // MARK: - Sync
+
   sourceSync?: (
     input: OmitNever<{
       id: Id['reso']

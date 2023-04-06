@@ -26,6 +26,7 @@
     "@usevenice/integration-foreceipt": "workspace:*",
     "@usevenice/integration-import": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
+    "@usevenice/integration-merge": "workspace:*",
     "@usevenice/integration-moota": "workspace:*",
     "@usevenice/integration-onebrick": "workspace:*",
     "@usevenice/integration-plaid": "workspace:*",

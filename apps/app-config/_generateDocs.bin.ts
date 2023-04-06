@@ -115,7 +115,7 @@ const readmeOutPath = path.join(__dirname, 'README.md')
 fs.writeFileSync(readmeOutPath, readme)
 console.log(`Wrote ${readmeOutPath}`)
 
-const dotEnvExampleOutPath = path.join(__dirname, '../../', '.env.example')
+const dotEnvExampleOutPath = path.join(__dirname, '../web', '.env.example')
 fs.writeFileSync(dotEnvExampleOutPath, dotEnvExample)
 console.log(`Wrote ${dotEnvExampleOutPath}`)
 

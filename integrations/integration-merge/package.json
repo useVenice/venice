@@ -8,6 +8,7 @@
     "codegen:next:accounting": "openapi-typescript https://api.merge.dev/api/accounting/v1/schema --make-paths-enum --output merge.accounting.gen.ts"
   },
   "dependencies": {
+    "@mergeapi/react-merge-link": "2.0.6",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",

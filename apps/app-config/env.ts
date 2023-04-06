@@ -23,6 +23,7 @@ import {togglProvider} from '@usevenice/integration-toggl'
 import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
+import {mergeImpl} from '@usevenice/integration-merge'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
 // MARK: - Env vars
@@ -62,7 +63,10 @@ export const zBackendEnv = zEnvVars({
 
 export {plaidProvider, fsProvider}
 
-export const DOCUMENTED_PROVIDERS = [plaidProvider] as const
+export const DOCUMENTED_PROVIDERS = [
+  // plaidProvider,
+  mergeImpl as unknown as typeof plaidProvider,
+] as const
 
 export const PROVIDERS = [
   ...DOCUMENTED_PROVIDERS,
@@ -93,6 +97,8 @@ export const PROVIDERS = [
   QBOProvider,
   saltedgeProvider,
   venmoProvider,
+  // New ones
+  mergeImpl as unknown as typeof venmoProvider, // Hack for now...
 ] as const
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */

@@ -148,7 +148,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
                       <h2 className="grid grid-cols-[auto_1fr] items-center gap-2">
                         <SettingsIcon className="h-5 w-5 fill-venice-gray-muted" />
                         <span className="text-base text-offwhite">
-                          Plaid Connection Settings
+                          Connect parameters
                         </span>
                       </h2>
                       <ZodForm

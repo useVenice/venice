@@ -193,6 +193,9 @@ importers:
       '@usevenice/integration-lunchmoney':
         specifier: workspace:*
         version: link:../../integrations/integration-lunchmoney
+      '@usevenice/integration-merge':
+        specifier: workspace:*
+        version: link:../../integrations/integration-merge
       '@usevenice/integration-moota':
         specifier: workspace:*
         version: link:../../integrations/integration-moota
@@ -851,6 +854,9 @@ importers:
 
   integrations/integration-merge:
     dependencies:
+      '@mergeapi/react-merge-link':
+        specifier: 2.0.6
+        version: 2.0.6(react-dom@18.2.0)(react@18.2.0)
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
@@ -3585,6 +3591,15 @@ packages:
       '@types/fs-extra': 9.0.13
       fs-extra: 10.1.0
     dev: true
+
+  /@mergeapi/react-merge-link@2.0.6(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-KQJoE72YTd4pRPyVrPslBcfAQyXFbClZ1Ay5LFhAeoJTyq6QFPH49XnR9EDl31WGLTZghnQWFY3Vcz+e3UDzGw==}
+    dependencies:
+      react-script-hook: 1.7.2(react-dom@18.2.0)(react@18.2.0)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
 
   /@monaco-editor/loader@1.3.2(monaco-editor@0.35.0):
     resolution: {integrity: sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==}
