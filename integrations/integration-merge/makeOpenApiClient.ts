@@ -16,17 +16,14 @@ type InfoFromPaths<T extends {}> = {
   [m in HTTPMethod]: {
     [p in keyof T]: m extends keyof T[p]
       ? T[p][m] extends {
-          parameters?: {
-            query?: infer Query
-            headers?: infer Headers
-          }
+          parameters?: infer Params
           requestBody?: {content: {'application/json': infer BodyInput}}
           responses?: {
             [_ in 200 | 201]?: {content: {'application/json': infer BodyOutput}}
           }
         }
         ? {
-            input: {headers?: Headers; query?: Query; body?: BodyInput}
+            input: Partial<Params> & {body?: BodyInput}
             output: Strict<BodyOutput>
           }
         : never
@@ -60,11 +57,18 @@ export function makeOpenApiClient<T extends {}>(
     path: Path,
     _input: Get<Info[M][Path], 'input'>,
   ): Promise<Get<Info[M][Path], 'output'>> {
-    const input = _input as {headers?: {}; query?: {}; body?: {}}
+    const input = _input as {
+      headers?: {}
+      query?: {}
+      body?: {}
+      path?: {}
+      cookies?: {} // TODO: Impl. cookies
+    }
 
     // TODO: Create a better function for this than += pathname...
     const url = new URL(baseUrl)
-    url.pathname += path as string
+
+    url.pathname += getPath(path as string, input.path ?? {})
     Object.entries(input.query ?? {}).forEach(([key, value]) =>
       url.searchParams.set(key, `${value}`),
     )
@@ -82,6 +86,7 @@ export function makeOpenApiClient<T extends {}>(
           'Content-Type': 'application/json',
           ...defaults.headers,
           ...input.headers,
+          // TODO: Send cookie...
         },
         body: input.body ? JSON.stringify(input.body) : defaults.body,
       })
@@ -99,4 +104,13 @@ export function makeOpenApiClient<T extends {}>(
   }
 
   return {request, get}
+}
+
+function getPath(path: string, pathParams: Record<string, any>) {
+  return path.replace(/\{([^}]+)\}/g, (_, key) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    const value = encodeURIComponent(pathParams[key])
+    delete pathParams[key]
+    return value
+  })
 }
