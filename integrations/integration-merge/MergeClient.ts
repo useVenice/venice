@@ -2,12 +2,6 @@
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import '../../apps/app-config/register.node'
-// Polyfill fetch on node to support proxy agent...
-import fetch, {Headers, Request, Response} from 'cross-fetch'
-globalThis.fetch = fetch
-globalThis.Headers = Headers
-globalThis.Request = Request
-globalThis.Response = Response
 
 import {makeOpenApiClient} from '@usevenice/util'
 import type {paths} from './merge.accounting.gen'

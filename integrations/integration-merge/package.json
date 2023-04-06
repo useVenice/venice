@@ -12,7 +12,6 @@
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "cross-fetch": "3.1.5",
     "openapi-typescript-fetch": "1.1.3"
   },
   "devDependencies": {

@@ -16,7 +16,7 @@ const destPath = './temp'
 // we are working with configurable via command line args
 
 if (process.argv[2] === 'source') {
-  console.error('source mode')
+  console.log('source mode')
   sync({
     source: mergeImpl.sourceSync({
       id: 'reso_1',
@@ -36,7 +36,7 @@ if (process.argv[2] === 'source') {
 }
 
 if (process.argv[2] === 'destination') {
-  console.error('destination mode')
+  console.log('destination mode')
   sync({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     source: new rxjs.Observable<any>((obs) => {
@@ -68,7 +68,7 @@ if (process.argv[2] === 'destination') {
 }
 
 if (process.argv[2] == 'direct') {
-  console.error('direct mode')
+  console.log('direct mode')
   sync({
     source: fsProvider.sourceSync({
       id: 'reso_1',
