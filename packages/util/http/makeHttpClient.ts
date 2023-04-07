@@ -2,6 +2,7 @@ import {getDefaultProxyAgent, HTTPError} from './http-utils'
 import z from 'zod'
 import * as R from 'remeda'
 import {safeJSONParse} from '../json-utils'
+import {defineProxyFn} from '../di-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -33,14 +34,25 @@ export type HttpClientOptions = RequestInit & {
   URL?: typeof URL
 }
 
+/**
+ * Patching globalThis.fetch does not work reliably in a next.js context
+ * Thus this workaround...
+ */
+export const $getFetchFn = defineProxyFn<() => typeof fetch | undefined>(
+  '$getFetchFn',
+  () => undefined,
+)
+
 export function makeHttpClient(options: HttpClientOptions) {
   const {
-    fetch = globalThis.fetch,
+    fetch = $getFetchFn() ?? globalThis.fetch,
     URL = globalThis.URL,
     baseUrl,
     bearerToken,
     ...defaults
   } = options
+
+  const agent = getDefaultProxyAgent()
 
   function request(
     method: Uppercase<HTTPMethod>,
@@ -66,7 +78,7 @@ export function makeHttpClient(options: HttpClientOptions) {
     // as well as just simple in-app logging.
     return fetch(url, {
       // @ts-expect-error Node fetch specific option... Noop on other platforms.
-      agent: getDefaultProxyAgent(),
+      agent,
       ...defaults,
       method,
       headers,

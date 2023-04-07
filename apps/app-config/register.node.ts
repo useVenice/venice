@@ -1,7 +1,7 @@
 // Polyfill fetch on node to support proxy agent...
 // Should we use node-fetch directly?
-import fetch, {Headers, Request, Response} from 'cross-fetch'
-globalThis.fetch = fetch
+import crossFetch, {Headers, Request, Response} from 'cross-fetch'
+globalThis.fetch = crossFetch
 globalThis.Headers = Headers
 globalThis.Request = Request
 globalThis.Response = Response
@@ -26,6 +26,7 @@ import {
   $ensureDir,
   $execCommand,
   $fs,
+  $getFetchFn,
   $makeProxyAgent,
   $path,
   $readFile,
@@ -42,6 +43,7 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
+implementProxyFn($getFetchFn, () => crossFetch)
 implementProxyFn(
   $makeProxyAgent,
   (input) => {

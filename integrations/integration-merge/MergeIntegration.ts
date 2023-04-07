@@ -88,7 +88,6 @@ export const mergeImpl = {
 
   preConnect: async (config, context, input) => {
     const client = makeMergeClient({apiKey: config.apiKey})
-    console.log('[Merge] preConnect', config, context, input)
     const res = await client.integrations.post('/create-link-token', {
       body: {
         end_user_origin_id: context.userId,
