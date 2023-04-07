@@ -34,9 +34,9 @@
     "timeago.js": "4.0.2",
     "tiny-invariant": "1.2.0",
     "ts-brand": "0.0.2",
-    "type-fest": "2.19.0",
+    "type-fest": "3.8.0",
     "ulidx": "0.4.0",
-    "zod": "3.20.2",
+    "zod": "3.21.4",
     "zod-to-json-schema": "3.20.4"
   },
   "devDependencies": {

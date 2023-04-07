@@ -14,6 +14,12 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
 // MARK: - Standard types
 
+export const zInstitutionCategory = z.enum([
+  'accounting',
+  'banking',
+  'hris', // Aka payroll
+])
+
 export type ZStandard = {
   [k in keyof typeof zStandard]: z.infer<(typeof zStandard)[k]>
 }
@@ -34,6 +40,7 @@ export const zStandard = {
           : url,
       z.string().url().optional(),
     ),
+    categories: z.array(zInstitutionCategory).nullish(),
     /** Environment specific providers */
     envName: zEnvName.optional(),
   }),

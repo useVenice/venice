@@ -7,7 +7,7 @@ import {
   ProfileIcon,
   SupportIcon,
 } from '@usevenice/ui/icons'
-import {UsersIcon} from 'lucide-react'
+import {UsersIcon, WandIcon} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {useAuthState} from '../../../contexts/session-context'
@@ -17,7 +17,7 @@ const mainNavigation = [
   {
     name: 'Magic link',
     href: '/admin/magic-link',
-    icon: ArrowLeftRightIcon,
+    icon: WandIcon,
     adminOnly: true,
   },
   {

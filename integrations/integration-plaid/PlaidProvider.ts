@@ -209,6 +209,7 @@ export const plaidProvider = makeSyncProvider({
       logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,
       envName: undefined,
+      categories: ['banking'],
     }),
     resource: (settings) => {
       // TODO: Unify item.error and webhookItemError into a single field
@@ -257,7 +258,10 @@ export const plaidProvider = makeSyncProvider({
     return makePlaidClient(config)
       .fromEnv(
         input.envName ??
-          (process.env.NODE_ENV === 'development' ? 'sandbox' : 'production'),
+          // TODO: Fix me
+          (process.env['NEXT_PUBLIC_VERCEL_ENV'] !== 'production'
+            ? 'sandbox'
+            : 'production'),
       )
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting

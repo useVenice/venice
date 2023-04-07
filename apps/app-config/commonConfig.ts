@@ -1,5 +1,4 @@
-import {AnySyncProvider, EnvName, LinkFactory} from '@usevenice/cdk-core'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import type {AnySyncProvider, EnvName, LinkFactory} from '@usevenice/cdk-core'
 import type {SyncEngineCommonConfig} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 

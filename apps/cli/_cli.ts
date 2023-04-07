@@ -30,6 +30,7 @@ import {getEnvVar, R, z, zodInsecureDebug, zParser} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
+import {makeMergeClient} from '@usevenice/integration-merge'
 
 if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
@@ -91,6 +92,17 @@ if (require.main === module) {
     moota: () => makeMootaClient(intConfig('moota')),
     // qbo: () => makeQBOClient(intConfig('qbo')),
     saltedge: () => makeSaltedgeClient(intConfig('saltedge')),
+
+    'merge.accounting': () =>
+      makeMergeClient({
+        apiKey: process.env['MERGE_TEST_API_KEY'] ?? '',
+        accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+      }).accounting,
+    'merge.integrations': () =>
+      makeMergeClient({
+        apiKey: process.env['MERGE_TEST_API_KEY'] ?? '',
+        accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+      }).integrations,
   }
 
   const clientFactory = z

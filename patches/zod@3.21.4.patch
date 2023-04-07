@@ -1,5 +1,5 @@
 diff --git a/lib/types.d.ts b/lib/types.d.ts
-index 0c3051205f5b35f013934c4e988c592c579cf69e..8294ab882f774aaab8626952d3819009d6902627 100644
+index e8b7ecdd3f856dff5901f7f382b517030cb41ba4..8ba160d71cf93517b44935334eabb2e6ad26d2dc 100644
 --- a/lib/types.d.ts
 +++ b/lib/types.d.ts
 @@ -39,6 +39,7 @@ export declare type SafeParseSuccess<Output> = {
@@ -10,7 +10,7 @@ index 0c3051205f5b35f013934c4e988c592c579cf69e..8294ab882f774aaab8626952d3819009
  };
  export declare type SafeParseReturnType<Input, Output> = SafeParseSuccess<Output> | SafeParseError<Input>;
  export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = ZodTypeDef, Input = Output> {
-@@ -56,12 +57,12 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
+@@ -56,11 +57,11 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
      };
      _parseSync(input: ParseInput): SyncParseReturnType<Output>;
      _parseAsync(input: ParseInput): AsyncParseReturnType<Output>;
@@ -18,12 +18,11 @@ index 0c3051205f5b35f013934c4e988c592c579cf69e..8294ab882f774aaab8626952d3819009
 -    safeParse(data: unknown, params?: Partial<ParseParams>): SafeParseReturnType<Input, Output>;
 -    parseAsync(data: unknown, params?: Partial<ParseParams>): Promise<Output>;
 -    safeParseAsync(data: unknown, params?: Partial<ParseParams>): Promise<SafeParseReturnType<Input, Output>>;
+-    spa: (data: unknown, params?: Partial<ParseParams> | undefined) => Promise<SafeParseReturnType<Input, Output>>;
 +    parse<TOpt extends 'untyped' | 'typed' = 'untyped'>(data: TOpt extends 'typed' ? Input : unknown, params?: Partial<ParseParams>): Output; // Make it easier..
 +    safeParse<TOpt extends 'untyped' | 'typed' = 'untyped'>(data: TOpt extends 'typed' ? Input : unknown, params?: Partial<ParseParams>): SafeParseReturnType<Input, Output>;
 +    parseAsync<TOpt extends 'untyped' | 'typed' = 'untyped'>(data: TOpt extends 'typed' ? Input : unknown, params?: Partial<ParseParams>): Promise<Output>;
 +    safeParseAsync<TOpt extends 'untyped' | 'typed' = 'untyped'>(data: TOpt extends 'typed' ? Input : unknown, params?: Partial<ParseParams>): Promise<SafeParseReturnType<Input, Output>>;
-     /** Alias of safeParseAsync */
--    spa: (data: unknown, params?: Partial<ParseParams> | undefined) => Promise<SafeParseReturnType<Input, Output>>;
 +    spa: <TOpt extends 'untyped' | 'typed' = 'untyped'>(data: TOpt extends 'typed' ? Input : unknown, params?: Partial<ParseParams> | undefined) => Promise<SafeParseReturnType<Input, Output>>;
      refine<RefinedOutput extends Output>(check: (arg: Output) => arg is RefinedOutput, message?: string | CustomErrorParams | ((arg: Output) => CustomErrorParams)): ZodEffects<this, RefinedOutput, Input>;
      refine(check: (arg: Output) => unknown | Promise<unknown>, message?: string | CustomErrorParams | ((arg: Output) => CustomErrorParams)): ZodEffects<this, Output, Input>;

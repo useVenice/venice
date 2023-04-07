@@ -98,9 +98,7 @@
   "overrides": [
     {
       "files": ["**/*.{ts,tsx}"],
-      "parserOptions": {
-        "project": "tsconfig.json"
-      },
+      "parserOptions": {"project": "tsconfig.json"},
       "plugins": ["@typescript-eslint"],
       "extends": ["plugin:@typescript-eslint/strict"],
       "rules": {

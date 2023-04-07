@@ -1,25 +1,21 @@
 {
-  "name": "@usevenice/integration-plaid",
+  "name": "@usevenice/integration-merge",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": [
-    "register.node.ts"
-  ],
+  "sideEffects": [],
   "module": "./index.ts",
   "scripts": {
-    "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
+    "codegen:next:accounting": "openapi-typescript https://api.merge.dev/api/accounting/v1/schema --make-paths-enum --output merge.accounting.gen.ts"
   },
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "plaid": "12.3.0",
-    "react": "*",
-    "react-dom": "*",
-    "react-plaid-link": "3.3.2"
+    "openapi-typescript-fetch": "1.1.3"
   },
   "devDependencies": {
+    "@mergeapi/react-merge-link": "2.0.6",
     "@types/react": "*",
     "openapi-typescript": "6.2.1"
   }

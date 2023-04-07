@@ -3,7 +3,7 @@ import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
 import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
+import type {GetServerSideProps} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -186,7 +186,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
                 if (onlyIntegrationId) {
                   void veniceConnect.connect(
                     {id: onlyIntegrationId},
-                    {connectWith, resourceId: source.resource.id},
+                    {connectWith, resourceId: source.id},
                   )
                 } else {
                   console.error('Missing onlyIntegrationId')
@@ -194,7 +194,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               }}
               onSandboxSimulateDisconnect={() =>
                 checkResource.mutate([
-                  {id: source.resource.id},
+                  {id: source.id},
                   {sandboxSimulateDisconnect: true},
                 ])
               }

@@ -10,8 +10,8 @@ import type {
 } from 'axios'
 import _Axios from 'axios'
 
-import {defineProxyFn} from './di-utils'
-import {stringifyQueryParams} from './url-utils'
+import {defineProxyFn} from '../di-utils'
+import {stringifyQueryParams} from '../url-utils'
 
 export {default as Axios} from 'axios'
 export type {AxiosError as IAxiosError} from 'axios'
@@ -22,7 +22,7 @@ export const $makeProxyAgent = defineProxyFn<
   (opts: {url: string; cert: string}) => http.Agent | https.Agent | undefined
 >('$makeProxyAgent', () => {
   console.warn(
-    '$makeProxyAgent stub invoked, proxy will be undefined. Did you forget to regiser.node?',
+    '$makeProxyAgent stub invoked, proxy will be undefined. Did you forget to register.node?',
   )
   return undefined
 })

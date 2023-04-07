@@ -3,7 +3,7 @@ import type {PropsWithChildren} from 'react'
 import {AuthLayout} from './AuthLayout'
 
 interface PageLayoutProps extends PropsWithChildren {
-  auth?: 'none' | 'user' | 'admin'
+  auth?: 'user' | 'admin' | null
   title: string
 }
 

@@ -1,3 +1,11 @@
+// Polyfill fetch on node to support proxy agent...
+// Should we use node-fetch directly?
+import crossFetch, {Headers, Request, Response} from 'cross-fetch'
+globalThis.fetch = crossFetch
+globalThis.Headers = Headers
+globalThis.Request = Request
+globalThis.Response = Response
+
 import '@usevenice/core-integration-airtable/register.node'
 import '@usevenice/core-integration-mongodb/register.node'
 import '@usevenice/core-integration-postgres/register.node'
@@ -18,6 +26,7 @@ import {
   $ensureDir,
   $execCommand,
   $fs,
+  $getFetchFn,
   $makeProxyAgent,
   $path,
   $readFile,
@@ -34,6 +43,7 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
+implementProxyFn($getFetchFn, () => crossFetch, {replaceExisting: true})
 implementProxyFn(
   $makeProxyAgent,
   (input) => {

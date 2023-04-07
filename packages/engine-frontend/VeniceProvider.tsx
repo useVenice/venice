@@ -69,6 +69,16 @@ export function VeniceProvider<
   queryClient: Parameters<typeof trpc.Provider>[0]['queryClient']
   developerMode?: boolean
 }) {
+  // For debugging 3rd party iframes, such as Plaid / Merge / Stripe
+  React.useEffect(() => {
+    const listener = (event: MessageEvent) => {
+      console.log('[VeniceProvider] iframe window message', event.data)
+    }
+    console.log('[VeniceProvider] Listen for iframe window messages')
+    window.addEventListener('message', listener)
+    return () => window.removeEventListener('message', listener)
+  }, [])
+
   // @yenbekbay what's the way way to have a global debug confi?
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')

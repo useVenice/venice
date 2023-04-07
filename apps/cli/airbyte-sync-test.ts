@@ -5,17 +5,25 @@ import {sync} from '@usevenice/cdk-core'
 
 import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
 import readline from 'node:readline'
+import {mergeImpl} from '@usevenice/integration-merge'
 
 const srcPath = './apps/tests/__encrypted__/meta'
 const destPath = './temp'
 
 // Output sync messages to standard out
 
+// TODO: Take inspiration from airbyte-plaid-connector and make the integration
+// we are working with configurable via command line args
+
 if (process.argv[2] === 'source') {
+  console.log('source mode')
   sync({
-    source: fsProvider.sourceSync({
+    source: mergeImpl.sourceSync({
       id: 'reso_1',
-      settings: {basePath: srcPath},
+      settings: {
+        accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+      },
+      config: {apiKey: process.env['MERGE_TEST_API_KEY'] ?? ''},
       state: {},
     }),
     destination: (obs) =>
@@ -28,6 +36,7 @@ if (process.argv[2] === 'source') {
 }
 
 if (process.argv[2] === 'destination') {
+  console.log('destination mode')
   sync({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     source: new rxjs.Observable<any>((obs) => {
@@ -58,7 +67,8 @@ if (process.argv[2] === 'destination') {
   }).catch(console.error)
 }
 
-if ((process.argv[2] = 'direct')) {
+if (process.argv[2] == 'direct') {
+  console.log('direct mode')
   sync({
     source: fsProvider.sourceSync({
       id: 'reso_1',

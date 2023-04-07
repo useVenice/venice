@@ -17,7 +17,7 @@ const deleteFormSchema = z.object({
 interface DeleteConnectionDialogProps {
   institution?: ZStandard['institution'] | null
   isConnectionDeleting?: boolean
-  name?: Connection['resource']['displayName']
+  name?: Connection['displayName']
   onCancel: () => void
   onDeletionConfirmed: (options?: {deleteAssociatedData?: boolean}) => void
 }

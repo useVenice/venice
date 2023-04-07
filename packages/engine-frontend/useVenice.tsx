@@ -25,11 +25,14 @@ export const zUseVeniceOptions = z.object({
   lazyPreConnect: z.boolean().nullish(),
   /** When searching for for institution  */
   keywords: z.string().nullish(),
+  /** For developers */
+
+  enablePreconnectPrompt: z.boolean().nullish(),
 })
 
 export type UseVenice = ReturnType<typeof useVenice>
 
-export function useVenice({envName, keywords}: UseVeniceOptions) {
+export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
   const {trpc, userId, isAdmin, developerMode} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
@@ -45,7 +48,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of handling loading and error...
-  const veniceConnect = useVeniceConnect({envName})
+  const veniceConnect = useVeniceConnect({envName, ...options})
 
   return {
     userId,
@@ -75,10 +78,16 @@ interface IntegrationOptions {
   institutionId?: Id['ins']
 
   resourceId?: Id['reso']
+
+  /** TODO: Fix me... */
+  preConnectInput?: unknown
 }
 
 /** Also ledger-specific */
-export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
+export function useVeniceConnect({
+  envName,
+  ...options
+}: UseVeniceOptions): VeniceConnect {
   // We are relying on subscription to invalidate now rather than explicit invalidate...
   const {
     connectFnMapRef,
@@ -133,6 +142,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           providerByName[providerName]?.def.preConnectInput
 
         const enablePreconnectPrompt =
+          options.enablePreconnectPrompt ??
           !window.localStorage['DISABLE_PRECONNECT_PROMPT']
 
         // Do not show pre-connect dialog if we are re-connecting
@@ -140,7 +150,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           !enablePreconnectPrompt ||
           opt.resourceExternalId ||
           !preConnInputSchema
-            ? {}
+            ? opts.preConnectInput ?? {}
             : await new Promise((resolve, reject) => {
                 openDialog(
                   ({close}) => (
@@ -148,7 +158,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
                       <h2 className="grid grid-cols-[auto_1fr] items-center gap-2">
                         <SettingsIcon className="h-5 w-5 fill-venice-gray-muted" />
                         <span className="text-base text-offwhite">
-                          Plaid Connection Settings
+                          Connect parameters
                         </span>
                       </h2>
                       <ZodForm
@@ -245,6 +255,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
       envName,
       userId,
       providerByName,
+      options.enablePreconnectPrompt,
       trpcCtx.preConnect,
       trpcCtx.listConnections,
       connectFnMapRef,
