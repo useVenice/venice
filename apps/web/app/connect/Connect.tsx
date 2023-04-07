@@ -87,6 +87,7 @@ export function Connect(props: {
               category="hris"
               title="Payroll system"
               integrationId="int_merge"
+              preConnectInput={{categories: ['hris']}}
             />
           </>
         )}
@@ -124,10 +125,12 @@ interface ConnectionsColumnProps {
   integrationId?: Id['int']
   /** Could also be inferred based on category */
   title?: string
+  /** TODO: Fix me... typing and hard-coding not ideal */
+  preConnectInput?: unknown
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
-  const {connectWith, title} = props
+  const {connectWith, title, preConnectInput} = props
   const connections = props.connections.filter(
     (c) =>
       !props.category || c.institution?.categories?.includes(props.category),
@@ -146,7 +149,10 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
 
   function addNewConnection() {
     if (integrationId) {
-      void veniceConnect.connect({id: integrationId}, {connectWith})
+      void veniceConnect.connect(
+        {id: integrationId},
+        {connectWith, preConnectInput},
+      )
     }
   }
 

@@ -78,6 +78,9 @@ interface IntegrationOptions {
   institutionId?: Id['ins']
 
   resourceId?: Id['reso']
+
+  /** TODO: Fix me... */
+  preConnectInput?: unknown
 }
 
 /** Also ledger-specific */
@@ -147,7 +150,7 @@ export function useVeniceConnect({
           !enablePreconnectPrompt ||
           opt.resourceExternalId ||
           !preConnInputSchema
-            ? {}
+            ? opts.preConnectInput ?? {}
             : await new Promise((resolve, reject) => {
                 openDialog(
                   ({close}) => (
@@ -252,6 +255,7 @@ export function useVeniceConnect({
       envName,
       userId,
       providerByName,
+      options.enablePreconnectPrompt,
       trpcCtx.preConnect,
       trpcCtx.listConnections,
       connectFnMapRef,
