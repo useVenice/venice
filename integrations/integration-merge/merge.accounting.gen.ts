@@ -13490,11 +13490,11 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /** @description Get details for a linked account. */
   account_details_retrieve: {
-    /** @description Get details for a linked account. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13506,8 +13506,8 @@ export interface operations {
       };
     };
   };
+  /** @description Returns the account token for the end user with the provided public token. */
   account_token_retrieve: {
-    /** @description Returns the account token for the end user with the provided public token. */
     parameters: {
       path: {
         public_token: string;
@@ -13521,39 +13521,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Account` objects. */
   accounts_list: {
-    /** @description Returns a list of `Account` objects. */
     parameters: {
-        /** @description If provided, will only return accounts for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description If provided, will only return accounts for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "classification" | "classification,status" | "status";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "classification" | "classification,status" | "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13565,17 +13565,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates an `Account` object with the given values. */
   accounts_create: {
-    /** @description Creates an `Account` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13594,21 +13594,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `Account` object with the given `id`. */
   accounts_retrieve: {
-    /** @description Returns an `Account` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "classification" | "classification,status" | "status";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "classification" | "classification,status" | "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -13623,11 +13623,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `Account` POSTs. */
   accounts_meta_post_retrieve: {
-    /** @description Returns metadata for `Account` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13639,19 +13639,19 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `Address` object with the given `id`. */
   addresses_retrieve: {
-    /** @description Returns an `Address` object with the given `id`. */
     parameters: {
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "type";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "type";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -13666,33 +13666,33 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `AccountingAttachment` objects. */
   attachments_list: {
-    /** @description Returns a list of `AccountingAttachment` objects. */
     parameters: {
-        /** @description If provided, will only return accounting attachments for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return accounting attachments for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13704,17 +13704,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates an `AccountingAttachment` object with the given values. */
   attachments_create: {
-    /** @description Creates an `AccountingAttachment` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13733,15 +13733,15 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `AccountingAttachment` object with the given `id`. */
   attachments_retrieve: {
-    /** @description Returns an `AccountingAttachment` object with the given `id`. */
     parameters: {
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -13756,11 +13756,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `AccountingAttachment` POSTs. */
   attachments_meta_post_retrieve: {
-    /** @description Returns metadata for `AccountingAttachment` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13772,11 +13772,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of models and actions available for an account. */
   available_actions_retrieve: {
-    /** @description Returns a list of models and actions available for an account. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13788,35 +13788,35 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `BalanceSheet` objects. */
   balance_sheets_list: {
-    /** @description Returns a list of `BalanceSheet` objects. */
     parameters: {
-        /** @description If provided, will only return balance sheets for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return balance sheets for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13828,17 +13828,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `BalanceSheet` object with the given `id`. */
   balance_sheets_retrieve: {
-    /** @description Returns a `BalanceSheet` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -13853,35 +13853,35 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `CashFlowStatement` objects. */
   cash_flow_statements_list: {
-    /** @description Returns a list of `CashFlowStatement` objects. */
     parameters: {
-        /** @description If provided, will only return cash flow statements for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return cash flow statements for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13893,17 +13893,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `CashFlowStatement` object with the given `id`. */
   cash_flow_statements_retrieve: {
-    /** @description Returns a `CashFlowStatement` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -13918,11 +13918,11 @@ export interface operations {
       };
     };
   };
+  /** @description Fetch the configuration of what data is saved by Merge when syncing. Common model scopes are set as a default across all linked accounts, but can be updated to have greater granularity per account. */
   common_model_scopes_retrieve: {
-    /** @description Fetch the configuration of what data is saved by Merge when syncing. Common model scopes are set as a default across all linked accounts, but can be updated to have greater granularity per account. */
     parameters: {
-        /** @description ID of specific linked account to fetch */
       query: {
+        /** @description ID of specific linked account to fetch */
         linked_account_id?: string;
       };
     };
@@ -13934,11 +13934,11 @@ export interface operations {
       };
     };
   };
+  /** @description Update the configuration of what data is saved by Merge when syncing. Common model scopes are set as a default across all linked accounts, but can be updated to have greater granularity per account. */
   common_model_scopes_create: {
-    /** @description Update the configuration of what data is saved by Merge when syncing. Common model scopes are set as a default across all linked accounts, but can be updated to have greater granularity per account. */
     parameters: {
-        /** @description ID of specific linked account to fetch */
       query: {
+        /** @description ID of specific linked account to fetch */
         linked_account_id?: string;
       };
     };
@@ -13957,33 +13957,33 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `CompanyInfo` objects. */
   company_info_list: {
-    /** @description Returns a list of `CompanyInfo` objects. */
     parameters: {
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "addresses" | "addresses,phone_numbers" | "phone_numbers";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -13995,17 +13995,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `CompanyInfo` object with the given `id`. */
   company_info_retrieve: {
-    /** @description Returns a `CompanyInfo` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "addresses" | "addresses,phone_numbers" | "phone_numbers";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14020,39 +14020,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Contact` objects. */
   contacts_list: {
-    /** @description Returns a list of `Contact` objects. */
     parameters: {
-        /** @description If provided, will only return contacts for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description If provided, will only return contacts for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "addresses" | "addresses,company" | "addresses,phone_numbers" | "addresses,phone_numbers,company" | "company" | "phone_numbers" | "phone_numbers,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14064,17 +14064,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a `Contact` object with the given values. */
   contacts_create: {
-    /** @description Creates a `Contact` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14093,21 +14093,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `Contact` object with the given `id`. */
   contacts_retrieve: {
-    /** @description Returns a `Contact` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "addresses" | "addresses,company" | "addresses,phone_numbers" | "addresses,phone_numbers,company" | "company" | "phone_numbers" | "phone_numbers,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14122,11 +14122,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `Contact` POSTs. */
   contacts_meta_post_retrieve: {
-    /** @description Returns metadata for `Contact` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14138,43 +14138,43 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `CreditNote` objects. */
   credit_notes_list: {
-    /** @description Returns a list of `CreditNote` objects. */
     parameters: {
-        /** @description If provided, will only return credit notes for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return credit notes for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "line_items" | "payments" | "payments,line_items";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status" | "status,type" | "type";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status" | "status,type" | "type";
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14186,21 +14186,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `CreditNote` object with the given `id`. */
   credit_notes_retrieve: {
-    /** @description Returns a `CreditNote` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "line_items" | "payments" | "payments,line_items";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status" | "status,type" | "type";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status" | "status,type" | "type";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14215,11 +14215,11 @@ export interface operations {
       };
     };
   };
+  /** @description Delete a linked account. */
   delete_account_create: {
-    /** @description Delete a linked account. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14228,39 +14228,39 @@ export interface operations {
       200: never;
     };
   };
+  /** @description Returns a list of `Expense` objects. */
   expenses_list: {
-    /** @description Returns a list of `Expense` objects. */
     parameters: {
-        /** @description If provided, will only return expenses for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return expenses for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "account,company" | "account,contact" | "account,contact,company" | "company" | "contact" | "contact,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14272,17 +14272,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates an `Expense` object with the given values. */
   expenses_create: {
-    /** @description Creates an `Expense` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14301,17 +14301,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `Expense` object with the given `id`. */
   expenses_retrieve: {
-    /** @description Returns an `Expense` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "account,company" | "account,contact" | "account,contact,company" | "company" | "contact" | "contact,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14326,11 +14326,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `Expense` POSTs. */
   expenses_meta_post_retrieve: {
-    /** @description Returns metadata for `Expense` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14342,8 +14342,8 @@ export interface operations {
       };
     };
   };
+  /** @description Create a remote key. */
   generate_key_create: {
-    /** @description Create a remote key. */
     requestBody: {
       content: {
         "application/json": components["schemas"]["GenerateRemoteKeyRequest"];
@@ -14359,35 +14359,35 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `IncomeStatement` objects. */
   income_statements_list: {
-    /** @description Returns a list of `IncomeStatement` objects. */
     parameters: {
-        /** @description If provided, will only return income statements for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return income statements for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14399,17 +14399,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `IncomeStatement` object with the given `id`. */
   income_statements_retrieve: {
-    /** @description Returns an `IncomeStatement` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14424,52 +14424,52 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Invoice` objects. */
   invoices_list: {
-    /** @description Returns a list of `Invoice` objects. */
     parameters: {
+      query: {
         /** @description If provided, will only return invoices for this company. */
+        company_id?: string;
         /** @description If provided, will only return invoices for this contact. */
+        contact_id?: string;
         /** @description If provided, will only return objects created after this datetime. */
+        created_after?: string;
         /** @description If provided, will only return objects created before this datetime. */
+        created_before?: string;
         /** @description The pagination cursor value. */
+        cursor?: string;
         /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
+        expand?: "company" | "contact" | "contact,company" | "line_items" | "line_items,company" | "line_items,contact" | "line_items,contact,company" | "payments" | "payments,company" | "payments,contact" | "payments,contact,company" | "payments,line_items" | "payments,line_items,company" | "payments,line_items,contact" | "payments,line_items,contact,company";
         /** @description Whether to include data that was marked as deleted by third party webhooks. */
+        include_deleted_data?: boolean;
         /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
+        include_remote_data?: boolean;
         /** @description If provided, will only return objects created after this datetime. */
+        issue_date_after?: string | null;
         /** @description If provided, will only return objects created before this datetime. */
+        issue_date_before?: string | null;
         /** @description If provided, will only return objects modified after this datetime. */
+        modified_after?: string;
         /** @description If provided, will only return objects modified before this datetime. */
+        modified_before?: string;
         /** @description Number of results to return per page. */
+        page_size?: number;
         /** @description Deprecated. Use show_enum_origins. */
+        remote_fields?: "type";
         /** @description The API provider's ID for the given object. */
+        remote_id?: string | null;
         /** @description Which fields should be returned in non-normalized form. */
+        show_enum_origins?: "type";
         /**
          * @description If provided, will only return Invoices with this type
          * 
          * * `ACCOUNTS_RECEIVABLE` - ACCOUNTS_RECEIVABLE
          * * `ACCOUNTS_PAYABLE` - ACCOUNTS_PAYABLE
          */
-      query: {
-        company_id?: string;
-        contact_id?: string;
-        created_after?: string;
-        created_before?: string;
-        cursor?: string;
-        expand?: "company" | "contact" | "contact,company" | "line_items" | "line_items,company" | "line_items,contact" | "line_items,contact,company" | "payments" | "payments,company" | "payments,contact" | "payments,contact,company" | "payments,line_items" | "payments,line_items,company" | "payments,line_items,contact" | "payments,line_items,contact,company";
-        include_deleted_data?: boolean;
-        include_remote_data?: boolean;
-        issue_date_after?: string | null;
-        issue_date_before?: string | null;
-        modified_after?: string;
-        modified_before?: string;
-        page_size?: number;
-        remote_fields?: "type";
-        remote_id?: string | null;
-        show_enum_origins?: "type";
         type?: "ACCOUNTS_PAYABLE" | "ACCOUNTS_RECEIVABLE" | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14481,17 +14481,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates an `Invoice` object with the given values. */
   invoices_create: {
-    /** @description Creates an `Invoice` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14510,21 +14510,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `Invoice` object with the given `id`. */
   invoices_retrieve: {
-    /** @description Returns an `Invoice` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "contact" | "contact,company" | "line_items" | "line_items,company" | "line_items,contact" | "line_items,contact,company" | "payments" | "payments,company" | "payments,contact" | "payments,contact,company" | "payments,line_items" | "payments,line_items,company" | "payments,line_items,contact" | "payments,line_items,contact,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "type";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "type";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14539,11 +14539,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `Invoice` POSTs. */
   invoices_meta_post_retrieve: {
-    /** @description Returns metadata for `Invoice` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14555,18 +14555,31 @@ export interface operations {
       };
     };
   };
+  /** @description Gets issues. */
   issues_list: {
-    /** @description Gets issues. */
     parameters: {
+      query: {
+        account_token?: string;
         /** @description The pagination cursor value. */
+        cursor?: string;
         /** @description If included, will only include issues whose most recent action occurred before this time */
+        end_date?: string;
+        end_user_organization_name?: string;
         /** @description If provided, will only return issues whose first incident time was after this datetime. */
+        first_incident_time_after?: string | null;
         /** @description If provided, will only return issues whose first incident time was before this datetime. */
+        first_incident_time_before?: string | null;
         /** @description If True, will include muted issues */
+        include_muted?: string;
+        integration_name?: string;
         /** @description If provided, will only return issues whose first incident time was after this datetime. */
+        last_incident_time_after?: string | null;
         /** @description If provided, will only return issues whose first incident time was before this datetime. */
+        last_incident_time_before?: string | null;
         /** @description Number of results to return per page. */
+        page_size?: number;
         /** @description If included, will only include issues whose most recent action occurred after this time */
+        start_date?: string;
         /**
          * @description * `ONGOING` - ONGOING
          * * `RESOLVED` - RESOLVED
@@ -14574,19 +14587,6 @@ export interface operations {
          * * `ONGOING` - ONGOING
          * * `RESOLVED` - RESOLVED
          */
-      query: {
-        account_token?: string;
-        cursor?: string;
-        end_date?: string;
-        end_user_organization_name?: string;
-        first_incident_time_after?: string | null;
-        first_incident_time_before?: string | null;
-        include_muted?: string;
-        integration_name?: string;
-        last_incident_time_after?: string | null;
-        last_incident_time_before?: string | null;
-        page_size?: number;
-        start_date?: string;
         status?: "ONGOING" | "RESOLVED";
       };
     };
@@ -14598,8 +14598,8 @@ export interface operations {
       };
     };
   };
+  /** @description Get a specific issue. */
   issues_retrieve: {
-    /** @description Get a specific issue. */
     parameters: {
       path: {
         id: string;
@@ -14613,39 +14613,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Item` objects. */
   items_list: {
-    /** @description Returns a list of `Item` objects. */
     parameters: {
-        /** @description If provided, will only return items for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description If provided, will only return items for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "purchase_account" | "purchase_account,company" | "purchase_account,sales_account" | "purchase_account,sales_account,company" | "sales_account" | "sales_account,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14657,21 +14657,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `Item` object with the given `id`. */
   items_retrieve: {
-    /** @description Returns an `Item` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "purchase_account" | "purchase_account,company" | "purchase_account,sales_account" | "purchase_account,sales_account,company" | "sales_account" | "sales_account,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14686,39 +14686,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `JournalEntry` objects. */
   journal_entries_list: {
-    /** @description Returns a list of `JournalEntry` objects. */
     parameters: {
-        /** @description If provided, will only return journal entries for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return journal entries for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "lines" | "lines,company" | "lines,payments" | "lines,payments,company" | "payments" | "payments,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14730,17 +14730,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a `JournalEntry` object with the given values. */
   journal_entries_create: {
-    /** @description Creates a `JournalEntry` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14759,17 +14759,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `JournalEntry` object with the given `id`. */
   journal_entries_retrieve: {
-    /** @description Returns a `JournalEntry` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "lines" | "lines,company" | "lines,payments" | "lines,payments,company" | "payments" | "payments,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14784,11 +14784,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `JournalEntry` POSTs. */
   journal_entries_meta_post_retrieve: {
-    /** @description Returns metadata for `JournalEntry` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14800,8 +14800,8 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a link token to be used when linking a new end user. */
   link_token_create: {
-    /** @description Creates a link token to be used when linking a new end user. */
     requestBody: {
       content: {
         "application/json": components["schemas"]["EndUserDetailsRequest"];
@@ -14817,9 +14817,10 @@ export interface operations {
       };
     };
   };
+  /** @description List linked accounts for your organization. */
   linked_accounts_list: {
-    /** @description List linked accounts for your organization. */
     parameters: {
+      query: {
         /**
          * @description * `hris` - hris
          * * `ats` - ats
@@ -14837,30 +14838,29 @@ export interface operations {
          * * `mktg` - mktg
          * * `filestorage` - filestorage
          */
-        /** @description The pagination cursor value. */
-        /** @description If provided, will only return linked accounts associated with the given email address. */
-        /** @description If provided, will only return linked accounts associated with the given organization name. */
-        /** @description If provided, will only return linked accounts associated with the given origin ID. */
-        /** @description Comma-separated list of EndUser origin IDs, making it possible to specify multiple EndUsers at once. */
-        /** @description Comma-separated list of LinkedAccount IDs, making it possible to specify multiple LinkedAccounts at once. */
-        /** @description If `true`, will include complete production duplicates of the account specified by the `id` query parameter in the response. `id` must be for a complete production linked account. */
-        /** @description If provided, will only return linked accounts associated with the given integration name. */
-        /** @description If included, will only include test linked accounts. If not included, will only include non-test linked accounts. */
-        /** @description Number of results to return per page. */
-        /** @description Filter by status. Options: `COMPLETE`, `INCOMPLETE`, `RELINK_NEEDED` */
-      query: {
         category?: "accounting" | "ats" | "crm" | "filestorage" | "hris" | "mktg" | "ticketing" | null;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description If provided, will only return linked accounts associated with the given email address. */
         end_user_email_address?: string;
+        /** @description If provided, will only return linked accounts associated with the given organization name. */
         end_user_organization_name?: string;
+        /** @description If provided, will only return linked accounts associated with the given origin ID. */
         end_user_origin_id?: string;
+        /** @description Comma-separated list of EndUser origin IDs, making it possible to specify multiple EndUsers at once. */
         end_user_origin_ids?: string;
         id?: string;
+        /** @description Comma-separated list of LinkedAccount IDs, making it possible to specify multiple LinkedAccounts at once. */
         ids?: string;
+        /** @description If `true`, will include complete production duplicates of the account specified by the `id` query parameter in the response. `id` must be for a complete production linked account. */
         include_duplicates?: boolean;
+        /** @description If provided, will only return linked accounts associated with the given integration name. */
         integration_name?: string;
+        /** @description If included, will only include test linked accounts. If not included, will only include non-test linked accounts. */
         is_test_account?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by status. Options: `COMPLETE`, `INCOMPLETE`, `RELINK_NEEDED` */
         status?: string;
       };
     };
@@ -14872,11 +14872,11 @@ export interface operations {
       };
     };
   };
+  /** @description Pull data from an endpoint not currently supported by Merge. */
   passthrough_create: {
-    /** @description Pull data from an endpoint not currently supported by Merge. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14895,43 +14895,43 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Payment` objects. */
   payments_list: {
-    /** @description Returns a list of `Payment` objects. */
     parameters: {
-        /** @description If provided, will only return payments for this account. */
-        /** @description If provided, will only return payments for this company. */
-        /** @description If provided, will only return payments for this contact. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return payments for this account. */
         account_id?: string;
+        /** @description If provided, will only return payments for this company. */
         company_id?: string;
+        /** @description If provided, will only return payments for this contact. */
         contact_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "account,company" | "company" | "contact" | "contact,account" | "contact,account,company" | "contact,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14943,17 +14943,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a `Payment` object with the given values. */
   payments_create: {
-    /** @description Creates a `Payment` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -14972,17 +14972,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `Payment` object with the given `id`. */
   payments_retrieve: {
-    /** @description Returns a `Payment` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "account,company" | "company" | "contact" | "contact,account" | "contact,account,company" | "contact,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -14997,11 +14997,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `Payment` POSTs. */
   payments_meta_post_retrieve: {
-    /** @description Returns metadata for `Payment` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15013,15 +15013,15 @@ export interface operations {
       };
     };
   };
+  /** @description Returns an `AccountingPhoneNumber` object with the given `id`. */
   phone_numbers_retrieve: {
-    /** @description Returns an `AccountingPhoneNumber` object with the given `id`. */
     parameters: {
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15036,43 +15036,43 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `PurchaseOrder` objects. */
   purchase_orders_list: {
-    /** @description Returns a list of `PurchaseOrder` objects. */
     parameters: {
-        /** @description If provided, will only return purchase orders for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description If provided, will only return purchase orders for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "delivery_address" | "delivery_address,company" | "delivery_address,vendor" | "delivery_address,vendor,company" | "line_items" | "line_items,company" | "line_items,delivery_address" | "line_items,delivery_address,company" | "line_items,delivery_address,vendor" | "line_items,delivery_address,vendor,company" | "line_items,vendor" | "line_items,vendor,company" | "vendor" | "vendor,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects created after this datetime. */
         issue_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         issue_date_before?: string | null;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15084,17 +15084,17 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a `PurchaseOrder` object with the given values. */
   purchase_orders_create: {
-    /** @description Creates a `PurchaseOrder` object with the given values. */
     parameters: {
-        /** @description Whether to include debug fields (such as log file links) in the response. */
-        /** @description Whether or not third-party updates should be run asynchronously. */
       query: {
+        /** @description Whether to include debug fields (such as log file links) in the response. */
         is_debug_mode?: boolean;
+        /** @description Whether or not third-party updates should be run asynchronously. */
         run_async?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15113,21 +15113,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `PurchaseOrder` object with the given `id`. */
   purchase_orders_retrieve: {
-    /** @description Returns a `PurchaseOrder` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "delivery_address" | "delivery_address,company" | "delivery_address,vendor" | "delivery_address,vendor,company" | "line_items" | "line_items,company" | "line_items,delivery_address" | "line_items,delivery_address,company" | "line_items,delivery_address,vendor" | "line_items,delivery_address,vendor,company" | "line_items,vendor" | "line_items,vendor,company" | "vendor" | "vendor,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15142,11 +15142,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns metadata for `PurchaseOrder` POSTs. */
   purchase_orders_meta_post_retrieve: {
-    /** @description Returns metadata for `PurchaseOrder` POSTs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15158,8 +15158,8 @@ export interface operations {
       };
     };
   };
+  /** @description Exchange remote keys. */
   regenerate_key_create: {
-    /** @description Exchange remote keys. */
     requestBody: {
       content: {
         "application/json": components["schemas"]["RemoteKeyForRegenerationRequest"];
@@ -15175,11 +15175,11 @@ export interface operations {
       };
     };
   };
+  /** @description Get a linked account's selective syncs. */
   selective_sync_configurations_list: {
-    /** @description Get a linked account's selective syncs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15191,11 +15191,11 @@ export interface operations {
       };
     };
   };
+  /** @description Replace a linked account's selective syncs. */
   selective_sync_configurations_update: {
-    /** @description Replace a linked account's selective syncs. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15212,18 +15212,18 @@ export interface operations {
       };
     };
   };
+  /** @description Get metadata for the conditions available to a linked account. */
   selective_sync_meta_list: {
-    /** @description Get metadata for the conditions available to a linked account. */
     parameters: {
-        /** @description The pagination cursor value. */
-        /** @description Number of results to return per page. */
       query: {
         common_model?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15235,17 +15235,17 @@ export interface operations {
       };
     };
   };
+  /** @description Get syncing status. Possible values: `DISABLED`, `DONE`, `FAILED`, `PAUSED`, `SYNCING` */
   sync_status_list: {
-    /** @description Get syncing status. Possible values: `DISABLED`, `DONE`, `FAILED`, `PAUSED`, `SYNCING` */
     parameters: {
-        /** @description The pagination cursor value. */
-        /** @description Number of results to return per page. */
       query: {
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15257,11 +15257,11 @@ export interface operations {
       };
     };
   };
+  /** @description Force re-sync of all models. This is available for all organizations via the dashboard. Force re-sync is also available for monthly and quarterly sync frequency customers on the Core, Professional, or Enterprise plans. */
   sync_status_resync_create: {
-    /** @description Force re-sync of all models. This is available for all organizations via the dashboard. Force re-sync is also available for monthly and quarterly sync frequency customers on the Core, Professional, or Enterprise plans. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15273,35 +15273,35 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `TaxRate` objects. */
   tax_rates_list: {
-    /** @description Returns a list of `TaxRate` objects. */
     parameters: {
-        /** @description If provided, will only return tax rates for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
       query: {
+        /** @description If provided, will only return tax rates for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15313,17 +15313,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `TaxRate` object with the given `id`. */
   tax_rates_retrieve: {
-    /** @description Returns a `TaxRate` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15338,39 +15338,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `TrackingCategory` objects. */
   tracking_categories_list: {
-    /** @description Returns a list of `TrackingCategory` objects. */
     parameters: {
-        /** @description If provided, will only return tracking categories for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description The API provider's ID for the given object. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description If provided, will only return tracking categories for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15382,21 +15382,21 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `TrackingCategory` object with the given `id`. */
   tracking_categories_retrieve: {
-    /** @description Returns a `TrackingCategory` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description Deprecated. Use show_enum_origins. */
-        /** @description Which fields should be returned in non-normalized form. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description Deprecated. Use show_enum_origins. */
         remote_fields?: "status";
+        /** @description Which fields should be returned in non-normalized form. */
         show_enum_origins?: "status";
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15411,39 +15411,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `Transaction` objects. */
   transactions_list: {
-    /** @description Returns a list of `Transaction` objects. */
     parameters: {
-        /** @description If provided, will only return accounting transactions for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return accounting transactions for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "contact" | "contact,account" | "line_items" | "line_items,account" | "line_items,contact" | "line_items,contact,account";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15455,17 +15455,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `Transaction` object with the given `id`. */
   transactions_retrieve: {
-    /** @description Returns a `Transaction` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "account" | "contact" | "contact,account" | "line_items" | "line_items,account" | "line_items,contact" | "line_items,contact,account";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15480,39 +15480,39 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `VendorCredit` objects. */
   vendor_credits_list: {
-    /** @description Returns a list of `VendorCredit` objects. */
     parameters: {
-        /** @description If provided, will only return vendor credits for this company. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
-        /** @description The pagination cursor value. */
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include data that was marked as deleted by third party webhooks. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
-        /** @description If provided, will only return objects modified after this datetime. */
-        /** @description If provided, will only return objects modified before this datetime. */
-        /** @description Number of results to return per page. */
-        /** @description The API provider's ID for the given object. */
-        /** @description If provided, will only return objects created after this datetime. */
-        /** @description If provided, will only return objects created before this datetime. */
       query: {
+        /** @description If provided, will only return vendor credits for this company. */
         company_id?: string;
+        /** @description If provided, will only return objects created after this datetime. */
         created_after?: string;
+        /** @description If provided, will only return objects created before this datetime. */
         created_before?: string;
+        /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "lines" | "lines,company" | "lines,vendor" | "lines,vendor,company" | "vendor" | "vendor,company";
+        /** @description Whether to include data that was marked as deleted by third party webhooks. */
         include_deleted_data?: boolean;
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
+        /** @description If provided, will only return objects modified after this datetime. */
         modified_after?: string;
+        /** @description If provided, will only return objects modified before this datetime. */
         modified_before?: string;
+        /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description The API provider's ID for the given object. */
         remote_id?: string | null;
+        /** @description If provided, will only return objects created after this datetime. */
         transaction_date_after?: string | null;
+        /** @description If provided, will only return objects created before this datetime. */
         transaction_date_before?: string | null;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15524,17 +15524,17 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a `VendorCredit` object with the given `id`. */
   vendor_credits_retrieve: {
-    /** @description Returns a `VendorCredit` object with the given `id`. */
     parameters: {
-        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
-        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
       query: {
+        /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces. */
         expand?: "company" | "lines" | "lines,company" | "lines,vendor" | "lines,vendor,company" | "vendor" | "vendor,company";
+        /** @description Whether to include the original data Merge fetched from the third-party to produce these models. */
         include_remote_data?: boolean;
       };
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
       path: {
@@ -15549,11 +15549,11 @@ export interface operations {
       };
     };
   };
+  /** @description Returns a list of `WebhookReceiver` objects. */
   webhook_receivers_list: {
-    /** @description Returns a list of `WebhookReceiver` objects. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
@@ -15565,11 +15565,11 @@ export interface operations {
       };
     };
   };
+  /** @description Creates a `WebhookReceiver` object with the given values. */
   webhook_receivers_create: {
-    /** @description Creates a `WebhookReceiver` object with the given values. */
     parameters: {
-        /** @description Token identifying the end user. */
       header: {
+        /** @description Token identifying the end user. */
         "X-Account-Token": string;
       };
     };
