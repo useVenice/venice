@@ -29,8 +29,9 @@ export default function Page() {
   return (
     <PageLayout title="Integrations">
       <PageHeader title={['Integrations']} />
-      <div className="flex gap-8 p-10">
+      <div className="flex flex-wrap gap-8 p-10">
         <PlaidCard />
+        <MergeCard />
         <QuickbooksCard />
         <NetSuiteCard />
         <StripeCard />
@@ -49,6 +50,26 @@ function PlaidCard() {
       </span>
       <div className="mb-2 flex items-center justify-center">
         <Image width={150} height={70} src="/plaidLogo.png" alt="Plaid Logo" />
+      </div>
+      <Button asChild className="disabled mb-1 opacity-30">
+        <div>
+          <SettingsIcon className="h-6 w-6 fill-current pr-2 text-gray" />
+          Settings
+        </div>
+      </Button>
+    </Card>
+  )
+}
+
+/* MergeCard */
+function MergeCard() {
+  return (
+    <Card className="flex w-40 flex-col gap-4 p-2">
+      <span className="mt-2 text-center font-mono text-base text-offwhite">
+        Merge
+      </span>
+      <div className="mb-2 flex items-center justify-center">
+        <Image width={150} height={70} src="/mergeLogo.png" alt="Merge Logo" />
       </div>
       <Button asChild className="disabled mb-1 opacity-30">
         <div>
