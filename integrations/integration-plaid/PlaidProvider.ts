@@ -258,7 +258,10 @@ export const plaidProvider = makeSyncProvider({
     return makePlaidClient(config)
       .fromEnv(
         input.envName ??
-          (process.env.NODE_ENV === 'development' ? 'sandbox' : 'production'),
+          // TODO: Fix me
+          (process.env['NEXT_PUBLIC_VERCEL_ENV'] !== 'production'
+            ? 'sandbox'
+            : 'production'),
       )
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
