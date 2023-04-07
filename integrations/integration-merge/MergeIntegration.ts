@@ -59,6 +59,9 @@ export const mergeImpl = {
       name: ins.name,
       logoUrl: ins.square_image,
       envName: undefined,
+      categories: ins.categories.filter(
+        (c): c is 'accounting' | 'hris' => c === 'accounting' || c === 'hris',
+      ),
     }),
     resource() {
       return {

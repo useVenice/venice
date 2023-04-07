@@ -64,7 +64,7 @@ export const zBackendEnv = zEnvVars({
 export {plaidProvider, fsProvider}
 
 export const DOCUMENTED_PROVIDERS = [
-  // plaidProvider,
+  plaidProvider,
   mergeImpl as unknown as typeof plaidProvider,
 ] as const
 

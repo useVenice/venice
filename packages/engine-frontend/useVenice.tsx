@@ -25,11 +25,14 @@ export const zUseVeniceOptions = z.object({
   lazyPreConnect: z.boolean().nullish(),
   /** When searching for for institution  */
   keywords: z.string().nullish(),
+  /** For developers */
+
+  enablePreconnectPrompt: z.boolean().nullish(),
 })
 
 export type UseVenice = ReturnType<typeof useVenice>
 
-export function useVenice({envName, keywords}: UseVeniceOptions) {
+export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
   const {trpc, userId, isAdmin, developerMode} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
@@ -45,7 +48,7 @@ export function useVenice({envName, keywords}: UseVeniceOptions) {
 
   // Connect should return a shape similar to client.mutation such that
   // consumers can use the same pattern of handling loading and error...
-  const veniceConnect = useVeniceConnect({envName})
+  const veniceConnect = useVeniceConnect({envName, ...options})
 
   return {
     userId,
@@ -78,7 +81,10 @@ interface IntegrationOptions {
 }
 
 /** Also ledger-specific */
-export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
+export function useVeniceConnect({
+  envName,
+  ...options
+}: UseVeniceOptions): VeniceConnect {
   // We are relying on subscription to invalidate now rather than explicit invalidate...
   const {
     connectFnMapRef,
@@ -133,6 +139,7 @@ export function useVeniceConnect({envName}: UseVeniceOptions): VeniceConnect {
           providerByName[providerName]?.def.preConnectInput
 
         const enablePreconnectPrompt =
+          options.enablePreconnectPrompt ??
           !window.localStorage['DISABLE_PRECONNECT_PROMPT']
 
         // Do not show pre-connect dialog if we are re-connecting

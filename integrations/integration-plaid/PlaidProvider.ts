@@ -209,6 +209,7 @@ export const plaidProvider = makeSyncProvider({
       logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,
       envName: undefined,
+      categories: ['banking'],
     }),
     resource: (settings) => {
       // TODO: Unify item.error and webhookItemError into a single field
