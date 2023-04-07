@@ -16,7 +16,7 @@ export default function AdminAuthScreen() {
   }
 
   return (
-    <PageLayout title="Login" auth="none">
+    <PageLayout title="Login" auth={null}>
       <Container className="min-h-screen justify-center">
         <div className="mx-auto grid w-80 grid-cols-1">
           <Image
