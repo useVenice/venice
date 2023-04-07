@@ -167,7 +167,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             alt="" // decorative image
             aria-hidden="true"
           />
-          <span className="text-sm uppercase">{title ?? 'Connections'}</span>
+          <span className="text-xl uppercase">{title ?? 'Connections'}</span>
         </h2>
         {connections.length > 0 && (
           <button

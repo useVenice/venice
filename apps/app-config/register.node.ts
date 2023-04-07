@@ -43,7 +43,7 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
-implementProxyFn($getFetchFn, () => crossFetch)
+implementProxyFn($getFetchFn, () => crossFetch, {replaceExisting: true})
 implementProxyFn(
   $makeProxyAgent,
   (input) => {
