@@ -447,6 +447,9 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
+      '@usevenice/connect':
+        specifier: workspace:*
+        version: link:../../packages/connect
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -1264,6 +1267,15 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
+
+  packages/connect:
+    devDependencies:
+      '@types/react':
+        specifier: 18.0.27
+        version: 18.0.27
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
 
   packages/engine-backend:
     dependencies:

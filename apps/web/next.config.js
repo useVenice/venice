@@ -43,6 +43,7 @@ const nextConfig = {
     path.resolve(__dirname, '../../packages/standard'),
     path.resolve(__dirname, '../../packages/ui'),
     path.resolve(__dirname, '../../packages/util'),
+    path.resolve(__dirname, '../../packages/connect'),
   ],
   env: {
     NEXT_PUBLIC_PORT: process.env['PORT'] ?? '',

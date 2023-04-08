@@ -25,6 +25,10 @@ export const metadata = {
  */
 export const dynamic = 'force-dynamic'
 
+// TODO: Allow page to optionally load without token for performance then add token async
+// Perhaps it would even be an advantage to have the page simply be static?
+// Though that would result in waterfall loading of integrations
+
 /** https://beta.nextjs.org/docs/api-reference/file-conventions/page#searchparams-optional */
 export default async function ConnectPage({
   searchParams,
