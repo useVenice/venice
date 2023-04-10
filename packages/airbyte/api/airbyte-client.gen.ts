@@ -1,4 +1,5 @@
-import {makeApi, Zodios, type ZodiosOptions} from '@zodios/core'
+import {makeApi} from '@zodios/core'
+import {Zodios} from '@zodios/fetch'
 import {z} from 'zod'
 
 const NotificationType = z.enum(['slack', 'customerio'])
@@ -159,7 +160,7 @@ const OAuth2Specification = z.object({
 })
 const AuthSpecification = z
   .object({
-    auth_type: z.enum(['oauth2.0']),
+    auth_type: z.literal('oauth2.0'),
     oauth2Specification: OAuth2Specification,
   })
   .partial()
@@ -641,7 +642,7 @@ const AttemptRead = z.object({
 const AttemptInfoRead = z.object({attempt: AttemptRead, logs: LogRead})
 const JobInfoRead = z.object({job: JobRead, attempts: z.array(AttemptInfoRead)})
 const OperatorType = z.enum(['normalization', 'dbt', 'webhook'])
-const OperatorNormalization = z.object({option: z.enum(['basic'])}).partial()
+const OperatorNormalization = z.object({option: z.literal('basic')}).partial()
 const OperatorDbt = z.object({
   gitRepoUrl: z.string(),
   gitRepoBranch: z.string().optional(),
@@ -651,7 +652,7 @@ const OperatorDbt = z.object({
 const OperatorWebhook = z
   .object({
     webhookConfigId: z.string().uuid(),
-    webhookType: z.enum(['dbtCloud']),
+    webhookType: z.literal('dbtCloud'),
     dbtCloud: z.object({accountId: z.number().int(), jobId: z.number().int()}),
     executionUrl: z.string(),
     executionBody: z.string(),
@@ -3182,6 +3183,6 @@ containing the updated stream needs to be sent.
 
 export const api = new Zodios(endpoints)
 
-export function createApiClient(baseUrl: string, options?: ZodiosOptions) {
+export function createApiClient(baseUrl: string, options?: ConstructorParameters<typeof Zodios>[2]) {
   return new Zodios(baseUrl, endpoints, options)
 }
