@@ -20,7 +20,7 @@ export const makeAirbyteMetaService = z
     const service = makePostgresMetaService({databaseUrl: cfg.postgresUrl})
 
     const client = createApiClient(cfg.apiUrl, {
-      axiosConfig: {auth: cfg.auth},
+      // axiosConfig: {auth: cfg.auth}, // TODO: Fix me after zodios v11 is released
     })
 
     return {
@@ -32,7 +32,7 @@ export const makeAirbyteMetaService = z
           list: () =>
             client
               .post('/v1/connections/list', {
-                workspaceId: cfg._temp_workspaceId,
+                // workspaceId: cfg._temp_workspaceId,  // TODO: Fix me after zodios v11 is released
               })
               .then((res) => res as any),
         },
