@@ -6,6 +6,7 @@ import {
   DeleteIcon,
   EditIcon,
   SyncIcon,
+  CopyTextIcon,
 } from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
@@ -19,6 +20,7 @@ import {ResourceCard} from '../../ResourceCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 import {DeleteConnectionDialog} from './DeleteConnectionDialog'
 import {EditingDisplayName} from './EditingDisplayName'
+import {copyToClipboard} from '../../../contexts/common-contexts'
 
 export interface ConnectionCardProps {
   connection: Connection
@@ -122,13 +124,13 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
             <ActionMenu>
               {/* This is not working... */}
-              {/* <ActionMenuItem
-                icon={CopyIcon}
+              <ActionMenuItem
+                icon={CopyTextIcon}
                 label="Copy Id"
                 onClick={() => {
                   void copyToClipboard(resourceId)
                 }}
-              /> */}
+              />
               <ActionMenuItem
                 icon={EditIcon}
                 label="Rename"
