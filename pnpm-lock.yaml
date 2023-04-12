@@ -308,6 +308,9 @@ importers:
       '@usevenice/integration-expensify':
         specifier: workspace:*
         version: link:../../integrations/integration-expensify
+      '@usevenice/integration-heron':
+        specifier: workspace:*
+        version: link:../../integrations/integration-heron
       '@usevenice/integration-lunchmoney':
         specifier: workspace:*
         version: link:../../integrations/integration-lunchmoney
