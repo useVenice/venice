@@ -22,6 +22,7 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,(standard-> 'postingsMap')::graphql_json as splits -- keep type as jsonb rather than turn into string
 	,external :: graphql_json
 	,ledger_resource_id
+	,provider_name
 	,updated_at
 	,created_at
 FROM
@@ -56,6 +57,7 @@ CREATE VIEW account WITH (security_invoker) AS SELECT
 	,(standard#> '{informationalBalances,available,quantity}') :: double precision as available_balance
 	,external :: graphql_json
 	,ledger_resource_id
+	,provider_name
 	,updated_at
 	,created_at
 FROM
