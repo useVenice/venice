@@ -29,7 +29,11 @@ export interface HttpRequestOptions {
 
 export type HttpClientOptions = RequestInit & {
   baseUrl: string
-  bearerToken?: string
+  auth?: {
+    bearerToken?: string
+    basic?: {username: string; password: string}
+  }
+
   fetch?: typeof fetch
   URL?: typeof URL
 }
@@ -48,7 +52,7 @@ export function makeHttpClient(options: HttpClientOptions) {
     fetch = $getFetchFn() ?? globalThis.fetch,
     URL = globalThis.URL,
     baseUrl,
-    bearerToken,
+    auth,
     ...defaults
   } = options
 
@@ -67,7 +71,12 @@ export function makeHttpClient(options: HttpClientOptions) {
     )
     const headers = {
       'Content-Type': 'application/json',
-      ...(bearerToken && {Authorization: `Bearer ${bearerToken}`}),
+      ...(auth?.basic && {
+        Authorization: `Basic ${btoa(
+          `${auth.basic.username}:${auth.basic.password}`,
+        )}`,
+      }),
+      ...(auth?.bearerToken && {Authorization: `Bearer ${auth.bearerToken}`}),
       ...defaults.headers,
       ...input.header,
     } as Record<string, string>

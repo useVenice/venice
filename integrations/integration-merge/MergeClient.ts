@@ -59,7 +59,7 @@ export function makeMergeClient(opts: {apiKey: string; accountToken?: string}) {
   const baseUrl = 'https://api.merge.dev/api'
   const accounting = makeOpenApiClient<InfoFromPaths<paths>>({
     baseUrl: baseUrl + '/accounting/v1',
-    bearerToken: opts.apiKey,
+    auth: {bearerToken: opts.apiKey},
     headers: {
       ...(opts.accountToken && {'X-Account-Token': `${opts.accountToken}`}),
     },
@@ -68,7 +68,7 @@ export function makeMergeClient(opts: {apiKey: string; accountToken?: string}) {
     InfoFromEndpoints<typeof integrationsEndpoints>
   >({
     baseUrl: baseUrl + '/integrations',
-    bearerToken: opts.apiKey,
+    auth: {bearerToken: opts.apiKey},
   })
   return {accounting, integrations}
 }

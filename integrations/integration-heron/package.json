@@ -1,0 +1,19 @@
+{
+  "name": "@usevenice/integration-heron",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi-typescript https://app.herondata.io/swagger --make-paths-enum --output heron.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "openapi-typescript": "6.2.1"
+  }
+}
