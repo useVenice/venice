@@ -6,6 +6,7 @@ import {sync} from '@usevenice/cdk-core'
 import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
 import readline from 'node:readline'
 import {mergeImpl} from '@usevenice/integration-merge'
+import {heronImpl} from '@usevenice/integration-heron'
 import {postgresProvider} from '@usevenice/integration-postgres'
 
 const srcPath = './apps/tests/__encrypted__/meta'
@@ -20,7 +21,7 @@ switch (process.argv[2]) {
   case 'source-postgres': {
     sync({
       source: postgresProvider.sourceSync({
-        id: 'reso_postgres_c89f8b55-2b52-4f33-9327-1ae712cd20f2',
+        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
         },
@@ -31,6 +32,23 @@ switch (process.argv[2]) {
             console.error(JSON.stringify(msg))
           }),
         ),
+    }).catch(console.error)
+    break
+  }
+  case 'postgres-heron': {
+    sync({
+      source: postgresProvider.sourceSync({
+        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        settings: {
+          databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
+        },
+      }),
+      destination: heronImpl.destinationSync({
+        id: 'reso_heron_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
+        config: {apiKey: process.env['HERON_API_KEY']!},
+        state: {},
+      }),
     }).catch(console.error)
     break
   }
