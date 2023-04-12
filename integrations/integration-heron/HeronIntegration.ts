@@ -89,12 +89,12 @@ export const heronImpl = {
           {
             path: {end_user_id_or_heron_id: endUserId},
             body: {
-              transactions: Object.values(cache.transaction).map(
-                (txn): components['schemas']['Transaction'] => ({
+              transactions: Object.entries(cache.transaction).map(
+                ([id, txn]): components['schemas']['Transaction'] => ({
                   amount: txn.postingsMap?.main?.amount.quantity ?? 0,
                   currency: txn.postingsMap?.main?.amount.unit,
                   description: txn.description,
-                  reference_id: txn.id,
+                  reference_id: id, // txn.id is somehow null...
                   account_id: txn.postingsMap?.main?.accountId,
                   date: txn.date,
                   categories_default: txn.externalCategory,
