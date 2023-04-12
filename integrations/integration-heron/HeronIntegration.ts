@@ -1,7 +1,8 @@
 import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
+import {defHelpers} from '@usevenice/cdk-core'
 import type {EntityPayload} from '@usevenice/cdk-ledger'
 import {cachingLink} from '@usevenice/cdk-ledger'
-import {fromCompletion, rxjs, z, zCast} from '@usevenice/util'
+import {Rx, fromCompletion, rxjs, z, zCast} from '@usevenice/util'
 import {makeHeronClient} from './HeronClient'
 import type {components} from './heron.gen'
 
@@ -10,19 +11,14 @@ export const heronDef = {
   integrationConfig: z.object({apiKey: z.string()}),
   resourceSettings: z.object({endUserId: z.string()}),
   destinationInputEntity: zCast<EntityPayload>(),
-  sourceOutputEntity: z.discriminatedUnion('entityName', [
-    z.object({
-      id: z.string(),
-      entityName: z.literal('account'),
-    }),
-    z.object({
-      id: z.string(),
-      entityName: z.literal('transaction'),
-    }),
-  ]),
+  sourceOutputEntity: z.object({
+    id: z.string(),
+    entityName: z.literal('transaction'),
+    entity: zCast<components['schemas']['TransactionEnriched']>(),
+  }),
 } satisfies IntegrationDef
 
-// const helpers = defHelpers(heronDef)
+const helpers = defHelpers(heronDef)
 
 export const heronImpl = {
   def: heronDef,
@@ -39,24 +35,33 @@ export const heronImpl = {
   },
   extension: {
     sourceMapEntity: {
-      // account: (entity) => ({
-      //   id: entity.id,
-      //   entityName: 'account',
-      //   entity: {name: entity.entity.name ?? ''},
-      // }),
-      // transaction: (entity) => ({
-      //   id: entity.id,
-      //   entityName: 'transaction',
-      //   entity: {date: entity.entity.transaction_date},
-      // }),
+      transaction: (entity) => ({
+        id: entity.id,
+        entityName: 'transaction',
+        entity: {
+          date: entity.entity.date ?? '',
+          description: entity.entity.description ?? '',
+        },
+      }),
     },
   },
 
-  sourceSync: ({config}) => {
-    // @ts-expect-error
+  sourceSync: ({config, settings: {endUserId}}) => {
     const client = makeHeronClient({apiKey: config.apiKey})
 
-    return rxjs.EMPTY
+    async function* iterateEntities() {
+      // TODO: Abstract different paging strategies into re-usable functions, similar to airbyte low-code connector for example
+      const res = await client.get(
+        '/api/end_users/{end_user_id_or_heron_id}/transactions',
+        {path: {end_user_id_or_heron_id: endUserId}, query: {}},
+      )
+      yield (res.transactions_enriched ?? []).map((txn) =>
+        helpers._opData('transaction', txn.heron_id!, txn),
+      )
+    }
+    return rxjs
+      .from(iterateEntities())
+      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
   },
   destinationSync: ({config, settings: {endUserId}}) => {
     const client = makeHeronClient({apiKey: config.apiKey})

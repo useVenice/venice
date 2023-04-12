@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
 
 import {fsProvider} from '@usevenice/app-config/env'
@@ -25,6 +27,23 @@ switch (process.argv[2]) {
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
         },
+      }),
+      destination: (obs) =>
+        obs.pipe(
+          Rx.tap((msg) => {
+            console.error(JSON.stringify(msg))
+          }),
+        ),
+    }).catch(console.error)
+    break
+  }
+  case 'source-heron': {
+    sync({
+      source: heronImpl.sourceSync({
+        id: 'reso_heron_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
+        config: {apiKey: process.env['HERON_API_KEY']!},
+        state: {},
       }),
       destination: (obs) =>
         obs.pipe(
