@@ -459,12 +459,17 @@ export const makeSyncEngine = <
           })
       }),
     listPipelines: authedProcedure
-      .input(z.object({}).optional())
-      .query(async ({ctx}) => {
+      .input(z.object({viewAsUserId: zUserId.nullish()}).optional())
+      .query(async ({ctx, input}) => {
+        if (input?.viewAsUserId && !ctx.isAdmin) {
+          throw new TRPCError({code: 'FORBIDDEN'})
+        }
+        const userId = input?.viewAsUserId ?? ctx.userId
+
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
         const resources = await metaService.tables.resource.list({
-          creatorId: ctx.userId,
+          creatorId: userId,
         })
         const [institutions, pipelines] = await Promise.all([
           metaService.tables.institution.list({

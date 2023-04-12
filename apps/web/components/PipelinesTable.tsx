@@ -10,6 +10,7 @@ import {
   ActionMenu,
   ActionMenuItem,
 } from './connections/ConnectionCard/ActionMenu'
+import {ArrowRight} from 'lucide-react'
 
 export function PipelinesTable(props: {
   pipelines: AnySyncRouterOutput['listPipelines']
@@ -22,6 +23,7 @@ export function PipelinesTable(props: {
         <tr className="">
           {/* <th className="p-4">Name</th> */}
           <th className="p-4">Source</th>
+          <th className="p-4"></th>
           <th className="p-4">Destination</th>
           <th className="p-4">Last Sync</th>
           <th className="p-4"></th>
@@ -33,6 +35,9 @@ export function PipelinesTable(props: {
             {/* <td className="p-4">{pipe.id}</td> */}
             <td className="p-4">
               {pipe.source && <ResourceCard resource={pipe.source} />}
+            </td>
+            <td className="p-4">
+              <ArrowRight />
             </td>
             <td className="p-4">
               {pipe.destination && <ResourceCard resource={pipe.destination} />}
