@@ -458,6 +458,74 @@ export const makeSyncEngine = <
             }
           })
       }),
+    listPipelines: authedProcedure
+      .input(z.object({}).optional())
+      .query(async ({ctx}) => {
+        // Add info about what it takes to `reconnect` here for resources which
+        // has disconnected
+        const resources = await metaService.tables.resource.list({
+          creatorId: ctx.userId,
+        })
+        const [institutions, pipelines] = await Promise.all([
+          metaService.tables.institution.list({
+            ids: R.compact(resources.map((c) => c.institutionId)),
+          }),
+          metaService.findPipelines({
+            resourceIds: resources.map((c) => c.id),
+          }),
+        ])
+        type ConnType = 'source' | 'destination'
+
+        const insById = R.mapToObj(institutions, (ins) => [ins.id, ins])
+        const resoById = R.mapToObj(resources, (ins) => [ins.id, ins])
+
+        function parseResource(reso?: (typeof resources)[number] | null) {
+          if (!reso) {
+            return reso
+          }
+          const providerName = extractId(reso.id)[1]
+          const institution = insById[reso.institutionId!]
+          const mappers = providerMap[providerName]?.standardMappers
+          const standardReso = zStandard.resource
+            .omit({id: true})
+            .nullish()
+            .parse(mappers?.resource?.(reso.settings))
+          const standardIns = zStandard.institution
+            .omit({id: true})
+            .nullish()
+            .parse(institution && mappers?.institution?.(institution?.external))
+
+          return {
+            ...reso,
+            ...standardReso,
+            id: reso.id,
+            displayName:
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              reso.displayName ||
+              standardReso?.displayName ||
+              standardIns?.name ||
+              '',
+            institution:
+              standardIns && institution
+                ? {...standardIns, id: institution.id}
+                : null,
+          }
+        }
+
+        return pipelines.map(({sourceId, destinationId, ...pipe}) => ({
+          ...pipe,
+          syncInProgress:
+            (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
+            (pipe.lastSyncStartedAt &&
+              pipe.lastSyncCompletedAt &&
+              pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
+
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          source: parseResource(resoById[sourceId!])!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          destination: parseResource(resoById[destinationId!])!,
+        }))
+      }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
       .query(async ({input: {type}}) => {
