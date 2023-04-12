@@ -17,7 +17,7 @@ import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {ResourceCard} from '../../components/ResourceCard'
 import type {Connection} from '../../lib/supabase-queries'
-import {createSSRHelpers, ensureDefaultLedger} from '../../server'
+import {createSSRHelpers, ensureDefaultResourceAndPipelines} from '../../server'
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
@@ -39,7 +39,10 @@ export const getServerSideProps = (async (context) => {
     ssg.searchInstitutions.prefetch({keywords: undefined}),
   ])
 
-  const ledgerIds = await ensureDefaultLedger(user.id)
+  const ledgerIds = await ensureDefaultResourceAndPipelines(user.id, {
+    heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
+      ?.id,
+  })
   return {
     props: {
       ...getPageProps(),

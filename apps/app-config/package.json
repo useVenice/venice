@@ -24,6 +24,7 @@
     "@usevenice/integration-beancount": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
     "@usevenice/integration-foreceipt": "workspace:*",
+    "@usevenice/integration-heron": "workspace:*",
     "@usevenice/integration-import": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
     "@usevenice/integration-merge": "workspace:*",

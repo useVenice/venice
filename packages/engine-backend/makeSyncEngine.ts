@@ -465,6 +465,7 @@ export const makeSyncEngine = <
         return ints
           .map((int) => ({
             id: int.id,
+            providerName: int.provider.name,
             isSource: !!int.provider.sourceSync,
             isDestination: !!int.provider.destinationSync,
           }))
