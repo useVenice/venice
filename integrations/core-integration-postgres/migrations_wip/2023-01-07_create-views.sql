@@ -10,6 +10,7 @@ comment on schema "public" is e'@graphql({
 
 DROP VIEW IF EXISTS transaction;
 CREATE VIEW transaction WITH (security_invoker) AS SELECT
+  REPLACE(ledger_resource_id, 'reso_postgres_', '') as user_id,
 	id -- standard->>'_id' as id
 	,standard->>'date' as date
 	,standard->> 'description' as description
@@ -47,6 +48,7 @@ comment on view "transaction" is e'TODO: Add description of transaction data typ
 
 DROP VIEW IF EXISTS account;
 CREATE VIEW account WITH (security_invoker) AS SELECT
+  REPLACE(ledger_resource_id, 'reso_postgres_', '') as user_id,
 	id -- standard->>'_id' as id
 	,standard->>'name' as name
 	,standard->> 'type' as type
