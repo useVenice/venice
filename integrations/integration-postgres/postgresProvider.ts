@@ -1,20 +1,26 @@
-import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {extractId, handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
   makePostgresClient,
   upsertByIdQuery,
   zPgConfig,
 } from '@usevenice/core-integration-postgres'
-import {R, rxjs, z, zCast} from '@usevenice/util'
+import {R, Rx, rxjs, z, zCast} from '@usevenice/util'
 
 export {makePostgresClient} from '@usevenice/core-integration-postgres'
 
-const def = makeSyncProvider.def({
+const _def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
   resourceSettings: zPgConfig.pick({databaseUrl: true}),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
+  sourceOutputEntity: zCast<EntityPayloadWithExternal>(),
 })
+
+const def = makeSyncProvider.def.helpers(_def)
 
 export const postgresProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
@@ -24,6 +30,55 @@ export const postgresProvider = makeSyncProvider({
       displayName: 'Postgres',
       status: 'healthy',
     }),
+  },
+  // TODO:
+  // 1) Implement pagination
+  // 2) Impelemnt incremental Sync
+  // 3) Improve type safety
+  // 4) Implement parallel runs
+  sourceSync: ({id: ledgerId, settings: {databaseUrl}}) => {
+    const {getPool, sql} = makePostgresClient({
+      databaseUrl,
+      migrationsPath: __dirname + '/migrations',
+      migrationTableName: 'ls_migrations',
+    })
+
+    async function* iterateEntities() {
+      const pool = await getPool()
+      for (const entityName of ['account', 'transaction'] as const) {
+        const res = await pool.query<{
+          created_at: string
+          external: any
+          id: string
+          ledger_resource_id: string | null
+          provider_name: string
+          source_id: string | null
+          standard: any
+          updated_at: string
+        }>(
+          sql`SELECT * FROM ${sql.identifier([
+            'raw_' + entityName,
+          ])} WHERE ledger_resource_id = ${ledgerId}`,
+        )
+        yield res.rows.map((row) =>
+          def._op('data', {
+            data: {
+              entityName,
+              entity: row.standard,
+              external: row.external,
+              id: row.id,
+              providerName: 'postgres',
+              sourceId: row.source_id ?? undefined,
+              externalId: extractId(row.id as any)[2],
+            },
+          }),
+        )
+      }
+    }
+
+    return rxjs
+      .from(iterateEntities())
+      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
   },
   destinationSync: ({id: ledgerId, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {
