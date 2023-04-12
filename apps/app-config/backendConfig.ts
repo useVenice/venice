@@ -73,6 +73,9 @@ export const veniceBackendConfig = makeSyncEngine.config({
         logLink({prefix: 'preDest'}),
       ]
     }
+    if (source.integration.provider.name === 'postgres') {
+      return [...links, logLink({prefix: 'preDest'})]
+    }
     return [
       ...links,
       // logLink({prefix: 'preMapStandard', verbose: true}),
