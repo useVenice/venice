@@ -16,7 +16,7 @@ import {forwardRef, useState} from 'react'
 import {useSupabase} from '../../../contexts/session-context'
 
 import type {Connection} from '../../../lib/supabase-queries'
-import {ResourceCard} from '../../ResourceCard'
+import {TaggedCard} from '../../TaggedCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 import {DeleteConnectionDialog} from './DeleteConnectionDialog'
 import {EditingDisplayName} from './EditingDisplayName'
@@ -86,7 +86,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     // TODO: We really need a toast component...
 
     return (
-      <ResourceCard
+      <TaggedCard
         tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
         <div className="flex grow flex-col justify-between py-2 px-3" ref={ref}>
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
@@ -226,7 +226,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
             </div>
           </div>
         </div>
-      </ResourceCard>
+      </TaggedCard>
     )
   },
 )

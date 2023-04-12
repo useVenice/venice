@@ -96,7 +96,6 @@ export async function ensureDefaultResourceAndPipelines(
         )
         .then(async (rows) => {
           const heronResoId = makeId('reso', 'heron', userId)
-          console.log('rows', rows)
 
           if (!rows.length) {
             await trxn.query(

@@ -16,10 +16,10 @@ export function InvalidateQueriesOnPostgresChanges(props: {
   const {trpc} = VeniceProvider.useContext()
   const trpcUtils = trpc.useContext()
 
-  const invalidate = React.useCallback(
-    () => trpcUtils.listConnections.invalidate(),
-    [trpcUtils],
-  )
+  const invalidate = React.useCallback(() => {
+    void trpcUtils.listConnections.invalidate()
+    void trpcUtils.listPipelines.invalidate()
+  }, [trpcUtils])
   usePostgresChanges(props.supabase, 'resource', invalidate)
   usePostgresChanges(props.supabase, 'pipeline', invalidate)
   return null

@@ -27,7 +27,7 @@ export const heronImpl = {
   standardMappers: {
     resource() {
       return {
-        displayName: 'Heron Data',
+        displayName: 'Heron',
         // status: healthy vs. disconnected...
         // labels: test vs. production
       }

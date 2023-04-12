@@ -15,7 +15,7 @@ import {
 import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
-import {ResourceCard} from '../../components/ResourceCard'
+import {TaggedCard} from '../../components/TaggedCard'
 import type {Connection} from '../../lib/supabase-queries'
 import {createSSRHelpers, ensureDefaultResourceAndPipelines} from '../../server'
 
@@ -206,7 +206,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
         ))
       ) : (
         <>
-          <ResourceCard
+          <TaggedCard
             tagColor="offwhite"
             bgColor="bg-gradient-to-r from-[#ECAA47] to-[#722273]">
             <button
@@ -215,7 +215,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               <AddFilledIcon className="inline-flex h-5 w-5 fill-current" />
               <span className="text-sm uppercase">Add new source</span>
             </button>
-          </ResourceCard>
+          </TaggedCard>
           <div className="grid gap-4 px-2 text-center text-sm text-venice-gray">
             <p>
               Venice has over 12,000 financial data sources to choose from (e.g.

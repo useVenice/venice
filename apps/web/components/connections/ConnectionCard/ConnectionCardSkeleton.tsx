@@ -1,9 +1,9 @@
 import {CircleFilledIcon, MoreIcon} from '@usevenice/ui/icons'
-import {ResourceCard} from '../../ResourceCard'
+import {TaggedCard} from '../../TaggedCard'
 
 export function ConnectionCardSkeleton() {
   return (
-    <ResourceCard tagColor="venice-gray">
+    <TaggedCard tagColor="venice-gray">
       <div className="flex grow animate-pulse flex-col justify-between py-2 px-3">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-venice-gray-muted" />
@@ -18,7 +18,7 @@ export function ConnectionCardSkeleton() {
           <div className="inline-flex h-2 w-[7rem] rounded-sm bg-venice-gray-muted" />
         </div>
       </div>
-    </ResourceCard>
+    </TaggedCard>
   )
 }
 

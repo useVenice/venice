@@ -3,6 +3,7 @@ import {VeniceProvider} from '@usevenice/engine-frontend'
 import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
+import {PipelinesTable} from '../../components/PipelinesTable'
 import {createSSRHelpers, ensureDefaultResourceAndPipelines} from '../../server'
 
 // Should this be moved to _app getInitialProps?
@@ -36,7 +37,7 @@ export const getServerSideProps = (async (context) => {
   }
 }) satisfies GetServerSideProps
 
-export default function ConnectionsPage(
+export default function PipelinesPage(
   _props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
   const {trpc} = VeniceProvider.useContext()
@@ -44,37 +45,13 @@ export default function ConnectionsPage(
 
   return (
     <PageLayout title="Pipelines" auth="user">
-      <div className="grid min-h-screen grid-rows-[auto_1fr]">
+      <div className="">
         <PageHeader title={['Pipelines']} />
-
-        <div className="flex flex-col">
-          {pipelines.isLoading ? (
-            <span>Loading...</span>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Source</th>
-                  <th>Destination</th>
-                  <th>Last Sync</th>
-                  <th>Sync Now</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(pipelines.data ?? []).map((pipe) => (
-                  <tr key={pipe.id}>
-                    <td>{pipe.id}</td>
-                    <td>{JSON.stringify(pipe.source)}</td>
-                    <td>{JSON.stringify(pipe.destination)}</td>
-                    <td>{pipe.syncInProgress}</td>
-                    <td>Button...</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        {pipelines.isLoading ? (
+          <span>Loading...</span>
+        ) : (
+          <PipelinesTable pipelines={pipelines.data ?? []} />
+        )}
       </div>
     </PageLayout>
   )

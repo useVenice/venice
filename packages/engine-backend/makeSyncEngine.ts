@@ -46,7 +46,7 @@ import {
   zSyncOptions,
 } from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
-import {VeniceConnectJwtPayload} from './safeForFrontend'
+import type {VeniceConnectJwtPayload} from './safeForFrontend'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -474,7 +474,6 @@ export const makeSyncEngine = <
             resourceIds: resources.map((c) => c.id),
           }),
         ])
-        type ConnType = 'source' | 'destination'
 
         const insById = R.mapToObj(institutions, (ins) => [ins.id, ins])
         const resoById = R.mapToObj(resources, (ins) => [ins.id, ins])
@@ -499,6 +498,7 @@ export const makeSyncEngine = <
             ...reso,
             ...standardReso,
             id: reso.id,
+            providerName,
             displayName:
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               reso.displayName ||
@@ -512,7 +512,10 @@ export const makeSyncEngine = <
           }
         }
 
-        return pipelines.map(({sourceId, destinationId, ...pipe}) => ({
+        return R.sortBy(pipelines, [
+          (p) => p.lastSyncCompletedAt ?? '',
+          'desc',
+        ]).map(({sourceId, destinationId, ...pipe}) => ({
           ...pipe,
           syncInProgress:
             (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
