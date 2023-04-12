@@ -12,6 +12,7 @@ test.each([
   ['rest/v1/', '//', 'rest/v1/'],
   ['rest/v1/', '///', 'rest/v1/'],
   ['/rest/v1/', '', '/rest/v1/'],
+  ['/', '/api/v1', '/api/v1'],
 ])('joinPath(%o, %o) -> %o', (p1, p2, output) => {
   // os.path.join does not handle :// , so this is actually not the same
   // expect(path.join(p1, p2)).toEqual(output)

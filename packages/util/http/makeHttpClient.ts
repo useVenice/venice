@@ -3,6 +3,7 @@ import z from 'zod'
 import * as R from 'remeda'
 import {safeJSONParse} from '../json-utils'
 import {defineProxyFn} from '../di-utils'
+import {joinPath} from '../url-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -65,7 +66,7 @@ export function makeHttpClient(options: HttpClientOptions) {
   ): Promise<unknown> {
     const url = new URL(baseUrl)
     // Need a better function for this than += pathname...
-    url.pathname += getPath(path, input.path ?? {})
+    url.pathname = joinPath(url.pathname, getPath(path, input.path ?? {}))
     Object.entries(input.query ?? {}).forEach(([key, value]) =>
       url.searchParams.set(key, `${value}`),
     )
@@ -120,6 +121,7 @@ export function makeHttpClient(options: HttpClientOptions) {
   return {...methods, request}
 }
 
+// TODO: build url from utils?
 function getPath(path: string, pathParams: Record<string, any>) {
   return path.replace(/\{([^}]+)\}/g, (_, key) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
