@@ -32,6 +32,7 @@ export default function Page() {
       <div className="flex flex-wrap gap-8 p-10">
         <PlaidCard />
         <MergeCard />
+        <HeronCard />
         <QuickbooksCard />
         <NetSuiteCard />
         <StripeCard />
@@ -70,6 +71,32 @@ function MergeCard() {
       </span>
       <div className="mb-2 flex items-center justify-center">
         <Image width={150} height={70} src="/mergeLogo.png" alt="Merge Logo" />
+      </div>
+      <Button asChild className="disabled mb-1 opacity-30">
+        <div>
+          <SettingsIcon className="h-6 w-6 fill-current pr-2 text-gray" />
+          Settings
+        </div>
+      </Button>
+    </Card>
+  )
+}
+
+/* HeronCard */
+function HeronCard() {
+  return (
+    <Card className="flex w-40 flex-col gap-4 p-2">
+      <span className="mt-2 text-center font-mono text-base text-offwhite">
+        Heron Data
+      </span>
+      <div className="mb-2 flex items-center justify-center">
+        <Image
+          className="max-h-[70px] object-contain"
+          width={150}
+          height={70}
+          src="/heron-logo.png"
+          alt="Heron Logo"
+        />
       </div>
       <Button asChild className="disabled mb-1 opacity-30">
         <div>
