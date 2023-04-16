@@ -1,9 +1,9 @@
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import {ResourceCard} from '../ResourceCard'
+import {TaggedCard} from '../TaggedCard'
 
 export function AddDestinationCard() {
   return (
-    <ResourceCard
+    <TaggedCard
       tagColor="offwhite"
       bgColor="bg-gradient-to-r from-[#12B886] to-[#12678C]">
       <div className="grid place-items-center px-6 py-4">
@@ -12,6 +12,6 @@ export function AddDestinationCard() {
           <span className="text-sm uppercase">Add new destination</span>
         </button>
       </div>
-    </ResourceCard>
+    </TaggedCard>
   )
 }

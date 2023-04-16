@@ -1,3 +1,4 @@
+'use client'
 import {useIntervalEffect} from '@react-hookz/web'
 import React from 'react'
 

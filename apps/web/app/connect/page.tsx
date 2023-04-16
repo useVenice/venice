@@ -11,7 +11,7 @@ import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {fromMaybeArray, z} from '@usevenice/util'
 import superjson from 'superjson'
-import {ensureDefaultLedger} from '../../server'
+import {ensureDefaultResourceAndPipelines} from '../../server'
 import {ClientRoot} from '../ClientRoot'
 import {Connect} from './Connect'
 
@@ -60,7 +60,10 @@ export default async function ConnectPage({
     ssg.listConnections.prefetch({}),
   ])
 
-  const ledgerIds = await ensureDefaultLedger(userId)
+  const ledgerIds = await ensureDefaultResourceAndPipelines(userId, {
+    heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
+      ?.id,
+  })
 
   return (
     <ClientRoot

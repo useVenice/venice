@@ -31,6 +31,7 @@ import {getEnvVar, R, z, zodInsecureDebug, zParser} from '@usevenice/util'
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
 import {makeMergeClient} from '@usevenice/integration-merge'
+import {makeHeronClient} from '@usevenice/integration-heron'
 
 if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
@@ -60,8 +61,8 @@ if (require.main === module) {
       '': () => parseIntConfigsFromRawEnv(),
     }),
     jwt: () =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY!}),
+       
+      makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY}),
     pg: () => makePostgresClient({databaseUrl: env().POSTGRES_OR_WEBHOOK_URL}),
     pgMeta: () =>
       makePostgresMetaService({
@@ -103,6 +104,7 @@ if (require.main === module) {
         apiKey: process.env['MERGE_TEST_API_KEY'] ?? '',
         accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
       }).integrations,
+    heron: () => makeHeronClient({apiKey: process.env['HERON_API_KEY']!}),
   }
 
   const clientFactory = z

@@ -11,7 +11,7 @@ import {zId, zUserId} from '@usevenice/cdk-core'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
 import {serverAnalytics} from '../lib/server-analytics'
-import {ensureDefaultLedger, getPool, sql} from '../server'
+import {ensureDefaultResourceAndPipelines, getPool, sql} from '../server'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sentry = makeSentryClient({dsn: commonEnv.NEXT_PUBLIC_SENTRY_DSN!})
@@ -77,7 +77,7 @@ export const syncResource = inngest.createFunction(
         sql`SELECT creator_id FROM resource WHERE id = ${resourceId}`,
       )
       console.log('creatorId', creatorId)
-      const [ledgerId] = await ensureDefaultLedger(creatorId)
+      const [ledgerId] = await ensureDefaultResourceAndPipelines(creatorId)
       await veniceRouter
         .createCaller({userId: creatorId})
         .syncResource([

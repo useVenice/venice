@@ -3,6 +3,7 @@ import z from 'zod'
 import * as R from 'remeda'
 import {safeJSONParse} from '../json-utils'
 import {defineProxyFn} from '../di-utils'
+import {joinPath} from '../url-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -29,7 +30,11 @@ export interface HttpRequestOptions {
 
 export type HttpClientOptions = RequestInit & {
   baseUrl: string
-  bearerToken?: string
+  auth?: {
+    bearerToken?: string
+    basic?: {username: string; password: string}
+  }
+
   fetch?: typeof fetch
   URL?: typeof URL
 }
@@ -48,7 +53,7 @@ export function makeHttpClient(options: HttpClientOptions) {
     fetch = $getFetchFn() ?? globalThis.fetch,
     URL = globalThis.URL,
     baseUrl,
-    bearerToken,
+    auth,
     ...defaults
   } = options
 
@@ -61,13 +66,18 @@ export function makeHttpClient(options: HttpClientOptions) {
   ): Promise<unknown> {
     const url = new URL(baseUrl)
     // Need a better function for this than += pathname...
-    url.pathname += getPath(path, input.path ?? {})
+    url.pathname = joinPath(url.pathname, getPath(path, input.path ?? {}))
     Object.entries(input.query ?? {}).forEach(([key, value]) =>
       url.searchParams.set(key, `${value}`),
     )
     const headers = {
       'Content-Type': 'application/json',
-      ...(bearerToken && {Authorization: `Bearer ${bearerToken}`}),
+      ...(auth?.basic && {
+        Authorization: `Basic ${btoa(
+          `${auth.basic.username}:${auth.basic.password}`,
+        )}`,
+      }),
+      ...(auth?.bearerToken && {Authorization: `Bearer ${auth.bearerToken}`}),
       ...defaults.headers,
       ...input.header,
     } as Record<string, string>
@@ -111,6 +121,7 @@ export function makeHttpClient(options: HttpClientOptions) {
   return {...methods, request}
 }
 
+// TODO: build url from utils?
 function getPath(path: string, pathParams: Record<string, any>) {
   return path.replace(/\{([^}]+)\}/g, (_, key) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access

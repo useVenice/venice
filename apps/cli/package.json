@@ -13,6 +13,7 @@
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
+    "@usevenice/integration-heron": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
     "@usevenice/integration-merge": "workspace:*",
     "@usevenice/integration-moota": "workspace:*",

@@ -3,12 +3,12 @@ import type {SvgIconProps} from '@usevenice/ui/icons'
 import {MoreIcon} from '@usevenice/ui/icons'
 import type {ComponentType, PropsWithChildren} from 'react'
 
-type ActionMenuProps = PropsWithChildren<{}>
+type ActionMenuProps = PropsWithChildren<{className?: string}>
 
 export function ActionMenu(props: ActionMenuProps) {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
+      <DropdownMenu.Trigger asChild className={props.className}>
         <button className="rounded-full p-1 hover:bg-venice-black/75 focus:outline-none focus-visible:bg-venice-black/75 data-[state=open]:bg-venice-black/75">
           <MoreIcon className="h-3.5 w-3.5 fill-current text-venice-gray" />
         </button>

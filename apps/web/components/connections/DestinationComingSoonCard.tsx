@@ -1,8 +1,8 @@
-import {ResourceCard} from '../ResourceCard'
+import {TaggedCard} from '../TaggedCard'
 
 export function DestinationComingSoonCard() {
   return (
-    <ResourceCard tagColor="venice-gold">
+    <TaggedCard tagColor="venice-gold">
       <div className="grid gap-4 px-6 py-4 text-sm">
         <p>
           👉 Soon: send your unified Venice data to Notion, Excel, Coda, and
@@ -17,6 +17,6 @@ export function DestinationComingSoonCard() {
           </a>
         </p>
       </div>
-    </ResourceCard>
+    </TaggedCard>
   )
 }

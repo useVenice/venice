@@ -9,7 +9,7 @@ import type {
 } from '@usevenice/cdk-core'
 import {zConnectWith} from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
-import type { Json} from '@usevenice/util';
+import type {Json} from '@usevenice/util'
 import {deepOmitUndefined} from '@usevenice/util'
 import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
 
@@ -188,44 +188,52 @@ export function makeSyncParsers<
   const zReso = castInput(zInput.resource)<
     ResourceInput<TProviders[number]>
   >().transform(
-    zGuard(async ({id, ...rest}) => {
+    zGuard(async ({id, ...input}) => {
       const reso = await m.tables.resource.get(id)
       const [integration, institution] = await Promise.all([
         zInt.parseAsync(
           R.identity<z.infer<(typeof zInput)['integration']>>({
             id:
               reso?.integrationId ??
-              rest.integrationId ??
+              input.integrationId ??
               makeId('int', extractId(id)[1], ''),
-            config: rest.integration?.config,
+            config: input.integration?.config,
           }),
         ),
         zIns.optional().parseAsync(
-          R.pipe(reso?.institutionId ?? rest.institutionId, (insId) =>
+          R.pipe(reso?.institutionId ?? input.institutionId, (insId) =>
             // Unlike integration, we do not have default institution for provider
             // ins_plaid just makes no sense. Although ins_quickbooks does... so what gives?
             !insId
               ? undefined
               : R.identity<z.infer<(typeof zInput)['institution']>>({
                   id: insId,
-                  external: rest.institution?.external,
+                  external: input.institution?.external,
                 }),
           ),
         ),
       ])
-      console.log('Will parse settings', reso?.settings, rest.settings)
+      // TODO: Fix this hard-code when we figure out whether resources should be specified
+      // via envVar or not
+      const defaultSettings =
+        integration.provider.name === 'postgres'
+          ? {databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL']}
+          : integration.provider.name === 'heron'
+          ? {endUserId: extractId(id)[2]}
+          : {}
+      console.log('Will parse settings', reso?.settings, input.settings)
       const settings = integration.provider.def.resourceSettings?.parse(
-        deepMerge(reso?.settings, rest.settings),
+        deepMerge(defaultSettings, reso?.settings, input.settings),
         {path: ['settings']},
       ) as Record<string, Json>
       return {
         id,
         ...reso,
-        ...rest,
+        ...input,
         // For security do not allow userId to ever be automatically changed
         // once exists. Otherwise one could pass someone else's userId and get access
         // to their resource via just the `id`
-        creatorId: reso?.creatorId ?? rest.creatorId,
+        creatorId: reso?.creatorId ?? input.creatorId,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,

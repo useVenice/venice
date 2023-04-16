@@ -6,6 +6,7 @@ import {
   DeleteIcon,
   EditIcon,
   SyncIcon,
+  CopyTextIcon,
 } from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import {formatDistanceToNowStrict} from 'date-fns'
@@ -15,10 +16,11 @@ import {forwardRef, useState} from 'react'
 import {useSupabase} from '../../../contexts/session-context'
 
 import type {Connection} from '../../../lib/supabase-queries'
-import {ResourceCard} from '../../ResourceCard'
+import {TaggedCard} from '../../TaggedCard'
 import {ActionMenu, ActionMenuItem} from './ActionMenu'
 import {DeleteConnectionDialog} from './DeleteConnectionDialog'
 import {EditingDisplayName} from './EditingDisplayName'
+import {copyToClipboard} from '../../../contexts/common-contexts'
 
 export interface ConnectionCardProps {
   connection: Connection
@@ -84,7 +86,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     // TODO: We really need a toast component...
 
     return (
-      <ResourceCard
+      <TaggedCard
         tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
         <div className="flex grow flex-col justify-between py-2 px-3" ref={ref}>
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
@@ -122,13 +124,13 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
 
             <ActionMenu>
               {/* This is not working... */}
-              {/* <ActionMenuItem
-                icon={CopyIcon}
+              <ActionMenuItem
+                icon={CopyTextIcon}
                 label="Copy Id"
                 onClick={() => {
                   void copyToClipboard(resourceId)
                 }}
-              /> */}
+              />
               <ActionMenuItem
                 icon={EditIcon}
                 label="Rename"
@@ -224,7 +226,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
             </div>
           </div>
         </div>
-      </ResourceCard>
+      </TaggedCard>
     )
   },
 )
