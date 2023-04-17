@@ -12,6 +12,7 @@
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",
+    "@usevenice/integration-brex": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
     "@usevenice/integration-heron": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",

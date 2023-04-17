@@ -1,0 +1,995 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Transactions API",
+    "description": "\nThe transactions API lets you view your transactions, accounts, and statements.\n",
+    "contact": {
+      "name": "Admin",
+      "url": "https://brex.com",
+      "email": "developer-access@brex.com"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://platform.brexapis.com",
+      "description": "Production"
+    },
+    {
+      "url": "https://platform.staging.brexapps.com",
+      "description": "Staging (Note: This is not a sandbox. It will not work with customer tokens.)"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Transactions",
+      "description": "Endpoints for transaction data."
+    },
+    {
+      "name": "Accounts",
+      "description": "Endpoints for account data."
+    }
+  ],
+  "paths": {
+    "/v2/accounts/card": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nList card accounts\n",
+        "description": "\nThis endpoint lists all accounts of card type.\n",
+        "operationId": "listCardAccounts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "listCardAccounts 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CardAccount"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "accounts.card.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/accounts/card/primary/statements": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nList primary card account statements. \n",
+        "description": "\nThis endpoint lists all finalized statements for the primary card account.\n",
+        "operationId": "listPrimaryCardStatements",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "listPrimaryCardStatements 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Statement_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "statements.card.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/accounts/cash": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nList cash accounts\n",
+        "description": "\nThis endpoint lists all the existing cash accounts with their status.\n",
+        "operationId": "listAccounts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "listAccounts 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_CashAccount_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "accounts.cash.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/accounts/cash/primary": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nGet primary cash account\n",
+        "description": "\nThis endpoint returns the primary cash account with its status. There will always be only one primary account.\n",
+        "operationId": "getPrimaryAccount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "getPrimaryAccount 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashAccount"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "accounts.cash.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/accounts/cash/{id}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nGet cash account by ID\n",
+        "description": "\nThis endpoint returns the cash account associated with the provided ID with its status.\n",
+        "operationId": "getAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "getAccount 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashAccount"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "accounts.cash.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/accounts/cash/{id}/statements": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "\nList cash account statements.    \n",
+        "description": "\nThis endpoint lists all finalized statements for the cash account by ID.\n",
+        "operationId": "listCashStatements",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "listCashStatements 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Statement_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "statements.cash.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/transactions/card/primary": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "\nList transactions for the primary card account.\n",
+        "description": "\nThis endpoint lists all settled transactions for the primary card account.\nRegular users may only fetch their own \"PURCHASE\",\"REFUND\" and \"CHARGEBACK\" settled transactions.\n",
+        "operationId": "listPrimaryCardTransactions",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "user_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "posted_at_start",
+            "in": "query",
+            "description": "\nShows only transactions with a `posted_at_date` on or after this date-time. This parameter is the date-time notation as defined by [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "example": "\n2022-12-12T23:59:59.999\n"
+          },
+          {
+            "name": "expand[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "description": "`expense_id` can be passed to `expand[]` query parameter to get expanded, e.g., `?expand[]=expense_id`.",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "listPrimaryCardTransactions 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_CardTransaction_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transactions.card.readonly"
+            ]
+          }
+        ]
+      }
+    },
+    "/v2/transactions/cash/{id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "\nList transactions for the selected cash account.\n",
+        "description": "\nThis endpoint lists all transactions for the cash account with the selected ID.\n",
+        "operationId": "listCashTransactions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "posted_at_start",
+            "in": "query",
+            "description": "\nShows only transactions with a `posted_at_date` on or after this date-time. This parameter is the date-time notation as defined by [RFC 3339, section 5.6](https://tools.ietf.org/html/rfc3339#section-5.6)\n",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "example": "\n2022-12-12T23:59:59.999\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "listCashTransactions 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_CashTransaction_"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transactions.cash.readonly"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CardAccount": {
+        "required": [
+          "current_statement_period",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ID of the card account"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Status"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "current_balance": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "available_balance": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "account_limit": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "current_statement_period": {
+            "$ref": "#/components/schemas/StatementPeriod"
+          }
+        }
+      },
+      "CardTransaction": {
+        "required": [
+          "amount",
+          "description",
+          "id",
+          "initiated_at_date",
+          "posted_at_date"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "card_id": {
+            "type": "string",
+            "description": "ID of the card used for the transaction. Null when type is REWARDS_CREDIT or COLLECTION.",
+            "nullable": true
+          },
+          "description": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "Description of the transaction"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "initiated_at_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ISO 8601 date string",
+            "format": "date"
+          },
+          "posted_at_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ISO 8601 date string",
+            "format": "date"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CardTransactionType"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "merchant": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MerchantData"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "card_metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "\nSet of key value pairs associated with this object. Please do not store any personally identifiable or sensitive information here.\nLimitations: maximum of 50 keys, keys cannot exceed 40 characters, values cannot exceed 500 characters. \n",
+            "nullable": true
+          },
+          "expense_id": {
+            "type": "string",
+            "description": "The expense ID related to the card transaction.",
+            "nullable": true
+          }
+        }
+      },
+      "CardTransactionType": {
+        "type": "string",
+        "enum": [
+          "PURCHASE",
+          "REFUND",
+          "CHARGEBACK",
+          "REWARDS_CREDIT",
+          "COLLECTION",
+          "BNPL_FEE"
+        ]
+      },
+      "CashAccount": {
+        "required": [
+          "account_number",
+          "available_balance",
+          "current_balance",
+          "id",
+          "name",
+          "primary",
+          "routing_number"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ID of the cash account"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Status"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "current_balance": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "available_balance": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "account_number": {
+            "type": "string"
+          },
+          "routing_number": {
+            "type": "string"
+          },
+          "primary": {
+            "required": [
+              "true"
+            ],
+            "type": "boolean",
+            "description": "Whether or not this account is the primary account. There will always be only one primary account."
+          }
+        }
+      },
+      "CashTransaction": {
+        "required": [
+          "description",
+          "id",
+          "initiated_at_date",
+          "posted_at_date"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "Description of the transaction"
+          },
+          "amount": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "initiated_at_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ISO 8601 date of when the payment is initiated",
+            "format": "date"
+          },
+          "posted_at_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "ISO 8601 date of when the payment is posted",
+            "format": "date"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CashTransactionType"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "transfer_id": {
+            "type": "string",
+            "description": "Transfer ID to fetch additional metadata about the transaction using `https://developer.brex.com/openapi/payments_api/#operation/getTransfersById`",
+            "nullable": true
+          }
+        }
+      },
+      "CashTransactionType": {
+        "type": "string",
+        "enum": [
+          "PAYMENT",
+          "DIVIDEND",
+          "FEE",
+          "ADJUSTMENT",
+          "INTEREST",
+          "CARD_COLLECTION",
+          "REWARDS_REDEMPTION",
+          "RECEIVABLES_OFFERS_ADVANCE",
+          "FBO_TRANSFER",
+          "RECEIVABLES_OFFERS_REPAYMENT",
+          "RECEIVABLES_OFFERS_COLLECTION",
+          "BREX_OPERATIONAL_TRANSFER",
+          "INTRA_CUSTOMER_ACCOUNT_BOOK_TRANSFER",
+          "BOOK_TRANSFER",
+          "CRYPTO_BRIDGE"
+        ]
+      },
+      "MerchantData": {
+        "required": [
+          "mcc",
+          "raw_descriptor"
+        ],
+        "type": "object",
+        "properties": {
+          "raw_descriptor": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "Merchant descriptor"
+          },
+          "mcc": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "https://en.wikipedia.org/wiki/Merchant_category_code"
+          }
+        }
+      },
+      "Money": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "description": "The amount of money, in the smallest denomination of the currency indicated by currency. For example, when currency is USD, amount is in cents.",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string",
+            "description": "The type of currency, in ISO 4217 format. Default to USD if not specified",
+            "nullable": true
+          }
+        },
+        "description": "\nMoney fields can be signed or unsigned. Fields are signed (an unsigned value will be interpreted as positive). The amount of money will be represented in the smallest denomination\nof the currency indicated. For example, USD 7.00 will be represented in cents with an amount of 700.\n"
+      },
+      "Page_CardTransaction_": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CardTransaction"
+            }
+          }
+        }
+      },
+      "Page_CashAccount_": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CashAccount"
+            }
+          }
+        }
+      },
+      "Page_CashTransaction_": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CashTransaction"
+            }
+          }
+        }
+      },
+      "Page_Statement_": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Statement"
+            }
+          }
+        }
+      },
+      "Statement": {
+        "required": [
+          "id",
+          "period"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "start_balance": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "end_balance": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          },
+          "period": {
+            "$ref": "#/components/schemas/StatementPeriod"
+          }
+        }
+      },
+      "StatementPeriod": {
+        "required": [
+          "end_date",
+          "start_date"
+        ],
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "Start date of the statement period",
+            "format": "date"
+          },
+          "end_date": {
+            "required": [
+              "true"
+            ],
+            "type": "string",
+            "description": "End date of the statement period",
+            "format": "date"
+          }
+        }
+      },
+      "Status": {
+        "type": "string",
+        "enum": [
+          "ACTIVE"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "OAuth2 security scheme",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://accounts-api.brex.com/oauth2/default/v1/authorize",
+            "tokenUrl": "https://accounts-api.brex.com/oauth2/default/v1/token",
+            "scopes": {
+              "openid": "openid",
+              "offline_access": "offline access",
+              "transactions.card.readonly": "View card transaction data",
+              "statements.card.readonly": "View card statement data",
+              "accounts.card.readonly": "View card account data",
+              "accounts.cash.readonly": "View cash account data"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-explorer-enabled": false
+}
