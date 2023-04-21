@@ -1,73 +1,20 @@
-import Stripe from 'stripe'
+import type {InfoFromPaths} from '@usevenice/util'
+import {makeOpenApiClient} from '@usevenice/util'
 
-import {getDefaultProxyAgent, memoize, z, zFunction} from '@usevenice/util'
+import type {operations, paths} from './stripe.gen'
 
-import {inferStripeModeFromToken} from './stripe-utils'
-
-export type ModeName = z.infer<typeof zModeName>
-
-const accountParamsSchema = z.object({
-  secretKey: z.string(),
-  accountId: z.string(),
-})
-
-const transactionAccountSchema = z.object({
-  secretKey: z.string(),
-  starting_after: z.string().nullish(),
-})
-export const zModeName = z.enum(['test', 'live'])
-export const zStripeConfig = z
-  .object({
-    accountId: z.string().nullish(),
-    publishableKeys: z.record(zModeName, z.string()).nullish(),
-    secretKeys: z.record(zModeName, z.string()).nullish(),
-    secretKey: z.string().nullish(),
+export function makeStripeClient(opts: {
+  apiKey: string
+  /** API version */
+  stripeVersion?: operations['PostWebhookEndpoints']['requestBody']['content']['application/x-www-form-urlencoded']['api_version']
+}) {
+  const baseUrl = 'https://api.stripe.com'
+  const client = makeOpenApiClient<InfoFromPaths<paths>>({
+    baseUrl,
+    auth: {basic: {username: opts.apiKey, password: ''}},
+    headers: {
+      ...(opts.stripeVersion && {'Stripe-Version': `${opts.stripeVersion}`}),
+    },
   })
-  .nullish()
-
-export const makeStripeClient = zFunction(zStripeConfig, (cfg) => {
-  const fromMode = memoize((modeName: ModeName | undefined) => {
-    const secretKey =
-      modeName && (cfg?.secretKeys?.[modeName] || (cfg?.secretKey ?? ''))
-
-    if (!modeName || !secretKey) {
-      throw new Error(`Unable to get client mode=${modeName}`)
-    }
-    const configuration: Stripe.StripeConfig = {
-      apiVersion: '2022-11-15',
-    }
-    return new Stripe(secretKey, configuration)
-  })
-  function fromToken(token: string) {
-    return fromMode(inferStripeModeFromToken(token))
-  }
-
-  return {
-    getAccount: zFunction(accountParamsSchema, (opts) =>
-      fromToken(opts.secretKey).accounts.retrieve(opts.accountId),
-    ),
-    getBalance: zFunction(z.string(), (secretKey) =>
-      fromToken(secretKey).balance.retrieve(),
-    ),
-    getBalanceTransactions: zFunction(transactionAccountSchema, (opts) =>
-      fromToken(opts.secretKey).balanceTransactions.list({
-        limit: 100,
-        starting_after: opts.starting_after ?? undefined,
-      }),
-    ),
-  }
-})
-
-if (require.main === module) {
-  require('../../apps/app-config/register.node')
-  const stripe = new Stripe(process.env['STRIPE_TEST_SECRET_KEY']!, {
-    apiVersion: '2022-11-15',
-    httpAgent: getDefaultProxyAgent(),
-  })
-
-  void stripe.invoices
-    .create({customer: 'cus_Luy9s4xRHw2OU4'})
-
-    .then((r) => console.log(r))
-    .catch(console.error)
+  return client
 }
