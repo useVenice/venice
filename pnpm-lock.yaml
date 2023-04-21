@@ -1130,12 +1130,15 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       stripe:
-        specifier: 8.86.0
-        version: 8.86.0
+        specifier: 12.2.0
+        version: 12.2.0
     devDependencies:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
+      openapi-typescript:
+        specifier: 6.2.1
+        version: 6.2.1
 
   integrations/integration-teller:
     dependencies:
@@ -15776,11 +15779,11 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /stripe@8.86.0:
-    resolution: {integrity: sha512-E7Njw+h50TZys2G8QBipIbYQzDVC9L9WT+4Zb1JBepS5ZkWrAJxbk9DXETrs23xj/3jzSevjMelfy3YxN0qFZQ==}
-    engines: {node: ^8.1 || >=10.*}
+  /stripe@12.2.0:
+    resolution: {integrity: sha512-OVqmUuHvDL8z9pBhrhL0HkjPduBM6x1KJCSnVC8R3m+nWpTb7xRpqNuETEkvkYrek1QpfzbcS+UlOCTpv7SC/w==}
+    engines: {node: '>=12.*'}
     dependencies:
-      '@types/node': 18.8.3
+      '@types/node': 18.11.18
       qs: 6.11.0
     dev: false
 

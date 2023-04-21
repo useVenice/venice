@@ -59,11 +59,11 @@ export const stripeProvider = makeSyncProvider({
           name: a.settings?.dashboard.display_name ?? '',
           type: 'asset/digital_wallet',
           institutionName: a.settings?.payments.statement_descriptor,
-          defaultUnit: a.default_currency.toUpperCase() as Unit,
+          defaultUnit: a.default_currency?.toUpperCase() as Unit,
           informationalBalances: {
             available: A(
               a.balance?.available[0]?.amount ?? 0,
-              a.default_currency.toUpperCase() as Unit,
+              a.default_currency?.toUpperCase() as Unit,
             ),
           },
         },

@@ -34,7 +34,7 @@ export const makeStripeClient = zFunction(zStripeConfig, (cfg) => {
       throw new Error(`Unable to get client mode=${modeName}`)
     }
     const configuration: Stripe.StripeConfig = {
-      apiVersion: '2020-03-02',
+      apiVersion: '2022-11-15',
     }
     return new Stripe(secretKey, configuration)
   })
