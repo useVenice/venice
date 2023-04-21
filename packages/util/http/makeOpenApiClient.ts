@@ -9,7 +9,7 @@ import {makeHttpClient} from './makeHttpClient'
 
 // Defining endpoints inline
 interface _Endpoint {
-  input: {[k in keyof HttpRequestOptions]?: z.ZodTypeAny}
+  input: {[k in Exclude<keyof HttpRequestOptions, 'body'>]?: z.ZodTypeAny}
   output: z.ZodTypeAny
 }
 
@@ -34,13 +34,22 @@ export type InfoFromPaths<T extends {}> = {
     [p in keyof T]: m extends keyof T[p]
       ? T[p][m] extends {
           parameters?: infer Params
-          requestBody?: {content: {'application/json': infer BodyInput}}
+          requestBody?: {
+            content: {
+              'application/json'?: infer JsonInput
+              'application/x-www-form-urlencoded'?: infer FormInput
+            }
+          }
           responses?: {
             [_ in 200 | 201]?: {content: {'application/json': infer BodyOutput}}
           }
         }
         ? {
-            input: Partial<Params> & {body?: BodyInput}
+            // TODO: This needs to depend more clearly on HttpRequestOptions
+            input: Partial<Params> & {
+              bodyJson?: JsonInput
+              bodyForm?: FormInput
+            }
             output: Strict<BodyOutput>
           }
         : never

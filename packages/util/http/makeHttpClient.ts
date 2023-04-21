@@ -4,6 +4,7 @@ import * as R from 'remeda'
 import {safeJSONParse} from '../json-utils'
 import {defineProxyFn} from '../di-utils'
 import {joinPath} from '../url-utils'
+import {stringifyQueryParams} from '../url-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -23,9 +24,11 @@ export interface HttpRequestOptions {
   path?: Record<string, unknown>
   /** searchQuery params */
   query?: Record<string, unknown>
-  /** Body json */
-  body?: Record<string, unknown>
   cookies?: Record<string, unknown> // TODO: Impl. cookies
+  /** Body json */
+  bodyJson?: Record<string, unknown>
+  bodyForm?: Record<string, unknown>
+  bodyText?: string
 }
 
 export type HttpClientOptions = RequestInit & {
@@ -59,6 +62,8 @@ export function makeHttpClient(options: HttpClientOptions) {
 
   const agent = getDefaultProxyAgent()
 
+  // TODO: Perform runtime validation on input... so we don't get body
+  // json / form / string at the same time...
   function request(
     method: Uppercase<HTTPMethod>,
     path: string,
@@ -71,7 +76,11 @@ export function makeHttpClient(options: HttpClientOptions) {
       url.searchParams.set(key, `${value}`),
     )
     const headers = {
-      'Content-Type': 'application/json',
+      ...(input.bodyForm && {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }),
+      ...(input.bodyJson && {'Content-Type': 'application/json'}),
+      ...(input.bodyText && {'Content-Type': 'text/plain'}),
       ...(auth?.basic && {
         Authorization: `Basic ${btoa(
           `${auth.basic.username}:${auth.basic.password}`,
@@ -81,7 +90,13 @@ export function makeHttpClient(options: HttpClientOptions) {
       ...defaults.headers,
       ...input.header,
     } as Record<string, string>
-    const body = input.body ? JSON.stringify(input.body) : defaults.body
+
+    const body =
+      input.bodyText ?? input.bodyJson
+        ? JSON.stringify(input.bodyJson)
+        : input.bodyForm
+        ? stringifyQueryParams(input.bodyForm)
+        : undefined
 
     // NOTE: Implement proxyAgent as a middleware
     // This way we can transparently use reverse proxies also in addition to forward proxy
