@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 
-import {memoize, z, zFunction} from '@usevenice/util'
+import {getDefaultProxyAgent, memoize, z, zFunction} from '@usevenice/util'
 
 import {inferStripeModeFromToken} from './stripe-utils'
 
@@ -57,3 +57,17 @@ export const makeStripeClient = zFunction(zStripeConfig, (cfg) => {
     ),
   }
 })
+
+if (require.main === module) {
+  require('../../apps/app-config/register.node')
+  const stripe = new Stripe(process.env['STRIPE_TEST_SECRET_KEY']!, {
+    apiVersion: '2022-11-15',
+    httpAgent: getDefaultProxyAgent(),
+  })
+
+  void stripe.invoices
+    .create({customer: 'cus_Luy9s4xRHw2OU4'})
+
+    .then((r) => console.log(r))
+    .catch(console.error)
+}
