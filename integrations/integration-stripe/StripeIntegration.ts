@@ -1,7 +1,11 @@
 import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
-import {defHelpers} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {defHelpers, handlersLink} from '@usevenice/cdk-core'
+import {
+  makePostingsMap,
+  veniceProviderBase,
+  zCommon,
+} from '@usevenice/cdk-ledger'
+import {A, Rx, fromCompletion, rxjs, z, zCast} from '@usevenice/util'
 import type {components} from './stripe.gen'
 
 import {makeStripeClient} from './StripeClient'
@@ -26,6 +30,14 @@ const stripeDef = {
     .removeDefault()
     .extend({transactionSyncCursor: z.string().nullish()})
     .default({}),
+  destinationInputEntity: z.object({
+    // stream: z.literal('invoice'),
+    // data: zCommon.Invoice,
+    // TODO: rename to stream and data
+    entityName: z.literal('invoice'),
+    entity: zCommon.Invoice,
+    id: z.string(),
+  }),
 } satisfies IntegrationDef
 
 const helpers = defHelpers(stripeDef)
@@ -33,6 +45,7 @@ const helpers = defHelpers(stripeDef)
 export const stripeImpl = {
   name: 'stripe',
   def: stripeDef,
+  helpers,
   extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
@@ -98,5 +111,30 @@ export const stripeImpl = {
     return rxjs
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
+  },
+
+  destinationSync: ({settings}) => {
+    const client = makeStripeClient({apiKey: settings.secretKey})
+
+    // Gotta look up stripe customer...
+    return handlersLink({
+      data: ({data}) => {
+        if (data.entityName !== 'invoice') {
+          return
+        }
+        return fromCompletion(
+          client.post('/v1/invoices', {
+            bodyForm: {
+              customer: data.entity?.company!,
+              // expand: ['customer'],
+              // metadata: {entityId: data.id},
+              // TODO: Fix this parameter stringify
+              // @ts-expect-error
+              'metadata[entityId]': data.id,
+            },
+          }),
+        )
+      },
+    })
   },
 } satisfies IntegrationImpl<typeof stripeDef>

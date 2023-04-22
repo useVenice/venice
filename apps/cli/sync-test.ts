@@ -5,11 +5,12 @@ import '@usevenice/app-config/register.node'
 import {fsProvider} from '@usevenice/app-config/env'
 import {sync} from '@usevenice/cdk-core'
 
-import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
+import {Rx, rxjs, safeJSONParse, z} from '@usevenice/util'
 import readline from 'node:readline'
 import {mergeImpl} from '@usevenice/integration-merge'
 import {heronImpl} from '@usevenice/integration-heron'
 import {brexImpl} from '@usevenice/integration-brex'
+import {stripeImpl} from '@usevenice/integration-stripe'
 import {postgresProvider} from '@usevenice/integration-postgres'
 
 const srcPath = './apps/tests/__encrypted__/meta'
@@ -21,6 +22,28 @@ const destPath = './temp'
 // we are working with configurable via command line args
 
 switch (process.argv[2]) {
+  case 'destination-stripe': {
+    sync({
+      source: rxjs.of({
+        type: 'data',
+        data: {
+          entityName: 'invoice',
+          entity: {
+            id: 'in_1J9ZQo2eZvKYlo2CQ2Z2Z2Z2',
+            company: 'cus_Luy9s4xRHw2OU4',
+          },
+          id: 'ins_1234',
+        },
+      } satisfies (typeof stripeImpl)['helpers']['_inputOpType']),
+      destination: stripeImpl.destinationSync({
+        id: 'reso_stripe',
+        config: {},
+        settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
+        state: {},
+      }),
+    }).catch(console.error)
+    break
+  }
   case 'source-brex': {
     sync({
       source: brexImpl.sourceSync({
