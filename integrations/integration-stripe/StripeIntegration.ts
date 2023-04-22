@@ -116,6 +116,16 @@ export const stripeImpl = {
         if (data.entityName === 'invoice' && data.entity) {
           const entity = data.entity
 
+          let invoice = await client
+            .get('/v1/invoices/search', {
+              query: {query: `metadata['entityId']:'${entity.id}'`},
+            })
+            .then((r) => r.data[0])
+          if (invoice) {
+            console.log('Skipping already created invoice', invoice.id)
+            return op
+          }
+
           const customer = await client
             .get('/v1/customers/search', {
               query: {query: `metadata['entityId']:'${entity.contact}'`},
@@ -132,7 +142,7 @@ export const stripeImpl = {
           // should make this simpler
           // TODO: Gotta validate that the standard invoice before passing onto stripe
           // Most likely via a validator link in the middle
-          const invoice = await client.post('/v1/invoices', {
+          invoice = await client.post('/v1/invoices', {
             bodyForm: {
               customer: customer.id,
               currency: entity.currency ?? undefined,
@@ -147,7 +157,7 @@ export const stripeImpl = {
               client.post('/v1/invoiceitems', {
                 bodyForm: {
                   metadata: {entityId: line.id},
-                  invoice: invoice.id,
+                  invoice: invoice?.id,
                   customer: customer.id, // Technically redundant
                   description: line.description ?? undefined,
                   quantity: line.quantity ?? undefined,
