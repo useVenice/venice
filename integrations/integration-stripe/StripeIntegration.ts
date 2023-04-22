@@ -5,7 +5,7 @@ import {
   veniceProviderBase,
   zCommon,
 } from '@usevenice/cdk-ledger'
-import {A, Rx, fromCompletion, rxjs, z, zCast} from '@usevenice/util'
+import {A, Rx, rxjs, z, zCast} from '@usevenice/util'
 import type {components} from './stripe.gen'
 
 import {makeStripeClient} from './StripeClient'
@@ -30,14 +30,7 @@ const stripeDef = {
     .removeDefault()
     .extend({transactionSyncCursor: z.string().nullish()})
     .default({}),
-  destinationInputEntity: z.object({
-    // stream: z.literal('invoice'),
-    // data: zCommon.Invoice,
-    // TODO: rename to stream and data
-    entityName: z.literal('invoice'),
-    entity: zCommon.Invoice,
-    id: z.string(),
-  }),
+  destinationInputEntity: zCommon.Entity,
 } satisfies IntegrationDef
 
 const helpers = defHelpers(stripeDef)
@@ -118,22 +111,31 @@ export const stripeImpl = {
 
     // Gotta look up stripe customer...
     return handlersLink({
-      data: ({data}) => {
-        if (data.entityName !== 'invoice') {
-          return
-        }
-        return fromCompletion(
-          client.post('/v1/invoices', {
+      data: async (op) => {
+        const {data} = op
+
+        if (data.entityName === 'invoice') {
+          let customer = await client
+            .get('/v1/customers/search', {
+              query: {query: `metadata['entityId']:'${data.entity?.contact}'`},
+            })
+            .then((r) => r.data[0])
+          if (!customer) {
+            customer = await client.post('/v1/customers', {
+              bodyForm: {metadata: {entityId: data.entity?.contact!}},
+            })
+          }
+
+          // Find or create invoice
+          await client.post('/v1/invoices', {
             bodyForm: {
-              customer: data.entity?.company!,
+              customer: customer.id,
               // expand: ['customer'],
-              // metadata: {entityId: data.id},
-              // TODO: Fix this parameter stringify
-              // @ts-expect-error
-              'metadata[entityId]': data.id,
+              metadata: {entityId: data.id},
             },
-          }),
-        )
+          })
+        }
+        return op
       },
     })
   },

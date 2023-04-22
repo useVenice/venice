@@ -30,7 +30,7 @@ switch (process.argv[2]) {
           entityName: 'invoice',
           entity: {
             id: 'in_1J9ZQo2eZvKYlo2CQ2Z2Z2Z2',
-            company: 'cus_Luy9s4xRHw2OU4',
+            contact: 'cus_Luy9s4xRHw2OU4',
           },
           id: 'ins_1234',
         },
