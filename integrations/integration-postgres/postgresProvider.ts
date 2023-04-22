@@ -48,6 +48,11 @@ export const postgresProvider = makeSyncProvider({
       migrationsPath: __dirname + '/migrations',
       migrationTableName: 'ls_migrations',
     })
+    // TODO: Never let slonik transform the field names...
+    const rawClient = makePostgresClient({
+      databaseUrl,
+      transformFieldNames: false,
+    })
 
     async function* iterateEntities() {
       const pool = await getPool()
@@ -82,6 +87,7 @@ export const postgresProvider = makeSyncProvider({
         )
       }
 
+      const rawPool = await rawClient.getPool()
       for (const [_entityName, query] of Object.entries(sourceQueries ?? {})) {
         const entityName = _entityName as keyof NonNullable<
           typeof sourceQueries
@@ -90,8 +96,8 @@ export const postgresProvider = makeSyncProvider({
           return
         }
 
-        const res = await pool.query(
-          sql([query] as unknown as TemplateStringsArray),
+        const res = await rawPool.query(
+          rawClient.sql([query] as unknown as TemplateStringsArray),
         )
         yield res.rows.map((row) =>
           def._op('data', {

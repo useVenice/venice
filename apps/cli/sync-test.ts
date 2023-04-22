@@ -28,7 +28,7 @@ function getSource(name: string) {
                     'quantity', il.quantity,
                     'unit_price', il.unit_price
                   )
-                ) AS line_items
+                ) FILTER (WHERE il.id IS NOT NULL) AS line_items
               FROM
                 invoice_invoice iv
                 LEFT JOIN invoice_invoicelineitem il
