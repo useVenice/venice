@@ -1,17 +1,8 @@
--- Introduce the concept of workspaces and members.
 /*
- TODOs:
- - [ ] Add a table for workspaces and workspace_member join table
- - [ ] Should we add workspace_id to entities? Better for performance but introduces normalization issues
- - [ ] Update RLS accordingly
- - [ ] Add a table of end users
- - [ ] Scoping end user id to workspace id
- - [ ] No more default integrations from env vars... waste of time
- - [ ] Remove extraneous postgres resources
- - [ ] Maybe add end user id to pipeline
- */
-
-
+Checklist:
+- [ ] Add a table of end users
+- [ ] Scoping end user id to workspace id
+*/
 
 -- CREATE TABLE IF NOT EXISTS "public"."end_user" (
 --   "id" character varying NOT NULL DEFAULT generate_ulid(),
