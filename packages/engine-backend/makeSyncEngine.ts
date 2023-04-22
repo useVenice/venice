@@ -271,7 +271,6 @@ export const makeSyncEngine = <
 
     const defaultSource$ = () =>
       src.integration.provider.sourceSync?.({
-        id: src.id,
         endUser,
         config: src.integration.config,
         settings: src.settings,
@@ -290,7 +289,6 @@ export const makeSyncEngine = <
     const destination$$ =
       opts.destination$$ ??
       dest.integration.provider.destinationSync?.({
-        id: dest.id,
         endUser,
         config: dest.integration.config,
         settings: dest.settings,
@@ -762,7 +760,6 @@ export const makeSyncEngine = <
           await sync({
             source:
               reso.integration.provider.sourceSync?.({
-                id: reso.id,
                 config: reso.integration.config,
                 settings: reso.settings,
                 endUser: reso.endUserId && {id: reso.endUserId},

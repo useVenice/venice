@@ -1,7 +1,7 @@
 import type {MaybePromise} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
-import type {EndUserId, ExternalId, Id} from './id.types'
+import type {EndUserId, ExternalId} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
@@ -308,7 +308,6 @@ export function makeSyncProvider<
   TSrcSync extends _opt<
     (
       input: OmitNever<{
-        id: Id['reso']
         endUser: {id: EndUserId} | null | undefined
         config: T['_types']['integrationConfig']
         settings: T['_types']['resourceSettings']
@@ -319,7 +318,6 @@ export function makeSyncProvider<
   TDestSync extends _opt<
     (
       input: OmitNever<{
-        id: Id['reso']
         endUser: {id: EndUserId} | null | undefined
         config: T['_types']['integrationConfig']
         settings: T['_types']['resourceSettings']
