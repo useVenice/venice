@@ -10,9 +10,9 @@ comment on schema "public" is e'@graphql({
 
 DROP VIEW IF EXISTS transaction;
 CREATE VIEW transaction WITH (security_invoker) AS SELECT
-  REPLACE(ledger_resource_id, 'reso_postgres_', '') as user_id,
-	id -- standard->>'_id' as id
-	,standard->>'date' as date
+  end_user_id
+	,id -- standard->>'_id' as id
+  ,standard->>'date' as date
 	,standard->> 'description' as description
 	,standard->> 'payee' as payee
 	,(standard#> '{postingsMap,main,amount,quantity}') :: double precision as amount_quantity
@@ -22,7 +22,6 @@ CREATE VIEW transaction WITH (security_invoker) AS SELECT
 	,standard->> 'notes'  as notes
 	,(standard-> 'postingsMap')::graphql_json as splits -- keep type as jsonb rather than turn into string
 	,external :: graphql_json
-	,ledger_resource_id
 	,provider_name
 	,updated_at
 	,created_at
@@ -48,8 +47,8 @@ comment on view "transaction" is e'TODO: Add description of transaction data typ
 
 DROP VIEW IF EXISTS account;
 CREATE VIEW account WITH (security_invoker) AS SELECT
-  REPLACE(ledger_resource_id, 'reso_postgres_', '') as user_id,
-	id -- standard->>'_id' as id
+  end_user_id
+	,id -- standard->>'_id' as id
 	,standard->>'name' as name
 	,standard->> 'type' as type
 	,standard->> 'lastFour' as last_four
@@ -58,7 +57,6 @@ CREATE VIEW account WITH (security_invoker) AS SELECT
 	,(standard#> '{informationalBalances,current,quantity}') :: double precision as current_balance
 	,(standard#> '{informationalBalances,available,quantity}') :: double precision as available_balance
 	,external :: graphql_json
-	,ledger_resource_id
 	,provider_name
 	,updated_at
 	,created_at
@@ -75,13 +73,13 @@ comment on view "account" is e'TODO: Add description of account data type here..
 
 DROP VIEW IF EXISTS transaction_split;
 CREATE VIEW transaction_split WITH (security_invoker) AS SELECT
-	id as transaction_id
+	end_user_id
+	,id as transaction_id
 	,s.key
 	,(s.value #>'{amount,quantity}')  :: double precision as amount_quantity
 	,s.value #>>'{amount,unit}' as amount_unit
 	,s.value ->>'accountId' as account_id
 	,s.value :: graphql_json as data
-	,ledger_resource_id
 	,updated_at
 	,created_at
 FROM "raw_transaction",
