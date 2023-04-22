@@ -1,6 +1,6 @@
 import type {NoInfer, ObjectPartialDeep} from '@usevenice/util'
 
-import type {Id, IDS, UserId} from './id.types'
+import type {EndUserId, Id, IDS} from './id.types'
 import type {ZRaw} from './meta.types'
 
 export interface MetaTable<
@@ -11,7 +11,7 @@ export interface MetaTable<
   list(options: {
     ids?: TID[]
     /** Maybe remove this? not applicable everywhere */
-    creatorId?: UserId | null
+    endUserId?: EndUserId | null
     /** Used for search */
     keywords?: string | null
     /** Pagination, not necessarily supported */
@@ -23,7 +23,7 @@ export interface MetaTable<
   delete(id: TID): Promise<void>
 }
 
-export interface CreatorIdResultRow {
+export interface EndUserResultRow {
   id: Id['ldgr']
   resourceCount?: number
   firstCreatedAt?: unknown
@@ -38,11 +38,11 @@ export interface MetaService {
   // and default to dumb listing all rows from table and in memory filter
   // if the corresponding methods are not implemented
   // This is useful for things like memory
-  searchCreatorIds: (options: {
+  searchEndUsers: (options: {
     keywords?: string | null
     limit?: number
     offset?: number
-  }) => Promise<readonly CreatorIdResultRow[]>
+  }) => Promise<readonly EndUserResultRow[]>
   searchInstitutions: (options: {
     /** Leave empty to list the top institutions */
     keywords?: string | null

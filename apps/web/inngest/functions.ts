@@ -6,8 +6,8 @@ import {
   veniceRouter,
 } from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
-import type {UserId} from '@usevenice/cdk-core'
-import {zId, zUserId} from '@usevenice/cdk-core'
+import type {EndUserId} from '@usevenice/cdk-core'
+import {zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
 import {serverAnalytics} from '../lib/server-analytics'
@@ -56,7 +56,7 @@ export const syncPipeline = inngest.createFunction(
     // Otherwise connections could be overwritten with the wrong id...
     // This upsert stuff is dangerous...
     await veniceRouter
-      .createCaller({isAdmin: true, userId: 'usr_TASK_NOOP' as UserId})
+      .createCaller({isAdmin: true, endUserId: 'usr_TASK_NOOP' as EndUserId})
       .syncPipeline([{id: pipelineId}, {}])
     console.log('did sync pipeline', pipelineId)
     return pipelineId
@@ -73,13 +73,13 @@ export const syncResource = inngest.createFunction(
       // TODO: Figure out what is the userId we ought to be using...
 
       const pool = await getPool()
-      const creatorId = await pool.oneFirst<UserId>(
-        sql`SELECT creator_id FROM resource WHERE id = ${resourceId}`,
+      const endUserId = await pool.oneFirst<EndUserId>(
+        sql`SELECT end_user_id FROM resource WHERE id = ${resourceId}`,
       )
-      console.log('creatorId', creatorId)
-      const [ledgerId] = await ensureDefaultResourceAndPipelines(creatorId)
+      console.log('endUserId', endUserId)
+      const [ledgerId] = await ensureDefaultResourceAndPipelines(endUserId)
       await veniceRouter
-        .createCaller({userId: creatorId})
+        .createCaller({endUserId})
         .syncResource([
           {id: resourceId as never},
           {connectWith: {destinationId: ledgerId}},
@@ -149,12 +149,12 @@ async function handleDatabaseWebhook(c: ChangePayload) {
   } else if (c.schema === 'public' && c.table === 'resource') {
     // Ignore postgres events for now...
     if (c.type === 'INSERT' && c.record['provider_name'] !== 'postgres') {
-      serverAnalytics.track(zUserId.parse(c.record['creator_id']), {
+      serverAnalytics.track(zEndUserId.parse(c.record['end_user_id']), {
         name: 'db/resource-created',
         data: {resourceId: zId('reso').parse(c.record['id'])},
       })
     } else if (c.type === 'DELETE') {
-      serverAnalytics.track(zUserId.parse(c.old_record['creator_id']), {
+      serverAnalytics.track(zEndUserId.parse(c.old_record['end_user_id']), {
         name: 'db/resource-deleted',
         data: {resourceId: zId('reso').parse(c.old_record['id'])},
       })

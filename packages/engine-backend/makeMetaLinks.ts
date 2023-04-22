@@ -26,7 +26,7 @@ import {deepMerge, infer, R} from '@usevenice/util'
 export function makeMetaLinks(metaBase: MetaService) {
   type Res = Pick<
     ZRaw['resource'],
-    'id' | 'envName' | 'integrationId' | 'creatorId'
+    'id' | 'envName' | 'integrationId' | 'endUserId'
   >
   type Pipe = Pick<
     ZRaw['pipeline'],
@@ -112,7 +112,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           // maybe we should distinguish between setDefaults (from existingResource) vs. actually
           // updating the values...
           envName: op.envName ?? resource.envName,
-          creatorId: resource.creatorId,
+          endUserId: resource.endUserId,
         })
       },
       stateUpdate: async (op) => {

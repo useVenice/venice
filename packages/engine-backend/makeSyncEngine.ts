@@ -1,19 +1,18 @@
 import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
-import {initTRPC, TRPCError} from '@trpc/server'
+import {TRPCError, initTRPC} from '@trpc/server'
 
 import type {
   AnyEntityPayload,
   AnySyncProvider,
   ConnectWith,
   Destination,
+  EndUserId,
   Link,
   LinkFactory,
   MetaService,
   ResourceUpdate,
   Source,
-  UserId,
 } from '@usevenice/cdk-core'
-import {zUserId} from '@usevenice/cdk-core'
 import {
   extractId,
   handlersLink,
@@ -21,15 +20,16 @@ import {
   sync,
   zCheckResourceOptions,
   zConnectOptions,
+  zEndUserId,
   zPostConnectOptions,
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
-import {joinPath, R, rxjs, z} from '@usevenice/util'
+import {R, joinPath, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
-import {makeJwtClient, _zContext} from './auth-utils'
+import {_zContext, makeJwtClient} from './auth-utils'
 import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
@@ -68,7 +68,7 @@ export interface SyncEngineConfig<
   /** Used for oauth based resources */
   getRedirectUrl?: (
     integration: ParsedInt,
-    ctx: {userId?: UserId | null},
+    ctx: {endUserId?: EndUserId | null},
   ) => string
 
   parseJwtPayload?: ParseJwtPayload
@@ -106,7 +106,7 @@ export const trpcServer = initTRPC
   .create()
 
 export const isAuthed = trpcServer.middleware(({next, ctx, path}) => {
-  if (!ctx.userId && !ctx.isAdmin) {
+  if (!ctx.endUserId && !ctx.isAdmin) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: `Auth required: ${path}`,
@@ -116,7 +116,7 @@ export const isAuthed = trpcServer.middleware(({next, ctx, path}) => {
   // check user has access to resource pipline etc in a single place...
   // Also we probably don't want non-admin user to be able to provider anything
   // other than the `id` for integration, resource and pipeline
-  return next({ctx: {...ctx, userId: ctx.userId}})
+  return next({ctx: {...ctx, userId: ctx.endUserId}})
 })
 export const isAdmin = trpcServer.middleware(({next, ctx, path}) => {
   if (!ctx.isAdmin) {
@@ -135,9 +135,9 @@ export const adminProcedure = publicProcedure.use(isAdmin)
 // as well as syncing via API which has auth...
 // Some methods require userId in context (preConnect / postConnect)
 // while other methods (sometimes) does not require userId (syncResource)
-// We should also be careful that during upserts we never change the `creatorId` and thus
+// We should also be careful that during upserts we never change the `endUserId` and thus
 // the permission structure...
-const ADMIN_UID = 'admin' as UserId
+const ADMIN_UID = 'admin' as EndUserId
 
 export const makeSyncEngine = <
   TProviders extends readonly AnySyncProvider[],
@@ -210,7 +210,7 @@ export const makeSyncEngine = <
   const _syncResourceUpdate = async (
     int: ParsedInt,
     {
-      userId,
+      endUserId: userId,
       envName,
       settings,
       institution,
@@ -227,7 +227,7 @@ export const makeSyncEngine = <
     const id = makeId('reso', int.provider.name, resoUpdate.resourceExternalId)
     await metaLinks
       .handlers({
-        resource: {id, integrationId: int.id, creatorId: userId, envName},
+        resource: {id, integrationId: int.id, endUserId: userId, envName},
       })
       .resoUpdate({type: 'resoUpdate', id, settings, institution})
 
@@ -244,7 +244,7 @@ export const makeSyncEngine = <
         id,
         // Should we spread resoUpdate into it?
         settings,
-        creatorId: userId,
+        endUserId: userId,
         // institution: resoUpdate.institution,
       },
       resoUpdate.connectWith ?? undefined,
@@ -383,7 +383,7 @@ export const makeSyncEngine = <
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
         const resources = await metaService.tables.resource.list({
-          creatorId: ctx.userId,
+          endUserId: ctx.userId,
         })
         const [institutions, _pipelines] = await Promise.all([
           metaService.tables.institution.list({
@@ -459,7 +459,7 @@ export const makeSyncEngine = <
           })
       }),
     listPipelines: authedProcedure
-      .input(z.object({viewAsUserId: zUserId.nullish()}).optional())
+      .input(z.object({viewAsUserId: zEndUserId.nullish()}).optional())
       .query(async ({ctx, input}) => {
         if (input?.viewAsUserId && !ctx.isAdmin) {
           throw new TRPCError({code: 'FORBIDDEN'})
@@ -469,7 +469,7 @@ export const makeSyncEngine = <
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
         const resources = await metaService.tables.resource.list({
-          creatorId: userId,
+          endUserId: userId,
         })
         const [institutions, pipelines] = await Promise.all([
           metaService.tables.institution.list({
@@ -603,10 +603,10 @@ export const makeSyncEngine = <
             },
           })
           if (resoUpdate || opts?.import) {
-            /** Do not update the `creatorId` here... */
+            /** Do not update the `endUserId` here... */
             await _syncResourceUpdate(int, {
               ...(opts?.import && {
-                userId: reso.creatorId ?? undefined,
+                endUserId: reso.endUserId ?? undefined,
                 envName: reso.envName ?? undefined,
               }),
               ...resoUpdate,
@@ -676,7 +676,7 @@ export const makeSyncEngine = <
             int.config,
             {
               ...connCtxInput,
-              userId: ctx.userId ?? ADMIN_UID,
+              endUserId: ctx.userId ?? ADMIN_UID,
               resource: reso
                 ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   {externalId: resourceExternalId!, settings: reso.settings}
@@ -726,7 +726,7 @@ export const makeSyncEngine = <
             int.config,
             {
               ...connCtxInput,
-              userId: ctx.userId ?? ADMIN_UID,
+              endUserId: ctx.userId ?? ADMIN_UID,
               resource: reso
                 ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   {externalId: resourceExternalId!, settings: reso.settings}
@@ -745,7 +745,7 @@ export const makeSyncEngine = <
           const resourceId = await _syncResourceUpdate(int, {
             ...resoUpdate,
             // No need for each integration to worry about this, unlike in the case of handleWebhook.
-            userId: ctx.userId ?? ADMIN_UID,
+            endUserId: ctx.userId ?? ADMIN_UID,
             envName: connCtxInput.envName,
             connectWith: connCtxInput.connectWith,
             triggerDefaultSync:
@@ -791,7 +791,7 @@ export const makeSyncEngine = <
         // is vulnerable to race condition and feels brittle. Though syncResource is only
         // called from the UI so we are fine for now.
         await _syncResourceUpdate(reso.integration, {
-          userId: ctx.userId,
+          endUserId: ctx.userId,
           settings: reso.settings,
           // What about envName
           resourceExternalId: extractId(reso.id)[2],
@@ -813,8 +813,8 @@ export const makeSyncEngine = <
 
     // Admin procedures...
     adminCreateConnectToken: adminProcedure
-      .input(z.object({userId: zUserId}))
-      .mutation(({input: {userId}}) => {
+      .input(z.object({endUserId: zEndUserId}))
+      .mutation(({input: {endUserId}}) => {
         if (!jwtClient) {
           throw new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
@@ -823,15 +823,15 @@ export const makeSyncEngine = <
         }
         // TODO: Handle having jwtPublicKey rather than secret
         return jwtClient.sign({
-          sub: userId,
+          sub: endUserId,
           exp: Math.floor(Date.now() / 1000) + 3600,
           role: 'authenticated',
         } satisfies VeniceConnectJwtPayload)
       }),
-    adminSearchCreatorIds: adminProcedure
+    adminSearchEndUsers: adminProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
       .query(async ({input: {keywords} = {}}) =>
-        metaService.searchCreatorIds({keywords}),
+        metaService.searchEndUsers({keywords}),
       ),
     adminGetIntegration: adminProcedure.input(zInt).query(({input: int}) => ({
       config: int.config,

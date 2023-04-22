@@ -225,7 +225,7 @@ export const yodleeProvider = makeSyncProvider({
     }),
   },
   // TODO: handle reconnecting scenario
-  preConnect: async (config, {envName, userId}) => {
+  preConnect: async (config, {envName, endUserId: userId}) => {
     const loginName =
       envName === 'sandbox' ? config.sandbox?.sandboxLoginName : userId
     if (!loginName) {
@@ -243,7 +243,7 @@ export const yodleeProvider = makeSyncProvider({
   postConnect: async (
     {providerAccountId, providerId},
     config,
-    {envName, userId},
+    {envName, endUserId: userId},
   ) => {
     // Should we get accessToken & loginName from the preConnect phase?
     const loginName =

@@ -5,6 +5,7 @@
  - [ ] Should we add workspace_id to entities? Better for performance but introduces normalization issues
  - [ ] Update RLS accordingly
  - [ ] Add a table of end users
+ - [ ] Scoping end user id to workspace id
  */
 
 

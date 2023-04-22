@@ -1,16 +1,16 @@
 import {getServerUrl} from '@usevenice/app-config/constants'
-import {zUserId} from '@usevenice/cdk-core'
+import {zEndUserId} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
+import Link from 'next/link'
+import {useForm} from 'react-hook-form'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {copyToClipboard} from '../../contexts/common-contexts'
-import Link from 'next/link'
-import {useForm} from 'react-hook-form'
 
 const formSchema = z.object({
-  userId: zUserId,
+  endUserId: zEndUserId,
   displayName: z
     .string()
     .nullish()
@@ -30,7 +30,7 @@ export default function MagicLinkPage() {
   })
   const form = useForm<z.infer<typeof formSchema>>()
 
-  const userId = form.watch('userId')
+  const endUserId = form.watch('endUserId')
 
   return (
     <PageLayout title="Magic link" auth="admin">
@@ -56,7 +56,7 @@ export default function MagicLinkPage() {
             <div className="mt-8 flex justify-center gap-4">
               <Button
                 onClick={submit}
-                disabled={createToken.isLoading || !userId}
+                disabled={createToken.isLoading || !endUserId}
                 className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
                 {createToken.isLoading ? (
                   <span>Creating...</span>
@@ -66,7 +66,7 @@ export default function MagicLinkPage() {
               </Button>
 
               <Link
-                href={`/admin/pipelines?viewAsUserId=${userId ?? ''}`}
+                href={`/admin/pipelines?viewAsUserId=${endUserId ?? ''}`}
                 // target="_blank"
                 className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
                 View user pipelines

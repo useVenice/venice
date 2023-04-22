@@ -9,11 +9,11 @@ import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createProxySSGHelpers} from '@trpc/react-query/ssg'
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {
+  xPatAppMetadataKey,
   xPatHeaderKey,
   xPatUrlParamKey,
-  xPatAppMetadataKey,
 } from '@usevenice/app-config/constants'
-import type {UserId} from '@usevenice/cdk-core'
+import type {EndUserId} from '@usevenice/cdk-core'
 import {makeJwtClient, xAdminAppMetadataKey} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
@@ -34,7 +34,7 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   const ssg = createProxySSGHelpers({
     queryClient,
     router: veniceRouter,
-    ctx: {userId: user?.id as UserId | undefined},
+    ctx: {endUserId: user?.id as EndUserId | undefined},
     // transformer: superjson,
   })
   return {

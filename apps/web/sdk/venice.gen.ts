@@ -17,7 +17,7 @@ export interface paths {
   };
   "/account": {
     /**
-     * @graphql({ 
+     * @graphql({
      * @description 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
      * 	"foreign_keys": []
@@ -25,7 +25,7 @@ export interface paths {
      */
     get: {
       /**
-       * @graphql({ 
+       * @graphql({
        * @description 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
        * 	"foreign_keys": []
@@ -45,7 +45,7 @@ export interface paths {
       };
     };
     /**
-     * @graphql({ 
+     * @graphql({
      * @description 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
      * 	"foreign_keys": []
@@ -53,7 +53,7 @@ export interface paths {
      */
     post: {
       /**
-       * @graphql({ 
+       * @graphql({
        * @description 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
        * 	"foreign_keys": []
@@ -66,7 +66,7 @@ export interface paths {
       };
     };
     /**
-     * @graphql({ 
+     * @graphql({
      * @description 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
      * 	"foreign_keys": []
@@ -74,7 +74,7 @@ export interface paths {
      */
     delete: {
       /**
-       * @graphql({ 
+       * @graphql({
        * @description 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
        * 	"foreign_keys": []
@@ -86,7 +86,7 @@ export interface paths {
       };
     };
     /**
-     * @graphql({ 
+     * @graphql({
      * @description 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
      * 	"foreign_keys": []
@@ -94,7 +94,7 @@ export interface paths {
      */
     patch: {
       /**
-       * @graphql({ 
+       * @graphql({
        * @description 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
        * 	"foreign_keys": []
@@ -361,7 +361,7 @@ export interface paths {
   };
   "/transaction": {
     /**
-     * TODO: Add description of transaction data type here... 
+     * TODO: Add description of transaction data type here...
      * @description @graphql({
      * 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
@@ -380,7 +380,7 @@ export interface paths {
      */
     get: {
       /**
-       * TODO: Add description of transaction data type here... 
+       * TODO: Add description of transaction data type here...
        * @description @graphql({
        * 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
@@ -411,7 +411,7 @@ export interface paths {
       };
     };
     /**
-     * TODO: Add description of transaction data type here... 
+     * TODO: Add description of transaction data type here...
      * @description @graphql({
      * 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
@@ -430,7 +430,7 @@ export interface paths {
      */
     post: {
       /**
-       * TODO: Add description of transaction data type here... 
+       * TODO: Add description of transaction data type here...
        * @description @graphql({
        * 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
@@ -454,7 +454,7 @@ export interface paths {
       };
     };
     /**
-     * TODO: Add description of transaction data type here... 
+     * TODO: Add description of transaction data type here...
      * @description @graphql({
      * 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
@@ -473,7 +473,7 @@ export interface paths {
      */
     delete: {
       /**
-       * TODO: Add description of transaction data type here... 
+       * TODO: Add description of transaction data type here...
        * @description @graphql({
        * 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
@@ -496,7 +496,7 @@ export interface paths {
       };
     };
     /**
-     * TODO: Add description of transaction data type here... 
+     * TODO: Add description of transaction data type here...
      * @description @graphql({
      * 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
@@ -515,7 +515,7 @@ export interface paths {
      */
     patch: {
       /**
-       * TODO: Add description of transaction data type here... 
+       * TODO: Add description of transaction data type here...
        * @description @graphql({
        * 	"primary_key_columns": ["id"],
        * 	"totalCount": {"enabled": true},
@@ -541,12 +541,12 @@ export interface paths {
   };
   "/transaction_split": {
     /**
-     * Entities summary 
+     * Entities summary
      * @description   Entities description that
      *   spans
      *   multiple lines
-     *   
-     *   
+     *
+     *
      * 	@graphql({
      * 		"primary_key_columns": ["id", "key"],
      * 		"totalCount": {"enabled": true},
@@ -555,12 +555,12 @@ export interface paths {
      */
     get: {
       /**
-       * Entities summary 
+       * Entities summary
        * @description   Entities description that
        *   spans
        *   multiple lines
-       *   
-       *   
+       *
+       *
        * 	@graphql({
        * 		"primary_key_columns": ["id", "key"],
        * 		"totalCount": {"enabled": true},
@@ -596,7 +596,7 @@ export interface components {
      */
     account: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Primary Key.<pk/>
        */
@@ -624,9 +624,9 @@ export interface components {
     };
     institution: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
@@ -635,57 +635,57 @@ export interface components {
       /** Format: jsonb */
       external: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
     };
     integration: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
       /** Format: jsonb */
       config: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
     };
     pipeline: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
@@ -693,7 +693,7 @@ export interface components {
       /** Format: jsonb */
       source_state: Record<string, never>;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
@@ -703,12 +703,12 @@ export interface components {
       /** Format: jsonb */
       link_options: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
@@ -719,9 +719,9 @@ export interface components {
     };
     raw_account: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
@@ -732,22 +732,22 @@ export interface components {
       /** Format: jsonb */
       external: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
@@ -755,9 +755,9 @@ export interface components {
     };
     raw_commodity: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
@@ -768,22 +768,22 @@ export interface components {
       /** Format: jsonb */
       external: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
@@ -791,9 +791,9 @@ export interface components {
     };
     raw_transaction: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
@@ -804,22 +804,22 @@ export interface components {
       /** Format: jsonb */
       external: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
@@ -827,22 +827,22 @@ export interface components {
     };
     resource: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
-       * This is a Primary Key.<pk/> 
+       * This is a Primary Key.<pk/>
        * @default public.generate_ulid()
        */
       id: string;
       /** Format: character varying */
-      creator_id?: string;
+      end_user_id?: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `integration.id`.<fk table='integration' column='id'/>
        */
       integration_id?: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Foreign Key to `institution.id`.<fk table='institution' column='id'/>
        */
@@ -852,17 +852,17 @@ export interface components {
       /** Format: jsonb */
       settings: Record<string, never>;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       created_at: string;
       /**
-       * Format: timestamp with time zone 
+       * Format: timestamp with time zone
        * @default now()
        */
       updated_at: string;
       /**
-       * Format: character varying 
+       * Format: character varying
        * @default split_part((id)::text, '_'::text, 2)
        */
       provider_name: string;
@@ -871,7 +871,7 @@ export interface components {
     };
     /**
      * @description TODO: Add description of transaction data type here...
-     * 
+     *
      * @graphql({
      * 	"primary_key_columns": ["id"],
      * 	"totalCount": {"enabled": true},
@@ -890,7 +890,7 @@ export interface components {
      */
     transaction: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Primary Key.<pk/>
        */
@@ -922,12 +922,12 @@ export interface components {
     };
     /**
      * @description Entities summary
-     * 
+     *
      *   Entities description that
      *   spans
      *   multiple lines
-     *   
-     *   
+     *
+     *
      * 	@graphql({
      * 		"primary_key_columns": ["id", "key"],
      * 		"totalCount": {"enabled": true},
@@ -936,7 +936,7 @@ export interface components {
      */
     transaction_split: {
       /**
-       * Format: character varying 
+       * Format: character varying
        * @description Note:
        * This is a Primary Key.<pk/>
        */
@@ -1022,7 +1022,7 @@ export interface components {
     "rowFilter.raw_commodity.provider_name": string;
     "rowFilter.raw_commodity.ledger_resource_id": string;
     "rowFilter.resource.id": string;
-    "rowFilter.resource.creator_id": string;
+    "rowFilter.resource.end_user_id": string;
     "rowFilter.resource.integration_id": string;
     "rowFilter.resource.institution_id": string;
     "rowFilter.resource.env_name": string;

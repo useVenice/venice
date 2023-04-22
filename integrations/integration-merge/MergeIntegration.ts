@@ -90,7 +90,7 @@ export const mergeImpl = {
     const client = makeMergeClient({apiKey: config.apiKey})
     const res = await client.integrations.post('/create-link-token', {
       bodyJson: {
-        end_user_origin_id: context.userId,
+        end_user_origin_id: context.endUserId,
         end_user_email_address:
           input.end_user_email_address ?? 'test@example.com',
         end_user_organization_name:

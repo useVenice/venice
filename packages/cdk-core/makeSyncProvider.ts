@@ -1,14 +1,14 @@
 import type {MaybePromise} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
-import type {ExternalId, Id, UserId} from './id.types'
+import type {EndUserId, ExternalId, Id} from './id.types'
 import {makeId, zExternalId, zId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
-  ResoUpdateData,
   Destination,
+  ResoUpdateData,
   Source,
   StateUpdateData,
   SyncOperation,
@@ -49,7 +49,7 @@ export type OpenDialogFn = (
 ) => void
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
-  userId: UserId | undefined
+  endUserId: EndUserId | undefined
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
@@ -66,7 +66,7 @@ export interface CheckResourceContext {
 export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'resourceExternalId'>,
     CheckResourceContext {
-  userId: UserId
+  endUserId: EndUserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
   redirectUrl?: string
   resource?: {
@@ -107,7 +107,7 @@ export interface ResourceUpdate<TEntity extends AnyEntityPayload, TSettings>
   resourceExternalId: ExternalId
   // Can we inherit types used by metaLinks?
   /** If missing it means do not change the userId... */
-  userId?: UserId | null
+  endUserId?: EndUserId | null
 
   source$?: Source<TEntity>
   triggerDefaultSync?: boolean
@@ -380,7 +380,7 @@ export function makeSyncProvider<
           T['_types']['sourceOutputEntity'],
           T['_types']['resourceSettings']
         >,
-        'creatorId'
+        'endUserId'
       >
     >
   >,
@@ -398,7 +398,7 @@ export function makeSyncProvider<
           T['_types']['sourceOutputEntity'],
           T['_types']['resourceSettings']
         >,
-        'creatorId'
+        'endUserId'
       >
     >
   >,

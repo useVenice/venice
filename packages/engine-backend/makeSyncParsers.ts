@@ -233,7 +233,7 @@ export function makeSyncParsers<
         // For security do not allow userId to ever be automatically changed
         // once exists. Otherwise one could pass someone else's userId and get access
         // to their resource via just the `id`
-        creatorId: reso?.creatorId ?? input.creatorId,
+        endUserId: reso?.endUserId ?? input.endUserId,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,
@@ -339,7 +339,7 @@ export function makeSyncParsers<
 }
 
 type AuthSubject =
-  | ['resource', Pick<ParsedReso, 'creatorId' | 'id'> | null | undefined]
+  | ['resource', Pick<ParsedReso, 'endUserId' | 'id'> | null | undefined]
   | [
       'pipeline',
       Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
@@ -352,12 +352,12 @@ export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
   }
   switch (pair[0]) {
     case 'resource':
-      return pair[1] == null || pair[1].creatorId === ctx.userId
+      return pair[1] == null || pair[1].endUserId === ctx.endUserId
     case 'pipeline':
       return (
         pair[1] == null ||
-        pair[1].source.creatorId === ctx.userId ||
-        pair[1].destination.creatorId === ctx.userId
+        pair[1].source.endUserId === ctx.endUserId ||
+        pair[1].destination.endUserId === ctx.endUserId
       )
   }
 }
@@ -366,7 +366,7 @@ export function authorizeOrThrow(ctx: UserInfo, ...pair: AuthSubject) {
   if (!checkAuthorization(ctx, ...pair)) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
-      message: `${ctx.userId} does not have access to ${
+      message: `${ctx.endUserId} does not have access to ${
         typeof pair[1] === 'string' ? pair[1] : pair[1]?.id
       }`,
     })

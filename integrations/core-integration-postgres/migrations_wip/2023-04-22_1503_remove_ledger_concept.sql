@@ -7,6 +7,8 @@ TODOS:
 - [x] Rename creator_id to end_user_id on creator
   - [x] Update RLS policy names while we are at it
 - [ ] Stop using ledger_resource_id and use end_user_id in code
+  - [ ] Get rid of connectWith
+
 - [ ] Regenerate types
 - [ ] No more default integrations from env vars... waste of time
 - [ ] Remove extraneous postgres resources

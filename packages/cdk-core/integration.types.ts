@@ -102,7 +102,7 @@ export interface IntegrationImpl<
         T['_types']['sourceOutputEntity'],
         T['_types']['resourceSettings']
       >,
-      'creatorId'
+      'endUserId'
     >
   >
 
@@ -119,7 +119,7 @@ export interface IntegrationImpl<
         T['_types']['sourceOutputEntity'],
         T['_types']['resourceSettings']
       >,
-      'creatorId'
+      'endUserId'
     >
   >
 

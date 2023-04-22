@@ -1,5 +1,5 @@
 import type {
-  CreatorIdResultRow,
+  EndUserResultRow,
   MetaService,
   MetaTable,
   ZRaw,
@@ -27,11 +27,11 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
   // TODO: Convert case from snake_case to camelCase
   return {
-    list: ({ids, creatorId, keywords, ...rest}) =>
+    list: ({ids, endUserId, keywords, ...rest}) =>
       getPool().then((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
-          creatorId && sql`creator_id = ${creatorId}`,
+          endUserId && sql`end_user_id = ${endUserId}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&
             tableName === 'institution' &&
@@ -71,26 +71,26 @@ export const makePostgresMetaService = zFunction(
     }
     return {
       tables,
-      searchCreatorIds: ({keywords, ...rest}) => {
+      searchEndUsers: ({keywords, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)
         const where = keywords
-          ? sql`WHERE creator_id ILIKE ${'%' + keywords + '%'}`
+          ? sql`WHERE end_user_id ILIKE ${'%' + keywords + '%'}`
           : sql``
         const query = applyLimitOffset(
           sql`
             SELECT
-              creator_id as id,
+              end_user_id as id,
               count(*) AS resource_count,
               min(created_at) AS first_created_at,
               max(updated_at) AS last_updated_at
             FROM
               resource
             ${where}
-            GROUP BY creator_id
+            GROUP BY end_user_id
           `,
           rest,
         )
-        return getPool().then((pool) => pool.any<CreatorIdResultRow>(query))
+        return getPool().then((pool) => pool.any<EndUserResultRow>(query))
       },
       searchInstitutions: ({keywords, providerNames, ...rest}) => {
         const {getPool, sql} = _getDeps(databaseUrl)

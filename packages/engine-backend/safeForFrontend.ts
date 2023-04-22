@@ -1,11 +1,11 @@
 // Temporary file with exports that are safe to use on the frontend.
 
-import * as jwt from 'jsonwebtoken'
-import {zUserId} from '@usevenice/cdk-core'
+import {zEndUserId} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
+import * as jwt from 'jsonwebtoken'
 
 export const zVeniceConnectJwtPayload = z.object({
-  sub: zUserId,
+  sub: zEndUserId,
   /** Required by supabase/goTrue-js and supabase/realtime */
   exp: z.number(),
   /** Required by supabase/realtime */

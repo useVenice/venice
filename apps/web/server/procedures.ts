@@ -61,7 +61,7 @@ export async function ensureDefaultResourceAndPipelines(
   return runAsAdmin(async (trxn) => {
     const postgresResoIds = await trxn
       .anyFirst<Id['reso']>(
-        sql`SELECT id FROM resource WHERE creator_id = ${userId} AND provider_name = 'postgres'`,
+        sql`SELECT id FROM resource WHERE end_user_id = ${userId} AND provider_name = 'postgres'`,
       )
       .then(async (ids) => {
         if (ids.length > 0) {
@@ -69,7 +69,7 @@ export async function ensureDefaultResourceAndPipelines(
         }
         const ledgerId = makeId('reso', 'postgres', userId)
         await trxn.query(
-          sql`INSERT INTO resource (id, creator_id) VALUES (${ledgerId}, ${userId})`,
+          sql`INSERT INTO resource (id, end_user_id) VALUES (${ledgerId}, ${userId})`,
         )
         return [ledgerId] as NonEmptyArray<Id['reso']>
       })
@@ -90,7 +90,7 @@ export async function ensureDefaultResourceAndPipelines(
               LEFT JOIN pipeline p ON (r.id = p.source_id
                   OR r.id = p.destination_id)
             WHERE
-              r.creator_id = ${userId}
+              r.end_user_id = ${userId}
               AND r.provider_name = 'heron'
           `,
         )
@@ -99,7 +99,7 @@ export async function ensureDefaultResourceAndPipelines(
 
           if (!rows.length) {
             await trxn.query(
-              sql`INSERT INTO resource (id, creator_id) VALUES (${heronResoId}, ${userId})`,
+              sql`INSERT INTO resource (id, end_user_id) VALUES (${heronResoId}, ${userId})`,
             )
           }
           if (!rows.some((r) => r.direction === 'from_heron')) {

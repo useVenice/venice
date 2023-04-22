@@ -33,15 +33,15 @@ export const zUseVeniceOptions = z.object({
 export type UseVenice = ReturnType<typeof useVenice>
 
 export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
-  const {trpc, userId, isAdmin, developerMode} = VeniceProvider.useContext()
+  const {trpc, endUserId, isAdmin, developerMode} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
-    {enabled: !!userId, staleTime: 15 * 60 * 1000},
+    {enabled: !!endUserId, staleTime: 15 * 60 * 1000},
   )
 
   const insRes = trpc.searchInstitutions.useQuery(
     {keywords},
-    {enabled: !!userId, staleTime: 15 * 60 * 1000}, // TODO: default system wide stale time.
+    {enabled: !!endUserId, staleTime: 15 * 60 * 1000}, // TODO: default system wide stale time.
   )
   const deleteResource = trpc.deleteResource.useMutation({})
   const checkResource = trpc.checkResource.useMutation({})
@@ -51,7 +51,7 @@ export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
   const veniceConnect = useVeniceConnect({envName, ...options})
 
   return {
-    userId,
+    endUserId,
     integrationsRes,
     insRes,
     deleteResource,
@@ -93,7 +93,7 @@ export function useVeniceConnect({
     connectFnMapRef,
     trpcClient: _client,
     trpc,
-    userId,
+    endUserId,
     providerByName,
     openDialog,
   } = VeniceProvider.useContext()
@@ -112,10 +112,10 @@ export function useVeniceConnect({
   const connect = React.useCallback(
     async function (int: IntegrationInput, opts: IntegrationOptions) {
       console.log('[useVeniceConnect] _connect')
-      if (!envName || !userId) {
+      if (!envName || !endUserId) {
         console.log('[useVeniceConnect] Connect missing params, noop', {
           envName,
-          userId,
+          endUserId,
         })
         return
       }
@@ -253,7 +253,7 @@ export function useVeniceConnect({
     },
     [
       envName,
-      userId,
+      endUserId,
       providerByName,
       options.enablePreconnectPrompt,
       trpcCtx.preConnect,
