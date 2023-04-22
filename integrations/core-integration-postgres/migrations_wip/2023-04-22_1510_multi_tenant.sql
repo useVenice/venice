@@ -2,11 +2,6 @@
 /*
  Checklist:
  - [x] Add a table for workspaces and workspace_member join table
- - [ ] Should we add workspace_id to entities? Better for performance but introduces normalization issues
- - [ ] Update RLS accordingly
- - [ ] No more default integrations from env vars... waste of time
- - [ ] Remove extraneous postgres resources
- - [ ] Maybe add end user id to pipeline
  */
 
 -- Create tables
@@ -37,7 +32,7 @@ CREATE INDEX IF NOT EXISTS workspace_member_updated_at ON workspace_member (upda
 
 ALTER TABLE "public"."workspace_member" ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Create policies on workspace and workspace_members
 
 CREATE OR REPLACE FUNCTION auth.workspace_ids()
  RETURNS varchar[]
@@ -64,3 +59,66 @@ CREATE POLICY workspace_member_access ON "public"."workspace"
   ));
 
 -- Introduce workspace id to everything else...
+ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar,
+  ADD CONSTRAINT integration_workspace_id_fkey
+  FOREIGN KEY (workspace_id)
+  REFERENCES workspace(id);
+
+CREATE POLICY workspace_member_access ON "public"."integration"
+  USING ((
+    with cached as MATERIALIZED(select auth.workspace_ids())
+    select workspace_id = ANY(workspace_ids) from cached
+  ))
+  WITH CHECK ((
+    with cached as MATERIALIZED(select auth.workspace_ids())
+    select workspace_id = ANY(workspace_ids) from cached
+  ));
+
+DROP POLICY IF EXISTS workspace_member_access ON public.resource;
+CREATE POLICY workspace_member_access ON "public"."resource"
+  USING ((
+    with cached as MATERIALIZED(
+      select id as integration_id
+      from integration
+      where workspace_id = ANY(auth.workspace_ids())
+    )
+    select integration_id = ANY(select integration_id from cached)
+  ))
+  WITH CHECK ((
+    with cached as MATERIALIZED(
+      select id as integration_id
+      from integration
+      where workspace_id = ANY(auth.workspace_ids())
+    )
+    select integration_id = ANY(select integration_id from cached)
+  ));
+
+
+-- TODO: Add RLS on pipeline table
+
+
+
+-- Not sure if we need this either because pipelines source and destination are tied to integration which are tied to workspace also
+-- So we don't technically need it for RLS, so let's wait to add it for now...
+-- ALTER TABLE "public"."pipeline" ADD COLUMN workspace_id varchar,
+--   ADD CONSTRAINT pipeline_workspace_id_fkey
+--   FOREIGN KEY (workspace_id)
+--   REFERENCES workspace(id);
+
+-- Not clear if we need this at all, as resource is one-to-one with integration which is tied to workspace
+-- ALTER TABLE "public"."resource" ADD COLUMN workspace_id varchar,
+--   ADD CONSTRAINT resource_workspace_id_fkey
+--   FOREIGN KEY (workspace_id)
+--   REFERENCES workspace(id);
+
+DROP POLICY IF EXISTS admin_access ON raw_transaction;
+DROP POLICY IF EXISTS admin_access ON raw_commodity;
+DROP POLICY IF EXISTS admin_access ON raw_account;
+DROP POLICY IF EXISTS admin_access ON institution;
+DROP POLICY IF EXISTS admin_access ON integration;
+DROP POLICY IF EXISTS admin_access ON resource;
+DROP POLICY IF EXISTS admin_access ON pipeline;
+DROP POLICY IF EXISTS admin_access ON migrations;
+
+DROP FUNCTION IF EXISTS auth.is_admin;
+DROP PROCEDURE IF EXISTS auth.set_user_admin;
