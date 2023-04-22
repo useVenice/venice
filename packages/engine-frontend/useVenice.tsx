@@ -81,7 +81,6 @@ interface IntegrationOptions {
   preConnectInput?: unknown
 }
 
-/** Also ledger-specific */
 export function useVeniceConnect({
   envName,
   ...options

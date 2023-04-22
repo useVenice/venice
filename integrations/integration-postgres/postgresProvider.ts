@@ -62,7 +62,7 @@ export const postgresProvider = makeSyncProvider({
           created_at: string
           external: any
           id: string
-          ledger_resource_id: string | null
+          end_user_id: string | null
           provider_name: string
           source_id: string | null
           standard: any
@@ -70,7 +70,7 @@ export const postgresProvider = makeSyncProvider({
         }>(
           sql`SELECT * FROM ${sql.identifier([
             'raw_' + entityName,
-          ])} WHERE ledger_resource_id = ${ledgerId}`,
+          ])} WHERE end_user_id = ${ledgerId}`,
         )
         yield res.rows.map((row) =>
           def._op('data', {

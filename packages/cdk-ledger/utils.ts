@@ -8,7 +8,6 @@ const STANDARD_NAME_TO_PREFIX = {
   commodity: 'comm',
   resource: 'reso',
   integration: 'int',
-  ledger: 'ldgr',
 } as const
 
 export type StandardEntityPrefix = z.infer<typeof zStandardEntityPrefix>

@@ -24,7 +24,7 @@ export interface MetaTable<
 }
 
 export interface EndUserResultRow {
-  id: Id['ldgr']
+  id: EndUserId
   resourceCount?: number
   firstCreatedAt?: unknown
   lastUpdatedAt?: unknown

@@ -751,7 +751,7 @@ export interface components {
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
-      ledger_resource_id?: string;
+      end_user_id?: string;
     };
     raw_commodity: {
       /**
@@ -787,7 +787,7 @@ export interface components {
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
-      ledger_resource_id?: string;
+      end_user_id?: string;
     };
     raw_transaction: {
       /**
@@ -823,7 +823,7 @@ export interface components {
        * @description Note:
        * This is a Foreign Key to `resource.id`.<fk table='resource' column='id'/>
        */
-      ledger_resource_id?: string;
+      end_user_id?: string;
     };
     resource: {
       /**
@@ -988,7 +988,7 @@ export interface components {
     "rowFilter.raw_transaction.created_at": string;
     "rowFilter.raw_transaction.updated_at": string;
     "rowFilter.raw_transaction.provider_name": string;
-    "rowFilter.raw_transaction.ledger_resource_id": string;
+    "rowFilter.raw_transaction.end_user_id": string;
     "rowFilter.account.id": string;
     "rowFilter.account.name": string;
     "rowFilter.account.type": string;
@@ -1020,7 +1020,7 @@ export interface components {
     "rowFilter.raw_commodity.created_at": string;
     "rowFilter.raw_commodity.updated_at": string;
     "rowFilter.raw_commodity.provider_name": string;
-    "rowFilter.raw_commodity.ledger_resource_id": string;
+    "rowFilter.raw_commodity.end_user_id": string;
     "rowFilter.resource.id": string;
     "rowFilter.resource.end_user_id": string;
     "rowFilter.resource.integration_id": string;
@@ -1061,7 +1061,7 @@ export interface components {
     "rowFilter.raw_account.created_at": string;
     "rowFilter.raw_account.updated_at": string;
     "rowFilter.raw_account.provider_name": string;
-    "rowFilter.raw_account.ledger_resource_id": string;
+    "rowFilter.raw_account.end_user_id": string;
     "rowFilter.institution.id": string;
     "rowFilter.institution.standard": string;
     "rowFilter.institution.external": string;
