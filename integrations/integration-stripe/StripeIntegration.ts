@@ -109,32 +109,55 @@ export const stripeImpl = {
   destinationSync: ({settings}) => {
     const client = makeStripeClient({apiKey: settings.secretKey})
 
-    // Gotta look up stripe customer...
     return handlersLink({
       data: async (op) => {
         const {data} = op
 
-        if (data.entityName === 'invoice') {
-          let customer = await client
-            .get('/v1/customers/search', {
-              query: {query: `metadata['entityId']:'${data.entity?.contact}'`},
-            })
-            .then((r) => r.data[0])
-          if (!customer) {
-            customer = await client.post('/v1/customers', {
-              bodyForm: {metadata: {entityId: data.entity?.contact!}},
-            })
-          }
+        if (data.entityName === 'invoice' && data.entity) {
+          const entity = data.entity
 
-          // Find or create invoice
-          await client.post('/v1/invoices', {
+          const customer = await client
+            .get('/v1/customers/search', {
+              query: {query: `metadata['entityId']:'${entity.contact}'`},
+            })
+            .then(
+              (r) =>
+                r.data[0] ??
+                client.post('/v1/customers', {
+                  bodyForm: {metadata: {entityId: entity.contact!}},
+                }),
+            )
+
+          // TODO: Handle update scenarios. Only dealing with soft deletes
+          // should make this simpler
+          const invoice = await client.post('/v1/invoices', {
             bodyForm: {
               customer: customer.id,
-              // expand: ['customer'],
+              currency: entity.currency ?? undefined,
+              // In stripe description is probably visible for users...
+              // so it's an issue.
+              description: entity.memo ?? undefined,
               metadata: {entityId: data.id},
             },
           })
+          await Promise.all(
+            (entity.line_items ?? []).map((line) =>
+              client.post('/v1/invoiceitems', {
+                bodyForm: {
+                  metadata: {entityId: line.id},
+                  invoice: invoice.id,
+                  customer: customer.id, // Technically redundant
+                  description: line.description ?? undefined,
+                  quantity: line.quantity ?? undefined,
+                  unit_amount: line.unit_price ?? undefined,
+                  // amount cannot be specified together with unit_amount
+                  // amount: line.total_amount ?? undefined,
+                },
+              }),
+            ),
+          )
         }
+
         return op
       },
     })

@@ -31,6 +31,21 @@ switch (process.argv[2]) {
           entity: {
             id: 'in_1J9ZQo2eZvKYlo2CQ2Z2Z2Z2',
             contact: 'cus_Luy9s4xRHw2OU4',
+            memo: 'Hello invoice',
+            line_items: [
+              {
+                description: 'Hello line item',
+                quantity: 12,
+                unit_price: 10,
+                total_amount: 120,
+              },
+              {
+                description: 'Line 2',
+                quantity: 1,
+                unit_price: 50,
+                total_amount: 50,
+              },
+            ],
           },
           id: 'ins_1234',
         },
