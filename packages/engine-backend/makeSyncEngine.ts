@@ -265,10 +265,14 @@ export const makeSyncEngine = <
   ) => {
     console.log('[syncPipeline]', pipeline)
     const {source: src, links, destination: dest, watch, ...pipe} = pipeline
+    // TODO: Should we introduce endUserId onto the pipeline itself?
+    const endUserId = src.endUserId ?? dest.endUserId
+    const endUser = endUserId ? {id: endUserId} : null
 
     const defaultSource$ = () =>
       src.integration.provider.sourceSync?.({
         id: src.id,
+        endUser,
         config: src.integration.config,
         settings: src.settings,
         // Maybe we should rename `options` to `state`?
@@ -287,6 +291,7 @@ export const makeSyncEngine = <
       opts.destination$$ ??
       dest.integration.provider.destinationSync?.({
         id: dest.id,
+        endUser,
         config: dest.integration.config,
         settings: dest.settings,
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
@@ -760,6 +765,7 @@ export const makeSyncEngine = <
                 id: reso.id,
                 config: reso.integration.config,
                 settings: reso.settings,
+                endUser: reso.endUserId && {id: reso.endUserId},
                 // Maybe we should rename `options` to `state`?
                 // Should also make the distinction between `config`, `settings` and `state` much more clear.
                 // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals

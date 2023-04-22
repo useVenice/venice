@@ -42,7 +42,7 @@ export const postgresProvider = makeSyncProvider({
   // 2) Impelemnt incremental Sync
   // 3) Improve type safety
   // 4) Implement parallel runs
-  sourceSync: ({id: ledgerId, settings: {databaseUrl, sourceQueries}}) => {
+  sourceSync: ({endUser, settings: {databaseUrl, sourceQueries}}) => {
     const {getPool, sql} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
@@ -70,7 +70,7 @@ export const postgresProvider = makeSyncProvider({
         }>(
           sql`SELECT * FROM ${sql.identifier([
             'raw_' + entityName,
-          ])} WHERE end_user_id = ${ledgerId}`,
+          ])} WHERE end_user_id = ${endUser?.id ?? null}`,
         )
         yield res.rows.map((row) =>
           def._op('data', {
@@ -111,11 +111,11 @@ export const postgresProvider = makeSyncProvider({
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
   },
-  destinationSync: ({id: ledgerId, settings: {databaseUrl}}) => {
+  destinationSync: ({endUser, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {
       // databaseUrl,
       // migrationsPath: __dirname + '/migrations',
-      ledgerId,
+      endUser,
     })
     const {getPool} = makePostgresClient({
       databaseUrl,
@@ -134,7 +134,7 @@ export const postgresProvider = makeSyncProvider({
         batches[tableName] = batch
         batch.push({
           id,
-          ledger_resource_id: ledgerId,
+          end_user_id: endUser?.id ?? null,
           standard: data.entity,
           external: data.external,
           source_id: sourceId,

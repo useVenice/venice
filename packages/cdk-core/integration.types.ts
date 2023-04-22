@@ -1,5 +1,5 @@
 import type {MaybePromise, z} from '@usevenice/util'
-import type {Id} from './id.types'
+import type {EndUserId, Id} from './id.types'
 import type {
   CheckResourceContext,
   CheckResourceOptions,
@@ -134,6 +134,7 @@ export interface IntegrationImpl<
   sourceSync?: (
     input: OmitNever<{
       id: Id['reso']
+      endUser: {id: EndUserId} | null | undefined
       config: T['_types']['integrationConfig']
       settings: T['_types']['resourceSettings']
       state: T['_types']['sourceState']
@@ -143,6 +144,7 @@ export interface IntegrationImpl<
   destinationSync?: (
     input: OmitNever<{
       id: Id['reso']
+      endUser: {id: EndUserId} | null | undefined
       config: T['_types']['integrationConfig']
       settings: T['_types']['resourceSettings']
       state: T['_types']['destinationState']

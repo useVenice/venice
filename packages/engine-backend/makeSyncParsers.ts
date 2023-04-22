@@ -349,7 +349,7 @@ type AuthSubject =
       Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
     ]
 
-/** TODO: Add row level security to fully protect ourselves */
+/** TODO: Fully replace this with row level security so we do not duplicate the auth logic */
 export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
   if (ctx.isAdmin) {
     return true

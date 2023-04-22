@@ -113,6 +113,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
         return provider
           .sourceSync({
             id: 'reso_todo',
+            endUser: null,
             config: config.config,
             settings: config.settings,
             state,

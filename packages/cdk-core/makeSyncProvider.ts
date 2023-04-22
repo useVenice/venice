@@ -309,6 +309,7 @@ export function makeSyncProvider<
     (
       input: OmitNever<{
         id: Id['reso']
+        endUser: {id: EndUserId} | null | undefined
         config: T['_types']['integrationConfig']
         settings: T['_types']['resourceSettings']
         state: T['_types']['sourceState']
@@ -319,6 +320,7 @@ export function makeSyncProvider<
     (
       input: OmitNever<{
         id: Id['reso']
+        endUser: {id: EndUserId} | null | undefined
         config: T['_types']['integrationConfig']
         settings: T['_types']['resourceSettings']
         state: T['_types']['destinationState']
