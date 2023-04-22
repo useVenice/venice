@@ -5,13 +5,13 @@ import '@usevenice/app-config/register.node'
 import {fsProvider} from '@usevenice/app-config/env'
 import {sync} from '@usevenice/cdk-core'
 
-import {Rx, rxjs, safeJSONParse, z} from '@usevenice/util'
-import readline from 'node:readline'
-import {mergeImpl} from '@usevenice/integration-merge'
-import {heronImpl} from '@usevenice/integration-heron'
 import {brexImpl} from '@usevenice/integration-brex'
-import {stripeImpl} from '@usevenice/integration-stripe'
+import {heronImpl} from '@usevenice/integration-heron'
+import {mergeImpl} from '@usevenice/integration-merge'
 import {postgresProvider} from '@usevenice/integration-postgres'
+import {stripeImpl} from '@usevenice/integration-stripe'
+import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
+import readline from 'node:readline'
 
 const srcPath = './apps/tests/__encrypted__/meta'
 const destPath = './temp'
@@ -134,6 +134,7 @@ switch (process.argv[2]) {
   }
   case 'postgres-heron': {
     sync({
+      // @ts-expect-error
       source: postgresProvider.sourceSync({
         id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
         settings: {
