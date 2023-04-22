@@ -77,13 +77,10 @@ export const syncResource = inngest.createFunction(
         sql`SELECT end_user_id FROM resource WHERE id = ${resourceId}`,
       )
       console.log('endUserId', endUserId)
-      const [ledgerId] = await ensureDefaultResourceAndPipelines(endUserId)
+      await ensureDefaultResourceAndPipelines(endUserId)
       await veniceRouter
         .createCaller({endUserId})
-        .syncResource([
-          {id: resourceId as never},
-          {connectWith: {destinationId: ledgerId}},
-        ])
+        .syncResource([{id: resourceId as never}, {}])
 
       console.log('did sync pipeline', resourceId)
       return resourceId

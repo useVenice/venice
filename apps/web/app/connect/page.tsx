@@ -60,7 +60,7 @@ export default async function ConnectPage({
     ssg.listConnections.prefetch({}),
   ])
 
-  const ledgerIds = await ensureDefaultResourceAndPipelines(endUserId, {
+  await ensureDefaultResourceAndPipelines(endUserId, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
@@ -75,7 +75,6 @@ export default async function ConnectPage({
           fromMaybeArray(searchParams['displayName'])[0] ?? endUserId
         }
         redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
-        ledgerIds={ledgerIds}
       />
     </ClientRoot>
   )

@@ -4,7 +4,6 @@ import {TRPCError, initTRPC} from '@trpc/server'
 import type {
   AnyEntityPayload,
   AnySyncProvider,
-  ConnectWith,
   Destination,
   EndUserId,
   Link,
@@ -85,7 +84,6 @@ export interface SyncEngineConfig<
 
   getDefaultPipeline?: (
     connInput?: ResourceInput<TProviders[number]>,
-    connectWith?: ConnectWith,
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
   defaultIntegrations?:
     | Array<IntegrationInput<TProviders[number]>>
@@ -189,15 +187,9 @@ export const makeSyncEngine = <
       ),
     )
 
-  const getPipelinesForResource = (
-    resoInput: ZInput['resource'],
-    connectWith: ConnectWith | undefined,
-  ) => {
+  const getPipelinesForResource = (resoInput: ZInput['resource']) => {
     const defaultPipeline = () =>
-      getDefaultPipeline?.(
-        resoInput as ResourceInput<TProviders[number]>,
-        connectWith,
-      )
+      getDefaultPipeline?.(resoInput as ResourceInput<TProviders[number]>)
 
     // TODO: In the case of an existing `conn`, how do we update conn.settings too?
     // Otherwise we will result in outdated settings...
@@ -239,16 +231,13 @@ export const makeSyncEngine = <
       return id
     }
 
-    const pipelines = await getPipelinesForResource(
-      {
-        id,
-        // Should we spread resoUpdate into it?
-        settings,
-        endUserId: userId,
-        // institution: resoUpdate.institution,
-      },
-      resoUpdate.connectWith ?? undefined,
-    )
+    const pipelines = await getPipelinesForResource({
+      id,
+      // Should we spread resoUpdate into it?
+      settings,
+      endUserId: userId,
+      // institution: resoUpdate.institution,
+    })
 
     console.log('_syncResourceUpdate existingPipes.len', pipelines.length)
     await Promise.all(
@@ -356,7 +345,6 @@ export const makeSyncEngine = <
         await Promise.all(
           res.resourceUpdates.map((resoUpdate) =>
             // Provider is responsible for providing envName / userId
-            // TODO: Should provider be responsible for providing connectWith?
             // This may be relevant for OneBrick resources for example
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             _syncResourceUpdate(int, resoUpdate),
@@ -617,7 +605,6 @@ export const makeSyncEngine = <
               },
               resourceExternalId:
                 resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
-              connectWith: opts?.connectWith,
             })
           }
           if (!int.provider.checkResource) {
@@ -747,7 +734,6 @@ export const makeSyncEngine = <
             // No need for each integration to worry about this, unlike in the case of handleWebhook.
             endUserId: ctx.userId ?? ADMIN_UID,
             envName: connCtxInput.envName,
-            connectWith: connCtxInput.connectWith,
             triggerDefaultSync:
               !syncInBackground && resoUpdate.triggerDefaultSync,
           })
@@ -799,7 +785,6 @@ export const makeSyncEngine = <
             externalId: extractId(reso.institution.id)[2],
             data: reso.institution.external ?? {},
           },
-          connectWith: opts?.connectWith,
           triggerDefaultSync: true,
         })
       }),

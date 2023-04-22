@@ -2,7 +2,7 @@ import type {MaybePromise} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
 import type {EndUserId, ExternalId, Id} from './id.types'
-import {makeId, zExternalId, zId} from './id.types'
+import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
 import type {
@@ -16,13 +16,7 @@ import type {
 
 // MARK: - Shared connect types
 
-export const zConnectWith = z.object({
-  sourceId: zId('reso').nullish(),
-  destinationId: zId('reso').nullish(),
-})
-
 /** Useful for establishing the initial pipeline when creating a connection for the first time */
-export type ConnectWith = z.infer<typeof zConnectWith>
 
 export type ConnectOptions = z.input<typeof zConnectOptions>
 export const zConnectOptions = z.object({
@@ -34,7 +28,6 @@ export const zConnectOptions = z.object({
 })
 
 export const zPostConnectOptions = zConnectOptions.extend({
-  connectWith: zConnectWith.nullish(),
   syncInBand: z.boolean().nullish(),
 })
 
@@ -95,8 +88,6 @@ export const zCheckResourceOptions = z.object({
   sandboxSimulateUpdate: z.boolean().nullish(),
   /** For testing out disconnection handling */
   sandboxSimulateDisconnect: z.boolean().nullish(),
-
-  connectWith: zConnectWith.nullish(),
 })
 
 /** Extra props not on ResoUpdateData */
@@ -111,9 +102,6 @@ export interface ResourceUpdate<TEntity extends AnyEntityPayload, TSettings>
 
   source$?: Source<TEntity>
   triggerDefaultSync?: boolean
-
-  /** Used for ledgerConnectionId */
-  connectWith?: ConnectWith | null
 }
 
 export type WebhookInput = z.infer<typeof zWebhookInput>

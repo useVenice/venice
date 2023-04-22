@@ -99,14 +99,12 @@ export const veniceBackendConfig = makeSyncEngine.config({
     ]
   },
   // When do we perform migration?
-  getDefaultPipeline: (conn, connectWith) => ({
+  getDefaultPipeline: (conn) => ({
     id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),
     // TODO: Handle default soruce scenario
     source: conn,
     // TODO: Make me parsable from env vars
-    destination: connectWith?.destinationId
-      ? {id: connectWith?.destinationId as 'reso_postgres'} // Temp fix..
-      : usePg
+    destination: usePg
       ? {
           id: 'reso_postgres',
           settings: {databaseUrl: env.POSTGRES_OR_WEBHOOK_URL},

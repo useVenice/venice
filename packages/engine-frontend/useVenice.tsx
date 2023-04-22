@@ -1,15 +1,15 @@
 import React, {useState} from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 
-import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
+import type {ConnectOptions, Id} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
 import type {IntegrationInput} from '@usevenice/engine-backend'
 import {z} from '@usevenice/util'
 
 import {createTRPCClientProxy} from '@trpc/client'
-import {VeniceProvider} from './VeniceProvider'
 import {Button, Card, SettingsIcon, ZodForm} from '@usevenice/ui'
 import {browserAnalytics} from '../../apps/web/lib/browser-analytics'
+import {VeniceProvider} from './VeniceProvider'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
 export const zUseVeniceOptions = z.object({
@@ -71,8 +71,6 @@ interface VeniceConnect {
 }
 
 interface IntegrationOptions {
-  /** For creating initial pipeline in new resource */
-  connectWith?: ConnectWith
   /** For exsting Existing resource Id */
   /** Optional for new resource */
   institutionId?: Id['ins']
@@ -219,11 +217,7 @@ export function useVeniceConnect({
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.postConnect.mutate([
-          res,
-          int,
-          {...opt, connectWith: opts.connectWith},
-        ])
+        const postConRes = await client.postConnect.mutate([res, int, opt])
         await trpcCtx.listConnections.invalidate()
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
         setIsConnecting(false)

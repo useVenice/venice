@@ -4,11 +4,9 @@ import {
   backendEnv,
   makePostgresClient,
 } from '@usevenice/app-config/backendConfig'
-import type {NonEmptyArray} from '@usevenice/util'
 import {makeUlid} from '@usevenice/util'
 
 import {xPatAppMetadataKey} from '@usevenice/app-config/constants'
-import type {Id} from '@usevenice/cdk-core'
 import {makeId} from '@usevenice/cdk-core'
 
 export const {getPool, sql} = makePostgresClient({
@@ -59,21 +57,8 @@ export async function ensureDefaultResourceAndPipelines(
   options?: {heronIntegrationId?: string},
 ) {
   return runAsAdmin(async (trxn) => {
-    const postgresResoIds = await trxn
-      .anyFirst<Id['reso']>(
-        sql`SELECT id FROM resource WHERE end_user_id = ${userId} AND provider_name = 'postgres'`,
-      )
-      .then(async (ids) => {
-        if (ids.length > 0) {
-          return ids as NonEmptyArray<Id['reso']>
-        }
-        const ledgerId = makeId('reso', 'postgres', userId)
-        await trxn.query(
-          sql`INSERT INTO resource (id, end_user_id) VALUES (${ledgerId}, ${userId})`,
-        )
-        return [ledgerId] as NonEmptyArray<Id['reso']>
-      })
     if (options?.heronIntegrationId) {
+      const postgresResoId = 'reso_postgres_...' // TODO: Get the current workspace postgres resource id
       await trxn
         .any<{direction: 'from_heron' | 'to_heron'}>(
           sql`
@@ -107,7 +92,7 @@ export async function ensureDefaultResourceAndPipelines(
               sql`INSERT INTO pipeline (id, source_id, destination_id) VALUES (${makeId(
                 'pipe',
                 'heron_source_' + userId,
-              )}, ${heronResoId}, ${postgresResoIds[0]})`,
+              )}, ${heronResoId}, ${postgresResoId})`,
             )
           }
           if (!rows.some((r) => r.direction === 'to_heron')) {
@@ -115,11 +100,10 @@ export async function ensureDefaultResourceAndPipelines(
               sql`INSERT INTO pipeline (id, source_id, destination_id) VALUES (${makeId(
                 'pipe',
                 'heron_destination_' + userId,
-              )}, ${postgresResoIds[0]}, ${heronResoId})`,
+              )}, ${postgresResoId}, ${heronResoId})`,
             )
           }
         })
     }
-    return postgresResoIds
   })
 }
