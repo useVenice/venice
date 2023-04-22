@@ -9,7 +9,8 @@ import type {components} from './heron.gen'
 export const heronDef = {
   name: z.literal('heron'),
   integrationConfig: z.object({apiKey: z.string()}),
-  resourceSettings: z.object({endUserId: z.string()}),
+  // is endUserId actually needed here?
+  // How do we create default resources for integrations that are basically single resource?
   destinationInputEntity: zCast<EntityPayload>(),
   sourceOutputEntity: z.object({
     id: z.string(),
@@ -46,10 +47,13 @@ export const heronImpl = {
     },
   },
 
-  sourceSync: ({config, settings: {endUserId}}) => {
+  sourceSync: ({endUser, config}) => {
     const client = makeHeronClient({apiKey: config.apiKey})
-
     async function* iterateEntities() {
+      const endUserId = endUser?.id
+      if (!endUserId) {
+        throw new Error('endUser is required for heron source sync')
+      }
       // TODO: Abstract different paging strategies into re-usable functions, similar to airbyte low-code connector for example
       const res = await client.get(
         '/api/end_users/{end_user_id_or_heron_id}/transactions',
@@ -63,7 +67,11 @@ export const heronImpl = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
   },
-  destinationSync: ({config, settings: {endUserId}}) => {
+  destinationSync: ({config, endUser}) => {
+    const endUserId = endUser?.id
+    if (!endUserId) {
+      throw new Error('endUser is required for heron source sync')
+    }
     const client = makeHeronClient({apiKey: config.apiKey})
     // Need init event and complete event to better handle the creation
     // and set ready state of the user
