@@ -10,18 +10,16 @@
  */
 
 -- Create tables
-
 CREATE TABLE IF NOT EXISTS "public"."workspace" (
   "id" varchar NOT NULL DEFAULT concat('ws_', generate_ulid ()),
   "name" varchar NOT NULL,
-  "slug" varchar NOT NULL,
+  "slug" varchar NOT NULL UNIQUE,
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   CONSTRAINT "pk_workspace" PRIMARY KEY ("id")
 );
 CREATE INDEX IF NOT EXISTS workspace_created_at ON workspace (created_at);
 CREATE INDEX IF NOT EXISTS workspace_updated_at ON workspace (updated_at);
-CREATE INDEX IF NOT EXISTS workspace_slug ON workspace (slug);
 
 ALTER TABLE "public"."workspace" ENABLE ROW LEVEL SECURITY;
 
@@ -64,3 +62,5 @@ CREATE POLICY workspace_member_access ON "public"."workspace"
     with cached as MATERIALIZED(select auth.workspace_ids())
     select id = ANY(workspace_ids) from cached
   ));
+
+-- Introduce workspace id to everything else...
