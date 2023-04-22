@@ -6,6 +6,9 @@
  - [ ] Update RLS accordingly
  - [ ] Add a table of end users
  - [ ] Scoping end user id to workspace id
+ - [ ] No more default integrations from env vars... waste of time
+ - [ ] Remove extraneous postgres resources
+ - [ ] Maybe add end user id to pipeline
  */
 
 

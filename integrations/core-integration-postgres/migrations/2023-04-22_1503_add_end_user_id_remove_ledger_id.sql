@@ -3,16 +3,12 @@
 -- end user does not own either resource (e.g. postgres -> heron data)
 
 /*
-TODOS:
+Checklist:
 - [x] Rename creator_id to end_user_id on creator
   - [x] Update RLS policy names while we are at it
-- [ ] Stop using ledger_resource_id and use end_user_id in code
-  - [ ] Get rid of connectWith
-
-- [ ] Regenerate types
-- [ ] No more default integrations from env vars... waste of time
-- [ ] Remove extraneous postgres resources
-- [ ] Maybe add end user id to pipeline
+- [x] Stop using ledger_resource_id and use end_user_id in code
+  - [x] Get rid of connectWith
+- [x] Regenerate types
 */
 
 
