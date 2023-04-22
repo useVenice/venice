@@ -130,6 +130,8 @@ export const stripeImpl = {
 
           // TODO: Handle update scenarios. Only dealing with soft deletes
           // should make this simpler
+          // TODO: Gotta validate that the standard invoice before passing onto stripe
+          // Most likely via a validator link in the middle
           const invoice = await client.post('/v1/invoices', {
             bodyForm: {
               customer: customer.id,

@@ -1,6 +1,6 @@
 import '@usevenice/app-config/register.node'
 
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 
 import {DatabaseError, Papa} from '@usevenice/app-config/backendConfig'
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
