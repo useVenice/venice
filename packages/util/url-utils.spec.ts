@@ -1,4 +1,9 @@
-import {parseUrl, stringifyUrl, joinPath} from './url-utils'
+import {
+  parseUrl,
+  stringifyUrl,
+  joinPath,
+  stringifyQueryParams,
+} from './url-utils'
 // import path from 'node:path'
 
 test.each([
@@ -24,4 +29,11 @@ test('delete query param', () => {
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete parsed.query['token']
   expect(stringifyUrl(parsed)).toEqual('/rest/v1/')
+})
+
+test.each([
+  [{metadata: {id: 123}}, 'metadata%5Bid%5D=123'],
+  [{hello: 'world', again: '123'}, 'hello=world&again=123'],
+])('stringifyQueryParams(%o) -> %o', (input, output) => {
+  expect(stringifyQueryParams(input)).toEqual(output)
 })
