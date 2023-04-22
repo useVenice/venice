@@ -656,6 +656,9 @@ export const makeSyncEngine = <
           input: [int, {resourceExternalId, ...connCtxInput}, preConnInput],
           ctx,
         }) => {
+          if (!int.provider.preConnect) {
+            return null
+          }
           const reso = resourceExternalId
             ? await metaService.tables.resource
                 .get(makeId('reso', int.provider.name, resourceExternalId))

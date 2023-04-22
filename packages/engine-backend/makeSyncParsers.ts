@@ -261,7 +261,6 @@ export function makeSyncParsers<
     .transform(
       zGuard(async ({id, ...rest}) => {
         const pipeline = await m.tables.pipeline.get(id)
-
         // This is a temporary workaround for default pipeline is overriding the explicit pipeline definition....
         // TODO: We should really re-work this where defaulting happens as a last step
         // Also it should not be possible to have the conn.id differ from connId
@@ -273,7 +272,9 @@ export function makeSyncParsers<
             deepMerge(rest.source, {
               id:
                 overrideId(rest.sourceId ?? rest.source?.id) ??
-                pipeline?.sourceId,
+                pipeline?.sourceId ??
+                rest.sourceId ??
+                rest.source?.id,
             }),
             {path: ['source']},
           ),
@@ -284,7 +285,9 @@ export function makeSyncParsers<
             deepMerge(rest.destination, {
               id:
                 overrideId(rest.destinationId ?? rest.destination?.id) ??
-                pipeline?.destinationId,
+                pipeline?.destinationId ??
+                rest.destinationId ??
+                rest.destination?.id,
             }),
             {path: ['destination']},
           ),
