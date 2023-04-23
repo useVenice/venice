@@ -88,7 +88,9 @@ CREATE OR REPLACE FUNCTION auth.institution_ids() RETURNS character varying[]
 $$;
 
 ALTER INDEX resource_creator_id RENAME TO resource_end_user_id;
-
+CREATE INDEX transaction_end_user_id ON raw_transaction (end_user_id);
+CREATE INDEX account_end_user_id ON raw_account (end_user_id);
+CREATE INDEX commodity_end_user_id ON raw_commodity (end_user_id);
 
 -- For debugging
 -- SELECT tablename, policyname, qual, with_check FROM pg_policies WHERE schemaname = 'public' ;

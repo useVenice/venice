@@ -103,7 +103,6 @@ CREATE POLICY workspace_member_access ON "public"."pipeline"
       where i.workspace_id = ANY(auth.workspace_ids())
     )
     -- Prevent user from seeing pipelines that don't have a source or destination that they have access to
-    -- TODO: Do the same for end user access to pipelines
     select array(select resource_id from cached) @> array[source_id, destination_id]
   ))
   WITH CHECK ((
@@ -114,7 +113,6 @@ CREATE POLICY workspace_member_access ON "public"."pipeline"
       where i.workspace_id = ANY(auth.workspace_ids())
     )
     -- Prevent user from creating/updating pipelines that don't have a source or destination that they have access to
-    -- TODO: Do the same for end user access to pipelines
     select array(select resource_id from cached) @> array[source_id, destination_id]
   ));
 
