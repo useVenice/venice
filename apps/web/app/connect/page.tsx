@@ -1,3 +1,5 @@
+import '../../pages/global.css'
+
 import '@usevenice/app-config/register.node'
 
 import {backendEnv, veniceRouter} from '@usevenice/app-config/backendConfig'
@@ -66,16 +68,18 @@ export default async function ConnectPage({
   })
 
   return (
-    <ClientRoot
-      dehydratedState={superjson.serialize(dehydrate(queryClient))}
-      accessToken={token}>
-      <Connect
-        integrations={integrations}
-        displayName={
-          fromMaybeArray(searchParams['displayName'])[0] ?? endUserId
-        }
-        redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
-      />
-    </ClientRoot>
+    <div className="text-offwhite bg-black h-screen w-screen" data-theme="dark">
+      <ClientRoot
+        dehydratedState={superjson.serialize(dehydrate(queryClient))}
+        accessToken={token}>
+        <Connect
+          integrations={integrations}
+          displayName={
+            fromMaybeArray(searchParams['displayName'])[0] ?? endUserId
+          }
+          redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
+        />
+      </ClientRoot>
+    </div>
   )
 }

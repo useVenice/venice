@@ -1,5 +1,3 @@
-import '../pages/global.css'
-
 /* eslint-disable @next/next/no-page-custom-font */
 export const metadata = {
   title: 'Venice — Financial data, fast.',
@@ -8,7 +6,7 @@ export const metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className="bg-black text-offwhite" data-theme="dark">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

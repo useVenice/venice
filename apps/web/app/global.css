@@ -1,0 +1,7 @@
+/* This does not work for some reason... Even if we simply reference the identical config file... */
+/* @config "../tailwind.tremor.config.js" */
+/* @config "../tailwind.config.js" */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

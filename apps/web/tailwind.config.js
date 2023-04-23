@@ -19,6 +19,9 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
+
+    // Path to the tremor module
+    './node_modules/@tremor/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -78,7 +81,7 @@ module.exports = {
         'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
       },
       colors: {
-        ...VeniceTheme,
+        ...VeniceTheme, // Needs to be commented out for tremor to work...
         'venice-black': VeniceTheme.black,
         'venice-gold': VeniceTheme.gold,
         'venice-gray-muted': VeniceTheme.gray,
