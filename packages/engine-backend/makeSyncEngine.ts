@@ -25,7 +25,7 @@ import {
   zWebhookInput,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
-import {R, joinPath, rxjs, z} from '@usevenice/util'
+import {R, joinPath, makeUlid, rxjs, z} from '@usevenice/util'
 
 import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
@@ -802,6 +802,15 @@ export const makeSyncEngine = <
         return _syncPipeline(pipeline, opts)
       }),
 
+    _wipListWorkspaces: publicProcedure
+      .input(z.object({}).nullish())
+      .query(() => metaService.tables.workspace.list({})),
+    _wipCreateWorkspace: publicProcedure
+      .input(z.object({name: z.string(), slug: z.string()}))
+      .mutation(({input}) =>
+        metaService.tables.workspace.set(makeId('ws', makeUlid()), input),
+      ),
+
     // Admin procedures...
     adminCreateConnectToken: adminProcedure
       .input(z.object({endUserId: zEndUserId}))
@@ -864,6 +873,8 @@ export const makeSyncEngine = <
         return `Synced ${stats} institutions from ${ints.length} providers`
       }),
   })
+
+
 
   const jwtClient = jwtSecretOrPublicKey
     ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})

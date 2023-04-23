@@ -1,6 +1,6 @@
 import {z, zJsonObject} from '@usevenice/util'
 
-import {zEndUserId, zId} from './id.types'
+import {zEndUserId, zId, zUserId} from './id.types'
 
 // Utility types
 
@@ -72,6 +72,15 @@ export type ZRaw = {
 }
 /** Should this be a factory function so we can use typed config / settings? */
 export const zRaw = {
+  workspace: z.object({
+    id: zId('ws'),
+    slug: z.string(),
+    name: z.string(),
+  }),
+  workspaceMember: z.object({
+    workspaceId: zId('ws'),
+    userId: zUserId,
+  }),
   integration: z.object({
     id: zId('int'),
     config: zJsonObject.nullish(),

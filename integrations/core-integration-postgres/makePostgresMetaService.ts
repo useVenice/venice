@@ -64,6 +64,8 @@ export const makePostgresMetaService = zFunction(
   ({databaseUrl}): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
+      workspace: metaTable('workspace', _getDeps(databaseUrl)),
+      workspaceMember: metaTable('workspaceMember', _getDeps(databaseUrl)),
       resource: metaTable('resource', _getDeps(databaseUrl)),
       institution: metaTable('institution', _getDeps(databaseUrl)),
       integration: metaTable('integration', _getDeps(databaseUrl)),

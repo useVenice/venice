@@ -6,6 +6,8 @@ export const zExternalId = z.union([z.string(), z.number()])
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
+  workspace: 'ws',
+  workspaceMember: '', // Workspace member does not have its own id... not sure if this will work...
   pipeline: 'pipe',
 } as const
 
