@@ -19,7 +19,8 @@ module.exports = {
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [
-    require.resolve('@ianvs/prettier-plugin-sort-imports'),
+    // This plugin breaks on makeSyncEngine.ts... So commenting out for now.
+    // require.resolve('@ianvs/prettier-plugin-sort-imports'),
     require.resolve('prettier-plugin-packagejson'),
     require.resolve('prettier-plugin-tailwindcss'), // needs to come last
   ],
