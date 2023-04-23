@@ -1,4 +1,20 @@
 import '../../pages/global.css'
+// TODO: Apply the font to this page only...
+//  https://nextjs.org/docs/basic-features/font-optimization
+// <link rel="preconnect" href="https://fonts.googleapis.com" />
+// <link
+//  rel="preconnect"
+//  href="https://fonts.gstatic.com"
+//  crossOrigin=""
+// />
+// <link
+//  rel="stylesheet"
+//  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap"
+// />
+// <link
+//  href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+//  rel="stylesheet"
+// />
 
 import '@usevenice/app-config/register.node'
 
