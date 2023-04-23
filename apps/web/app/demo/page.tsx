@@ -1,5 +1,7 @@
 'use client'
 
+import '../../pages/global.css'
+
 import {VeniceConnectEmbed} from '@usevenice/connect'
 import {useSearchParams} from 'next/navigation'
 
