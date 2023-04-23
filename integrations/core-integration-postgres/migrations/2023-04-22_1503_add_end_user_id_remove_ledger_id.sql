@@ -49,5 +49,46 @@ ALTER TABLE "public"."raw_transaction" DROP COLUMN "ledger_resource_id";
 ALTER TABLE "public"."raw_account" DROP COLUMN "ledger_resource_id";
 ALTER TABLE "public"."raw_commodity" DROP COLUMN "ledger_resource_id";
 
+-- Update references which were previously missed
+
+CREATE OR REPLACE FUNCTION auth.pre_request() RETURNS void AS $$
+  select set_config(
+    'request.jwt.claim.resource_ids'
+    , COALESCE((select jsonb_agg(id)::text from "resource" where end_user_id = auth.uid()), '[]')
+    , true
+  );
+  select set_config(
+    'request.jwt.claim.sub'
+    , (current_setting('request.jwt.claims', true))::jsonb->>'sub'
+    , true
+  );
+$$ LANGUAGE sql;
+
+CREATE or replace FUNCTION auth.resource_ids() RETURNS character varying[]
+    LANGUAGE sql stable AS $$
+  select
+    case when nullif(current_setting('request.jwt.claim.resource_ids', true), '') is not null then
+      ARRAY(select jsonb_array_elements_text(
+        nullif(current_setting('request.jwt.claim.resource_ids', true), '')::jsonb
+      ))
+    else
+      -- Fallback for when pre_request() hasn't been called yet for some reason, such as possibly
+      -- in supabase/realtime
+      ARRAY(select id from "resource" where end_user_id = auth.uid())
+    end;
+$$;
+
+CREATE OR REPLACE FUNCTION auth.institution_ids() RETURNS character varying[]
+    LANGUAGE sql STABLE
+    AS $$
+  select array(
+    SELECT DISTINCT institution_id FROM "resource"
+    WHERE end_user_id = auth.uid() AND institution_id IS NOT NULL
+  )
+$$;
+
+ALTER INDEX resource_creator_id RENAME TO resource_end_user_id;
+
+
 -- For debugging
 -- SELECT tablename, policyname, qual, with_check FROM pg_policies WHERE schemaname = 'public' ;
