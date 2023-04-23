@@ -9,7 +9,7 @@
     },
     "tailwindcss": {
       "callees": ["twMerge"],
-      "config": "apps/web/tailwind.config.js"
+      "config": "apps/web/tailwind.config.ts"
     }
   },
   "plugins": [

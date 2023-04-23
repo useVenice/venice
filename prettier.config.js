@@ -28,7 +28,7 @@ module.exports = {
   semi: false,
   singleQuote: true,
   tabWidth: 2,
-  tailwindConfig: './apps/web/tailwind.config.js',
+  tailwindConfig: './apps/web/tailwind.config.ts',
   trailingComma: 'all',
   useTabs: false,
 }

@@ -1,6 +1,6 @@
 /* Venice's Core Theme */
 
-const VeniceTheme = {
+export const VeniceTheme = {
   background: '#1e1e1e',
   black: {
     DEFAULT: '#1e1e1e',
@@ -37,7 +37,7 @@ const VeniceTheme = {
 /* Glide's data grid DOES NOT SUPPORT RGBA VALUES */
 /* You must use HEX values for the data grid theme */
 /* See https://github.com/glideapps/glide-data-grid/discussions/612 */
-const dataGridThemeColors = {
+export const dataGridThemeColors = {
   cellBackground: '#1E1E1E',
   accent: '#12B886',
   accentLight: '#031C14',
@@ -106,7 +106,3 @@ const VeniceDataGridTheme = {
   lineHeight: 1.4, // unitless scaler, depends on your font
 }
 
-module.exports = {
-  VeniceTheme,
-  VeniceDataGridTheme,
-}

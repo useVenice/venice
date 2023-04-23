@@ -1,12 +1,8 @@
-const colors = require('tailwindcss/colors')
-const defaultTheme = require('tailwindcss/defaultTheme')
+import type {Config} from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
+import {VeniceTheme} from './themes'
 
-const {VeniceTheme} = require('./themes')
-
-/**
- * @type {import('tailwindcss').Config}
- */
-module.exports = {
+export default {
   content: [
     // No styles in here, be very careful about including extra
     // paths here we don't need otherwise it causes massive DX perf issues
@@ -28,21 +24,21 @@ module.exports = {
       keyframes: {
         // Dropdown menu
         'scale-in': {
-          '0%': {opacity: 0, transform: 'scale(0)'},
-          '100%': {opacity: 1, transform: 'scale(1)'},
+          '0%': {opacity: '0', transform: 'scale(0)'},
+          '100%': {opacity: '1', transform: 'scale(1)'},
         },
         'slide-down': {
-          '0%': {opacity: 0, transform: 'translateY(-10px)'},
-          '100%': {opacity: 1, transform: 'translateY(0)'},
+          '0%': {opacity: '0', transform: 'translateY(-10px)'},
+          '100%': {opacity: '1', transform: 'translateY(0)'},
         },
         'slide-up': {
-          '0%': {opacity: 0, transform: 'translateY(10px)'},
-          '100%': {opacity: 1, transform: 'translateY(0)'},
+          '0%': {opacity: '0', transform: 'translateY(10px)'},
+          '100%': {opacity: '1', transform: 'translateY(0)'},
         },
         // Toast
         'toast-hide': {
-          '0%': {opacity: 1},
-          '100%': {opacity: 0},
+          '0%': {opacity: '1'},
+          '100%': {opacity: '0'},
         },
         'toast-slide-in-right': {
           '0%': {transform: 'translateX(calc(100% + 1rem))'},
@@ -100,4 +96,4 @@ module.exports = {
     },
   },
   plugins: [require('tailwindcss-animate'), require('tailwindcss-radix')()],
-}
+} satisfies Config
