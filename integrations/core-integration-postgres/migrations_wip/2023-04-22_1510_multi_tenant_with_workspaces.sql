@@ -59,6 +59,9 @@ CREATE POLICY workspace_member_access ON "public"."workspace"
     select id = ANY(workspace_ids) from cached
   ));
 
+-- Allow supabase realtime to work
+ALTER publication supabase_realtime ADD TABLE workspace, workspace_member;
+
 -- Introduce workspace id to everything else...
 ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar,
   ADD CONSTRAINT integration_workspace_id_fkey
