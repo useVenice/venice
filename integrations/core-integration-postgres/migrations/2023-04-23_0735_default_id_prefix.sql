@@ -1,6 +1,3 @@
-ALTER TABLE public.workspace 
-  ADD CONSTRAINT workspace_id_prefix_check CHECK (starts_with(id, 'ws_'));
-
 ALTER TABLE public.institution
   ALTER COLUMN id SET DEFAULT concat('ins_', public.generate_ulid()),
   ADD CONSTRAINT institution_id_prefix_check CHECK (starts_with(id, 'ins_'));

@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS "public"."workspace" (
   "slug" varchar NOT NULL UNIQUE,
   "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  CONSTRAINT "pk_workspace" PRIMARY KEY ("id")
+  CONSTRAINT "pk_workspace" PRIMARY KEY ("id"),
+  CONSTRAINT workspace_id_prefix_check CHECK (starts_with(id, 'ws_'))
 );
 CREATE INDEX IF NOT EXISTS workspace_created_at ON workspace (created_at);
 CREATE INDEX IF NOT EXISTS workspace_updated_at ON workspace (updated_at);
