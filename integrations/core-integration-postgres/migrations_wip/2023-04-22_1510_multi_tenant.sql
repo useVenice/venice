@@ -93,9 +93,30 @@ CREATE POLICY workspace_member_access ON "public"."resource"
     select integration_id = ANY(select integration_id from cached)
   ));
 
-
--- TODO: Add RLS on pipeline table
-
+DROP POLICY IF EXISTS workspace_member_access ON public.pipeline;
+CREATE POLICY workspace_member_access ON "public"."pipeline"
+  USING ((
+    with cached as MATERIALIZED(
+      select r.id as resource_id
+      from resource r
+      join integration i on i.id = r.integration_id
+      where i.workspace_id = ANY(auth.workspace_ids())
+    )
+    -- Prevent user from seeing pipelines that don't have a source or destination that they have access to
+    -- TODO: Do the same for end user access to pipelines
+    select array(select resource_id from cached) @> array[source_id, destination_id]
+  ))
+  WITH CHECK ((
+    with cached as MATERIALIZED(
+      select r.id as resource_id
+      from resource r
+      join integration i on i.id = r.integration_id
+      where i.workspace_id = ANY(auth.workspace_ids())
+    )
+    -- Prevent user from creating/updating pipelines that don't have a source or destination that they have access to
+    -- TODO: Do the same for end user access to pipelines
+    select array(select resource_id from cached) @> array[source_id, destination_id]
+  ));
 
 
 -- Not sure if we need this either because pipelines source and destination are tied to integration which are tied to workspace also
