@@ -1,0 +1,20 @@
+{
+  "name": "@usevenice/integration-brex",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "scripts": {
+    "codegen:transactions": "openapi-typescript __generated__/transactions.openapi.json --make-paths-enum --output __generated__/transactions.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "openapi-typescript": "6.2.1"
+  }
+}

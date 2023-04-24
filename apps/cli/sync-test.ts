@@ -9,6 +9,7 @@ import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
 import readline from 'node:readline'
 import {mergeImpl} from '@usevenice/integration-merge'
 import {heronImpl} from '@usevenice/integration-heron'
+import {brexImpl} from '@usevenice/integration-brex'
 import {postgresProvider} from '@usevenice/integration-postgres'
 
 const srcPath = './apps/tests/__encrypted__/meta'
@@ -20,6 +21,23 @@ const destPath = './temp'
 // we are working with configurable via command line args
 
 switch (process.argv[2]) {
+  case 'source-brex': {
+    sync({
+      source: brexImpl.sourceSync({
+        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        config: {clientId: '', clientSecret: ''},
+        settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
+        state: {},
+      }),
+      destination: (obs) =>
+        obs.pipe(
+          Rx.tap((msg) => {
+            console.error(JSON.stringify(msg))
+          }),
+        ),
+    }).catch(console.error)
+    break
+  }
   case 'source-postgres': {
     sync({
       source: postgresProvider.sourceSync({
