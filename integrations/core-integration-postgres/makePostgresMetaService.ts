@@ -4,7 +4,7 @@ import type {
   MetaTable,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {memoize, R, zFunction} from '@usevenice/util'
+import {memoize, R, z, zFunction} from '@usevenice/util'
 
 import {
   applyLimitOffset,
@@ -60,7 +60,7 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 }
 
 export const makePostgresMetaService = zFunction(
-  zPgConfig.pick({databaseUrl: true}),
+  zPgConfig.pick({databaseUrl: true}).extend({userId: z.string().nullable()}),
   ({databaseUrl}): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..

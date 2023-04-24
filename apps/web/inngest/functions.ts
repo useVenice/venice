@@ -24,9 +24,10 @@ export const scheduleSyncs = inngest.createFunction(
     : {cron: '0 * * * *'}, // Once an hour, https://crontab.guru/#0_*_*_*_*
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
-      const pipelines = await veniceBackendConfig.metaService.findPipelines({
-        secondsSinceLastSync: 1 * 60 * 60, // Every hour
-      })
+      const pipelines = await veniceBackendConfig
+        .getMetaService(null)
+        // Every hour
+        .findPipelines({secondsSinceLastSync: 1 * 60 * 60})
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
       if (pipelines.length > 0) {
         await inngest.send(

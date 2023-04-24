@@ -79,7 +79,7 @@ export interface SyncEngineConfig<
   jwtSecretOrPublicKey?: string
 
   /** Used to store metadata */
-  metaService: MetaService
+  getMetaService: (sub: string | null) => MetaService
   getLinksForPipeline?: (pipeline: ParsedPipeline) => Link[]
 
   getDefaultPipeline?: (
@@ -98,37 +98,6 @@ export type AnySyncRouter = ReturnType<typeof makeSyncEngine>['router']
 export type AnySyncRouterInput = inferRouterInputs<AnySyncRouter>
 export type AnySyncRouterOutput = inferRouterOutputs<AnySyncRouter>
 
-export const trpcServer = initTRPC
-  .context<UserInfo>()
-  .meta<EngineMeta>()
-  .create()
-
-export const isAuthed = trpcServer.middleware(({next, ctx, path}) => {
-  if (!ctx.endUserId && !ctx.isAdmin) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: `Auth required: ${path}`,
-    })
-  }
-  // Figure out how we can pass the context into zod validators so that we can
-  // check user has access to resource pipline etc in a single place...
-  // Also we probably don't want non-admin user to be able to provider anything
-  // other than the `id` for integration, resource and pipeline
-  return next({ctx: {...ctx, userId: ctx.endUserId}})
-})
-export const isAdmin = trpcServer.middleware(({next, ctx, path}) => {
-  if (!ctx.isAdmin) {
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: `Admin only: ${path}`,
-    })
-  }
-  return next({ctx: {...ctx, isAdmin: true as const}})
-})
-export const publicProcedure = trpcServer.procedure
-export const authedProcedure = publicProcedure.use(isAuthed)
-export const adminProcedure = publicProcedure.use(isAdmin)
-
 // TODO: Figure out how to support both syncing on the command line via CLI without auth
 // as well as syncing via API which has auth...
 // Some methods require userId in context (preConnect / postConnect)
@@ -141,7 +110,7 @@ export const makeSyncEngine = <
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
-  metaService,
+  getMetaService,
   providers,
   getDefaultPipeline,
   defaultIntegrations,
@@ -153,7 +122,8 @@ export const makeSyncEngine = <
 }: SyncEngineConfig<TProviders, TLinks>) => {
   // NEXT: Validate defaultDest and defaultIntegrations at init time rather than run time.
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
-  const metaLinks = makeMetaLinks(metaService)
+  const superMetaService = getMetaService(null)
+  const metaLinks = makeMetaLinks(superMetaService)
 
   // TODO: Re-enable me when providers are no longer being constructed client side...
   // Perhaps validating the default pipeline also
@@ -174,7 +144,7 @@ export const makeSyncEngine = <
       defaultIntegrationInputs.find(
         (i) => (id && i.id === id) || (i.id && extractId(i.id)[1] === name),
       )?.config,
-    metaService,
+    metaService: superMetaService,
   })
 
   const getDefaultIntegrations = async () =>
@@ -193,7 +163,7 @@ export const makeSyncEngine = <
 
     // TODO: In the case of an existing `conn`, how do we update conn.settings too?
     // Otherwise we will result in outdated settings...
-    return metaService
+    return superMetaService
       .findPipelines({resourceIds: [resoInput.id]})
       .then((pipes) => (pipes.length ? pipes : R.compact([defaultPipeline()])))
       .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
@@ -332,6 +302,44 @@ export const makeSyncEngine = <
     )
   }
 
+  const trpcServer = initTRPC.context<UserInfo>().meta<EngineMeta>().create()
+
+  const isAuthed = trpcServer.middleware(({next, ctx, path}) => {
+    const userId = ctx.userId ?? ctx.endUserId
+    if (!userId) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: `Auth required: ${path}`,
+      })
+    }
+    // Figure out how we can pass the context into zod validators so that we can
+    // check user has access to resource pipline etc in a single place...
+    // Also we probably don't want non-admin user to be able to provider anything
+    // other than the `id` for integration, resource and pipeline
+    return next({
+      ctx: {
+        ...ctx,
+        userId: userId as EndUserId,
+        metaService: getMetaService(userId),
+      },
+    })
+  })
+  const isAdmin = trpcServer.middleware(({next, ctx, path}) => {
+    // TODO: Check for role in here
+    if (!ctx.isAdmin) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: `Admin only: ${path}`,
+      })
+    }
+    return next({ctx: {...ctx, isAdmin: true as const}})
+  })
+  const publicProcedure = trpcServer.procedure
+  const authedProcedure = publicProcedure.use(isAuthed)
+
+  // TODO: How do we get adminProcedure to use context from authedProcedure?
+  const adminProcedure = authedProcedure.use(isAdmin)
+
   const router = trpcServer.router({
     health: publicProcedure.query(() => 'Ok ' + new Date().toISOString()),
     handleWebhook: publicProcedure
@@ -373,14 +381,14 @@ export const makeSyncEngine = <
       .query(async ({ctx}) => {
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
-        const resources = await metaService.tables.resource.list({
+        const resources = await ctx.metaService.tables.resource.list({
           endUserId: ctx.userId,
         })
         const [institutions, _pipelines] = await Promise.all([
-          metaService.tables.institution.list({
+          ctx.metaService.tables.institution.list({
             ids: R.compact(resources.map((c) => c.institutionId)),
           }),
-          metaService.findPipelines({
+          ctx.metaService.findPipelines({
             resourceIds: resources.map((c) => c.id),
           }),
         ])
@@ -459,14 +467,14 @@ export const makeSyncEngine = <
 
         // Add info about what it takes to `reconnect` here for resources which
         // has disconnected
-        const resources = await metaService.tables.resource.list({
+        const resources = await ctx.metaService.tables.resource.list({
           endUserId: userId,
         })
         const [institutions, pipelines] = await Promise.all([
-          metaService.tables.institution.list({
+          ctx.metaService.tables.institution.list({
             ids: R.compact(resources.map((c) => c.institutionId)),
           }),
-          metaService.findPipelines({
+          ctx.metaService.findPipelines({
             resourceIds: resources.map((c) => c.id),
           }),
         ])
@@ -546,9 +554,9 @@ export const makeSyncEngine = <
     // Implement this directly via supabase?
     searchInstitutions: authedProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
-      .query(async ({input: {keywords} = {}}) => {
+      .query(async ({input: {keywords} = {}, ctx}) => {
         const ints = await getDefaultIntegrations()
-        const institutions = await metaService.searchInstitutions({
+        const institutions = await ctx.metaService.searchInstitutions({
           keywords,
           limit: 10,
           providerNames: R.uniq(ints.map((int) => int.provider.name)),
@@ -643,7 +651,7 @@ export const makeSyncEngine = <
             // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
             // We should probably introduce a reset / delete event...
           }
-          await metaService.tables.resource.delete(reso.id)
+          await ctx.metaService.tables.resource.delete(reso.id)
         },
       ),
 
@@ -660,7 +668,7 @@ export const makeSyncEngine = <
             return null
           }
           const reso = resourceExternalId
-            ? await metaService.tables.resource
+            ? await ctx.metaService.tables.resource
                 .get(makeId('reso', int.provider.name, resourceExternalId))
                 .then((input) => zReso.parseAsync(input))
             : undefined
@@ -708,7 +716,7 @@ export const makeSyncEngine = <
             return 'Noop'
           }
           const reso = resourceExternalId
-            ? await metaService.tables.resource
+            ? await ctx.metaService.tables.resource
                 .get(makeId('reso', int.provider.name, resourceExternalId))
                 .then((input) => zReso.parseAsync(input))
             : undefined
@@ -802,13 +810,15 @@ export const makeSyncEngine = <
         return _syncPipeline(pipeline, opts)
       }),
 
-    _wipListWorkspaces: publicProcedure
+    // TODO: How do we not just return empty result, but also return proper error code (401
+    // should end use actually hit these APIs?
+    _wipListWorkspaces: authedProcedure
       .input(z.object({}).nullish())
-      .query(() => metaService.tables.workspace.list({})),
-    _wipCreateWorkspace: publicProcedure
+      .query(({ctx}) => ctx.metaService.tables.workspace.list({})),
+    _wipCreateWorkspace: authedProcedure
       .input(z.object({name: z.string(), slug: z.string()}))
-      .mutation(({input}) =>
-        metaService.tables.workspace.set(makeId('ws', makeUlid()), input),
+      .mutation(({input, ctx}) =>
+        ctx.metaService.tables.workspace.set(makeId('ws', makeUlid()), input),
       ),
 
     // Admin procedures...
@@ -830,8 +840,8 @@ export const makeSyncEngine = <
       }),
     adminSearchEndUsers: adminProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
-      .query(async ({input: {keywords} = {}}) =>
-        metaService.searchEndUsers({keywords}),
+      .query(async ({input: {keywords} = {}, ctx}) =>
+        ctx.metaService.searchEndUsers({keywords}),
       ),
     adminGetIntegration: adminProcedure.input(zInt).query(({input: int}) => ({
       config: int.config,

@@ -36,9 +36,13 @@ export const veniceBackendConfig = makeSyncEngine.config({
   ...veniceCommonConfig,
   jwtSecretOrPublicKey: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
-  metaService: usePg
-    ? makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL})
-    : noopMetaService,
+  getMetaService: (userId) =>
+    usePg
+      ? makePostgresMetaService({
+          databaseUrl: env.POSTGRES_OR_WEBHOOK_URL,
+          userId,
+        })
+      : noopMetaService,
   // TODO: Support other config service such as fs later...
   linkMap: {
     renameAccount: renameAccountLink as LinkFactory,

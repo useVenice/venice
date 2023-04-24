@@ -27,7 +27,7 @@ export const _zContext = (...args: Parameters<typeof _zUserInfo>) => {
     .object({accessToken: zUserInfo})
     .transform(({accessToken: userInfo}) => ({
       endUserId: userInfo.endUserId ?? undefined,
-      userId: userInfo.userId ?? false,
+      userId: userInfo.userId ?? undefined,
       role: userInfo.role ?? undefined,
       isAdmin: userInfo.isAdmin ?? false,
       userInfo,

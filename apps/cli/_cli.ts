@@ -66,6 +66,7 @@ if (require.main === module) {
     pgMeta: () =>
       makePostgresMetaService({
         databaseUrl: env().POSTGRES_OR_WEBHOOK_URL,
+        userId: null,
       }) as {},
     plaid: () =>
       R.pipe(makePlaidClient(intConfig('plaid')), (p) =>

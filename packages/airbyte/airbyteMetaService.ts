@@ -17,7 +17,10 @@ export const makeAirbyteMetaService = z
   .function()
   .args(zAirbyteMetaConfig)
   .implement((cfg): MetaService => {
-    const service = makePostgresMetaService({databaseUrl: cfg.postgresUrl})
+    const service = makePostgresMetaService({
+      databaseUrl: cfg.postgresUrl,
+      userId: null, // TODO: We should make it more clear that when there are no userId, metaService is in fact displaying all data...
+    })
 
     const client = createApiClient(cfg.apiUrl, {
       // axiosConfig: {auth: cfg.auth}, // TODO: Fix me after zodios v11 is released
