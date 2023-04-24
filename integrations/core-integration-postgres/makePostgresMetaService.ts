@@ -4,22 +4,45 @@ import type {
   MetaTable,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {memoize, R, z, zFunction} from '@usevenice/util'
+import {R, memoize, z, zFunction} from '@usevenice/util'
 
+import type {TransactionFunction} from 'slonik/dist/src/types'
 import {
   applyLimitOffset,
   makePostgresClient,
   zPgConfig,
 } from './makePostgresClient'
 
-const _getDeps = memoize((databaseUrl: string) =>
+const getPostgreClient = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
 )
+const _getDeps = (opts: {databaseUrl: string; userId: string | null}) => {
+  const client = getPostgreClient(opts.databaseUrl)
+  return {
+    ...client,
+    runQueries: async <T>(handler: TransactionFunction<T>) => {
+      const pool = await client.getPool()
+      const {sql} = client
+      if (opts.userId != null) {
+        return pool.transaction(async (trxn) => {
+          await trxn.query(sql`SET LOCAL ROLE authenticated`)
+          await trxn.query(
+            // SET LOCAL is does not work with prepared statements
+            // sql`SET LOCAL "request.jwt.claim.sub" = ${opts.userId}`,
+            sql`SELECT set_config('request.jwt.claim.sub',  ${opts.userId}, true)`,
+          )
+          return handler(trxn)
+        })
+      }
+      return handler(pool)
+    },
+  }
+}
 type Deps = ReturnType<typeof _getDeps>
 
 function metaTable<TID extends string, T extends Record<string, unknown>>(
   tableName: keyof ZRaw,
-  {sql, upsertById, getPool}: Deps,
+  {sql, upsertById, runQueries}: Deps,
 ): MetaTable<TID, T> {
   const table = sql.identifier([tableName])
 
@@ -28,7 +51,7 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
   // TODO: Convert case from snake_case to camelCase
   return {
     list: ({ids, endUserId, keywords, ...rest}) =>
-      getPool().then((pool) => {
+      runQueries((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
           endUserId && sql`end_user_id = ${endUserId}`,
@@ -46,35 +69,35 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
         )
       }),
     get: (id) =>
-      getPool().then((pool) =>
+      runQueries((pool) =>
         pool.maybeOne<T>(sql`SELECT * FROM ${table} where id = ${id}`),
       ),
     set: (id, data) => upsertById(tableName, {...data, id}),
     patch: (id, data) =>
       upsertById(tableName, {...data, id}, {mergeJson: 'shallow'}),
     delete: (id) =>
-      getPool()
-        .then((pool) => pool.query(sql`DELETE FROM ${table} WHERE id = ${id}`))
-        .then(() => {}),
+      runQueries((pool) =>
+        pool.query(sql`DELETE FROM ${table} WHERE id = ${id}`),
+      ).then(() => {}),
   }
 }
 
 export const makePostgresMetaService = zFunction(
   zPgConfig.pick({databaseUrl: true}).extend({userId: z.string().nullable()}),
-  ({databaseUrl}): MetaService => {
+  (opts): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
-      workspace: metaTable('workspace', _getDeps(databaseUrl)),
-      workspaceMember: metaTable('workspaceMember', _getDeps(databaseUrl)),
-      resource: metaTable('resource', _getDeps(databaseUrl)),
-      institution: metaTable('institution', _getDeps(databaseUrl)),
-      integration: metaTable('integration', _getDeps(databaseUrl)),
-      pipeline: metaTable('pipeline', _getDeps(databaseUrl)),
+      workspace: metaTable('workspace', _getDeps(opts)),
+      workspaceMember: metaTable('workspaceMember', _getDeps(opts)),
+      resource: metaTable('resource', _getDeps(opts)),
+      institution: metaTable('institution', _getDeps(opts)),
+      integration: metaTable('integration', _getDeps(opts)),
+      pipeline: metaTable('pipeline', _getDeps(opts)),
     }
     return {
       tables,
       searchEndUsers: ({keywords, ...rest}) => {
-        const {getPool, sql} = _getDeps(databaseUrl)
+        const {runQueries, sql} = _getDeps(opts)
         const where = keywords
           ? sql`WHERE end_user_id ILIKE ${'%' + keywords + '%'}`
           : sql``
@@ -92,10 +115,10 @@ export const makePostgresMetaService = zFunction(
           `,
           rest,
         )
-        return getPool().then((pool) => pool.any<EndUserResultRow>(query))
+        return runQueries((pool) => pool.any<EndUserResultRow>(query))
       },
       searchInstitutions: ({keywords, providerNames, ...rest}) => {
-        const {getPool, sql} = _getDeps(databaseUrl)
+        const {runQueries, sql} = _getDeps(opts)
         const conditions = R.compact([
           providerNames &&
             sql`provider_name = ANY(${sql.array(providerNames, 'varchar')})`,
@@ -105,7 +128,7 @@ export const makePostgresMetaService = zFunction(
           conditions.length > 0
             ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
             : sql``
-        return getPool().then((pool) =>
+        return runQueries((pool) =>
           pool.any(
             applyLimitOffset(sql`SELECT * FROM institution ${where}`, rest),
           ),
@@ -113,7 +136,7 @@ export const makePostgresMetaService = zFunction(
       },
 
       findPipelines: ({resourceIds, secondsSinceLastSync}) => {
-        const {getPool, sql} = _getDeps(databaseUrl)
+        const {runQueries, sql} = _getDeps(opts)
         const ids = resourceIds && sql.array(resourceIds, 'varchar')
         const conditions = R.compact([
           ids && sql`(source_id = ANY(${ids}) OR destination_id = ANY(${ids}))`,
@@ -127,7 +150,7 @@ export const makePostgresMetaService = zFunction(
           conditions.length > 0
             ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
             : sql``
-        return getPool().then((pool) =>
+        return runQueries((pool) =>
           pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },

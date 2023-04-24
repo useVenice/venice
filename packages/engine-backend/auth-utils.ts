@@ -12,7 +12,7 @@ const __zUserInfo = z.object({
 
   // Cannot have this return zUserId for some reason.. not working...
   userId: z.string().nullish(),
-  role: z.enum(['end_user', 'admin']).nullish(),
+  role: z.enum(['end_user', 'authenticated']).nullish(),
   /** @deprecated */
   isAdmin: z.boolean().nullish(),
 })
