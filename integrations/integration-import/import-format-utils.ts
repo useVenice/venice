@@ -13,7 +13,6 @@ const ID_PREFIXES = {
   res: 'reso', // Resource
   evt: 'evt',
   lbl: 'lbl',
-  ldgr: 'ldgr',
   note: 'note',
   ntf: 'ntf',
   op: 'op',

@@ -1,13 +1,13 @@
 import {TRPCError} from '@trpc/server'
 import * as jwt from 'jsonwebtoken'
 
-import {zUserId} from '@usevenice/cdk-core'
+import {zEndUserId} from '@usevenice/cdk-core'
 import {z, zFunction, zGuard} from '@usevenice/util'
 import {xAdminAppMetadataKey} from './safeForFrontend'
 
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
-  userId: zUserId.nullish(), // Is this right?
+  endUserId: zEndUserId.nullish(), // Is this right?
   isAdmin: z.boolean().nullish(),
 })
 
@@ -20,7 +20,7 @@ export const _zContext = (...args: Parameters<typeof _zUserInfo>) => {
   return z
     .object({accessToken: zUserInfo})
     .transform(({accessToken: userInfo}) => ({
-      userId: userInfo.userId ?? undefined,
+      endUserId: userInfo.endUserId ?? undefined,
       isAdmin: userInfo.isAdmin ?? false,
       userInfo,
     }))
@@ -37,7 +37,7 @@ export const _zUserInfo = (options: {
   const parseJwtPayload =
     options.parseJwtPayload ??
     ((jwt) => ({
-      userId: jwt.sub,
+      endUserId: jwt.sub,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       isAdmin: jwt['app_metadata']?.[xAdminAppMetadataKey] === true,
     }))

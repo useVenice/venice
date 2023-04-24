@@ -67,7 +67,6 @@ export interface Account<TBalance extends Balance = Balance> {
   /** https://en.wikipedia.org/wiki/Cash_and_cash_equivalents#:~:text=Cash%20and%20cash%20equivalents%20(CCE,into%20a%20known%20cash%20amount%22. */
   // liquidity?: string | null
 
-  /** Display only. Not used in the ledger itself */
   informationalBalances?: {
     current?: Amount | null
     available?: Amount | null

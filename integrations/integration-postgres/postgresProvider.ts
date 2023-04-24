@@ -15,6 +15,10 @@ export {makePostgresClient} from '@usevenice/core-integration-postgres'
 const _def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
+  // TODO: Should postgres use integration config or resourceSettings?
+  // if it's resourceSettings then it doesn't make as much sense to configure
+  // in the list of integrations...
+  // How do we create default resources for integrations that are basically single resource?
   resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
     sourceQueries: z
       .object({
@@ -42,7 +46,7 @@ export const postgresProvider = makeSyncProvider({
   // 2) Impelemnt incremental Sync
   // 3) Improve type safety
   // 4) Implement parallel runs
-  sourceSync: ({id: ledgerId, settings: {databaseUrl, sourceQueries}}) => {
+  sourceSync: ({endUser, settings: {databaseUrl, sourceQueries}}) => {
     const {getPool, sql} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
@@ -62,7 +66,7 @@ export const postgresProvider = makeSyncProvider({
           created_at: string
           external: any
           id: string
-          ledger_resource_id: string | null
+          end_user_id: string | null
           provider_name: string
           source_id: string | null
           standard: any
@@ -70,7 +74,7 @@ export const postgresProvider = makeSyncProvider({
         }>(
           sql`SELECT * FROM ${sql.identifier([
             'raw_' + entityName,
-          ])} WHERE ledger_resource_id = ${ledgerId}`,
+          ])} WHERE end_user_id = ${endUser?.id ?? null}`,
         )
         yield res.rows.map((row) =>
           def._op('data', {
@@ -111,11 +115,11 @@ export const postgresProvider = makeSyncProvider({
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
   },
-  destinationSync: ({id: ledgerId, settings: {databaseUrl}}) => {
+  destinationSync: ({endUser, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {
       // databaseUrl,
       // migrationsPath: __dirname + '/migrations',
-      ledgerId,
+      endUser,
     })
     const {getPool} = makePostgresClient({
       databaseUrl,
@@ -134,7 +138,7 @@ export const postgresProvider = makeSyncProvider({
         batches[tableName] = batch
         batch.push({
           id,
-          ledger_resource_id: ledgerId,
+          end_user_id: endUser?.id ?? null,
           standard: data.entity,
           external: data.external,
           source_id: sourceId,

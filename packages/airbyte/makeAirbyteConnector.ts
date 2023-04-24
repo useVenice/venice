@@ -2,7 +2,7 @@
 
 import {initTRPC} from '@trpc/server'
 import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
-import {fromMaybePromise, R, Rx, rxjs, z} from '@usevenice/util'
+import {R, Rx, fromMaybePromise, rxjs, z} from '@usevenice/util'
 import zodToJsonSchema from 'zod-to-json-schema'
 import type {ABMessage, ABMessageStream} from './protocol/airbyte-protocol'
 import {abMessage} from './protocol/airbyte-protocol'
@@ -112,7 +112,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
 
         return provider
           .sourceSync({
-            id: 'reso_todo',
+            endUser: null,
             config: config.config,
             settings: config.settings,
             state,

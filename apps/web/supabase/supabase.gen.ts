@@ -116,9 +116,9 @@ export interface Database {
       raw_account: {
         Row: {
           created_at: string
+          end_user_id: string | null
           external: Json
           id: string
-          ledger_resource_id: string | null
           provider_name: string
           source_id: string | null
           standard: Json
@@ -126,9 +126,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -136,9 +136,9 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -148,9 +148,9 @@ export interface Database {
       raw_commodity: {
         Row: {
           created_at: string
+          end_user_id: string | null
           external: Json
           id: string
-          ledger_resource_id: string | null
           provider_name: string
           source_id: string | null
           standard: Json
@@ -158,9 +158,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -168,9 +168,9 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -180,9 +180,9 @@ export interface Database {
       raw_transaction: {
         Row: {
           created_at: string
+          end_user_id: string | null
           external: Json
           id: string
-          ledger_resource_id: string | null
           provider_name: string
           source_id: string | null
           standard: Json
@@ -190,9 +190,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -200,9 +200,9 @@ export interface Database {
         }
         Update: {
           created_at?: string
+          end_user_id?: string | null
           external?: Json
           id?: string
-          ledger_resource_id?: string | null
           provider_name?: string
           source_id?: string | null
           standard?: Json
@@ -212,8 +212,8 @@ export interface Database {
       resource: {
         Row: {
           created_at: string
-          creator_id: string | null
           display_name: string | null
+          end_user_id: string | null
           env_name: string | null
           id: string
           institution_id: string | null
@@ -224,8 +224,8 @@ export interface Database {
         }
         Insert: {
           created_at?: string
-          creator_id?: string | null
           display_name?: string | null
+          end_user_id?: string | null
           env_name?: string | null
           id?: string
           institution_id?: string | null
@@ -236,8 +236,8 @@ export interface Database {
         }
         Update: {
           created_at?: string
-          creator_id?: string | null
           display_name?: string | null
+          end_user_id?: string | null
           env_name?: string | null
           id?: string
           institution_id?: string | null
@@ -249,162 +249,153 @@ export interface Database {
       }
     }
     Views: {
-      posting: {
+      account: {
         Row: {
-          account_id: string | null
-          amount_quantity: string | null
-          amount_unit: string | null
-          data: Json | null
+          available_balance: number | null
+          created_at: string | null
+          current_balance: number | null
+          default_unit: string | null
+          end_user_id: string | null
+          external: Json | null
           id: string | null
-          key: string | null
+          institution_name: string | null
+          last_four: string | null
+          name: string | null
+          provider_name: string | null
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          available_balance?: never
+          created_at?: string | null
+          current_balance?: never
+          default_unit?: never
+          end_user_id?: string | null
+          external?: never
+          id?: string | null
+          institution_name?: never
+          last_four?: never
+          name?: never
+          provider_name?: string | null
+          type?: never
+          updated_at?: string | null
+        }
+        Update: {
+          available_balance?: never
+          created_at?: string | null
+          current_balance?: never
+          default_unit?: never
+          end_user_id?: string | null
+          external?: never
+          id?: string | null
+          institution_name?: never
+          last_four?: never
+          name?: never
+          provider_name?: string | null
+          type?: never
+          updated_at?: string | null
         }
       }
       transaction: {
         Row: {
           account_id: string | null
-          amount_quantity: string | null
+          amount_quantity: number | null
           amount_unit: string | null
+          created_at: string | null
           date: string | null
           description: string | null
+          end_user_id: string | null
+          external: Json | null
           external_category: string | null
           id: string | null
           notes: string | null
           payee: string | null
-          postings: string | null
+          provider_name: string | null
+          splits: Json | null
+          updated_at: string | null
         }
         Insert: {
           account_id?: never
           amount_quantity?: never
           amount_unit?: never
+          created_at?: string | null
           date?: never
           description?: never
+          end_user_id?: string | null
+          external?: never
           external_category?: never
           id?: string | null
           notes?: never
           payee?: never
-          postings?: never
+          provider_name?: string | null
+          splits?: never
+          updated_at?: string | null
         }
         Update: {
           account_id?: never
           amount_quantity?: never
           amount_unit?: never
+          created_at?: string | null
           date?: never
           description?: never
+          end_user_id?: string | null
+          external?: never
           external_category?: never
           id?: string | null
           notes?: never
           payee?: never
-          postings?: never
+          provider_name?: string | null
+          splits?: never
+          updated_at?: string | null
+        }
+      }
+      transaction_split: {
+        Row: {
+          account_id: string | null
+          amount_quantity: number | null
+          amount_unit: string | null
+          created_at: string | null
+          data: Json | null
+          end_user_id: string | null
+          key: string | null
+          transaction_id: string | null
+          updated_at: string | null
         }
       }
     }
     Functions: {
-      _uid: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      create_workspace: {
-        Args: { name: string }
+      format_relative_date: {
+        Args: {
+          date: string
+        }
         Returns: string
       }
       generate_ulid: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
-      http: {
-        Args: { request: unknown }
-        Returns: unknown
-      }
-      http_delete:
-        | {
-            Args: { uri: string; content: string; content_type: string }
-            Returns: unknown
-          }
-        | {
-            Args: { uri: string }
-            Returns: unknown
-          }
-      http_get:
-        | {
-            Args: { uri: string; data: Json }
-            Returns: unknown
-          }
-        | {
-            Args: { uri: string }
-            Returns: unknown
-          }
-      http_head: {
-        Args: { uri: string }
-        Returns: unknown
-      }
-      http_header: {
-        Args: { field: string; value: string }
-        Returns: unknown
-      }
-      http_list_curlopt: {
-        Args: Record<PropertyKey, never>
-        Returns: { curlopt: string; value: string }[]
-      }
-      http_patch: {
-        Args: { uri: string; content: string; content_type: string }
-        Returns: unknown
-      }
-      http_post:
-        | {
-            Args: { uri: string; data: Json }
-            Returns: unknown
-          }
-        | {
-            Args: { uri: string; content: string; content_type: string }
-            Returns: unknown
-          }
-      http_put: {
-        Args: { uri: string; content: string; content_type: string }
-        Returns: unknown
-      }
-      http_reset_curlopt: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      http_set_curlopt: {
-        Args: { curlopt: string; value: string }
-        Returns: boolean
-      }
-      jsonb_array_to_text_array: {
-        Args: { _js: Json }
-        Returns: string[]
-      }
-      jsonb_object_keys: {
-        Args: { obj: Json }
-        Returns: string[]
-      }
-      jsonb_object_keys_to_text_array: {
-        Args: { _js: Json }
-        Returns: string[]
-      }
-      plv8_test: {
-        Args: { keys: string[]; vals: string[] }
+      get_claim: {
+        Args: {
+          uid: string
+          claim: string
+        }
         Returns: Json
       }
-      urlencode:
-        | {
-            Args: { string: string }
-            Returns: string
-          }
-        | {
-            Args: { data: Json }
-            Returns: string
-          }
-        | {
-            Args: { string: string }
-            Returns: string
-          }
-      xjsonb_object_keys: {
-        Args: { obj: Json }
-        Returns: string[]
+      jsonb_array_to_text_array: {
+        Args: {
+          _js: Json
+        }
+        Returns: unknown
+      }
+      test_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }

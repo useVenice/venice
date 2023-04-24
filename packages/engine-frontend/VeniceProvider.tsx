@@ -5,10 +5,10 @@ import React from 'react'
 import type {
   AnyProviderDef,
   AnySyncProvider,
+  EndUserId,
   LinkFactory,
   OpenDialogFn,
   UseConnectHook,
-  UserId,
 } from '@usevenice/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
 import {_zContext} from '@usevenice/engine-backend/auth-utils'
@@ -43,7 +43,7 @@ export const VeniceContext = React.createContext<{
 
   providerByName: Record<string, AnySyncProvider>
 
-  userId: UserId | undefined
+  endUserId: EndUserId | undefined
   isAdmin: boolean
   developerMode: boolean
   openDialog: OpenDialogFn
@@ -86,13 +86,13 @@ export function VeniceProvider<
   const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
 
   const {developerMode: _developerMode} = options
-  const {userId, isAdmin = false} = zAuthContext.parse<'typed'>({
+  const {endUserId, isAdmin = false} = zAuthContext.parse<'typed'>({
     accessToken,
   })
   const developerMode = (isAdmin && _developerMode) || false
 
   if (typeof window !== 'undefined') {
-    console.log('[VeniceProvider]', {userId, isAdmin, accessToken})
+    console.log('[VeniceProvider]', {endUserId, isAdmin, accessToken})
   }
 
   const url = config.apiUrl
@@ -128,7 +128,7 @@ export function VeniceProvider<
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
-    p.useConnectHook?.({userId, openDialog}),
+    p.useConnectHook?.({endUserId, openDialog}),
   ])
   const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
 
@@ -145,7 +145,7 @@ export function VeniceProvider<
             connectFnMapRef,
             trpcClient,
             queryClient,
-            userId,
+            endUserId,
             isAdmin,
             developerMode,
             openDialog,
@@ -154,7 +154,7 @@ export function VeniceProvider<
           [
             trpcClient,
             queryClient,
-            userId,
+            endUserId,
             isAdmin,
             developerMode,
             openDialog,

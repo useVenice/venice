@@ -6,7 +6,6 @@ export const zExternalId = z.union([z.string(), z.number()])
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
-  ledger: 'ldgr', // Technicall we do not store this... Consider renaming to ownerId e.g. own_123
   pipeline: 'pipe',
 } as const
 
@@ -45,13 +44,13 @@ export type Id<TName extends string = string> = {
 export const zUserId = z.string().min(1).brand<'usr'>()
 export type UserId = z.infer<typeof zUserId>
 
+export const zEndUserId = z.string().min(1).brand<'end_user'>()
+export type EndUserId = z.infer<typeof zEndUserId>
+
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...
-    (s): s is Id[TPrefix] =>
-      prefix === 'ldgr'
-        ? true // Bypass check for ledger-ids for now...
-        : s.startsWith(`${prefix}_`),
+    (s): s is Id[TPrefix] => s.startsWith(`${prefix}_`),
     `Not a valid ${IDS_INVERTED[prefix]} id`,
   )
 }

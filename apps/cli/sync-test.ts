@@ -11,7 +11,7 @@ function getSource(name: string) {
   switch (name) {
     case 'postgres':
       return postgresProvider.sourceSync({
-        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        endUser: null,
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
           sourceQueries: {
@@ -47,8 +47,8 @@ function getDestination(name: string) {
   switch (name) {
     case 'stripe':
       return stripeImpl.destinationSync({
-        id: 'reso_stripe',
         config: {},
+        endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},
       })

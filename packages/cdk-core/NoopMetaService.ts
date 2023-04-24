@@ -17,7 +17,7 @@ export const noopMetaService: MetaService = {
     integration: noopTable,
     pipeline: noopTable,
   },
-  searchCreatorIds: async () => [],
+  searchEndUsers: async () => [],
   searchInstitutions: async () => [],
   findPipelines: async () => [],
 }

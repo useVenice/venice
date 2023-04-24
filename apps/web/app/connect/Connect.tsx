@@ -1,6 +1,6 @@
 'use client'
 
-import type {ConnectWith, Id, ZStandard} from '@usevenice/cdk-core'
+import type {Id, ZStandard} from '@usevenice/cdk-core'
 import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
@@ -21,7 +21,6 @@ export function Connect(props: {
   integrations: AnySyncRouterOutput['listIntegrations']
   displayName?: string
   redirectUrl?: string
-  ledgerIds: Array<Id['reso']>
 }) {
   const {trpc} = VeniceProvider.useContext()
   const trpcCtx = trpc.useContext()
@@ -65,7 +64,6 @@ export function Connect(props: {
               connections={
                 connections.data?.filter((c) => c.type === 'source') ?? []
               }
-              connectWith={{destinationId: props.ledgerIds[0]}}
               category="banking"
               title="Bank accounts"
               integrationId="int_plaid"
@@ -74,7 +72,6 @@ export function Connect(props: {
               connections={
                 connections.data?.filter((c) => c.type === 'source') ?? []
               }
-              connectWith={{destinationId: props.ledgerIds[0]}}
               category="accounting"
               title="Accounting software"
               integrationId="int_merge"
@@ -83,7 +80,6 @@ export function Connect(props: {
               connections={
                 connections.data?.filter((c) => c.type === 'source') ?? []
               }
-              connectWith={{destinationId: props.ledgerIds[0]}}
               category="hris"
               title="Payroll system"
               integrationId="int_merge"
@@ -119,7 +115,6 @@ function LoadingConnectionsColumn() {
 
 interface ConnectionsColumnProps {
   connections: Connection[]
-  connectWith: ConnectWith
   category?: NonNullable<ZStandard['institution']['categories']>[number]
   /** TODO: Should be inferred based on `category` specified above */
   integrationId?: Id['int']
@@ -130,7 +125,7 @@ interface ConnectionsColumnProps {
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
-  const {connectWith, title, preConnectInput} = props
+  const {title, preConnectInput} = props
   const connections = props.connections.filter(
     (c) =>
       !props.category || c.institution?.categories?.includes(props.category),
@@ -149,10 +144,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
 
   function addNewConnection() {
     if (integrationId) {
-      void veniceConnect.connect(
-        {id: integrationId},
-        {connectWith, preConnectInput},
-      )
+      void veniceConnect.connect({id: integrationId}, {preConnectInput})
     }
   }
 
@@ -186,7 +178,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               if (integrationId) {
                 void veniceConnect.connect(
                   {id: integrationId},
-                  {connectWith, resourceId: source.id},
+                  {resourceId: source.id},
                 )
               } else {
                 console.error('Missing onlyIntegrationId')

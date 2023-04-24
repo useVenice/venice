@@ -13,9 +13,6 @@ import {commonEnv} from '@usevenice/app-config/commonConfig'
 export const kAccessToken = '_token' as const
 export const kEnv = 'env' as const
 
-export const kLedgerId = 'ledgerId'
-
-export const ledgerIdAtom = atomWithQueryParam(kLedgerId, '', StringParam)
 export const accessTokenAtom = atomWithQueryParam(kAccessToken, '', StringParam)
 export const envAtom = atomWithQueryParam<EnvName>(
   kEnv,

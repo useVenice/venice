@@ -47,12 +47,12 @@ export default async function ConnectPage({
     secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
   })
   const payload = zVeniceConnectJwtPayload.parse(jwtClient.verify(token))
-  const userId = payload.sub
+  const endUserId = payload.sub
   const queryClient = new QueryClient()
   const ssg = createProxySSGHelpers({
     queryClient,
     router: veniceRouter,
-    ctx: {userId},
+    ctx: {endUserId},
   })
 
   const [integrations] = await Promise.all([
@@ -60,7 +60,7 @@ export default async function ConnectPage({
     ssg.listConnections.prefetch({}),
   ])
 
-  const ledgerIds = await ensureDefaultResourceAndPipelines(userId, {
+  await ensureDefaultResourceAndPipelines(endUserId, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
@@ -71,9 +71,10 @@ export default async function ConnectPage({
       accessToken={token}>
       <Connect
         integrations={integrations}
-        displayName={fromMaybeArray(searchParams['displayName'])[0] ?? userId}
+        displayName={
+          fromMaybeArray(searchParams['displayName'])[0] ?? endUserId
+        }
         redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
-        ledgerIds={ledgerIds}
       />
     </ClientRoot>
   )

@@ -25,7 +25,7 @@ export const cli = cliFromRouter(veniceRouter, {
   cleanup: () => {}, // metaService.shutdown?
   // Bypass auth when running sync from CLI
   // We should improve this for usage on single machines
-  context: {userId: process.env['USER_ID'] as undefined, isAdmin: true},
+  context: {endUserId: process.env['USER_ID'] as undefined, isAdmin: true},
   // syncEngine.zContext.parse<'typed'>({
   //   accessToken: process.env['ACCESS_TOKEN'],
   // })

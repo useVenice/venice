@@ -1,15 +1,15 @@
 import React, {useState} from 'react'
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 
-import type {ConnectOptions, ConnectWith, Id} from '@usevenice/cdk-core'
+import type {ConnectOptions, Id} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
 import type {IntegrationInput} from '@usevenice/engine-backend'
 import {z} from '@usevenice/util'
 
 import {createTRPCClientProxy} from '@trpc/client'
-import {VeniceProvider} from './VeniceProvider'
 import {Button, Card, SettingsIcon, ZodForm} from '@usevenice/ui'
 import {browserAnalytics} from '../../apps/web/lib/browser-analytics'
+import {VeniceProvider} from './VeniceProvider'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
 export const zUseVeniceOptions = z.object({
@@ -33,15 +33,15 @@ export const zUseVeniceOptions = z.object({
 export type UseVenice = ReturnType<typeof useVenice>
 
 export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
-  const {trpc, userId, isAdmin, developerMode} = VeniceProvider.useContext()
+  const {trpc, endUserId, isAdmin, developerMode} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
-    {enabled: !!userId, staleTime: 15 * 60 * 1000},
+    {enabled: !!endUserId, staleTime: 15 * 60 * 1000},
   )
 
   const insRes = trpc.searchInstitutions.useQuery(
     {keywords},
-    {enabled: !!userId, staleTime: 15 * 60 * 1000}, // TODO: default system wide stale time.
+    {enabled: !!endUserId, staleTime: 15 * 60 * 1000}, // TODO: default system wide stale time.
   )
   const deleteResource = trpc.deleteResource.useMutation({})
   const checkResource = trpc.checkResource.useMutation({})
@@ -51,7 +51,7 @@ export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
   const veniceConnect = useVeniceConnect({envName, ...options})
 
   return {
-    userId,
+    endUserId,
     integrationsRes,
     insRes,
     deleteResource,
@@ -71,8 +71,6 @@ interface VeniceConnect {
 }
 
 interface IntegrationOptions {
-  /** For creating initial pipeline in new resource */
-  connectWith?: ConnectWith
   /** For exsting Existing resource Id */
   /** Optional for new resource */
   institutionId?: Id['ins']
@@ -83,7 +81,6 @@ interface IntegrationOptions {
   preConnectInput?: unknown
 }
 
-/** Also ledger-specific */
 export function useVeniceConnect({
   envName,
   ...options
@@ -93,7 +90,7 @@ export function useVeniceConnect({
     connectFnMapRef,
     trpcClient: _client,
     trpc,
-    userId,
+    endUserId,
     providerByName,
     openDialog,
   } = VeniceProvider.useContext()
@@ -112,10 +109,10 @@ export function useVeniceConnect({
   const connect = React.useCallback(
     async function (int: IntegrationInput, opts: IntegrationOptions) {
       console.log('[useVeniceConnect] _connect')
-      if (!envName || !userId) {
+      if (!envName || !endUserId) {
         console.log('[useVeniceConnect] Connect missing params, noop', {
           envName,
-          userId,
+          endUserId,
         })
         return
       }
@@ -219,11 +216,7 @@ export function useVeniceConnect({
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.postConnect.mutate([
-          res,
-          int,
-          {...opt, connectWith: opts.connectWith},
-        ])
+        const postConRes = await client.postConnect.mutate([res, int, opt])
         await trpcCtx.listConnections.invalidate()
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
         setIsConnecting(false)
@@ -253,7 +246,7 @@ export function useVeniceConnect({
     },
     [
       envName,
-      userId,
+      endUserId,
       providerByName,
       options.enablePreconnectPrompt,
       trpcCtx.preConnect,

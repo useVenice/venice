@@ -1,6 +1,6 @@
 import {z, zJsonObject} from '@usevenice/util'
 
-import {zId, zUserId} from './id.types'
+import {zEndUserId, zId} from './id.types'
 
 // Utility types
 
@@ -78,7 +78,7 @@ export const zRaw = {
   }),
   resource: z.object({
     id: zId('reso'),
-    creatorId: zUserId.nullish(),
+    endUserId: zEndUserId.nullish(),
     integrationId: zId('int').nullish(),
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),

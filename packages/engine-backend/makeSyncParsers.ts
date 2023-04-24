@@ -7,11 +7,17 @@ import type {
   MetaService,
   ZStandard,
 } from '@usevenice/cdk-core'
-import {zConnectWith} from '@usevenice/cdk-core'
 import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
 import type {Json} from '@usevenice/util'
-import {deepOmitUndefined} from '@usevenice/util'
-import {castInput, deepMerge, mapDeep, R, z, zGuard} from '@usevenice/util'
+import {
+  R,
+  castInput,
+  deepMerge,
+  deepOmitUndefined,
+  mapDeep,
+  z,
+  zGuard,
+} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
 import type {SyncEngineConfig} from './makeSyncEngine'
@@ -118,8 +124,6 @@ export const zSyncOptions = z.object({
   // See coda's implmementation. Requires adding a new message to the sync protocol
   // to remove all data from a particular source_id
   todo_removeUnsyncedData: z.boolean().nullish(),
-
-  connectWith: zConnectWith.nullish(),
 })
 
 export function makeSyncParsers<
@@ -233,7 +237,7 @@ export function makeSyncParsers<
         // For security do not allow userId to ever be automatically changed
         // once exists. Otherwise one could pass someone else's userId and get access
         // to their resource via just the `id`
-        creatorId: reso?.creatorId ?? input.creatorId,
+        endUserId: reso?.endUserId ?? input.endUserId,
         integration,
         integrationId: integration.id, // Ensure consistency
         institution,
@@ -257,7 +261,6 @@ export function makeSyncParsers<
     .transform(
       zGuard(async ({id, ...rest}) => {
         const pipeline = await m.tables.pipeline.get(id)
-
         // This is a temporary workaround for default pipeline is overriding the explicit pipeline definition....
         // TODO: We should really re-work this where defaulting happens as a last step
         // Also it should not be possible to have the conn.id differ from connId
@@ -269,7 +272,9 @@ export function makeSyncParsers<
             deepMerge(rest.source, {
               id:
                 overrideId(rest.sourceId ?? rest.source?.id) ??
-                pipeline?.sourceId,
+                pipeline?.sourceId ??
+                rest.sourceId ??
+                rest.source?.id,
             }),
             {path: ['source']},
           ),
@@ -280,7 +285,9 @@ export function makeSyncParsers<
             deepMerge(rest.destination, {
               id:
                 overrideId(rest.destinationId ?? rest.destination?.id) ??
-                pipeline?.destinationId,
+                pipeline?.destinationId ??
+                rest.destinationId ??
+                rest.destination?.id,
             }),
             {path: ['destination']},
           ),
@@ -339,25 +346,25 @@ export function makeSyncParsers<
 }
 
 type AuthSubject =
-  | ['resource', Pick<ParsedReso, 'creatorId' | 'id'> | null | undefined]
+  | ['resource', Pick<ParsedReso, 'endUserId' | 'id'> | null | undefined]
   | [
       'pipeline',
       Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
     ]
 
-/** TODO: Add row level security to fully protect ourselves */
+/** TODO: Fully replace this with row level security so we do not duplicate the auth logic */
 export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
   if (ctx.isAdmin) {
     return true
   }
   switch (pair[0]) {
     case 'resource':
-      return pair[1] == null || pair[1].creatorId === ctx.userId
+      return pair[1] == null || pair[1].endUserId === ctx.endUserId
     case 'pipeline':
       return (
         pair[1] == null ||
-        pair[1].source.creatorId === ctx.userId ||
-        pair[1].destination.creatorId === ctx.userId
+        pair[1].source.endUserId === ctx.endUserId ||
+        pair[1].destination.endUserId === ctx.endUserId
       )
   }
 }
@@ -366,7 +373,7 @@ export function authorizeOrThrow(ctx: UserInfo, ...pair: AuthSubject) {
   if (!checkAuthorization(ctx, ...pair)) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
-      message: `${ctx.userId} does not have access to ${
+      message: `${ctx.endUserId} does not have access to ${
         typeof pair[1] === 'string' ? pair[1] : pair[1]?.id
       }`,
     })

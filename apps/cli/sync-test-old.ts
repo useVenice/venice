@@ -51,8 +51,8 @@ switch (process.argv[2]) {
         },
       } satisfies (typeof stripeImpl)['helpers']['_inputOpType']),
       destination: stripeImpl.destinationSync({
-        id: 'reso_stripe',
         config: {},
+        endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},
       }),
@@ -62,8 +62,8 @@ switch (process.argv[2]) {
   case 'source-brex': {
     sync({
       source: brexImpl.sourceSync({
-        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
         config: {clientId: '', clientSecret: ''},
+        endUser: null,
         settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
         state: {},
       }),
@@ -79,7 +79,7 @@ switch (process.argv[2]) {
   case 'source-postgres': {
     sync({
       source: postgresProvider.sourceSync({
-        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        endUser: null,
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
           sourceQueries: {
@@ -118,9 +118,9 @@ switch (process.argv[2]) {
   case 'source-heron': {
     sync({
       source: heronImpl.sourceSync({
-        id: 'reso_heron_b27c6987-22ea-4518-be81-f9da4bbc40c8',
         settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
         config: {apiKey: process.env['HERON_API_KEY']!},
+        endUser: null,
         state: {},
       }),
       destination: (obs) =>
@@ -136,13 +136,12 @@ switch (process.argv[2]) {
     sync({
       // @ts-expect-error
       source: postgresProvider.sourceSync({
-        id: 'reso_postgres_b27c6987-22ea-4518-be81-f9da4bbc40c8',
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
         },
       }),
       destination: heronImpl.destinationSync({
-        id: 'reso_heron_b27c6987-22ea-4518-be81-f9da4bbc40c8',
+        endUser: null,
         settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
         config: {apiKey: process.env['HERON_API_KEY']!},
         state: {},
@@ -154,7 +153,7 @@ switch (process.argv[2]) {
     console.log('source mode')
     sync({
       source: mergeImpl.sourceSync({
-        id: 'reso_1',
+        endUser: null,
         settings: {
           accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
         },
@@ -197,7 +196,7 @@ switch (process.argv[2]) {
         })
       }),
       destination: fsProvider.destinationSync({
-        id: 'reso_1',
+        endUser: null,
         settings: {basePath: destPath},
       }),
     }).catch(console.error)
@@ -208,12 +207,12 @@ switch (process.argv[2]) {
     console.log('direct mode')
     sync({
       source: fsProvider.sourceSync({
-        id: 'reso_1',
+        endUser: null,
         settings: {basePath: srcPath},
         state: {},
       }),
       destination: fsProvider.destinationSync({
-        id: 'reso_1',
+        endUser: null,
         settings: {basePath: destPath},
       }),
     }).catch(console.error)

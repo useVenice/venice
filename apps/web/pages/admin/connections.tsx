@@ -1,4 +1,4 @@
-import type {ConnectWith, UserId} from '@usevenice/cdk-core'
+import type {UserId} from '@usevenice/cdk-core'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
@@ -39,14 +39,13 @@ export const getServerSideProps = (async (context) => {
     ssg.searchInstitutions.prefetch({keywords: undefined}),
   ])
 
-  const ledgerIds = await ensureDefaultResourceAndPipelines(user.id, {
+  await ensureDefaultResourceAndPipelines(user.id, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
   return {
     props: {
       ...getPageProps(),
-      ledgerIds,
       userId: user.id as UserId,
       integrations,
     },
@@ -94,7 +93,6 @@ export default function ConnectionsPage(
                 connections={
                   connections.data?.filter((c) => c.type === 'source') ?? []
                 }
-                connectWith={{destinationId: props.ledgerIds[0]}}
               />
             )}
 
@@ -129,11 +127,10 @@ function LoadingConnectionsColumn() {
 
 interface ConnectionsColumnProps {
   connections: Connection[]
-  connectWith: ConnectWith
 }
 
 function ConnectionsColumn(props: ConnectionsColumnProps) {
-  const {connections, connectWith} = props
+  const {connections} = props
   const archerElementRelations = [
     {
       targetId: VENICE_DATABASE_IMAGE_ID,
@@ -152,7 +149,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
 
   function addNewConnection() {
     if (onlyIntegrationId) {
-      void veniceConnect.connect({id: onlyIntegrationId}, {connectWith})
+      void veniceConnect.connect({id: onlyIntegrationId}, {})
     }
   }
 
@@ -189,7 +186,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
                 if (onlyIntegrationId) {
                   void veniceConnect.connect(
                     {id: onlyIntegrationId},
-                    {connectWith, resourceId: source.id},
+                    {resourceId: source.id},
                   )
                 } else {
                   console.error('Missing onlyIntegrationId')
