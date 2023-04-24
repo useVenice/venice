@@ -43,6 +43,11 @@ DROP FUNCTION IF EXISTS auth.resource_ids;
 DROP FUNCTION IF EXISTS auth.institution_ids;
 
 -- Won't need these for too long, but still
+
+CREATE INDEX transaction_end_user_id ON raw_transaction (end_user_id);
+CREATE INDEX account_end_user_id ON raw_account (end_user_id);
+CREATE INDEX commodity_end_user_id ON raw_commodity (end_user_id);
+
 DROP POLICY IF EXISTS end_user_access ON public.raw_transaction;
 CREATE POLICY end_user_access ON public.raw_transaction
   USING ((
