@@ -825,7 +825,7 @@ export const makeSyncEngine = <
         return jwtClient.sign({
           sub: endUserId,
           exp: Math.floor(Date.now() / 1000) + 3600,
-          role: 'authenticated',
+          role: 'end_user', // 'authenticated',
         } satisfies VeniceConnectJwtPayload)
       }),
     adminSearchEndUsers: adminProcedure
@@ -873,8 +873,6 @@ export const makeSyncEngine = <
         return `Synced ${stats} institutions from ${ints.length} providers`
       }),
   })
-
-
 
   const jwtClient = jwtSecretOrPublicKey
     ? makeJwtClient({secretOrPublicKey: jwtSecretOrPublicKey})

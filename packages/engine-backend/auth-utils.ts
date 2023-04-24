@@ -8,6 +8,12 @@ import {xAdminAppMetadataKey} from './safeForFrontend'
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
   endUserId: zEndUserId.nullish(), // Is this right?
+  // TODO: Consider how to reconcile between userId vs. endUserId.
+
+  // Cannot have this return zUserId for some reason.. not working...
+  userId: z.string().nullish(),
+  role: z.enum(['end_user', 'admin']).nullish(),
+  /** @deprecated */
   isAdmin: z.boolean().nullish(),
 })
 
@@ -21,6 +27,8 @@ export const _zContext = (...args: Parameters<typeof _zUserInfo>) => {
     .object({accessToken: zUserInfo})
     .transform(({accessToken: userInfo}) => ({
       endUserId: userInfo.endUserId ?? undefined,
+      userId: userInfo.userId ?? false,
+      role: userInfo.role ?? undefined,
       isAdmin: userInfo.isAdmin ?? false,
       userInfo,
     }))
@@ -38,6 +46,8 @@ export const _zUserInfo = (options: {
     options.parseJwtPayload ??
     ((jwt) => ({
       endUserId: jwt.sub,
+      userId: jwt.sub,
+      role: jwt['role'],
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       isAdmin: jwt['app_metadata']?.[xAdminAppMetadataKey] === true,
     }))

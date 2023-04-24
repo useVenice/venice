@@ -8,7 +8,10 @@ export const zVeniceConnectJwtPayload = z.object({
   sub: zEndUserId,
   /** Required by supabase/goTrue-js and supabase/realtime */
   exp: z.number(),
-  /** Required by supabase/realtime */
+  /**
+   * Required by supabase/realtime.
+   * Typcially `authenticated`, but we are also gonna try having this be `endUser`
+   * and see if it still works with realtime*/
   role: z.string(),
   /** Extra metadata for us, though may be better off specified via url params as they do not need to be secure */
   // veniceConnect: z.object({
