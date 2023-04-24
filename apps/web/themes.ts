@@ -60,7 +60,7 @@ export const dataGridThemeColors = {
   drillDownBorder: '#00000000',
 }
 
-const VeniceDataGridTheme = {
+export const VeniceDataGridTheme = {
   accentColor: dataGridThemeColors.accent,
   accentFg: dataGridThemeColors.cellBackground,
   accentLight: dataGridThemeColors.accentLight,

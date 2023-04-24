@@ -12,6 +12,8 @@ const noopTable: MetaTable<string, never> = {
 // much like used to have memoryKV store
 export const noopMetaService: MetaService = {
   tables: {
+    workspace: noopTable,
+    workspaceMember: noopTable,
     resource: noopTable,
     institution: noopTable,
     integration: noopTable,
