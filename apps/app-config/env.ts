@@ -7,8 +7,10 @@ import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
+import {heronImpl} from '@usevenice/integration-heron'
 import {importProvider} from '@usevenice/integration-import'
 import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
+import {mergeImpl} from '@usevenice/integration-merge'
 import {mootaProvider} from '@usevenice/integration-moota'
 import {oneBrickProvider} from '@usevenice/integration-onebrick'
 import {plaidProvider} from '@usevenice/integration-plaid'
@@ -17,14 +19,12 @@ import {QBOProvider} from '@usevenice/integration-qbo'
 import {rampProvider} from '@usevenice/integration-ramp'
 import {saltedgeProvider} from '@usevenice/integration-saltedge'
 import {splitwiseProvider} from '@usevenice/integration-splitwise'
-import {stripeProvider} from '@usevenice/integration-stripe'
+import {stripeImpl} from '@usevenice/integration-stripe'
 import {tellerProvider} from '@usevenice/integration-teller'
 import {togglProvider} from '@usevenice/integration-toggl'
 import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
-import {mergeImpl} from '@usevenice/integration-merge'
-import {heronImpl} from '@usevenice/integration-heron'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
 // MARK: - Env vars
@@ -87,7 +87,6 @@ export const PROVIDERS = [
   lunchmoneyProvider,
   oneBrickProvider,
   tellerProvider,
-  stripeProvider,
   rampProvider,
   wiseProvider,
   togglProvider,
@@ -100,6 +99,7 @@ export const PROVIDERS = [
   saltedgeProvider,
   venmoProvider,
   // New ones
+  stripeImpl as unknown as typeof plaidProvider, // Hack for now..
   mergeImpl as unknown as typeof plaidProvider, // Hack for now...
   heronImpl as unknown as typeof plaidProvider, // Hack for now...
 ] as const

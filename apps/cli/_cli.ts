@@ -61,7 +61,6 @@ if (require.main === module) {
       '': () => parseIntConfigsFromRawEnv(),
     }),
     jwt: () =>
-       
       makeJwtClient({secretOrPublicKey: env().JWT_SECRET_OR_PUBLIC_KEY}),
     pg: () => makePostgresClient({databaseUrl: env().POSTGRES_OR_WEBHOOK_URL}),
     pgMeta: () =>
@@ -77,7 +76,8 @@ if (require.main === module) {
       ) as {},
     onebrick: () => makeOneBrickClient(intConfig('onebrick')),
     teller: () => makeTellerClient(intConfig('teller')),
-    stripe: () => makeStripeClient(intConfig('stripe')),
+    stripe: () =>
+      makeStripeClient({apiKey: process.env['STRIPE_TEST_SECRET_KEY']!}),
     ramp: () => makeRampClient(intConfig('ramp')),
     wise: () => makeWiseClient(intConfig('wise')),
     toggl: () => makeTogglClient(intConfig('toggl')),

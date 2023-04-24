@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {extractId, handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
 import {
   makePostgresClient,
   upsertByIdQuery,
@@ -15,9 +15,15 @@ export {makePostgresClient} from '@usevenice/core-integration-postgres'
 const _def = makeSyncProvider.def({
   ...makeSyncProvider.def.defaults,
   name: z.literal('postgres'),
-  resourceSettings: zPgConfig.pick({databaseUrl: true}),
+  resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
+    sourceQueries: z
+      .object({
+        invoice: z.string().nullish(),
+      })
+      .nullish(),
+  }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
-  sourceOutputEntity: zCast<EntityPayloadWithExternal>(),
+  sourceOutputEntity: zCast<EntityPayloadWithExternal | ZCommon['Entity']>(),
 })
 
 const def = makeSyncProvider.def.helpers(_def)
@@ -36,15 +42,21 @@ export const postgresProvider = makeSyncProvider({
   // 2) Impelemnt incremental Sync
   // 3) Improve type safety
   // 4) Implement parallel runs
-  sourceSync: ({id: ledgerId, settings: {databaseUrl}}) => {
+  sourceSync: ({id: ledgerId, settings: {databaseUrl, sourceQueries}}) => {
     const {getPool, sql} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
       migrationTableName: 'ls_migrations',
     })
+    // TODO: Never let slonik transform the field names...
+    const rawClient = makePostgresClient({
+      databaseUrl,
+      transformFieldNames: false,
+    })
 
     async function* iterateEntities() {
       const pool = await getPool()
+
       for (const entityName of ['account', 'transaction'] as const) {
         const res = await pool.query<{
           created_at: string
@@ -71,6 +83,25 @@ export const postgresProvider = makeSyncProvider({
               sourceId: row.source_id ?? undefined,
               externalId: extractId(row.id as any)[2],
             },
+          }),
+        )
+      }
+
+      const rawPool = await rawClient.getPool()
+      for (const [_entityName, query] of Object.entries(sourceQueries ?? {})) {
+        const entityName = _entityName as keyof NonNullable<
+          typeof sourceQueries
+        >
+        if (!query) {
+          return
+        }
+
+        const res = await rawPool.query(
+          rawClient.sql([query] as unknown as TemplateStringsArray),
+        )
+        yield res.rows.map((row) =>
+          def._op('data', {
+            data: {entityName, id: `${row['id']}`, entity: row},
           }),
         )
       }

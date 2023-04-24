@@ -46,6 +46,7 @@ export interface IntegrationImpl<
   TDef extends IntegrationDef,
   T extends ExtendDef<TDef> = ExtendDef<TDef>,
 > {
+  [k: string]: unknown
   def: TDef
   name: TDef['name']['_def']['value']
 
@@ -192,6 +193,11 @@ export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
   type Src = Source<_types['sourceOutputEntity'], resoUpdate, stateUpdate>
 
   type Op = SyncOperation<_types['sourceOutputEntity'], resoUpdate, stateUpdate>
+  type InputOp = SyncOperation<
+    _types['destinationInputEntity'],
+    resoUpdate,
+    stateUpdate
+  >
 
   type OpData = Extract<Op, {type: 'data'}>
   type OpRes = Extract<Op, {type: 'resoUpdate'}>
@@ -212,6 +218,7 @@ export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
     _opType: {} as Op,
     _insOpType: {} as InsOpData,
     _sourceType: {} as Src,
+    _inputOpType: {} as InputOp,
     _resourceUpdateType: {} as _resourceUpdateType,
     _webhookReturnType: {} as _webhookReturnType,
 

@@ -100,7 +100,7 @@ export const toCompletion = <T>(
 }
 
 export const fromCompletion = <T = never>(
-  promise: Promise<void> | (() => Promise<void>),
+  promise: Promise<unknown> | (() => Promise<unknown>),
 ) =>
   rxjs
     .from(typeof promise === 'function' ? promise() : promise)

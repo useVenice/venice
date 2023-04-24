@@ -80,7 +80,7 @@ export const heronImpl = {
           })
           .catch(() =>
             client.post('/api/end_users', {
-              body: {end_user: {end_user_id: endUserId}},
+              bodyJson: {end_user: {end_user_id: endUserId}},
             }),
           )
 
@@ -88,7 +88,7 @@ export const heronImpl = {
           '/api/end_users/{end_user_id_or_heron_id}/transactions',
           {
             path: {end_user_id_or_heron_id: endUserId},
-            body: {
+            bodyJson: {
               transactions: Object.entries(cache.transaction).map(
                 ([id, txn]): components['schemas']['Transaction'] => ({
                   amount: txn.postingsMap?.main?.amount.quantity ?? 0,
@@ -106,7 +106,7 @@ export const heronImpl = {
         )
         // TODO Do this once when all transactions have completed processing
         await client.put('/api/end_users', {
-          body: {end_user: {end_user_id: endUserId, status: 'ready'}},
+          bodyJson: {end_user: {end_user_id: endUserId, status: 'ready'}},
         })
       }),
     )

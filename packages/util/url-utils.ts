@@ -8,7 +8,16 @@ import {
 
 import type {AnyRecord} from './type-utils'
 
-export {stringify as stringifyQueryParams, stringifyUrl} from 'query-string'
+export {stringifyUrl} from 'query-string'
+
+import {stringify as _stringify} from 'qs'
+
+/**
+ * qs supports nested query param, needed by apis such as Stripe.
+ * @see https://github.com/sindresorhus/query-string/pull/147
+ * TODO: Fully switch from query-string to qs
+ */
+export const stringifyQueryParams = _stringify
 
 export function parseUrl<T extends AnyRecord>(
   url: string,

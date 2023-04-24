@@ -6,14 +6,17 @@
     "register.node.ts"
   ],
   "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi-typescript https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.yaml --make-paths-enum --output stripe.gen.ts"
+  },
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "react": "*",
-    "stripe": "8.86.0"
+    "react": "*"
   },
   "devDependencies": {
-    "@types/react": "*"
+    "@types/react": "*",
+    "openapi-typescript": "6.2.1"
   }
 }

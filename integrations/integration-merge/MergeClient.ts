@@ -38,7 +38,7 @@ export const integrationsEndpoints = {
   post: {
     '/create-link-token': {
       input: {
-        body: z.object({
+        bodyJson: z.object({
           /** Unique ID for your end user */
           end_user_origin_id: z.string(),
           end_user_organization_name: z.string(),
