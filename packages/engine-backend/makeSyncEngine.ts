@@ -6,6 +6,7 @@ import type {
   AnySyncProvider,
   Destination,
   EndUserId,
+  Id,
   Link,
   LinkFactory,
   MetaService,
@@ -33,13 +34,14 @@ import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
 import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
-import type {
+import {
   IntegrationInput,
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
   ResourceInput,
   ZInput,
+  getContextHelpers,
 } from './makeSyncParsers'
 import {
   authorizeOrThrow,
@@ -314,23 +316,19 @@ export const makeSyncEngine = <
         message: `Auth required: ${path}`,
       })
     }
+
     // Figure out how we can pass the context into zod validators so that we can
     // check user has access to resource pipline etc in a single place...
     // Also we probably don't want non-admin user to be able to provider anything
     // other than the `id` for integration, resource and pipeline
     const metaService = getMetaService(userId)
-    const parsers = {
-      reso: zId('reso')
-        .transform((id) => metaService.tables.resource.get(id))
-        .pipe(zRaw.resource),
-    }
-
+    const helpers = getContextHelpers({metaService, providerMap})
     return next({
       ctx: {
         ...ctx,
         userId: userId as EndUserId,
         metaService,
-        parsers,
+        ...helpers,
       },
     })
   })
@@ -598,52 +596,54 @@ export const makeSyncEngine = <
       })
       .input(z.object({id: zId('reso')}))
       .query(async ({input, ctx}) => {
-        const reso = await ctx.parsers.reso.parseAsync(input.id)
+        const reso = await ctx.getResourceOrFail(input.id)
         return reso
       }),
     checkResource: authedProcedure
       .meta({
         description: 'Not automatically called, used for debugging for now',
       })
-      .input(z.tuple([zReso, zCheckResourceOptions.optional()]))
-      .mutation(
-        async ({input: [{settings, integration: int, ...reso}, opts], ctx}) => {
-          authorizeOrThrow(ctx, 'resource', reso)
-          // console.log('checkResource', {settings, integration, ...conn}, opts)
-          const resoUpdate = await int.provider.checkResource?.({
-            settings,
-            config: int.config,
-            options: opts ?? {},
-            context: {
-              webhookBaseUrl: joinPath(
-                apiUrl,
-                parseWebhookRequest.pathOf(int.id),
-              ),
+      .input(z.tuple([zId('reso'), zCheckResourceOptions.optional()]))
+      .mutation(async ({input: [resoId, opts], ctx}) => {
+        const {
+          settings,
+          integration: int,
+          ...reso
+        } = await ctx.getResourceOrFail(resoId)
+        // console.log('checkResource', {settings, integration, ...conn}, opts)
+        const resoUpdate = await int.provider.checkResource?.({
+          settings,
+          config: int.config,
+          options: opts ?? {},
+          context: {
+            webhookBaseUrl: joinPath(
+              apiUrl,
+              parseWebhookRequest.pathOf(int.id),
+            ),
+          },
+        })
+        if (resoUpdate || opts?.import) {
+          /** Do not update the `endUserId` here... */
+          await _syncResourceUpdate(int, {
+            ...(opts?.import && {
+              endUserId: reso.endUserId ?? undefined,
+              envName: reso.envName ?? undefined,
+            }),
+            ...resoUpdate,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            settings: {
+              ...(opts?.import && settings),
+              ...resoUpdate?.settings,
             },
+            resourceExternalId:
+              resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
           })
-          if (resoUpdate || opts?.import) {
-            /** Do not update the `endUserId` here... */
-            await _syncResourceUpdate(int, {
-              ...(opts?.import && {
-                endUserId: reso.endUserId ?? undefined,
-                envName: reso.envName ?? undefined,
-              }),
-              ...resoUpdate,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              settings: {
-                ...(opts?.import && settings),
-                ...resoUpdate?.settings,
-              },
-              resourceExternalId:
-                resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
-            })
-          }
-          if (!int.provider.checkResource) {
-            return `Not implemented in ${int.provider.name}`
-          }
-          return 'Ok'
-        },
-      ),
+        }
+        if (!int.provider.checkResource) {
+          return `Not implemented in ${int.provider.name}`
+        }
+        return 'Ok'
+      }),
     // What about delete? Should this delete also? Or soft delete?
     deleteResource: authedProcedure
       .input(
