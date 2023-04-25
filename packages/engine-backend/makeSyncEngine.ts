@@ -20,7 +20,9 @@ import {
   zCheckResourceOptions,
   zConnectOptions,
   zEndUserId,
+  zId,
   zPostConnectOptions,
+  zRaw,
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
@@ -316,11 +318,19 @@ export const makeSyncEngine = <
     // check user has access to resource pipline etc in a single place...
     // Also we probably don't want non-admin user to be able to provider anything
     // other than the `id` for integration, resource and pipeline
+    const metaService = getMetaService(userId)
+    const parsers = {
+      reso: zId('reso')
+        .transform((id) => metaService.tables.resource.get(id))
+        .pipe(zRaw.resource),
+    }
+
     return next({
       ctx: {
         ...ctx,
         userId: userId as EndUserId,
-        metaService: getMetaService(userId),
+        metaService,
+        parsers,
       },
     })
   })
@@ -332,6 +342,7 @@ export const makeSyncEngine = <
         message: `Admin only: ${path}`,
       })
     }
+
     return next({ctx: {...ctx, isAdmin: true as const}})
   })
   const publicProcedure = trpcServer.procedure
@@ -581,6 +592,15 @@ export const makeSyncEngine = <
       }),
     // TODO: Do we need this method at all? Or should we simply add params to args
     // to syncResource instead? For example, skipPipelines?
+    getResource: authedProcedure
+      .meta({
+        description: 'Not automatically called, used for debugging for now',
+      })
+      .input(z.object({id: zId('reso')}))
+      .query(async ({input, ctx}) => {
+        const reso = await ctx.parsers.reso.parseAsync(input.id)
+        return reso
+      }),
     checkResource: authedProcedure
       .meta({
         description: 'Not automatically called, used for debugging for now',
