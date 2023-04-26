@@ -12,32 +12,6 @@ import {z} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
 
-// Four different types
-// Generic Input / Input
-// Generic Output / Output
-// We implement all except Generic Output
-
-export type ZInput = {
-  [k in keyof typeof zInput]: z.infer<(typeof zInput)[k]>
-}
-export const zInput = (() => {
-  const provider = z.string().brand<'provider'>()
-  // zRaw also have a bunch of things such as userId, envName, etc.
-  // Do we want to worry about those?
-  const integration = zRaw.integration
-  const institution = zRaw.institution
-  const resource = zRaw.resource.omit({standard: true}).extend({
-    integration: integration.optional(),
-    institution: institution.optional(),
-  })
-  const pipeline = zRaw.pipeline.extend({
-    source: resource.partial().optional(),
-    destination: resource.partial().optional(),
-    watch: z.boolean().optional(),
-  })
-  return {provider, institution, integration, resource, pipeline}
-})()
-
 type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
 // Would be nice to improve the typing of this... Make stuff non-optional
