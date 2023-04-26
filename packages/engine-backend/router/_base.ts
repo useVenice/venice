@@ -11,7 +11,7 @@ export const trpc = initTRPC
 
 export const publicProcedure = trpc.procedure
 
-export const nonPublicProcedure = trpc.procedure.use(({next, ctx}) => {
+export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
   if (!hasRole(ctx.viewer, ['end_user', 'user', 'workspace', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',

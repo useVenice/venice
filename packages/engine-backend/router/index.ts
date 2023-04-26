@@ -1,13 +1,13 @@
 import {trpc} from './_base'
 import {adminRouter} from './adminRouter'
 import {endUserRouter} from './endUserRouter'
-import {nonPublicRouter} from './nonPublicRouter'
+import {protectedRouter} from './protectedRouter'
 import {publicRouter} from './publicRouter'
 import {systemRouter} from './systemRouter'
 
 export const flatRouter = trpc.mergeRouters(
   publicRouter,
-  nonPublicRouter,
+  protectedRouter,
   endUserRouter,
   adminRouter,
   systemRouter,
@@ -16,8 +16,8 @@ export const flatRouter = trpc.mergeRouters(
 // Which one is best?
 export const nestedRouter = trpc.router({
   public: publicRouter,
-  nonPublic: nonPublicRouter,
-  system: systemRouter,
+  protected: protectedRouter,
   endUser: endUserRouter,
   admin: adminRouter,
+  system: systemRouter,
 })

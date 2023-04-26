@@ -1,5 +1,5 @@
 import {zEvent} from '../events'
-import {nonPublicProcedure, trpc} from './_base'
+import {protectedProcedure, trpc} from './_base'
 
 import {TRPCError} from '@trpc/server'
 
@@ -19,8 +19,8 @@ import {zSyncOptions} from '../types'
 
 export {type inferProcedureInput} from '@trpc/server'
 
-export const nonPublicRouter = trpc.router({
-  dispatch: nonPublicProcedure.input(zEvent).mutation(async ({input, ctx}) => {
+export const protectedRouter = trpc.router({
+  dispatch: protectedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
     if (
       input.name !== 'sync/resource-requested' &&
       input.name !== 'sync/pipeline-requested'
@@ -33,7 +33,7 @@ export const nonPublicRouter = trpc.router({
     // not sure what `viewer` is quite for here...
     await inngest.send(input.name, {data: input.data, user: ctx.viewer})
   }),
-  listConnections: nonPublicProcedure
+  listConnections: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {
       // Add info about what it takes to `reconnect` here for resources which
@@ -112,7 +112,7 @@ export const nonPublicRouter = trpc.router({
           }
         })
     }),
-  listPipelines: nonPublicProcedure
+  listPipelines: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {
       // Add info about what it takes to `reconnect` here for resources which
@@ -181,7 +181,7 @@ export const nonPublicRouter = trpc.router({
         destination: parseResource(resoById[destinationId!])!,
       }))
     }),
-  listIntegrations: nonPublicProcedure
+  listIntegrations: protectedProcedure
     .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
     .query(async ({input: {type}, ctx}) => {
       const ints = await ctx.helpers.listIntegrations()
@@ -199,7 +199,7 @@ export const nonPublicRouter = trpc.router({
             (type === 'destination' && int.isDestination),
         )
     }),
-  searchInstitutions: nonPublicProcedure
+  searchInstitutions: protectedProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) => {
       const ints = await ctx.helpers.listIntegrations()
@@ -228,7 +228,7 @@ export const nonPublicRouter = trpc.router({
     }),
   // TODO: Do we need this method at all? Or should we simply add params to args
   // to syncResource instead? For example, skipPipelines?
-  getResource: nonPublicProcedure
+  getResource: protectedProcedure
     .meta({
       description: 'Not automatically called, used for debugging for now',
     })
@@ -237,7 +237,7 @@ export const nonPublicRouter = trpc.router({
       const reso = await ctx.helpers.getResourceOrFail(input.id)
       return reso
     }),
-  checkResource: nonPublicProcedure
+  checkResource: protectedProcedure
     .meta({
       description: 'Not automatically called, used for debugging for now',
     })
@@ -283,7 +283,7 @@ export const nonPublicRouter = trpc.router({
       return 'Ok'
     }),
   // What about delete? Should this delete also? Or soft delete?
-  deleteResource: nonPublicProcedure
+  deleteResource: protectedProcedure
     .input(
       z.tuple([
         zId('reso'),
@@ -314,7 +314,7 @@ export const nonPublicRouter = trpc.router({
 
   // MARK: - Sync
 
-  syncResource: nonPublicProcedure
+  syncResource: protectedProcedure
     .input(z.tuple([zId('reso'), zSyncOptions.optional()]))
     .mutation(async function syncResource({input: [resoId, opts], ctx}) {
       const reso = await ctx.helpers.getResourceOrFail(resoId)
@@ -356,7 +356,7 @@ export const nonPublicRouter = trpc.router({
         triggerDefaultSync: true,
       })
     }),
-  syncPipeline: nonPublicProcedure
+  syncPipeline: protectedProcedure
     .input(z.tuple([zId('pipe'), zSyncOptions.optional()]))
     .mutation(async function syncPipeline({input: [pipeId, opts], ctx}) {
       const pipeline = await ctx.helpers.getPipelineOrFail(pipeId)

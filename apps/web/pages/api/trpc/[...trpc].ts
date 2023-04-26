@@ -19,6 +19,7 @@ const handler = trpcNext.createNextApiHandler({
       query: req.query,
       headers: req.headers,
     })
+    // const _ctx = contextFactory.fromJwtToken(getAccessToken(req))
     const ctx = syncEngine.zContext.parse<'typed'>({
       accessToken: getAccessToken(req),
     })
