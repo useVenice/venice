@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@trpc/server": "10.18.0",
+    "@trpc/server": "10.21.1",
     "@usevenice/airbyte": "workspace:*",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",

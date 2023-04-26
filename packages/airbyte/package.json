@@ -6,7 +6,7 @@
     "codegen:airbyte-client": "openapi-zod-client https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-client.gen.ts"
   },
   "dependencies": {
-    "@trpc/server": "10.18.0",
+    "@trpc/server": "10.21.1",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",

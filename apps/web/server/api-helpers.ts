@@ -6,7 +6,7 @@ import {kAccessToken} from '../contexts/atoms'
 
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
-import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {createServerSideHelpers} from '@trpc/react-query/server'
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {
   xPatAppMetadataKey,
@@ -31,7 +31,7 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   await import('@usevenice/app-config/register.node')
   const {veniceRouter} = await import('@usevenice/app-config/backendConfig')
 
-  const ssg = createProxySSGHelpers({
+  const ssg = createServerSideHelpers({
     queryClient,
     router: veniceRouter,
     ctx: {endUserId: user?.id as EndUserId | undefined},
