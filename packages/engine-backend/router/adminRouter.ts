@@ -10,10 +10,10 @@ export {type inferProcedureInput} from '@trpc/server'
 export const adminRouter = trpc.router({
   // TODO: How do we not just return empty result, but also return proper error code (401
   // should end use actually hit these APIs?
-  _wipListWorkspaces: adminProcedure
+  adminListWorkspaces: adminProcedure
     .input(z.object({}).nullish())
     .query(({ctx}) => ctx.helpers.metaService.tables.workspace.list({})),
-  _wipCreateWorkspace: adminProcedure
+  adminCreateWorkspace: adminProcedure
     .input(z.object({name: z.string(), slug: z.string()}))
     .mutation(({input, ctx}) =>
       ctx.helpers.metaService.tables.workspace.set(

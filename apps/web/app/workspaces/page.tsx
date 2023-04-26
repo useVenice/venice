@@ -17,10 +17,10 @@ export default function Workspaces() {
   const {trpc} = VeniceProvider.useContext()
   const trpcUtils = trpc.useContext()
 
-  const workspacesRes = trpc._wipListWorkspaces.useQuery({})
-  const createWorkspace = trpc._wipCreateWorkspace.useMutation({
+  const workspacesRes = trpc.adminListWorkspaces.useQuery({})
+  const createWorkspace = trpc.adminCreateWorkspace.useMutation({
     onSuccess: () => {
-      void trpcUtils._wipListWorkspaces.invalidate()
+      void trpcUtils.adminListWorkspaces.invalidate()
     },
   })
   const form = useForm<z.infer<typeof formSchema>>()
