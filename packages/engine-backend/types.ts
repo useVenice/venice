@@ -1,5 +1,5 @@
 import type {AnySyncProvider, Id, LinkFactory} from '@usevenice/cdk-core'
-import type {z} from '@usevenice/util'
+import {z} from '@usevenice/util'
 
 // MARK: - Input types
 
@@ -51,3 +51,25 @@ export interface PipelineInput<
   >
   watch?: boolean
 }
+
+
+export const zSyncOptions = z.object({
+  /** Only sync resource metadata and skip pipelines */
+  metaOnly: z.boolean().nullish(),
+  /**
+   * Remove `state` of resource and trigger a full resync
+   */
+  fullResync: z.boolean().nullish(),
+
+  /**
+   * Triggers provider to refresh data from its source
+   * https://plaid.com/docs/api/products/transactions/#transactionsrefresh
+   * This may also load historical transactions. For example,
+   * Finicity treats historical transaction as premium service.
+   */
+  todo_upstreamRefresh: z.boolean().nullish(),
+
+  // See coda's implmementation. Requires adding a new message to the sync protocol
+  // to remove all data from a particular source_id
+  todo_removeUnsyncedData: z.boolean().nullish(),
+})

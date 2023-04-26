@@ -25,18 +25,34 @@ export const zViewer = z.discriminatedUnion('role', [
 ])
 
 type Helpers = ReturnType<typeof getContextHelpers>
-type ViewerRole = z.infer<typeof zRole>
+export type ViewerRole = z.infer<typeof zRole>
 export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
   z.infer<typeof zViewer>,
   {role: R}
 >
 
 export interface RouterContext {
+  // Viewer-dependent
   viewer: Viewer
   /** Helpers with the designated permission level */
-  current: Helpers
+  helpers: Helpers
   /** Impersonate a different permission level explicitly */
   as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Helpers
+
+  // Non-viewer dependent
+  providerMap: Record<string, AnySyncProvider>
+  jwt: JWTClient
+  /**
+   * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
+   * This is needed for 1) server side rendering and 2) webhook handling
+   */
+  apiUrl: string
+
+  /** Used for oauth based resources */
+  getRedirectUrl?: (
+    integration: _Integration,
+    ctx: {endUserId?: EndUserId | null},
+  ) => string
 }
 
 // MARK: - JWT
@@ -71,20 +87,8 @@ export const zViewerFromJwtPayload = z
 export interface ContextFactoryOptions<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
-> {
+> extends Pick<RouterContext, 'apiUrl' | 'getRedirectUrl'> {
   providers: TProviders
-  /**
-   * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
-   * This is needed for 1) server side rendering and 2) webhook handling
-   */
-  apiUrl: string
-
-  /** Used for oauth based resources */
-  getRedirectUrl?: (
-    integration: _Integration,
-    ctx: {endUserId?: EndUserId | null},
-  ) => string
-
   // Backend only
   linkMap?: TLinks
 
@@ -100,19 +104,19 @@ export interface ContextFactoryOptions<
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
 }
 
-export function contextFactory<
+export function getContextFactory<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
   // getLinksForPipeline,
-  // apiUrl,
-  // getRedirectUrl,
+  apiUrl,
+  getRedirectUrl,
   getMetaService,
   providers,
   jwtSecret,
 }: ContextFactoryOptions<TProviders, TLinks>) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
-  const jwtClient = makeJwtClient({secretOrPublicKey: jwtSecret})
+  const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getHelpers = (viewer: Viewer) =>
     getContextHelpers({metaService: getMetaService(viewer), providerMap})
@@ -121,7 +125,12 @@ export function contextFactory<
     return {
       viewer,
       as: (role, data) => getHelpers({role, ...data} as Viewer),
-      current: getHelpers(viewer),
+      helpers: getHelpers(viewer),
+      // --- Non-viewer dependent
+      providerMap,
+      jwt,
+      apiUrl,
+      getRedirectUrl,
     }
   }
 
@@ -131,7 +140,7 @@ export function contextFactory<
     }
 
     try {
-      const data = jwtClient.verify(token)
+      const data = jwt.verify(token)
       return fromViewer(zViewerFromJwtPayload.parse(data))
     } catch (err) {
       console.warn('JwtError', err)
@@ -164,3 +173,5 @@ export const makeJwtClient = zFunction(
     sign: (payload: jwt.JwtPayload) => jwt.sign(payload, secretOrPublicKey),
   }),
 )
+
+export type JWTClient = ReturnType<typeof makeJwtClient>

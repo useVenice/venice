@@ -35,30 +35,10 @@ import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import {parseWebhookRequest} from './parseWebhookRequest'
 import type {PipelineInput, ResourceInput} from './types'
+import {zSyncOptions} from './types'
 import type {ParseJwtPayload, UserInfo} from './zdeprecated_auth-utils'
 import {_zContext} from './zdeprecated_auth-utils'
 import type {VeniceConnectJwtPayload} from './zdeprecated_safeForFrontend'
-
-export const zSyncOptions = z.object({
-  /** Only sync resource metadata and skip pipelines */
-  metaOnly: z.boolean().nullish(),
-  /**
-   * Remove `state` of resource and trigger a full resync
-   */
-  fullResync: z.boolean().nullish(),
-
-  /**
-   * Triggers provider to refresh data from its source
-   * https://plaid.com/docs/api/products/transactions/#transactionsrefresh
-   * This may also load historical transactions. For example,
-   * Finicity treats historical transaction as premium service.
-   */
-  todo_upstreamRefresh: z.boolean().nullish(),
-
-  // See coda's implmementation. Requires adding a new message to the sync protocol
-  // to remove all data from a particular source_id
-  todo_removeUnsyncedData: z.boolean().nullish(),
-})
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -276,12 +256,7 @@ export const makeSyncEngine = <
     const metaService = getMetaService(userId)
     const helpers = getContextHelpers({metaService, providerMap})
     return next({
-      ctx: {
-        ...ctx,
-        userId: userId as EndUserId,
-        metaService,
-        ...helpers,
-      },
+      ctx: {...ctx, userId: userId as EndUserId, ...helpers},
     })
   })
   const isAdmin = trpcServer.middleware(({next, ctx, path}) => {
