@@ -35,11 +35,7 @@ export function Connect(props: {
   // connect immediately, until we have a dedicated screen for immediate connect anyways.
   React.useEffect(() => {
     props.integrations.forEach((int) =>
-      trpcCtx.preConnect.prefetch([
-        {id: int.id as never},
-        {envName: 'sandbox'},
-        {},
-      ]),
+      trpcCtx.preConnect.prefetch([int.id, {envName: 'sandbox'}, {}]),
     )
   }, [props.integrations, trpcCtx])
 

@@ -9,14 +9,14 @@ const kWebhook = 'webhook' as const
 export function parseWebhookRequest(
   req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
 ) {
-  const [procedure, integrationId] = req.pathSegments
+  const [procedure, intId] = req.pathSegments
   if (procedure !== kWebhook) {
     return {...req, procedure}
   }
 
   // Consider naming it integrationId? not sure.
   const input: AnySyncRouterInput['handleWebhook'] = [
-    {id: integrationId as Id['int']},
+    intId!,
     {query: req.query, headers: req.headers, body: req.body},
   ]
   return {

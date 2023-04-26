@@ -347,10 +347,10 @@ export function makeSyncParsers<
 }
 
 type AuthSubject =
-  | ['resource', Pick<ParsedReso, 'endUserId' | 'id'> | null | undefined]
+  | ['resource', Pick<_Resource, 'endUserId' | 'id'> | null | undefined]
   | [
       'pipeline',
-      Pick<ParsedPipeline, 'source' | 'destination' | 'id'> | null | undefined,
+      Pick<_Pipeline, 'source' | 'destination' | 'id'> | null | undefined,
     ]
 
 /** TODO: Fully replace this with row level security so we do not duplicate the auth logic */
@@ -413,6 +413,13 @@ export function getContextHelpers({
       const config: {} = provider.def.integrationConfig?.parse(int.config)
       return {...int, provider, config}
     })
+  const getInstitutionOrFail = (id: Id['ins']) =>
+    metaService.tables.institution.get(id).then((ins) => {
+      if (!ins) {
+        throw new TRPCError({code: 'NOT_FOUND'})
+      }
+      return zRaw.institution.parse(ins)
+    })
   const getResourceOrFail = (id: Id['reso']) =>
     metaService.tables.resource.get(id).then(async (_reso) => {
       if (!_reso) {
@@ -424,7 +431,10 @@ export function getContextHelpers({
       const settings: {} = integration.provider.def.resourceSettings?.parse(
         reso.settings,
       )
-      return {...reso, integration, settings}
+      const institution = reso.institutionId
+        ? await getInstitutionOrFail(reso.institutionId)
+        : undefined
+      return {...reso, integration, settings, institution}
     })
   const getPipelineOrFail = (id: Id['pipe']) =>
     metaService.tables.pipeline.get(id).then(async (_pipe) => {
@@ -443,7 +453,24 @@ export function getContextHelpers({
         destination.integration.provider.def.destinationState?.parse(
           pipe.destinationState,
         )
-      return {...pipe, source, destination, sourceState, destinationState}
+      // const links = R.pipe(
+      //   rest.linkOptions ?? pipeline?.linkOptions ?? [],
+      //   R.map((l) =>
+      //     typeof l === 'string'
+      //       ? linkMap?.[l]?.(undefined)
+      //       : linkMap?.[l[0]]?.(l[1]),
+      //   ),
+      //   R.compact,
+      // )
+      return {
+        ...pipe,
+        source,
+        destination,
+        sourceState,
+        destinationState,
+        links: [], // TODO: Fix me
+        watch: false, // TODO: Fix me
+      }
     })
   return {
     getProviderOrFail,
@@ -452,3 +479,10 @@ export function getContextHelpers({
     getPipelineOrFail,
   }
 }
+
+export type _Pipeline = Awaited<
+  ReturnType<ReturnType<typeof getContextHelpers>['getPipelineOrFail']>
+>
+export type _Resource = Awaited<
+  ReturnType<ReturnType<typeof getContextHelpers>['getResourceOrFail']>
+>

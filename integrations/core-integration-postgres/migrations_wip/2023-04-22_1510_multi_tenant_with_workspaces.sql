@@ -145,3 +145,9 @@ DROP POLICY IF EXISTS admin_access ON migrations;
 
 DROP FUNCTION IF EXISTS auth.is_admin;
 DROP PROCEDURE IF EXISTS auth.set_user_admin;
+
+
+--- Migrating previous DATA
+--  ALTER TABLE "public"."resource" ALTER COLUMN integration_id SET NOT NULL;
+--  ALTER TABLE "public"."pipeline" ALTER COLUMN source_id SET NOT NULL;
+--  ALTER TABLE "public"."pipeline" ALTER COLUMN destination_id SET NOT NULL;

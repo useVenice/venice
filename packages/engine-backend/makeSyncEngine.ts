@@ -35,10 +35,10 @@ import {makeMetaLinks} from './makeMetaLinks'
 import type {
   IntegrationInput,
   ParsedInt,
-  ParsedPipeline,
   PipelineInput,
   ResourceInput,
   ZInput,
+  _Pipeline,
 } from './makeSyncParsers'
 import {
   authorizeOrThrow,
@@ -82,7 +82,7 @@ export interface SyncEngineConfig<
 
   /** Used to store metadata */
   getMetaService: (sub: string | null) => MetaService
-  getLinksForPipeline?: (pipeline: ParsedPipeline) => Link[]
+  getLinksForPipeline?: (pipeline: _Pipeline) => Link[]
 
   getDefaultPipeline?: (
     connInput?: ResourceInput<TProviders[number]>,
@@ -139,7 +139,7 @@ export const makeSyncEngine = <
         }),
       )
   /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {zInt, zReso, zPipeline} = makeSyncParsers({
+  const {zInt, zPipeline} = makeSyncParsers({
     providers,
     getDefaultPipeline,
     getDefaultConfig: (name, id) =>
@@ -224,7 +224,7 @@ export const makeSyncEngine = <
   }
 
   const _syncPipeline = async (
-    pipeline: ParsedPipeline,
+    pipeline: _Pipeline,
     opts: z.infer<typeof zSyncOptions> & {
       source$?: Source<AnyEntityPayload>
       /**
@@ -283,7 +283,7 @@ export const makeSyncEngine = <
         // logLink({prefix: 'postSource', verbose: true}),
         metaLinks.postSource({src}),
       ),
-      links: getLinksForPipeline?.(pipeline) ?? links,
+      links: getLinksForPipeline?.(pipeline), // ?? links,
       // WARNING: It is insanely unclear to me why moving `metaLinks.link`
       // to after provider.destinationSync makes all the difference.
       // When syncing from firebase with a large number of docs,
@@ -350,8 +350,13 @@ export const makeSyncEngine = <
   const router = trpcServer.router({
     health: publicProcedure.query(() => 'Ok ' + new Date().toISOString()),
     handleWebhook: publicProcedure
-      .input(z.tuple([zInt, zWebhookInput]))
-      .mutation(async ({input: [int, input]}) => {
+      .input(z.tuple([zId('int'), zWebhookInput]))
+      .mutation(async ({input: [intId, input]}) => {
+        const int = await getContextHelpers({
+          metaService: superMetaService,
+          providerMap,
+        }).getIntegrationOrFail(intId)
+
         if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
           console.warn(`${int.provider.name} does not handle webhooks`)
           return
@@ -646,7 +651,7 @@ export const makeSyncEngine = <
     deleteResource: authedProcedure
       .input(
         z.tuple([
-          zReso,
+          zId('reso'),
           z
             .object({
               skipRevoke: z.boolean().nullish(),
@@ -655,42 +660,46 @@ export const makeSyncEngine = <
             .optional(),
         ]),
       )
-      .mutation(
-        async ({input: [{settings, integration, ...reso}, opts], ctx}) => {
-          authorizeOrThrow(ctx, 'resource', reso)
-          if (!opts?.skipRevoke) {
-            await integration.provider.revokeResource?.(
-              settings,
-              integration.config,
-            )
-          }
-          if (opts?.todo_deleteAssociatedData) {
-            // TODO: Figure out how to delete... Destination is not part of meta service
-            // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
-            // We should probably introduce a reset / delete event...
-          }
-          await ctx.metaService.tables.resource.delete(reso.id)
-        },
-      ),
+      .mutation(async ({input: [resoId, opts], ctx}) => {
+        const {settings, integration, ...reso} = await ctx.getResourceOrFail(
+          resoId,
+        )
+        authorizeOrThrow(ctx, 'resource', reso)
+        if (!opts?.skipRevoke) {
+          await integration.provider.revokeResource?.(
+            settings,
+            integration.config,
+          )
+        }
+        if (opts?.todo_deleteAssociatedData) {
+          // TODO: Figure out how to delete... Destination is not part of meta service
+          // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
+          // We should probably introduce a reset / delete event...
+        }
+        await ctx.metaService.tables.resource.delete(reso.id)
+      }),
 
     // MARK: - Connect
     preConnect: authedProcedure
-      .input(z.tuple([zInt, zConnectOptions, z.unknown()]))
+      .input(z.tuple([zId('int'), zConnectOptions, z.unknown()]))
       // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
       .query(
         async ({
-          input: [int, {resourceExternalId, ...connCtxInput}, preConnInput],
+          input: [intId, {resourceExternalId, ...connCtxInput}, preConnInput],
           ctx,
         }) => {
+          const int = await ctx.getIntegrationOrFail(intId)
           if (!int.provider.preConnect) {
             return null
           }
           const reso = resourceExternalId
-            ? await ctx.metaService.tables.resource
-                .get(makeId('reso', int.provider.name, resourceExternalId))
-                .then((input) => zReso.parseAsync(input))
+            ? await ctx.getResourceOrFail(
+                makeId('reso', int.provider.name, resourceExternalId),
+              )
             : undefined
-          authorizeOrThrow(ctx, 'resource', reso)
+          if (reso) {
+            authorizeOrThrow(ctx, 'resource', reso)
+          }
           return int.provider.preConnect?.(
             int.config,
             {
@@ -714,16 +723,17 @@ export const makeSyncEngine = <
     // for cli usage, can just call `postConnect` directly. Consider making the
     // flow a bit smoother with a guided cli flow
     postConnect: authedProcedure
-      .input(z.tuple([z.unknown(), zInt, zPostConnectOptions]))
+      .input(z.tuple([z.unknown(), zId('int'), zPostConnectOptions]))
       // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
       // needed
       // How do we verify that the userId here is the same as the userId from preConnectOption?
 
       .mutation(
         async ({
-          input: [input, int, {resourceExternalId, ...connCtxInput}],
+          input: [input, intId, {resourceExternalId, ...connCtxInput}],
           ctx,
         }) => {
+          const int = await ctx.getIntegrationOrFail(intId)
           console.log(
             'didConnect start',
             int.provider.name,
@@ -734,11 +744,13 @@ export const makeSyncEngine = <
             return 'Noop'
           }
           const reso = resourceExternalId
-            ? await ctx.metaService.tables.resource
-                .get(makeId('reso', int.provider.name, resourceExternalId))
-                .then((input) => zReso.parseAsync(input))
+            ? await ctx.getResourceOrFail(
+                makeId('reso', int.provider.name, resourceExternalId),
+              )
             : undefined
-          authorizeOrThrow(ctx, 'resource', reso)
+          if (reso) {
+            authorizeOrThrow(ctx, 'resource', reso)
+          }
 
           const resoUpdate = await int.provider.postConnect(
             int.provider.def.connectOutput.parse(input),
@@ -779,8 +791,9 @@ export const makeSyncEngine = <
     // MARK: - Sync
 
     syncResource: authedProcedure
-      .input(z.tuple([zReso, zSyncOptions.optional()]))
-      .mutation(async function syncResource({input: [reso, opts], ctx}) {
+      .input(z.tuple([zId('reso'), zSyncOptions.optional()]))
+      .mutation(async function syncResource({input: [resoId, opts], ctx}) {
+        const reso = await ctx.getResourceOrFail(resoId)
         authorizeOrThrow(ctx, 'resource', reso)
         console.log('[syncResource]', reso, opts)
         // No need to checkResource here as sourceSync should take care of it
@@ -821,8 +834,9 @@ export const makeSyncEngine = <
         })
       }),
     syncPipeline: authedProcedure
-      .input(z.tuple([zPipeline, zSyncOptions.optional()]))
-      .mutation(async function syncPipeline({input: [pipeline, opts], ctx}) {
+      .input(z.tuple([zId('pipe'), zSyncOptions.optional()]))
+      .mutation(async function syncPipeline({input: [pipeId, opts], ctx}) {
+        const pipeline = await ctx.getPipelineOrFail(pipeId)
         console.log('[syncPipeline]', pipeline)
         authorizeOrThrow(ctx, 'pipeline', pipeline)
         return _syncPipeline(pipeline, opts)
@@ -872,15 +886,22 @@ export const makeSyncEngine = <
       .query(async ({input: {keywords} = {}, ctx}) =>
         ctx.metaService.searchEndUsers({keywords}),
       ),
-    adminGetIntegration: adminProcedure.input(zInt).query(({input: int}) => ({
-      config: int.config,
-      provider: int.provider.name,
-      id: int.id,
-    })),
+    adminGetIntegration: adminProcedure
+      .input(zId('int'))
+      .query(async ({input: intId, ctx}) => {
+        const int = await ctx.getIntegrationOrFail(intId)
+        return {
+          config: int.config,
+          provider: int.provider.name,
+          id: int.id,
+        }
+      }),
     adminSyncMetadata: adminProcedure
-      .input(zInt.nullish())
-      .mutation(async ({input: int}) => {
-        const ints = int ? [int] : await getDefaultIntegrations()
+      .input(zId('int').nullish())
+      .mutation(async ({input: intId, ctx}) => {
+        const ints = intId
+          ? await ctx.getIntegrationOrFail(intId).then((int) => [int])
+          : await getDefaultIntegrations()
         const stats = await sync({
           source: rxjs.merge(
             ...ints.map(

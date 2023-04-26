@@ -58,7 +58,7 @@ export const syncPipeline = inngest.createFunction(
     // This upsert stuff is dangerous...
     await veniceRouter
       .createCaller({isAdmin: true, endUserId: 'usr_TASK_NOOP' as EndUserId})
-      .syncPipeline([{id: pipelineId}, {}])
+      .syncPipeline([pipelineId, {}])
     console.log('did sync pipeline', pipelineId)
     return pipelineId
   },
@@ -81,7 +81,7 @@ export const syncResource = inngest.createFunction(
       await ensureDefaultResourceAndPipelines(endUserId)
       await veniceRouter
         .createCaller({endUserId})
-        .syncResource([{id: resourceId as never}, {}])
+        .syncResource([resourceId, {}])
 
       console.log('did sync pipeline', resourceId)
       return resourceId

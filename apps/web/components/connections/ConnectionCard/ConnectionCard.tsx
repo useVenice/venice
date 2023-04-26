@@ -88,7 +88,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     return (
       <TaggedCard
         tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
-        <div className="flex grow flex-col justify-between py-2 px-3" ref={ref}>
+        <div className="flex grow flex-col justify-between px-3 py-2" ref={ref}>
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
             {institution?.logoUrl ? (
               <Image
@@ -191,11 +191,10 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 onDeletionConfirmed={(opts) => {
                   if (opts?.deleteAssociatedData) {
                     deleteAssociatedData.mutate(undefined, {
-                      onSuccess: () =>
-                        deleteResource.mutate([{id: resourceId}, {}]),
+                      onSuccess: () => deleteResource.mutate([resourceId, {}]),
                     })
                   } else {
-                    deleteResource.mutate([{id: resourceId}, {}])
+                    deleteResource.mutate([resourceId, {}])
                   }
                 }}
               />
