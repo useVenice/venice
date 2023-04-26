@@ -28,23 +28,37 @@ import {
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
 import {R, joinPath, makeUlid, rxjs, z} from '@usevenice/util'
 
-import type {ParseJwtPayload, UserInfo} from './auth-utils'
-import {_zContext, makeJwtClient} from './auth-utils'
+import {makeJwtClient} from './context'
+import type {_Integration, _Pipeline, _Resource} from './contextHelpers'
+import {getContextHelpers} from './contextHelpers'
 import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
-import type {
-  PipelineInput,
-  ResourceInput,
-  _Integration,
-  _Pipeline,
-} from './makeSyncParsers'
-import {
-  authorizeOrThrow,
-  getContextHelpers,
-  zSyncOptions,
-} from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
-import type {VeniceConnectJwtPayload} from './safeForFrontend'
+import type {PipelineInput, ResourceInput} from './types'
+import type {ParseJwtPayload, UserInfo} from './zdeprecated_auth-utils'
+import {_zContext} from './zdeprecated_auth-utils'
+import type {VeniceConnectJwtPayload} from './zdeprecated_safeForFrontend'
+
+export const zSyncOptions = z.object({
+  /** Only sync resource metadata and skip pipelines */
+  metaOnly: z.boolean().nullish(),
+  /**
+   * Remove `state` of resource and trigger a full resync
+   */
+  fullResync: z.boolean().nullish(),
+
+  /**
+   * Triggers provider to refresh data from its source
+   * https://plaid.com/docs/api/products/transactions/#transactionsrefresh
+   * This may also load historical transactions. For example,
+   * Finicity treats historical transaction as premium service.
+   */
+  todo_upstreamRefresh: z.boolean().nullish(),
+
+  // See coda's implmementation. Requires adding a new message to the sync protocol
+  // to remove all data from a particular source_id
+  todo_removeUnsyncedData: z.boolean().nullish(),
+})
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -907,3 +921,38 @@ makeSyncEngine.config = <
 >(
   config: SyncEngineConfig<TProviders, TLinks>,
 ) => config
+
+type AuthSubject =
+  | ['resource', Pick<_Resource, 'endUserId' | 'id'> | null | undefined]
+  | [
+      'pipeline',
+      Pick<_Pipeline, 'source' | 'destination' | 'id'> | null | undefined,
+    ]
+
+/** TODO: Fully replace this with row level security so we do not duplicate the auth logic */
+export function checkAuthorization(ctx: UserInfo, ...pair: AuthSubject) {
+  if (ctx.isAdmin) {
+    return true
+  }
+  switch (pair[0]) {
+    case 'resource':
+      return pair[1] == null || pair[1].endUserId === ctx.endUserId
+    case 'pipeline':
+      return (
+        pair[1] == null ||
+        pair[1].source.endUserId === ctx.endUserId ||
+        pair[1].destination.endUserId === ctx.endUserId
+      )
+  }
+}
+
+export function authorizeOrThrow(ctx: UserInfo, ...pair: AuthSubject) {
+  if (!checkAuthorization(ctx, ...pair)) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: `${ctx.endUserId} does not have access to ${
+        typeof pair[1] === 'string' ? pair[1] : pair[1]?.id
+      }`,
+    })
+  }
+}

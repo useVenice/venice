@@ -6,11 +6,13 @@
 // }
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
-export * from './auth-utils'
+export * from './context'
+export * from './contextHelpers'
 export * from './events'
 export * from './makeMetaLinks'
-export * from './makeSyncEngine'
-export * from './makeSyncParsers'
 export * from './parseWebhookRequest'
-export * from './safeForFrontend'
+export * from './types'
+export * from './zdeprecated_auth-utils'
+export * from './zdeprecated_makeSyncEngine'
+export * from './zdeprecated_safeForFrontend'
 // codegen:end

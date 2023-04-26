@@ -11,7 +11,7 @@ import type {
   UseConnectHook,
 } from '@usevenice/cdk-core'
 import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
-import {_zContext} from '@usevenice/engine-backend/auth-utils'
+import {_zContext} from '@usevenice/engine-backend/zdeprecated_auth-utils'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 

@@ -1,7 +1,7 @@
 import type {Id, WebhookInput} from '@usevenice/cdk-core'
 import type {NonEmptyArray} from '@usevenice/util'
 
-import type {AnySyncRouterInput} from './makeSyncEngine'
+import type {AnySyncRouterInput} from './zdeprecated_makeSyncEngine'
 
 const kWebhook = 'webhook' as const
 

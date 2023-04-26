@@ -4,7 +4,7 @@ import {RedirectTo} from '../../RedirectTo'
 import {LoadingIndicatorOverlay} from '../../loading-indicators'
 import {useSession, useSupabase} from '../../../contexts/session-context'
 import {Sidebar} from './Sidebar'
-import {xAdminAppMetadataKey} from '@usevenice/engine-backend/safeForFrontend'
+import {xAdminAppMetadataKey} from '@usevenice/engine-backend/zdeprecated_safeForFrontend'
 import {
   Button,
   CircularProgress,

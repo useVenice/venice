@@ -7,15 +7,11 @@ import type {
   MetaService,
 } from '@usevenice/cdk-core'
 import {zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
-import {R, z} from '@usevenice/util'
-import {makeJwtClient} from './auth-utils'
-import type {
-  PipelineInput,
-  ResourceInput,
-  _Integration,
-  _Pipeline,
-} from './makeSyncParsers'
-import {getContextHelpers} from './makeSyncParsers'
+import {R, z, zFunction} from '@usevenice/util'
+import * as jwt from 'jsonwebtoken'
+import type {_Integration, _Pipeline} from './contextHelpers'
+import {getContextHelpers} from './contextHelpers'
+import type {PipelineInput, ResourceInput} from './types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
 
@@ -30,12 +26,12 @@ export const zViewer = z.discriminatedUnion('role', [
 
 type Helpers = ReturnType<typeof getContextHelpers>
 type ViewerRole = z.infer<typeof zRole>
-type Viewer<R extends ViewerRole = ViewerRole> = Extract<
+export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
   z.infer<typeof zViewer>,
   {role: R}
 >
 
-interface Context {
+export interface RouterContext {
   viewer: Viewer
   /** Helpers with the designated permission level */
   current: Helpers
@@ -104,30 +100,24 @@ export interface ContextFactoryOptions<
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
 }
 
-export interface ContextOptions {
-  jwtToken?: string
-}
-
 export function contextFactory<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
 >({
-  getMetaService,
-  providers,
-  jwtSecret,
   // getLinksForPipeline,
   // apiUrl,
   // getRedirectUrl,
+  getMetaService,
+  providers,
+  jwtSecret,
 }: ContextFactoryOptions<TProviders, TLinks>) {
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const jwtClient = makeJwtClient({secretOrPublicKey: jwtSecret})
 
-  function getHelpers(viewer: Viewer) {
-    const metaService = getMetaService(viewer)
-    return getContextHelpers({metaService, providerMap})
-  }
+  const getHelpers = (viewer: Viewer) =>
+    getContextHelpers({metaService: getMetaService(viewer), providerMap})
 
-  function fromViewer(viewer: Viewer): Context {
+  function fromViewer(viewer: Viewer): RouterContext {
     return {
       viewer,
       as: (role, data) => getHelpers({role, ...data} as Viewer),
@@ -135,7 +125,7 @@ export function contextFactory<
     }
   }
 
-  function fromJwtToken(token?: string): Context {
+  function fromJwtToken(token?: string): RouterContext {
     if (!token) {
       return fromViewer({role: 'anon'})
     }
@@ -151,3 +141,26 @@ export function contextFactory<
 
   return {fromViewer, fromJwtToken}
 }
+
+export const makeJwtClient = zFunction(
+  z.object({secretOrPublicKey: z.string()}),
+  ({secretOrPublicKey}) => ({
+    verify: (token: string) => {
+      try {
+        const data = jwt.verify(token, secretOrPublicKey)
+        if (typeof data === 'string') {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Unexpected jwt data',
+          })
+        }
+        return data
+      } catch (err) {
+        // This dependency is not great... But don't know of a better pattern for now
+        throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
+      }
+    },
+    decode: (token: string) => jwt.decode(token),
+    sign: (payload: jwt.JwtPayload) => jwt.sign(payload, secretOrPublicKey),
+  }),
+)

@@ -1,9 +1,8 @@
-import {TRPCError} from '@trpc/server'
 import * as jwt from 'jsonwebtoken'
 
 import {zEndUserId, zId} from '@usevenice/cdk-core'
-import {z, zFunction, zGuard} from '@usevenice/util'
-import {xAdminAppMetadataKey} from './safeForFrontend'
+import {z, zGuard} from '@usevenice/util'
+import {xAdminAppMetadataKey} from './zdeprecated_safeForFrontend'
 
 export type UserInfo = z.infer<typeof __zUserInfo>
 const __zUserInfo = z.object({
@@ -68,26 +67,3 @@ export const _zUserInfo = (options: {
       }),
     )
 }
-
-export const makeJwtClient = zFunction(
-  z.object({secretOrPublicKey: z.string()}),
-  ({secretOrPublicKey}) => ({
-    verify: (token: string) => {
-      try {
-        const data = jwt.verify(token, secretOrPublicKey)
-        if (typeof data === 'string') {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Unexpected jwt data',
-          })
-        }
-        return data
-      } catch (err) {
-        // This dependency is not great... But don't know of a better pattern for now
-        throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
-      }
-    },
-    decode: (token: string) => jwt.decode(token),
-    sign: (payload: jwt.JwtPayload) => jwt.sign(payload, secretOrPublicKey),
-  }),
-)
