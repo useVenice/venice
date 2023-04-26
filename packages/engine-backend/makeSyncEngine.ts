@@ -33,17 +33,14 @@ import {_zContext, makeJwtClient} from './auth-utils'
 import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {
-  IntegrationInput,
-  ParsedInt,
   PipelineInput,
   ResourceInput,
-  ZInput,
+  _Integration,
   _Pipeline,
 } from './makeSyncParsers'
 import {
   authorizeOrThrow,
   getContextHelpers,
-  makeSyncParsers,
   zSyncOptions,
 } from './makeSyncParsers'
 import {parseWebhookRequest} from './parseWebhookRequest'
@@ -54,7 +51,6 @@ export {type inferProcedureInput} from '@trpc/server'
 /** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
 export interface EngineMeta {}
 
-type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 export interface SyncEngineConfig<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
@@ -68,7 +64,7 @@ export interface SyncEngineConfig<
 
   /** Used for oauth based resources */
   getRedirectUrl?: (
-    integration: ParsedInt,
+    integration: _Integration,
     ctx: {endUserId?: EndUserId | null},
   ) => string
 
@@ -87,13 +83,6 @@ export interface SyncEngineConfig<
   getDefaultPipeline?: (
     connInput?: ResourceInput<TProviders[number]>,
   ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
-  defaultIntegrations?:
-    | Array<IntegrationInput<TProviders[number]>>
-    | {
-        [k in TProviders[number]['name']]?: _inferInput<
-          Extract<TProviders[number], {name: k}>['def']['integrationConfig']
-        >
-      }
 }
 
 export type AnySyncRouter = ReturnType<typeof makeSyncEngine>['router']
@@ -114,8 +103,6 @@ export const makeSyncEngine = <
 >({
   getMetaService,
   providers,
-  getDefaultPipeline,
-  defaultIntegrations,
   getLinksForPipeline,
   jwtSecretOrPublicKey,
   parseJwtPayload,
@@ -127,52 +114,8 @@ export const makeSyncEngine = <
   const superMetaService = getMetaService(null)
   const metaLinks = makeMetaLinks(superMetaService)
 
-  // TODO: Re-enable me when providers are no longer being constructed client side...
-  // Perhaps validating the default pipeline also
-  const defaultIntegrationInputs = Array.isArray(defaultIntegrations)
-    ? defaultIntegrations
-    : R.toPairs(defaultIntegrations ?? {}).map(
-        ([name, config]): IntegrationInput => ({
-          id: makeId('int', name, ''), // This will end up with an ending `_` is it an issue?
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-          config: config as any,
-        }),
-      )
-  /** getDefaultIntegrations will need to change to getIntegrations(forWorkspace) later  */
-  const {zInt, zPipeline} = makeSyncParsers({
-    providers,
-    getDefaultPipeline,
-    getDefaultConfig: (name, id) =>
-      defaultIntegrationInputs.find(
-        (i) => (id && i.id === id) || (i.id && extractId(i.id)[1] === name),
-      )?.config,
-    metaService: superMetaService,
-  })
-
-  const getDefaultIntegrations = async () =>
-    Promise.all(
-      defaultIntegrationInputs.map((input) =>
-        zInt.parseAsync(input).catch((err) => {
-          console.error('Error initialzing', input, err)
-          throw new Error(`Error initializing integration ${input.id} `)
-        }),
-      ),
-    )
-
-  const getPipelinesForResource = (resoInput: ZInput['resource']) => {
-    const defaultPipeline = () =>
-      getDefaultPipeline?.(resoInput as ResourceInput<TProviders[number]>)
-
-    // TODO: In the case of an existing `conn`, how do we update conn.settings too?
-    // Otherwise we will result in outdated settings...
-    return superMetaService
-      .findPipelines({resourceIds: [resoInput.id]})
-      .then((pipes) => (pipes.length ? pipes : R.compact([defaultPipeline()])))
-      .then((pipes) => Promise.all(pipes.map((p) => zPipeline.parseAsync(p))))
-  }
-
   const _syncResourceUpdate = async (
-    int: ParsedInt,
+    int: _Integration,
     {
       endUserId: userId,
       envName,
@@ -203,13 +146,10 @@ export const makeSyncEngine = <
       return id
     }
 
-    const pipelines = await getPipelinesForResource({
-      id,
-      // Should we spread resoUpdate into it?
-      settings,
-      endUserId: userId,
-      // institution: resoUpdate.institution,
-    })
+    const pipelines = await getContextHelpers({
+      providerMap,
+      metaService: superMetaService,
+    }).getPipelinesForResource(id)
 
     console.log('_syncResourceUpdate existingPipes.len', pipelines.length)
     await Promise.all(
@@ -547,8 +487,8 @@ export const makeSyncEngine = <
       }),
     listIntegrations: authedProcedure
       .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
-      .query(async ({input: {type}}) => {
-        const ints = await getDefaultIntegrations()
+      .query(async ({input: {type}, ctx}) => {
+        const ints = await ctx.listIntegrations()
         return ints
           .map((int) => ({
             id: int.id,
@@ -563,11 +503,10 @@ export const makeSyncEngine = <
               (type === 'destination' && int.isDestination),
           )
       }),
-    // Implement this directly via supabase?
     searchInstitutions: authedProcedure
       .input(z.object({keywords: z.string().trim().nullish()}).optional())
       .query(async ({input: {keywords} = {}, ctx}) => {
-        const ints = await getDefaultIntegrations()
+        const ints = await ctx.listIntegrations()
         const institutions = await ctx.metaService.searchInstitutions({
           keywords,
           limit: 10,
@@ -901,7 +840,7 @@ export const makeSyncEngine = <
       .mutation(async ({input: intId, ctx}) => {
         const ints = intId
           ? await ctx.getIntegrationOrFail(intId).then((int) => [int])
-          : await getDefaultIntegrations()
+          : await ctx.listIntegrations()
         const stats = await sync({
           source: rxjs.merge(
             ...ints.map(

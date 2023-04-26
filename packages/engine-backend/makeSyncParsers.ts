@@ -6,22 +6,11 @@ import type {
   Id,
   LinkFactory,
   MetaService,
-  ZStandard,
 } from '@usevenice/cdk-core'
-import {extractId, makeId, zRaw} from '@usevenice/cdk-core'
-import type {Json} from '@usevenice/util'
-import {
-  R,
-  castInput,
-  deepMerge,
-  deepOmitUndefined,
-  mapDeep,
-  z,
-  zGuard,
-} from '@usevenice/util'
+import {extractId, zRaw} from '@usevenice/cdk-core'
+import {z} from '@usevenice/util'
 
 import type {UserInfo} from './auth-utils'
-import type {SyncEngineConfig} from './makeSyncEngine'
 
 // Four different types
 // Generic Input / Input
@@ -100,12 +89,6 @@ export interface PipelineInput<
 
 // Consider adding connectContextInput here...
 
-export type ParsedReso = z.infer<ReturnType<typeof makeSyncParsers>['zReso']>
-export type ParsedInt = z.infer<ReturnType<typeof makeSyncParsers>['zInt']>
-export type ParsedPipeline = z.infer<
-  ReturnType<typeof makeSyncParsers>['zPipeline']
->
-
 export const zSyncOptions = z.object({
   /** Only sync resource metadata and skip pipelines */
   metaOnly: z.boolean().nullish(),
@@ -126,225 +109,6 @@ export const zSyncOptions = z.object({
   // to remove all data from a particular source_id
   todo_removeUnsyncedData: z.boolean().nullish(),
 })
-
-export function makeSyncParsers<
-  TProviders extends readonly AnySyncProvider[],
-  TLinks extends Record<string, LinkFactory>,
->({
-  providers,
-  linkMap,
-  getDefaultPipeline,
-  getDefaultConfig,
-  metaService: m, // Destructure can cause dependencies to be loaded...
-}: Pick<
-  SyncEngineConfig<TProviders, TLinks>,
-  'providers' | 'linkMap' | 'getDefaultPipeline'
-> & {
-  getDefaultConfig: (
-    name: TProviders[number]['name'],
-    integrationId?: Id<TProviders[number]['name']>['int'],
-  ) => TProviders[number]['def']['_types']['integrationConfig']
-  metaService: MetaService
-}) {
-  const providerMap = R.mapToObj(providers, (p) => [p.name, p])
-
-  const zProvider = zInput.provider.transform(
-    zGuard((input) => {
-      const provider =
-        providerMap[input] ?? providerMap[extractId(input as never)[1]]
-      if (!provider) {
-        throw new Error(`${input} is not a valid provider name`)
-      }
-      return provider
-    }),
-  )
-
-  const zInt = castInput(zInput.integration)<
-    IntegrationInput<TProviders[number]>
-  >().transform(
-    zGuard(async ({id, ...rest}) => {
-      const integration = await m.tables.integration.get(id)
-      const provider = zProvider.parse(id, {path: ['id']})
-      const _config = deepMerge(
-        getDefaultConfig(provider.name, id),
-        integration?.config,
-        rest.config,
-      )
-      const config = provider.def.integrationConfig?.parse(_config, {
-        path: ['config'],
-      }) as Record<string, Json>
-      // Validated id only
-      return {id, ...integration, ...rest, provider, config}
-    }),
-  )
-
-  const zIns = zInput.institution.transform(
-    zGuard(async ({id, ...rest}) => {
-      const institution = await m.tables.institution.get(id)
-      const provider = zProvider.parse(id, {path: ['id']})
-      const external = deepMerge(institution?.external, rest.external)
-      const standard = provider.def.institutionData?.parse(external, {
-        path: ['external'],
-      }) as ZStandard['institution']
-      return {id, ...institution, ...rest, external, standard}
-    }),
-  )
-
-  const zReso = castInput(zInput.resource)<
-    ResourceInput<TProviders[number]>
-  >().transform(
-    zGuard(async ({id, ...input}) => {
-      const reso = await m.tables.resource.get(id)
-      const [integration, institution] = await Promise.all([
-        zInt.parseAsync(
-          R.identity<z.infer<(typeof zInput)['integration']>>({
-            id:
-              reso?.integrationId ??
-              input.integrationId ??
-              makeId('int', extractId(id)[1], ''),
-            config: input.integration?.config,
-          }),
-        ),
-        zIns.optional().parseAsync(
-          R.pipe(reso?.institutionId ?? input.institutionId, (insId) =>
-            // Unlike integration, we do not have default institution for provider
-            // ins_plaid just makes no sense. Although ins_quickbooks does... so what gives?
-            !insId
-              ? undefined
-              : R.identity<z.infer<(typeof zInput)['institution']>>({
-                  id: insId,
-                  external: input.institution?.external,
-                }),
-          ),
-        ),
-      ])
-      // TODO: Fix this hard-code when we figure out whether resources should be specified
-      // via envVar or not
-      const defaultSettings =
-        integration.provider.name === 'postgres'
-          ? {databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL']}
-          : integration.provider.name === 'heron'
-          ? {endUserId: extractId(id)[2]}
-          : {}
-      console.log('Will parse settings', reso?.settings, input.settings)
-      const settings = integration.provider.def.resourceSettings?.parse(
-        deepMerge(defaultSettings, reso?.settings, input.settings),
-        {path: ['settings']},
-      ) as Record<string, Json>
-      return {
-        id,
-        ...reso,
-        ...input,
-        // For security do not allow userId to ever be automatically changed
-        // once exists. Otherwise one could pass someone else's userId and get access
-        // to their resource via just the `id`
-        endUserId: reso?.endUserId ?? input.endUserId,
-        integration,
-        integrationId: integration.id, // Ensure consistency
-        institution,
-        institutionId: institution?.id,
-        settings,
-      }
-    }),
-  )
-
-  const zPipeline = z
-    .preprocess((arg) => {
-      const defaultPipe = getDefaultPipeline?.()
-      return deepOmitUndefined(
-        !arg
-          ? defaultPipe
-          : typeof arg === 'object'
-          ? deepMerge(defaultPipe, arg)
-          : arg,
-      )
-    }, castInput(zInput.pipeline)<PipelineInput<TProviders[number], TProviders[number], TLinks>>())
-    .transform(
-      zGuard(async ({id, ...rest}) => {
-        const pipeline = await m.tables.pipeline.get(id)
-        // This is a temporary workaround for default pipeline is overriding the explicit pipeline definition....
-        // TODO: We should really re-work this where defaulting happens as a last step
-        // Also it should not be possible to have the conn.id differ from connId
-        function overrideId(cid: Id['reso'] | undefined | null) {
-          return cid && extractId(cid)[2] ? cid : null
-        }
-        const [source, destination] = await Promise.all([
-          zReso.parseAsync(
-            deepMerge(rest.source, {
-              id:
-                overrideId(rest.sourceId ?? rest.source?.id) ??
-                pipeline?.sourceId ??
-                rest.sourceId ??
-                rest.source?.id,
-            }),
-            {path: ['source']},
-          ),
-          // TODO: Re-think how deepMerge works here
-          // especially relative to id vs content of the merge...
-          // could it be a better idea to have a fully normalized API?
-          zReso.parseAsync(
-            deepMerge(rest.destination, {
-              id:
-                overrideId(rest.destinationId ?? rest.destination?.id) ??
-                pipeline?.destinationId ??
-                rest.destinationId ??
-                rest.destination?.id,
-            }),
-            {path: ['destination']},
-          ),
-        ])
-        // console.log('[zPipeline]', {pipeline, destination, rest})
-
-        // Validation happens inside for now
-        const links = R.pipe(
-          rest.linkOptions ?? pipeline?.linkOptions ?? [],
-          R.map((l) =>
-            typeof l === 'string'
-              ? linkMap?.[l]?.(undefined)
-              : linkMap?.[l[0]]?.(l[1]),
-          ),
-          R.compact,
-        )
-        const sourceState = source.integration.provider.def.sourceState?.parse(
-          deepMerge(pipeline?.sourceState, rest.sourceState),
-          {path: ['sourceState']},
-        ) as Record<string, unknown>
-        const destinationState =
-          destination.integration.provider.def.destinationState?.parse(
-            deepMerge(pipeline?.destinationState, rest.destinationState),
-            {path: ['destinationState']},
-          ) as Record<string, unknown>
-        return {
-          id,
-          ...pipeline,
-          ...rest,
-          source,
-          sourceId: source.id, // Ensure consistency
-          destination,
-          destinationId: destination.id, // Ensure consistency
-          links,
-          sourceState,
-          destinationState,
-          watch: rest.watch, // Should this be on pipeline too?
-        }
-      }),
-    )
-    .refine((pipe) => {
-      console.dir(
-        mapDeep(pipe, (v, k) =>
-          k === 'provider'
-            ? (v as AnySyncProvider).name
-            : `${k}`.toLowerCase().includes('secret')
-            ? '[redacted]'
-            : v,
-        ),
-        {depth: null},
-      )
-      return true
-    })
-
-  return {zProvider, zInt, zIns, zReso, zPipeline}
-}
 
 type AuthSubject =
   | ['resource', Pick<_Resource, 'endUserId' | 'id'> | null | undefined]
@@ -413,6 +177,7 @@ export function getContextHelpers({
       const config: {} = provider.def.integrationConfig?.parse(int.config)
       return {...int, provider, config}
     })
+
   const getInstitutionOrFail = (id: Id['ins']) =>
     metaService.tables.institution.get(id).then((ins) => {
       if (!ins) {
@@ -436,6 +201,7 @@ export function getContextHelpers({
         : undefined
       return {...reso, integration, settings, institution}
     })
+
   const getPipelineOrFail = (id: Id['pipe']) =>
     metaService.tables.pipeline.get(id).then(async (_pipe) => {
       if (!_pipe) {
@@ -472,14 +238,34 @@ export function getContextHelpers({
         watch: false, // TODO: Fix me
       }
     })
+  // TODO: Refactor to avoid the double roundtrip
+  const listIntegrations = () =>
+    metaService.tables.integration
+      .list({})
+      .then((ints) =>
+        Promise.all(ints.map((int) => getIntegrationOrFail(int.id))),
+      )
+
+  // TODO: 1) avoid roundtrip to db 2) Bring back getDefaultPipeline somehow
+  const getPipelinesForResource = (resoId: Id['reso']) =>
+    metaService
+      .findPipelines({resourceIds: [resoId]})
+      .then((pipes) =>
+        Promise.all(pipes.map((pipe) => getPipelineOrFail(pipe.id))),
+      )
   return {
     getProviderOrFail,
     getIntegrationOrFail,
     getResourceOrFail,
     getPipelineOrFail,
+    listIntegrations,
+    getPipelinesForResource,
   }
 }
 
+export type _Integration = Awaited<
+  ReturnType<ReturnType<typeof getContextHelpers>['getIntegrationOrFail']>
+>
 export type _Pipeline = Awaited<
   ReturnType<ReturnType<typeof getContextHelpers>['getPipelineOrFail']>
 >
