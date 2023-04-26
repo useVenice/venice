@@ -13,7 +13,5 @@ export * from './makeMetaLinks'
 export * from './parseWebhookRequest'
 export * from './router/index'
 export * from './types'
-export * from './zdeprecated_auth-utils'
-export * from './zdeprecated_makeSyncEngine'
 export * from './zdeprecated_safeForFrontend'
 // codegen:end

@@ -1,9 +1,9 @@
 import type {UserId} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import type {InferGetServerSidePropsType} from 'next'
-import type {GetServerSideProps} from 'next'
+import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -16,8 +16,9 @@ import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {TaggedCard} from '../../components/TaggedCard'
-import type {Connection} from '../../lib/supabase-queries'
 import {createSSRHelpers, ensureDefaultResourceAndPipelines} from '../../server'
+
+type Connection = RouterOutput['listConnections'][number]
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 

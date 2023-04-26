@@ -38,8 +38,6 @@ export const veniceCommonConfig = {
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
-
-  // parseJwtPayload // use default here
 } satisfies SyncEngineCommonConfig<
   readonly AnySyncProvider[],
   Record<string, LinkFactory>

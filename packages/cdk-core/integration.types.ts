@@ -85,7 +85,7 @@ export interface IntegrationImpl<
   ) => Promise<T['_types']['connectInput']>
 
   useConnectHook?: (scope: {
-    userId: UserId | undefined
+    userId: DeprecatedUserId | undefined
     openDialog: OpenDialogFn
   }) => (
     connectInput: T['_types']['connectInput'],

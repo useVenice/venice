@@ -1,7 +1,7 @@
 'use client'
 
 import type {Id, ZStandard} from '@usevenice/cdk-core'
-import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
@@ -18,7 +18,7 @@ import {TaggedCard} from '../../components/TaggedCard'
 import type {Connection} from '../../lib/supabase-queries'
 
 export function Connect(props: {
-  integrations: AnySyncRouterOutput['listIntegrations']
+  integrations: RouterOutput['listIntegrations']
   displayName?: string
   redirectUrl?: string
 }) {

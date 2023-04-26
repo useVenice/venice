@@ -1,7 +1,7 @@
 import type {Id, WebhookInput} from '@usevenice/cdk-core'
 import type {NonEmptyArray} from '@usevenice/util'
 
-import type {AnySyncRouterInput} from './zdeprecated_makeSyncEngine'
+import type {RouterInput} from './router'
 
 const kWebhook = 'webhook' as const
 
@@ -15,7 +15,7 @@ export function parseWebhookRequest(
   }
 
   // Consider naming it integrationId? not sure.
-  const input: AnySyncRouterInput['handleWebhook'] = [
+  const input: RouterInput['handleWebhook'] = [
     intId!,
     {query: req.query, headers: req.headers, body: req.body},
   ]

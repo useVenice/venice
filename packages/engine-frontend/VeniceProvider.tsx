@@ -10,8 +10,8 @@ import type {
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk-core'
-import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
-import {_zContext} from '@usevenice/engine-backend/zdeprecated_auth-utils'
+import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
+import {jwt} from '@usevenice/engine-backend/zdeprecated_safeForFrontend'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
@@ -20,10 +20,7 @@ export type {CreateTRPCReact} from '@trpc/react-query'
 export type SyncEngineCommonConfig<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
-> = Pick<
-  SyncEngineConfig<TProviders, TLinks>,
-  'providers' | 'apiUrl' | 'parseJwtPayload'
->
+> = Pick<ContextFactoryOptions<TProviders, TLinks>, 'providers' | 'apiUrl'>
 
 type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
 type ConnectFn = ReturnType<UseConnectHook<AnyProviderDef>>
@@ -33,7 +30,7 @@ interface DialogConfig {
   options: Parameters<UseConnectScope['openDialog']>[1]
 }
 
-const trpc = createTRPCReact<AnySyncRouter>()
+const trpc = createTRPCReact<FlatRouter>()
 
 export const VeniceContext = React.createContext<{
   trpc: typeof trpc
@@ -83,12 +80,12 @@ export function VeniceProvider<
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
-  const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
+  // TODO: Fix me up
+  const payload = (accessToken && jwt.decode(accessToken, {json: true})) || {}
 
   const {developerMode: _developerMode} = options
-  const {endUserId, isAdmin = false} = zAuthContext.parse<'typed'>({
-    accessToken,
-  })
+  const endUserId = payload.sub as EndUserId
+  const isAdmin = payload['role'] === 'authenticated'
   const developerMode = (isAdmin && _developerMode) || false
 
   if (typeof window !== 'undefined') {
@@ -99,7 +96,7 @@ export function VeniceProvider<
   const trpcClient = React.useMemo(
     () =>
       // Disable reqeuest batching in DEBUG mode for easier debugging
-      // createTRPCProxyClient<AnySyncRouter>({
+      // createTRPCProxyClient<FlatRouter>({
       trpc.createClient({
         links: [
           (__DEBUG__ ? httpLink : httpBatchLink)({

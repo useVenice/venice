@@ -1,3 +1,4 @@
+import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
 import {trpc} from './_base'
 import {adminRouter} from './adminRouter'
 import {endUserRouter} from './endUserRouter'
@@ -21,3 +22,7 @@ export const nestedRouter = trpc.router({
   admin: adminRouter,
   system: systemRouter,
 })
+
+export type FlatRouter = typeof flatRouter
+export type RouterInput = inferRouterInputs<typeof flatRouter>
+export type RouterOutput = inferRouterOutputs<typeof flatRouter>

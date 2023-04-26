@@ -3,28 +3,19 @@ import '@usevenice/app-config/register.node'
 import * as trpcNext from '@trpc/server/adapters/next'
 import type {NextApiHandler} from 'next'
 
-import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {contextFactory} from '@usevenice/app-config/backendConfig'
+import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {R} from '@usevenice/util'
 import {getAccessToken, respondToCORS} from '../../../server/api-helpers'
 
-// export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
-// export type AppRouter = typeof appRouter
-// export type TRPCType = CreateTRPCReact<AppRouter, unknown, null>
-
 const handler = trpcNext.createNextApiHandler({
-  router: veniceRouter,
+  router: flatRouter,
   createContext: ({req}) => {
     console.log('[createContext]', {
       query: req.query,
       headers: req.headers,
     })
-    // const _ctx = contextFactory.fromJwtToken(getAccessToken(req))
-    const ctx = syncEngine.zContext.parse<'typed'>({
-      accessToken: getAccessToken(req),
-    })
-    console.log('[createContext] Got ctx', ctx)
-    return ctx
+    return contextFactory.fromJwtToken(getAccessToken(req))
   },
   onError: ({error}) => {
     console.warn('error', error)

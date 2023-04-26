@@ -1,9 +1,9 @@
 import type {Id} from '@usevenice/cdk-core'
-import {extractId} from '@usevenice/cdk-core'
-import {makeId} from '@usevenice/cdk-core'
+import {extractId, makeId} from '@usevenice/cdk-core'
 import type {IntegrationInput} from '@usevenice/engine-backend'
+import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
-import {veniceRouter} from './backendConfig'
+import {contextFactory} from './backendConfig'
 import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv} from './env'
 
@@ -13,12 +13,9 @@ export async function bootstrap() {
   // Would be nice to simplify loading of env vars from zod in a way that makes sense...
   const workspaceId = getEnvVar('WORKSPACE_ID', {required: true}) as Id['ws']
 
-  const caller = veniceRouter.createCaller({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    endUserId: 'fixme' as any,
-    isAdmin: true,
-    workspaceId,
-  })
+  const caller = flatRouter.createCaller(
+    contextFactory.fromViewer({role: 'workspace', workspaceId}),
+  )
   const configs = parseIntConfigsFromRawEnv()
 
   for (const [providerName, config] of Object.entries(configs ?? {})) {
@@ -26,7 +23,7 @@ export async function bootstrap() {
       continue
     }
     const id = makeId('int', providerName, extractId(workspaceId)[1])
-    await caller.adminUpsertIntegration({id, config})
+    await caller.adminUpsertIntegration({id, config, workspaceId})
     console.log('Upsert integration', id)
   }
   console.log('Bootstrap complete')

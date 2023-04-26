@@ -218,13 +218,13 @@ export function idsForRef(ref: AnyDocumentReference) {
   if (ledgerOrUserRef?.parent.id === 'users') {
     return {
       id: ref.id,
-      userId: ledgerOrUserRef.id as UserId,
+      userId: ledgerOrUserRef.id as DeprecatedUserId,
     }
   }
   if (ledgerOrUserRef?.parent.id === 'ledgers') {
     return {
       id: ref.id,
-      ledgerId: ledgerOrUserRef.id as LedgerId,
+      ledgerId: ledgerOrUserRef.id as DeprecatedLedgerId,
     }
   }
   return {id: ref.id}

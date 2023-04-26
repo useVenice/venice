@@ -13,8 +13,8 @@ declare type MixedPrecisionDateExpression = _Brand<
 >
 
 declare type ExternalId = _Brand<string, 'ExternalId'>
-declare type UserId = _Brand<string, 'UserId'>
-declare type LedgerId = _Brand<string, 'LedgerId'>
+declare type DeprecatedUserId = _Brand<string, 'UserId'>
+declare type DeprecatedLedgerId = _Brand<string, 'LedgerId'>
 declare type AccountId = _Brand<string, 'AccountId'>
 declare type CommodityId = _Brand<string, 'CommodityId'>
 declare type TransactionId = _Brand<string, 'TransactionId'>

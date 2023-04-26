@@ -1,6 +1,6 @@
 'use client'
 
-import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {CopyTextIcon, Loading, SyncIcon} from '@usevenice/ui'
 import {formatDistanceToNowStrict} from 'date-fns'
@@ -13,7 +13,7 @@ import {
 import {ArrowRight} from 'lucide-react'
 
 export function PipelinesTable(props: {
-  pipelines: AnySyncRouterOutput['listPipelines']
+  pipelines: RouterOutput['listPipelines']
 }) {
   const {trpc} = VeniceProvider.useContext()
   const dispatch = trpc.dispatch.useMutation()

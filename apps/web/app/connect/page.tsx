@@ -18,15 +18,16 @@ import '../../pages/global.css'
 
 import '@usevenice/app-config/register.node'
 
-import {backendEnv, veniceRouter} from '@usevenice/app-config/backendConfig'
+import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 
 import {
+  flatRouter,
   makeJwtClient,
   zVeniceConnectJwtPayload,
 } from '@usevenice/engine-backend'
 
 import {dehydrate, QueryClient} from '@tanstack/query-core'
-import {createProxySSGHelpers} from '@trpc/react-query/ssg'
+import {createServerSideHelpers} from '@trpc/react-query/server'
 import {fromMaybeArray, z} from '@usevenice/util'
 import superjson from 'superjson'
 import {ensureDefaultResourceAndPipelines} from '../../server'
@@ -67,10 +68,10 @@ export default async function ConnectPage({
   const payload = zVeniceConnectJwtPayload.parse(jwtClient.verify(token))
   const endUserId = payload.sub
   const queryClient = new QueryClient()
-  const ssg = createProxySSGHelpers({
+  const ssg = createServerSideHelpers({
     queryClient,
-    router: veniceRouter,
-    ctx: {endUserId},
+    router: flatRouter,
+    ctx: contextFactory.fromJwtToken(fromMaybeArray(searchParams['token'])[0]),
   })
 
   const [integrations] = await Promise.all([
@@ -84,7 +85,7 @@ export default async function ConnectPage({
   })
 
   return (
-    <div className="text-offwhite bg-black h-screen w-screen" data-theme="dark">
+    <div className="h-screen w-screen bg-black text-offwhite" data-theme="dark">
       <ClientRoot
         dehydratedState={superjson.serialize(dehydrate(queryClient))}
         accessToken={token}>

@@ -107,14 +107,15 @@ export interface ContextFactoryOptions<
 export function getContextFactory<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
->({
-  // getLinksForPipeline,
-  apiUrl,
-  getRedirectUrl,
-  getMetaService,
-  providers,
-  jwtSecret,
-}: ContextFactoryOptions<TProviders, TLinks>) {
+>(config: ContextFactoryOptions<TProviders, TLinks>) {
+  const {
+    // getLinksForPipeline,
+    apiUrl,
+    getRedirectUrl,
+    getMetaService,
+    providers,
+    jwtSecret,
+  } = config
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
@@ -148,7 +149,7 @@ export function getContextFactory<
     }
   }
 
-  return {fromViewer, fromJwtToken}
+  return {config, fromViewer, fromJwtToken}
 }
 
 export const makeJwtClient = zFunction(

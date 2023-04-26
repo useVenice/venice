@@ -13,8 +13,12 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import type {EndUserId} from '@usevenice/cdk-core'
-import {makeJwtClient, xAdminAppMetadataKey} from '@usevenice/engine-backend'
+import type {UserId} from '@usevenice/cdk-core'
+import {
+  flatRouter,
+  makeJwtClient,
+  xAdminAppMetadataKey,
+} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
@@ -29,12 +33,15 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
 
   const [user, supabase] = await serverGetUser(context)
   await import('@usevenice/app-config/register.node')
-  const {veniceRouter} = await import('@usevenice/app-config/backendConfig')
+  const {contextFactory} = await import('@usevenice/app-config/backendConfig')
 
+  // TODO: figure out
   const ssg = createServerSideHelpers({
     queryClient,
-    router: veniceRouter,
-    ctx: {endUserId: user?.id as EndUserId | undefined},
+    router: flatRouter,
+    ctx: contextFactory.fromViewer(
+      user?.id ? {role: 'user', userId: user?.id as UserId} : {role: 'anon'},
+    ),
     // transformer: superjson,
   })
   return {

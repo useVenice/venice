@@ -1,6 +1,6 @@
 'use client'
 
-import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {CopyTextIcon, SyncIcon} from '@usevenice/ui'
 import Image from 'next/image'
@@ -11,9 +11,7 @@ import {
   ActionMenuItem,
 } from './connections/ConnectionCard/ActionMenu'
 
-type Resource = NonNullable<
-  AnySyncRouterOutput['listPipelines'][number]['source']
->
+type Resource = NonNullable<RouterOutput['listPipelines'][number]['source']>
 
 export function ResourceCard(props: {resource: Resource}) {
   const {
@@ -30,7 +28,7 @@ export function ResourceCard(props: {resource: Resource}) {
     <TaggedCard
       tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}
       className="min-h-0">
-      <div className="flex grow flex-col justify-between py-2 px-3">
+      <div className="flex grow flex-col justify-between px-3 py-2">
         <div className="flex items-center gap-1">
           {institution?.logoUrl ? (
             <Image
