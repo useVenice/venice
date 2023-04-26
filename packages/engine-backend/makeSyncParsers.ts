@@ -392,20 +392,24 @@ export function getContextHelpers({
   // TODO: Consider giving end users no permission at all?
   // It really does feel like we need some internal GraphQL for this...
   // Except different entities may still need to be access with different permissions...
+  const getProviderOrFail = (id: Id['int'] | Id['reso']) => {
+    const providerName = extractId(id)[1]
+    const provider = providerMap[providerName]
+    if (!provider) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: `Cannot find provider for ${id}`,
+      })
+    }
+    return provider
+  }
   const getIntegrationOrFail = (id: Id['int']) =>
     metaService.tables.integration.get(id).then((_int) => {
       if (!_int) {
         throw new TRPCError({code: 'NOT_FOUND'})
       }
       const int = zRaw.integration.parse(_int)
-      const providerName = extractId(int.id)[1]
-      const provider = providerMap[providerName]
-      if (!provider) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `Cannot find provider for ${int.id}`,
-        })
-      }
+      const provider = getProviderOrFail(int.id)
       const config: {} = provider.def.integrationConfig?.parse(int.config)
       return {...int, provider, config}
     })
@@ -441,5 +445,10 @@ export function getContextHelpers({
         )
       return {...pipe, source, destination, sourceState, destinationState}
     })
-  return {getIntegrationOrFail, getResourceOrFail, getPipelineOrFail}
+  return {
+    getProviderOrFail,
+    getIntegrationOrFail,
+    getResourceOrFail,
+    getPipelineOrFail,
+  }
 }

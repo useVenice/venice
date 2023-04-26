@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 import * as jwt from 'jsonwebtoken'
 
-import {zEndUserId} from '@usevenice/cdk-core'
+import {zEndUserId, zId} from '@usevenice/cdk-core'
 import {z, zFunction, zGuard} from '@usevenice/util'
 import {xAdminAppMetadataKey} from './safeForFrontend'
 
@@ -15,6 +15,8 @@ const __zUserInfo = z.object({
   role: z.enum(['end_user', 'authenticated']).nullish(),
   /** @deprecated */
   isAdmin: z.boolean().nullish(),
+
+  workspaceId: zId('ws').nullish(),
 })
 
 export type ParseJwtPayload = (jwtPayload: jwt.JwtPayload) => UserInfo

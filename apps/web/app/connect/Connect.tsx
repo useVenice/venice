@@ -186,7 +186,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
             }}
             onSandboxSimulateDisconnect={() =>
               checkResource.mutate([
-                {id: source.id},
+                source.id,
                 {sandboxSimulateDisconnect: true},
               ])
             }

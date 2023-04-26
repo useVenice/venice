@@ -84,6 +84,7 @@ export const zRaw = {
   integration: z.object({
     id: zId('int'),
     config: zJsonObject.nullish(),
+    workspaceId: zId('ws').nullish(), // FIXME Should be required
   }),
   resource: z.object({
     id: zId('reso'),

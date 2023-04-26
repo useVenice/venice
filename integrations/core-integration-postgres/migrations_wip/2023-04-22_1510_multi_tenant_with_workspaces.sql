@@ -63,7 +63,7 @@ CREATE POLICY workspace_member_access ON "public"."workspace"
 ALTER publication supabase_realtime ADD TABLE workspace, workspace_member;
 
 -- Introduce workspace id to everything else...
-ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar,
+ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar NOT NULL,
   ADD CONSTRAINT integration_workspace_id_fkey
   FOREIGN KEY (workspace_id)
   REFERENCES workspace(id);

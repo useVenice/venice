@@ -6,7 +6,6 @@ import type {
   AnySyncProvider,
   Destination,
   EndUserId,
-  Id,
   Link,
   LinkFactory,
   MetaService,
@@ -23,7 +22,6 @@ import {
   zEndUserId,
   zId,
   zPostConnectOptions,
-  zRaw,
   zStandard,
   zWebhookInput,
 } from '@usevenice/cdk-core'
@@ -34,17 +32,17 @@ import type {ParseJwtPayload, UserInfo} from './auth-utils'
 import {_zContext, makeJwtClient} from './auth-utils'
 import {inngest, zEvent} from './events'
 import {makeMetaLinks} from './makeMetaLinks'
-import {
+import type {
   IntegrationInput,
   ParsedInt,
   ParsedPipeline,
   PipelineInput,
   ResourceInput,
   ZInput,
-  getContextHelpers,
 } from './makeSyncParsers'
 import {
   authorizeOrThrow,
+  getContextHelpers,
   makeSyncParsers,
   zSyncOptions,
 } from './makeSyncParsers'
@@ -840,6 +838,17 @@ export const makeSyncEngine = <
       .mutation(({input, ctx}) =>
         ctx.metaService.tables.workspace.set(makeId('ws', makeUlid()), input),
       ),
+
+    adminUpsertIntegration: adminProcedure
+      .input(z.object({id: zId('int'), config: z.unknown()}))
+      .query(({input, ctx}) => {
+        const provider = ctx.getProviderOrFail(input.id)
+        const config = provider.def.integrationConfig?.parse(input.config)
+        return ctx.metaService.tables.integration.set(input.id, {
+          workspaceId: ctx.workspaceId!,
+          config,
+        })
+      }),
 
     // Admin procedures...
     adminCreateConnectToken: adminProcedure

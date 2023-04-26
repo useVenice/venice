@@ -194,7 +194,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               }}
               onSandboxSimulateDisconnect={() =>
                 checkResource.mutate([
-                  {id: source.id},
+                  source.id,
                   {sandboxSimulateDisconnect: true},
                 ])
               }
@@ -256,7 +256,7 @@ function VeniceDatabaseSection() {
         src="/db-links-line.svg"
         alt="Line for links"
       />
-      <ul className="absolute top-[12.8rem] left-[1.2rem] flex min-w-[9rem] flex-col">
+      <ul className="absolute left-[1.2rem] top-[12.8rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
             href="/explore-data"
