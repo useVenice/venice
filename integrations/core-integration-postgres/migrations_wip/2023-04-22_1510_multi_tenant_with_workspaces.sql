@@ -4,7 +4,7 @@
  - [x] Add a table for workspaces and workspace_member join table
  */
 
--- Create tables
+--- Create tables ---
 CREATE TABLE IF NOT EXISTS "public"."workspace" (
   "id" varchar NOT NULL DEFAULT concat('ws_', generate_ulid ()),
   "name" varchar NOT NULL,
@@ -33,33 +33,6 @@ CREATE INDEX IF NOT EXISTS workspace_member_updated_at ON workspace_member (upda
 
 ALTER TABLE "public"."workspace_member" ENABLE ROW LEVEL SECURITY;
 
--- Create policies on workspace and workspace_members
-
-CREATE OR REPLACE FUNCTION auth.workspace_ids()
- RETURNS varchar[]
- LANGUAGE sql
---  SECURITY DEFINER
- STABLE
-AS $function$
-  select array(select workspace_id from "workspace_member" where user_id::varchar = auth.uid())
-$function$;
-
-DROP POLICY IF EXISTS workspace_member_access ON public.workspace_member;
-CREATE POLICY workspace_member_access ON "public"."workspace_member"
-  USING (user_id::varchar = auth.uid())
-  WITH CHECK (user_id::varchar = auth.uid());
-
-DROP POLICY IF EXISTS workspace_member_access ON public.workspace;
-CREATE POLICY workspace_member_access ON "public"."workspace"
-  USING ((
-    with cached as MATERIALIZED(select auth.workspace_ids())
-    select id = ANY(workspace_ids) from cached
-  ))
-  WITH CHECK ((
-    with cached as MATERIALIZED(select auth.workspace_ids())
-    select id = ANY(workspace_ids) from cached
-  ));
-
 -- Allow supabase realtime to work
 ALTER publication supabase_realtime ADD TABLE workspace, workspace_member;
 
@@ -68,59 +41,6 @@ ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar NOT NULL,
   ADD CONSTRAINT integration_workspace_id_fkey
   FOREIGN KEY (workspace_id)
   REFERENCES workspace(id);
-
-CREATE POLICY workspace_member_access ON "public"."integration"
-  USING ((
-    with cached as MATERIALIZED(select auth.workspace_ids())
-    select workspace_id = ANY(workspace_ids) from cached
-  ))
-  WITH CHECK ((
-    with cached as MATERIALIZED(select auth.workspace_ids())
-    select workspace_id = ANY(workspace_ids) from cached
-  ));
-
-DROP POLICY IF EXISTS workspace_member_access ON public.resource;
-CREATE POLICY workspace_member_access ON "public"."resource"
-  USING ((
-    with cached as MATERIALIZED(
-      select id as integration_id
-      from integration
-      where workspace_id = ANY(auth.workspace_ids())
-    )
-    select integration_id = ANY(select integration_id from cached)
-  ))
-  WITH CHECK ((
-    with cached as MATERIALIZED(
-      select id as integration_id
-      from integration
-      where workspace_id = ANY(auth.workspace_ids())
-    )
-    select integration_id = ANY(select integration_id from cached)
-  ));
-
-DROP POLICY IF EXISTS workspace_member_access ON public.pipeline;
-CREATE POLICY workspace_member_access ON "public"."pipeline" TO authenticated
-  USING ((
-    with cached as MATERIALIZED(
-      select r.id as resource_id
-      from resource r
-      join integration i on i.id = r.integration_id
-      where i.workspace_id = ANY(auth.workspace_ids())
-    )
-    -- Prevent user from seeing pipelines that don't have a source or destination that they have access to
-    select array(select resource_id from cached) @> array[source_id, destination_id]
-  ))
-  WITH CHECK ((
-    with cached as MATERIALIZED(
-      select r.id as resource_id
-      from resource r
-      join integration i on i.id = r.integration_id
-      where i.workspace_id = ANY(auth.workspace_ids())
-    )
-    -- Prevent user from creating/updating pipelines that don't have a source or destination that they have access to
-    select array(select resource_id from cached) @> array[source_id, destination_id]
-  ));
-
 
 -- Not sure if we need this either because pipelines source and destination are tied to integration which are tied to workspace also
 -- So we don't technically need it for RLS, so let's wait to add it for now...
@@ -135,35 +55,78 @@ CREATE POLICY workspace_member_access ON "public"."pipeline" TO authenticated
 --   FOREIGN KEY (workspace_id)
 --   REFERENCES workspace(id);
 
-DROP POLICY IF EXISTS admin_access ON raw_transaction;
-DROP POLICY IF EXISTS admin_access ON raw_commodity;
-DROP POLICY IF EXISTS admin_access ON raw_account;
-DROP POLICY IF EXISTS admin_access ON institution;
-DROP POLICY IF EXISTS admin_access ON integration;
-DROP POLICY IF EXISTS admin_access ON resource;
-DROP POLICY IF EXISTS admin_access ON pipeline;
-DROP POLICY IF EXISTS admin_access ON migrations;
 
-DROP FUNCTION IF EXISTS auth.is_admin;
-DROP PROCEDURE IF EXISTS auth.set_user_admin;
+
+--- User policies ---
+DROP FUNCTION IF EXISTS auth.workspace_ids CASCADE;
+
+DROP POLICY IF EXISTS workspace_member_access ON public.workspace;
+CREATE POLICY workspace_member_access ON "public"."workspace" TO authenticated
+  USING (id = ANY(
+    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
+  ))
+  WITH CHECK (id = ANY(
+    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
+  ));
+
+DROP POLICY IF EXISTS workspace_member_access ON public.workspace_member;
+CREATE POLICY workspace_member_access ON "public"."workspace_member" TO authenticated
+  USING (user_id::varchar = auth.uid())
+  WITH CHECK (user_id::varchar = auth.uid());
+
+DROP POLICY IF EXISTS workspace_member_access ON public.integration;
+CREATE POLICY workspace_member_access ON "public"."integration" TO authenticated
+  USING (workspace_id = ANY(
+    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
+  ))
+  WITH CHECK (workspace_id = ANY(
+    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
+  ));
+
+DROP POLICY IF EXISTS workspace_member_access ON public.resource;
+CREATE POLICY workspace_member_access ON "public"."resource" TO authenticated
+  USING (integration_id = ANY(
+    select i.id from integration i
+    join workspace_member wm on i.workspace_id = wm.workspace_id
+    where wm.user_id::varchar = auth.uid()
+  ))
+  WITH CHECK (integration_id = ANY(
+    select i.id from integration i
+    join workspace_member wm on i.workspace_id = wm.workspace_id
+    where wm.user_id::varchar = auth.uid()
+  ));
+
+DROP POLICY IF EXISTS workspace_member_access ON public.pipeline;
+CREATE POLICY workspace_member_access ON "public"."pipeline" TO authenticated
+  USING (
+    array(
+      select r.id
+      from resource r
+      join integration i on i.id = r.integration_id
+      join workspace_member wm on wm.workspace_id = i.workspace_id
+      where wm.user_id::varchar = auth.uid()
+    ) @> array[source_id, destination_id]
+    -- Prevent user from seeing pipelines that don't have a source or destination that they have access to
+  );
+
+
+--- End user policies ---
+
+CREATE ROLE "end_user";
+GRANT "end_user" TO "postgres";
+GRANT USAGE ON SCHEMA public TO "end_user";
 
 DROP FUNCTION IF EXISTS auth.end_user_workspace_integration_ids cascade;
 CREATE OR REPLACE FUNCTION auth.end_user_workspace_integration_ids()
- RETURNS TABLE (id varchar)
- LANGUAGE sql
- SECURITY DEFINER
- STABLE
+  RETURNS TABLE (id varchar)
+  LANGUAGE sql
+  SECURITY DEFINER
+  STABLE
 AS $function$
   select id as integration_id
     from integration
     where workspace_id = current_setting('endUser.workspaceId', true)
 $function$;
-
-
--- End user policies
-CREATE ROLE "end_user";
-GRANT "end_user" TO "postgres";
-GRANT USAGE ON SCHEMA public TO "end_user";
 
 GRANT SELECT (id) ON public.integration TO "end_user";
 DROP POLICY IF EXISTS end_user_access ON public.integration;
@@ -193,14 +156,78 @@ CREATE POLICY end_user_access ON public.pipeline TO end_user
   -- User can see any pipeline that they their resource is connected to for the moment
   ));
 
+--- Workspace policies ---
 
+CREATE ROLE "workspace";
+GRANT "workspace" TO "postgres";
+GRANT USAGE ON SCHEMA public TO "workspace";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "workspace";
+
+DROP POLICY IF EXISTS workspace_access ON public.workspace;
+CREATE POLICY workspace_access ON public.workspace TO workspace
+  USING (id = current_setting('workspace.id', true))
+  WITH CHECK (id = current_setting('workspace.id', true));
+
+DROP POLICY IF EXISTS workspace_access ON public.workspace_member;
+CREATE POLICY workspace_access ON public.workspace_member TO workspace
+  USING (workspace_id = current_setting('workspace.id', true))
+  WITH CHECK (workspace_id = current_setting('workspace.id', true));
+
+DROP POLICY IF EXISTS workspace_access ON public.integration;
+CREATE POLICY workspace_access ON public.integration TO workspace
+  USING (workspace_id = current_setting('workspace.id', true))
+  WITH CHECK (workspace_id = current_setting('workspace.id', true));
+
+DROP POLICY IF EXISTS workspace_access ON public.resource;
+CREATE POLICY workspace_access ON public.resource TO workspace
+  USING (integration_id = ANY(
+      select id from integration
+      where workspace_id = current_setting('workspace.id', true)
+  ))
+  WITH CHECK (integration_id = ANY(
+      select id from integration
+      where workspace_id = current_setting('workspace.id', true)
+  ));
+
+DROP POLICY IF EXISTS workspace_access ON public.pipeline;
+CREATE POLICY workspace_access ON public.pipeline TO workspace
+  USING ((
+    select array(
+      select r.id
+      from resource r
+      join integration i on r.integration_id = i.id
+      where i.workspace_id = current_setting('workspace.id', true)
+    ) @> array[source_id, destination_id]
+    -- Pipeline must be fully within the workspace
+  ))
+  WITH CHECK ((
+    select array(
+      select r.id
+      from resource r
+      join integration i on r.integration_id = i.id
+      where i.workspace_id = current_setting('workspace.id', true)
+    ) @> array[source_id, destination_id]
+  ));
+
+--- Clean up previous ---
+
+DROP POLICY IF EXISTS admin_access ON raw_transaction;
+DROP POLICY IF EXISTS admin_access ON raw_commodity;
+DROP POLICY IF EXISTS admin_access ON raw_account;
+DROP POLICY IF EXISTS admin_access ON institution;
+DROP POLICY IF EXISTS admin_access ON integration;
+DROP POLICY IF EXISTS admin_access ON resource;
+DROP POLICY IF EXISTS admin_access ON pipeline;
+DROP POLICY IF EXISTS admin_access ON migrations;
+
+DROP FUNCTION IF EXISTS auth.is_admin;
+DROP PROCEDURE IF EXISTS auth.set_user_admin;
 
 --- Migrating previous DATA
+
 --  ALTER TABLE "public"."resource" ALTER COLUMN integration_id SET NOT NULL;
 --  ALTER TABLE "public"."pipeline" ALTER COLUMN source_id SET NOT NULL;
 --  ALTER TABLE "public"."pipeline" ALTER COLUMN destination_id SET NOT NULL;
 
 
 
-reset role;
-drop function if EXISTS auth.workspace_ids CASCADE;
