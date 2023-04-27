@@ -38,6 +38,7 @@ ALTER TABLE "public"."workspace_member" ENABLE ROW LEVEL SECURITY;
 CREATE OR REPLACE FUNCTION auth.workspace_ids()
  RETURNS varchar[]
  LANGUAGE sql
+--  SECURITY DEFINER
  STABLE
 AS $function$
   select array(select workspace_id from "workspace_member" where user_id::varchar = auth.uid())
@@ -98,7 +99,7 @@ CREATE POLICY workspace_member_access ON "public"."resource"
   ));
 
 DROP POLICY IF EXISTS workspace_member_access ON public.pipeline;
-CREATE POLICY workspace_member_access ON "public"."pipeline"
+CREATE POLICY workspace_member_access ON "public"."pipeline" TO authenticated
   USING ((
     with cached as MATERIALIZED(
       select r.id as resource_id
@@ -146,8 +147,60 @@ DROP POLICY IF EXISTS admin_access ON migrations;
 DROP FUNCTION IF EXISTS auth.is_admin;
 DROP PROCEDURE IF EXISTS auth.set_user_admin;
 
+DROP FUNCTION IF EXISTS auth.end_user_workspace_integration_ids cascade;
+CREATE OR REPLACE FUNCTION auth.end_user_workspace_integration_ids()
+ RETURNS TABLE (id varchar)
+ LANGUAGE sql
+ SECURITY DEFINER
+ STABLE
+AS $function$
+  select id as integration_id
+    from integration
+    where workspace_id = current_setting('endUser.workspaceId', true)
+$function$;
+
+
+-- End user policies
+CREATE ROLE "end_user";
+GRANT "end_user" TO "postgres";
+GRANT USAGE ON SCHEMA public TO "end_user";
+
+GRANT SELECT (id) ON public.integration TO "end_user";
+DROP POLICY IF EXISTS end_user_access ON public.integration;
+CREATE POLICY end_user_access ON public.integration TO end_user
+  USING (workspace_id = current_setting('endUser.workspaceId', true));
+
+
+GRANT SELECT, UPDATE (display_name), DELETE ON public.resource TO "end_user";
+DROP POLICY IF EXISTS end_user_access ON public.resource;
+CREATE POLICY end_user_access ON public.resource TO end_user
+  USING (
+    integration_id = ANY(select id from auth.end_user_workspace_integration_ids())
+    AND end_user_id = (select current_setting('endUser.id', true))
+  );
+
+-- REVOKE DELETE ON public.pipeline FROM "end_user";
+GRANT SELECT ON public.pipeline TO "end_user";
+DROP POLICY IF EXISTS end_user_access ON public.pipeline;
+CREATE POLICY end_user_access ON public.pipeline TO end_user
+  USING ((
+    select array(
+      select id
+        from resource
+        where integration_id = ANY(select id from auth.end_user_workspace_integration_ids())
+          AND end_user_id = (select current_setting('endUser.id', true))
+    ) && array[source_id, destination_id]
+  -- User can see any pipeline that they their resource is connected to for the moment
+  ));
+
+
 
 --- Migrating previous DATA
 --  ALTER TABLE "public"."resource" ALTER COLUMN integration_id SET NOT NULL;
 --  ALTER TABLE "public"."pipeline" ALTER COLUMN source_id SET NOT NULL;
 --  ALTER TABLE "public"."pipeline" ALTER COLUMN destination_id SET NOT NULL;
+
+
+
+reset role;
+drop function if EXISTS auth.workspace_ids CASCADE;

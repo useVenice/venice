@@ -50,6 +50,14 @@ const _getDeps = (opts: {databaseUrl: string; viewer: Viewer}) => {
                 : null
             }, true)`,
           )
+          if (viewer.role === 'end_user') {
+            await trxn.query(
+              sql`SELECT set_config('endUser.id', ${viewer.endUserId}, true)`,
+            )
+            await trxn.query(
+              sql`SELECT set_config('endUser.workspaceId', ${viewer.workspaceId}, true)`,
+            )
+          }
         }
         return handler(trxn)
       })
