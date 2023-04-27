@@ -6,30 +6,14 @@ import type {
   LinkFactory,
   MetaService,
 } from '@usevenice/cdk-core'
-import {zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
-import {R, z, zFunction} from '@usevenice/util'
-import * as jwt from 'jsonwebtoken'
+import {R} from '@usevenice/util'
 import type {_Integration, _Pipeline} from './contextHelpers'
 import {getContextHelpers} from './contextHelpers'
 import type {PipelineInput, ResourceInput} from './types'
-
-export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
-
-export const zViewer = z.discriminatedUnion('role', [
-  z.object({role: z.literal(zRole.Enum.anon)}),
-  // prettier-ignore
-  z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, workspaceId: zId('ws')}),
-  z.object({role: z.literal(zRole.Enum.user), userId: zUserId}),
-  z.object({role: z.literal(zRole.Enum.workspace), workspaceId: zId('ws')}),
-  z.object({role: z.literal(zRole.Enum.system)}),
-])
+import type {JWTClient, Viewer, ViewerRole} from './viewer'
+import {makeJwtClient, zViewerFromJwtPayload} from './viewer'
 
 type Helpers = ReturnType<typeof getContextHelpers>
-export type ViewerRole = z.infer<typeof zRole>
-export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
-  z.infer<typeof zViewer>,
-  {role: R}
->
 
 export interface RouterContext {
   // Viewer-dependent
@@ -54,35 +38,6 @@ export interface RouterContext {
     ctx: {endUserId?: EndUserId | null},
   ) => string
 }
-
-// MARK: - JWT
-
-export const zViewerFromJwtPayload = z
-  .object({
-    /** Different meaning in different contexts */
-    sub: z.string(),
-    /**
-     * Jwt role is different from viewer role because supabase uses authenticated
-     * by default and it's a bit too much work right now to switch
-     * futher we never want to permit system role for now for security, and anon role has no token
-     */
-    role: z.enum(['authenticated', 'end_user', 'workspace']),
-    /** Enforce that all jwts are timed. The actual validity check is done by jwtClient */
-    exp: z.number(),
-  })
-  .transform(({sub, role}) => {
-    switch (role) {
-      case 'authenticated':
-        return {role, userId: sub}
-      case 'end_user': {
-        const [workspaceId, endUserId] = sub.split('/')
-        return {role, endUserId, workspaceId}
-      }
-      case 'workspace':
-        return {role, workspaceId: sub}
-    }
-  })
-  .pipe(zViewer)
 
 export interface ContextFactoryOptions<
   TProviders extends readonly AnySyncProvider[],
@@ -141,7 +96,7 @@ export function getContextFactory<
     }
 
     try {
-      const data = jwt.verify(token)
+      const data = jwt.verifyViewer(token)
       return fromViewer(zViewerFromJwtPayload.parse(data))
     } catch (err) {
       console.warn('JwtError', err)
@@ -151,28 +106,3 @@ export function getContextFactory<
 
   return {config, fromViewer, fromJwtToken}
 }
-
-export const makeJwtClient = zFunction(
-  z.object({secretOrPublicKey: z.string()}),
-  ({secretOrPublicKey}) => ({
-    verify: (token: string) => {
-      try {
-        const data = jwt.verify(token, secretOrPublicKey)
-        if (typeof data === 'string') {
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Unexpected jwt data',
-          })
-        }
-        return data
-      } catch (err) {
-        // This dependency is not great... But don't know of a better pattern for now
-        throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
-      }
-    },
-    decode: (token: string) => jwt.decode(token),
-    sign: (payload: jwt.JwtPayload) => jwt.sign(payload, secretOrPublicKey),
-  }),
-)
-
-export type JWTClient = ReturnType<typeof makeJwtClient>

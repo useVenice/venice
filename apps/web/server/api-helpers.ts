@@ -14,11 +14,7 @@ import {
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
-import {
-  flatRouter,
-  makeJwtClient,
-  xAdminAppMetadataKey,
-} from '@usevenice/engine-backend'
+import {flatRouter, makeJwtClient} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
@@ -65,12 +61,18 @@ export async function serverGetApiUserId({
 }) {
   const token = getAccessToken(req)
   if (token) {
-    const data = makeJwtClient({
+    const viewer = makeJwtClient({
       secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-    }).verify(token)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const isAdmin = data['app_metadata']?.[xAdminAppMetadataKey] == true
-    return [data.sub, {isAdmin, from: 'accessToken'} as const] as const
+    }).verifyViewer(token)
+    const isAdmin = viewer.role === 'user'
+    return [
+      viewer.role === 'end_user'
+        ? viewer.endUserId
+        : viewer.role === 'user'
+        ? viewer.userId
+        : null,
+      {isAdmin, from: 'accessToken'} as const,
+    ] as const
   }
 
   const pat = fromMaybeArray(
@@ -88,12 +90,12 @@ export async function serverGetApiUserId({
         WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${pat}
       `),
     )
-    const isAdmin = row?.raw_app_metadata?.[xAdminAppMetadataKey] == true
+    const isAdmin = row != null
 
     return [row?.id, {isAdmin, from: 'apiKey'} as const] as const
   }
   const [user] = await serverGetUser({req, res})
-  const isAdmin = user?.app_metadata?.[xAdminAppMetadataKey] == true
+  const isAdmin = user != null
 
   return [user?.id, {isAdmin, from: 'cookie'} as const] as const
 }
@@ -121,7 +123,7 @@ export async function serverGetUser(
   try {
     makeJwtClient({
       secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-    }).verify(access_token)
+    }).verifyViewer(access_token)
     return [user, supabase] as const
   } catch (err) {
     console.warn(

@@ -1,10 +1,6 @@
 import type {PropsWithChildren} from 'react'
 
-import {RedirectTo} from '../../RedirectTo'
-import {LoadingIndicatorOverlay} from '../../loading-indicators'
-import {useSession, useSupabase} from '../../../contexts/session-context'
-import {Sidebar} from './Sidebar'
-import {xAdminAppMetadataKey} from '@usevenice/engine-backend/zdeprecated_safeForFrontend'
+import {useMutation} from '@tanstack/react-query'
 import {
   Button,
   CircularProgress,
@@ -13,7 +9,10 @@ import {
   Input,
   Label,
 } from '@usevenice/ui'
-import {useMutation} from '@tanstack/react-query'
+import {useSession, useSupabase} from '../../../contexts/session-context'
+import {RedirectTo} from '../../RedirectTo'
+import {LoadingIndicatorOverlay} from '../../loading-indicators'
+import {Sidebar} from './Sidebar'
 
 interface AuthLayoutProps extends PropsWithChildren {
   adminOnly?: boolean
@@ -30,7 +29,7 @@ export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
     await supabase.auth.refreshSession()
   })
   const isLoadingSession = status === 'loading'
-  const isAdmin = session?.user.app_metadata[xAdminAppMetadataKey] === true
+  const isAdmin = session?.user.role === 'authenticated'
 
   if (isLoadingSession) {
     return <LoadingIndicatorOverlay />

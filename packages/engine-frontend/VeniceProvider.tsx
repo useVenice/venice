@@ -11,7 +11,7 @@ import type {
   UseConnectHook,
 } from '@usevenice/cdk-core'
 import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
-import {jwt} from '@usevenice/engine-backend/zdeprecated_safeForFrontend'
+import {zViewerFromUnverifiedJwtToken} from '@usevenice/engine-backend/viewer'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
@@ -81,11 +81,12 @@ export function VeniceProvider<
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
   // TODO: Fix me up
-  const payload = (accessToken && jwt.decode(accessToken, {json: true})) || {}
+
+  const viewer = zViewerFromUnverifiedJwtToken.parse(accessToken)
 
   const {developerMode: _developerMode} = options
-  const endUserId = payload.sub as EndUserId
-  const isAdmin = payload['role'] === 'authenticated'
+  const endUserId = viewer.role === 'end_user' ? viewer.endUserId : undefined
+  const isAdmin = viewer.role === 'user'
   const developerMode = (isAdmin && _developerMode) || false
 
   if (typeof window !== 'undefined') {

@@ -20,11 +20,7 @@ import '@usevenice/app-config/register.node'
 
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 
-import {
-  flatRouter,
-  makeJwtClient,
-  zVeniceConnectJwtPayload,
-} from '@usevenice/engine-backend'
+import {flatRouter, makeJwtClient} from '@usevenice/engine-backend'
 
 import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createServerSideHelpers} from '@trpc/react-query/server'
@@ -54,24 +50,26 @@ export default async function ConnectPage({
 }: {
   searchParams: Record<string, string | string[] | undefined>
 }) {
-  if (!searchParams['token']) {
+  const token = z.string().nullish().parse(searchParams['token'])
+  if (!token) {
     return <div>Missing token</div>
   }
-  const token = z.string().parse(searchParams['token'])
 
   // Need to create jwtClient in here vecause otherwise during vercel static pre-render
   // it would crash...
-  const jwtClient = makeJwtClient({
-    // app-config/backendConfig does not work inside server components, so we will have to use this for now...
+  // app-config/backendConfig does not work inside server components, so we will have to use this for now...
+  const viewer = makeJwtClient({
     secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-  })
-  const payload = zVeniceConnectJwtPayload.parse(jwtClient.verify(token))
-  const endUserId = payload.sub
+  }).verifyViewer(token)
+  if (viewer.role !== 'end_user') {
+    throw new Error('end user only route')
+  }
+
   const queryClient = new QueryClient()
   const ssg = createServerSideHelpers({
     queryClient,
     router: flatRouter,
-    ctx: contextFactory.fromJwtToken(fromMaybeArray(searchParams['token'])[0]),
+    ctx: contextFactory.fromViewer(viewer),
   })
 
   const [integrations] = await Promise.all([
@@ -79,7 +77,7 @@ export default async function ConnectPage({
     ssg.listConnections.prefetch({}),
   ])
 
-  await ensureDefaultResourceAndPipelines(endUserId, {
+  await ensureDefaultResourceAndPipelines(viewer.endUserId, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
@@ -92,7 +90,7 @@ export default async function ConnectPage({
         <Connect
           integrations={integrations}
           displayName={
-            fromMaybeArray(searchParams['displayName'])[0] ?? endUserId
+            fromMaybeArray(searchParams['displayName'])[0] ?? viewer.endUserId
           }
           redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
         />

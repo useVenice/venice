@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
-import {xAdminAppMetadataKey} from '@usevenice/engine-backend'
 
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
@@ -76,6 +75,7 @@ export function SessionContextProvider({
   return <SessionContext.Provider {...props} value={value} />
 }
 
+/** TODO: Change from useSession to useViewer */
 export function useSession() {
   const context = React.useContext(SessionContext)
   if (context === undefined) {
@@ -86,7 +86,7 @@ export function useSession() {
 
 export function useAuthState() {
   const [session] = useSession()
-  const isAdmin = session?.user.app_metadata?.[xAdminAppMetadataKey] === true
+  const isAdmin = session?.user.role === 'authenticated'
   return {user: session?.user, isAdmin}
 }
 

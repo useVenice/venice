@@ -13,5 +13,5 @@ export * from './makeMetaLinks'
 export * from './parseWebhookRequest'
 export * from './router/index'
 export * from './types'
-export * from './zdeprecated_safeForFrontend'
+export * from './viewer'
 // codegen:end

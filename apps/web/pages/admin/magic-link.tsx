@@ -40,17 +40,20 @@ export default function MagicLinkPage() {
           form={form}
           schema={formSchema}
           onSubmit={(values) =>
-            createToken.mutate(values, {
-              onSuccess: async (data) => {
-                const url = new URL('/connect', getServerUrl(null))
-                url.searchParams.set('token', data)
-                url.searchParams.set('displayName', values.displayName ?? '')
-                url.searchParams.set('redirectUrl', values.redirectUrl ?? '')
+            createToken.mutate(
+              {...values, workspaceId: 'FIXME'},
+              {
+                onSuccess: async (data) => {
+                  const url = new URL('/connect', getServerUrl(null))
+                  url.searchParams.set('token', data)
+                  url.searchParams.set('displayName', values.displayName ?? '')
+                  url.searchParams.set('redirectUrl', values.redirectUrl ?? '')
 
-                await copyToClipboard(url.toString())
-                alert('Magic link copied to clipboard')
+                  await copyToClipboard(url.toString())
+                  alert('Magic link copied to clipboard')
+                },
               },
-            })
+            )
           }
           renderAfter={({submit}) => (
             <div className="mt-8 flex justify-center gap-4">

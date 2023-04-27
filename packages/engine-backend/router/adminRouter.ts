@@ -3,8 +3,6 @@ import {adminProcedure, trpc} from './_base'
 import {handlersLink, makeId, sync, zEndUserId, zId} from '@usevenice/cdk-core'
 import {makeUlid, rxjs, z} from '@usevenice/util'
 
-import type {VeniceConnectJwtPayload} from '../zdeprecated_safeForFrontend'
-
 export {type inferProcedureInput} from '@trpc/server'
 
 export const adminRouter = trpc.router({
@@ -34,13 +32,9 @@ export const adminRouter = trpc.router({
       })
     }),
   adminCreateConnectToken: adminProcedure
-    .input(z.object({endUserId: zEndUserId}))
-    .mutation(({input: {endUserId}, ctx}) =>
-      ctx.jwt.sign({
-        sub: endUserId,
-        exp: Math.floor(Date.now() / 1000) + 3600,
-        role: 'end_user', // 'authenticated',
-      } satisfies VeniceConnectJwtPayload),
+    .input(z.object({endUserId: zEndUserId, workspaceId: zId('ws')}))
+    .mutation(({input: {endUserId, workspaceId}, ctx}) =>
+      ctx.jwt.signViewer({role: 'end_user', endUserId, workspaceId}),
     ),
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())

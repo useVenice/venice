@@ -41,7 +41,7 @@ export async function proxySupabase({
   // aud:apikey So we can check in logs if needed
   const accessToken =
     userId &&
-    jwtClient.sign({
+    jwtClient.signViewer({
       sub: userId,
       aud: 'apikey',
       exp: DateTime.local().plus({seconds: 60}).toMillis() / 1000, // No request will be longer than 60 seconds
