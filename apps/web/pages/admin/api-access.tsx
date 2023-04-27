@@ -12,13 +12,13 @@ import {
 } from '@usevenice/ui'
 import {useAtom} from 'jotai'
 import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
+import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {createEnumParam} from 'use-query-params'
-import {GraphQLExplorer} from '../../components/api-access'
 import {CopyTextButton} from '../../components/CopyTextButton'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
+import {GraphQLExplorer} from '../../components/api-access'
 import {atomWithQueryParam} from '../../contexts/utils/atomWithQueryParam'
 
 // for server-side
@@ -30,9 +30,9 @@ import {
 } from '@usevenice/app-config/constants'
 import type {SqlExplorerProps} from '../../components/api-access/SqlExplorer'
 import {SqlExplorer} from '../../components/api-access/SqlExplorer'
+import {useViewerInfo} from '../../contexts/session-context'
 import {browserAnalytics} from '../../lib/browser-analytics'
 import {ensurePersonalAccessToken, serverGetUser} from '../../server'
-import {useAuthState} from '../../contexts/session-context'
 
 const tabLabelByKey = {
   apiKeys: 'API Keys',
@@ -90,7 +90,8 @@ export default function ApiAccessNewPage({
   selectables,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [tab, setTab] = useAtom(tabAtom)
-  const {isAdmin} = useAuthState()
+
+  const {viewer} = useViewerInfo(['end_user', 'user'])
 
   return (
     <PageLayout title="API Access" auth="user">
@@ -103,7 +104,7 @@ export default function ApiAccessNewPage({
           value={tab}
           onValueChange={setTab}>
           <TabsTriggers
-            options={(isAdmin
+            options={(viewer.role === 'user'
               ? Object.entries(tabLabelByKey)
               : [
                   // Sort sql to the end if we aren't admin. Could use some cleanup
@@ -118,7 +119,7 @@ export default function ApiAccessNewPage({
           <TabsContent className="flex flex-col pt-6" value={tabKey('apiKeys')}>
             <APIKeysCard pat={pat} />
           </TabsContent>
-          {isAdmin ? (
+          {viewer.role === 'user' ? (
             <TabsContent value={tabKey('sql')}>
               <SqlExplorer pat={pat} selectables={selectables} />
             </TabsContent>
@@ -267,7 +268,7 @@ function APIKeysCard({pat}: APIKeysCardProps) {
             <span className="font-mono text-xs text-venice-gray">
               Header example:
             </span>
-            <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 py-1 px-2 font-mono text-xs text-venice-gray">
+            <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 px-2 py-1 font-mono text-xs text-venice-gray">
               <code>{xPatHeaderKey}: myPersonalAccessTokenHere</code>
             </pre>
           </div>
@@ -278,7 +279,7 @@ function APIKeysCard({pat}: APIKeysCardProps) {
             <span className="font-mono text-xs text-venice-gray">
               Query param example:
             </span>
-            <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 py-1 px-2 font-mono text-xs text-venice-gray">
+            <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 px-2 py-1 font-mono text-xs text-venice-gray">
               <code>?{xPatUrlParamKey}=myPersonalAccessTokenHere</code>
             </pre>
           </div>

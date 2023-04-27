@@ -1,7 +1,6 @@
-import {getCookie} from 'cookies-next'
 import type {NextApiRequest, NextApiResponse} from 'next'
 
-import {fromMaybeArray, R, safeJSONParse} from '@usevenice/util'
+import {fromMaybeArray} from '@usevenice/util'
 import {kAccessToken} from '../contexts/atoms'
 
 import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
@@ -14,20 +13,23 @@ import {
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
 import type {UserId} from '@usevenice/cdk-core'
+import type {Viewer} from '@usevenice/engine-backend'
 import {flatRouter, makeJwtClient} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
 import {runAsAdmin, sql} from './procedures'
+
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
 export async function createSSRHelpers(context: GetServerSidePropsContext) {
   const queryClient = new QueryClient()
+  const supabase = createServerSupabaseClient<Database>(context)
 
-  const [user, supabase] = await serverGetUser(context)
+  const viewer = await serverGetViewer(context)
   await import('@usevenice/app-config/register.node')
   const {contextFactory} = await import('@usevenice/app-config/backendConfig')
 
@@ -35,13 +37,11 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   const ssg = createServerSideHelpers({
     queryClient,
     router: flatRouter,
-    ctx: contextFactory.fromViewer(
-      user?.id ? {role: 'user', userId: user?.id as UserId} : {role: 'anon'},
-    ),
+    ctx: contextFactory.fromViewer(viewer),
     // transformer: superjson,
   })
   return {
-    user,
+    viewer,
     supabase,
     queryClient,
     ssg,
@@ -51,53 +51,83 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   }
 }
 
-/** Get user based on accessToken, apiKey, cookie in that order */
-export async function serverGetApiUserId({
-  req,
-  res,
-}: {
-  req: NextApiRequest
-  res: NextApiResponse
-}) {
-  const token = getAccessToken(req)
-  if (token) {
-    const viewer = makeJwtClient({
-      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-    }).verifyViewer(token)
-    const isAdmin = viewer.role === 'user'
-    return [
-      viewer.role === 'end_user'
-        ? viewer.endUserId
-        : viewer.role === 'user'
-        ? viewer.userId
-        : null,
-      {isAdmin, from: 'accessToken'} as const,
-    ] as const
+/** Determine the current viewer in this order
+ * access token via query param
+ * access token via header
+ * apiKey via query param
+ * api key via header
+ * next.js cookie
+ * fall back to anon viewer
+ */
+export async function serverGetViewer(
+  context:
+    | GetServerSidePropsContext
+    | {req: NextApiRequest; res: NextApiResponse},
+): Promise<Viewer> {
+  const jwt = makeJwtClient({
+    secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
+  })
+  // access token via query param
+  let viewer = jwt.verifyViewer(
+    fromMaybeArray(
+      'query' in context
+        ? context.query[kAccessToken]
+        : context.req.query[kAccessToken],
+    )[0],
+  )
+  if (viewer.role !== 'anon') {
+    return viewer
+  }
+  // access token via header
+  viewer = jwt.verifyViewer(
+    context.req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
+  )
+  if (viewer.role !== 'anon') {
+    return viewer
   }
 
-  const pat = fromMaybeArray(
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    req.query[xPatUrlParamKey] || req.headers[xPatHeaderKey],
-  )[0]
+  // personal access token via query param or header
+  const apiKey =
+    fromMaybeArray(
+      'query' in context
+        ? context.query[xPatUrlParamKey]
+        : context.req.query[xPatUrlParamKey],
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    )[0] || context.req.headers[xPatHeaderKey]
 
-  if (pat) {
+  if (apiKey) {
     const row = await runAsAdmin((pool) =>
       pool.maybeOne<{
         id: string
         raw_app_metadata: Record<string, unknown>
       }>(sql`
         SELECT id, raw_app_meta_data FROM auth.users
-        WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${pat}
+        WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${apiKey}
       `),
     )
-    const isAdmin = row != null
-
-    return [row?.id, {isAdmin, from: 'apiKey'} as const] as const
+    if (row) {
+      return {role: 'user', userId: row.id as UserId}
+    }
   }
-  const [user] = await serverGetUser({req, res})
-  const isAdmin = user != null
 
-  return [user?.id, {isAdmin, from: 'cookie'} as const] as const
+  // access token via cookie
+  const supabase = createServerSupabaseClient<Database>(context)
+
+  const {data: sessionRes} = await supabase.auth.getSession()
+
+  try {
+    viewer = jwt.verifyViewer(sessionRes.session?.access_token)
+    if (viewer.role !== 'anon') {
+      return viewer
+    }
+  } catch (err) {
+    console.warn(
+      '[serverGetViewer] Error verifying cookie access token, will logout',
+    )
+    await supabase.auth.signOut()
+    throw err
+  }
+  return {role: 'anon'}
 }
 
 /** For serverSideProps */
@@ -106,46 +136,11 @@ export async function serverGetUser(
     | GetServerSidePropsContext
     | {req: NextApiRequest; res: NextApiResponse},
 ) {
-  const supabase = createServerSupabaseClient<Database>(context)
-  // TODO: Consider returning access token
-  const {data: sessionRes} = await supabase.auth.getSession()
-
-  // console.log('[createSSRHelpers] session', {
-  //   session: sessionRes.session,
-  //   NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
-  //   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
-  // })
-  if (!sessionRes.session) {
-    return [null, supabase] as const
+  const viewer = await serverGetViewer(context)
+  if (viewer.role !== 'user') {
+    return [null] as const
   }
-  const {access_token, user} = sessionRes.session
-  // Should we rely on supabase at all given that they don't verify against JWT token?
-  try {
-    makeJwtClient({
-      secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
-    }).verifyViewer(access_token)
-    return [user, supabase] as const
-  } catch (err) {
-    console.warn(
-      '[serverGetUser] Error verifying user access token, will logout',
-    )
-    await supabase.auth.signOut()
-    throw err
-    // return [null, supabase] as const
-  }
-}
-
-export function getAccessToken(req: NextApiRequest) {
-  return (
-    fromMaybeArray(req.query[kAccessToken] ?? [])[0] ??
-    req.headers.authorization?.match(/^Bearer (.+)/)?.[1] ??
-    R.pipe(
-      getCookie(kAccessToken, {req}),
-      (v) =>
-        typeof v === 'string' ? (safeJSONParse(v) as unknown) : undefined,
-      (v) => (typeof v === 'string' ? v : undefined),
-    )
-  )
+  return [{id: viewer.userId}] as const
 }
 
 export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {

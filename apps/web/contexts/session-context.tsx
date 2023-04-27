@@ -4,6 +4,8 @@ import type {Session, SupabaseClient} from '@supabase/supabase-js'
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
 import type {Database} from '../supabase/supabase.gen'
+import type {Viewer, ViewerRole} from '@usevenice/engine-backend'
+import {hasRole, zViewerFromUnverifiedJwtToken} from '@usevenice/engine-backend'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'
@@ -75,25 +77,51 @@ export function SessionContextProvider({
   return <SessionContext.Provider {...props} value={value} />
 }
 
-/** TODO: Change from useSession to useViewer */
-export function useSession() {
+export function useViewerInfo(): {
+  viewer: Viewer
+  status: AsyncStatus
+  user?: Session['user'] | null
+  accessToken?: string | null
+}
+export function useViewerInfo<R extends ViewerRole>(
+  allowedRoles: R[],
+): {
+  viewer: Viewer<R>
+  status: AsyncStatus
+  user?: Session['user'] | null
+  accessToken?: string | null
+}
+export function useViewerInfo<R extends ViewerRole>(allowedRoles?: R[]) {
   const context = React.useContext(SessionContext)
   if (context === undefined) {
-    throw new Error('useSession must be used within a SessionContextProvider.')
+    throw new Error('useViewer must be used within a SessionContextProvider.')
   }
-  return context
+  const [session, {status}] = context
+  const viewer = zViewerFromUnverifiedJwtToken.parse(session?.access_token)
+
+  if (allowedRoles && !hasRole(viewer, allowedRoles)) {
+    throw new Error(
+      `Viewer does not have any of the required roles: ${allowedRoles.join(
+        ', ',
+      )}`,
+    )
+  }
+  return {
+    viewer,
+    status,
+    user: session?.user,
+    accessToken: session?.access_token,
+  }
 }
 
-export function useAuthState() {
-  const [session] = useSession()
-  const isAdmin = session?.user.role === 'authenticated'
-  return {user: session?.user, isAdmin}
-}
-
+/** Use carefully, should only be used with viewer of type `user` */
 export function useSupabase() {
-  const [, {supabase}] = useSession()
-  if (!supabase) {
+  const context = React.useContext(SessionContext)
+  if (context === undefined) {
+    throw new Error('useSupabase must be used within a SessionContextProvider.')
+  }
+  if (!context[1].supabase) {
     throw new Error('Missing supabase in SessionContext')
   }
-  return supabase
+  return context[1].supabase
 }

@@ -6,11 +6,11 @@ import {
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
 import {makeJwtClient} from '@usevenice/engine-backend'
-import {DateTime, parseUrl, stringifyUrl} from '@usevenice/util'
+import {parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'
 import type {IncomingMessage} from 'node:http'
-import {respondToCORS, serverGetApiUserId} from '../server'
+import {respondToCORS, serverGetViewer} from '../server'
 
 // TODO: Centralize this
 const jwtClient = makeJwtClient({
@@ -36,19 +36,17 @@ export async function proxySupabase({
   if (respondToCORS(req, res)) {
     return
   }
-  const [userId] = await serverGetApiUserId({req, res})
+  const viewer = await serverGetViewer({req, res})
+  if (viewer.role !== 'user') {
+    res.status(401).send('Unauthorized')
+    return
+  }
 
   // aud:apikey So we can check in logs if needed
-  const accessToken =
-    userId &&
-    jwtClient.signViewer({
-      sub: userId,
-      aud: 'apikey',
-      exp: DateTime.local().plus({seconds: 60}).toMillis() / 1000, // No request will be longer than 60 seconds
-    })
+  const accessToken = jwtClient.signViewer(viewer)
 
   await Promise.all([
-    onUserId?.(userId),
+    onUserId?.(viewer.userId),
     new Promise((resolve, reject) => {
       proxy
         // Do not pass our custom param onwards otherwise could cause pgRest to complain

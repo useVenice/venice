@@ -6,16 +6,16 @@ import type {NextApiHandler} from 'next'
 import {contextFactory} from '@usevenice/app-config/backendConfig'
 import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {R} from '@usevenice/util'
-import {getAccessToken, respondToCORS} from '../../../server/api-helpers'
+import {respondToCORS, serverGetViewer} from '../../../server/api-helpers'
 
 const handler = trpcNext.createNextApiHandler({
   router: flatRouter,
-  createContext: ({req}) => {
+  createContext: async ({req, res}) => {
     console.log('[createContext]', {
       query: req.query,
       headers: req.headers,
     })
-    return contextFactory.fromJwtToken(getAccessToken(req))
+    return contextFactory.fromViewer(await serverGetViewer({req, res}))
   },
   onError: ({error}) => {
     console.warn('error', error)

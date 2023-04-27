@@ -2,15 +2,15 @@ import {
   ArrowLeftRightIcon,
   CodeIcon,
   DocsIcon,
-  SearchIcon,
   IntegrationsIcon,
   ProfileIcon,
+  SearchIcon,
   SupportIcon,
 } from '@usevenice/ui/icons'
 import {UsersIcon, WandIcon} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {useAuthState} from '../../../contexts/session-context'
+import {useViewerInfo} from '../../../contexts/session-context'
 import {NavLink} from './NavLink'
 
 const mainNavigation = [
@@ -84,12 +84,12 @@ export function Sidebar() {
 }
 
 function SidebarMain() {
-  const {isAdmin} = useAuthState()
+  const {viewer} = useViewerInfo()
   return (
     <div className="flex flex-1 flex-col overflow-y-auto py-6">
       <nav className="space-y-1">
         {mainNavigation
-          .filter((n) => !n.adminOnly || isAdmin)
+          .filter((n) => !n.adminOnly || viewer.role === 'user')
           .map((n) => (
             <NavLink key={n.name} {...n} />
           ))}
@@ -106,7 +106,7 @@ function SidebarMain() {
 
 function NavSectionSeparator() {
   return (
-    <div className="py-6 px-4">
+    <div className="px-4 py-6">
       <hr className="border-venice-black-300" />
     </div>
   )

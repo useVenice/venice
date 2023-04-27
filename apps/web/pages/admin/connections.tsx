@@ -1,4 +1,3 @@
-import type {UserId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
@@ -24,8 +23,8 @@ const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {user, getPageProps, ssg} = await createSSRHelpers(context)
-  if (!user?.id) {
+  const {viewer, getPageProps, ssg} = await createSSRHelpers(context)
+  if (viewer.role !== 'user') {
     return {
       redirect: {
         destination: '/admin/auth',
@@ -40,14 +39,14 @@ export const getServerSideProps = (async (context) => {
     ssg.searchInstitutions.prefetch({keywords: undefined}),
   ])
 
-  await ensureDefaultResourceAndPipelines(user.id, {
+  await ensureDefaultResourceAndPipelines(viewer.userId, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
   return {
     props: {
       ...getPageProps(),
-      userId: user.id as UserId,
+      userId: viewer.userId,
       integrations,
     },
   }

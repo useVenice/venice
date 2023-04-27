@@ -20,6 +20,13 @@ export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
   {role: R}
 >
 
+export function hasRole<R extends ViewerRole>(
+  viewer: Viewer,
+  roles: R[],
+): viewer is Viewer<R> {
+  return roles.includes(viewer.role as R)
+}
+
 // MARK: - JWT
 
 export const zJwtPayload = z.object({
@@ -71,7 +78,10 @@ export function jwtDecode(token: string) {
 export const makeJwtClient = zFunction(
   z.object({secretOrPublicKey: z.string()}),
   ({secretOrPublicKey}) => ({
-    verifyViewer: (token: string) => {
+    verifyViewer: (token?: string | null): Viewer => {
+      if (!token) {
+        return {role: 'anon'}
+      }
       try {
         const data = jwt.verify(token, secretOrPublicKey)
         if (typeof data === 'string') {

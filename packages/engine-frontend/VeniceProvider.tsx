@@ -39,10 +39,7 @@ export const VeniceContext = React.createContext<{
   connectFnMapRef: React.RefObject<Record<string, ConnectFn | undefined>>
 
   providerByName: Record<string, AnySyncProvider>
-
   endUserId: EndUserId | undefined
-  isAdmin: boolean
-  developerMode: boolean
   openDialog: OpenDialogFn
 } | null>(null)
 
@@ -86,11 +83,9 @@ export function VeniceProvider<
 
   const {developerMode: _developerMode} = options
   const endUserId = viewer.role === 'end_user' ? viewer.endUserId : undefined
-  const isAdmin = viewer.role === 'user'
-  const developerMode = (isAdmin && _developerMode) || false
 
   if (typeof window !== 'undefined') {
-    console.log('[VeniceProvider]', {endUserId, isAdmin, accessToken})
+    console.log('[VeniceProvider]', {endUserId, accessToken})
   }
 
   const url = config.apiUrl
@@ -144,20 +139,10 @@ export function VeniceProvider<
             trpcClient,
             queryClient,
             endUserId,
-            isAdmin,
-            developerMode,
             openDialog,
             providerByName: R.mapToObj(config.providers, (p) => [p.name, p]),
           }),
-          [
-            trpcClient,
-            queryClient,
-            endUserId,
-            isAdmin,
-            developerMode,
-            openDialog,
-            config.providers,
-          ],
+          [trpcClient, queryClient, endUserId, openDialog, config.providers],
         )}>
         {children}
         {/*

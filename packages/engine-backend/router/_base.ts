@@ -1,6 +1,6 @@
 import {TRPCError, initTRPC} from '@trpc/server'
 import type {RouterContext} from '../context'
-import type {Viewer, ViewerRole} from '../viewer'
+import {hasRole} from '../viewer'
 
 /** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
 interface OpenApiMeta {}
@@ -48,13 +48,6 @@ export const systemProcedure = trpc.procedure.use(({next, ctx}) => {
   }
   return next({ctx: {...ctx, viewer: ctx.viewer}}) // Get typing to work
 })
-
-function hasRole<R extends ViewerRole>(
-  viewer: Viewer,
-  roles: R[],
-): viewer is Viewer<R> {
-  return roles.includes(viewer.role as R)
-}
 
 // Not used atm
 // const levelByRole = {

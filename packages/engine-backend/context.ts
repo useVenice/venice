@@ -90,6 +90,7 @@ export function getContextFactory<
     }
   }
 
+  /** not sure if this is needed as most codepath gets us viewer via multiple methods */
   function fromJwtToken(token?: string): RouterContext {
     if (!token) {
       return fromViewer({role: 'anon'})

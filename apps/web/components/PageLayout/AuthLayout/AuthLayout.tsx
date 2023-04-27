@@ -9,7 +9,7 @@ import {
   Input,
   Label,
 } from '@usevenice/ui'
-import {useSession, useSupabase} from '../../../contexts/session-context'
+import {useSupabase, useViewerInfo} from '../../../contexts/session-context'
 import {RedirectTo} from '../../RedirectTo'
 import {LoadingIndicatorOverlay} from '../../loading-indicators'
 import {Sidebar} from './Sidebar'
@@ -19,7 +19,7 @@ interface AuthLayoutProps extends PropsWithChildren {
 }
 
 export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
-  const [session, {status}] = useSession()
+  const {viewer, status, user} = useViewerInfo()
   const supabase = useSupabase()
 
   const logout = useMutation<void, Error>(async () => {
@@ -29,17 +29,16 @@ export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
     await supabase.auth.refreshSession()
   })
   const isLoadingSession = status === 'loading'
-  const isAdmin = session?.user.role === 'authenticated'
 
   if (isLoadingSession) {
     return <LoadingIndicatorOverlay />
   }
 
-  if (!isLoadingSession && !session) {
+  if (!isLoadingSession && viewer.role === 'anon') {
     return <RedirectTo url="/admin/auth" />
   }
 
-  if (adminOnly && !isAdmin) {
+  if (adminOnly && viewer.role !== 'user') {
     return (
       <Container className="min-h-screen justify-center">
         <p>
@@ -49,7 +48,7 @@ export function AuthLayout({adminOnly, children}: AuthLayoutProps) {
         </p>
         <div className="grid w-full max-w-[20rem] gap-3">
           <Label>You are logged in as</Label>
-          <Input value={session?.user.email ?? session?.user.id} readOnly />
+          <Input value={user?.email ?? user?.id} readOnly />
         </div>
         <div className="mt-4 flex flex-row gap-4 align-middle">
           <Button

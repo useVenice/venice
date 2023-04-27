@@ -33,7 +33,7 @@ export const zUseVeniceOptions = z.object({
 export type UseVenice = ReturnType<typeof useVenice>
 
 export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
-  const {trpc, endUserId, isAdmin, developerMode} = VeniceProvider.useContext()
+  const {trpc, endUserId} = VeniceProvider.useContext()
   const integrationsRes = trpc.listIntegrations.useQuery(
     {},
     {enabled: !!endUserId, staleTime: 15 * 60 * 1000},
@@ -56,8 +56,6 @@ export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
     insRes,
     deleteResource,
     checkResource,
-    isAdmin,
-    developerMode,
     veniceConnect,
   }
 }
