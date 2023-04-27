@@ -2,9 +2,11 @@ import type {
   EndUserResultRow,
   MetaService,
   MetaTable,
+  Viewer,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {R, memoize, z, zFunction} from '@usevenice/util'
+import {zViewer} from '@usevenice/cdk-core'
+import {R, memoize, zFunction} from '@usevenice/util'
 
 import type {TransactionFunction} from 'slonik/dist/src/types'
 import {
@@ -16,74 +18,47 @@ import {
 const getPostgreClient = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
 )
-const _getDeps = (opts: {databaseUrl: string; userId: string | null}) => {
-  const client = getPostgreClient(opts.databaseUrl)
+
+type Deps = ReturnType<typeof _getDeps>
+const _getDeps = (opts: {databaseUrl: string; viewer: Viewer}) => {
+  const {viewer, databaseUrl} = opts
+  const client = getPostgreClient(databaseUrl)
   return {
     ...client,
     runQueries: async <T>(handler: TransactionFunction<T>) => {
       const pool = await client.getPool()
       const {sql} = client
-      if (opts.userId != null) {
-        return pool.transaction(async (trxn) => {
+      return pool.transaction(async (trxn) => {
+        if (viewer.role === 'anon') {
+          // same as set_config('role', .., true) . But this is probably a bit clear
+          // compare to using the select function
+          // Though SET LOCAL is does not work with prepared statements
+          await trxn.query(sql`SET LOCAL ROLE anon`)
+        } else if (viewer.role !== 'system') {
           await trxn.query(sql`SET LOCAL ROLE authenticated`)
           await trxn.query(
-            // SET LOCAL is does not work with prepared statements
-            // sql`SET LOCAL "request.jwt.claim.sub" = ${opts.userId}`,
-            sql`SELECT set_config('request.jwt.claim.sub',  ${opts.userId}, true)`,
+            sql`SELECT set_config('viewer.role', ${viewer.role}, true)`,
           )
-          return handler(trxn)
-        })
-      }
-      return handler(pool)
+          await trxn.query(
+            sql`SELECT set_config('request.jwt.claim.sub', ${
+              viewer.role === 'end_user'
+                ? [viewer.workspaceId, viewer.endUserId].join('/')
+                : viewer.role === 'user'
+                ? viewer.userId
+                : viewer.role === 'workspace'
+                ? viewer.workspaceId
+                : null
+            }, true)`,
+          )
+        }
+        return handler(trxn)
+      })
     },
-  }
-}
-type Deps = ReturnType<typeof _getDeps>
-
-function metaTable<TID extends string, T extends Record<string, unknown>>(
-  tableName: keyof ZRaw,
-  {sql, upsertById, runQueries}: Deps,
-): MetaTable<TID, T> {
-  const table = sql.identifier([tableName])
-
-  //  const sqlType = sql.type(zRaw[tableName])
-
-  // TODO: Convert case from snake_case to camelCase
-  return {
-    list: ({ids, endUserId, keywords, ...rest}) =>
-      runQueries((pool) => {
-        const conditions = R.compact([
-          ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
-          endUserId && sql`end_user_id = ${endUserId}`,
-          // Temp solution, shall use fts and make this work for any table...
-          keywords &&
-            tableName === 'institution' &&
-            sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
-        ])
-        const where =
-          conditions.length > 0
-            ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
-            : sql``
-        return pool.any(
-          applyLimitOffset(sql`SELECT * FROM ${table} ${where}`, rest),
-        )
-      }),
-    get: (id) =>
-      runQueries((pool) =>
-        pool.maybeOne<T>(sql`SELECT * FROM ${table} where id = ${id}`),
-      ),
-    set: (id, data) => upsertById(tableName, {...data, id}),
-    patch: (id, data) =>
-      upsertById(tableName, {...data, id}, {mergeJson: 'shallow'}),
-    delete: (id) =>
-      runQueries((pool) =>
-        pool.query(sql`DELETE FROM ${table} WHERE id = ${id}`),
-      ).then(() => {}),
   }
 }
 
 export const makePostgresMetaService = zFunction(
-  zPgConfig.pick({databaseUrl: true}).extend({userId: z.string().nullable()}),
+  zPgConfig.pick({databaseUrl: true}).extend({viewer: zViewer}),
   (opts): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
@@ -157,3 +132,45 @@ export const makePostgresMetaService = zFunction(
     }
   },
 )
+
+function metaTable<TID extends string, T extends Record<string, unknown>>(
+  tableName: keyof ZRaw,
+  {sql, upsertById, runQueries}: Deps,
+): MetaTable<TID, T> {
+  const table = sql.identifier([tableName])
+
+  //  const sqlType = sql.type(zRaw[tableName])
+
+  // TODO: Convert case from snake_case to camelCase
+  return {
+    list: ({ids, endUserId, keywords, ...rest}) =>
+      runQueries((pool) => {
+        const conditions = R.compact([
+          ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
+          endUserId && sql`end_user_id = ${endUserId}`,
+          // Temp solution, shall use fts and make this work for any table...
+          keywords &&
+            tableName === 'institution' &&
+            sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
+        ])
+        const where =
+          conditions.length > 0
+            ? sql`WHERE ${sql.join(conditions, sql` AND `)}`
+            : sql``
+        return pool.any(
+          applyLimitOffset(sql`SELECT * FROM ${table} ${where}`, rest),
+        )
+      }),
+    get: (id) =>
+      runQueries((pool) =>
+        pool.maybeOne<T>(sql`SELECT * FROM ${table} where id = ${id}`),
+      ),
+    set: (id, data) => upsertById(tableName, {...data, id}),
+    patch: (id, data) =>
+      upsertById(tableName, {...data, id}, {mergeJson: 'shallow'}),
+    delete: (id) =>
+      runQueries((pool) =>
+        pool.query(sql`DELETE FROM ${table} WHERE id = ${id}`),
+      ).then(() => {}),
+  }
+}

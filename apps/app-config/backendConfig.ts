@@ -49,12 +49,8 @@ export const contextFactory = getContextFactory({
   ...veniceCommonConfig,
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
-  getMetaService: (_viewer) =>
-    makePostgresMetaService({
-      databaseUrl: env.POSTGRES_OR_WEBHOOK_URL,
-      userId: 'FIXMEEEEE',
-      // userId: viewer.role === '',
-    }),
+  getMetaService: (viewer) =>
+    makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL, viewer}),
   // TODO: Support other config service such as fs later...
   linkMap: {
     renameAccount: renameAccountLink as LinkFactory,
