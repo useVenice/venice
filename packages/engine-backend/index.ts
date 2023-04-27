@@ -13,5 +13,4 @@ export * from './makeMetaLinks'
 export * from './parseWebhookRequest'
 export * from './router/index'
 export * from './types'
-export * from './viewer'
 // codegen:end

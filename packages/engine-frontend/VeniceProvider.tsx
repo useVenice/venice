@@ -11,7 +11,7 @@ import type {
   UseConnectHook,
 } from '@usevenice/cdk-core'
 import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
-import {zViewerFromUnverifiedJwtToken} from '@usevenice/engine-backend/viewer'
+import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 

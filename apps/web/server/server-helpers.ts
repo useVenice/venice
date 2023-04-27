@@ -12,9 +12,9 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import type {UserId} from '@usevenice/cdk-core'
-import type {Viewer} from '@usevenice/engine-backend'
-import {flatRouter, makeJwtClient} from '@usevenice/engine-backend'
+import {makeJwtClient} from '@usevenice/cdk-core'
+import type {UserId, Viewer} from '@usevenice/cdk-core'
+import {flatRouter} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'

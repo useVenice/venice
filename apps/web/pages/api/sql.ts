@@ -6,7 +6,7 @@ import {DatabaseError, Papa} from '@usevenice/app-config/backendConfig'
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
 import {z} from '@usevenice/util'
 import {runAsAdmin, sql} from '../../server'
-import {respondToCORS, serverGetViewer} from '../../server/api-helpers'
+import {respondToCORS, serverGetViewer} from '../../server/server-helpers'
 
 export default (async (req, res) => {
   // Is this necessary? Can be useful for admin console though

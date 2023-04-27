@@ -1301,6 +1301,9 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
+      jsonwebtoken:
+        specifier: 9.0.0
+        version: 9.0.0
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -1308,6 +1311,9 @@ importers:
         specifier: 1.7.2
         version: 1.7.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
+      '@types/jsonwebtoken':
+        specifier: 9.0.2
+        version: 9.0.2
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
@@ -1350,13 +1356,6 @@ importers:
       inngest:
         specifier: 1.3.1
         version: 1.3.1
-      jsonwebtoken:
-        specifier: 9.0.0
-        version: 9.0.0
-    devDependencies:
-      '@types/jsonwebtoken':
-        specifier: 8.5.9
-        version: 8.5.9
 
   packages/engine-frontend:
     dependencies:
@@ -6193,7 +6192,14 @@ packages:
   /@types/jsonwebtoken@8.5.9:
     resolution: {integrity: sha512-272FMnFGzAVMGtu9tkr29hRL6bZj4Zs1KZNeHLnKqAvp06tAIcarTMwOh8/8bz4FmKRcMxZhZNeUAQsNLoiPhg==}
     dependencies:
-      '@types/node': 18.8.3
+      '@types/node': 18.11.18
+    dev: false
+
+  /@types/jsonwebtoken@9.0.2:
+    resolution: {integrity: sha512-drE6uz7QBKq1fYqqoFKTDRdFCPHd5TCub75BM+D+cMx7NU9hUz7SESLfC2fSCXVFMO5Yj8sOWHuGqPgjc+fz0Q==}
+    dependencies:
+      '@types/node': 18.11.18
+    dev: true
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}

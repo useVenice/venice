@@ -1,6 +1,6 @@
 import {TRPCError, initTRPC} from '@trpc/server'
 import type {RouterContext} from '../context'
-import {hasRole} from '../viewer'
+import {hasRole} from '@usevenice/cdk-core'
 
 /** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
 interface OpenApiMeta {}

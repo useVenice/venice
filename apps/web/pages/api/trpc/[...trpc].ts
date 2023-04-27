@@ -6,7 +6,7 @@ import type {NextApiHandler} from 'next'
 import {contextFactory} from '@usevenice/app-config/backendConfig'
 import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {R} from '@usevenice/util'
-import {respondToCORS, serverGetViewer} from '../../../server/api-helpers'
+import {respondToCORS, serverGetViewer} from '../../../server/server-helpers'
 
 const handler = trpcNext.createNextApiHandler({
   router: flatRouter,

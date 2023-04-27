@@ -11,4 +11,5 @@ export * from './metaService'
 export * from './NoopMetaService'
 export * from './protocol'
 export * from './sync'
+export * from './viewer'
 // codegen:end

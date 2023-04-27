@@ -10,8 +10,8 @@ import {R} from '@usevenice/util'
 import type {_Integration, _Pipeline} from './contextHelpers'
 import {getContextHelpers} from './contextHelpers'
 import type {PipelineInput, ResourceInput} from './types'
-import type {JWTClient, Viewer, ViewerRole} from './viewer'
-import {makeJwtClient, zViewerFromJwtPayload} from './viewer'
+import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
+import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
 
 type Helpers = ReturnType<typeof getContextHelpers>
 

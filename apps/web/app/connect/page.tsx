@@ -20,8 +20,7 @@ import '@usevenice/app-config/register.node'
 
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 
-import {flatRouter, makeJwtClient} from '@usevenice/engine-backend'
-
+import {flatRouter} from '@usevenice/engine-backend'
 import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createServerSideHelpers} from '@trpc/react-query/server'
 import {fromMaybeArray, z} from '@usevenice/util'
@@ -29,6 +28,7 @@ import superjson from 'superjson'
 import {ensureDefaultResourceAndPipelines} from '../../server'
 import {ClientRoot} from '../ClientRoot'
 import {Connect} from './Connect'
+import {makeJwtClient} from '@usevenice/cdk-core'
 
 export const metadata = {
   title: 'Venice Connect',

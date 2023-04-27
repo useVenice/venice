@@ -4,8 +4,8 @@ import type {Session, SupabaseClient} from '@supabase/supabase-js'
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
 import type {Database} from '../supabase/supabase.gen'
-import type {Viewer, ViewerRole} from '@usevenice/engine-backend'
-import {hasRole, zViewerFromUnverifiedJwtToken} from '@usevenice/engine-backend'
+import type {Viewer, ViewerRole} from '@usevenice/cdk-core'
+import {hasRole, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'

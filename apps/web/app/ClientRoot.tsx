@@ -3,7 +3,7 @@
 import {createClient} from '@supabase/supabase-js'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
-import {jwtDecode} from '@usevenice/engine-backend/viewer'
+import {jwtDecode} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import React from 'react'
 import type {DehydratedState} from '../components/SuperHydrate'

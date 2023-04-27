@@ -5,7 +5,7 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeJwtClient} from '@usevenice/cdk-core'
 import {parseUrl, stringifyUrl} from '@usevenice/util'
 import {createProxy} from 'http-proxy'
 import type {NextApiRequest, NextApiResponse} from 'next'

@@ -7,7 +7,7 @@ import {
   makePostgresClient,
   makePostgresMetaService,
 } from '@usevenice/core-integration-postgres'
-import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeJwtClient} from '@usevenice/cdk-core'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
 import {makeMootaClient} from '@usevenice/integration-moota'
