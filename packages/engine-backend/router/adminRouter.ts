@@ -1,6 +1,13 @@
 import {adminProcedure, trpc} from './_base'
 
-import {handlersLink, makeId, sync, zEndUserId, zId} from '@usevenice/cdk-core'
+import {
+  handlersLink,
+  makeId,
+  sync,
+  zEndUserId,
+  zId,
+  zRaw,
+} from '@usevenice/cdk-core'
 import {makeUlid, rxjs, z} from '@usevenice/util'
 
 export {type inferProcedureInput} from '@trpc/server'
@@ -10,27 +17,23 @@ export const adminRouter = trpc.router({
   // should end use actually hit these APIs?
   adminListWorkspaces: adminProcedure
     .input(z.object({}).nullish())
-    .query(({ctx}) => ctx.helpers.metaService.tables.workspace.list({})),
-  adminCreateWorkspace: adminProcedure
-    .input(z.object({name: z.string(), slug: z.string()}))
-    .mutation(({input, ctx}) =>
-      ctx.helpers.metaService.tables.workspace.set(
-        makeId('ws', makeUlid()),
-        input,
-      ),
+    .query(({ctx}) => ctx.helpers.list('workspace', {})),
+  // Wonder if we should auto generate these procedures...
+  // Also might be nice to fix the type to distinguish between create and update
+  // In particular for "create" we might not want client to specify ID while making all
+  // other properties as required
+  adminUpsertWorkspace: adminProcedure
+    .input(zRaw.workspace.partial())
+    .mutation(({input: {id = makeId('ws', makeUlid()), ...input}, ctx}) =>
+      ctx.helpers.patchReturning('workspace', id, input),
     ),
+  // TODO: Right now this means client has to be responsible for creating
+  // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
-    .input(
-      z.object({id: zId('int'), workspaceId: zId('ws'), config: z.unknown()}),
-    )
-    .query(({input, ctx}) => {
-      const provider = ctx.helpers.getProviderOrFail(input.id)
-      const config = provider.def.integrationConfig?.parse(input.config)
-      return ctx.helpers.metaService.tables.integration.set(input.id, {
-        workspaceId: input.workspaceId,
-        config,
-      })
-    }),
+    .input(zRaw.integration.partial().required({id: true}))
+    .query(({input: {id, ...input}, ctx}) =>
+      ctx.helpers.patchReturning('integration', id, input),
+    ),
   adminCreateConnectToken: adminProcedure
     .input(z.object({endUserId: zEndUserId, workspaceId: zId('ws')}))
     .mutation(async ({input: {endUserId, workspaceId}, ctx}) => {

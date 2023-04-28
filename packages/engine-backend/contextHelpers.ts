@@ -5,15 +5,17 @@ import type {
   AnyEntityPayload,
   AnySyncProvider,
   Destination,
+  IDS,
   Id,
   Link,
   MetaService,
+  MetaTable,
   ResourceUpdate,
   Source,
+  ZRaw,
 } from '@usevenice/cdk-core'
 import {extractId, makeId, sync, zRaw} from '@usevenice/cdk-core'
-import type {z} from '@usevenice/util'
-import {rxjs} from '@usevenice/util'
+import {ObjectPartialDeep, deepMerge, rxjs, z} from '@usevenice/util'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {zSyncOptions} from './types'
 
@@ -42,6 +44,104 @@ export function getContextHelpers({
     }
     return provider
   }
+
+  // TODO: Replace other getOrFail with this
+  // TODO: Abstract this into a wrapper around metaService
+  // so it can be used by other files such as metaLinks too
+  const get = async <TTable extends keyof ZRaw>(
+    tableName: TTable,
+    id: Id[(typeof IDS)[TTable]],
+  ) => {
+    const table: MetaTable = metaService.tables[tableName]
+    const data = await table.get(id)
+    return data ? (zRaw[tableName].parse(data) as ZRaw[TTable]) : null
+  }
+  const getOrFail = async <TTable extends keyof ZRaw>(
+    tableName: TTable,
+    id: Id[(typeof IDS)[TTable]],
+  ) => {
+    const data = await get(tableName, id)
+    if (!data) {
+      throw new TRPCError({code: 'NOT_FOUND', message: `${tableName}: ${id}`})
+    }
+    return data
+  }
+  const list = async <TTable extends keyof ZRaw>(
+    tableName: TTable,
+    ...args: Parameters<MetaTable['list']>
+  ) => {
+    const table: MetaTable = metaService.tables[tableName]
+    const results = await table.list(...args)
+    return results.map((r) => zRaw[tableName].parse(r) as ZRaw[TTable])
+  }
+
+  const patch = async <TTable extends keyof ZRaw>(
+    tableName: TTable,
+    id: Id[(typeof IDS)[TTable]],
+    _patch: ObjectPartialDeep<ZRaw[TTable]>,
+  ) => {
+    // TODO: Validate integration.config and resource.settings
+    if (Object.keys(_patch).length === 0) {
+      return
+    }
+    let schema: z.AnyZodObject = zRaw[tableName]
+
+    // eslint-disable-next-line unicorn/prefer-switch
+    if (tableName === 'integration') {
+      // The typing here isn't perfect. We want to make sure we are
+      // overriding not just extending with arbitary properties
+      schema = (schema as (typeof zRaw)['integration']).extend({
+        // This should be an override...
+        config:
+          getProviderOrFail(id as Id['int']).def.integrationConfig ??
+          z.object({}).nullish(),
+      })
+    } else if (tableName === 'resource') {
+      schema = (schema as (typeof zRaw)['resource']).extend({
+        // This should be an override...
+        settings:
+          getProviderOrFail(id as Id['reso']).def.resourceSettings ??
+          z.object({}).nullish(),
+      })
+    } else if (tableName === 'pipeline') {
+      // TODO: How do we validate if source or destination id is not provided?
+      if ('sourceId' in _patch) {
+        schema = (schema as (typeof zRaw)['pipeline']).extend({
+          // This should be an override...
+          sourceState:
+            getProviderOrFail(_patch.sourceId!).def.sourceState ??
+            z.object({}).nullish(),
+        })
+      } else if ('destinationId' in _patch) {
+        schema = (schema as (typeof zRaw)['pipeline']).extend({
+          // This should be an override...
+          destinationState:
+            getProviderOrFail(_patch.destinationId!).def.destinationState ??
+            z.object({}).nullish(),
+        })
+      }
+    }
+    const table: MetaTable = metaService.tables[tableName]
+    if (table.patch) {
+      await table.patch(id, zRaw[tableName].deepPartial().parse(_patch))
+    } else {
+      const data = await table.get(id)
+
+      // console.log(`[patch] Will merge patch and data`, {_patch, data})
+      await table.set(id, zRaw[tableName].parse(deepMerge(data ?? {}, _patch)))
+    }
+  }
+
+  // TODO: Implement native patchReturning in postgres?
+  const patchReturning = async <TTable extends keyof ZRaw>(
+    tableName: TTable,
+    id: Id[(typeof IDS)[TTable]],
+    _patch: ObjectPartialDeep<ZRaw[TTable]>,
+  ) => {
+    await patch(tableName, id, _patch)
+    return getOrFail(tableName, id)
+  }
+
   const getWorkspaceOrFail = (id: Id['ws']) =>
     metaService.tables.workspace.get(id).then((ws) => {
       if (!ws) {
@@ -285,6 +385,12 @@ export function getContextHelpers({
     getPipelinesForResource,
     _syncResourceUpdate,
     _syncPipeline,
+    // DB methods really should be moved to a separate file
+    get,
+    getOrFail,
+    list,
+    patch,
+    patchReturning,
   }
 }
 

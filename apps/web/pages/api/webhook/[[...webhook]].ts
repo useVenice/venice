@@ -2,7 +2,7 @@ import '@usevenice/app-config/register.node'
 import {inngest} from '@usevenice/engine-backend'
 import {fromMaybeArray, makeUlid} from '@usevenice/util'
 
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 
 export default (async (req, res) => {
   const {webhook, ...query} = req.query

@@ -9,6 +9,8 @@ import {parseIntConfigsFromRawEnv} from './env'
 
 export type _ResourceInput = IntegrationInput<(typeof PROVIDERS)[number]>
 
+// TODO: Is this file needed? We can most likely just
+// embed the functionality into venice cli directly...
 export async function bootstrap() {
   // Would be nice to simplify loading of env vars from zod in a way that makes sense...
   const workspaceId = getEnvVar('WORKSPACE_ID', {required: true}) as Id['ws']
@@ -23,7 +25,7 @@ export async function bootstrap() {
       continue
     }
     const id = makeId('int', providerName, extractId(workspaceId)[1])
-    await caller.adminUpsertIntegration({id, config, workspaceId})
+    await caller.adminUpsertIntegration({id, config: config as {}, workspaceId})
     console.log('Upsert integration', id)
   }
   console.log('Bootstrap complete')

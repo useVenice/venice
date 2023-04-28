@@ -22,10 +22,6 @@ const handler = trpcNext.createNextApiHandler({
   },
 })
 
-// This probably needs to be refactored into sync-backend package together with
-// perhaps the cli package
-// - [ ] Remove RouterContext no longer needed
-// - [ ] Do the same logic for veniceCli httpServer that does not use next
 export default R.identity<NextApiHandler>((req, res) => {
   if (respondToCORS(req, res)) {
     return

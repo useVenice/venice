@@ -1,7 +1,7 @@
 import '@usevenice/app-config/register.node'
 import {joinPath} from '@usevenice/util'
 
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 import {serverAnalytics} from '../../../lib/server-analytics'
 
 import {proxySupabase} from '../../../lib/supabase-proxy.server'

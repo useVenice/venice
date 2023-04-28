@@ -4,7 +4,7 @@ import converter from 'swagger2openapi'
 
 import {getRestEndpoint} from '@usevenice/app-config/constants'
 import {joinPath, R} from '@usevenice/util'
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 import modifyResponse from 'node-http-proxy-json'
 import {serverAnalytics} from '../../../lib/server-analytics'
 import {proxySupabase} from '../../../lib/supabase-proxy.server'

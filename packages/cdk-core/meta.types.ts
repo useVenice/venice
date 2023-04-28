@@ -71,6 +71,9 @@ export type ZRaw = {
   [k in keyof typeof zRaw]: z.infer<(typeof zRaw)[k]>
 }
 /** Should this be a factory function so we can use typed config / settings? */
+// TODO: Consider auto-generating this from database, via a tool such as zapetos, pgtyped
+// or prisma, though would need to allow us to override for things like id prefix as well
+// as more specific type than just jsonb
 export const zRaw = {
   workspace: z.object({
     id: zId('ws'),
