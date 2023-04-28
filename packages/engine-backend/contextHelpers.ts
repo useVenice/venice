@@ -68,11 +68,22 @@ export function getContextHelpers({
       return zRaw.institution.parse(ins)
     })
   const getResourceOrFail = (id: Id['reso']) =>
-    metaService.tables.resource.get(id).then(async (_reso) => {
-      if (!_reso) {
+    metaService.tables.resource.get(id).then((reso) => {
+      if (!reso) {
         throw new TRPCError({code: 'NOT_FOUND'})
       }
-      const reso = zRaw.resource.parse(_reso)
+      return zRaw.resource.parse(reso)
+    })
+  const getPipelineOrFail = (id: Id['pipe']) =>
+    metaService.tables.pipeline.get(id).then((pipe) => {
+      if (!pipe) {
+        throw new TRPCError({code: 'NOT_FOUND'})
+      }
+      return zRaw.pipeline.parse(pipe)
+    })
+
+  const getResourceExpandedOrFail = (id: Id['reso']) =>
+    getResourceOrFail(id).then(async (reso) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const integration = await getIntegrationOrFail(reso.integrationId!)
       const settings: {} = integration.provider.def.resourceSettings?.parse(
@@ -84,16 +95,11 @@ export function getContextHelpers({
       return {...reso, integration, settings, institution}
     })
 
-  const getPipelineOrFail = (id: Id['pipe']) =>
-    metaService.tables.pipeline.get(id).then(async (_pipe) => {
-      if (!_pipe) {
-        throw new TRPCError({code: 'NOT_FOUND'})
-      }
-
-      const pipe = zRaw.pipeline.parse(_pipe)
+  const getPipelineExpandedOrFail = (id: Id['pipe']) =>
+    getPipelineOrFail(id).then(async (pipe) => {
       const [source, destination] = await Promise.all([
-        getResourceOrFail(pipe.sourceId!),
-        getResourceOrFail(pipe.destinationId!),
+        getResourceExpandedOrFail(pipe.sourceId!),
+        getResourceExpandedOrFail(pipe.destinationId!),
       ])
       const sourceState: {} =
         source.integration.provider.def.sourceState?.parse(pipe.sourceState)
@@ -133,7 +139,7 @@ export function getContextHelpers({
     metaService
       .findPipelines({resourceIds: [resoId]})
       .then((pipes) =>
-        Promise.all(pipes.map((pipe) => getPipelineOrFail(pipe.id))),
+        Promise.all(pipes.map((pipe) => getPipelineExpandedOrFail(pipe.id))),
       )
 
   const metaLinks = makeMetaLinks(metaService)
@@ -185,7 +191,7 @@ export function getContextHelpers({
   }
 
   const _syncPipeline = async (
-    pipeline: Awaited<ReturnType<typeof getPipelineOrFail>>,
+    pipeline: Awaited<ReturnType<typeof getPipelineExpandedOrFail>>,
     opts: z.infer<typeof zSyncOptions> & {
       source$?: Source<AnyEntityPayload>
       /**
@@ -273,6 +279,8 @@ export function getContextHelpers({
     getIntegrationOrFail,
     getResourceOrFail,
     getPipelineOrFail,
+    getResourceExpandedOrFail,
+    getPipelineExpandedOrFail,
     listIntegrations,
     getPipelinesForResource,
     _syncResourceUpdate,
@@ -284,8 +292,8 @@ export type _Integration = Awaited<
   ReturnType<ReturnType<typeof getContextHelpers>['getIntegrationOrFail']>
 >
 export type _Pipeline = Awaited<
-  ReturnType<ReturnType<typeof getContextHelpers>['getPipelineOrFail']>
+  ReturnType<ReturnType<typeof getContextHelpers>['getPipelineExpandedOrFail']>
 >
 export type _Resource = Awaited<
-  ReturnType<ReturnType<typeof getContextHelpers>['getResourceOrFail']>
+  ReturnType<ReturnType<typeof getContextHelpers>['getResourceExpandedOrFail']>
 >

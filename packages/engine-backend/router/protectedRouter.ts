@@ -181,22 +181,29 @@ export const protectedRouter = trpc.router({
         destination: parseResource(resoById[destinationId!])!,
       }))
     }),
-  listIntegrations: protectedProcedure
+  listIntegrationInfos: protectedProcedure
     .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
     .query(async ({input: {type}, ctx}) => {
-      const ints = await ctx.helpers.listIntegrations()
-      return ints
-        .map((int) => ({
-          id: int.id,
-          providerName: int.provider.name,
-          isSource: !!int.provider.sourceSync,
-          isDestination: !!int.provider.destinationSync,
-        }))
-        .filter(
-          (int) =>
-            !type ||
-            (type === 'source' && int.isSource) ||
-            (type === 'destination' && int.isDestination),
+      const intIds = await ctx.helpers.metaService.listIntegrationIds()
+      return intIds
+        .map((id) => {
+          const provider = ctx.providerMap[extractId(id)[1]]
+          return provider
+            ? {
+                id,
+                providerName: provider.name,
+                isSource: !!provider.sourceSync,
+                isDestination: !!provider.destinationSync,
+              }
+            : null
+        })
+        .filter((int): int is NonNullable<typeof int> =>
+          Boolean(
+            int &&
+              (!type ||
+                (type === 'source' && int.isSource) ||
+                (type === 'destination' && int.isDestination)),
+          ),
         )
     }),
   searchInstitutions: protectedProcedure
@@ -234,7 +241,7 @@ export const protectedRouter = trpc.router({
     })
     .input(z.object({id: zId('reso')}))
     .query(async ({input, ctx}) => {
-      const reso = await ctx.helpers.getResourceOrFail(input.id)
+      const reso = await ctx.helpers.getResourceExpandedOrFail(input.id)
       return reso
     }),
   checkResource: protectedProcedure
@@ -243,11 +250,14 @@ export const protectedRouter = trpc.router({
     })
     .input(z.tuple([zId('reso'), zCheckResourceOptions.optional()]))
     .mutation(async ({input: [resoId, opts], ctx}) => {
+      if (ctx.viewer.role === 'end_user') {
+        await ctx.helpers.getResourceOrFail(resoId)
+      }
       const {
         settings,
         integration: int,
         ...reso
-      } = await ctx.helpers.getResourceOrFail(resoId)
+      } = await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(resoId)
       // console.log('checkResource', {settings, integration, ...conn}, opts)
       const resoUpdate = await int.provider.checkResource?.({
         settings,
@@ -262,7 +272,7 @@ export const protectedRouter = trpc.router({
       })
       if (resoUpdate || opts?.import) {
         /** Do not update the `endUserId` here... */
-        await ctx.helpers._syncResourceUpdate(int, {
+        await ctx.asWorkspaceIfNeeded._syncResourceUpdate(int, {
           ...(opts?.import && {
             endUserId: reso.endUserId ?? undefined,
             envName: reso.envName ?? undefined,
@@ -296,8 +306,11 @@ export const protectedRouter = trpc.router({
       ]),
     )
     .mutation(async ({input: [resoId, opts], ctx}) => {
-      const {settings, integration, ...reso} =
+      if (ctx.viewer.role === 'end_user') {
         await ctx.helpers.getResourceOrFail(resoId)
+      }
+      const {settings, integration, ...reso} =
+        await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(resoId)
       if (!opts?.skipRevoke) {
         await integration.provider.revokeResource?.(
           settings,
@@ -309,7 +322,7 @@ export const protectedRouter = trpc.router({
         // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
         // We should probably introduce a reset / delete event...
       }
-      await ctx.helpers.metaService.tables.resource.delete(reso.id)
+      await ctx.asWorkspaceIfNeeded.metaService.tables.resource.delete(reso.id)
     }),
 
   // MARK: - Sync
@@ -317,7 +330,12 @@ export const protectedRouter = trpc.router({
   syncResource: protectedProcedure
     .input(z.tuple([zId('reso'), zSyncOptions.optional()]))
     .mutation(async function syncResource({input: [resoId, opts], ctx}) {
-      const reso = await ctx.helpers.getResourceOrFail(resoId)
+      if (ctx.viewer.role === 'end_user') {
+        await ctx.helpers.getResourceOrFail(resoId)
+      }
+      const reso = await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(
+        resoId,
+      )
       console.log('[syncResource]', reso, opts)
       // No need to checkResource here as sourceSync should take care of it
 
@@ -335,7 +353,9 @@ export const protectedRouter = trpc.router({
                 streams: ['resource', 'institution'],
               }),
             }) ?? rxjs.EMPTY,
-          destination: ctx.helpers.metaLinks.postSource({src: reso}),
+          destination: ctx.asWorkspaceIfNeeded.metaLinks.postSource({
+            src: reso,
+          }),
         })
         return
       }
@@ -344,7 +364,7 @@ export const protectedRouter = trpc.router({
       // but pipeline is already being persisted properly. This current solution
       // is vulnerable to race condition and feels brittle. Though syncResource is only
       // called from the UI so we are fine for now.
-      await ctx.helpers._syncResourceUpdate(reso.integration, {
+      await ctx.asWorkspaceIfNeeded._syncResourceUpdate(reso.integration, {
         endUserId: reso.endUserId,
         settings: reso.settings,
         // What about envName
@@ -359,7 +379,12 @@ export const protectedRouter = trpc.router({
   syncPipeline: protectedProcedure
     .input(z.tuple([zId('pipe'), zSyncOptions.optional()]))
     .mutation(async function syncPipeline({input: [pipeId, opts], ctx}) {
-      const pipeline = await ctx.helpers.getPipelineOrFail(pipeId)
+      if (ctx.viewer.role === 'end_user') {
+        await ctx.helpers.getPipelineOrFail(pipeId) // Authorization
+      }
+      const pipeline = await ctx.asWorkspaceIfNeeded.getPipelineExpandedOrFail(
+        pipeId,
+      )
       console.log('[syncPipeline]', pipeline)
       return ctx.helpers._syncPipeline(pipeline, opts)
     }),

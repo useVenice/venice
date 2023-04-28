@@ -22,4 +22,5 @@ export const noopMetaService: MetaService = {
   searchEndUsers: async () => [],
   searchInstitutions: async () => [],
   findPipelines: async () => [],
+  listIntegrationIds: async () => [],
 }

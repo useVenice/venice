@@ -18,7 +18,11 @@ export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
     })
   }
-  return next({ctx: {...ctx, viewer: ctx.viewer}}) // Get typing to work
+  const asWorkspaceIfNeeded =
+    ctx.viewer.role === 'end_user'
+      ? ctx.as('workspace', {workspaceId: ctx.viewer.workspaceId})
+      : ctx.helpers
+  return next({ctx: {...ctx, viewer: ctx.viewer, asWorkspaceIfNeeded}})
 })
 
 export const endUserProcedure = trpc.procedure.use(({next, ctx, path}) => {
@@ -28,7 +32,10 @@ export const endUserProcedure = trpc.procedure.use(({next, ctx, path}) => {
       message: `end_user role is required for ${path} procedure`,
     })
   }
-  return next({ctx: {...ctx, viewer: ctx.viewer}}) // Get typing to work
+  const asWorkspace = ctx.as('workspace', {workspaceId: ctx.viewer.workspaceId})
+  return next({
+    ctx: {...ctx, viewer: ctx.viewer, asWorkspace},
+  })
 })
 
 export const adminProcedure = trpc.procedure.use(({next, ctx}) => {
@@ -37,7 +44,7 @@ export const adminProcedure = trpc.procedure.use(({next, ctx}) => {
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
     })
   }
-  return next({ctx: {...ctx, viewer: ctx.viewer}}) // Get typing to work
+  return next({ctx: {...ctx, viewer: ctx.viewer}})
 })
 
 export const systemProcedure = trpc.procedure.use(({next, ctx}) => {
@@ -46,7 +53,7 @@ export const systemProcedure = trpc.procedure.use(({next, ctx}) => {
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
     })
   }
-  return next({ctx: {...ctx, viewer: ctx.viewer}}) // Get typing to work
+  return next({ctx: {...ctx, viewer: ctx.viewer}})
 })
 
 // Not used atm

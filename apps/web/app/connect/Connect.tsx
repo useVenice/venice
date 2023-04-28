@@ -18,7 +18,7 @@ import {TaggedCard} from '../../components/TaggedCard'
 import type {Connection} from '../../lib/supabase-queries'
 
 export function Connect(props: {
-  integrations: RouterOutput['listIntegrations']
+  integrations: RouterOutput['listIntegrationInfos']
   displayName?: string
   redirectUrl?: string
 }) {

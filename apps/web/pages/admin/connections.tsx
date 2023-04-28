@@ -34,7 +34,7 @@ export const getServerSideProps = (async (context) => {
   }
 
   const [integrations] = await Promise.all([
-    ssg.listIntegrations.fetch({}),
+    ssg.listIntegrationInfos.fetch({}),
     ssg.listConnections.fetch({}),
     ssg.searchInstitutions.prefetch({keywords: undefined}),
   ])

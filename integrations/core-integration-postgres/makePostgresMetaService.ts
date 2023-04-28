@@ -1,5 +1,6 @@
 import type {
   EndUserResultRow,
+  Id,
   MetaService,
   MetaTable,
   Viewer,
@@ -135,6 +136,12 @@ export const makePostgresMetaService = zFunction(
             : sql``
         return runQueries((pool) =>
           pool.any(sql`SELECT * FROM pipeline ${where}`),
+        )
+      },
+      listIntegrationIds: () => {
+        const {runQueries, sql} = _getDeps(opts)
+        return runQueries((pool) =>
+          pool.anyFirst<Id['int']>(sql`SELECT id FROM integration`),
         )
       },
     }

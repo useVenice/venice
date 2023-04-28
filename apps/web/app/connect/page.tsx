@@ -73,7 +73,7 @@ export default async function ConnectPage({
   })
 
   const [integrations] = await Promise.all([
-    ssg.listIntegrations.fetch({}),
+    ssg.listIntegrationInfos.fetch({}),
     ssg.listConnections.prefetch({}),
   ])
 

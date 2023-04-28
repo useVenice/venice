@@ -23,7 +23,7 @@ export const endUserRouter = trpc.router({
         input: [intId, {resourceExternalId, ...connCtxInput}, preConnInput],
         ctx,
       }) => {
-        const int = await ctx.helpers.getIntegrationOrFail(intId)
+        const int = await ctx.asWorkspace.getIntegrationOrFail(intId)
         if (!int.provider.preConnect) {
           return null
         }
@@ -32,8 +32,6 @@ export const endUserRouter = trpc.router({
               makeId('reso', int.provider.name, resourceExternalId),
             )
           : undefined
-        if (reso) {
-        }
         return int.provider.preConnect?.(
           int.config,
           {
@@ -69,7 +67,7 @@ export const endUserRouter = trpc.router({
         input: [input, intId, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const int = await ctx.helpers.getIntegrationOrFail(intId)
+        const int = await ctx.asWorkspace.getIntegrationOrFail(intId)
         console.log('didConnect start', int.provider.name, input, connCtxInput)
         if (!int.provider.postConnect || !int.provider.def.connectOutput) {
           return 'Noop'
@@ -79,9 +77,6 @@ export const endUserRouter = trpc.router({
               makeId('reso', int.provider.name, resourceExternalId),
             )
           : undefined
-        if (reso) {
-        }
-
         const resoUpdate = await int.provider.postConnect(
           int.provider.def.connectOutput.parse(input),
           int.config,
@@ -104,8 +99,7 @@ export const endUserRouter = trpc.router({
 
         const syncInBackground =
           resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
-
-        const resourceId = await ctx.helpers._syncResourceUpdate(int, {
+        const resourceId = await ctx.asWorkspace._syncResourceUpdate(int, {
           ...resoUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
           endUserId: ctx.viewer.endUserId,

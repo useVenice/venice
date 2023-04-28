@@ -218,6 +218,13 @@ CREATE POLICY workspace_access ON public.pipeline TO workspace
     -- Pipeline must be fully within the workspace
   ));
 
+-- FiXME: Revoke write access to institution once we figure out a better way...
+-- It's not YET an issue because we are not issuing any workspace-role tokens at the moment
+GRANT INSERT, UPDATE ON public.institution TO "workspace";
+DROP POLICY IF EXISTS workspace_write_access ON public.institution;
+CREATE POLICY workspace_write_access ON "public"."institution" FOR SELECT, INSERT, UPDATE
+  USING (true) WITH CHECK (true);
+
 -- @see https://www.postgresql.org/docs/current/sql-createpolicy.html for docs
 --- Clean up previous ---
 

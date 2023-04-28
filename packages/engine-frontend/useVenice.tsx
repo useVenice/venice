@@ -34,7 +34,7 @@ export type UseVenice = ReturnType<typeof useVenice>
 
 export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
   const {trpc, endUserId} = VeniceProvider.useContext()
-  const integrationsRes = trpc.listIntegrations.useQuery(
+  const integrationsRes = trpc.listIntegrationInfos.useQuery(
     {},
     {enabled: !!endUserId, staleTime: 15 * 60 * 1000},
   )
