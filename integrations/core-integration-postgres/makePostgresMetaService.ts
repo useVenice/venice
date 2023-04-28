@@ -20,45 +20,40 @@ const getPostgreClient = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
 )
 
+/** This determines the identity that gets used for every request to db! So be very careful */
+function localGucForViewer(viewer: Viewer) {
+  switch (viewer.role) {
+    case 'anon':
+      return {role: 'anon'}
+    case 'user':
+      return {role: 'authenticated', 'request.jwt.claim.sub': viewer.userId}
+    case 'end_user':
+      return {
+        role: 'end_user',
+        'endUser.id': viewer.endUserId,
+        'endUser.workspaceId': viewer.workspaceId,
+      }
+    case 'workspace':
+      return {role: 'workspace', 'workspace.id': viewer.workspaceId}
+    case 'system':
+      return {}
+    default:
+      throw new Error(`Unknown viewer role: ${(viewer as Viewer).role}`)
+  }
+}
+
 type Deps = ReturnType<typeof _getDeps>
 const _getDeps = (opts: {databaseUrl: string; viewer: Viewer}) => {
   const {viewer, databaseUrl} = opts
   const client = getPostgreClient(databaseUrl)
+  const {sql, getPool} = client
   return {
     ...client,
     runQueries: async <T>(handler: TransactionFunction<T>) => {
-      const pool = await client.getPool()
-      const {sql} = client
+      const pool = await getPool()
       return pool.transaction(async (trxn) => {
-        if (viewer.role === 'anon') {
-          // same as set_config('role', .., true) . But this is probably a bit clear
-          // compare to using the select function
-          // Though SET LOCAL is does not work with prepared statements
-          await trxn.query(sql`SET LOCAL ROLE anon`)
-        } else if (viewer.role !== 'system') {
-          await trxn.query(sql`SET LOCAL ROLE authenticated`)
-          await trxn.query(
-            sql`SELECT set_config('viewer.role', ${viewer.role}, true)`,
-          )
-          await trxn.query(
-            sql`SELECT set_config('request.jwt.claim.sub', ${
-              viewer.role === 'end_user'
-                ? [viewer.workspaceId, viewer.endUserId].join('/')
-                : viewer.role === 'user'
-                ? viewer.userId
-                : viewer.role === 'workspace'
-                ? viewer.workspaceId
-                : null
-            }, true)`,
-          )
-          if (viewer.role === 'end_user') {
-            await trxn.query(
-              sql`SELECT set_config('endUser.id', ${viewer.endUserId}, true)`,
-            )
-            await trxn.query(
-              sql`SELECT set_config('endUser.workspaceId', ${viewer.workspaceId}, true)`,
-            )
-          }
+        for (const [key, value] of Object.entries(localGucForViewer(viewer))) {
+          await trxn.query(sql`SELECT set_config(${key}, ${value}, true)`)
         }
         return handler(trxn)
       })
