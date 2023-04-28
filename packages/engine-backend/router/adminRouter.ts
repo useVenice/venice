@@ -33,9 +33,14 @@ export const adminRouter = trpc.router({
     }),
   adminCreateConnectToken: adminProcedure
     .input(z.object({endUserId: zEndUserId, workspaceId: zId('ws')}))
-    .mutation(({input: {endUserId, workspaceId}, ctx}) =>
-      ctx.jwt.signViewer({role: 'end_user', endUserId, workspaceId}),
-    ),
+    .mutation(async ({input: {endUserId, workspaceId}, ctx}) => {
+      // Will return 404, @see https://stackoverflow.com/questions/28582830/access-denied-403-or-404
+      // Technically we do not need the result though. It's a bit annoying to have this
+      // intermediate abstraction introduced by metaService rather than being able to just use postgres directly
+      await ctx.helpers.getWorkspaceOrFail(workspaceId)
+      // TOOD: Consider using jwt for that specific workspace
+      return ctx.jwt.signViewer({role: 'end_user', endUserId, workspaceId})
+    }),
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) =>

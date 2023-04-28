@@ -42,6 +42,13 @@ export function getContextHelpers({
     }
     return provider
   }
+  const getWorkspaceOrFail = (id: Id['ws']) =>
+    metaService.tables.workspace.get(id).then((ws) => {
+      if (!ws) {
+        throw new TRPCError({code: 'NOT_FOUND'})
+      }
+      return zRaw.workspace.parse(ws)
+    })
   const getIntegrationOrFail = (id: Id['int']) =>
     metaService.tables.integration.get(id).then((_int) => {
       if (!_int) {
@@ -261,6 +268,7 @@ export function getContextHelpers({
   return {
     metaService,
     metaLinks,
+    getWorkspaceOrFail,
     getProviderOrFail,
     getIntegrationOrFail,
     getResourceOrFail,

@@ -103,8 +103,18 @@ CREATE POLICY workspace_member_access ON "public"."pipeline" TO authenticated
       join integration i on i.id = r.integration_id
       join workspace_member wm on wm.workspace_id = i.workspace_id
       where wm.user_id::varchar = auth.uid()
+    ) && array[source_id, destination_id]
+    -- && and @> is the same, however we are using && to stay consistent with end user policy
+  )
+  WITH CHECK (
+    array(
+      select r.id
+      from resource r
+      join integration i on i.id = r.integration_id
+      join workspace_member wm on wm.workspace_id = i.workspace_id
+      where wm.user_id::varchar = auth.uid()
     ) @> array[source_id, destination_id]
-    -- Prevent user from seeing pipelines that don't have a source or destination that they have access to
+    -- User must have access to both the source & destination resources
   );
 
 
@@ -195,8 +205,8 @@ CREATE POLICY workspace_access ON public.pipeline TO workspace
       from resource r
       join integration i on r.integration_id = i.id
       where i.workspace_id = current_setting('workspace.id', true)
-    ) @> array[source_id, destination_id]
-    -- Pipeline must be fully within the workspace
+    ) && array[source_id, destination_id]
+    -- && and @> is the same, however we are using && to stay consistent with end user policy
   ))
   WITH CHECK ((
     select array(
@@ -205,8 +215,10 @@ CREATE POLICY workspace_access ON public.pipeline TO workspace
       join integration i on r.integration_id = i.id
       where i.workspace_id = current_setting('workspace.id', true)
     ) @> array[source_id, destination_id]
+    -- Pipeline must be fully within the workspace
   ));
 
+-- @see https://www.postgresql.org/docs/current/sql-createpolicy.html for docs
 --- Clean up previous ---
 
 DROP POLICY IF EXISTS admin_access ON raw_transaction;
