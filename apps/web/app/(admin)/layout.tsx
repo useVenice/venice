@@ -1,31 +1,21 @@
-'use client'
-
 import '../global.css'
 
-import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
-import {QueryClientProvider} from '@tanstack/react-query'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
+import {cookies, headers} from 'next/headers'
 import React from 'react'
-import {SessionContextProvider} from '../../contexts/session-context'
-import {createQueryClient} from '../../lib/query-client'
-import type {Database} from '../../supabase/supabase.gen'
+import {serverGetViewer} from '../../server'
+import {AdminLayout} from './AdminLayout'
 
-export default function AdminLayout({children}: {children: React.ReactNode}) {
-  console.log('[ClientRoot] rendering')
-  const {current: queryClient} = React.useRef(createQueryClient())
-  const {current: supabase} = React.useRef(
-    createBrowserSupabaseClient<Database>({}),
-  )
-  ;(globalThis as any).supabase = supabase
-  ;(globalThis as any).queryClient = queryClient
+export default async function AdminLayoutServer({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  console.log('[AdminLayoutServer] rendering')
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <SessionContextProvider supabase={supabase}>
-        {/* <TRPCProvider queryClient={queryClient} accessToken={undefined}> */}
-          {children}
-        {/* </TRPCProvider> */}
-      </SessionContextProvider>
-    </QueryClientProvider>
-  )
+  // make it so we can only get the viewer from cookies to be more consistent
+  // with how it works client side...
+  const viewer = await serverGetViewer({cookies, headers, params: {}})
+
+  return <AdminLayout initialViewer={viewer}>{children}</AdminLayout>
 }

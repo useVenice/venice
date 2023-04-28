@@ -1,7 +1,8 @@
 import {TRPCError} from '@trpc/server'
 import {z, zFunction} from '@usevenice/util'
 import * as jwt from 'jsonwebtoken'
-import {zUserId, zId, zEndUserId, UserId, Id, EndUserId} from './id.types'
+import type {UserId, Id, EndUserId} from './id.types'
+import {zUserId, zId, zEndUserId} from './id.types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
 

@@ -5,7 +5,7 @@ import React from 'react'
 
 import {parseUrl, shallowOmitUndefined} from '@usevenice/util'
 
-import {kAccessToken, kEnv} from '../contexts/atoms'
+import {kAccessToken, kEnv} from '../lib/constants'
 
 export const EnhancedLink = React.forwardRef(function EnhancedLink(
   props: LinkProps &

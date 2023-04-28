@@ -1,10 +1,12 @@
 import type {NextApiRequest, NextApiResponse} from 'next'
 
 import {fromMaybeArray} from '@usevenice/util'
-import {kAccessToken} from '../contexts/atoms'
 
-import {createServerSupabaseClient} from '@supabase/auth-helpers-nextjs'
-import {dehydrate, QueryClient} from '@tanstack/react-query'
+import {
+  createServerComponentSupabaseClient,
+  createServerSupabaseClient,
+} from '@supabase/auth-helpers-nextjs'
+import {QueryClient, dehydrate} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
 import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {
@@ -12,14 +14,17 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import {makeJwtClient} from '@usevenice/cdk-core'
 import type {UserId, Viewer} from '@usevenice/cdk-core'
+import {makeJwtClient} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
 import type {GetServerSidePropsContext} from 'next'
+import type {ReadonlyHeaders} from 'next/dist/server/web/spec-extension/adapters/headers'
+import type {ReadonlyRequestCookies} from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
 import {runAsAdmin, sql} from './procedures'
+import {kAccessToken} from '../lib/constants'
 
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
@@ -60,39 +65,44 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
  */
 export async function serverGetViewer(
   context:
-    | GetServerSidePropsContext
-    | {req: NextApiRequest; res: NextApiResponse},
+    | {req: NextApiRequest; res: NextApiResponse} // Next.js 12 api routes
+    | GetServerSidePropsContext // Next.js 12 pages/
+    // Next.js 13 server components
+    | {
+        headers: () => ReadonlyHeaders
+        cookies: () => ReadonlyRequestCookies
+        params: Record<string, string[] | string>
+      },
 ): Promise<Viewer> {
   const jwt = makeJwtClient({
     secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
   })
+  const headers =
+    'req' in context
+      ? context.req.headers
+      : Object.fromEntries(context.headers().entries())
+  const params =
+    'query' in context
+      ? context.query
+      : 'req' in context
+      ? context.req.query
+      : context.params
+
   // access token via query param
-  let viewer = jwt.verifyViewer(
-    fromMaybeArray(
-      'query' in context
-        ? context.query[kAccessToken]
-        : context.req.query[kAccessToken],
-    )[0],
-  )
+  let viewer = jwt.verifyViewer(fromMaybeArray(params[kAccessToken])[0])
   if (viewer.role !== 'anon') {
     return viewer
   }
   // access token via header
-  viewer = jwt.verifyViewer(
-    context.req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
-  )
+  viewer = jwt.verifyViewer(headers.authorization?.match(/^Bearer (.+)/)?.[1])
   if (viewer.role !== 'anon') {
     return viewer
   }
 
   // personal access token via query param or header
   const apiKey =
-    fromMaybeArray(
-      'query' in context
-        ? context.query[xPatUrlParamKey]
-        : context.req.query[xPatUrlParamKey],
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    )[0] || context.req.headers[xPatHeaderKey]
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    fromMaybeArray(params[xPatUrlParamKey])[0] || headers[xPatHeaderKey]
 
   if (apiKey) {
     const row = await runAsAdmin((pool) =>
@@ -110,7 +120,10 @@ export async function serverGetViewer(
   }
 
   // access token via cookie
-  const supabase = createServerSupabaseClient<Database>(context)
+  const supabase =
+    'req' in context
+      ? createServerSupabaseClient<Database>(context)
+      : createServerComponentSupabaseClient<Database>(context)
 
   const {data: sessionRes} = await supabase.auth.getSession()
 
