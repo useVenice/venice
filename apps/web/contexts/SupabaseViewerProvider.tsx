@@ -19,11 +19,12 @@ export const SupabaseContext = React.createContext<
 
 export interface SupabaseProviderProps {
   supabase: SupabaseClient<Database>
-  initialViewer?: Viewer
+  initialViewer?: Viewer & {accessToken?: string | null}
   children: React.ReactNode
 }
 
-export function SupabaseProvider({
+// TODO: Maybe separate out to SupabaseProvider and ViewerProvider?
+export function SupabaseViewerProvider({
   supabase,
   initialViewer = {role: 'anon'},
   children,
@@ -75,7 +76,10 @@ export function SupabaseProvider({
     }
   }, [email, phone, userId])
 
-  const accessToken = session?.access_token
+  const accessToken =
+    status === 'initial' || status === 'loading'
+      ? initialViewer.accessToken
+      : session?.access_token
   const viewer =
     status === 'initial' || status === 'loading'
       ? initialViewer

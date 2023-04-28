@@ -73,7 +73,9 @@ export async function serverGetViewer(
         cookies?: () => ReadonlyRequestCookies
         params?: Record<string, string[] | string>
       },
-): Promise<Viewer> {
+  // This is a hack for not knowing how else to return accessToken...
+  // and not wanting it to add it to the super simple viewer interface just yet
+): Promise<Viewer & {accessToken?: string | null}> {
   const jwt = makeJwtClient({
     secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
   })
@@ -89,14 +91,16 @@ export async function serverGetViewer(
       : context.params ?? {}
 
   // access token via query param
-  let viewer = jwt.verifyViewer(fromMaybeArray(params[kAccessToken])[0])
+  let accessToken = fromMaybeArray(params[kAccessToken])[0]
+  let viewer = jwt.verifyViewer(accessToken)
   if (viewer.role !== 'anon') {
-    return viewer
+    return {...viewer, accessToken}
   }
   // access token via header
-  viewer = jwt.verifyViewer(headers.authorization?.match(/^Bearer (.+)/)?.[1])
+  accessToken = headers.authorization?.match(/^Bearer (.+)/)?.[1]
+  viewer = jwt.verifyViewer(accessToken)
   if (viewer.role !== 'anon') {
-    return viewer
+    return {...viewer, accessToken}
   }
 
   // personal access token via query param or header
@@ -133,9 +137,10 @@ export async function serverGetViewer(
   const {data: sessionRes} = await supabase.auth.getSession()
 
   try {
-    viewer = jwt.verifyViewer(sessionRes.session?.access_token)
+    accessToken = sessionRes.session?.access_token
+    viewer = jwt.verifyViewer(accessToken)
     if (viewer.role !== 'anon') {
-      return viewer
+      return {...viewer, accessToken}
     }
   } catch (err) {
     console.warn(

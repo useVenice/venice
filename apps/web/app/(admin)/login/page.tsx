@@ -3,7 +3,7 @@
 import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 
 import {useMutation} from '@tanstack/react-query'
-import {useSupabaseContext} from '../../../contexts/SupabaseProvider'
+import {useSupabaseContext} from '../../../contexts/SupabaseViewerProvider'
 import {useViewerContext} from '../../../contexts/viewer-context'
 import {VeniceTheme} from '../../../themes'
 

@@ -1,20 +1,25 @@
 'use client'
 
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
-import {QueryClientProvider} from '@tanstack/react-query'
+import {QueryClientProvider, useQueryClient} from '@tanstack/react-query'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import type {Viewer} from '@usevenice/cdk-core'
+import {TRPCProvider} from '@usevenice/engine-frontend'
 import React from 'react'
-import {SupabaseProvider} from '../../contexts/SupabaseProvider'
+import {
+  SupabaseViewerProvider,
+  useSupabaseContext,
+} from '../../contexts/SupabaseViewerProvider'
 import {createQueryClient} from '../../lib/query-client'
 import type {Database} from '../../supabase/supabase.gen'
+import {useViewerContext} from '../../contexts/viewer-context'
 
 export function AdminLayout({
   children,
   initialViewer,
 }: {
   children: React.ReactNode
-  initialViewer: Viewer
+  initialViewer: Viewer & {accessToken?: string | null}
 }) {
   console.log('[AdminLayout] rendering', initialViewer)
   const {current: queryClient} = React.useRef(createQueryClient())
@@ -26,11 +31,20 @@ export function AdminLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SupabaseProvider supabase={supabase} initialViewer={initialViewer}>
-        {/* <TRPCProvider queryClient={queryClient} accessToken={undefined}> */}
-        {children}
-        {/* </TRPCProvider> */}
-      </SupabaseProvider>
+      <SupabaseViewerProvider supabase={supabase} initialViewer={initialViewer}>
+        <_TRPCProvider>{children}</_TRPCProvider>
+      </SupabaseViewerProvider>
     </QueryClientProvider>
+  )
+}
+
+function _TRPCProvider({children}: {children: React.ReactNode}) {
+  const queryClient = useQueryClient()
+  const {accessToken} = useViewerContext()
+
+  return (
+    <TRPCProvider queryClient={queryClient} accessToken={accessToken}>
+      {children}
+    </TRPCProvider>
   )
 }

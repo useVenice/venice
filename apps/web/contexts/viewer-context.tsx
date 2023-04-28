@@ -12,7 +12,7 @@ export const ViewerContext = React.createContext<
       viewer: Viewer
       status: AsyncStatus
       error: unknown
-      accessToken?: string
+      accessToken?: string | null
     }
   | undefined
 >(undefined)

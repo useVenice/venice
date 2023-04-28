@@ -15,7 +15,7 @@ export function TRPCProvider({
 }: {
   apiUrl?: string
   queryClient: QueryClient
-  accessToken?: string
+  accessToken?: string | null
   children: React.ReactNode
 }) {
   const __DEBUG__ =
@@ -47,5 +47,3 @@ export function TRPCProvider({
     </trpcReact.Provider>
   )
 }
-
-
