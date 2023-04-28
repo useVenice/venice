@@ -5,7 +5,7 @@ import {QueryClientProvider} from '@tanstack/react-query'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import type {Viewer} from '@usevenice/cdk-core'
 import React from 'react'
-import {SessionContextProvider} from '../../contexts/session-context'
+import {SupabaseProvider} from '../../contexts/SupabaseProvider'
 import {createQueryClient} from '../../lib/query-client'
 import type {Database} from '../../supabase/supabase.gen'
 
@@ -26,11 +26,11 @@ export function AdminLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionContextProvider supabase={supabase}>
+      <SupabaseProvider supabase={supabase} initialViewer={initialViewer}>
         {/* <TRPCProvider queryClient={queryClient} accessToken={undefined}> */}
         {children}
         {/* </TRPCProvider> */}
-      </SessionContextProvider>
+      </SupabaseProvider>
     </QueryClientProvider>
   )
 }

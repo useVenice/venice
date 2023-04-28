@@ -2,13 +2,15 @@
 
 import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
 
-import {useViewerInfo} from '../../../contexts/session-context'
-import {VeniceTheme} from '../../../themes'
 import {useMutation} from '@tanstack/react-query'
+import {useSupabaseContext} from '../../../contexts/SupabaseProvider'
+import {useViewerContext} from '../../../contexts/viewer-context'
+import {VeniceTheme} from '../../../themes'
 
 // TODO: Would be nice to populate the initial viewer state from the server
 export default function AdminAuthScreen() {
-  const {viewer, supabase, status} = useViewerInfo()
+  const {viewer, status} = useViewerContext()
+  const {supabase} = useSupabaseContext()
   const logout = useMutation<void, Error>(async () => {
     await supabase.auth.signOut()
   })
