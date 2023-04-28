@@ -6,18 +6,18 @@ import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {jwtDecode} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import React from 'react'
-import type {DehydratedState} from '../components/SuperHydrate'
-import {SuperHydrate} from '../components/SuperHydrate'
-import {InvalidateQueriesOnPostgresChanges} from '../contexts/realtime'
-import {SessionContextProvider} from '../contexts/session-context'
-import {createQueryClient} from '../lib/query-client'
+import type {DehydratedState} from '../../components/SuperHydrate'
+import {SuperHydrate} from '../../components/SuperHydrate'
+import {InvalidateQueriesOnPostgresChanges} from '../../contexts/realtime'
+import {SessionContextProvider} from '../../contexts/session-context'
+import {createQueryClient} from '../../lib/query-client'
 
-export function ClientRoot(props: {
+export function ConnectClientRoot(props: {
   children: React.ReactNode
   accessToken?: string
   dehydratedState?: DehydratedState
 }) {
-  console.log('[ClientRoot] rendering')
+  console.log('[ConnectClientRoot] rendering')
   const {current: queryClient} = React.useRef(createQueryClient())
   const {current: supabase} = React.useRef(
     createClient(

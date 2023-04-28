@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 import {z, zFunction} from '@usevenice/util'
 import * as jwt from 'jsonwebtoken'
-import {zUserId, zId, zEndUserId} from './id.types'
+import {zUserId, zId, zEndUserId, UserId, Id, EndUserId} from './id.types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
 
@@ -44,18 +44,22 @@ export const zJwtPayload = z.object({
 
 export const zViewerFromJwtPayload = zJwtPayload
   .nullish()
-  .transform((payload) => {
+  .transform((payload): Viewer => {
+    console.log('zViewerFromJwtPayload', payload)
     switch (payload?.role) {
       case undefined:
         return {role: 'anon'}
       case 'authenticated':
-        return {role: payload.role, userId: payload.sub}
+        return {role: 'user', userId: payload.sub as UserId}
       case 'end_user': {
-        const [workspaceId, endUserId] = payload.sub.split('/')
+        const [workspaceId, endUserId] = payload.sub.split('/') as [
+          Id['ws'],
+          EndUserId,
+        ]
         return {role: payload.role, endUserId, workspaceId}
       }
       case 'workspace':
-        return {role: payload.role, workspaceId: payload.sub}
+        return {role: payload.role, workspaceId: payload.sub as Id['ws']}
     }
   })
   .pipe(zViewer)

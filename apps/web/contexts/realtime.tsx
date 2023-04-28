@@ -7,19 +7,20 @@ import type {
 import React from 'react'
 import type {Database} from '../supabase/supabase.gen'
 
-import {VeniceProvider} from '@usevenice/engine-frontend'
+import {trpcReact} from '@usevenice/engine-frontend'
 
 // MARK: - React
 export function InvalidateQueriesOnPostgresChanges(props: {
+  // trpcReact: typeof trpcReact
   supabase: SupabaseClient
 }) {
-  const {trpc} = VeniceProvider.useContext()
-  const trpcUtils = trpc.useContext()
+  const trpcUtils = trpcReact.useContext()
 
   const invalidate = React.useCallback(() => {
     void trpcUtils.listConnections.invalidate()
     void trpcUtils.listPipelines.invalidate()
   }, [trpcUtils])
+  // TODO: Add support for listening for workspace / member / integration changes
   usePostgresChanges(props.supabase, 'resource', invalidate)
   usePostgresChanges(props.supabase, 'pipeline', invalidate)
   return null

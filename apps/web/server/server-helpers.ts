@@ -33,7 +33,6 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   await import('@usevenice/app-config/register.node')
   const {contextFactory} = await import('@usevenice/app-config/backendConfig')
 
-  // TODO: figure out
   const ssg = createServerSideHelpers({
     queryClient,
     router: flatRouter,
@@ -122,9 +121,9 @@ export async function serverGetViewer(
     }
   } catch (err) {
     console.warn(
-      '[serverGetViewer] Error verifying cookie access token, will logout',
+      '[serverGetViewer] Error verifying cookie access token, may sign out',
     )
-    await supabase.auth.signOut()
+    // await supabase.auth.signOut()
     throw err
   }
   return {role: 'anon'}

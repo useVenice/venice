@@ -26,7 +26,7 @@ import {createServerSideHelpers} from '@trpc/react-query/server'
 import {fromMaybeArray, z} from '@usevenice/util'
 import superjson from 'superjson'
 import {ensureDefaultResourceAndPipelines} from '../../server'
-import {ClientRoot} from '../ClientRoot'
+import {ConnectClientRoot} from './ConnectClientRoot'
 import {Connect} from './Connect'
 import {makeJwtClient} from '@usevenice/cdk-core'
 
@@ -84,7 +84,7 @@ export default async function ConnectPage({
 
   return (
     <div className="h-screen w-screen bg-black text-offwhite" data-theme="dark">
-      <ClientRoot
+      <ConnectClientRoot
         dehydratedState={superjson.serialize(dehydrate(queryClient))}
         accessToken={token}>
         <Connect
@@ -94,7 +94,7 @@ export default async function ConnectPage({
           }
           redirectUrl={fromMaybeArray(searchParams['redirectUrl'])[0]}
         />
-      </ClientRoot>
+      </ConnectClientRoot>
     </div>
   )
 }

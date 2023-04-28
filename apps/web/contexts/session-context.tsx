@@ -9,14 +9,14 @@ import {hasRole, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'
+// TODO: Rename this to viewerContext...
 type SessionContextValue = [
   session: Session | null | undefined,
-  info: {status: AsyncStatus; error: unknown; supabase: SupabaseClient | null},
+  info: {status: AsyncStatus; error: unknown; supabase: SupabaseClient},
 ]
-export const SessionContext = React.createContext<SessionContextValue>([
-  undefined,
-  {status: 'loading', error: null, supabase: null},
-])
+export const SessionContext = React.createContext<
+  SessionContextValue | undefined
+>(undefined)
 
 export interface SessionContextProps {
   supabase: SupabaseClient<Database>
@@ -25,6 +25,7 @@ export interface SessionContextProps {
 
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
+// TODO: Rename this to SupabaseViewerProvider
 export function SessionContextProvider({
   supabase: supabase,
   ...props
@@ -82,6 +83,7 @@ export function useViewerInfo(): {
   status: AsyncStatus
   user?: Session['user'] | null
   accessToken?: string | null
+  supabase: SupabaseClient
 }
 export function useViewerInfo<R extends ViewerRole>(
   allowedRoles: R[],
@@ -90,13 +92,14 @@ export function useViewerInfo<R extends ViewerRole>(
   status: AsyncStatus
   user?: Session['user'] | null
   accessToken?: string | null
+  supabase: SupabaseClient
 }
 export function useViewerInfo<R extends ViewerRole>(allowedRoles?: R[]) {
   const context = React.useContext(SessionContext)
   if (context === undefined) {
     throw new Error('useViewer must be used within a SessionContextProvider.')
   }
-  const [session, {status}] = context
+  const [session, {status, supabase}] = context
   const viewer = zViewerFromUnverifiedJwtToken.parse(session?.access_token)
 
   if (allowedRoles && !hasRole(viewer, allowedRoles)) {
@@ -111,6 +114,7 @@ export function useViewerInfo<R extends ViewerRole>(allowedRoles?: R[]) {
     status,
     user: session?.user,
     accessToken: session?.access_token,
+    supabase,
   }
 }
 
