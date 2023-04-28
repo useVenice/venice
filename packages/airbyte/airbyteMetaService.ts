@@ -19,7 +19,7 @@ export const makeAirbyteMetaService = z
   .implement((cfg): MetaService => {
     const service = makePostgresMetaService({
       databaseUrl: cfg.postgresUrl,
-      userId: null, // TODO: We should make it more clear that when there are no userId, metaService is in fact displaying all data...
+      viewer: {role: 'system'},
     })
 
     const client = createApiClient(cfg.apiUrl, {

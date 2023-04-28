@@ -55,8 +55,6 @@ ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar NOT NULL,
 --   FOREIGN KEY (workspace_id)
 --   REFERENCES workspace(id);
 
-
-
 --- User policies ---
 DROP FUNCTION IF EXISTS auth.workspace_ids CASCADE;
 
