@@ -69,9 +69,9 @@ export async function serverGetViewer(
     | GetServerSidePropsContext // Next.js 12 pages/
     // Next.js 13 server components
     | {
-        headers: () => ReadonlyHeaders
-        cookies: () => ReadonlyRequestCookies
-        params: Record<string, string[] | string>
+        headers?: () => ReadonlyHeaders
+        cookies?: () => ReadonlyRequestCookies
+        params?: Record<string, string[] | string>
       },
 ): Promise<Viewer> {
   const jwt = makeJwtClient({
@@ -80,13 +80,13 @@ export async function serverGetViewer(
   const headers =
     'req' in context
       ? context.req.headers
-      : Object.fromEntries(context.headers().entries())
+      : Object.fromEntries(context.headers?.().entries() ?? [])
   const params =
     'query' in context
       ? context.query
       : 'req' in context
       ? context.req.query
-      : context.params
+      : context.params ?? {}
 
   // access token via query param
   let viewer = jwt.verifyViewer(fromMaybeArray(params[kAccessToken])[0])
@@ -123,7 +123,12 @@ export async function serverGetViewer(
   const supabase =
     'req' in context
       ? createServerSupabaseClient<Database>(context)
-      : createServerComponentSupabaseClient<Database>(context)
+      : createServerComponentSupabaseClient<Database>({
+          // Defaulting, @see https://github.com/supabase/auth-helpers/blob/main/packages/nextjs/src/index.ts#L212-L219
+          headers: () => ({get: () => undefined}),
+          cookies: () => ({get: () => undefined}),
+          ...context,
+        })
 
   const {data: sessionRes} = await supabase.auth.getSession()
 
