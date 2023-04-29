@@ -13,8 +13,9 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      * - public folder
+     * - connect (Venice connect, which has separate auth logic)
      */
-    '/((?!static|.*\\..*|_next|favicon.ico).*)',
+    '/((?!static|.*\\..*|_next|favicon.ico|connect).*)',
     '/',
   ],
 }

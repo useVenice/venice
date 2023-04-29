@@ -5,6 +5,8 @@ import {jwtDecode} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import type {MaybePromise} from '@usevenice/util'
 
+import type {Database} from '@/supabase/supabase.gen'
+
 // TODO: remove this whole file completely as supabase is an optional dependency
 // and this includes not depending on Supabase real time to invalidate connection list changes.
 
@@ -13,7 +15,7 @@ export type Connection = RouterOutput['listConnections'][number]
 export function createSupabaseClient(
   getToken: () => MaybePromise<string | null | undefined>,
 ) {
-  return createClient(
+  return createClient<Database>(
     commonEnv.NEXT_PUBLIC_SUPABASE_URL,
     commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {

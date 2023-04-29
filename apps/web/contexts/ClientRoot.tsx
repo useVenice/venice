@@ -11,7 +11,6 @@ import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 import {createSupabaseClient} from '@/lib/supabase-queries'
 
 import {createQueryClient} from '../lib/query-client'
-import type {Database} from '../supabase/supabase.gen'
 import {usePostgresChanges} from './realtime'
 import type {AsyncStatus} from './viewer-context'
 import {ViewerContext} from './viewer-context'
@@ -19,8 +18,7 @@ import {ViewerContext} from './viewer-context'
 export function ClientRoot(props: {
   children: React.ReactNode
   /** Viewer will be inferred from this... */
-  initialAccessToken: string | null | undefined
-  supabase?: SupabaseClient<Database>
+  initialAccessToken?: string | null
 }) {
   console.log(
     '[ClientRoot] rendering initialToken?',
@@ -39,11 +37,15 @@ export function ClientRoot(props: {
   }, [auth])
 
   const {current: supabase} = React.useRef(
-    props.supabase ?? createSupabaseClient(() => accessToken),
+    createSupabaseClient(() => accessToken),
   )
   // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
   const {current: queryClient} = React.useRef(createQueryClient())
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).accessToken = accessToken
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).auth = auth
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).viewer = viewer
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
