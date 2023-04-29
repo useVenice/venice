@@ -1,9 +1,15 @@
 'use client'
 
-export default function WorkspaceHome({params}: {params: {slug: string}}) {
+import {useWorkspaceContext} from '../../../../contexts/workspace-context'
+
+export default function WorkspaceHome() {
+  const {workspace} = useWorkspaceContext()
+
   return (
     <div className="flex h-screen w-screen flex-col">
-      <h1>Hello {params.slug}</h1>
+      <h1>
+        Hello {workspace.name} {workspace.id}
+      </h1>
     </div>
   )
 }
