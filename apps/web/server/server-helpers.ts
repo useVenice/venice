@@ -132,6 +132,10 @@ export async function serverGetViewer(
           headers: () => ({get: () => undefined}),
           cookies: () => ({get: () => undefined}),
           ...context,
+          // Workaround for https://github.com/supabase/auth-helpers/issues/341#issuecomment-1528696953
+          // Setting cookie is not supported inside server components anyways.
+          // @see https://github.com/supabase/auth-helpers/blob/main/packages/shared/src/supabase-server.ts#L68
+          cookieOptions: {secure: true},
         })
 
   const {data: sessionRes} = await supabase.auth.getSession()
