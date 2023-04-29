@@ -1,20 +1,18 @@
-import '../global.css'
+import './global.css'
 
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import {cookies} from 'next/headers'
 import React from 'react'
 import {serverGetViewer} from '../../server'
-import {AdminLayout} from './AdminLayout'
+import {ClientRoot} from '../../contexts/ClientRoot'
 
-export default async function AdminLayoutServer({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  console.log('[AdminLayoutServer] rendering')
+export default async function AdminLayout(props: {children: React.ReactNode}) {
+  console.log('[AdminLayout] rendering')
   // We only get the viewer from cookies to be consistent with how it works
   // createBrowserSupabaseClient which only uses cookie and does not use header etc.
   const {accessToken} = await serverGetViewer({cookies})
 
-  return <AdminLayout initialAccessToken={accessToken}>{children}</AdminLayout>
+  return (
+    <ClientRoot initialAccessToken={accessToken}>{props.children}</ClientRoot>
+  )
 }

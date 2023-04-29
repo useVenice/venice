@@ -1,40 +1,41 @@
 'use client'
 
+import type {SupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {QueryClientProvider} from '@tanstack/react-query'
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider} from '@usevenice/engine-frontend'
 import React from 'react'
-import {
-  SupabaseProvider,
-  useSupabaseContext,
-} from '../../contexts/supabase-context'
-import {ViewerContext} from '../../contexts/viewer-context'
-import {createQueryClient} from '../../lib/query-client'
-import type {Database as DB} from '../../supabase/supabase.gen'
+import {SupabaseProvider, useSupabaseContext} from './supabase-context'
+import {ViewerContext} from './viewer-context'
+import {createQueryClient} from '../lib/query-client'
+import type {Database} from '../supabase/supabase.gen'
 
-export function AdminLayout(props: {
+export function ClientRoot(props: {
   children: React.ReactNode
   /** Viewer will be inferred from this... */
   initialAccessToken: string | null | undefined
+  supabase?: SupabaseClient<Database>
 }) {
-  console.log('[AdminLayout] rendering', props.initialAccessToken)
-  const {current: supabase} = React.useRef(createBrowserSupabaseClient<DB>({}))
+  console.log('[ClientRoot] rendering', props.initialAccessToken)
+  const {current: supabase} = React.useRef(
+    props.supabase ?? createBrowserSupabaseClient<Database>({}),
+  )
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).supabase = supabase
 
   return (
     <SupabaseProvider supabase={supabase}>
-      <AdminLayoutInner {...props} />
+      <ClientRootInner {...props} />
     </SupabaseProvider>
   )
 }
 
 /** Separate Inner component is needed in order to useSupabaseContext */
-function AdminLayoutInner({
+function ClientRootInner({
   children,
   initialAccessToken,
-}: React.ComponentProps<typeof AdminLayout>) {
+}: React.ComponentProps<typeof ClientRoot>) {
   const {session, status, error} = useSupabaseContext()
   const accessToken =
     status === 'initial' || status === 'loading'

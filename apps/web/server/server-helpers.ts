@@ -71,6 +71,8 @@ export async function createSSRHelpers(context: NextContext) {
  * api key via header
  * next.js cookie
  * fall back to anon viewer
+ * TODO: Figure out how to have the result of this function cached for the duration of the request
+ * much like we cache
  */
 export async function serverGetViewer(
   context: NextContext,
