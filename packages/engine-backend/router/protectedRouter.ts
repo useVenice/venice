@@ -1,6 +1,3 @@
-import {zEvent} from '../events'
-import {protectedProcedure, trpc} from './_base'
-
 import {TRPCError} from '@trpc/server'
 
 import {
@@ -11,11 +8,13 @@ import {
   zStandard,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
-import {R, joinPath, rxjs, z} from '@usevenice/util'
+import {joinPath, R, rxjs, z} from '@usevenice/util'
 
+import {zEvent} from '../events'
 import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {zSyncOptions} from '../types'
+import {protectedProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -257,7 +256,7 @@ export const protectedRouter = trpc.router({
         settings,
         integration: int,
         ...reso
-      } = await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(resoId)
+      } = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       // console.log('checkResource', {settings, integration, ...conn}, opts)
       const resoUpdate = await int.provider.checkResource?.({
         settings,
@@ -272,7 +271,7 @@ export const protectedRouter = trpc.router({
       })
       if (resoUpdate || opts?.import) {
         /** Do not update the `endUserId` here... */
-        await ctx.asWorkspaceIfNeeded._syncResourceUpdate(int, {
+        await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...(opts?.import && {
             endUserId: reso.endUserId ?? undefined,
             envName: reso.envName ?? undefined,
@@ -310,7 +309,7 @@ export const protectedRouter = trpc.router({
         await ctx.helpers.getResourceOrFail(resoId)
       }
       const {settings, integration, ...reso} =
-        await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(resoId)
+        await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       if (!opts?.skipRevoke) {
         await integration.provider.revokeResource?.(
           settings,
@@ -322,7 +321,7 @@ export const protectedRouter = trpc.router({
         // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
         // We should probably introduce a reset / delete event...
       }
-      await ctx.asWorkspaceIfNeeded.metaService.tables.resource.delete(reso.id)
+      await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
     }),
 
   // MARK: - Sync
@@ -333,9 +332,7 @@ export const protectedRouter = trpc.router({
       if (ctx.viewer.role === 'end_user') {
         await ctx.helpers.getResourceOrFail(resoId)
       }
-      const reso = await ctx.asWorkspaceIfNeeded.getResourceExpandedOrFail(
-        resoId,
-      )
+      const reso = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       console.log('[syncResource]', reso, opts)
       // No need to checkResource here as sourceSync should take care of it
 
@@ -353,7 +350,7 @@ export const protectedRouter = trpc.router({
                 streams: ['resource', 'institution'],
               }),
             }) ?? rxjs.EMPTY,
-          destination: ctx.asWorkspaceIfNeeded.metaLinks.postSource({
+          destination: ctx.asOrgIfNeeded.metaLinks.postSource({
             src: reso,
           }),
         })
@@ -364,7 +361,7 @@ export const protectedRouter = trpc.router({
       // but pipeline is already being persisted properly. This current solution
       // is vulnerable to race condition and feels brittle. Though syncResource is only
       // called from the UI so we are fine for now.
-      await ctx.asWorkspaceIfNeeded._syncResourceUpdate(reso.integration, {
+      await ctx.asOrgIfNeeded._syncResourceUpdate(reso.integration, {
         endUserId: reso.endUserId,
         settings: reso.settings,
         // What about envName
@@ -382,9 +379,7 @@ export const protectedRouter = trpc.router({
       if (ctx.viewer.role === 'end_user') {
         await ctx.helpers.getPipelineOrFail(pipeId) // Authorization
       }
-      const pipeline = await ctx.asWorkspaceIfNeeded.getPipelineExpandedOrFail(
-        pipeId,
-      )
+      const pipeline = await ctx.asOrgIfNeeded.getPipelineExpandedOrFail(pipeId)
       console.log('[syncPipeline]', pipeline)
       return ctx.helpers._syncPipeline(pipeline, opts)
     }),

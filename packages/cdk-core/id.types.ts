@@ -6,8 +6,8 @@ export const zExternalId = z.union([z.string(), z.number()])
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
-  workspace: 'ws',
-  workspaceMember: '', // Workspace member does not have its own id... not sure if this will work...
+  user: 'user',
+  organization: 'org',
   pipeline: 'pipe',
 } as const
 
@@ -43,7 +43,7 @@ export type Id<TName extends string = string> = {
 }
 
 /** Unfortunately userId is mostly *not* prefixed */
-export const zUserId = z.string().min(1).brand<'usr'>()
+export const zUserId = zId('user')
 export type UserId = z.infer<typeof zUserId>
 
 export const zEndUserId = z.string().min(1).brand<'end_user'>()

@@ -9,9 +9,8 @@ import type {
   Viewer,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {makeId} from '@usevenice/cdk-core'
 import {zViewer} from '@usevenice/cdk-core'
-import {makeUlid, memoize, R, zFunction} from '@usevenice/util'
+import {memoize, R, zFunction} from '@usevenice/util'
 
 import {
   applyLimitOffset,
@@ -34,16 +33,16 @@ function localGucForViewer(viewer: Viewer) {
         'request.jwt.claim.sub': viewer.userId,
         // TODO: Figure out how this should work with supabase relatime
         // We may need to use request.jwt.claims or app_metadata for it to work
-        'user.workspaceId': viewer.workspaceId ?? null,
+        'user.orgId': viewer.orgId ?? null,
       }
     case 'end_user':
       return {
         role: 'end_user',
         'endUser.id': viewer.endUserId,
-        'endUser.workspaceId': viewer.workspaceId,
+        'endUser.orgId': viewer.orgId,
       }
-    case 'workspace':
-      return {role: 'workspace', 'workspace.id': viewer.workspaceId}
+    case 'org':
+      return {role: 'org', 'org.id': viewer.orgId}
     case 'system':
       return {role: null} // Should be the same as reset role
     default:
@@ -85,8 +84,6 @@ export const makePostgresMetaService = zFunction(
   (opts): MetaService => {
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
-      workspace: metaTable('workspace', _getDeps(opts)),
-      workspaceMember: metaTable('workspaceMember', _getDeps(opts)),
       resource: metaTable('resource', _getDeps(opts)),
       institution: metaTable('institution', _getDeps(opts)),
       integration: metaTable('integration', _getDeps(opts)),
@@ -157,25 +154,6 @@ export const makePostgresMetaService = zFunction(
         return runQueries((pool) =>
           pool.anyFirst<Id['int']>(sql`SELECT id FROM integration`),
         )
-      },
-      createWorkspace: ({workspace: input, userId}) => {
-        const {runQueries, sql} = _getDeps(opts)
-        return runQueries(async (pool) => {
-          // Cannot do insert returning unfortunately...
-          const id = makeId('ws', makeUlid())
-          await pool.query(
-            sql`INSERT INTO workspace (id, name, slug) VALUES (${id}, ${input.name}, ${input.slug})`,
-          )
-          await assumeRole({
-            sql,
-            db: pool,
-            viewer: {role: 'workspace', workspaceId: id},
-          })
-          await pool.query(
-            sql`INSERT INTO workspace_member (workspace_id, user_id) VALUES (${id}, ${userId})`,
-          )
-          return {id}
-        })
       },
     }
   },

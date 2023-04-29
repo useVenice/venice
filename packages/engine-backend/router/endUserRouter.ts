@@ -1,5 +1,3 @@
-import {endUserProcedure, trpc} from './_base'
-
 import {
   makeId,
   zConnectOptions,
@@ -10,6 +8,7 @@ import {joinPath, z} from '@usevenice/util'
 
 import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
+import {endUserProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -23,7 +22,7 @@ export const endUserRouter = trpc.router({
         input: [intId, {resourceExternalId, ...connCtxInput}, preConnInput],
         ctx,
       }) => {
-        const int = await ctx.asWorkspace.getIntegrationOrFail(intId)
+        const int = await ctx.asOrg.getIntegrationOrFail(intId)
         if (!int.provider.preConnect) {
           return null
         }
@@ -67,7 +66,7 @@ export const endUserRouter = trpc.router({
         input: [input, intId, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const int = await ctx.asWorkspace.getIntegrationOrFail(intId)
+        const int = await ctx.asOrg.getIntegrationOrFail(intId)
         console.log('didConnect start', int.provider.name, input, connCtxInput)
         if (!int.provider.postConnect || !int.provider.def.connectOutput) {
           return 'Noop'
@@ -99,7 +98,7 @@ export const endUserRouter = trpc.router({
 
         const syncInBackground =
           resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
-        const resourceId = await ctx.asWorkspace._syncResourceUpdate(int, {
+        const resourceId = await ctx.asOrg._syncResourceUpdate(int, {
           ...resoUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
           endUserId: ctx.viewer.endUserId,

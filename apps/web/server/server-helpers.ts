@@ -143,7 +143,7 @@ export async function serverGetViewer(
     return {
       role: 'user',
       userId: userId as UserId,
-      workspaceId: orgId as Id['ws'],
+      orgId: orgId as Id['org'],
     }
   }
 

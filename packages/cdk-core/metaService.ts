@@ -1,6 +1,6 @@
 import type {NoInfer, ObjectPartialDeep} from '@usevenice/util'
 
-import type {EndUserId, Id, IDS, UserId} from './id.types'
+import type {EndUserId, Id, IDS} from './id.types'
 import type {ZRaw} from './meta.types'
 
 export interface MetaTable<
@@ -56,9 +56,4 @@ export interface MetaService {
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   listIntegrationIds: () => Promise<ReadonlyArray<Id['int']>>
-
-  createWorkspace: (options: {
-    workspace: Omit<ZRaw['workspace'], 'id' | 'createdAt' | 'updatedAt'>
-    userId: UserId
-  }) => Promise<Pick<ZRaw['workspace'], 'id'>>
 }

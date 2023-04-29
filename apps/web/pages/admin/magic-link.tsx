@@ -1,10 +1,12 @@
+import Link from 'next/link'
+import {useForm} from 'react-hook-form'
+
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {zEndUserId} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
-import Link from 'next/link'
-import {useForm} from 'react-hook-form'
+
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {copyToClipboard} from '../../contexts/common-contexts'
@@ -41,7 +43,7 @@ export default function MagicLinkPage() {
           schema={formSchema}
           onSubmit={(values) =>
             createToken.mutate(
-              {...values, workspaceId: 'FIXME'},
+              {...values, orgId: 'FIXME'},
               {
                 onSuccess: async (data) => {
                   const url = new URL('/connect', getServerUrl(null))

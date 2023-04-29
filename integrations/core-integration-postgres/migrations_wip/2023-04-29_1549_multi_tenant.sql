@@ -105,18 +105,18 @@ CREATE POLICY end_user_access ON public.pipeline TO end_user
 
 --- Organization policies ---
 
-CREATE ROLE "organization";
-GRANT "organization" TO "postgres";
-GRANT USAGE ON SCHEMA public TO "organization";
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "organization";
+CREATE ROLE "org";
+GRANT "org" TO "postgres";
+GRANT USAGE ON SCHEMA public TO "org";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "org";
 
 DROP POLICY IF EXISTS org_access ON public.integration;
-CREATE POLICY org_access ON public.integration TO organization
+CREATE POLICY org_access ON public.integration TO org
   USING (org_id = current_setting('org.id', true))
   WITH CHECK (org_id = current_setting('org.id', true));
 
 DROP POLICY IF EXISTS org_access ON public.resource;
-CREATE POLICY org_access ON public.resource TO organization
+CREATE POLICY org_access ON public.resource TO org
   USING (integration_id = ANY(
       select id from integration
       where org_id = current_setting('org.id', true)
@@ -127,7 +127,7 @@ CREATE POLICY org_access ON public.resource TO organization
   ));
 
 DROP POLICY IF EXISTS org_access ON public.pipeline;
-CREATE POLICY org_access ON public.pipeline TO organization
+CREATE POLICY org_access ON public.pipeline TO org
   USING ((
     select array(
       select r.id
@@ -144,12 +144,12 @@ CREATE POLICY org_access ON public.pipeline TO organization
       join integration i on r.integration_id = i.id
       where i.org_id = current_setting('org.id', true)
     ) @> array[source_id, destination_id]
-    -- Pipeline must be fully within the organization
+    -- Pipeline must be fully within the org
   ));
 
 -- FiXME: Revoke write access to institution once we figure out a better way...
--- It's not YET an issue because we are not issuing any organization-role tokens at the moment
-GRANT INSERT, UPDATE ON public.institution TO "organization";
+-- It's not YET an issue because we are not issuing any org-role tokens at the moment
+GRANT INSERT, UPDATE ON public.institution TO "org";
 DROP POLICY IF EXISTS org_write_access ON public.institution;
 CREATE POLICY org_write_access ON "public"."institution" FOR ALL
   USING (true) WITH CHECK (true);

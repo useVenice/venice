@@ -1,6 +1,8 @@
-import {TRPCError, initTRPC} from '@trpc/server'
-import type {RouterContext} from '../context'
+import {initTRPC, TRPCError} from '@trpc/server'
+
 import {hasRole} from '@usevenice/cdk-core'
+
+import type {RouterContext} from '../context'
 
 /** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
 interface OpenApiMeta {}
@@ -13,16 +15,16 @@ export const trpc = initTRPC
 export const publicProcedure = trpc.procedure
 
 export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
-  if (!hasRole(ctx.viewer, ['end_user', 'user', 'workspace', 'system'])) {
+  if (!hasRole(ctx.viewer, ['end_user', 'user', 'org', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
     })
   }
-  const asWorkspaceIfNeeded =
+  const asOrgIfNeeded =
     ctx.viewer.role === 'end_user'
-      ? ctx.as('workspace', {workspaceId: ctx.viewer.workspaceId})
+      ? ctx.as('org', {orgId: ctx.viewer.orgId})
       : ctx.helpers
-  return next({ctx: {...ctx, viewer: ctx.viewer, asWorkspaceIfNeeded}})
+  return next({ctx: {...ctx, viewer: ctx.viewer, asOrgIfNeeded}})
 })
 
 export const endUserProcedure = trpc.procedure.use(({next, ctx, path}) => {
@@ -32,14 +34,12 @@ export const endUserProcedure = trpc.procedure.use(({next, ctx, path}) => {
       message: `end_user role is required for ${path} procedure`,
     })
   }
-  const asWorkspace = ctx.as('workspace', {workspaceId: ctx.viewer.workspaceId})
-  return next({
-    ctx: {...ctx, viewer: ctx.viewer, asWorkspace},
-  })
+  const asOrg = ctx.as('org', {orgId: ctx.viewer.orgId})
+  return next({ctx: {...ctx, viewer: ctx.viewer, asOrg}})
 })
 
 export const adminProcedure = trpc.procedure.use(({next, ctx}) => {
-  if (!hasRole(ctx.viewer, ['user', 'workspace', 'system'])) {
+  if (!hasRole(ctx.viewer, ['user', 'org', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
     })
@@ -61,6 +61,6 @@ export const systemProcedure = trpc.procedure.use(({next, ctx}) => {
 //   anon: 0,
 //   end_user: 1,
 //   user: 2,
-//   workspace: 3,
+//   org: 3,
 //   system: 4,
 // } satisfies Record<ViewerRole, number>

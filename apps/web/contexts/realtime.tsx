@@ -20,7 +20,6 @@ export function InvalidateQueriesOnPostgresChanges(props: {
     void trpcUtils.listConnections.invalidate()
     void trpcUtils.listPipelines.invalidate()
   }, [trpcUtils])
-  // TODO: Add support for listening for workspace / member / integration changes
   usePostgresChanges(props.supabase, 'resource', invalidate)
   usePostgresChanges(props.supabase, 'pipeline', invalidate)
   return null

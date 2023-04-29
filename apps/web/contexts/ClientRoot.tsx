@@ -82,14 +82,17 @@ export const InvalidateQueriesOnPostgresChanges = React.memo(
     usePostgresChanges(props.supabase, 'pipeline', invalidateConnections)
 
     // prettier-ignore
-    usePostgresChanges(props.supabase, 'workspace', React.useCallback(() => {
-      // Add workspace member here also
-      void trpcUtils.adminListWorkspaces.invalidate()
-    }, [trpcUtils]))
-    // prettier-ignore
     usePostgresChanges(props.supabase, 'integration', React.useCallback(() => {
       void trpcUtils.adminGetIntegration.invalidate()
     }, [trpcUtils]))
     return null
   },
 )
+
+// browserAnalytics.track({name: 'user/signin', data: {}})
+// browserAnalytics.track({name: 'user/signout', data: {}})
+// browserAnalytics.identify(userId, {
+//   email: email || undefined,
+//   phone: phone || undefined,
+// })
+// browserAnalytics.reset()

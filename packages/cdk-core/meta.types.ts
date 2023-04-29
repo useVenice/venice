@@ -1,6 +1,6 @@
 import {z, zJsonObject} from '@usevenice/util'
 
-import {zEndUserId, zId, zUserId} from './id.types'
+import {zEndUserId, zId} from './id.types'
 
 // Utility types
 
@@ -75,19 +75,10 @@ export type ZRaw = {
 // or prisma, though would need to allow us to override for things like id prefix as well
 // as more specific type than just jsonb
 export const zRaw = {
-  workspace: z.object({
-    id: zId('ws'),
-    slug: z.string(),
-    name: z.string(),
-  }),
-  workspaceMember: z.object({
-    workspaceId: zId('ws'),
-    userId: zUserId,
-  }),
   integration: z.object({
     id: zId('int'),
     config: zJsonObject.nullish(),
-    workspaceId: zId('ws').nullish(), // FIXME Should be required
+    orgId: zId('org').nullish(), // FIXME Should be required
   }),
   resource: z.object({
     id: zId('reso'),

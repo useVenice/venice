@@ -3,6 +3,7 @@ import {extractId, makeId} from '@usevenice/cdk-core'
 import type {IntegrationInput} from '@usevenice/engine-backend'
 import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
+
 import {contextFactory} from './backendConfig'
 import type {PROVIDERS} from './env'
 import {parseIntConfigsFromRawEnv} from './env'
@@ -13,10 +14,10 @@ export type _ResourceInput = IntegrationInput<(typeof PROVIDERS)[number]>
 // embed the functionality into venice cli directly...
 export async function bootstrap() {
   // Would be nice to simplify loading of env vars from zod in a way that makes sense...
-  const workspaceId = getEnvVar('WORKSPACE_ID', {required: true}) as Id['ws']
+  const orgId = getEnvVar('ORG_ID', {required: true}) as Id['org']
 
   const caller = flatRouter.createCaller(
-    contextFactory.fromViewer({role: 'workspace', workspaceId}),
+    contextFactory.fromViewer({role: 'org', orgId}),
   )
   const configs = parseIntConfigsFromRawEnv()
 
@@ -24,8 +25,8 @@ export async function bootstrap() {
     if (!config) {
       continue
     }
-    const id = makeId('int', providerName, extractId(workspaceId)[1])
-    await caller.adminUpsertIntegration({id, config: config as {}, workspaceId})
+    const id = makeId('int', providerName, extractId(orgId)[1])
+    await caller.adminUpsertIntegration({id, config: config as {}, orgId})
     console.log('Upsert integration', id)
   }
   console.log('Bootstrap complete')

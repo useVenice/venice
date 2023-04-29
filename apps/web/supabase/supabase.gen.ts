@@ -40,25 +40,25 @@ export interface Database {
           config: Json
           created_at: string
           id: string
+          org_id: string
           provider_name: string
           updated_at: string
-          workspace_id: string
         }
         Insert: {
           config?: Json
           created_at?: string
           id?: string
+          org_id: string
           provider_name?: string
           updated_at?: string
-          workspace_id: string
         }
         Update: {
           config?: Json
           created_at?: string
           id?: string
+          org_id?: string
           provider_name?: string
           updated_at?: string
-          workspace_id?: string
         }
       }
       migrations: {
@@ -248,49 +248,6 @@ export interface Database {
           provider_name?: string
           settings?: Json
           updated_at?: string
-        }
-      }
-      workspace: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          slug: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          slug: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          slug?: string
-          updated_at?: string
-        }
-      }
-      workspace_member: {
-        Row: {
-          created_at: string
-          updated_at: string
-          user_id: string
-          workspace_id: string
-        }
-        Insert: {
-          created_at?: string
-          updated_at?: string
-          user_id: string
-          workspace_id: string
-        }
-        Update: {
-          created_at?: string
-          updated_at?: string
-          user_id?: string
-          workspace_id?: string
         }
       }
     }

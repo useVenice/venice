@@ -6,15 +6,15 @@ import {z, zFunction} from '@usevenice/util'
 import type {EndUserId, Id, UserId} from './id.types'
 import {zEndUserId, zId, zUserId} from './id.types'
 
-export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
+export const zRole = z.enum(['anon', 'end_user', 'user', 'org', 'system'])
 
 export const zViewer = z.discriminatedUnion('role', [
   z.object({role: z.literal(zRole.Enum.anon)}),
   // prettier-ignore
-  z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, workspaceId: zId('ws')}),
+  z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, orgId: zId('org')}),
   // prettier-ignore
-  z.object({role: z.literal(zRole.Enum.user), userId: zUserId, workspaceId: zId('ws').nullish()}),
-  z.object({role: z.literal(zRole.Enum.workspace), workspaceId: zId('ws')}),
+  z.object({role: z.literal(zRole.Enum.user), userId: zUserId, orgId: zId('org').nullish()}),
+  z.object({role: z.literal(zRole.Enum.org), orgId: zId('org')}),
   z.object({role: z.literal(zRole.Enum.system)}),
 ])
 
@@ -41,7 +41,7 @@ export const zJwtPayload = z.object({
    * by default and it's a bit too much work right now to switch
    * futher we never want to permit system role for now for security, and anon role has no token
    */
-  role: z.enum(['authenticated', 'end_user', 'workspace']),
+  role: z.enum(['authenticated', 'end_user', 'org']),
   /** Enforce that all jwts are timed. The actual validity check is done by jwtClient */
   exp: z.number(),
 })
@@ -56,19 +56,19 @@ export const zViewerFromJwtPayload = zJwtPayload
       case 'authenticated':
         return {role: 'user', userId: payload.sub as UserId}
       case 'end_user': {
-        const [workspaceId, endUserId] = payload.sub.split('/') as [
-          Id['ws'],
+        const [orgId, endUserId] = payload.sub.split('/') as [
+          Id['org'],
           EndUserId,
         ]
-        return {role: payload.role, endUserId, workspaceId}
+        return {role: payload.role, endUserId, orgId}
       }
-      case 'workspace':
-        return {role: payload.role, workspaceId: payload.sub as Id['ws']}
+      case 'org':
+        return {role: payload.role, orgId: payload.sub as Id['org']}
     }
   })
   .pipe(zViewer)
   // Not ideal we have to explictly type, but oh well
-  .refine((_): _ is Viewer<'anon' | 'end_user' | 'user' | 'workspace'> => true)
+  .refine((_): _ is Viewer<'anon' | 'end_user' | 'user' | 'org'> => true)
 
 export const zViewerFromUnverifiedJwtToken = z
   .string()
@@ -105,18 +105,18 @@ export const makeJwtClient = zFunction(
       }
     },
     signViewer: (
-      viewer: Viewer<'end_user' | 'user' | 'workspace'>,
+      viewer: Viewer<'end_user' | 'user' | 'org'>,
       {validityInSeconds = 3600}: {validityInSeconds?: number} = {},
     ) => {
       const payload = {
         exp: Math.floor(Date.now() / 1000) + validityInSeconds,
         ...(viewer.role === 'end_user' && {
           role: 'end_user',
-          sub: `${viewer.workspaceId}/${viewer.endUserId}`,
+          sub: `${viewer.orgId}/${viewer.endUserId}`,
         }),
-        ...(viewer.role === 'workspace' && {
-          role: 'workspace',
-          sub: viewer.workspaceId,
+        ...(viewer.role === 'org' && {
+          role: 'org',
+          sub: viewer.orgId,
         }),
         ...(viewer.role === 'user' && {
           role: 'authenticated',
