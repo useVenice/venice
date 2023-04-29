@@ -4,6 +4,7 @@ import {trpcReact} from '@usevenice/engine-frontend/TRPCProvider'
 import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 import {useForm} from 'react-hook-form'
+import {NoSSR} from '../../../components/NoSSR'
 
 // TODO: Enable better sharing of schemas between client & server
 // However we don't necessiarly want the procedure themselves to be imported to the client
@@ -41,7 +42,8 @@ export function Workspaces() {
       </div>
 
       <div className="mx-auto max-w-xs">
-        {1 + 1 === 3 && (
+        {/* Skip SSR as zodForm uses random id for htmlFor attribute which causes hydration issues.  */}
+        <NoSSR>
           <ZodForm
             form={form}
             schema={formSchema}
@@ -65,7 +67,7 @@ export function Workspaces() {
               </div>
             )}
           />
-        )}
+        </NoSSR>
       </div>
     </div>
   )
