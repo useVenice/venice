@@ -8,7 +8,7 @@ import {
 } from '@supabase/auth-helpers-nextjs'
 import {QueryClient, dehydrate} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
-import {backendEnv} from '@usevenice/app-config/backendConfig'
+import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {
   xPatAppMetadataKey,
   xPatHeaderKey,
@@ -30,13 +30,22 @@ export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
 }
 
-export async function createSSRHelpers(context: GetServerSidePropsContext) {
-  const queryClient = new QueryClient()
-  const supabase = createServerSupabaseClient<Database>(context)
+type NextContext =
+  | {req: NextApiRequest; res: NextApiResponse} // Next.js 12 api routes
+  | GetServerSidePropsContext // Next.js 12 pages/
+  // Next.js 13 server components
+  | {
+      headers?: () => ReadonlyHeaders
+      cookies?: () => ReadonlyRequestCookies
+      params?: Record<string, string[] | string>
+    }
 
-  const viewer = await serverGetViewer(context)
+export async function createSSRHelpers(context: NextContext) {
+  // TODO: Remove this once we fully migrate off next.js 12 routing
   await import('@usevenice/app-config/register.node')
-  const {contextFactory} = await import('@usevenice/app-config/backendConfig')
+
+  const queryClient = new QueryClient()
+  const viewer = await serverGetViewer(context)
 
   const ssg = createServerSideHelpers({
     queryClient,
@@ -46,9 +55,9 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
   })
   return {
     viewer,
-    supabase,
-    queryClient,
     ssg,
+    getDehyratedState: () => superjson.serialize(dehydrate(queryClient)),
+    /** @deprecated */
     getPageProps: (): PageProps => ({
       dehydratedState: superjson.serialize(dehydrate(queryClient)),
     }),
@@ -64,15 +73,7 @@ export async function createSSRHelpers(context: GetServerSidePropsContext) {
  * fall back to anon viewer
  */
 export async function serverGetViewer(
-  context:
-    | {req: NextApiRequest; res: NextApiResponse} // Next.js 12 api routes
-    | GetServerSidePropsContext // Next.js 12 pages/
-    // Next.js 13 server components
-    | {
-        headers?: () => ReadonlyHeaders
-        cookies?: () => ReadonlyRequestCookies
-        params?: Record<string, string[] | string>
-      },
+  context: NextContext,
   // This is a hack for not knowing how else to return accessToken...
   // and not wanting it to add it to the super simple viewer interface just yet
 ): Promise<Viewer & {accessToken?: string | null}> {
@@ -156,7 +157,7 @@ export async function serverGetViewer(
   return {role: 'anon'}
 }
 
-/** For serverSideProps */
+/** @deprecated For serverSideProps */
 export async function serverGetUser(
   context:
     | GetServerSidePropsContext

@@ -23,14 +23,16 @@ export function Workspaces() {
     },
   })
   const form = useForm<z.infer<typeof formSchema>>()
+  console.log('workspaces', workspacesRes.data)
 
   return (
     <div className="flex h-screen w-screen items-center">
       <div className="mx-auto max-w-xs">
+        <h1>Workspaces</h1>
         <ul
           // onValueChange={(value) => setSelectedName(value)}
           // placeholder="Select workspace"
-          className="max-w-xs">
+          className="max-w-xs list-inside list-disc">
           {(workspacesRes.data ?? []).map((item) => (
             <li key={item.name}>{item.name}</li>
             // <DropdownItem key={item.name} value={item.name} text={item.name} />
@@ -39,29 +41,31 @@ export function Workspaces() {
       </div>
 
       <div className="mx-auto max-w-xs">
-        <ZodForm
-          form={form}
-          schema={formSchema}
-          onSubmit={(values) =>
-            upsertWorkspace.mutate(values, {
-              // onSuccess: async (data) => {},
-            })
-          }
-          renderAfter={({submit}) => (
-            <div className="mt-8 flex justify-center gap-4">
-              <Button
-                onClick={submit}
-                disabled={upsertWorkspace.isLoading}
-                className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
-                {upsertWorkspace.isLoading ? (
-                  <span>Creating...</span>
-                ) : (
-                  <span>Create workspace</span>
-                )}
-              </Button>
-            </div>
-          )}
-        />
+        {1 + 1 === 3 && (
+          <ZodForm
+            form={form}
+            schema={formSchema}
+            onSubmit={(values) =>
+              upsertWorkspace.mutate(values, {
+                // onSuccess: async (data) => {},
+              })
+            }
+            renderAfter={({submit}) => (
+              <div className="mt-8 flex justify-center gap-4">
+                <Button
+                  onClick={submit}
+                  disabled={upsertWorkspace.isLoading}
+                  className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
+                  {upsertWorkspace.isLoading ? (
+                    <span>Creating...</span>
+                  ) : (
+                    <span>Create workspace</span>
+                  )}
+                </Button>
+              </div>
+            )}
+          />
+        )}
       </div>
     </div>
   )

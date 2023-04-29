@@ -45,6 +45,10 @@ function AdminLayoutInner({
   // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
   const {current: queryClient} = React.useRef(createQueryClient())
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).accessToken = accessToken
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).viewer = viewer
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).queryClient = queryClient
 
   return (
