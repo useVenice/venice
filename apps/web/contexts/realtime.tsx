@@ -26,6 +26,8 @@ export function InvalidateQueriesOnPostgresChanges(props: {
   return null
 }
 
+// TODO: Change this to supabase lib
+
 /** Ties to component lifecycle. Prefer global ones for subscription */
 export function usePostgresChanges(
   supabase: SupabaseClient,

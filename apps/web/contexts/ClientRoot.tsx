@@ -6,10 +6,11 @@ import {QueryClientProvider} from '@tanstack/react-query'
 import React from 'react'
 
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
-import {TRPCProvider} from '@usevenice/engine-frontend'
+import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 
 import {createQueryClient} from '../lib/query-client'
 import type {Database} from '../supabase/supabase.gen'
+import {usePostgresChanges} from './realtime'
 import {SupabaseProvider, useSupabaseContext} from './supabase-context'
 import {ViewerContext} from './viewer-context'
 
@@ -41,7 +42,7 @@ function ClientRootInner({
   children,
   initialAccessToken,
 }: React.ComponentProps<typeof ClientRoot>) {
-  const {session, status, error} = useSupabaseContext()
+  const {session, status, error, supabase} = useSupabaseContext()
   const accessToken =
     status === 'initial' || status === 'loading'
       ? initialAccessToken
@@ -63,6 +64,7 @@ function ClientRootInner({
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider queryClient={queryClient} accessToken={accessToken}>
+        <InvalidateQueriesOnPostgresChanges supabase={supabase} />
         <ViewerContext.Provider
           value={React.useMemo(
             () => ({accessToken, error, status, viewer}),
@@ -74,3 +76,30 @@ function ClientRootInner({
     </QueryClientProvider>
   )
 }
+
+// MARK: - React
+export const InvalidateQueriesOnPostgresChanges = React.memo(
+  function InvalidateQueriesOnPostgresChanges(props: {
+    supabase: SupabaseClient
+  }) {
+    const trpcUtils = trpcReact.useContext()
+
+    const invalidateConnections = React.useCallback(() => {
+      void trpcUtils.listConnections.invalidate()
+      void trpcUtils.listPipelines.invalidate()
+    }, [trpcUtils])
+    usePostgresChanges(props.supabase, 'resource', invalidateConnections)
+    usePostgresChanges(props.supabase, 'pipeline', invalidateConnections)
+
+    // prettier-ignore
+    usePostgresChanges(props.supabase, 'workspace', React.useCallback(() => {
+      // Add workspace member here also
+      void trpcUtils.adminListWorkspaces.invalidate()
+    }, [trpcUtils]))
+    // prettier-ignore
+    usePostgresChanges(props.supabase, 'integration', React.useCallback(() => {
+      void trpcUtils.adminGetIntegration.invalidate()
+    }, [trpcUtils]))
+    return null
+  },
+)

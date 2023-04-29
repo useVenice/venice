@@ -27,7 +27,7 @@ export default function WorkspacesList() {
     },
   })
   const form = useForm<z.infer<typeof formSchema>>()
-  console.log('workspaces', workspacesRes.data)
+  console.log('workspaces', workspacesRes.data, workspacesRes)
 
   return (
     <div className="flex h-screen w-screen items-center">

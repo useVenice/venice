@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
-
 import React from 'react'
+
 import {browserAnalytics} from '../lib/browser-analytics'
 import type {Database} from '../supabase/supabase.gen'
 import type {AsyncStatus} from './viewer-context'
@@ -71,7 +71,11 @@ export function SupabaseProvider({supabase, children}: SupabaseProviderProps) {
   }, [email, phone, userId])
 
   return (
-    <SupabaseContext.Provider value={{session, supabase, error, status}}>
+    <SupabaseContext.Provider
+      value={React.useMemo(
+        () => ({session, supabase, error, status}),
+        [error, session, status, supabase],
+      )}>
       {children}
     </SupabaseContext.Provider>
   )
