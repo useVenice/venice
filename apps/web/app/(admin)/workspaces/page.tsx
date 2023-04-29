@@ -8,6 +8,7 @@ import {Button, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
 import {NoSSR} from '@/components/NoSSR'
+import {RedirectToNext13} from '@/components/RedirectTo'
 
 // TODO: Enable better sharing of schemas between client & server
 // However we don't necessiarly want the procedure themselves to be imported to the client
@@ -21,6 +22,7 @@ export default function WorkspacesList() {
   const trpcUtils = trpcReact.useContext()
 
   const workspacesRes = trpcReact.adminListWorkspaces.useQuery({})
+
   const upsertWorkspace = trpcReact.adminUpsertWorkspace.useMutation({
     onSuccess: () => {
       void trpcUtils.adminListWorkspaces.invalidate()
@@ -29,6 +31,15 @@ export default function WorkspacesList() {
   const form = useForm<z.infer<typeof formSchema>>()
   console.log('workspaces', workspacesRes.data, workspacesRes)
 
+  // Doing this client side otherwise we need separate server component...
+  const firstWorkspace = workspacesRes.data?.[0]
+  if (workspacesRes.data?.length === 1 && firstWorkspace) {
+    return (
+      <RedirectToNext13 url={`/workspaces/${firstWorkspace.slug}`}>
+        <div>Redirecting to {firstWorkspace.name}</div>
+      </RedirectToNext13>
+    )
+  }
   return (
     <div className="flex h-screen w-screen items-center">
       <div className="mx-auto max-w-xs">

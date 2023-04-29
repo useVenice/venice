@@ -7,10 +7,7 @@ export default async function WorkspacesLayout({
   children: React.ReactNode
 }) {
   const helpers = await createServerComponentHelpers()
-  await Promise.all([
-    //
-    helpers.ssg.adminListWorkspaces.fetch({}),
-  ])
+  await Promise.all([helpers.ssg.adminListWorkspaces.fetch({})])
 
   return (
     <div className="flex h-screen w-screen flex-col">

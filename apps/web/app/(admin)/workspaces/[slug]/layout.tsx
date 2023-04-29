@@ -1,5 +1,6 @@
 import {notFound} from 'next/navigation'
-import {WorkspaceContextProvider} from '@/contexts/workspace-context'
+
+import {WorkspaceRoot} from '@/contexts/WorkspaceRoot'
 import {createServerComponentHelpers} from '@/server'
 
 export default async function WorkspaceLayout({
@@ -16,9 +17,5 @@ export default async function WorkspaceLayout({
     notFound()
   }
 
-  return (
-    <WorkspaceContextProvider value={{workspace}}>
-      {children}
-    </WorkspaceContextProvider>
-  )
+  return <WorkspaceRoot slug={slug}>{children}</WorkspaceRoot>
 }

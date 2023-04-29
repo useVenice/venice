@@ -1,6 +1,6 @@
 'use client'
 
-import {useWorkspaceContext} from '../../../../contexts/workspace-context'
+import {useWorkspaceContext} from '@/contexts/WorkspaceRoot'
 
 export default function WorkspaceHome() {
   const {workspace} = useWorkspaceContext()
