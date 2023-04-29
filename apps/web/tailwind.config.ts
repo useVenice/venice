@@ -77,7 +77,7 @@ export default {
         'venice-black-drop-shadow': `0px 2px 4px 0px ${VeniceTheme.dropShadow}`,
       },
       colors: {
-        ...VeniceTheme, // Needs to be commented out for tremor to work...
+        // ...VeniceTheme, // Needs to be commented out for tremor to work...
         'venice-black': VeniceTheme.black,
         'venice-gold': VeniceTheme.gold,
         'venice-gray-muted': VeniceTheme.gray,

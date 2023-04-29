@@ -5,6 +5,8 @@ import {OrganizationSwitcher, useAuth, UserButton} from '@clerk/nextjs'
 import {NoSSR} from '@/components/NoSSR'
 import {RedirectToNext13} from '@/components/RedirectTo'
 
+import {Sidebar} from './Sidebar'
+
 export default function AuthedLayout({children}: {children: React.ReactNode}) {
   // Clerk react cannot be trusted... Add our own clerk listener instead...
   // auth works for initial request but then subsequently breaks...
@@ -59,15 +61,22 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
   // }
 
   return (
-    <div className="h-screen w-screen">
-      <div className="flex h-10 justify-between gap-2 p-2">
+    <div className="flex h-screen w-screen flex-col">
+      <div className="flex h-12 items-center gap-2 border-b p-4">
         {/* Not working because of bug in clerk js that is unclear that results in hydration issue.. */}
         <NoSSR>
           <OrganizationSwitcher hidePersonal />
-          <UserButton />
+          {/* <TopLav /> */}
+          <div className="grow" /> {/* Spacer */}
+          <UserButton showName />
         </NoSSR>
       </div>
-      {auth.orgId ? children : <div>Create an org to begin</div>}
+      <div className="grid grow grid-cols-5">
+        <Sidebar />
+        <div className="col-span-4 border-l p-4">
+          {auth.orgId ? children : <div>Create an org to begin</div>}
+        </div>
+      </div>
     </div>
   )
 }
