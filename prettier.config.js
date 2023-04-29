@@ -9,6 +9,7 @@ module.exports = {
     '^node:(.+)$',
     '<THIRD_PARTY_MODULES>',
     '^@usevenice/(.+)$',
+    '^@/(.+)$',
     '^[./]',
   ],
   importOrderCaseInsensitive: true,
@@ -20,7 +21,7 @@ module.exports = {
   jsxSingleQuote: false,
   plugins: [
     // This plugin breaks on makeSyncEngine.ts... So commenting out for now.
-    // require.resolve('@ianvs/prettier-plugin-sort-imports'),
+    require.resolve('@ianvs/prettier-plugin-sort-imports'),
     require.resolve('prettier-plugin-packagejson'),
     require.resolve('prettier-plugin-tailwindcss'), // needs to come last
   ],

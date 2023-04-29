@@ -2,11 +2,11 @@
 
 import {Auth} from '@supabase/auth-ui-react'
 import {ThemeSupa} from '@supabase/auth-ui-shared'
-
 import {useMutation} from '@tanstack/react-query'
-import {useSupabaseContext} from '../../../contexts/supabase-context'
-import {useViewerContext} from '../../../contexts/viewer-context'
-import {VeniceTheme} from '../../../themes'
+
+import {useSupabaseContext} from '@/contexts/supabase-context'
+import {useViewerContext} from '@/contexts/viewer-context'
+import {VeniceTheme} from '@/themes'
 
 // TODO: Would be nice to populate the initial viewer state from the server
 export default function AdminAuthScreen() {

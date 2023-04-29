@@ -1,5 +1,5 @@
-import {SuperHydrate} from '../../../components/SuperHydrate'
-import {createServerComponentHelpers} from '../../../server'
+import {SuperHydrate} from '@/components/SuperHydrate'
+import {createServerComponentHelpers} from '@/server'
 
 export default async function WorkspacesLayout({
   children,

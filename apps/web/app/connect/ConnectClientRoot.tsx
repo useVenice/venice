@@ -2,15 +2,17 @@
 
 import {createClient} from '@supabase/supabase-js'
 import {QueryClientProvider} from '@tanstack/react-query'
+import React from 'react'
+
 import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {jwtDecode} from '@usevenice/cdk-core'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import React from 'react'
-import type {DehydratedState} from '../../components/SuperHydrate'
-import {SuperHydrate} from '../../components/SuperHydrate'
-import {InvalidateQueriesOnPostgresChanges} from '../../contexts/realtime'
-import {SessionContextProvider} from '../../contexts/session-context'
-import {createQueryClient} from '../../lib/query-client'
+
+import type {DehydratedState} from '@/components/SuperHydrate'
+import {SuperHydrate} from '@/components/SuperHydrate'
+import {InvalidateQueriesOnPostgresChanges} from '@/contexts/realtime'
+import {SessionContextProvider} from '@/contexts/session-context'
+import {createQueryClient} from '@/lib/query-client'
 
 export function ConnectClientRoot(props: {
   children: React.ReactNode

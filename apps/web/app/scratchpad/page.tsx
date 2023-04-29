@@ -1,6 +1,7 @@
 import '@usevenice/app-config/register.node'
 
-import {runAsAdmin, sql} from '../../server'
+import {runAsAdmin, sql} from '@/server'
+
 import {Scratchpad} from './scratchpad'
 
 export default async function ScratchpadPage() {

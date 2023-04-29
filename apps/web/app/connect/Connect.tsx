@@ -1,21 +1,20 @@
 'use client'
 
+import {ChevronLeft} from 'lucide-react'
+import Image from 'next/image'
+import React from 'react'
+
 import type {Id, ZStandard} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import {ChevronLeft} from 'lucide-react'
-import Image from 'next/image'
-import React from 'react'
-import {
-  ConnectionCard,
-  ConnectionCardSkeleton,
-} from '../../components/connections'
-import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
-import {PageHeader} from '../../components/PageHeader'
-import {TaggedCard} from '../../components/TaggedCard'
-import type {Connection} from '../../lib/supabase-queries'
+
+import {ConnectionCard, ConnectionCardSkeleton} from '@/components/connections'
+import {LoadingIndicatorOverlayV2} from '@/components/loading-indicators'
+import {PageHeader} from '@/components/PageHeader'
+import {TaggedCard} from '@/components/TaggedCard'
+import type {Connection} from '@/lib/supabase-queries'
 
 export function Connect(props: {
   integrations: RouterOutput['listIntegrationInfos']

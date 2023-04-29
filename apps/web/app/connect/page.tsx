@@ -18,17 +18,19 @@ import '../../pages/global.css'
 
 import '@usevenice/app-config/register.node'
 
-import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
-
-import {flatRouter} from '@usevenice/engine-backend'
 import {dehydrate, QueryClient} from '@tanstack/query-core'
 import {createServerSideHelpers} from '@trpc/react-query/server'
-import {fromMaybeArray, z} from '@usevenice/util'
 import superjson from 'superjson'
-import {ensureDefaultResourceAndPipelines} from '../../server'
-import {ConnectClientRoot} from './ConnectClientRoot'
-import {Connect} from './Connect'
+
+import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {makeJwtClient} from '@usevenice/cdk-core'
+import {flatRouter} from '@usevenice/engine-backend'
+import {fromMaybeArray, z} from '@usevenice/util'
+
+import {ensureDefaultResourceAndPipelines} from '@/server'
+
+import {Connect} from './Connect'
+import {ConnectClientRoot} from './ConnectClientRoot'
 
 export const metadata = {
   title: 'Venice Connect',

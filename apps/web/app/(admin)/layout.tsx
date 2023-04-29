@@ -3,8 +3,9 @@ import './global.css'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import {cookies} from 'next/headers'
 import React from 'react'
-import {serverGetViewer} from '../../server'
-import {ClientRoot} from '../../contexts/ClientRoot'
+
+import {ClientRoot} from '@/contexts/ClientRoot'
+import {serverGetViewer} from '@/server'
 
 export default async function AdminLayout(props: {children: React.ReactNode}) {
   console.log('[AdminLayout] rendering')
