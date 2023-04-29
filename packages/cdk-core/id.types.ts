@@ -53,7 +53,7 @@ export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...
     (s): s is Id[TPrefix] => s.startsWith(`${prefix}_`),
-    `Not a valid ${IDS_INVERTED[prefix]} id`,
+    `Is not a valid ${IDS_INVERTED[prefix]} id, expecting ${prefix}_`,
   )
 }
 

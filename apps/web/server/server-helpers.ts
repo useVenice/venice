@@ -134,16 +134,13 @@ export async function serverGetViewer(
     }
   }
 
-  const {userId, orgId} =
+  const auth =
     'req' in context ? getAuth(context.req) : serverComponentGetAuth()
-  // A bit expensive to have to do this every request... Is this even needed?
-  // const token = userId ? await getToken({template: 'supabase'}) : null
-
-  if (userId) {
+  if (auth.userId) {
     return {
       role: 'user',
-      userId: userId as UserId,
-      orgId: orgId as Id['org'],
+      userId: auth.userId as UserId,
+      orgId: auth.orgId as Id['org'],
     }
   }
 

@@ -33,6 +33,20 @@ export function hasRole<R extends ViewerRole>(
 
 // MARK: - JWT
 
+/**
+ * Clerk template for jwt payload below
+{
+	"aud": "authenticated",
+	"role": "authenticated",
+	"email": "{{user.primary_email_address}}",
+	"org_id": "{{org.id}}",
+	"org_name": "{{org.name}}",
+	"org_role": "{{org.role}}",
+	"org_slug": "{{org.slug}}",
+	"app_metadata": {},
+	"user_metadata": {}
+}
+ */
 export const zJwtPayload = z.object({
   /** Different meaning in different contexts */
   sub: z.string(),
@@ -44,6 +58,11 @@ export const zJwtPayload = z.object({
   role: z.enum(['authenticated', 'end_user', 'org']),
   /** Enforce that all jwts are timed. The actual validity check is done by jwtClient */
   exp: z.number(),
+  org_id: zId('org').nullish(),
+  /** Clerk: `admin` for sure and probably `basic_member` */
+  org_role: z.string().nullish(),
+  /** For readable urls, unique across org */
+  org_slug: z.string().nullish(),
 })
 
 export const zViewerFromJwtPayload = zJwtPayload
@@ -54,7 +73,11 @@ export const zViewerFromJwtPayload = zJwtPayload
       case undefined:
         return {role: 'anon'}
       case 'authenticated':
-        return {role: 'user', userId: payload.sub as UserId}
+        return {
+          role: 'user',
+          userId: payload.sub as UserId,
+          orgId: payload.org_id,
+        }
       case 'end_user': {
         const [orgId, endUserId] = payload.sub.split('/') as [
           Id['org'],
