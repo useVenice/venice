@@ -1,8 +1,10 @@
-import {TRPCError} from '@trpc/server'
-import {z, zFunction} from '@usevenice/util'
 import * as jwt from 'jsonwebtoken'
-import type {UserId, Id, EndUserId} from './id.types'
-import {zUserId, zId, zEndUserId} from './id.types'
+import {TRPCError} from '@trpc/server'
+
+import {z, zFunction} from '@usevenice/util'
+
+import type {EndUserId, Id, UserId} from './id.types'
+import {zEndUserId, zId, zUserId} from './id.types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'workspace', 'system'])
 
@@ -10,7 +12,8 @@ export const zViewer = z.discriminatedUnion('role', [
   z.object({role: z.literal(zRole.Enum.anon)}),
   // prettier-ignore
   z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, workspaceId: zId('ws')}),
-  z.object({role: z.literal(zRole.Enum.user), userId: zUserId}),
+  // prettier-ignore
+  z.object({role: z.literal(zRole.Enum.user), userId: zUserId, workspaceId: zId('ws').nullish()}),
   z.object({role: z.literal(zRole.Enum.workspace), workspaceId: zId('ws')}),
   z.object({role: z.literal(zRole.Enum.system)}),
 ])

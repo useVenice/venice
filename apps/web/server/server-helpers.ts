@@ -19,7 +19,7 @@ import {
   xPatHeaderKey,
   xPatUrlParamKey,
 } from '@usevenice/app-config/constants'
-import type {UserId, Viewer} from '@usevenice/cdk-core'
+import type {Id, UserId, Viewer} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
 import {fromMaybeArray} from '@usevenice/util'
@@ -134,13 +134,17 @@ export async function serverGetViewer(
     }
   }
 
-  const {userId} =
+  const {userId, orgId} =
     'req' in context ? getAuth(context.req) : serverComponentGetAuth()
   // A bit expensive to have to do this every request... Is this even needed?
   // const token = userId ? await getToken({template: 'supabase'}) : null
 
   if (userId) {
-    return {role: 'user', userId: userId as UserId}
+    return {
+      role: 'user',
+      userId: userId as UserId,
+      workspaceId: orgId as Id['ws'],
+    }
   }
 
   return {role: 'anon'}

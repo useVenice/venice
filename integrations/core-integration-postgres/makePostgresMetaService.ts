@@ -1,15 +1,15 @@
-import {DatabaseTransactionConnection, SqlTaggedTemplate} from 'slonik'
+import type {DatabaseTransactionConnection, SqlTaggedTemplate} from 'slonik'
 import type {TransactionFunction} from 'slonik/dist/src/types'
 
-import {
+import type {
   EndUserResultRow,
   Id,
-  makeId,
   MetaService,
   MetaTable,
   Viewer,
   ZRaw,
 } from '@usevenice/cdk-core'
+import {makeId} from '@usevenice/cdk-core'
 import {zViewer} from '@usevenice/cdk-core'
 import {makeUlid, memoize, R, zFunction} from '@usevenice/util'
 
@@ -29,7 +29,13 @@ function localGucForViewer(viewer: Viewer) {
     case 'anon':
       return {role: 'anon'}
     case 'user':
-      return {role: 'authenticated', 'request.jwt.claim.sub': viewer.userId}
+      return {
+        role: 'authenticated',
+        'request.jwt.claim.sub': viewer.userId,
+        // TODO: Figure out how this should work with supabase relatime
+        // We may need to use request.jwt.claims or app_metadata for it to work
+        'user.workspaceId': viewer.workspaceId ?? null,
+      }
     case 'end_user':
       return {
         role: 'end_user',
