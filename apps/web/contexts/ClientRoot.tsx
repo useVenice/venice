@@ -1,17 +1,19 @@
 'use client'
 
+import {useAuth} from '@clerk/nextjs'
 import type {SupabaseClient} from '@supabase/auth-helpers-nextjs'
-import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {QueryClientProvider} from '@tanstack/react-query'
-import React from 'react'
+import React, {useEffect} from 'react'
 
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 
+import {createSupabaseClient} from '@/lib/supabase-queries'
+
 import {createQueryClient} from '../lib/query-client'
 import type {Database} from '../supabase/supabase.gen'
 import {usePostgresChanges} from './realtime'
-import {SupabaseProvider, useSupabaseContext} from './supabase-context'
+import type {AsyncStatus} from './viewer-context'
 import {ViewerContext} from './viewer-context'
 
 export function ClientRoot(props: {
@@ -24,42 +26,30 @@ export function ClientRoot(props: {
     '[ClientRoot] rendering initialToken?',
     props.initialAccessToken != null,
   )
-  const {current: supabase} = React.useRef(
-    props.supabase ?? createBrowserSupabaseClient<Database>({}),
-  )
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  ;(globalThis as any).supabase = supabase
-
-  return (
-    <SupabaseProvider supabase={supabase}>
-      <ClientRootInner {...props} />
-    </SupabaseProvider>
-  )
-}
-
-/** Separate Inner component is needed in order to useSupabaseContext */
-function ClientRootInner({
-  children,
-  initialAccessToken,
-}: React.ComponentProps<typeof ClientRoot>) {
-  const {session, status, error, supabase} = useSupabaseContext()
-  const accessToken =
-    status === 'initial' || status === 'loading'
-      ? initialAccessToken
-      : session?.access_token
+  const [accessToken, setAccessToken] = React.useState(props.initialAccessToken)
+  const auth = useAuth()
   const viewer = React.useMemo(
     () => zViewerFromUnverifiedJwtToken.parse(accessToken),
     [accessToken],
   )
+  const status: AsyncStatus = auth.isLoaded ? 'loading' : 'success'
 
+  useEffect(() => {
+    void auth.getToken({template: 'supabase'}).then((t) => setAccessToken(t))
+  }, [auth])
+
+  const {current: supabase} = React.useRef(
+    props.supabase ?? createSupabaseClient(() => accessToken),
+  )
   // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
   const {current: queryClient} = React.useRef(createQueryClient())
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  ;(globalThis as any).accessToken = accessToken
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).viewer = viewer
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).queryClient = queryClient
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).supabase = supabase
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -67,10 +57,10 @@ function ClientRootInner({
         <InvalidateQueriesOnPostgresChanges supabase={supabase} />
         <ViewerContext.Provider
           value={React.useMemo(
-            () => ({accessToken, error, status, viewer}),
-            [accessToken, error, status, viewer],
+            () => ({accessToken, status, viewer}),
+            [accessToken, status, viewer],
           )}>
-          {children}
+          {props.children}
         </ViewerContext.Provider>
       </TRPCProvider>
     </QueryClientProvider>

@@ -21,7 +21,7 @@ export interface SupabaseProviderProps {
   children: React.ReactNode
 }
 
-// TODO: Maybe separate out to SupabaseProvider and ViewerProvider?
+/** @deprecated in favor of Clerk. However we still need to add analytics */
 export function SupabaseProvider({supabase, children}: SupabaseProviderProps) {
   const [{session, error, status}, setState] = React.useState<{
     session: Session | null
@@ -79,14 +79,4 @@ export function SupabaseProvider({supabase, children}: SupabaseProviderProps) {
       {children}
     </SupabaseContext.Provider>
   )
-}
-
-export function useSupabaseContext() {
-  const context = React.useContext(SupabaseContext)
-  if (context === undefined) {
-    throw new Error(
-      'Did you forget SupabaseProvider? useSupabase must be used within a SupabaseContext.Provder',
-    )
-  }
-  return context
 }

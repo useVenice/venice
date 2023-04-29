@@ -11,7 +11,7 @@ export const ViewerContext = React.createContext<
   | {
       viewer: Viewer
       status: AsyncStatus
-      error: unknown
+      error?: unknown
       accessToken?: string | null
     }
   | undefined

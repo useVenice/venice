@@ -1,13 +1,18 @@
-import type {NextApiRequest, NextApiResponse} from 'next'
-
-import {fromMaybeArray} from '@usevenice/util'
-
-import {
-  createServerComponentSupabaseClient,
-  createServerSupabaseClient,
-} from '@supabase/auth-helpers-nextjs'
-import {QueryClient, dehydrate} from '@tanstack/react-query'
+import {auth as serverComponentGetAuth} from '@clerk/nextjs/app-beta'
+import {getAuth} from '@clerk/nextjs/server'
+import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
+import type {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
+import type {ReadonlyHeaders} from 'next/dist/server/web/spec-extension/adapters/headers'
+import type {ReadonlyRequestCookies} from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+import {cookies} from 'next/headers'
+import superjson from 'superjson'
+import type {SuperJSONResult} from 'superjson/dist/types'
+
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {
   xPatAppMetadataKey,
@@ -17,15 +22,10 @@ import {
 import type {UserId, Viewer} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
-import type {GetServerSidePropsContext} from 'next'
-import type {ReadonlyHeaders} from 'next/dist/server/web/spec-extension/adapters/headers'
-import type {ReadonlyRequestCookies} from 'next/dist/server/web/spec-extension/adapters/request-cookies'
-import superjson from 'superjson'
-import type {SuperJSONResult} from 'superjson/dist/types'
-import type {Database} from '../supabase/supabase.gen'
-import {runAsAdmin, sql} from './procedures'
+import {fromMaybeArray} from '@usevenice/util'
+
 import {kAccessToken} from '../lib/constants'
-import {cookies} from 'next/headers'
+import {runAsAdmin, sql} from './procedures'
 
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
@@ -85,6 +85,7 @@ export async function serverGetViewer(
   context: NextContext,
   // This is a hack for not knowing how else to return accessToken...
   // and not wanting it to add it to the super simple viewer interface just yet
+  // Fwiw this is only used for the /connect experience and not generally otherwise
 ): Promise<Viewer & {accessToken?: string | null}> {
   const jwt = makeJwtClient({
     secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
@@ -133,36 +134,15 @@ export async function serverGetViewer(
     }
   }
 
-  // access token via cookie
-  const supabase =
-    'req' in context
-      ? createServerSupabaseClient<Database>(context)
-      : createServerComponentSupabaseClient<Database>({
-          // Defaulting, @see https://github.com/supabase/auth-helpers/blob/main/packages/nextjs/src/index.ts#L212-L219
-          headers: () => ({get: () => undefined}),
-          cookies: () => ({get: () => undefined}),
-          ...context,
-          // Workaround for https://github.com/supabase/auth-helpers/issues/341#issuecomment-1528696953
-          // Setting cookie is not supported inside server components anyways.
-          // @see https://github.com/supabase/auth-helpers/blob/main/packages/shared/src/supabase-server.ts#L68
-          cookieOptions: {secure: true},
-        })
+  const {userId} =
+    'req' in context ? getAuth(context.req) : serverComponentGetAuth()
+  // A bit expensive to have to do this every request... Is this even needed?
+  // const token = userId ? await getToken({template: 'supabase'}) : null
 
-  const {data: sessionRes} = await supabase.auth.getSession()
-
-  try {
-    accessToken = sessionRes.session?.access_token
-    viewer = jwt.verifyViewer(accessToken)
-    if (viewer.role !== 'anon') {
-      return {...viewer, accessToken}
-    }
-  } catch (err) {
-    console.warn(
-      '[serverGetViewer] Error verifying cookie access token, may sign out',
-    )
-    // await supabase.auth.signOut()
-    throw err
+  if (userId) {
+    return {role: 'user', userId: userId as UserId}
   }
+
   return {role: 'anon'}
 }
 
