@@ -3,13 +3,15 @@
 import type {SupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import {QueryClientProvider} from '@tanstack/react-query'
+import React from 'react'
+
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider} from '@usevenice/engine-frontend'
-import React from 'react'
-import {SupabaseProvider, useSupabaseContext} from './supabase-context'
-import {ViewerContext} from './viewer-context'
+
 import {createQueryClient} from '../lib/query-client'
 import type {Database} from '../supabase/supabase.gen'
+import {SupabaseProvider, useSupabaseContext} from './supabase-context'
+import {ViewerContext} from './viewer-context'
 
 export function ClientRoot(props: {
   children: React.ReactNode
@@ -17,7 +19,10 @@ export function ClientRoot(props: {
   initialAccessToken: string | null | undefined
   supabase?: SupabaseClient<Database>
 }) {
-  console.log('[ClientRoot] rendering', props.initialAccessToken)
+  console.log(
+    '[ClientRoot] rendering initialToken?',
+    props.initialAccessToken != null,
+  )
   const {current: supabase} = React.useRef(
     props.supabase ?? createBrowserSupabaseClient<Database>({}),
   )
@@ -41,7 +46,10 @@ function ClientRootInner({
     status === 'initial' || status === 'loading'
       ? initialAccessToken
       : session?.access_token
-  const viewer = zViewerFromUnverifiedJwtToken.parse(accessToken)
+  const viewer = React.useMemo(
+    () => zViewerFromUnverifiedJwtToken.parse(accessToken),
+    [accessToken],
+  )
 
   // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
   const {current: queryClient} = React.useRef(createQueryClient())
@@ -55,7 +63,11 @@ function ClientRootInner({
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider queryClient={queryClient} accessToken={accessToken}>
-        <ViewerContext.Provider value={{error, status, viewer, accessToken}}>
+        <ViewerContext.Provider
+          value={React.useMemo(
+            () => ({accessToken, error, status, viewer}),
+            [accessToken, error, status, viewer],
+          )}>
           {children}
         </ViewerContext.Provider>
       </TRPCProvider>

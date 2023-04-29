@@ -46,7 +46,7 @@ export const zJwtPayload = z.object({
 export const zViewerFromJwtPayload = zJwtPayload
   .nullish()
   .transform((payload): Viewer => {
-    console.log('zViewerFromJwtPayload', payload)
+    // console.log('zViewerFromJwtPayload', payload)
     switch (payload?.role) {
       case undefined:
         return {role: 'anon'}
