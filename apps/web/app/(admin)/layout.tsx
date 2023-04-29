@@ -14,7 +14,7 @@ export default async function AdminLayoutServer({
   console.log('[AdminLayoutServer] rendering')
   // We only get the viewer from cookies to be consistent with how it works
   // createBrowserSupabaseClient which only uses cookie and does not use header etc.
-  const viewer = await serverGetViewer({cookies})
+  const {accessToken} = await serverGetViewer({cookies})
 
-  return <AdminLayout initialViewer={viewer}>{children}</AdminLayout>
+  return <AdminLayout initialAccessToken={accessToken}>{children}</AdminLayout>
 }

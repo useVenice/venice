@@ -1,34 +1,28 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
 
-import type {Viewer} from '@usevenice/cdk-core'
-import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
 import type {Database} from '../supabase/supabase.gen'
 import type {AsyncStatus} from './viewer-context'
-import {ViewerContext} from './viewer-context'
 
 export const SupabaseContext = React.createContext<
   | {
-      session: Session | null | undefined
       supabase: SupabaseClient
+      session: Session | null | undefined
+      status: AsyncStatus
+      error: unknown
     }
   | undefined
 >(undefined)
 
 export interface SupabaseProviderProps {
   supabase: SupabaseClient<Database>
-  initialViewer?: Viewer & {accessToken?: string | null}
   children: React.ReactNode
 }
 
 // TODO: Maybe separate out to SupabaseProvider and ViewerProvider?
-export function SupabaseViewerProvider({
-  supabase,
-  initialViewer = {role: 'anon'},
-  children,
-}: SupabaseProviderProps) {
+export function SupabaseProvider({supabase, children}: SupabaseProviderProps) {
   const [{session, error, status}, setState] = React.useState<{
     session: Session | null
     error: unknown
@@ -76,19 +70,9 @@ export function SupabaseViewerProvider({
     }
   }, [email, phone, userId])
 
-  const accessToken =
-    status === 'initial' || status === 'loading'
-      ? initialViewer.accessToken
-      : session?.access_token
-  const viewer =
-    status === 'initial' || status === 'loading'
-      ? initialViewer
-      : zViewerFromUnverifiedJwtToken.parse(accessToken)
   return (
-    <SupabaseContext.Provider value={{session, supabase}}>
-      <ViewerContext.Provider value={{error, status, viewer, accessToken}}>
-        {children}
-      </ViewerContext.Provider>
+    <SupabaseContext.Provider value={{session, supabase, error, status}}>
+      {children}
     </SupabaseContext.Provider>
   )
 }
