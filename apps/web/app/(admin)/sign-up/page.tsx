@@ -2,10 +2,12 @@
 
 import {SignUp} from '@clerk/nextjs'
 
+import {FullScreenCenter} from '@/components/FullScreenCenter'
+
 export default function SignInScreen() {
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
+    <FullScreenCenter>
       <SignUp signInUrl="/sign-in" />
-    </div>
+    </FullScreenCenter>
   )
 }
