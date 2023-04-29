@@ -58,19 +58,27 @@ ALTER TABLE "public"."integration" ADD COLUMN workspace_id varchar NOT NULL,
 --- User policies ---
 DROP FUNCTION IF EXISTS auth.workspace_ids CASCADE;
 
+DROP FUNCTION IF EXISTS auth.user_workspace_ids CASCADE;
+CREATE OR REPLACE FUNCTION auth.user_workspace_ids()
+  RETURNS TABLE (id varchar)
+  LANGUAGE sql
+  SECURITY DEFINER
+  STABLE
+AS $function$
+  select workspace_id as id from "workspace_member" where user_id::varchar = auth.uid()
+$function$;
+
+-- All members of a workspace can see all other members
+-- all updates & deletes of memberships are handled by the workspace role only
+-- because we don't want users to be able to just add themselves to any workspace given the id
+DROP POLICY IF EXISTS workspace_member_readonly_access ON public.workspace_member;
+CREATE POLICY workspace_member_readonly_access ON "public"."workspace_member" FOR SELECT TO authenticated
+  USING (workspace_id = ANY(select id from auth.user_workspace_ids()));
+
 DROP POLICY IF EXISTS workspace_member_access ON public.workspace;
 CREATE POLICY workspace_member_access ON "public"."workspace" TO authenticated
-  USING (id = ANY(
-    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
-  ))
-  WITH CHECK (id = ANY(
-    select workspace_id from "workspace_member" where user_id::varchar = auth.uid()
-  ));
-
-DROP POLICY IF EXISTS workspace_member_access ON public.workspace_member;
-CREATE POLICY workspace_member_access ON "public"."workspace_member" TO authenticated
-  USING (user_id::varchar = auth.uid())
-  WITH CHECK (user_id::varchar = auth.uid());
+  USING (id = ANY(select id from auth.user_workspace_ids()))
+  WITH CHECK (id = ANY(select id from auth.user_workspace_ids()));
 
 DROP POLICY IF EXISTS workspace_member_access ON public.integration;
 CREATE POLICY workspace_member_access ON "public"."integration" TO authenticated
