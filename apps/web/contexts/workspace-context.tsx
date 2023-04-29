@@ -1,3 +1,5 @@
+'use client'
+
 import type {ZRaw} from '@usevenice/cdk-core'
 import React from 'react'
 
@@ -16,4 +18,20 @@ export function useWorkspaceContext() {
     )
   }
   return context
+}
+
+/**
+ * Workaround for not being able to render Context directly in server components
+ * @see https://share.cleanshot.com/PLcD2gwJ
+ * Though perhaps we can turn this into WorkspaceRoot component?
+ */
+export function WorkspaceContextProvider(props: {
+  children: React.ReactNode
+  value: NonNullable<React.ContextType<typeof WorkspaceContext>>
+}) {
+  return (
+    <WorkspaceContext.Provider value={props.value}>
+      {props.children}
+    </WorkspaceContext.Provider>
+  )
 }

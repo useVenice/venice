@@ -1,34 +1,24 @@
-'use client'
+import {notFound} from 'next/navigation'
+import {WorkspaceContextProvider} from '../../../../contexts/workspace-context'
+import {createServerComponentHelpers} from '../../../../server'
 
-import {trpcReact} from '@usevenice/engine-frontend'
-import {RedirectToNext13} from '../../../../components/RedirectTo'
-import {WorkspaceContext} from '../../../../contexts/workspace-context'
-
-export default function WorkspaceLayout({
+export default async function WorkspaceLayout({
   children,
   params: {slug},
 }: {
   children: React.ReactNode
   params: {slug: string}
 }) {
-  const workspacesRes = trpcReact.adminListWorkspaces.useQuery({})
-  console.log('/workspaces/[slug] rendering', {slug}, workspacesRes.data)
-  if (!workspacesRes.data) {
-    // Should not happen due to parent layout server fetching
-    return null
-  }
-  const workspace = workspacesRes.data.find((w) => w.slug === slug)
+  const {ssg} = await createServerComponentHelpers()
+  const workspaces = await ssg.adminListWorkspaces.fetch({})
+  const workspace = workspaces.find((w) => w.slug === slug)
   if (!workspace) {
-    return (
-      <RedirectToNext13 url="/workspaces">
-        <div>Workspace {slug} not found</div>
-      </RedirectToNext13>
-    )
+    notFound()
   }
 
   return (
-    <WorkspaceContext.Provider value={{workspace}}>
+    <WorkspaceContextProvider value={{workspace}}>
       {children}
-    </WorkspaceContext.Provider>
+    </WorkspaceContextProvider>
   )
 }

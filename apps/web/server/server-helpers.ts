@@ -25,6 +25,7 @@ import type {SuperJSONResult} from 'superjson/dist/types'
 import type {Database} from '../supabase/supabase.gen'
 import {runAsAdmin, sql} from './procedures'
 import {kAccessToken} from '../lib/constants'
+import {cookies} from 'next/headers'
 
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
@@ -62,6 +63,12 @@ export async function createSSRHelpers(context: NextContext) {
       dehydratedState: superjson.serialize(dehydrate(queryClient)),
     }),
   }
+}
+
+export function createServerComponentHelpers(opts?: {
+  params: {[kAccessToken]: string}
+}) {
+  return createSSRHelpers({cookies, params: opts?.params})
 }
 
 /** Determine the current viewer in this order

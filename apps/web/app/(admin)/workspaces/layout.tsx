@@ -1,13 +1,12 @@
-import {cookies} from 'next/headers'
 import {SuperHydrate} from '../../../components/SuperHydrate'
-import {createSSRHelpers} from '../../../server'
+import {createServerComponentHelpers} from '../../../server'
 
 export default async function WorkspacesLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const helpers = await createSSRHelpers({cookies})
+  const helpers = await createServerComponentHelpers()
   await Promise.all([
     //
     helpers.ssg.adminListWorkspaces.fetch({}),
