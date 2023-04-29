@@ -1,6 +1,6 @@
 import {notFound} from 'next/navigation'
-import {WorkspaceContextProvider} from '../../../../contexts/workspace-context'
-import {createServerComponentHelpers} from '../../../../server'
+import {WorkspaceContextProvider} from '@/contexts/workspace-context'
+import {createServerComponentHelpers} from '@/server'
 
 export default async function WorkspaceLayout({
   children,
