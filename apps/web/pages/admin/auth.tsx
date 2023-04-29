@@ -1,4 +1,5 @@
-import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
+import {Auth} from '@supabase/auth-ui-react'
+import {ThemeSupa} from '@supabase/auth-ui-shared'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 

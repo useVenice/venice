@@ -1,6 +1,7 @@
 'use client'
 
-import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
+import {Auth} from '@supabase/auth-ui-react'
+import {ThemeSupa} from '@supabase/auth-ui-shared'
 
 import {useMutation} from '@tanstack/react-query'
 import {useSupabaseContext} from '../../../contexts/supabase-context'
