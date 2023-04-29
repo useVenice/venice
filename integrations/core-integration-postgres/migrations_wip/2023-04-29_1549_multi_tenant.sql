@@ -22,6 +22,7 @@ DROP FUNCTION IF EXISTS auth.user_workspace_ids CASCADE;
 
 ALTER TABLE "public"."integration" ADD COLUMN org_id varchar NOT NULL;
 CREATE INDEX IF NOT EXISTS integration_org_id ON "public"."integration" (org_id);
+ALTER TABLE "public"."integration" ADD COLUMN display_name varchar;
 
 --- User policies ---
 

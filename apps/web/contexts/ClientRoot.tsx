@@ -86,6 +86,7 @@ export const InvalidateQueriesOnPostgresChanges = React.memo(
     // prettier-ignore
     usePostgresChanges(props.supabase, 'integration', React.useCallback(() => {
       void trpcUtils.adminGetIntegration.invalidate()
+      void trpcUtils.adminListIntegrations.invalidate()
     }, [trpcUtils]))
     return null
   },

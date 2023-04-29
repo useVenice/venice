@@ -8,6 +8,9 @@ import {adminProcedure, trpc} from './_base'
 export {type inferProcedureInput} from '@trpc/server'
 
 export const adminRouter = trpc.router({
+  adminListIntegrations: adminProcedure.query(async ({ctx}) =>
+    ctx.helpers.list('integration', {}),
+  ),
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
