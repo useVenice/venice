@@ -1,5 +1,6 @@
 import './global.css'
 
+import {ClerkProvider} from '@clerk/nextjs/app-beta'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import {cookies} from 'next/headers'
 import React from 'react'
@@ -14,6 +15,8 @@ export default async function AdminLayout(props: {children: React.ReactNode}) {
   const {accessToken} = await serverGetViewer({cookies})
 
   return (
-    <ClientRoot initialAccessToken={accessToken}>{props.children}</ClientRoot>
+    <ClerkProvider>
+      <ClientRoot initialAccessToken={accessToken}>{props.children}</ClientRoot>
+    </ClerkProvider>
   )
 }

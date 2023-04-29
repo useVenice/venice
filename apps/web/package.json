@@ -12,6 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/nextjs": "4.16.4",
     "@glideapps/glide-data-grid": "5.2.1",
     "@graphiql/toolkit": "^0.8.0",
     "@monaco-editor/react": "^4.4.6",
