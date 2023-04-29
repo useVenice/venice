@@ -23,7 +23,7 @@ export default function WorkspacesList() {
 
   const workspacesRes = trpcReact.adminListWorkspaces.useQuery({})
 
-  const upsertWorkspace = trpcReact.adminUpsertWorkspace.useMutation({
+  const createWorkspace = trpcReact.adminCreateWorkspace.useMutation({
     onSuccess: () => {
       void trpcUtils.adminListWorkspaces.invalidate()
     },
@@ -64,7 +64,7 @@ export default function WorkspacesList() {
             form={form}
             schema={formSchema}
             onSubmit={(values) =>
-              upsertWorkspace.mutate(values, {
+              createWorkspace.mutate(values, {
                 // onSuccess: async (data) => {},
               })
             }
@@ -72,9 +72,9 @@ export default function WorkspacesList() {
               <div className="mt-8 flex justify-center gap-4">
                 <Button
                   onClick={submit}
-                  disabled={upsertWorkspace.isLoading}
+                  disabled={createWorkspace.isLoading}
                   className="min-w-[6rem] rounded-lg px-3 py-2 text-sm text-offwhite ring-1 ring-inset ring-venice-black-400 transition-colors hover:bg-venice-black-400 focus:outline-none focus-visible:bg-venice-black-400 disabled:opacity-30">
-                  {upsertWorkspace.isLoading ? (
+                  {createWorkspace.isLoading ? (
                     <span>Creating...</span>
                   ) : (
                     <span>Create workspace</span>

@@ -1,14 +1,9 @@
-import {adminProcedure, trpc} from './_base'
+import {TRPCError} from '@trpc/server'
 
-import {
-  handlersLink,
-  makeId,
-  sync,
-  zEndUserId,
-  zId,
-  zRaw,
-} from '@usevenice/cdk-core'
-import {makeUlid, rxjs, z} from '@usevenice/util'
+import {handlersLink, sync, zEndUserId, zId, zRaw} from '@usevenice/cdk-core'
+import {rxjs, z} from '@usevenice/util'
+
+import {adminProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -18,15 +13,37 @@ export const adminRouter = trpc.router({
   adminListWorkspaces: adminProcedure
     .input(z.object({}).nullish())
     .query(({ctx}) => ctx.helpers.list('workspace', {})),
+  // This is particularly tricky because we need to create two objects at the same time
+  // in a single transaction... and that's not something we can do easily with the metaService today
+  // would require introducing a 'transaction' abstraction
+  adminCreateWorkspace: adminProcedure
+    .input(zRaw.workspace.omit({id: true}))
+    .mutation(async ({input, ctx}) => {
+      if (ctx.viewer.role !== 'user') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'user role is required',
+        })
+      }
+      return ctx.helpers.metaService.createWorkspace({
+        workspace: input,
+        userId: ctx.viewer.userId,
+      })
+    }),
+
   // Wonder if we should auto generate these procedures...
   // Also might be nice to fix the type to distinguish between create and update
   // In particular for "create" we might not want client to specify ID while making all
   // other properties as required
-  adminUpsertWorkspace: adminProcedure
-    .input(zRaw.workspace.partial())
-    .mutation(({input: {id = makeId('ws', makeUlid()), ...input}, ctx}) =>
+  adminUpdateWorkspace: adminProcedure
+    .input(zRaw.workspace.partial().required({id: true}))
+    .mutation(({input: {id, ...input}, ctx}) =>
       ctx.helpers.patchReturning('workspace', id, input),
     ),
+  // TODO: Implement adding / removing users from workspace too... kind of annoying...
+  // Should  we use a 3rd party service for managing these maybe?
+  // Or maybe supabase itself has something representing organization already?
+
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure

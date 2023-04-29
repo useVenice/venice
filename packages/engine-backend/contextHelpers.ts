@@ -5,8 +5,8 @@ import type {
   AnyEntityPayload,
   AnySyncProvider,
   Destination,
-  IDS,
   Id,
+  IDS,
   Link,
   MetaService,
   MetaTable,
@@ -15,7 +15,9 @@ import type {
   ZRaw,
 } from '@usevenice/cdk-core'
 import {extractId, makeId, sync, zRaw} from '@usevenice/cdk-core'
-import {ObjectPartialDeep, deepMerge, rxjs, z} from '@usevenice/util'
+import type {ObjectPartialDeep} from '@usevenice/util'
+import {deepMerge, rxjs, z} from '@usevenice/util'
+
 import {makeMetaLinks} from './makeMetaLinks'
 import type {zSyncOptions} from './types'
 

@@ -23,4 +23,7 @@ export const noopMetaService: MetaService = {
   searchInstitutions: async () => [],
   findPipelines: async () => [],
   listIntegrationIds: async () => [],
+  createWorkspace: async () => {
+    throw new Error('noopMetaService: Not implemented')
+  },
 }

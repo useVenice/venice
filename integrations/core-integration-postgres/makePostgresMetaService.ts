@@ -1,15 +1,18 @@
-import type {
+import {DatabaseTransactionConnection, SqlTaggedTemplate} from 'slonik'
+import type {TransactionFunction} from 'slonik/dist/src/types'
+
+import {
   EndUserResultRow,
   Id,
+  makeId,
   MetaService,
   MetaTable,
   Viewer,
   ZRaw,
 } from '@usevenice/cdk-core'
 import {zViewer} from '@usevenice/cdk-core'
-import {R, memoize, zFunction} from '@usevenice/util'
+import {makeUlid, memoize, R, zFunction} from '@usevenice/util'
 
-import type {TransactionFunction} from 'slonik/dist/src/types'
 import {
   applyLimitOffset,
   makePostgresClient,
@@ -36,9 +39,21 @@ function localGucForViewer(viewer: Viewer) {
     case 'workspace':
       return {role: 'workspace', 'workspace.id': viewer.workspaceId}
     case 'system':
-      return {}
+      return {role: null} // Should be the same as reset role
     default:
       throw new Error(`Unknown viewer role: ${(viewer as Viewer).role}`)
+  }
+  // Should we erase keys incompatible with current viewer role to avoid confusion?
+}
+
+async function assumeRole(options: {
+  db: DatabaseTransactionConnection
+  viewer: Viewer
+  sql: SqlTaggedTemplate
+}) {
+  const {db, viewer, sql} = options
+  for (const [key, value] of Object.entries(localGucForViewer(viewer))) {
+    await db.query(sql`SELECT set_config(${key}, ${value}, true)`)
   }
 }
 
@@ -52,9 +67,7 @@ const _getDeps = (opts: {databaseUrl: string; viewer: Viewer}) => {
     runQueries: async <T>(handler: TransactionFunction<T>) => {
       const pool = await getPool()
       return pool.transaction(async (trxn) => {
-        for (const [key, value] of Object.entries(localGucForViewer(viewer))) {
-          await trxn.query(sql`SELECT set_config(${key}, ${value}, true)`)
-        }
+        await assumeRole({db: trxn, viewer, sql})
         return handler(trxn)
       })
     },
@@ -138,6 +151,25 @@ export const makePostgresMetaService = zFunction(
         return runQueries((pool) =>
           pool.anyFirst<Id['int']>(sql`SELECT id FROM integration`),
         )
+      },
+      createWorkspace: ({workspace: input, userId}) => {
+        const {runQueries, sql} = _getDeps(opts)
+        return runQueries(async (pool) => {
+          // Cannot do insert returning unfortunately...
+          const id = makeId('ws', makeUlid())
+          await pool.query(
+            sql`INSERT INTO workspace (id, name, slug) VALUES (${id}, ${input.name}, ${input.slug})`,
+          )
+          await assumeRole({
+            sql,
+            db: pool,
+            viewer: {role: 'workspace', workspaceId: id},
+          })
+          await pool.query(
+            sql`INSERT INTO workspace_member (workspace_id, user_id) VALUES (${id}, ${userId})`,
+          )
+          return {id}
+        })
       },
     }
   },

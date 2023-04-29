@@ -75,6 +75,11 @@ DROP POLICY IF EXISTS workspace_member_readonly_access ON public.workspace_membe
 CREATE POLICY workspace_member_readonly_access ON "public"."workspace_member" FOR SELECT TO authenticated
   USING (workspace_id = ANY(select id from auth.user_workspace_ids()));
 
+-- Extra policy to allow user to create workspaces
+DROP POLICY IF EXISTS workspace_member_create ON public.workspace;
+CREATE POLICY workspace_member_create ON "public"."workspace" 
+  FOR INSERT TO authenticated WITH CHECK (true);
+
 DROP POLICY IF EXISTS workspace_member_access ON public.workspace;
 CREATE POLICY workspace_member_access ON "public"."workspace" TO authenticated
   USING (id = ANY(select id from auth.user_workspace_ids()))
