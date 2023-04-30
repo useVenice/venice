@@ -23,6 +23,11 @@ const sectionedLinks: Array<{
         href: '/magic-link',
         icon: 'Wand',
       },
+      {
+        title: 'Metrics',
+        href: '/metrics',
+        icon: 'BarChart2',
+      },
     ],
   },
   {
@@ -53,6 +58,11 @@ const sectionedLinks: Array<{
   {
     title: 'Developers',
     items: [
+      {
+        title: 'Logs',
+        href: '/logs',
+        icon: 'Footprints',
+      },
       {
         title: 'API Keys',
         href: '/api-keys',
