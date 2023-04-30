@@ -1,18 +1,32 @@
 'use client'
 
-import type {
-  RealtimePostgresChangesPayload,
-  SupabaseClient,
-} from '@supabase/supabase-js'
+import type {RealtimePostgresChangesPayload} from '@supabase/realtime-js'
+import {RealtimeClient} from '@supabase/realtime-js'
+import type {SupabaseClient} from '@supabase/supabase-js'
 import React from 'react'
+
+import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {trpcReact} from '@usevenice/engine-frontend'
+import {joinPath} from '@usevenice/util'
+
 import type {Database} from '../supabase/supabase.gen'
 
-import {trpcReact} from '@usevenice/engine-frontend'
+// https://db-dev.venice.is
+// wss://db-dev.venice.is/realtime/v1/websocket
+
+export function createRealtimeClient() {
+  return new RealtimeClient(
+    joinPath(
+      commonEnv.NEXT_PUBLIC_SUPABASE_URL.replace('https', 'wss'),
+      'realtime/v1',
+    ),
+    {params: {apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY}},
+  )
+}
 
 // MARK: - React
 export function InvalidateQueriesOnPostgresChanges(props: {
-  // trpcReact: typeof trpcReact
-  supabase: SupabaseClient
+  client: SupabaseClient | RealtimeClient
 }) {
   const trpcUtils = trpcReact.useContext()
 
@@ -20,8 +34,8 @@ export function InvalidateQueriesOnPostgresChanges(props: {
     void trpcUtils.listConnections.invalidate()
     void trpcUtils.listPipelines.invalidate()
   }, [trpcUtils])
-  usePostgresChanges(props.supabase, 'resource', invalidate)
-  usePostgresChanges(props.supabase, 'pipeline', invalidate)
+  usePostgresChanges(props.client, 'resource', invalidate)
+  usePostgresChanges(props.client, 'pipeline', invalidate)
   return null
 }
 
@@ -29,21 +43,21 @@ export function InvalidateQueriesOnPostgresChanges(props: {
 
 /** Ties to component lifecycle. Prefer global ones for subscription */
 export function usePostgresChanges(
-  supabase: SupabaseClient,
+  client: SupabaseClient | RealtimeClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
-  React.useEffect(() => subscribePostgresChanges(supabase, tableName, fn).unsub)
+  React.useEffect(() => subscribePostgresChanges(client, tableName, fn).unsub)
 }
 
 // MARK: - Utils
 
 export function subscribePostgresChanges(
-  supabase: SupabaseClient,
+  client: SupabaseClient | RealtimeClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
-  const sub = supabase
+  const sub = client
     // Unique channel name otherwise multiple calls to subscribe would overwrite each other
     .channel(`pg/public.${tableName}.${Date.now()}`)
     .on(

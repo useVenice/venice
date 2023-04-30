@@ -31,18 +31,16 @@ function localGucForViewer(viewer: Viewer) {
       return {
         role: 'authenticated',
         'request.jwt.claim.sub': viewer.userId,
-        // TODO: Figure out how this should work with supabase relatime
-        // We may need to use request.jwt.claims or app_metadata for it to work
-        'user.orgId': viewer.orgId ?? null,
+        'request.jwt.claim.org_id': viewer.orgId ?? null,
       }
     case 'end_user':
       return {
         role: 'end_user',
-        'endUser.id': viewer.endUserId,
-        'endUser.orgId': viewer.orgId,
+        'request.jwt.claim.end_user_id': viewer.endUserId,
+        'request.jwt.claim.org_id': viewer.orgId,
       }
     case 'org':
-      return {role: 'org', 'org.id': viewer.orgId}
+      return {role: 'org', 'request.jwt.claim.org_id': viewer.orgId}
     case 'system':
       return {role: null} // Should be the same as reset role
     default:

@@ -24,22 +24,48 @@ ALTER TABLE "public"."integration" ADD COLUMN org_id varchar NOT NULL;
 CREATE INDEX IF NOT EXISTS integration_org_id ON "public"."integration" (org_id);
 ALTER TABLE "public"."integration" ADD COLUMN display_name varchar;
 
+--- New helper functions that no longer depend on auth
+
+-- Even this is hardly used, can basically drop auth.uid as we don't use it
+-- DROP FUNCTION IF EXISTS auth.uid CASCADE;
+CREATE OR REPLACE FUNCTION jwt_sub() RETURNS varchar LANGUAGE sql STABLE
+AS $function$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )
+$function$;
+
+CREATE OR REPLACE FUNCTION jwt_org_id() RETURNS varchar LANGUAGE sql STABLE
+AS $function$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.org_id', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'org_id')
+  )
+$function$;
+
+CREATE OR REPLACE FUNCTION jwt_end_user_id() RETURNS varchar LANGUAGE sql STABLE
+AS $function$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.end_user_id', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'end_user_id')
+  )
+$function$;
+
 --- User policies ---
 
 DROP POLICY IF EXISTS org_member_access ON public.integration;
 CREATE POLICY org_member_access ON "public"."integration" TO authenticated
-  USING (org_id = current_setting('user.orgId', true))
-  WITH CHECK (org_id = current_setting('user.orgId', true));
+  USING (org_id = jwt_org_id())
+  WITH CHECK (org_id = jwt_org_id());
 
 DROP POLICY IF EXISTS org_member_access ON public.resource;
 CREATE POLICY org_member_access ON "public"."resource" TO authenticated
   USING (integration_id = ANY(
-    select id from integration
-    where org_id = current_setting('user.orgId', true)
+    select id from integration where org_id = jwt_org_id()
   ))
   WITH CHECK (integration_id = ANY(
-    select id from integration
-    where org_id = current_setting('user.orgId', true)
+    select id from integration where org_id = jwt_org_id()
   ));
 
 DROP POLICY IF EXISTS org_member_access ON public.pipeline;
@@ -49,7 +75,7 @@ CREATE POLICY org_member_access ON "public"."pipeline" TO authenticated
       select r.id
       from resource r
       join integration i on i.id = r.integration_id
-      where i.org_id = current_setting('user.orgId', true)
+      where i.org_id = jwt_org_id()
     ) && array[source_id, destination_id]
     -- && and @> is the same, however we are using && to stay consistent with end user policy
   )
@@ -58,7 +84,7 @@ CREATE POLICY org_member_access ON "public"."pipeline" TO authenticated
       select r.id
       from resource r
       join integration i on i.id = r.integration_id
-      where i.org_id = current_setting('user.orgId', true)
+      where i.org_id = jwt_org_id()
     ) @> array[source_id, destination_id]
     -- User must have access to both the source & destination resources
   );
@@ -68,12 +94,13 @@ CREATE POLICY org_member_access ON "public"."pipeline" TO authenticated
 
 CREATE ROLE "end_user";
 GRANT "end_user" TO "postgres";
+GRANT "end_user" TO "authenticator";
 GRANT USAGE ON SCHEMA public TO "end_user";
 
 GRANT SELECT (id) ON public.integration TO "end_user";
 DROP POLICY IF EXISTS end_user_access ON public.integration;
 CREATE POLICY end_user_access ON public.integration TO end_user
-  USING (org_id = current_setting('endUser.orgId', true));
+  USING (org_id = jwt_org_id());
 
 
 GRANT SELECT, UPDATE (display_name), DELETE ON public.resource TO "end_user";
@@ -82,9 +109,9 @@ CREATE POLICY end_user_access ON public.resource TO end_user
   USING (
     integration_id = ANY(
       select id from integration
-      where org_id = current_setting('endUser.orgId', true)
+      where org_id = jwt_org_id()
     )
-    AND end_user_id = (select current_setting('endUser.id', true))
+    AND end_user_id = (select jwt_end_user_id())
   );
 
 -- REVOKE DELETE ON public.pipeline FROM "end_user";
@@ -97,9 +124,9 @@ CREATE POLICY end_user_access ON public.pipeline TO end_user
       from resource
       where integration_id = ANY(
         select id from integration
-        where org_id = current_setting('endUser.orgId', true)
+        where org_id = jwt_org_id()
       )
-        AND end_user_id = (select current_setting('endUser.id', true))
+        AND end_user_id = (select jwt_end_user_id())
     ) && array[source_id, destination_id]
   -- User can see any pipeline that they their resource is connected to for the moment
   ));
@@ -108,23 +135,24 @@ CREATE POLICY end_user_access ON public.pipeline TO end_user
 
 CREATE ROLE "org";
 GRANT "org" TO "postgres";
+GRANT "end_user" TO "authenticator";
 GRANT USAGE ON SCHEMA public TO "org";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "org";
 
 DROP POLICY IF EXISTS org_access ON public.integration;
 CREATE POLICY org_access ON public.integration TO org
-  USING (org_id = current_setting('org.id', true))
-  WITH CHECK (org_id = current_setting('org.id', true));
+  USING (org_id = jwt_org_id())
+  WITH CHECK (org_id = jwt_org_id());
 
 DROP POLICY IF EXISTS org_access ON public.resource;
 CREATE POLICY org_access ON public.resource TO org
   USING (integration_id = ANY(
       select id from integration
-      where org_id = current_setting('org.id', true)
+      where org_id = jwt_org_id()
   ))
   WITH CHECK (integration_id = ANY(
       select id from integration
-      where org_id = current_setting('org.id', true)
+      where org_id = jwt_org_id()
   ));
 
 DROP POLICY IF EXISTS org_access ON public.pipeline;
@@ -134,7 +162,7 @@ CREATE POLICY org_access ON public.pipeline TO org
       select r.id
       from resource r
       join integration i on r.integration_id = i.id
-      where i.org_id = current_setting('org.id', true)
+      where i.org_id = jwt_org_id()
     ) && array[source_id, destination_id]
     -- && and @> is the same, however we are using && to stay consistent with end user policy
   ))
@@ -143,7 +171,7 @@ CREATE POLICY org_access ON public.pipeline TO org
       select r.id
       from resource r
       join integration i on r.integration_id = i.id
-      where i.org_id = current_setting('org.id', true)
+      where i.org_id = jwt_org_id()
     ) @> array[source_id, destination_id]
     -- Pipeline must be fully within the org
   ));

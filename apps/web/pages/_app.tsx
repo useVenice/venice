@@ -96,7 +96,7 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
             }>
             <SessionContextProvider supabase={supabase}>
               <_VeniceProvider queryClient={queryClient}>
-                <InvalidateQueriesOnPostgresChanges supabase={supabase} />
+                <InvalidateQueriesOnPostgresChanges client={supabase} />
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>

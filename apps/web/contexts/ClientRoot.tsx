@@ -1,17 +1,15 @@
 'use client'
 
 import {useAuth} from '@clerk/nextjs'
-import type {SupabaseClient} from '@supabase/auth-helpers-nextjs'
+import type {RealtimeClient} from '@supabase/realtime-js'
 import {QueryClientProvider} from '@tanstack/react-query'
-import React, {useEffect} from 'react'
+import React, {useEffect, useRef} from 'react'
 
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 
-import {createSupabaseClient} from '@/lib/supabase-queries'
-
 import {createQueryClient} from '../lib/query-client'
-import {usePostgresChanges} from './realtime'
+import {createRealtimeClient, usePostgresChanges} from './realtime'
 import type {AsyncStatus} from './viewer-context'
 import {ViewerContext} from './viewer-context'
 
@@ -32,13 +30,19 @@ export function ClientRoot(props: {
   )
   const status: AsyncStatus = auth.isLoaded ? 'loading' : 'success'
 
+  const {current: realtime} = useRef(createRealtimeClient())
+
   useEffect(() => {
     void auth.getToken({template: 'supabase'}).then((t) => setAccessToken(t))
   }, [auth])
 
-  const {current: supabase} = React.useRef(
-    createSupabaseClient(() => accessToken),
-  )
+  useEffect(() => {
+    if (!realtime.isConnected()) {
+      realtime.connect()
+    }
+    realtime.setAuth(accessToken ?? null)
+  }, [realtime, accessToken])
+
   // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
   const {current: queryClient} = React.useRef(createQueryClient())
 
@@ -51,12 +55,12 @@ export function ClientRoot(props: {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).queryClient = queryClient
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  ;(globalThis as any).supabase = supabase
+  ;(globalThis as any).realtime = realtime
 
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider queryClient={queryClient} accessToken={accessToken}>
-        <InvalidateQueriesOnPostgresChanges supabase={supabase} />
+        <InvalidateQueriesOnPostgresChanges client={realtime} />
         <ViewerContext.Provider
           value={React.useMemo(
             () => ({accessToken, status, viewer}),
@@ -71,20 +75,18 @@ export function ClientRoot(props: {
 
 // MARK: - React
 export const InvalidateQueriesOnPostgresChanges = React.memo(
-  function InvalidateQueriesOnPostgresChanges(props: {
-    supabase: SupabaseClient
-  }) {
+  function InvalidateQueriesOnPostgresChanges(props: {client: RealtimeClient}) {
     const trpcUtils = trpcReact.useContext()
 
     const invalidateConnections = React.useCallback(() => {
       void trpcUtils.listConnections.invalidate()
       void trpcUtils.listPipelines.invalidate()
     }, [trpcUtils])
-    usePostgresChanges(props.supabase, 'resource', invalidateConnections)
-    usePostgresChanges(props.supabase, 'pipeline', invalidateConnections)
+    usePostgresChanges(props.client, 'resource', invalidateConnections)
+    usePostgresChanges(props.client, 'pipeline', invalidateConnections)
 
     // prettier-ignore
-    usePostgresChanges(props.supabase, 'integration', React.useCallback(() => {
+    usePostgresChanges(props.client, 'integration', React.useCallback(() => {
       void trpcUtils.adminGetIntegration.invalidate()
       void trpcUtils.adminListIntegrations.invalidate()
     }, [trpcUtils]))

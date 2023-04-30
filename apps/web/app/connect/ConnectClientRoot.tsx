@@ -60,7 +60,7 @@ export function ConnectClientRoot(props: {
           config={veniceCommonConfig}
           accessToken={props.accessToken}
           developerMode={false}>
-          <InvalidateQueriesOnPostgresChanges supabase={supabase} />
+          <InvalidateQueriesOnPostgresChanges client={supabase} />
           <SessionContextProvider supabase={supabase}>
             {props.children}
           </SessionContextProvider>
