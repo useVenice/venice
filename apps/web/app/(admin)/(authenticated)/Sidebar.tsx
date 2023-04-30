@@ -1,6 +1,7 @@
 import * as lucide from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {usePathname, useRouter} from 'next/navigation'
 
 import {Button, ScrollArea} from '@usevenice/ui/new-components'
 
@@ -69,6 +70,7 @@ const sectionedLinks: Array<{
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Sidebar({className}: SidebarProps) {
+  const pathname = usePathname()
   return (
     <nav className={cn('flex h-full flex-col', className)}>
       <ScrollArea className="h-full px-2">
@@ -85,7 +87,9 @@ export function Sidebar({className}: SidebarProps) {
                   return (
                     <Link href={link.href} key={link.href}>
                       <Button
-                        variant="secondary"
+                        variant={
+                          pathname === link.href ? 'outline' : 'secondary'
+                        }
                         size="sm"
                         className="w-full justify-start">
                         {Icon && <Icon className="mr-2 h-4 w-4" />}
