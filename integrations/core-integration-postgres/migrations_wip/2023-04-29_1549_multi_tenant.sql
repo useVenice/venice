@@ -1,5 +1,3 @@
--- Introduce the concept of workspaces and members.
-
 --- Clean up previous ---
 
 DROP POLICY IF EXISTS admin_access ON raw_transaction;
@@ -20,6 +18,13 @@ DROP TABLE IF EXISTS public.workspace_member CASCADE;
 DROP FUNCTION IF EXISTS auth.workspace_ids CASCADE;
 DROP FUNCTION IF EXISTS auth.user_workspace_ids CASCADE;
 
+-- Not dropping the previous tables yet, but we will start iwht policies
+DROP POLICY IF EXISTS end_user_access ON raw_account;
+DROP POLICY IF EXISTS end_user_access ON raw_commodity;
+DROP POLICY IF EXISTS end_user_access ON raw_transaction;
+
+-- Introduce org_id finally --
+
 ALTER TABLE "public"."integration" ADD COLUMN org_id varchar NOT NULL;
 CREATE INDEX IF NOT EXISTS integration_org_id ON "public"."integration" (org_id);
 ALTER TABLE "public"."integration" ADD COLUMN display_name varchar;
@@ -27,7 +32,7 @@ ALTER TABLE "public"."integration" ADD COLUMN display_name varchar;
 --- New helper functions that no longer depend on auth
 
 -- Even this is hardly used, can basically drop auth.uid as we don't use it
--- DROP FUNCTION IF EXISTS auth.uid CASCADE;
+
 CREATE OR REPLACE FUNCTION jwt_sub() RETURNS varchar LANGUAGE sql STABLE
 AS $function$
   select coalesce(
