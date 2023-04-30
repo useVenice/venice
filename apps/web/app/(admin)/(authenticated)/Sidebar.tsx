@@ -1,7 +1,7 @@
 import * as lucide from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {usePathname, useRouter} from 'next/navigation'
+import {usePathname} from 'next/navigation'
 
 import {Button, ScrollArea} from '@usevenice/ui/new-components'
 

@@ -43,8 +43,13 @@ export function ClientRoot(props: {
     realtime.setAuth(accessToken ?? null)
   }, [realtime, accessToken])
 
-  // NOTE: Should change queryClient when authenticated identity changes to reset all trpc cache
+  // NOTE: Recreate query client does not seem to do the trick... so we explicitly invalidate
   const {current: queryClient} = React.useRef(createQueryClient())
+  useEffect(() => {
+    console.log('invalidate all queries')
+    void queryClient.invalidateQueries()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.userId, auth.orgId])
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).accessToken = accessToken
