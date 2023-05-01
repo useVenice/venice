@@ -62,7 +62,11 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
 
   return (
     <div className="flex h-screen w-screen flex-col">
-      <div className="flex h-12 items-center gap-2 border-b p-4">
+      <main className="ml-[240px] mt-12">
+        {auth.orgId ? children : <div>Create an org to begin</div>}
+      </main>
+      <Sidebar className="fixed bottom-0 left-0 top-12 w-[240px] border-r bg-white" />
+      <header className="fixed inset-x-0 top-0 flex h-12 items-center gap-2 border-b bg-white p-4">
         {/* Not working because of bug in clerk js that is unclear that results in hydration issue.. */}
         <NoSSR>
           <OrganizationSwitcher hidePersonal />
@@ -70,13 +74,7 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
           <div className="grow" /> {/* Spacer */}
           <UserButton showName />
         </NoSSR>
-      </div>
-      <div className="grid grow grid-cols-5">
-        <Sidebar />
-        <div className="col-span-4 border-l p-4">
-          {auth.orgId ? children : <div>Create an org to begin</div>}
-        </div>
-      </div>
+      </header>
     </div>
   )
 }
