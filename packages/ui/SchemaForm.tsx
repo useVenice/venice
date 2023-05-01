@@ -14,13 +14,18 @@ const theme: ThemeProps = {widgets: {}}
 export const JsonSchemaForm = withTheme(theme)
 
 // Consider renaming this to zodSchemaForm
-export function SchemaForm(props: {schema: z.ZodTypeAny; className?: string}) {
+export function SchemaForm(props: {
+  schema: z.ZodTypeAny
+  className?: string
+  formData?: unknown
+}) {
   const jsonSchema = zodToJsonSchema(props.schema) as RJSFSchema
   console.log('[SchemaForm] jsonSchema', jsonSchema)
   return (
     <JsonSchemaForm
       className={cn('schema-form', props.className)}
       schema={jsonSchema}
+      formData={props.formData}
       validator={validator}
       onChange={console.log}
       onSubmit={console.log}

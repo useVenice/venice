@@ -98,7 +98,7 @@ export function Sidebar({className}: SidebarProps) {
                     <Link href={link.href} key={link.href}>
                       <Button
                         variant={
-                          pathname === link.href ? 'outline' : 'secondary'
+                          pathname === link.href ? 'outline' : 'ghost'
                         }
                         size="sm"
                         className="w-full justify-start">

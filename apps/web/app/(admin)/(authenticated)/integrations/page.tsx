@@ -92,7 +92,10 @@ export function EditIntegrationSheet({
           </div>
         </SheetHeader>
         <div className="overflow-scroll">
-          <SchemaForm schema={provider.def.integrationConfig ?? z.object({})} />
+          <SchemaForm
+            schema={provider.def.integrationConfig ?? z.object({})}
+            formData={int.config}
+          />
         </div>
         <SheetFooter className="shrink-0">
           <Button type="submit">Save changes</Button>
