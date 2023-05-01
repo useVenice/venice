@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import {initTRPC} from '@trpc/server'
+
 import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
-import {R, Rx, fromMaybePromise, rxjs, z} from '@usevenice/util'
-import zodToJsonSchema from 'zod-to-json-schema'
+import {
+  fromMaybePromise,
+  R,
+  Rx,
+  rxjs,
+  z,
+  zodToJsonSchema,
+} from '@usevenice/util'
+
 import type {ABMessage, ABMessageStream} from './protocol/airbyte-protocol'
 import {abMessage} from './protocol/airbyte-protocol'
 import type {AirbyteStream} from './protocol/airbyte-protocol.gen'
-import {defaultTitleAsJsonPath, readJson} from './utils'
+import {readJson} from './utils'
 
 const trpcServer = initTRPC.create()
 const procedure = trpcServer.procedure
@@ -35,9 +43,7 @@ export function makeAirbyteConnector(provider: AnySyncProvider) {
             protocol_version: '0.2.0',
             documentationUrl: `https://github.com/useVenice/venice/tree/main/integrations/integration-${provider.name}`,
             // Add all the other stuff we support
-            connectionSpecification: defaultTitleAsJsonPath(
-              zodToJsonSchema(connSpec),
-            ),
+            connectionSpecification: zodToJsonSchema(connSpec),
           }),
         ),
     ),

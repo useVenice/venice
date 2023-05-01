@@ -12,9 +12,7 @@
     "@usevenice/util": "workspace:*",
     "@zodios/core": "11.0.0-beta.18",
     "@zodios/fetch": "11.0.0-beta.18",
-    "jsonschema-nodewalker": "1.0.6",
-    "zod": "3.21.4",
-    "zod-to-json-schema": "3.20.4"
+    "zod": "3.21.4"
   },
   "devDependencies": {
     "openapi-zod-client": "1.6.1"

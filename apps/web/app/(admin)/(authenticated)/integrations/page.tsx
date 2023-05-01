@@ -20,8 +20,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@usevenice/ui/new-components'
-import {R, sort, titleCase, urlFromImage} from '@usevenice/util'
+import {R, sort, titleCase, urlFromImage, z} from '@usevenice/util'
 
+import {SchemaForm} from '@/../../packages/ui'
 import {cn} from '@/lib/utils'
 
 const allProviders = sort(
@@ -35,6 +36,8 @@ const allProviders = sort(
     stage: provider.metadata?.stage ?? 'alpha',
     platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
     categories: provider.metadata?.categories ?? ['other'],
+
+    def: provider.def,
   })),
 ).desc((p) => zIntegrationStage.options.indexOf(p.stage))
 
@@ -57,8 +60,11 @@ export function EditIntegrationSheet({
           Edit
         </Button>
       </SheetTrigger>
-      <SheetContent position="right" size="lg" className="bg-white">
-        <SheetHeader>
+      <SheetContent
+        position="right"
+        size="lg"
+        className="flex flex-col bg-white">
+        <SheetHeader className="shrink-0">
           <SheetTitle>
             Edit {provider.displayName} integration ({int.id})
           </SheetTitle>
@@ -87,21 +93,10 @@ export function EditIntegrationSheet({
             {/* Add help text here */}
           </div>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
+        <div className="overflow-scroll">
+          <SchemaForm schema={provider.def.integrationConfig ?? z.object({})} />
         </div>
-        <SheetFooter>
+        <SheetFooter className="shrink-0">
           <Button type="submit">Save changes</Button>
         </SheetFooter>
       </SheetContent>
@@ -118,8 +113,11 @@ export function AddIntegrationSheet(props: {providerName: string}) {
           Add
         </Button>
       </SheetTrigger>
-      <SheetContent position="right" size="lg" className="bg-white">
-        <SheetHeader>
+      <SheetContent
+        position="right"
+        size="lg"
+        className="flex flex-col bg-white">
+        <SheetHeader className="shrink-0">
           <SheetTitle>Add new {provider.displayName} integration</SheetTitle>
           {/* Sheet.description? But that's a */}
           <div className="flex max-h-[100px] flex-row items-center justify-between">
@@ -146,21 +144,10 @@ export function AddIntegrationSheet(props: {providerName: string}) {
             {/* Add help text here */}
           </div>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
+        <div className="overflow-scroll">
+          <SchemaForm schema={provider.def.integrationConfig ?? z.object({})} />
         </div>
-        <SheetFooter>
+        <SheetFooter className="shrink-0">
           <Button type="submit">Save changes</Button>
         </SheetFooter>
       </SheetContent>
