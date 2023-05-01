@@ -25,12 +25,19 @@ export const zIntegrationCategory = z.enum([
   'other',
 ])
 
+export const zIntegrationStage = z.enum([
+  'hidden',
+  'alpha',
+  'beta',
+  'production',
+])
+
 export interface IntegrationMetadata {
   logoUrl?: string
   logoSvg?: string
   displayName?: string
   platforms?: Array<'cloud' | 'local'>
-  status?: 'hidden' | 'alpha' | 'beta' | 'production'
+  stage?: z.infer<typeof zIntegrationStage>
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
   categories?: Array<z.infer<typeof zIntegrationCategory>>
 }

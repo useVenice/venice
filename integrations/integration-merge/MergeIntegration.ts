@@ -57,6 +57,7 @@ export const mergeImpl = {
   name: 'merge',
   metadata: {
     displayName: 'merge.dev',
+    stage: 'beta',
     logoSvg: mergeLogoSvg,
     categories: ['accounting', 'commerce'],
   },

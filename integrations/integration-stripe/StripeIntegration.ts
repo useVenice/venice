@@ -37,7 +37,11 @@ const helpers = defHelpers(stripeDef)
 
 export const stripeImpl = {
   name: 'stripe',
-  metadata: {categories: ['commerce'], logoUrl: '/_assets/logo-stripe.png'},
+  metadata: {
+    categories: ['commerce'],
+    logoUrl: '/_assets/logo-stripe.png',
+    stage: 'beta',
+  },
   def: stripeDef,
   helpers,
   extension: {

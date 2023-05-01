@@ -12,7 +12,7 @@ const def = makeSyncProvider.def({
 })
 
 export const corePostgresProvider = makeSyncProvider({
-  metadata: {status: 'hidden'},
+  metadata: {stage: 'hidden'},
   ...makeSyncProvider.defaults,
   def,
   destinationSync: ({settings: {databaseUrl}}) => {

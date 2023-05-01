@@ -4,35 +4,53 @@ import Image from 'next/image'
 
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider} from '@usevenice/cdk-core'
-import {zIntegrationCategory} from '@usevenice/cdk-core'
+import {zIntegrationCategory, zIntegrationStage} from '@usevenice/cdk-core'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {Button, Card} from '@usevenice/ui/new-components'
-import {titleCase, urlFromImage} from '@usevenice/util'
+import {Badge, Button, Card} from '@usevenice/ui/new-components'
+import {sort, titleCase, urlFromImage} from '@usevenice/util'
 
-const allProviders = PROVIDERS.map((provider: AnySyncProvider) => ({
-  // ...provider,
-  name: provider.name,
-  displayName: provider.metadata?.displayName ?? titleCase(provider.name),
-  logoUrl: provider.metadata?.logoSvg
-    ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
-    : provider.metadata?.logoUrl,
-  status: provider.metadata?.status ?? 'alpha',
-  platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
-  categories: provider.metadata?.categories ?? ['other'],
-}))
+import {cn} from '@/lib/utils'
 
-const availableProviders = allProviders.filter((p) => p.status !== 'hidden')
+const allProviders = sort(
+  PROVIDERS.map((provider: AnySyncProvider) => ({
+    // ...provider,
+    name: provider.name,
+    displayName: provider.metadata?.displayName ?? titleCase(provider.name),
+    logoUrl: provider.metadata?.logoSvg
+      ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
+      : provider.metadata?.logoUrl,
+    stage: provider.metadata?.stage ?? 'alpha',
+    platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
+    categories: provider.metadata?.categories ?? ['other'],
+  })),
+).desc((p) => zIntegrationStage.options.indexOf(p.stage))
+
+const availableProviders = allProviders.filter((p) => p.stage !== 'hidden')
 
 const ProviderCard = ({
   provider,
   actionText,
+  onAction,
 }: {
   provider: (typeof allProviders)[number]
   actionText: string
+  onAction?: () => void
 }) => (
   <Card
     key={provider.name}
-    className="m-3 flex h-40 w-40 flex-col items-center p-2">
+    className="m-3 flex h-48 w-48 flex-col items-center p-2">
+    <div className="flex self-stretch">
+      <Badge
+        variant="secondary"
+        className={cn(
+          'ml-auto',
+          provider.stage === 'production' && 'bg-green-200',
+          provider.stage === 'beta' && 'bg-blue-200',
+          provider.stage === 'alpha' && 'bg-pink-50',
+        )}>
+        {provider.stage}
+      </Badge>
+    </div>
     {provider.logoUrl ? (
       <Image
         width={100}
@@ -46,7 +64,7 @@ const ProviderCard = ({
         <caption>{provider.displayName}</caption>
       </div>
     )}
-    <Button className="mt-2" variant="default">
+    <Button className="mt-2" variant="default" onClick={onAction}>
       {actionText}
     </Button>
   </Card>
@@ -101,7 +119,18 @@ export default function IntegrationsPage() {
                 <ProviderCard
                   key={`${category}-${provider.name}`}
                   provider={provider}
-                  actionText="Add"
+                  actionText={
+                    provider.stage === 'alpha' ? 'Request access' : 'Add'
+                  }
+                  onAction={() => {
+                    if (provider.stage === 'alpha') {
+                      window.open(
+                        `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
+                      )
+                    } else {
+                      // open modal...
+                    }
+                  }}
                 />
               ))}
             </div>

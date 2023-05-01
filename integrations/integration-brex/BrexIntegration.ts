@@ -43,7 +43,11 @@ const helpers = defHelpers(brexDef)
 export const brexImpl = {
   def: brexDef,
   name: 'brex',
-  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-brex.png'},
+  metadata: {
+    categories: ['banking'],
+    logoUrl: '/_assets/logo-brex.png',
+    stage: 'beta',
+  },
   standardMappers: {
     institution: () => ({
       name: 'Brex',

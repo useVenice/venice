@@ -16,7 +16,7 @@ const debugProviderDef = makeSyncProvider.def({
 export const debugProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def: debugProviderDef,
-  metadata: {status: 'hidden'},
+  metadata: {stage: 'hidden'},
   sourceSync: () => rxjs.EMPTY,
   destinationSync: () => logLink({prefix: 'debug', verbose: true}),
   handleWebhook: (input) => ({
