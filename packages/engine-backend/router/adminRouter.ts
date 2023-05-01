@@ -1,6 +1,13 @@
 import {TRPCError} from '@trpc/server'
 
-import {handlersLink, sync, zEndUserId, zId, zRaw} from '@usevenice/cdk-core'
+import {
+  handlersLink,
+  makeId,
+  sync,
+  zEndUserId,
+  zId,
+  zRaw,
+} from '@usevenice/cdk-core'
 import {rxjs, z} from '@usevenice/util'
 
 import {adminProcedure, trpc} from './_base'
@@ -14,9 +21,40 @@ export const adminRouter = trpc.router({
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
-    .input(zRaw.integration.partial().required({id: true}))
-    .query(({input: {id, ...input}, ctx}) =>
-      ctx.helpers.patchReturning('integration', id, input),
+    .input(
+      zRaw.integration
+        .pick({
+          id: true,
+          providerName: true,
+          orgId: true,
+          config: true,
+          displayName: true,
+        })
+        .partial()
+        // Due to insert on conflict update it appears that orgId is actually required
+        // it will simply fail on the required field and never gets to on conflict update
+        // this makes me wonder if UPSERT should always be the default....
+        .required({orgId: true}),
+    )
+    .mutation(({input: {id: _id, providerName, ...input}, ctx}) => {
+      const id = _id
+        ? _id
+        : providerName && input.orgId
+        ? makeId('int', providerName, input.orgId)
+        : null
+      if (!id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Missing id or providerName/orgId',
+        })
+      }
+      return ctx.helpers.patchReturning('integration', id, input)
+    }),
+  // Need a tuple for some reason... otherwise seems to not work in practice.
+  adminDeleteIntegration: adminProcedure
+    .input(z.tuple([zId('int')]))
+    .mutation(({input: [intId], ctx}) =>
+      ctx.helpers.metaService.tables.integration.delete(intId),
     ),
   adminCreateConnectToken: adminProcedure
     .input(z.object({endUserId: zEndUserId, orgId: zId('org')}))

@@ -1,6 +1,8 @@
 'use client'
 
+import {Loader2} from 'lucide-react'
 import Image from 'next/image'
+import React from 'react'
 
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider} from '@usevenice/cdk-core'
@@ -13,14 +15,16 @@ import {
   Card,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@usevenice/ui/new-components'
+import {SchemaForm} from '@usevenice/ui/SchemaForm'
 import {R, sort, titleCase, urlFromImage, z} from '@usevenice/util'
 
-import {SchemaForm} from '@/../../packages/ui'
+import {useCurrengOrg} from '@/contexts/viewer-context'
 import {cn} from '@/lib/utils'
 
 const allProviders = sort(
@@ -45,28 +49,44 @@ type Integration = RouterOutput['adminListIntegrations'][number]
 const availableProviders = allProviders.filter((p) => p.stage !== 'hidden')
 const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
 
-export function EditIntegrationSheet({
+export function IntegrationSheet({
   integration: int,
+  providerName,
 }: {
-  integration: Integration
+  integration?: Omit<Integration, 'providerName'>
+  providerName: string
 }) {
-  const provider = providerByName[int.providerName]!
+  const provider = providerByName[providerName]!
+
+  const {orgId} = useCurrengOrg()
+
+  const [open, setOpen] = React.useState(false)
+  const verb = int ? 'Edit' : 'Add'
+  // TODO: Add toast please
+  const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
+    onSuccess: () => setOpen(false),
+  })
+  const deleteIntegration = trpcReact.adminDeleteIntegration.useMutation({
+    onSuccess: () => setOpen(false),
+  })
+  const mutating = deleteIntegration.isLoading || upsertIntegration.isLoading
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button className="mt-2" variant="ghost">
-          Edit
+          {verb}
         </Button>
       </SheetTrigger>
       <SheetContent
         position="right"
         size="lg"
-        className="flex flex-col bg-white">
+        className="flex flex-col bg-background">
         <SheetHeader className="shrink-0">
           <SheetTitle>
-            Edit {provider.displayName} integration ({int.id})
+            {verb} {provider.displayName} integration
           </SheetTitle>
-          {/* Sheet.description? But that's a */}
+          {int && <SheetDescription>ID: {int.id}</SheetDescription>}
           <div className="flex max-h-[100px] flex-row items-center justify-between">
             {provider.logoUrl ? (
               <Image
@@ -91,65 +111,43 @@ export function EditIntegrationSheet({
             {/* Add help text here */}
           </div>
         </SheetHeader>
-        <div className="overflow-scroll">
-          <SchemaForm
-            schema={provider.def.integrationConfig ?? z.object({})}
-            formData={int.config}
-          />
+        <div className="grow overflow-scroll">
+          {provider.def.integrationConfig ? (
+            <SchemaForm
+              schema={provider.def.integrationConfig}
+              formData={int?.config}
+              onSubmit={({formData}) => {
+                console.log('formData submitted', formData)
+                upsertIntegration.mutate({
+                  ...(int ? {id: int.id} : {providerName}),
+                  orgId,
+                  config: formData,
+                })
+              }}
+            />
+          ) : (
+            <p>No configuration needed</p>
+          )}
         </div>
         <SheetFooter className="shrink-0">
-          <Button type="submit">Save changes</Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-export function AddIntegrationSheet(props: {providerName: string}) {
-  const provider = providerByName[props.providerName]!
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button className="mt-2" variant="ghost">
-          Add
-        </Button>
-      </SheetTrigger>
-      <SheetContent
-        position="right"
-        size="lg"
-        className="flex flex-col bg-white">
-        <SheetHeader className="shrink-0">
-          <SheetTitle>Add new {provider.displayName} integration</SheetTitle>
-          {/* Sheet.description? But that's a */}
-          <div className="flex max-h-[100px] flex-row items-center justify-between">
-            {provider.logoUrl ? (
-              <Image
-                width={100}
-                height={100}
-                src={provider.logoUrl}
-                alt={provider.displayName}
-              />
-            ) : (
-              <caption>{provider.displayName}</caption>
+          {int && (
+            <Button
+              disabled={mutating}
+              className="mr-auto"
+              variant="destructive"
+              onClick={() => deleteIntegration.mutate([int.id])}>
+              {deleteIntegration.isLoading && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete
+            </Button>
+          )}
+          <Button disabled={mutating} type="submit">
+            {upsertIntegration.isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            <Badge
-              variant="secondary"
-              className={cn(
-                'ml-auto',
-                provider.stage === 'production' && 'bg-green-200',
-                provider.stage === 'beta' && 'bg-blue-200',
-                provider.stage === 'alpha' && 'bg-pink-50',
-              )}>
-              {provider.stage}
-            </Badge>
-            {/* Add help text here */}
-          </div>
-        </SheetHeader>
-        <div className="overflow-scroll">
-          <SchemaForm schema={provider.def.integrationConfig ?? z.object({})} />
-        </div>
-        <SheetFooter className="shrink-0">
-          <Button type="submit">Save changes</Button>
+            Save
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -210,7 +208,10 @@ export default function IntegrationsPage() {
             const provider = providerByName[int.providerName]!
             return (
               <ProviderCard key={int.id} provider={provider}>
-                <EditIntegrationSheet integration={int} />
+                <IntegrationSheet
+                  integration={int}
+                  providerName={provider.name}
+                />
               </ProviderCard>
             )
           })}
@@ -252,7 +253,7 @@ export default function IntegrationsPage() {
                       Request access
                     </Button>
                   ) : (
-                    <AddIntegrationSheet providerName={provider.name} />
+                    <IntegrationSheet providerName={provider.name} />
                   )}
                 </ProviderCard>
               ))}

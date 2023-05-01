@@ -1,5 +1,7 @@
-import type {Viewer} from '@usevenice/cdk-core'
+import {useAuth} from '@clerk/nextjs'
 import React from 'react'
+
+import type {Viewer} from '@usevenice/cdk-core'
 
 /** TODO This ought to be a bit more generic... */
 export type AsyncStatus = 'initial' | 'loading' | 'error' | 'success'
@@ -25,4 +27,12 @@ export function useViewerContext() {
     )
   }
   return context
+}
+
+export const useCurrengOrg = () => {
+  const auth = useAuth()
+  if (!auth.orgId) {
+    throw new Error('No current org')
+  }
+  return auth
 }
