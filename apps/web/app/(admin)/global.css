@@ -5,3 +5,182 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .step {
+    counter-increment: step;
+  }
+
+  .step:before {
+    @apply absolute w-8 h-8 bg-muted rounded-full font-medium text-center text-base inline-flex items-center justify-center -indent-px;
+    @apply ml-[-41px];
+    content: counter(step);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+
+@layer components {
+  .schema-form {
+    /* Left side is not needed due to fieldset left margin */
+    @apply mr-2;
+  }
+  /* Aka sections */
+  .schema-form fieldset > legend {
+    /* Display block doesn't work for some reason. Does not fill parent width which is still a div, not sure why */
+    @apply mb-3 pb-1 w-full border-b pt-4 text-xl font-semibold;
+  }
+  .schema-form fieldset > div {
+    /* Offset to indicate hierarchy */
+    @apply ml-3;
+  }
+  /* Label + component = group */
+  .schema-form .form-group {
+    @apply mb-2;
+  }
+  .schema-form label.control-label {
+    @apply block mb-1 font-bold;
+  }
+  .schema-form p.field-description {
+    @apply mb-1;
+  }
+  /* Select component, and maybe other .form-control too */
+  .schema-form .form-control {
+    @apply block w-full rounded-md border border-input p-2;
+  }
+  /* Input component */
+  .schema-form input {
+    @apply flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Array elements */
+  .schema-form .array-item {
+    /* @apply grid grid-cols-12; */
+    @apply flex flex-row items-end gap-4;
+  }
+  .schema-form .array-item .col-xs-9 {
+    /* @apply col-span-9; */
+    @apply grow;
+  }
+  .schema-form .array-item .col-xs-3 {
+    /* @apply col-span-3; */
+    @apply shrink-0;
+  }
+  .schema-form .array-item .array-item-toolbox {
+    /* mb-4 to match .form-group */
+    @apply mb-4 flex items-center justify-end;
+  }
+  /* Icons */
+  .schema-form .glyphicon {
+    @apply font-normal not-italic;
+  }
+  .schema-form .glyphicon-remove::before {
+    content: 'Remove';
+  }
+  .schema-form .glyphicon-arrow-up::before {
+    content: 'Up';
+  }
+  .schema-form .glyphicon-arrow-down::before {
+    content: 'Down';
+  }
+  .schema-form .glyphicon-plus::before {
+    content: 'Add';
+  }
+  /* Buttons (tends to be icon buttons */
+  .schema-form .btn {
+    @apply rounded-md p-2 border mx-1;
+  }
+  .schema-form .btn-danger {
+    @apply border-red-200;
+  }
+  .schema-form .btn-add {
+    @apply border-blue-200;
+  }
+  .schema-form button[type='submit'] {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+}

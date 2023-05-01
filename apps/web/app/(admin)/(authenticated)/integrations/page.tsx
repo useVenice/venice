@@ -11,8 +11,6 @@ import {
   Badge,
   Button,
   Card,
-  Input,
-  Label,
   Sheet,
   SheetContent,
   SheetFooter,
@@ -56,7 +54,7 @@ export function EditIntegrationSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="mt-2" variant="default">
+        <Button className="mt-2" variant="ghost">
           Edit
         </Button>
       </SheetTrigger>
@@ -109,7 +107,7 @@ export function AddIntegrationSheet(props: {providerName: string}) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="mt-2" variant="default">
+        <Button className="mt-2" variant="ghost">
           Add
         </Button>
       </SheetTrigger>
@@ -242,7 +240,7 @@ export default function IntegrationsPage() {
                   {provider.stage === 'alpha' ? (
                     <Button
                       className="mt-2"
-                      variant="default"
+                      variant="ghost"
                       onClick={() =>
                         window.open(
                           `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
