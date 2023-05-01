@@ -1,4 +1,5 @@
 import * as R from 'remeda'
+import {stringify as _stringify} from 'qs'
 import type {ParsedUrl, ParseOptions} from 'query-string'
 import {
   parse as _parseQueryParams,
@@ -10,7 +11,9 @@ import type {AnyRecord} from './type-utils'
 
 export {stringifyUrl} from 'query-string'
 
-import {stringify as _stringify} from 'qs'
+export function urlFromImage(input: {type: 'svg'; data: string}) {
+  return `data:image/svg+xml,${encodeURIComponent(input.data)}`
+}
 
 /**
  * qs supports nested query param, needed by apis such as Stripe.

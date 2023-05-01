@@ -14,6 +14,12 @@ import type {
   SyncOperation,
 } from './protocol'
 
+export interface IntegrationMetadata {
+  logoUrl?: string
+  logoSvg?: string
+  displayName?: string
+}
+
 // MARK: - Shared connect types
 
 /** Useful for establishing the initial pipeline when creating a connection for the first time */
@@ -414,6 +420,7 @@ export function makeSyncProvider<
   TExtension,
 >(impl: {
   def: T
+  metadata?: IntegrationMetadata
   standardMappers: TMappers
 
   // MARK: - Connection management

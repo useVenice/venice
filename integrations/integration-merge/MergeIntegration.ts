@@ -1,9 +1,11 @@
 /** Used for the side effect of window.MergeLink */
 import type {UseMergeLinkProps} from '@mergeapi/react-merge-link/dist/types'
-import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
 
+import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
 import {CANCELLATION_TOKEN, defHelpers, useScript} from '@usevenice/cdk-core'
 import {Rx, rxjs, z, zCast} from '@usevenice/util'
+
+import {mergeLogoSvg} from './merge-logo.svg'
 import type {components} from './merge.accounting.gen'
 import {makeMergeClient, zCategory, zIntegration} from './MergeClient'
 
@@ -53,6 +55,10 @@ const helpers = defHelpers(mergeDef)
 export const mergeImpl = {
   def: mergeDef,
   name: 'merge',
+  metadata: {
+    displayName: 'merge.dev',
+    logoSvg: mergeLogoSvg,
+  },
 
   standardMappers: {
     institution: (ins) => ({

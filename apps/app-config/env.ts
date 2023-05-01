@@ -100,8 +100,6 @@ export const PROVIDERS = [
   venmoProvider,
   // New ones
   stripeImpl as unknown as typeof plaidProvider, // Hack for now..
-  mergeImpl as unknown as typeof plaidProvider, // Hack for now...
-  heronImpl as unknown as typeof plaidProvider, // Hack for now...
 ] as const
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
