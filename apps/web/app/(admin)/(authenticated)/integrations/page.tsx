@@ -21,7 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@usevenice/ui/new-components'
-import {SchemaForm} from '@usevenice/ui/SchemaForm'
+import {SchemaForm, SchemaFormElement} from '@usevenice/ui/SchemaForm'
 import {R, sort, titleCase, urlFromImage, z} from '@usevenice/util'
 
 import {useCurrengOrg} from '@/contexts/viewer-context'
@@ -70,6 +70,7 @@ export function IntegrationSheet({
     onSuccess: () => setOpen(false),
   })
   const mutating = deleteIntegration.isLoading || upsertIntegration.isLoading
+  const formRef = React.useRef<SchemaFormElement>(null)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -86,7 +87,7 @@ export function IntegrationSheet({
           <SheetTitle>
             {verb} {provider.displayName} integration
           </SheetTitle>
-          {int && <SheetDescription>ID: {int.id}</SheetDescription>}
+
           <div className="flex max-h-[100px] flex-row items-center justify-between">
             {provider.logoUrl ? (
               <Image
@@ -110,10 +111,12 @@ export function IntegrationSheet({
             </Badge>
             {/* Add help text here */}
           </div>
+          {int && <SheetDescription>ID: {int.id}</SheetDescription>}
         </SheetHeader>
         <div className="grow overflow-scroll">
           {provider.def.integrationConfig ? (
             <SchemaForm
+              ref={formRef}
               schema={provider.def.integrationConfig}
               formData={int?.config}
               onSubmit={({formData}) => {
@@ -124,6 +127,7 @@ export function IntegrationSheet({
                   config: formData,
                 })
               }}
+              hideSubmitButton
             />
           ) : (
             <p>No configuration needed</p>
@@ -142,7 +146,10 @@ export function IntegrationSheet({
               Delete
             </Button>
           )}
-          <Button disabled={mutating} type="submit">
+          <Button
+            disabled={mutating}
+            type="submit"
+            onClick={() => formRef.current?.submit()}>
             {upsertIntegration.isLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
