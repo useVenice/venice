@@ -6,7 +6,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* Via shadcn */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -103,6 +103,7 @@
   }
 }
 
+/* Custom stuff */
 
 @layer components {
   .schema-form {

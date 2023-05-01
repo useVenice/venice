@@ -65,8 +65,8 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
       <main className="ml-[240px] mt-12">
         {auth.orgId ? children : <div>Create an org to begin</div>}
       </main>
-      <Sidebar className="fixed bottom-0 left-0 top-12 w-[240px] border-r bg-white" />
-      <header className="fixed inset-x-0 top-0 flex h-12 items-center gap-2 border-b bg-white p-4">
+      <Sidebar className="fixed bottom-0 left-0 top-12 w-[240px] border-r bg-background" />
+      <header className="fixed inset-x-0 top-0 flex h-12 items-center gap-2 border-b bg-background p-4">
         {/* Not working because of bug in clerk js that is unclear that results in hydration issue.. */}
         <NoSSR>
           <OrganizationSwitcher hidePersonal />

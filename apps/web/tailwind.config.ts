@@ -4,6 +4,7 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 import {VeniceTheme} from './themes'
 
 export default {
+  darkMode: 'class',
   content: [
     // No styles in here, be very careful about including extra
     // paths here we don't need otherwise it causes massive DX perf issues

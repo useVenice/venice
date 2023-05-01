@@ -79,6 +79,7 @@
     "@types/react-dom": "18.0.10",
     "autoprefixer": "*",
     "csstype": "*",
+    "jiti": "*",
     "node-loader": "2.0.0",
     "openapi-typescript": "6.2.1",
     "openapi-typescript-fetch": "1.1.3",
