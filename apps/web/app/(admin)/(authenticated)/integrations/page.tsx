@@ -13,6 +13,7 @@ import {
   Badge,
   Button,
   Card,
+  Separator,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -21,7 +22,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@usevenice/ui/new-components'
-import {SchemaForm, SchemaFormElement} from '@usevenice/ui/SchemaForm'
+import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
+import {SchemaForm} from '@usevenice/ui/SchemaForm'
 import {R, sort, titleCase, urlFromImage, z} from '@usevenice/util'
 
 import {useCurrengOrg} from '@/contexts/viewer-context'
@@ -113,6 +115,7 @@ export function IntegrationSheet({
           </div>
           {int && <SheetDescription>ID: {int.id}</SheetDescription>}
         </SheetHeader>
+        <Separator orientation="horizontal" />
         <div className="grow overflow-scroll">
           {provider.def.integrationConfig ? (
             <SchemaForm
@@ -133,6 +136,7 @@ export function IntegrationSheet({
             <p>No configuration needed</p>
           )}
         </div>
+        <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">
           {int && (
             <Button

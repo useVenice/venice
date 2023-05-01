@@ -8,7 +8,7 @@ import {
   zId,
   zRaw,
 } from '@usevenice/cdk-core'
-import {rxjs, z} from '@usevenice/util'
+import {makeUlid, rxjs, z} from '@usevenice/util'
 
 import {adminProcedure, trpc} from './_base'
 
@@ -40,7 +40,7 @@ export const adminRouter = trpc.router({
       const id = _id
         ? _id
         : providerName && input.orgId
-        ? makeId('int', providerName, input.orgId)
+        ? makeId('int', providerName, makeUlid())
         : null
       if (!id) {
         throw new TRPCError({
