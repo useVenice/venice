@@ -5,9 +5,22 @@ import Image from 'next/image'
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider} from '@usevenice/cdk-core'
 import {zIntegrationCategory, zIntegrationStage} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {Badge, Button, Card} from '@usevenice/ui/new-components'
-import {sort, titleCase, urlFromImage} from '@usevenice/util'
+import {
+  Badge,
+  Button,
+  Card,
+  Input,
+  Label,
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@usevenice/ui/new-components'
+import {R, sort, titleCase, urlFromImage} from '@usevenice/util'
 
 import {cn} from '@/lib/utils'
 
@@ -25,16 +38,142 @@ const allProviders = sort(
   })),
 ).desc((p) => zIntegrationStage.options.indexOf(p.stage))
 
+type ProviderMeta = (typeof allProviders)[number]
+type Integration = RouterOutput['adminListIntegrations'][number]
+
 const availableProviders = allProviders.filter((p) => p.stage !== 'hidden')
+const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
+
+export function EditIntegrationSheet({
+  integration: int,
+}: {
+  integration: Integration
+}) {
+  const provider = providerByName[int.providerName]!
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button className="mt-2" variant="default">
+          Edit
+        </Button>
+      </SheetTrigger>
+      <SheetContent position="right" size="lg" className="bg-white">
+        <SheetHeader>
+          <SheetTitle>
+            Edit {provider.displayName} integration ({int.id})
+          </SheetTitle>
+          {/* Sheet.description? But that's a */}
+          <div className="flex max-h-[100px] flex-row items-center justify-between">
+            {provider.logoUrl ? (
+              <Image
+                width={100}
+                height={100}
+                src={provider.logoUrl}
+                alt={provider.displayName}
+              />
+            ) : (
+              <caption>{provider.displayName}</caption>
+            )}
+            <Badge
+              variant="secondary"
+              className={cn(
+                'ml-auto',
+                provider.stage === 'production' && 'bg-green-200',
+                provider.stage === 'beta' && 'bg-blue-200',
+                provider.stage === 'alpha' && 'bg-pink-50',
+              )}>
+              {provider.stage}
+            </Badge>
+            {/* Add help text here */}
+          </div>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" value="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" value="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <SheetFooter>
+          <Button type="submit">Save changes</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+export function AddIntegrationSheet(props: {providerName: string}) {
+  const provider = providerByName[props.providerName]!
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button className="mt-2" variant="default">
+          Add
+        </Button>
+      </SheetTrigger>
+      <SheetContent position="right" size="lg" className="bg-white">
+        <SheetHeader>
+          <SheetTitle>Add new {provider.displayName} integration</SheetTitle>
+          {/* Sheet.description? But that's a */}
+          <div className="flex max-h-[100px] flex-row items-center justify-between">
+            {provider.logoUrl ? (
+              <Image
+                width={100}
+                height={100}
+                src={provider.logoUrl}
+                alt={provider.displayName}
+              />
+            ) : (
+              <caption>{provider.displayName}</caption>
+            )}
+            <Badge
+              variant="secondary"
+              className={cn(
+                'ml-auto',
+                provider.stage === 'production' && 'bg-green-200',
+                provider.stage === 'beta' && 'bg-blue-200',
+                provider.stage === 'alpha' && 'bg-pink-50',
+              )}>
+              {provider.stage}
+            </Badge>
+            {/* Add help text here */}
+          </div>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" value="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" value="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <SheetFooter>
+          <Button type="submit">Save changes</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}
 
 const ProviderCard = ({
   provider,
-  actionText,
-  onAction,
+  children,
 }: {
-  provider: (typeof allProviders)[number]
-  actionText: string
-  onAction?: () => void
+  provider: ProviderMeta
+  children?: React.ReactNode
 }) => (
   <Card
     key={provider.name}
@@ -64,9 +203,7 @@ const ProviderCard = ({
         <caption>{provider.displayName}</caption>
       </div>
     )}
-    <Button className="mt-2" variant="default" onClick={onAction}>
-      {actionText}
-    </Button>
+    {children}
   </Card>
 )
 
@@ -82,15 +219,11 @@ export default function IntegrationsPage() {
       {integrationsRes.data ? (
         <div className="flex flex-wrap">
           {integrationsRes.data.map((int) => {
-            const provider = allProviders.find(
-              (p) => p.name === int.providerName,
-            )
+            const provider = providerByName[int.providerName]!
             return (
-              <ProviderCard
-                key={int.id}
-                provider={provider!}
-                actionText="Edit"
-              />
+              <ProviderCard key={int.id} provider={provider}>
+                <EditIntegrationSheet integration={int} />
+              </ProviderCard>
             )
           })}
         </div>
@@ -118,20 +251,22 @@ export default function IntegrationsPage() {
               {providers.map((provider) => (
                 <ProviderCard
                   key={`${category}-${provider.name}`}
-                  provider={provider}
-                  actionText={
-                    provider.stage === 'alpha' ? 'Request access' : 'Add'
-                  }
-                  onAction={() => {
-                    if (provider.stage === 'alpha') {
-                      window.open(
-                        `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
-                      )
-                    } else {
-                      // open modal...
-                    }
-                  }}
-                />
+                  provider={provider}>
+                  {provider.stage === 'alpha' ? (
+                    <Button
+                      className="mt-2"
+                      variant="default"
+                      onClick={() =>
+                        window.open(
+                          `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
+                        )
+                      }>
+                      Request access
+                    </Button>
+                  ) : (
+                    <AddIntegrationSheet providerName={provider.name} />
+                  )}
+                </ProviderCard>
               ))}
             </div>
           </div>
