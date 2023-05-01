@@ -41,6 +41,7 @@ const def = makeSyncProvider.def({
 })
 
 export const fsProvider = makeSyncProvider({
+  metadata: {platforms: ['local'], displayName: 'File system'},
   ...makeSyncProvider.defaults,
   def,
   sourceSync: ({settings, state}) =>

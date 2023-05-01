@@ -184,6 +184,9 @@ importers:
       '@usevenice/integration-beancount':
         specifier: workspace:*
         version: link:../../integrations/integration-beancount
+      '@usevenice/integration-brex':
+        specifier: workspace:*
+        version: link:../../integrations/integration-brex
       '@usevenice/integration-expensify':
         specifier: workspace:*
         version: link:../../integrations/integration-expensify

@@ -1,10 +1,10 @@
 /** Used for the side effect of window.MergeLink */
 import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
-
 import {defHelpers} from '@usevenice/cdk-core'
 import {Rx, rxjs, z, zCast} from '@usevenice/util'
-import {makeBrexClient} from './BrexClient'
+
 import type {components} from './__generated__/transactions.gen'
+import {makeBrexClient} from './BrexClient'
 
 // TODO: Split into 3 files... Def aka common / Client / Server
 
@@ -43,7 +43,7 @@ const helpers = defHelpers(brexDef)
 export const brexImpl = {
   def: brexDef,
   name: 'brex',
-
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-brex.png'},
   standardMappers: {
     institution: () => ({
       name: 'Brex',

@@ -67,6 +67,11 @@ function globalId(realmId: string, entityId: string) {
 }
 
 export const QBOProvider = makeSyncProvider({
+  metadata: {
+    categories: ['accounting'],
+    displayName: 'Quickbooks Online',
+    logoUrl: '/_assets/logo-qbo.svg',
+  },
   ...veniceProviderBase(QBOProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

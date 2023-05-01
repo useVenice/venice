@@ -6,6 +6,7 @@ import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
+import {brexImpl} from '@usevenice/integration-brex'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {heronImpl} from '@usevenice/integration-heron'
 import {importProvider} from '@usevenice/integration-import'
@@ -100,6 +101,7 @@ export const PROVIDERS = [
   venmoProvider,
   // New ones
   stripeImpl as unknown as typeof plaidProvider, // Hack for now..
+  brexImpl as unknown as typeof plaidProvider, // Hack for now..
 ] as const
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */

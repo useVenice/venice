@@ -40,6 +40,7 @@ const _def = makeSyncProvider.def({
 export const venmoProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const venmoProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-venmo.png'},
   ...veniceProviderBase(venmoProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}, _extConn) => ({

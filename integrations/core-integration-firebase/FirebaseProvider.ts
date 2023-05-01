@@ -109,6 +109,7 @@ const def = makeSyncProvider.def({
 })
 
 export const firebaseProvider = makeSyncProvider({
+  metadata: {categories: ['database'], logoUrl: '/_assets/logo-firebase.png'},
   ...makeSyncProvider.defaults,
   def,
   sourceSync: ({settings, state}) => {

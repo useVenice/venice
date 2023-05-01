@@ -4,23 +4,30 @@ import Image from 'next/image'
 
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider} from '@usevenice/cdk-core'
+import {zIntegrationCategory} from '@usevenice/cdk-core'
 import {trpcReact} from '@usevenice/engine-frontend'
 import {Button, Card} from '@usevenice/ui/new-components'
 import {titleCase, urlFromImage} from '@usevenice/util'
 
-const providers = PROVIDERS.map((provider: AnySyncProvider) => ({
-  ...provider,
+const allProviders = PROVIDERS.map((provider: AnySyncProvider) => ({
+  // ...provider,
+  name: provider.name,
   displayName: provider.metadata?.displayName ?? titleCase(provider.name),
   logoUrl: provider.metadata?.logoSvg
     ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
     : provider.metadata?.logoUrl,
+  status: provider.metadata?.status ?? 'alpha',
+  platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
+  categories: provider.metadata?.categories ?? ['other'],
 }))
+
+const availableProviders = allProviders.filter((p) => p.status !== 'hidden')
 
 const ProviderCard = ({
   provider,
   actionText,
 }: {
-  provider: (typeof providers)[number]
+  provider: (typeof allProviders)[number]
   actionText: string
 }) => (
   <Card
@@ -57,7 +64,9 @@ export default function IntegrationsPage() {
       {integrationsRes.data ? (
         <div className="flex flex-wrap">
           {integrationsRes.data.map((int) => {
-            const provider = providers.find((p) => p.name === int.providerName)
+            const provider = allProviders.find(
+              (p) => p.name === int.providerName,
+            )
             return (
               <ProviderCard
                 key={int.id}
@@ -75,15 +84,30 @@ export default function IntegrationsPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Available integrations
       </h2>
-      <div className="flex flex-wrap">
-        {providers.map((provider) => (
-          <ProviderCard
-            key={provider.name}
-            provider={provider}
-            actionText="Add"
-          />
-        ))}
-      </div>
+      {zIntegrationCategory.options.map((category) => {
+        const providers = availableProviders.filter((p) =>
+          p.categories.includes(category),
+        )
+        if (!providers.length) {
+          return null
+        }
+        return (
+          <div key={category}>
+            <h3 className="mb-4 ml-4 text-xl font-semibold tracking-tight">
+              {titleCase(category)}
+            </h3>
+            <div className="flex flex-wrap">
+              {providers.map((provider) => (
+                <ProviderCard
+                  key={`${category}-${provider.name}`}
+                  provider={provider}
+                  actionText="Add"
+                />
+              ))}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -79,6 +79,11 @@ const def = makeSyncProvider.def({
 })
 
 export const importProvider = makeSyncProvider({
+  metadata: {
+    displayName: 'CSV Import',
+    categories: ['flat-files'],
+    logoUrl: '/_assets/logo-import.png',
+  },
   ...veniceProviderBase(def, {
     // what do we do with the fact that conn has preset and entity itself has preset?
     sourceMapEntity: ({entity}, conn) =>

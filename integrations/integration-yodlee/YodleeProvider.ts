@@ -79,6 +79,7 @@ const _def = makeSyncProvider.def({
 export const yodleeProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const yodleeProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-yodlee.png'},
   ...veniceProviderBase(yodleeProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}, extConn) => ({

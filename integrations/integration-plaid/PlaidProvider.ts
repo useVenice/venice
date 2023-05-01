@@ -140,6 +140,7 @@ const def = makeSyncProvider.def.helpers(_def)
 
 export const plaidProvider = makeSyncProvider({
   metadata: {
+    categories: ['banking'],
     displayName: 'Plaid',
     /** https://commons.wikimedia.org/wiki/File:Plaid_logo.svg */
     logoSvg:

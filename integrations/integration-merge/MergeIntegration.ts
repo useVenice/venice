@@ -58,6 +58,7 @@ export const mergeImpl = {
   metadata: {
     displayName: 'merge.dev',
     logoSvg: mergeLogoSvg,
+    categories: ['accounting', 'commerce'],
   },
 
   standardMappers: {

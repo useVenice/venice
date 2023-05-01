@@ -12,6 +12,7 @@ const webhookProviderDef = makeSyncProvider.def({
 })
 
 export const webhookProvider = makeSyncProvider({
+  metadata: {categories: ['streaming'], logoUrl: '/_assets/logo-webhook.png'},
   ...makeSyncProvider.defaults,
   def: webhookProviderDef,
   destinationSync: ({settings: {destinationUrl}}) => {

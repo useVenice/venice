@@ -49,6 +49,7 @@ const _def = makeSyncProvider.def({
 export const saltedgeProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const saltedgeProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-saltedge.png'},
   ...veniceProviderBase(saltedgeProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}, c) => ({

@@ -14,10 +14,25 @@ import type {
   SyncOperation,
 } from './protocol'
 
+export const zIntegrationCategory = z.enum([
+  'banking',
+  'accounting',
+  'commerce',
+  'enrichment',
+  'database',
+  'flat-files',
+  'streaming',
+  'other',
+])
+
 export interface IntegrationMetadata {
   logoUrl?: string
   logoSvg?: string
   displayName?: string
+  platforms?: Array<'cloud' | 'local'>
+  status?: 'hidden' | 'alpha' | 'beta' | 'production'
+  // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
+  categories?: Array<z.infer<typeof zIntegrationCategory>>
 }
 
 // MARK: - Shared connect types

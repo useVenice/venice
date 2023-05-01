@@ -33,6 +33,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const postgresProvider = makeSyncProvider({
+  metadata: {categories: ['database'], logoUrl: '/_assets/logo-postgres.png'},
   ...makeSyncProvider.defaults,
   def,
   standardMappers: {
