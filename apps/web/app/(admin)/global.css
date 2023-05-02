@@ -119,6 +119,10 @@
     /* Offset to indicate hierarchy */
     @apply ml-3;
   }
+  .schema-form fieldset#root {
+    /* Compensate so the root form is not indented */
+    @apply -ml-3;
+  }
   /* Label + component = group */
   .schema-form .form-group {
     @apply mb-2;
@@ -134,8 +138,15 @@
     @apply block w-full rounded-md border border-input p-2;
   }
   /* Input component */
-  .schema-form input {
+  .schema-form input[type="text"] {
     @apply flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* .schema-form .checkbox label {
+    @apply
+  } */
+  .schema-form input[type="checkbox"] {
+    @apply m-2;
   }
 
   /* Array elements */

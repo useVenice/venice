@@ -29,6 +29,7 @@ export const adminRouter = trpc.router({
           orgId: true,
           config: true,
           displayName: true,
+          endUserAccess: true,
         })
         .partial()
         // Due to insert on conflict update it appears that orgId is actually required

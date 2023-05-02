@@ -28,6 +28,7 @@ DROP POLICY IF EXISTS end_user_access ON raw_transaction;
 ALTER TABLE "public"."integration" ADD COLUMN org_id varchar NOT NULL;
 CREATE INDEX IF NOT EXISTS integration_org_id ON "public"."integration" (org_id);
 ALTER TABLE "public"."integration" ADD COLUMN display_name varchar;
+ALTER TABLE "public"."integration" ADD COLUMN end_user_access boolean;
 
 --- New helper functions that no longer depend on auth
 

@@ -6,7 +6,11 @@ import React from 'react'
 
 import {PROVIDERS} from '@usevenice/app-config/env'
 import type {AnySyncProvider} from '@usevenice/cdk-core'
-import {zIntegrationCategory, zIntegrationStage} from '@usevenice/cdk-core'
+import {
+  zIntegrationCategory,
+  zIntegrationStage,
+  zRaw,
+} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
 import {
@@ -69,6 +73,12 @@ export function IntegrationSheet({
   providerName: string
 }) {
   const provider = providerByName[providerName]!
+
+  // Consider calling this provider, actually seem to make more sense...
+  // given that we call the code itself integration
+  const formSchema = zRaw.integration
+    .pick({endUserAccess: true})
+    .extend({config: provider.def.integrationConfig ?? z.object({})})
 
   const {orgId} = useCurrengOrg()
 
@@ -151,14 +161,18 @@ export function IntegrationSheet({
         <div className="grow overflow-scroll">
           <SchemaForm
             ref={formRef}
-            schema={provider.def.integrationConfig ?? z.object({})}
-            formData={int?.config}
+            schema={formSchema}
+            formData={{
+              endUserAccess: int?.endUserAccess,
+              config: int?.config ?? {}, // {} because required
+            }}
+            // formData should be non-null at this point, we should fix the typing
             onSubmit={({formData}) => {
               console.log('formData submitted', formData)
               upsertIntegration.mutate({
+                ...formData,
                 ...(int ? {id: int.id} : {providerName}),
                 orgId,
-                config: formData,
               })
             }}
             hideSubmitButton

@@ -84,6 +84,10 @@ export const zRaw = {
     id: zId('int'),
     providerName: z.string(),
     config: zJsonObject.nullish(),
+    endUserAccess: z
+      .boolean()
+      .nullish()
+      .describe('Allow end user to create resources for this integration'),
     orgId: zId('org'),
     displayName: z.string().nullish(),
   }),
