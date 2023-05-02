@@ -193,7 +193,7 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
               variant="secondary"
               className={cn(
                 'ml-auto',
-                provider.stage === 'production' && 'bg-green-200',
+                provider.stage === 'ga' && 'bg-green-200',
                 provider.stage === 'beta' && 'bg-blue-200',
                 provider.stage === 'alpha' && 'bg-pink-50',
               )}>

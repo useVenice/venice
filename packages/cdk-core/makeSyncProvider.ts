@@ -52,12 +52,7 @@ export const zIntegrationCategory = z.enum([
   'other',
 ])
 
-export const zIntegrationStage = z.enum([
-  'hidden',
-  'alpha',
-  'beta',
-  'production',
-])
+export const zIntegrationStage = z.enum(['hidden', 'alpha', 'beta', 'ga'])
 
 export interface IntegrationMetadata {
   logoUrl?: string

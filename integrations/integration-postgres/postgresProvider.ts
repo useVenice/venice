@@ -40,7 +40,7 @@ export const postgresProvider = makeSyncProvider({
   metadata: {
     categories: ['database'],
     logoUrl: '/_assets/logo-postgres.png',
-    stage: 'production',
+    stage: 'ga',
   },
   ...makeSyncProvider.defaults,
   def,
