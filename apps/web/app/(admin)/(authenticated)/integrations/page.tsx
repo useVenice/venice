@@ -10,6 +10,15 @@ import {zIntegrationCategory, zIntegrationStage} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Badge,
   Button,
   Card,
@@ -117,38 +126,54 @@ export function IntegrationSheet({
         </SheetHeader>
         <Separator orientation="horizontal" />
         <div className="grow overflow-scroll">
-          {provider.def.integrationConfig ? (
-            <SchemaForm
-              ref={formRef}
-              schema={provider.def.integrationConfig}
-              formData={int?.config}
-              onSubmit={({formData}) => {
-                console.log('formData submitted', formData)
-                upsertIntegration.mutate({
-                  ...(int ? {id: int.id} : {providerName}),
-                  orgId,
-                  config: formData,
-                })
-              }}
-              hideSubmitButton
-            />
-          ) : (
-            <p>No configuration needed</p>
-          )}
+          <SchemaForm
+            ref={formRef}
+            schema={provider.def.integrationConfig ?? z.object({})}
+            formData={int?.config}
+            onSubmit={({formData}) => {
+              console.log('formData submitted', formData)
+              upsertIntegration.mutate({
+                ...(int ? {id: int.id} : {providerName}),
+                orgId,
+                config: formData,
+              })
+            }}
+            hideSubmitButton
+          />
+          {!provider.def.integrationConfig && <p>No configuration needed</p>}
         </div>
         <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">
           {int && (
-            <Button
-              disabled={mutating}
-              className="mr-auto"
-              variant="destructive"
-              onClick={() => deleteIntegration.mutate([int.id])}>
-              {deleteIntegration.isLoading && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Delete
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger>Delete</AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure absolutely sure?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <Button
+                      disabled={mutating}
+                      className="mr-auto"
+                      variant="destructive"
+                      onClick={() => deleteIntegration.mutate([int.id])}>
+                      {deleteIntegration.isLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Delete
+                    </Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
           <Button
             disabled={mutating}
@@ -157,7 +182,7 @@ export function IntegrationSheet({
             {upsertIntegration.isLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Save
+            {int ? 'Save' : 'Create'}
           </Button>
         </SheetFooter>
       </SheetContent>
