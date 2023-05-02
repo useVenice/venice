@@ -30,6 +30,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  useToast,
 } from '@usevenice/ui/new-components'
 import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
 import {SchemaForm} from '@usevenice/ui/SchemaForm'
@@ -73,14 +74,36 @@ export function IntegrationSheet({
 
   const [open, setOpen] = React.useState(false)
   const verb = int ? 'Edit' : 'Add'
-  // TODO: Add toast please
+  const {toast} = useToast()
+
   const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
-    onSuccess: () => setOpen(false),
+    onSuccess: () => {
+      setOpen(false)
+      toast({title: 'Integration creaed'})
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to save integration',
+        description: `${err}`,
+        variant: 'destructive',
+      })
+    },
   })
   const deleteIntegration = trpcReact.adminDeleteIntegration.useMutation({
-    onSuccess: () => setOpen(false),
+    onSuccess: () => {
+      setOpen(false)
+      toast({title: 'Integration deleted'})
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to create integration saved',
+        description: `${err}`,
+        variant: 'destructive',
+      })
+    },
   })
   const mutating = deleteIntegration.isLoading || upsertIntegration.isLoading
+
   const formRef = React.useRef<SchemaFormElement>(null)
 
   return (
@@ -146,7 +169,9 @@ export function IntegrationSheet({
         <SheetFooter className="shrink-0">
           {int && (
             <AlertDialog>
-              <AlertDialogTrigger>Delete</AlertDialogTrigger>
+              <AlertDialogTrigger className="mr-auto">
+                Delete
+              </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>

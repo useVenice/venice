@@ -7,6 +7,7 @@ import React, {useEffect, useRef} from 'react'
 
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
+import {Toaster} from '@usevenice/ui/new-components'
 
 import {createQueryClient} from '../lib/query-client'
 import {createRealtimeClient, usePostgresChanges} from './realtime'
@@ -72,6 +73,7 @@ export function ClientRoot(props: {
             [accessToken, status, viewer],
           )}>
           {props.children}
+          <Toaster />
         </ViewerContext.Provider>
       </TRPCProvider>
     </QueryClientProvider>
