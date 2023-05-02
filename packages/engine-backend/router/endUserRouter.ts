@@ -149,4 +149,18 @@ export const endUserRouter = trpc.router({
       await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
       return resoId
     }),
+
+  updateResource: protectedProcedure
+    .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
+    .mutation(async ({input: {id, ...input}, ctx}) =>
+      // TODO: Run mapStandardResource after editing
+      // Also we probably do not want deeply nested patch
+      // shallow is sufficient more most situations
+      ctx.helpers.patchReturning('resource', id, input),
+    ),
+  deleteResoruce: protectedProcedure
+    .input(zRaw.resource.pick({id: true}))
+    .mutation(async ({input: {id}, ctx}) =>
+      ctx.helpers.metaService.tables.resource.delete(id),
+    ),
 })

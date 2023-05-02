@@ -71,7 +71,7 @@ export function IntegrationSheet({
   const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
-      toast({title: 'Integration creaed', variant: 'success'})
+      toast({title: 'Integration created', variant: 'success'})
     },
     onError: (err) => {
       toast({
