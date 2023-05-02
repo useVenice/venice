@@ -10,6 +10,7 @@ export default function ResourcesPage() {
   return (
     <div className="p-6">
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">Resources</h2>
+      <p>Resources are created based on integration configurations</p>
       <DataTable isFetching={res.isFetching} rows={res.data ?? []} />
     </div>
   )

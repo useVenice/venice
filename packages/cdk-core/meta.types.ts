@@ -87,7 +87,9 @@ export const zRaw = {
     endUserAccess: z
       .boolean()
       .nullish()
-      .describe('Allow end user to create resources for this integration'),
+      .describe(
+        "Allow end user to create resources using this integration's configuration",
+      ),
     orgId: zId('org'),
     displayName: z.string().nullish(),
   }),

@@ -54,7 +54,10 @@ const allProviders = sort(
     stage: provider.metadata?.stage ?? 'alpha',
     platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
     categories: provider.metadata?.categories ?? ['other'],
-
+    supportedModes: R.compact([
+      provider.sourceSync ? ('source' as const) : null,
+      provider.destinationSync ? ('destination' as const) : null,
+    ]),
     def: provider.def,
   })),
 ).desc((p) => zIntegrationStage.options.indexOf(p.stage))
@@ -155,7 +158,12 @@ export function IntegrationSheet({
             </Badge>
             {/* Add help text here */}
           </div>
-          {int && <SheetDescription>ID: {int.id}</SheetDescription>}
+
+          <SheetDescription>
+            {int && `ID: ${int.id}`}
+            <br />
+            Supported mode(s): {provider.supportedModes.join(', ')}
+          </SheetDescription>
         </SheetHeader>
         <Separator orientation="horizontal" />
         <div className="grow overflow-scroll">

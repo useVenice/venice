@@ -39,14 +39,14 @@ const sectionedLinks: Array<{
         icon: 'Users',
       },
       {
-        title: 'Resources',
-        href: '/resources',
-        icon: 'Box',
-      },
-      {
         title: 'Pipelines',
         href: '/pipelines',
         icon: 'ArrowLeftRight',
+      },
+      {
+        title: 'Resources',
+        href: '/resources',
+        icon: 'Box',
       },
       {
         title: 'Integrations',
@@ -97,9 +97,7 @@ export function Sidebar({className}: SidebarProps) {
                   return (
                     <Link href={link.href} key={link.href}>
                       <Button
-                        variant={
-                          pathname === link.href ? 'outline' : 'ghost'
-                        }
+                        variant={pathname === link.href ? 'outline' : 'ghost'}
                         size="sm"
                         className="w-full justify-start">
                         {Icon && <Icon className="mr-2 h-4 w-4" />}
