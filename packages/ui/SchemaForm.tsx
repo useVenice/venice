@@ -1,4 +1,4 @@
-import type {default as Form, ThemeProps} from '@rjsf/core'
+import type {default as Form, FormProps, ThemeProps} from '@rjsf/core'
 import {withTheme} from '@rjsf/core'
 import type {RJSFSchema} from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
@@ -12,27 +12,30 @@ import {cn} from './utils'
 const theme: ThemeProps = {widgets: {}}
 
 /** TODO: Actually customize with our own components... */
-export const JsonSchemaForm = withTheme(theme)
+export const JsonSchemaForm = withTheme(theme) as typeof Form
 
 /** For use with createRef... */
 export type SchemaFormElement = Form
 
 // Consider renaming this to zodSchemaForm
-export const SchemaForm = React.forwardRef<
-  SchemaFormElement,
-  Omit<
-    React.ComponentPropsWithoutRef<typeof JsonSchemaForm>,
-    'schema' | 'validator'
-  > & {
-    schema: z.ZodTypeAny
+export const SchemaForm = React.forwardRef(function SchemaForm<
+  TSchema extends z.ZodTypeAny,
+>(
+  {
+    schema,
+    hideSubmitButton,
+    ...props
+  }: Omit<FormProps<z.infer<TSchema>>, 'schema' | 'validator'> & {
+    schema: TSchema
     hideSubmitButton?: boolean
-  }
->(function SchemaForm({schema, hideSubmitButton, ...props}, forwardedRef) {
+  },
+  forwardedRef: React.ForwardedRef<Form<z.infer<TSchema>>>,
+) {
   const jsonSchema = zodToJsonSchema(schema) as RJSFSchema
   console.log('[SchemaForm] jsonSchema', jsonSchema)
 
   return (
-    <JsonSchemaForm
+    <JsonSchemaForm<z.infer<TSchema>>
       {...props}
       ref={forwardedRef}
       className={cn('schema-form', props.className)}
@@ -46,3 +49,10 @@ export const SchemaForm = React.forwardRef<
     />
   )
 })
+
+/** https://fettblog.eu/typescript-react-generic-forward-refs/ */
+declare module 'react' {
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null,
+  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null
+}
