@@ -4,13 +4,12 @@ import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-import {PROVIDERS} from '@usevenice/app-config/env'
-import type {AnySyncProvider} from '@usevenice/cdk-core'
 import {
-  zIntegrationCategory,
-  zIntegrationStage,
-  zRaw,
-} from '@usevenice/cdk-core'
+  availableProviders,
+  providerByName,
+  type ProviderMeta,
+} from '@usevenice/app-config/providers'
+import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
 import {
@@ -38,35 +37,12 @@ import {
 } from '@usevenice/ui/new-components'
 import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
 import {SchemaForm} from '@usevenice/ui/SchemaForm'
-import {R, sort, titleCase, urlFromImage, z} from '@usevenice/util'
+import {titleCase, z} from '@usevenice/util'
 
 import {useCurrengOrg} from '@/contexts/viewer-context'
 import {cn} from '@/lib/utils'
 
-const allProviders = sort(
-  PROVIDERS.map((provider: AnySyncProvider) => ({
-    // ...provider,
-    name: provider.name,
-    displayName: provider.metadata?.displayName ?? titleCase(provider.name),
-    logoUrl: provider.metadata?.logoSvg
-      ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
-      : provider.metadata?.logoUrl,
-    stage: provider.metadata?.stage ?? 'alpha',
-    platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
-    categories: provider.metadata?.categories ?? ['other'],
-    supportedModes: R.compact([
-      provider.sourceSync ? ('source' as const) : null,
-      provider.destinationSync ? ('destination' as const) : null,
-    ]),
-    def: provider.def,
-  })),
-).desc((p) => zIntegrationStage.options.indexOf(p.stage))
-
-type ProviderMeta = (typeof allProviders)[number]
 type Integration = RouterOutput['adminListIntegrations'][number]
-
-const availableProviders = allProviders.filter((p) => p.stage !== 'hidden')
-const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
 
 export function IntegrationSheet({
   integration: int,

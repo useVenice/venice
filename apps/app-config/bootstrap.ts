@@ -5,7 +5,7 @@ import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
 
 import {contextFactory} from './backendConfig'
-import type {PROVIDERS} from './env'
+import type {PROVIDERS} from './providers'
 import {parseIntConfigsFromRawEnv} from './env'
 
 export type _ResourceInput = IntegrationInput<(typeof PROVIDERS)[number]>

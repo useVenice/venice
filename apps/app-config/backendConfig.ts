@@ -14,7 +14,7 @@ import {R, Rx, joinPath, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
 import {getServerUrl} from './constants'
-import type {PROVIDERS} from './env'
+import type {PROVIDERS} from './providers'
 import {zAllEnv} from './env'
 
 export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'

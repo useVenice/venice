@@ -3,7 +3,8 @@ import type {SyncEngineCommonConfig} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
-import {PROVIDERS, zCommonEnv} from './env'
+import {zCommonEnv} from './env'
+import {PROVIDERS} from './providers'
 
 export {Papa} from '@usevenice/integration-import'
 
