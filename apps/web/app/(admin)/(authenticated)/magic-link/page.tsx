@@ -33,9 +33,6 @@ export default function MagicLinkPage() {
       <SchemaForm
         schema={formSchema}
         onSubmit={({formData: values}) => {
-          if (!values) {
-            return // TODO: Shouldnever happen
-          }
           createToken.mutate(
             {...values, orgId},
             {
@@ -48,7 +45,6 @@ export default function MagicLinkPage() {
                 await copyToClipboard(url.toString())
                 toast({
                   title: 'Magic link copied to clipboard',
-                  description: `${data}`,
                   variant: 'success',
                 })
               },

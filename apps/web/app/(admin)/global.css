@@ -166,21 +166,24 @@
     /* mb-4 to match .form-group */
     @apply mb-4 flex items-center justify-end;
   }
-  /* Icons */
+  /* Icons, @see https://rjsf-team.github.io/react-jsonschema-form/docs/advanced-customization/internals#custom-array-field-buttons */
   .schema-form .glyphicon {
     @apply font-normal not-italic;
   }
+  .schema-form .glyphicon-plus::before {
+    content: 'Add';
+  }
   .schema-form .glyphicon-remove::before {
     content: 'Remove';
+  }
+  .schema-form .glyphicon-copy::before {
+    content: 'Copy';
   }
   .schema-form .glyphicon-arrow-up::before {
     content: 'Up';
   }
   .schema-form .glyphicon-arrow-down::before {
     content: 'Down';
-  }
-  .schema-form .glyphicon-plus::before {
-    content: 'Add';
   }
   /* Buttons (tends to be icon buttons */
   .schema-form .btn {

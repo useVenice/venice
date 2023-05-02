@@ -24,28 +24,42 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   {
     schema,
     hideSubmitButton,
+    formData: _formData,
+    onSubmit,
     ...props
-  }: Omit<FormProps<z.infer<TSchema>>, 'schema' | 'validator'> & {
+  }: Omit<FormProps<z.infer<TSchema>>, 'schema' | 'validator' | 'onSubmit'> & {
     schema: TSchema
     hideSubmitButton?: boolean
+    onSubmit?: (data: {formData: z.infer<TSchema>}) => void
   },
   forwardedRef: React.ForwardedRef<Form<z.infer<TSchema>>>,
 ) {
   const jsonSchema = zodToJsonSchema(schema) as RJSFSchema
+
+  // We cache the formState so that re-render does not cause immediate loss
+  // though this may sometimes cause stale data? Need to think more about it.
+  const [formData, setFormData] = React.useState<z.infer<TSchema>>(_formData)
   console.log('[SchemaForm] jsonSchema', jsonSchema)
 
   return (
     <JsonSchemaForm<z.infer<TSchema>>
       {...props}
       ref={forwardedRef}
+      formData={formData}
       className={cn('schema-form', props.className)}
       schema={jsonSchema}
       validator={validator}
-      templates={
-        hideSubmitButton
-          ? {ButtonTemplates: {SubmitButton: () => null}}
-          : undefined
-      }
+      templates={{
+        ...(hideSubmitButton && {ButtonTemplates: {SubmitButton: () => null}}),
+        ...props.templates,
+      }}
+      onSubmit={(data) => {
+        if (!data.formData) {
+          throw new Error('Invariant: formData is undefined')
+        }
+        setFormData(data.formData)
+        onSubmit?.(data.formData)
+      }}
     />
   )
 })
