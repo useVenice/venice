@@ -43,15 +43,13 @@ const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
     VariantProps<typeof toastVariants>
->(({className, variant, ...props}, ref) => {
-  return (
-    <ToastPrimitives.Root
-      ref={ref}
-      className={cn(toastVariants({variant}), className)}
-      {...props}
-    />
-  )
-})
+>(({className, variant, ...props}, ref) => (
+  <ToastPrimitives.Root
+    ref={ref}
+    className={cn(toastVariants({variant}), className)}
+    {...props}
+  />
+))
 Toast.displayName = ToastPrimitives.Root.displayName
 
 const ToastAction = React.forwardRef<
@@ -124,4 +122,12 @@ export {
   ToastDescription,
   ToastClose,
   ToastAction,
+}
+
+declare module 'react' {
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null,
+  ): ((props: P & React.RefAttributes<T>) => React.ReactElement | null) & {
+    displayName?: string
+  }
 }
