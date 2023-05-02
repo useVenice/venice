@@ -58,7 +58,7 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
           throw new Error('Invariant: formData is undefined')
         }
         setFormData(data.formData)
-        onSubmit?.(data.formData)
+        onSubmit?.({formData: data.formData})
       }}
     />
   )
