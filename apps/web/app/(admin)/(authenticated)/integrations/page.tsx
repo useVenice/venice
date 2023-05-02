@@ -89,7 +89,7 @@ export function IntegrationSheet({
   const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
-      toast({title: 'Integration creaed'})
+      toast({title: 'Integration creaed', variant: 'success'})
     },
     onError: (err) => {
       toast({
@@ -102,7 +102,7 @@ export function IntegrationSheet({
   const deleteIntegration = trpcReact.adminDeleteIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
-      toast({title: 'Integration deleted'})
+      toast({title: 'Integration deleted', variant: 'success'})
     },
     onError: (err) => {
       toast({
@@ -189,11 +189,14 @@ export function IntegrationSheet({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Are you sure absolutely sure?
+                    Confirm delete {provider.displayName} integration?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    ID: {int.id}
+                    <br />
+                    This action cannot be undone. In order to to delete an
+                    integration, you may need to first delete all the resources
+                    that depend on this integration first
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -202,6 +205,8 @@ export function IntegrationSheet({
                     <Button
                       disabled={mutating}
                       className="mr-auto"
+                      // Specifying asChild and using this variant does not appear to be
+                      // working for some reason...
                       variant="destructive"
                       onClick={() => deleteIntegration.mutate([int.id])}>
                       {deleteIntegration.isLoading && (
