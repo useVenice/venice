@@ -10,7 +10,8 @@ interface OpenApiMeta {}
 export const trpc = initTRPC
   .context<RouterContext>()
   .meta<OpenApiMeta>()
-  .create()
+  // For client side to be able to import runtime schema from server side also
+  .create({allowOutsideOfServer: true})
 
 export const publicProcedure = trpc.procedure
 

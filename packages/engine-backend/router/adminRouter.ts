@@ -14,6 +14,42 @@ import {adminProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
+/**
+ * Workaround to be able to re-use the schema on the frontend for now
+ * @see https://github.com/trpc/trpc/issues/4295
+ *
+ * Though if we can FULLY automate the generate of forms perhaps this wouldn't actually be necessary?
+ * We will have to make sure though that the router themselves do not have any side effect imports
+ * and all server-specific logic would be part of context.
+ * But then again client side bundle size would still be a concern
+ * as we'd be sending server side code unnecessarily to client still
+ * unless of course we transform zod -> jsonschema and send that to the client only
+ * via a trpc schema endpoint (with server side rendering of course)
+ */
+export const adminRouterSchema = {
+  adminCreateConnectToken: {
+    input: z.object({
+      orgId: zId('org'),
+      endUserId: zEndUserId.describe(
+        'Anything that uniquely identifies the end user that you will be sending the magic link to',
+      ),
+      displayName: z.string().nullish().describe('What to call user by'),
+      redirectUrl: z
+        .string()
+        .nullish()
+        .describe(
+          'Where to send user to after connect / if they press back button',
+        ),
+      validityInSeconds: z
+        .number()
+        .default(3600)
+        .describe(
+          'How long the magic link will be valid for (in seconds) before it expires',
+        ),
+    }),
+  },
+} satisfies Record<string, {input?: z.ZodTypeAny; output?: z.ZodTypeAny}>
+
 export const adminRouter = trpc.router({
   adminListIntegrations: adminProcedure.query(async ({ctx}) =>
     ctx.helpers.list('integration', {}),
@@ -58,8 +94,8 @@ export const adminRouter = trpc.router({
       ctx.helpers.metaService.tables.integration.delete(intId),
     ),
   adminCreateConnectToken: adminProcedure
-    .input(z.object({endUserId: zEndUserId, orgId: zId('org')}))
-    .mutation(({input: {endUserId, orgId}, ctx}) => {
+    .input(adminRouterSchema.adminCreateConnectToken.input)
+    .mutation(({input: {endUserId, orgId, validityInSeconds}, ctx}) => {
       if (
         (ctx.viewer.role === 'user' || ctx.viewer.role === 'org') &&
         ctx.viewer.orgId !== orgId
@@ -69,7 +105,10 @@ export const adminRouter = trpc.router({
           message: `${orgId} Not your org`,
         })
       }
-      return ctx.jwt.signViewer({role: 'end_user', endUserId, orgId})
+      return ctx.jwt.signViewer(
+        {role: 'end_user', endUserId, orgId},
+        {validityInSeconds},
+      )
     }),
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())

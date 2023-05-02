@@ -47,6 +47,78 @@ import {cn} from '@/lib/utils'
 
 type Integration = RouterOutput['adminListIntegrations'][number]
 
+export default function IntegrationsPage() {
+  const integrationsRes = trpcReact.adminListIntegrations.useQuery()
+
+  return (
+    <div className="p-6">
+      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
+        Configured integrations
+      </h2>
+
+      {integrationsRes.data ? (
+        <div className="flex flex-wrap">
+          {integrationsRes.data.map((int) => {
+            const provider = providerByName[int.providerName]!
+            return (
+              <ProviderCard key={int.id} provider={provider}>
+                <IntegrationSheet
+                  integration={int}
+                  providerName={provider.name}
+                />
+              </ProviderCard>
+            )
+          })}
+        </div>
+      ) : (
+        <div>No integrations configured</div>
+      )}
+      {/* Spacer */}
+      <div className="mt-4" />
+      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
+        Available integrations
+      </h2>
+      {zIntegrationCategory.options.map((category) => {
+        const providers = availableProviders.filter((p) =>
+          p.categories.includes(category),
+        )
+        if (!providers.length) {
+          return null
+        }
+        return (
+          <div key={category}>
+            <h3 className="mb-4 ml-4 text-xl font-semibold tracking-tight">
+              {titleCase(category)}
+            </h3>
+            <div className="flex flex-wrap">
+              {providers.map((provider) => (
+                <ProviderCard
+                  key={`${category}-${provider.name}`}
+                  provider={provider}>
+                  {provider.stage === 'alpha' ? (
+                    <Button
+                      className="mt-2"
+                      variant="ghost"
+                      onClick={() =>
+                        window.open(
+                          `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
+                        )
+                      }>
+                      Request access
+                    </Button>
+                  ) : (
+                    <IntegrationSheet providerName={provider.name} />
+                  )}
+                </ProviderCard>
+              ))}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export function IntegrationSheet({
   integration: int,
   providerName,
@@ -225,75 +297,3 @@ const ProviderCard = (props: {
   provider: ProviderMeta
   children?: React.ReactNode
 }) => <_ProviderCard Image={Image as any} showStageBadge {...props} />
-
-export default function IntegrationsPage() {
-  const integrationsRes = trpcReact.adminListIntegrations.useQuery()
-
-  return (
-    <div className="p-6">
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Configured integrations
-      </h2>
-
-      {integrationsRes.data ? (
-        <div className="flex flex-wrap">
-          {integrationsRes.data.map((int) => {
-            const provider = providerByName[int.providerName]!
-            return (
-              <ProviderCard key={int.id} provider={provider}>
-                <IntegrationSheet
-                  integration={int}
-                  providerName={provider.name}
-                />
-              </ProviderCard>
-            )
-          })}
-        </div>
-      ) : (
-        <div>No integrations configured</div>
-      )}
-      {/* Spacer */}
-      <div className="mt-4" />
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Available integrations
-      </h2>
-      {zIntegrationCategory.options.map((category) => {
-        const providers = availableProviders.filter((p) =>
-          p.categories.includes(category),
-        )
-        if (!providers.length) {
-          return null
-        }
-        return (
-          <div key={category}>
-            <h3 className="mb-4 ml-4 text-xl font-semibold tracking-tight">
-              {titleCase(category)}
-            </h3>
-            <div className="flex flex-wrap">
-              {providers.map((provider) => (
-                <ProviderCard
-                  key={`${category}-${provider.name}`}
-                  provider={provider}>
-                  {provider.stage === 'alpha' ? (
-                    <Button
-                      className="mt-2"
-                      variant="ghost"
-                      onClick={() =>
-                        window.open(
-                          `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
-                        )
-                      }>
-                      Request access
-                    </Button>
-                  ) : (
-                    <IntegrationSheet providerName={provider.name} />
-                  )}
-                </ProviderCard>
-              ))}
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
