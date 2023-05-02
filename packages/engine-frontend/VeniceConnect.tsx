@@ -117,7 +117,7 @@ export const ConnectCard = ({
   // connectFnMap:
   connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
 }) => {
-  console.log('ConnectCard', int.id, int.provider)
+  // console.log('ConnectCard', int.id, int.provider)
   const envName = 'sandbox' as const
 
   // TODO: Handle preConnectInput schema and such... for example for Plaid
@@ -138,19 +138,23 @@ export const ConnectCard = ({
       // For plaid and other integrations that requires client side JS
       // TODO: Test this...
       // How to make sure does not actually refetch we if we already have data?
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const connInput = int.provider.hasPreConnect
-        ? await preConnect.refetch()
+        ? (await preConnect.refetch()).data
         : {}
+      console.log(`[VeniceConnect] ${int.id} connInput`, connInput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const connOutput = connectFn
         ? await connectFn?.(connInput, {envName})
         : connInput
+      console.log(`[VeniceConnect] ${int.id} connOutput`, connOutput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const postConnOutput = int.provider.hasPostConnect
         ? await postConnect.mutateAsync([connOutput, int.id, {envName}])
         : connOutput
+      console.log(`[VeniceConnect] ${int.id} postConnOutput`, postConnOutput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return postConnOutput
