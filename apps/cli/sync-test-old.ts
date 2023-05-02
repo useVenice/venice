@@ -2,7 +2,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
 
-import {fsProvider} from '@usevenice/app-config/env'
+import {fsProvider} from '@usevenice/app-config/providers'
 import {sync} from '@usevenice/cdk-core'
 
 import {brexImpl} from '@usevenice/integration-brex'

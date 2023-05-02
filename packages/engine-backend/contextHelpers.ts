@@ -144,6 +144,14 @@ export function getContextHelpers({
     return getOrFail(tableName, id)
   }
 
+  const getIntegrationInfoOrFail = (id: Id['int']) =>
+    metaService.listIntegrationIds({id}).then((ints) => {
+      if (!ints[0]) {
+        throw new TRPCError({code: 'NOT_FOUND'})
+      }
+      return ints[0]
+    })
+
   const getIntegrationOrFail = (id: Id['int']) =>
     metaService.tables.integration.get(id).then((_int) => {
       if (!_int) {
@@ -370,6 +378,7 @@ export function getContextHelpers({
     metaService,
     metaLinks,
     getProviderOrFail,
+    getIntegrationInfoOrFail,
     getIntegrationOrFail,
     getResourceOrFail,
     getPipelineOrFail,

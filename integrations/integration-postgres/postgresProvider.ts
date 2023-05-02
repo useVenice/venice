@@ -21,11 +21,14 @@ const _def = makeSyncProvider.def({
   // How do we create default resources for integrations that are basically single resource?
   resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
     // gotta make sourceQueries a Textarea
+
     sourceQueries: z
       .object({
         invoice: z.string().nullish(),
       })
-      .nullish(),
+      // .nullish() does not translate well to jsonSchema
+      // @see https://share.cleanshot.com/w0KVx1Y2
+      .optional(),
   }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: zCast<EntityPayloadWithExternal | ZCommon['Entity']>(),

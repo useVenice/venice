@@ -98,7 +98,7 @@ export const zRaw = {
     providerName: z.string(),
     displayName: z.string().nullish(),
     endUserId: zEndUserId.nullish(),
-    integrationId: zId('int').nullish(),
+    integrationId: zId('int'),
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),
     // TODO: Does envName belong in Raw layer or Standard layer?

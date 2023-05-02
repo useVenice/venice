@@ -1,4 +1,5 @@
 import {useMutation} from '@tanstack/react-query'
+import {Loader2} from 'lucide-react'
 import React from 'react'
 
 import type {
@@ -10,9 +11,22 @@ import type {
   UseConnectHook,
 } from '@usevenice/cdk-core'
 import {extractProviderName, zIntegrationCategory} from '@usevenice/cdk-core'
+import type {RouterInput} from '@usevenice/engine-backend'
 import {ProviderCard} from '@usevenice/ui/domain-components'
-import {Button} from '@usevenice/ui/new-components'
-import {R, titleCase} from '@usevenice/util'
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  useToast,
+} from '@usevenice/ui/new-components'
+import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
+import {SchemaForm} from '@usevenice/ui/SchemaForm'
+import {R, titleCase, z} from '@usevenice/util'
 
 import {trpcReact} from './TRPCProvider'
 
@@ -34,7 +48,7 @@ export function VeniceConnect({
   integrationIds,
   providerMetaByName,
 }: VeniceConnectProps) {
-  const [dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
+  const [_dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )
   const openDialog: OpenDialogFn = React.useCallback(
@@ -70,15 +84,6 @@ export function VeniceConnect({
     }))
     .filter((item) => item.integrations.length > 0)
 
-  const {client} = trpcReact.useContext()
-  // TODO: we cannot use preConnect here becase it is a query...
-  // Will need to render each of those as separate react components instead so we can properly
-  // preConnect
-
-  const postConnect = trpcReact.postConnect.useMutation()
-
-  const connect = useMutation(async (intId: Id['int']) => {})
-
   return (
     <div className="flex flex-wrap">
       {false &&
@@ -94,17 +99,137 @@ export function VeniceConnect({
         ))}
 
       {integrations.map((int) => (
-        <ProviderCard key={int.id} provider={int.provider}>
+        <ConnectCard
+          key={int.id}
+          int={int}
+          connectFn={connectFnMap[int.provider.name]}
+        />
+      ))}
+    </div>
+  )
+}
+
+export const ConnectCard = ({
+  int,
+  connectFn,
+}: {
+  int: {id: Id['int']; provider: ProviderMeta}
+  // connectFnMap:
+  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+}) => {
+  console.log('ConnectCard', int.id, int.provider)
+  const envName = 'sandbox' as const
+
+  // TODO: Handle preConnectInput schema and such... for example for Plaid
+  const preConnect = trpcReact.preConnect.useQuery([int.id, {envName}, {}], {
+    enabled: int.provider.hasPreConnect,
+  })
+  const postConnect = trpcReact.postConnect.useMutation()
+  const createResource = trpcReact.createResource.useMutation()
+
+  const {toast} = useToast()
+
+  const connect = useMutation(
+    async (input?: RouterInput['createResource']) => {
+      // For postgres and various integrations that does not require client side JS
+      if (input) {
+        return createResource.mutateAsync(input)
+      }
+      // For plaid and other integrations that requires client side JS
+      // TODO: Test this...
+      // How to make sure does not actually refetch we if we already have data?
+      const connInput = int.provider.hasPreConnect
+        ? await preConnect.refetch()
+        : {}
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const connOutput = connectFn
+        ? await connectFn?.(connInput, {envName})
+        : connInput
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const postConnOutput = int.provider.hasPostConnect
+        ? await postConnect.mutateAsync([connOutput, int.id, {envName}])
+        : connOutput
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return postConnOutput
+    },
+    {
+      onSuccess(msg) {
+        if (msg) {
+          toast({
+            title: `Success (${int.provider.displayName})`,
+            description: `${msg}`,
+            variant: 'success',
+          })
+        }
+      },
+      onError: (err) => {
+        toast({
+          title: `Failed to connect to ${int.provider.displayName}`,
+          description: `${err}`,
+          variant: 'destructive',
+        })
+      },
+    },
+  )
+
+  const [open, setOpen] = React.useState(false)
+  const formRef = React.useRef<SchemaFormElement>(null)
+  const formSchema = int.provider.def.resourceSettings ?? z.object({})
+
+  return (
+    <ProviderCard provider={int.provider}>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
           <Button
             className="mt-2"
+            disabled={connect.isLoading}
             variant="ghost"
-            onClick={() => {
-              // do something
+            onClick={(e) => {
+              if (!connectFn) {
+                // Allow the default behavior of opening the dialog
+                return
+              }
+              // Prevent dialog from automatically opening
+              // as we invoke provider client side JS
+              e.preventDefault()
+              connect.mutate(undefined)
             }}>
             Connect
           </Button>
-        </ProviderCard>
-      ))}
-    </div>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Connect to {int.provider.name}</DialogTitle>
+            <DialogDescription>Uing integration ID: {int.id}</DialogDescription>
+          </DialogHeader>
+          <SchemaForm
+            ref={formRef}
+            schema={formSchema}
+            formData={{}}
+            // formData should be non-null at this point, we should fix the typing
+            onSubmit={({formData}) => {
+              console.log('resource form submitted', formData)
+              connect.mutate({integrationId: int.id, settings: formData})
+            }}
+            hideSubmitButton
+          />
+          {/* Children here */}
+          <DialogFooter>
+            <Button
+              disabled={createResource.isLoading}
+              onClick={() => formRef.current?.submit()}
+              type="submit">
+              {createResource.isLoading && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </ProviderCard>
   )
 }

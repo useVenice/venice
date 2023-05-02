@@ -146,7 +146,10 @@ export const zCheckResourceOptions = z.object({
 })
 
 /** Extra props not on ResoUpdateData */
-export interface ResourceUpdate<TEntity extends AnyEntityPayload, TSettings>
+export interface ResourceUpdate<
+    TEntity extends AnyEntityPayload = AnyEntityPayload,
+    TSettings = unknown,
+  >
   // make `ResoUpdateData.id` not prefixed so we can have better inheritance
   extends Omit<ResoUpdateData<TSettings>, 'id'> {
   // Subset of resoUpdate

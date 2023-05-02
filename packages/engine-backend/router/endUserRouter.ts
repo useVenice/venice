@@ -1,17 +1,20 @@
+import type {ResourceUpdate} from '@usevenice/cdk-core'
 import {
   makeId,
   zConnectOptions,
   zId,
   zPostConnectOptions,
+  zRaw,
 } from '@usevenice/cdk-core'
-import {joinPath, z} from '@usevenice/util'
+import {joinPath, makeUlid, z} from '@usevenice/util'
 
 import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
-import {endUserProcedure, trpc} from './_base'
+import {endUserProcedure, protectedProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
+/** TODO: Modify this so that admin user can execute it... not just endUser */
 export const endUserRouter = trpc.router({
   // MARK: - Connect
   preConnect: endUserProcedure
@@ -113,4 +116,37 @@ export const endUserRouter = trpc.router({
         return 'Resource successfully connected'
       },
     ),
+  createResource: protectedProcedure
+    .input(zRaw.resource.pick({integrationId: true, settings: true}))
+    // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
+    // needed
+    // How do we verify that the userId here is the same as the userId from preConnectOption?
+
+    .mutation(async ({input: {integrationId, settings}, ctx}) => {
+      // Authorization
+      await ctx.helpers.getIntegrationInfoOrFail(integrationId)
+
+      // Escalate to now have enough pemission to sync
+      const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(integrationId)
+
+      const _extId = makeUlid()
+      const resoId = makeId('reso', int.provider.name, _extId)
+
+      // Should throw if not working..
+      const resoUpdate = {
+        triggerDefaultSync: false,
+        // TODO: Should no longer depend on external ID
+        resourceExternalId: _extId,
+        ...(await int.provider.checkResource?.({
+          config: int.config,
+          settings,
+          context: {webhookBaseUrl: ''},
+          options: {},
+        })),
+        // TODO: Fix me up
+        endUserId: 'endUserId' in ctx.viewer ? ctx.viewer.endUserId : null,
+      } satisfies ResourceUpdate
+      await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
+      return resoId
+    }),
 })

@@ -1,4 +1,4 @@
-import {plaidProvider} from '@usevenice/app-config/env'
+import {plaidProvider} from '@usevenice/app-config/providers'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {
   Button,

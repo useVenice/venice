@@ -147,10 +147,14 @@ export const makePostgresMetaService = zFunction(
           pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },
-      listIntegrationIds: () => {
+      listIntegrationIds: ({id} = {}) => {
         const {runQueries, sql} = _getDeps(opts)
         return runQueries((pool) =>
-          pool.anyFirst<Id['int']>(sql`SELECT id FROM integration`),
+          pool.anyFirst<Id['int']>(
+            sql`SELECT id FROM integration ${
+              id ? sql`WHERE id = ${id}` : sql``
+            }`,
+          ),
         )
       },
     }

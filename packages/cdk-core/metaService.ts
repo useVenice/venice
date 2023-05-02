@@ -55,5 +55,6 @@ export interface MetaService {
     resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
-  listIntegrationIds: () => Promise<ReadonlyArray<Id['int']>>
+  /** Id is used to check RLS policy right now for end user */
+  listIntegrationIds: (opts?: {id?: Id['int']}) => Promise<ReadonlyArray<Id['int']>>
 }
