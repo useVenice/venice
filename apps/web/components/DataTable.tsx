@@ -65,7 +65,11 @@ export function DataTable({isFetching, rows}: DataTableProps) {
   }
 
   return !columns.length || !rows.length ? (
-    <div>No data available</div>
+    isFetching ? (
+      <DataTableSkeleton />
+    ) : (
+      <div className="mt-4">No data available</div>
+    )
   ) : (
     <DataEditor
       className={cn(isFetching && 'opacity-70')}
