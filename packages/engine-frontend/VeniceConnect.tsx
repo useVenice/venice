@@ -30,10 +30,13 @@ import {R, titleCase, z} from '@usevenice/util'
 
 import {trpcReact} from './TRPCProvider'
 
+type ConnectEventType = 'open' | 'close' | 'error'
+
 export interface VeniceConnectProps {
   endUserId?: EndUserId | null
   integrationIds: Array<Id['int']>
   providerMetaByName: Record<string, ProviderMeta>
+  onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
 
 type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
@@ -42,15 +45,60 @@ interface DialogConfig {
   options: Parameters<UseConnectScope['openDialog']>[1]
 }
 
+/**
+ * TODO: Figure out if we can reuse the same dialog such that when a provider is selected
+ * we can replace the dialog content.
+ * Alternatively if there's something like a mobile app navigation where it's part of a
+ * "back" stack...
+ */
+export function VeniceConnectButton({
+  children,
+  className,
+  ...props
+}: VeniceConnectProps & {className?: string; children?: React.ReactNode, }) {
+  const [open, setOpen] = React.useState(false)
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children ?? (
+          <Button className={className} variant="default">
+            Connect
+          </Button>
+        )}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>New connection</DialogTitle>
+          <DialogDescription>Choose an integration to start</DialogDescription>
+        </DialogHeader>
+        <VeniceConnect
+          {...props}
+          onEvent={(event) => {
+            // How do we close the dialog when an integration has been chosen?
+            // This is problematic because if VeniceConnect itself gets removed from dom
+            // then any dialog it presents goes away also
+            // Tested forceMount though and it doesn't quite work... So we might want something like a hidden
+            props.onEvent?.(event)
+          }}
+        />
+        {/* Children here */}
+        <DialogFooter>{/* Cancel here */}</DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 // TODO: Wrap this in memo so it does not re-render as much as possible.
 export function VeniceConnect({
   endUserId,
   integrationIds,
   providerMetaByName,
+  onEvent,
 }: VeniceConnectProps) {
   const [_dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )
+  // TODO: Fix me by actually implementing it...
   const openDialog: OpenDialogFn = React.useCallback(
     (render, options) => {
       setDialogConfig({Component: render, options})
@@ -103,6 +151,9 @@ export function VeniceConnect({
           key={int.id}
           int={int}
           connectFn={connectFnMap[int.provider.name]}
+          onEvent={(e) => {
+            onEvent?.({type: e.type, intId: int.id})
+          }}
         />
       ))}
     </div>
@@ -112,10 +163,12 @@ export function VeniceConnect({
 export const ConnectCard = ({
   int,
   connectFn,
+  onEvent,
 }: {
   int: {id: Id['int']; provider: ProviderMeta}
   // connectFnMap:
   connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  onEvent?: (event: {type: ConnectEventType}) => void
 }) => {
   // console.log('ConnectCard', int.id, int.provider)
   const envName = 'sandbox' as const
@@ -192,6 +245,7 @@ export const ConnectCard = ({
             disabled={connect.isLoading}
             variant="ghost"
             onClick={(e) => {
+              onEvent?.({type: 'open'})
               if (!connectFn) {
                 // Allow the default behavior of opening the dialog
                 return
@@ -207,7 +261,9 @@ export const ConnectCard = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Connect to {int.provider.name}</DialogTitle>
-            <DialogDescription>Uing integration ID: {int.id}</DialogDescription>
+            <DialogDescription>
+              Using integration ID: {int.id}
+            </DialogDescription>
           </DialogHeader>
           <SchemaForm
             ref={formRef}

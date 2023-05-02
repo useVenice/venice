@@ -1,7 +1,7 @@
 'use client'
 
 import {providerByName} from '@usevenice/app-config/providers'
-import {trpcReact, VeniceConnect} from '@usevenice/engine-frontend'
+import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 
 import {DataTable} from '@/components/DataTable'
 
@@ -15,13 +15,17 @@ export default function ResourcesPage() {
 
   return (
     <div className="p-6">
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">Resources</h2>
+      <header className="flex items-center">
+        <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
+          Resources
+        </h2>
+        <VeniceConnectButton
+          endUserId={null}
+          integrationIds={infos.data.map((i) => i.id)}
+          providerMetaByName={providerByName}
+        />
+      </header>
       <p>Resources are created based on integration configurations</p>
-      <VeniceConnect
-        endUserId={null}
-        integrationIds={infos.data.map((i) => i.id)}
-        providerMetaByName={providerByName}
-      />
       <DataTable isFetching={res.isFetching} rows={res.data ?? []} />
     </div>
   )
