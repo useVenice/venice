@@ -18,6 +18,24 @@ export const zViewer = z.discriminatedUnion('role', [
   z.object({role: z.literal(zRole.Enum.system)}),
 ])
 
+/** Used for external systems */
+export function getExtEndUserId(
+  viewer: Viewer<'end_user' | 'user' | 'org' | 'system'>,
+) {
+  // TODO: Create a separate brand for extEndUserId
+  switch (viewer.role) {
+    case 'end_user':
+      return `eusr_${viewer.endUserId}` as EndUserId
+    case 'user':
+      // Falling back to userId should not generally happen
+      return (viewer.orgId ?? viewer.userId) as EndUserId
+    case 'org':
+      return viewer.orgId as EndUserId
+    case 'system':
+      return 'system' as EndUserId
+  }
+}
+
 export type ViewerRole = z.infer<typeof zRole>
 export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
   z.infer<typeof zViewer>,

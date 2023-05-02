@@ -10,14 +10,14 @@ import {joinPath, makeUlid, z} from '@usevenice/util'
 
 import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
-import {endUserProcedure, protectedProcedure, trpc} from './_base'
+import {protectedProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
 /** TODO: Modify this so that admin user can execute it... not just endUser */
 export const endUserRouter = trpc.router({
   // MARK: - Connect
-  preConnect: endUserProcedure
+  preConnect: protectedProcedure
     .input(z.tuple([zId('int'), zConnectOptions, z.unknown()]))
     // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
     .query(
@@ -25,7 +25,7 @@ export const endUserRouter = trpc.router({
         input: [intId, {resourceExternalId, ...connCtxInput}, preConnInput],
         ctx,
       }) => {
-        const int = await ctx.asOrg.getIntegrationOrFail(intId)
+        const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
         if (!int.provider.preConnect) {
           return null
         }
@@ -38,7 +38,7 @@ export const endUserRouter = trpc.router({
           int.config,
           {
             ...connCtxInput,
-            endUserId: ctx.viewer.endUserId,
+            endUserId: ctx.extEndUserId,
             resource: reso
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: resourceExternalId!, settings: reso.settings}
@@ -48,7 +48,7 @@ export const endUserRouter = trpc.router({
               parseWebhookRequest.pathOf(int.id),
             ),
             redirectUrl: ctx.getRedirectUrl?.(int, {
-              endUserId: ctx.viewer.endUserId,
+              endUserId: ctx.extEndUserId,
             }),
           },
           preConnInput,
@@ -58,7 +58,7 @@ export const endUserRouter = trpc.router({
   // useConnectHook happens client side only
   // for cli usage, can just call `postConnect` directly. Consider making the
   // flow a bit smoother with a guided cli flow
-  postConnect: endUserProcedure
+  postConnect: protectedProcedure
     .input(z.tuple([z.unknown(), zId('int'), zPostConnectOptions]))
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
@@ -69,7 +69,7 @@ export const endUserRouter = trpc.router({
         input: [input, intId, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const int = await ctx.asOrg.getIntegrationOrFail(intId)
+        const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
         console.log('didConnect start', int.provider.name, input, connCtxInput)
         if (!int.provider.postConnect || !int.provider.def.connectOutput) {
           return 'Noop'
@@ -84,7 +84,7 @@ export const endUserRouter = trpc.router({
           int.config,
           {
             ...connCtxInput,
-            endUserId: ctx.viewer.endUserId,
+            endUserId: ctx.extEndUserId,
             resource: reso
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: resourceExternalId!, settings: reso.settings}
@@ -94,17 +94,17 @@ export const endUserRouter = trpc.router({
               parseWebhookRequest.pathOf(int.id),
             ),
             redirectUrl: ctx.getRedirectUrl?.(int, {
-              endUserId: ctx.viewer.endUserId,
+              endUserId: ctx.extEndUserId,
             }),
           },
         )
 
         const syncInBackground =
           resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
-        const resourceId = await ctx.asOrg._syncResourceUpdate(int, {
+        const resourceId = await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...resoUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          endUserId: ctx.viewer.endUserId,
+          endUserId: ctx.extEndUserId,
           envName: connCtxInput.envName,
           triggerDefaultSync:
             !syncInBackground && resoUpdate.triggerDefaultSync,
@@ -144,7 +144,7 @@ export const endUserRouter = trpc.router({
           options: {},
         })),
         // TODO: Fix me up
-        endUserId: 'endUserId' in ctx.viewer ? ctx.viewer.endUserId : null,
+        endUserId: ctx.extEndUserId,
       } satisfies ResourceUpdate
       await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
       return resoId

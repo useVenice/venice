@@ -6,12 +6,15 @@ export function createQueryClient() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
         refetchOnWindowFocus: false, // Too many requests for going between devTool and not... alternative is to change the stale time
         // refetchOnMount: false,
         // refetchOnReconnect: false,
         // How do we configure it that the only time we "refetch" is when we cmd+r reload the window?
         // We still want to stale-while-revalidate though and thus we persist the query cache.
+
+        // No longer need to refetch now that we always get data from server first
+        staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
+        refetchOnMount: false,
       },
     },
   })

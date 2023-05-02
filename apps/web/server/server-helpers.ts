@@ -57,7 +57,7 @@ export async function createSSRHelpers(context: NextContext) {
   return {
     viewer,
     ssg,
-    getDehyratedState: () => superjson.serialize(dehydrate(queryClient)),
+    getDehydratedState: () => superjson.serialize(dehydrate(queryClient)),
     /** @deprecated */
     getPageProps: (): PageProps => ({
       dehydratedState: superjson.serialize(dehydrate(queryClient)),

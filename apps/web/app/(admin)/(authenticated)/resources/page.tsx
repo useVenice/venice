@@ -1,23 +1,26 @@
-'use client'
+import {SuperHydrate} from '@/components/SuperHydrate'
+import {createServerComponentHelpers} from '@/server'
 
-import {providerByName} from '@usevenice/app-config/providers'
-import {trpcReact, VeniceConnect} from '@usevenice/engine-frontend'
+import _ResourcePage from './ResourcesPage'
 
-import {DataTable} from '@/components/DataTable'
+export default async function ResourcesPage() {
+  const {ssg, getDehydratedState} = await createServerComponentHelpers()
 
-export default function ResourcesPage() {
-  const res = trpcReact.listConnections.useQuery()
+  await Promise.all([
+    ssg.listIntegrationInfos.fetch({}),
+    ssg.listConnections.prefetch({}),
+  ])
+
+  // Anyway to stream the preConnect response to client so client does not
+  // have to make a round-trip? We don't want to do it right away
+  // because we do not want to block the initial page load on 3rd party API endpoints
+  // await integrations.map(
+  //   ssg.preConnect()
+  // )
 
   return (
-    <div className="p-6">
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">Resources</h2>
-      <p>Resources are created based on integration configurations</p>
-      <VeniceConnect
-        endUserId={null}
-        integrationIds={['int_postgres_01GZDSYE062G2CE5V4WE5Z004M']}
-        providerMetaByName={providerByName}
-      />
-      <DataTable isFetching={res.isFetching} rows={res.data ?? []} />
-    </div>
+    <SuperHydrate dehydratedState={getDehydratedState()}>
+      <_ResourcePage />
+    </SuperHydrate>
   )
 }
