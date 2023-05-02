@@ -106,7 +106,7 @@ GRANT USAGE ON SCHEMA public TO "end_user";
 GRANT SELECT (id) ON public.integration TO "end_user";
 DROP POLICY IF EXISTS end_user_access ON public.integration;
 CREATE POLICY end_user_access ON public.integration TO end_user
-  USING (org_id = jwt_org_id());
+  USING (org_id = jwt_org_id() AND end_user_access = true);
 
 
 GRANT SELECT, UPDATE (display_name), DELETE ON public.resource TO "end_user";
