@@ -28,6 +28,7 @@
     "@tanstack/query-sync-storage-persister": "4.27.1",
     "@tanstack/react-query": "4.28.0",
     "@tanstack/react-query-persist-client": "4.28.0",
+    "@tremor/react": "2.4.0",
     "@trpc/react-query": "10.21.1",
     "@trpc/server": "10.21.1",
     "@types/http-proxy": "1.17.10",
