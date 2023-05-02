@@ -3,7 +3,7 @@ import {TRPCError} from '@trpc/server'
 
 import {z, zFunction} from '@usevenice/util'
 
-import type {EndUserId, Id, UserId} from './id.types'
+import type {EndUserId, ExtEndUserId, Id, UserId} from './id.types'
 import {zEndUserId, zId, zUserId} from './id.types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'org', 'system'])
@@ -25,14 +25,14 @@ export function getExtEndUserId(
   // TODO: Create a separate brand for extEndUserId
   switch (viewer.role) {
     case 'end_user':
-      return `eusr_${viewer.endUserId}` as EndUserId
+      return `eusr_${viewer.endUserId}` as ExtEndUserId
     case 'user':
       // Falling back to userId should not generally happen
-      return (viewer.orgId ?? viewer.userId) as EndUserId
+      return (viewer.orgId ?? viewer.userId) as ExtEndUserId
     case 'org':
-      return viewer.orgId as EndUserId
+      return viewer.orgId as ExtEndUserId
     case 'system':
-      return 'system' as EndUserId
+      return 'system' as ExtEndUserId
   }
 }
 

@@ -251,7 +251,7 @@ export const plaidProvider = makeSyncProvider({
   // - commandsForResource
   preConnect: (
     config,
-    {endUserId: userId, resource, institutionExternalId, ...ctx},
+    {extEndUserId: userId, resource, institutionExternalId, ...ctx},
     input,
   ) => {
     if (input.sandboxPublicTokenCreate) {

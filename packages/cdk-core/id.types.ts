@@ -49,6 +49,9 @@ export type UserId = z.infer<typeof zUserId>
 export const zEndUserId = z.string().min(1).brand<'end_user'>()
 export type EndUserId = z.infer<typeof zEndUserId>
 
+export const zExtEndUserId = z.string().min(1).brand<'ext_end_user'>()
+export type ExtEndUserId = z.infer<typeof zExtEndUserId>
+
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...

@@ -3,7 +3,7 @@ import {titleCase} from '@usevenice/util'
 import {urlFromImage} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
-import type {EndUserId, ExternalId} from './id.types'
+import type {EndUserId, ExtEndUserId, ExternalId} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
@@ -114,7 +114,7 @@ export interface CheckResourceContext {
 export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'resourceExternalId'>,
     CheckResourceContext {
-  endUserId: EndUserId
+  extEndUserId: ExtEndUserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
   redirectUrl?: string
   resource?: {

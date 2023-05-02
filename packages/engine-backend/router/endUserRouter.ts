@@ -38,7 +38,7 @@ export const endUserRouter = trpc.router({
           int.config,
           {
             ...connCtxInput,
-            endUserId: ctx.extEndUserId,
+            extEndUserId: ctx.extEndUserId,
             resource: reso
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: resourceExternalId!, settings: reso.settings}
@@ -48,7 +48,8 @@ export const endUserRouter = trpc.router({
               parseWebhookRequest.pathOf(int.id),
             ),
             redirectUrl: ctx.getRedirectUrl?.(int, {
-              endUserId: ctx.extEndUserId,
+              endUserId:
+                ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
             }),
           },
           preConnInput,
@@ -84,7 +85,7 @@ export const endUserRouter = trpc.router({
           int.config,
           {
             ...connCtxInput,
-            endUserId: ctx.extEndUserId,
+            extEndUserId: ctx.extEndUserId,
             resource: reso
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 {externalId: resourceExternalId!, settings: reso.settings}
@@ -94,7 +95,8 @@ export const endUserRouter = trpc.router({
               parseWebhookRequest.pathOf(int.id),
             ),
             redirectUrl: ctx.getRedirectUrl?.(int, {
-              endUserId: ctx.extEndUserId,
+              endUserId:
+                ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
             }),
           },
         )
@@ -104,7 +106,8 @@ export const endUserRouter = trpc.router({
         const resourceId = await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...resoUpdate,
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
-          endUserId: ctx.extEndUserId,
+          endUserId:
+            ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
           envName: connCtxInput.envName,
           triggerDefaultSync:
             !syncInBackground && resoUpdate.triggerDefaultSync,
@@ -144,7 +147,7 @@ export const endUserRouter = trpc.router({
           options: {},
         })),
         // TODO: Fix me up
-        endUserId: ctx.extEndUserId,
+        endUserId: ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
       } satisfies ResourceUpdate
       await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
       return resoId
