@@ -1499,6 +1499,9 @@ importers:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
+      '@usevenice/cdk-core':
+        specifier: '*'
+        version: link:../cdk-core
 
   packages/util:
     dependencies:

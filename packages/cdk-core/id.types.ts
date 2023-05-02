@@ -73,6 +73,11 @@ export function extractId(id: Id[keyof Id]) {
   return [prefix as IdPrefix, providerName!, rest.join('_')] as const
 }
 
+// TODO: Should we have a branded type for providerName?
+export function extractProviderName(id: Id['int'] | Id['reso']) {
+  return extractId(id)[1]
+}
+
 export function swapPrefix<TPrefix extends IdPrefix>(
   id: Id[keyof Id],
   newPrefix: TPrefix,

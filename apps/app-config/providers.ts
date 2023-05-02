@@ -1,5 +1,8 @@
-import type {AnySyncProvider} from '@usevenice/cdk-core'
-import {debugProvider, zIntegrationStage} from '@usevenice/cdk-core'
+import {
+  debugProvider,
+  metaForProvider,
+  zIntegrationStage,
+} from '@usevenice/cdk-core'
 import {airtableProvider} from '@usevenice/core-integration-airtable'
 import {firebaseProvider} from '@usevenice/core-integration-firebase'
 import {fsProvider} from '@usevenice/core-integration-fs'
@@ -27,7 +30,7 @@ import {togglProvider} from '@usevenice/integration-toggl'
 import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
-import {R, sort, titleCase, urlFromImage} from '@usevenice/util'
+import {R, sort} from '@usevenice/util'
 
 export {plaidProvider, fsProvider}
 
@@ -70,28 +73,9 @@ export const PROVIDERS = [
   brexImpl as unknown as typeof plaidProvider, // Hack for now..
 ] as const
 
-export const allProviders = sort(
-  PROVIDERS.map((provider: AnySyncProvider) => ({
-    // ...provider,
-    name: provider.name,
-    displayName: provider.metadata?.displayName ?? titleCase(provider.name),
-    logoUrl: provider.metadata?.logoSvg
-      ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
-      : provider.metadata?.logoUrl,
-    stage: provider.metadata?.stage ?? 'alpha',
-    platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
-    categories: provider.metadata?.categories ?? ['other'],
-    supportedModes: R.compact([
-      provider.sourceSync ? ('source' as const) : null,
-      provider.destinationSync ? ('destination' as const) : null,
-    ]),
-    preConnectNeeded: provider.preConnect != null,
-    useConnectHookNeeded: provider.useConnectHook != null,
-    def: provider.def,
-  })),
-).desc((p) => zIntegrationStage.options.indexOf(p.stage))
-
-export type ProviderMeta = (typeof allProviders)[number]
+export const allProviders = sort(PROVIDERS.map(metaForProvider)).desc((p) =>
+  zIntegrationStage.options.indexOf(p.stage),
+)
 
 export const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
 

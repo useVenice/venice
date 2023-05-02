@@ -7,11 +7,15 @@ import React from 'react'
 import {
   availableProviders,
   providerByName,
-  type ProviderMeta,
 } from '@usevenice/app-config/providers'
-import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
+import {
+  zIntegrationCategory,
+  zRaw,
+  type ProviderMeta,
+} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
+import {ProviderCard as _ProviderCard} from '@usevenice/ui/domain-components'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +28,6 @@ import {
   AlertDialogTrigger,
   Badge,
   Button,
-  Card,
   Separator,
   Sheet,
   SheetContent,
@@ -218,44 +221,10 @@ export function IntegrationSheet({
   )
 }
 
-const ProviderCard = ({
-  provider,
-  children,
-}: {
+const ProviderCard = (props: {
   provider: ProviderMeta
   children?: React.ReactNode
-}) => (
-  <Card
-    key={provider.name}
-    className="m-3 flex h-48 w-48 flex-col items-center p-2">
-    <div className="flex self-stretch">
-      <Badge
-        variant="secondary"
-        className={cn(
-          'ml-auto',
-          provider.stage === 'production' && 'bg-green-200',
-          provider.stage === 'beta' && 'bg-blue-200',
-          provider.stage === 'alpha' && 'bg-pink-50',
-        )}>
-        {provider.stage}
-      </Badge>
-    </div>
-    {provider.logoUrl ? (
-      <Image
-        width={100}
-        height={100}
-        src={provider.logoUrl}
-        alt={provider.displayName}
-        className="grow object-contain"
-      />
-    ) : (
-      <div className="flex grow flex-col items-center justify-center">
-        <caption>{provider.displayName}</caption>
-      </div>
-    )}
-    {children}
-  </Card>
-)
+}) => <_ProviderCard Image={Image as any} showStageBadge {...props} />
 
 export default function IntegrationsPage() {
   const integrationsRes = trpcReact.adminListIntegrations.useQuery()

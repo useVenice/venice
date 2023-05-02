@@ -35,6 +35,7 @@
     "tailwind-merge": "*"
   },
   "devDependencies": {
-    "@types/react": "*"
+    "@types/react": "*",
+    "@usevenice/cdk-core": "*"
   }
 }

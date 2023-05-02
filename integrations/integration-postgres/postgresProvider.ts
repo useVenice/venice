@@ -20,6 +20,7 @@ const _def = makeSyncProvider.def({
   // in the list of integrations...
   // How do we create default resources for integrations that are basically single resource?
   resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
+    // gotta make sourceQueries a Textarea
     sourceQueries: z
       .object({
         invoice: z.string().nullish(),

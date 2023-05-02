@@ -1,4 +1,6 @@
 import type {MaybePromise} from '@usevenice/util'
+import {titleCase} from '@usevenice/util'
+import {urlFromImage} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
 import type {EndUserId, ExternalId} from './id.types'
@@ -13,6 +15,31 @@ import type {
   StateUpdateData,
   SyncOperation,
 } from './protocol'
+
+export type ProviderMeta = ReturnType<typeof metaForProvider>
+
+export const metaForProvider = (provider: AnySyncProvider) => ({
+  // ...provider,
+  name: provider.name,
+  displayName: provider.metadata?.displayName ?? titleCase(provider.name),
+  logoUrl: provider.metadata?.logoSvg
+    ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
+    : provider.metadata?.logoUrl,
+  stage: provider.metadata?.stage ?? 'alpha',
+  platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
+  categories: provider.metadata?.categories ?? ['other'],
+  supportedModes: R.compact([
+    provider.sourceSync ? ('source' as const) : null,
+    provider.destinationSync ? ('destination' as const) : null,
+  ]),
+  hasPreConnect: provider.preConnect != null,
+  hasUseConnectHook: provider.useConnectHook != null,
+  hasPostConnect: provider.postConnect != null,
+  def: provider.def,
+  // This is the only non-serializable attribute for network...
+  // should it really be part of meta?
+  useConnectHook: provider.useConnectHook,
+})
 
 export const zIntegrationCategory = z.enum([
   'banking',
@@ -70,7 +97,7 @@ export type OpenDialogFn = (
 ) => void
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
-  endUserId: EndUserId | undefined
+  endUserId: EndUserId | undefined | null
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
