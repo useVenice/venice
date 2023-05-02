@@ -5,7 +5,7 @@ import type {RealtimeClient} from '@supabase/realtime-js'
 import {QueryClientProvider} from '@tanstack/react-query'
 import React, {useEffect, useRef} from 'react'
 
-import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
+import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 import {Toaster} from '@usevenice/ui/new-components'
 
@@ -14,28 +14,42 @@ import {createRealtimeClient, usePostgresChanges} from './realtime'
 import type {AsyncStatus} from './viewer-context'
 import {ViewerContext} from './viewer-context'
 
-export function ClientRoot(props: {
+export function ClientRootWithClerk(props: {
   children: React.ReactNode
   /** Viewer will be inferred from this... */
   initialAccessToken?: string | null
 }) {
-  console.log(
-    '[ClientRoot] rendering initialToken?',
-    props.initialAccessToken != null,
-  )
   const [accessToken, setAccessToken] = React.useState(props.initialAccessToken)
   const auth = useAuth()
+  const status: AsyncStatus = auth.isLoaded ? 'loading' : 'success'
+  useEffect(() => {
+    void auth.getToken({template: 'supabase'}).then((t) => setAccessToken(t))
+  }, [auth])
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+  ;(globalThis as any).auth = auth
+
+  return <ClientRoot {...props} accessToken={accessToken} authStatus={status} />
+}
+
+export function ClientRoot({
+  authStatus: status,
+  accessToken,
+  children,
+}: {
+  children: React.ReactNode
+  /** Viewer will be inferred from this... */
+  accessToken?: string | null
+  authStatus: AsyncStatus
+}) {
+  console.log('[ClientRoot] rendering initialToken?', accessToken != null)
+
   const viewer = React.useMemo(
     () => zViewerFromUnverifiedJwtToken.parse(accessToken),
     [accessToken],
   )
-  const status: AsyncStatus = auth.isLoaded ? 'loading' : 'success'
 
   const {current: realtime} = useRef(createRealtimeClient())
-
-  useEffect(() => {
-    void auth.getToken({template: 'supabase'}).then((t) => setAccessToken(t))
-  }, [auth])
 
   useEffect(() => {
     if (!realtime.isConnected()) {
@@ -50,12 +64,11 @@ export function ClientRoot(props: {
     console.log('invalidate all queries')
     void queryClient.invalidateQueries()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.userId, auth.orgId])
+  }, [getViewerId(viewer)])
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).accessToken = accessToken
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  ;(globalThis as any).auth = auth
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).viewer = viewer
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
@@ -72,7 +85,7 @@ export function ClientRoot(props: {
             () => ({accessToken, status, viewer}),
             [accessToken, status, viewer],
           )}>
-          {props.children}
+          {children}
           <Toaster />
         </ViewerContext.Provider>
       </TRPCProvider>

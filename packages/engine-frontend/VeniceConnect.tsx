@@ -1,3 +1,5 @@
+'use client'
+
 import {useMutation} from '@tanstack/react-query'
 import {Loader2} from 'lucide-react'
 import React from 'react'
@@ -55,7 +57,7 @@ export function VeniceConnectButton({
   children,
   className,
   ...props
-}: VeniceConnectProps & {className?: string; children?: React.ReactNode, }) {
+}: VeniceConnectProps & {className?: string; children?: React.ReactNode}) {
   const [open, setOpen] = React.useState(false)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -95,6 +97,11 @@ export function VeniceConnect({
   providerMetaByName,
   onEvent,
 }: VeniceConnectProps) {
+  // VeniceConnect should be fetching its own integrationIds as well as resources
+  // this way it can esure those are refreshed as operations take place
+  // This is esp true when we are operating in client envs (js embed)
+  // and cannot run on server-side per-se
+
   const [_dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
   )

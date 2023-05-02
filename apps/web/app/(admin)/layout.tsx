@@ -4,7 +4,7 @@ import {ClerkProvider} from '@clerk/nextjs/app-beta'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import React from 'react'
 
-import {ClientRoot} from '@/contexts/ClientRoot'
+import {ClientRootWithClerk} from '@/contexts/ClientRoot'
 
 export default function AdminLayout(props: {children: React.ReactNode}) {
   console.log('[AdminLayout] rendering')
@@ -13,7 +13,7 @@ export default function AdminLayout(props: {children: React.ReactNode}) {
 
   return (
     <ClerkProvider>
-      <ClientRoot>{props.children}</ClientRoot>
+      <ClientRootWithClerk>{props.children}</ClientRootWithClerk>
     </ClerkProvider>
   )
 }

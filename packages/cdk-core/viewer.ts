@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 import {TRPCError} from '@trpc/server'
 
-import {z, zFunction} from '@usevenice/util'
+import {R, z, zFunction} from '@usevenice/util'
 
 import type {EndUserId, ExtEndUserId, Id, UserId} from './id.types'
 import {zEndUserId, zId, zUserId} from './id.types'
@@ -18,24 +18,6 @@ export const zViewer = z.discriminatedUnion('role', [
   z.object({role: z.literal(zRole.Enum.system)}),
 ])
 
-/** Used for external systems */
-export function getExtEndUserId(
-  viewer: Viewer<'end_user' | 'user' | 'org' | 'system'>,
-) {
-  // TODO: Create a separate brand for extEndUserId
-  switch (viewer.role) {
-    case 'end_user':
-      return `eusr_${viewer.endUserId}` as ExtEndUserId
-    case 'user':
-      // Falling back to userId should not generally happen
-      return (viewer.orgId ?? viewer.userId) as ExtEndUserId
-    case 'org':
-      return viewer.orgId as ExtEndUserId
-    case 'system':
-      return 'system' as ExtEndUserId
-  }
-}
-
 export type ViewerRole = z.infer<typeof zRole>
 export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
   z.infer<typeof zViewer>,
@@ -47,6 +29,42 @@ export function hasRole<R extends ViewerRole>(
   roles: R[],
 ): viewer is Viewer<R> {
   return roles.includes(viewer.role as R)
+}
+
+// MARK: -
+
+/** Used to easily tell if two viewers are identical */
+export function getViewerId(viewer: Viewer) {
+  switch (viewer.role) {
+    case 'anon':
+      return 'anon'
+    case 'end_user':
+      return `${viewer.orgId}/eusr_${viewer.endUserId}`
+    case 'user':
+      // orgId is actually optional, thus userId first
+      return R.compact([viewer.userId, viewer.orgId]).join('/')
+    case 'org':
+      return viewer.orgId
+    case 'system':
+      return 'system'
+  }
+}
+
+/** Used for external systems */
+export function getExtEndUserId(
+  viewer: Viewer<'end_user' | 'user' | 'org' | 'system'>,
+) {
+  switch (viewer.role) {
+    case 'end_user':
+      return `eusr_${viewer.endUserId}` as ExtEndUserId
+    case 'user':
+      // Falling back to userId should not generally happen
+      return (viewer.orgId ?? viewer.userId) as ExtEndUserId
+    case 'org':
+      return viewer.orgId as ExtEndUserId
+    case 'system':
+      return 'system' as ExtEndUserId
+  }
 }
 
 // MARK: - JWT

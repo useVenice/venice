@@ -38,7 +38,7 @@ type NextContext =
   | {
       headers?: () => ReadonlyHeaders
       cookies?: () => ReadonlyRequestCookies
-      params?: Record<string, string[] | string>
+      params?: Record<string, string[] | string | undefined>
     }
 
 export async function createSSRHelpers(context: NextContext) {
@@ -66,7 +66,7 @@ export async function createSSRHelpers(context: NextContext) {
 }
 
 export function createServerComponentHelpers(opts?: {
-  params: {[kAccessToken]: string}
+  params: {[kAccessToken]?: string | string[]}
 }) {
   return createSSRHelpers({cookies, params: opts?.params})
 }
