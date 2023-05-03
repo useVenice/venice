@@ -26,11 +26,13 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
     hideSubmitButton,
     formData: _formData,
     onSubmit,
+    loading,
     ...props
   }: Omit<FormProps<z.infer<TSchema>>, 'schema' | 'validator' | 'onSubmit'> & {
     schema: TSchema
     hideSubmitButton?: boolean
     onSubmit?: (data: {formData: z.infer<TSchema>}) => void
+    loading?: boolean
   },
   forwardedRef: React.ForwardedRef<Form<z.infer<TSchema>>>,
 ) {
@@ -43,10 +45,12 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
 
   return (
     <JsonSchemaForm<z.infer<TSchema>>
+      disabled={loading}
       {...props}
       ref={forwardedRef}
       formData={formData}
-      className={cn('schema-form', props.className)}
+      // eslint-disable-next-line tailwindcss/no-custom-classname
+      className={cn('schema-form', loading && 'loading', props.className)}
       schema={jsonSchema}
       validator={validator}
       templates={{

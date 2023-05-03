@@ -277,6 +277,7 @@ export const ConnectCard = ({
             schema={formSchema}
             formData={{}}
             // formData should be non-null at this point, we should fix the typing
+            loading={connect.isLoading}
             onSubmit={({formData}) => {
               console.log('resource form submitted', formData)
               connect.mutate({integrationId: int.id, settings: formData})

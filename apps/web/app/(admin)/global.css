@@ -81,7 +81,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
 
@@ -91,7 +91,7 @@
   }
 
   .step:before {
-    @apply absolute w-8 h-8 bg-muted rounded-full font-medium text-center text-base inline-flex items-center justify-center -indent-px;
+    @apply absolute inline-flex h-8 w-8 items-center justify-center rounded-full bg-muted text-center -indent-px text-base font-medium;
     @apply ml-[-41px];
     content: counter(step);
   }
@@ -113,7 +113,7 @@
   /* Aka sections */
   .schema-form fieldset > legend {
     /* Display block doesn't work for some reason. Does not fill parent width which is still a div, not sure why */
-    @apply mb-3 pb-1 w-full border-b pt-4 text-xl font-semibold;
+    @apply mb-3 w-full border-b pb-1 pt-4 text-xl font-semibold;
   }
   .schema-form fieldset > div {
     /* Offset to indicate hierarchy */
@@ -128,7 +128,7 @@
     @apply mb-2;
   }
   .schema-form label.control-label {
-    @apply block mb-1 font-bold;
+    @apply mb-1 block font-bold;
   }
   .schema-form p.field-description {
     @apply mb-1;
@@ -138,14 +138,14 @@
     @apply block w-full rounded-md border border-input p-2;
   }
   /* Input component */
-  .schema-form input[type="text"] {
+  .schema-form input[type='text'] {
     @apply flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   /* .schema-form .checkbox label {
     @apply
   } */
-  .schema-form input[type="checkbox"] {
+  .schema-form input[type='checkbox'] {
     @apply m-2;
   }
 
@@ -187,7 +187,7 @@
   }
   /* Buttons (tends to be icon buttons */
   .schema-form .btn {
-    @apply rounded-md p-2 border mx-1;
+    @apply mx-1 rounded-md border p-2;
   }
   .schema-form .btn-danger {
     @apply border-red-200;
@@ -195,7 +195,29 @@
   .schema-form .btn-add {
     @apply border-blue-200;
   }
-  .schema-form button[type='submit'] {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  .schema-form button[type='submit'].btn {
+    @apply inline-flex items-center justify-center bg-primary px-4 text-primary-foreground hover:bg-primary/90;
+  }
+
+  /* Loading state */
+  .schema-form.loading button[type='submit'].btn::before {
+    @apply mr-2 inline-block h-4 w-4 animate-spin bg-primary-foreground;
+    content: ' ';
+    /* https://github.com/lucide-icons/lucide/blob/main/icons/loader-2.svg */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a9 9 0 1 1-6.219-8.56' /%3E%3C/svg%3E");
+    mask-size: contain;
+  }
+  .schema-form.loading button[type='submit'].btn::after {
+    content: 'ting...';
+  }
+
+  /* Readonly state */
+  .schema-form input:read-only {
+    @apply opacity-50;
+  }
+  /* Disabled state */
+  .schema-form button:disabled,
+  .schema-form input:disabled {
+    @apply opacity-50 cursor-not-allowed;
   }
 }

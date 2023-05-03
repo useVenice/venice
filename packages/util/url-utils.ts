@@ -11,6 +11,9 @@ import type {AnyRecord} from './type-utils'
 
 export {stringifyUrl} from 'query-string'
 
+/**
+ * Also available here https://www.svgbackgrounds.com/tools/svg-to-css/
+ */
 export function urlFromImage(input: {type: 'svg'; data: string}) {
   return `data:image/svg+xml,${encodeURIComponent(input.data)}`
 }

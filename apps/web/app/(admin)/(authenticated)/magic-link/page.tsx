@@ -32,6 +32,7 @@ export default function MagicLinkPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">Magic link</h2>
       <SchemaForm
         schema={formSchema}
+        loading={createToken.isLoading}
         onSubmit={({formData: values}) => {
           createToken.mutate(
             {...values, orgId},

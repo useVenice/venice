@@ -226,6 +226,7 @@ export function IntegrationSheet({
               config: int?.config ?? {}, // {} because required
             }}
             // formData should be non-null at this point, we should fix the typing
+            loading={upsertIntegration.isLoading}
             onSubmit={({formData}) => {
               console.log('formData submitted', formData)
               upsertIntegration.mutate({

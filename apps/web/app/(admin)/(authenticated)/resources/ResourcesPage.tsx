@@ -214,6 +214,7 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
             ref={formRef}
             schema={formSchema}
             formData={reso}
+            loading={updateResource.isLoading}
             onSubmit={({formData}) => {
               console.log('formData submitted', formData)
               updateResource.mutate({
