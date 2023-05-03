@@ -39,7 +39,10 @@ export default async function ConnectPageContainer({
     )
   }
 
-  await ssg.listIntegrationInfos.prefetch({})
+  await Promise.all([
+    ssg.listIntegrationInfos.prefetch({}),
+    ssg.listConnections.prefetch({}),
+  ])
 
   return (
     <div className="h-screen w-screen p-6">
@@ -48,7 +51,7 @@ export default async function ConnectPageContainer({
       </h2>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
-          <ConnectPage viewer={viewer} />
+          <ConnectPage />
         </SuperHydrate>
       </ClientRoot>
     </div>

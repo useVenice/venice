@@ -1,35 +1,95 @@
+import {Landmark} from 'lucide-react'
 import React from 'react'
 
 import type {ProviderMeta} from '@usevenice/cdk-core'
+import type {ZStandard} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
 
 import {Badge, Card} from '../new-components'
 import {cn} from '../utils'
 
-// Should this live in useVenice/ui? probably
-export const ProviderCard = ({
+/** Can be img or next/image component */
+export type ImageComponent = React.FC<
+  Omit<
+    React.DetailedHTMLProps<
+      React.ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement
+    >,
+    'loading' | 'ref'
+  >
+>
+
+export interface UIPropsNoChildren {
+  className?: string
+  children?: React.ReactNode
+  Image?: ImageComponent
+}
+
+export interface UIProps extends UIPropsNoChildren {
+  children?: React.ReactNode
+}
+
+type Resource = RouterOutput['listConnections'][number]
+
+export const ResourceCard = ({
+  resource,
   provider,
   children,
-  showStageBadge = false,
-  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  Image = (props) => <img {...props} />,
-}: {
+  className,
+  ...uiProps
+}: UIProps & {
+  resource: Resource
   provider: ProviderMeta
-  children?: React.ReactNode
-  showStageBadge?: boolean
-  /** Pass in the Next.js Image component */
-  Image?: React.FC<
-    Omit<
-      React.DetailedHTMLProps<
-        React.ImgHTMLAttributes<HTMLImageElement>,
-        HTMLImageElement
-      >,
-      'loading' | 'ref'
-    >
-  >
 }) => (
   <Card
-    key={provider.name}
-    className="m-3 flex h-48 w-48 flex-col items-center p-2">
+    className={cn('m-3 flex h-48 w-48 flex-col items-center p-2', className)}>
+    <div className="flex self-stretch">
+      <Badge
+        variant="secondary"
+        className={cn(
+          'ml-auto',
+          resource.status === 'healthy' && 'bg-green-200',
+          resource.status === 'manual' && 'bg-blue-200',
+          (resource.status === 'error' || resource.status === 'disconnected') &&
+            'bg-pink-200',
+        )}>
+        {resource.syncInProgress ? 'Syncing' : resource.status}
+      </Badge>
+    </div>
+
+    {resource.institutionId ? (
+      <InstitutionLogo
+        {...uiProps}
+        institution={resource.institution}
+        className="grow"
+      />
+    ) : (
+      <ProviderLogo {...uiProps} provider={provider} className="grow" />
+    )}
+
+    {/* Integration id / provider name */}
+    {/* Institution logo with name */}
+    {/* Connection status / last synced time */}
+    {/* Reconnect button */}
+    {/* Do we want drop down menu? */}
+    {/* Renaming (display name) */}
+    {/* Deleting */}
+    {children}
+  </Card>
+)
+
+export const ProviderCard = ({
+  provider,
+  showStageBadge = false,
+  className,
+  children,
+  ...uiProps
+}: UIProps & {
+  provider: ProviderMeta
+  showStageBadge?: boolean
+}) => (
+  <Card
+    className={cn('m-3 flex h-48 w-48 flex-col items-center p-2', className)}>
     <div className="flex self-stretch">
       {showStageBadge && (
         <Badge
@@ -44,19 +104,57 @@ export const ProviderCard = ({
         </Badge>
       )}
     </div>
-    {provider.logoUrl ? (
-      <Image
-        width={100}
-        height={100}
-        src={provider.logoUrl}
-        alt={provider.displayName}
-        className="grow object-contain"
-      />
-    ) : (
-      <div className="flex grow flex-col items-center justify-center">
-        <caption>{provider.displayName}</caption>
-      </div>
-    )}
+    <ProviderLogo {...uiProps} provider={provider} className="grow" />
     {children}
   </Card>
 )
+
+export const ProviderLogo = ({
+  provider,
+  className,
+  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  Image = (props) => <img {...props} />,
+}: UIPropsNoChildren & {
+  provider: ProviderMeta
+}) =>
+  provider.logoUrl ? (
+    <Image
+      width={100}
+      height={100}
+      src={provider.logoUrl}
+      alt={`"${provider.displayName}" logo`}
+      className={cn('object-contain', className)}
+    />
+  ) : (
+    <div className={cn('flex flex-col items-center justify-center', className)}>
+      <caption>{provider.displayName}</caption>
+    </div>
+  )
+
+export function InstitutionLogo({
+  institution,
+  className,
+  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  Image = (props) => <img {...props} />,
+}: UIPropsNoChildren & {
+  institution?: ZStandard['institution'] | null | undefined
+}) {
+  return institution?.logoUrl ? (
+    <Image
+      src={institution.logoUrl}
+      alt={`"${institution.name}" logo`}
+      className={cn(
+        'h-12 w-12 shrink-0 overflow-hidden object-contain',
+        className,
+      )}
+    />
+  ) : (
+    <div
+      className={cn(
+        'flex h-12 shrink-0 items-center justify-center rounded-lg',
+        className,
+      )}>
+      <Landmark />
+    </div>
+  )
+}

@@ -10,8 +10,8 @@ import type {
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk-core'
-import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
 import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
+import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
@@ -121,7 +121,7 @@ export function VeniceProvider<
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
-    p.useConnectHook?.({endUserId, openDialog}),
+    p.useConnectHook?.({openDialog}),
   ])
   const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
 

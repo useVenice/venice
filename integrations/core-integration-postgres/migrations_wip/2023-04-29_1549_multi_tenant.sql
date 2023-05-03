@@ -103,7 +103,8 @@ GRANT "end_user" TO "postgres";
 GRANT "end_user" TO "authenticator";
 GRANT USAGE ON SCHEMA public TO "end_user";
 
-GRANT SELECT (id) ON public.integration TO "end_user";
+GRANT SELECT ON public.institution TO "end_user";
+GRANT SELECT (id, org_id) ON public.integration TO "end_user";
 DROP POLICY IF EXISTS end_user_access ON public.integration;
 CREATE POLICY end_user_access ON public.integration TO end_user
   USING (org_id = jwt_org_id() AND end_user_access = true);

@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "@usevenice/cdk-core": "*"
+    "@usevenice/cdk-core": "*",
+    "@usevenice/engine-backend": "*"
   }
 }

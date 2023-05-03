@@ -1508,6 +1508,9 @@ importers:
       '@usevenice/cdk-core':
         specifier: '*'
         version: link:../cdk-core
+      '@usevenice/engine-backend':
+        specifier: '*'
+        version: link:../engine-backend
 
   packages/util:
     dependencies:

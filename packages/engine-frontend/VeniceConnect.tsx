@@ -6,15 +6,16 @@ import React from 'react'
 
 import type {
   AnyProviderDef,
-  EndUserId,
   Id,
   OpenDialogFn,
   ProviderMeta,
   UseConnectHook,
 } from '@usevenice/cdk-core'
+import {CANCELLATION_TOKEN, extractId} from '@usevenice/cdk-core'
 import {extractProviderName, zIntegrationCategory} from '@usevenice/cdk-core'
-import type {RouterInput} from '@usevenice/engine-backend'
-import {ProviderCard} from '@usevenice/ui/domain-components'
+import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
+import type {UIProps, UIPropsNoChildren} from '@usevenice/ui/domain-components'
+import {ProviderCard, ResourceCard} from '@usevenice/ui/domain-components'
 import {
   Button,
   Dialog,
@@ -28,15 +29,16 @@ import {
 } from '@usevenice/ui/new-components'
 import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
 import {SchemaForm} from '@usevenice/ui/SchemaForm'
+import {cn} from '@usevenice/ui/utils'
 import {R, titleCase, z} from '@usevenice/util'
 
 import {trpcReact} from './TRPCProvider'
 
 type ConnectEventType = 'open' | 'close' | 'error'
 
-export interface VeniceConnectProps {
-  endUserId?: EndUserId | null
-  integrationIds: Array<Id['int']>
+export interface VeniceConnectProps extends UIPropsNoChildren {
+  /** Whether to display the existing connections */
+  showExisting?: boolean
   providerMetaByName: Record<string, ProviderMeta>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
@@ -91,16 +93,49 @@ export function VeniceConnectButton({
 }
 
 // TODO: Wrap this in memo so it does not re-render as much as possible.
+// Also it would be nice if there was an easy way to automatically prefetch on the server side
+// based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect({
-  endUserId,
-  integrationIds,
   providerMetaByName,
   onEvent,
+  showExisting,
+  className,
+  ...uiProps
 }: VeniceConnectProps) {
   // VeniceConnect should be fetching its own integrationIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
   // and cannot run on server-side per-se
+  const listIntegrationsRes = trpcReact.listIntegrationInfos.useQuery({})
+  const listConnectionsRes = trpcReact.listConnections.useQuery(
+    {},
+    {enabled: showExisting},
+  )
+
+  const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
+  const integrations = integrationIds
+    .map((id) => {
+      const provider = providerMetaByName[extractProviderName(id)]
+      if (!provider) {
+        console.warn('Missing provider for integration', id)
+      }
+      return provider ? {id, provider} : null
+    })
+    .filter((i): i is NonNullable<typeof i> => !!i)
+  const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
+
+  const connections = (listConnectionsRes.data ?? [])
+    .map((conn) => {
+      const integration = integrationById[conn.integrationId]
+      if (!integration) {
+        console.warn('Missing integration for connection', conn)
+      }
+      return integration ? {...conn, integration} : null
+    })
+    .filter((c): c is NonNullable<typeof c> => !!c)
+
+  console.log('[VeniceConnect] integrations', integrations)
+  console.log('[VeniceConnect] connections', connections)
 
   const [_dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
     null,
@@ -112,23 +147,15 @@ export function VeniceConnect({
     },
     [setDialogConfig],
   )
-  const integrations = integrationIds
-    .map((id) => {
-      const provider = providerMetaByName[extractProviderName(id)]
-      if (!provider) {
-        console.warn('Missing provider for integration', id)
-      }
-      return provider ? {id, provider} : null
-    })
-    .filter((i): i is NonNullable<typeof i> => !!i)
 
+  // Do we actually need this here or can this go inside a ConnectCard somehow?
   const connectFnMap = R.pipe(
     integrationIds,
     R.map(extractProviderName),
     R.uniq,
     R.mapToObj((name: string) => [
       name,
-      providerMetaByName[name]?.useConnectHook?.({endUserId, openDialog}),
+      providerMetaByName[name]?.useConnectHook?.({openDialog}),
     ]),
   )
 
@@ -142,11 +169,15 @@ export function VeniceConnect({
     }))
     .filter((item) => item.integrations.length > 0)
 
+  if (!listIntegrationsRes.data) {
+    return <div>Loading...</div>
+  }
   if (!integrations.length) {
     return <div>No end user integrations configured</div>
   }
   return (
-    <div className="flex flex-wrap">
+    <div className={cn('flex flex-wrap', className)}>
+      {/* Listing by categories */}
       {false &&
         categories.map((category) => (
           <div key={category.key}>
@@ -159,37 +190,66 @@ export function VeniceConnect({
           </div>
         ))}
 
+      {/* Show existing */}
+      {connections.map((conn) => (
+        <ResourceCard
+          {...uiProps}
+          key={conn.id}
+          resource={conn}
+          provider={conn.integration.provider}>
+          <ProviderConnectButton
+            key={conn.id}
+            integration={conn.integration}
+            resource={conn}
+            connectFn={connectFnMap[conn.integration.provider.name]}
+            onEvent={(e) => {
+              onEvent?.({type: e.type, intId: conn.integration.id})
+            }}>
+            Reconnect
+          </ProviderConnectButton>
+        </ResourceCard>
+      ))}
+      {/* Add new  */}
       {integrations.map((int) => (
-        <ConnectCard
-          key={int.id}
-          int={int}
-          connectFn={connectFnMap[int.provider.name]}
-          onEvent={(e) => {
-            onEvent?.({type: e.type, intId: int.id})
-          }}
-        />
+        <ProviderCard {...uiProps} key={int.id} provider={int.provider}>
+          <ProviderConnectButton
+            integration={int}
+            connectFn={connectFnMap[int.provider.name]}
+            onEvent={(e) => {
+              onEvent?.({type: e.type, intId: int.id})
+            }}
+          />
+        </ProviderCard>
       ))}
     </div>
   )
 }
 
-export const ConnectCard = ({
-  int,
+type Resource = RouterOutput['listConnections'][number]
+
+export const ProviderConnectButton = ({
+  integration: int,
+  resource,
   connectFn,
   onEvent,
-}: {
-  int: {id: Id['int']; provider: ProviderMeta}
-  // connectFnMap:
+  className,
+  children,
+}: UIProps & {
+  integration: {id: Id['int']; provider: ProviderMeta}
+  resource?: Resource
   connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
   onEvent?: (event: {type: ConnectEventType}) => void
 }) => {
   // console.log('ConnectCard', int.id, int.provider)
   const envName = 'sandbox' as const
 
+  const resourceExternalId = resource ? extractId(resource.id)[2] : undefined
+
   // TODO: Handle preConnectInput schema and such... for example for Plaid
-  const preConnect = trpcReact.preConnect.useQuery([int.id, {envName}, {}], {
-    enabled: int.provider.hasPreConnect,
-  })
+  const preConnect = trpcReact.preConnect.useQuery(
+    [int.id, {envName, resourceExternalId}, {}],
+    {enabled: int.provider.hasPreConnect},
+  )
   const postConnect = trpcReact.postConnect.useMutation()
   const createResource = trpcReact.createResource.useMutation()
 
@@ -236,6 +296,9 @@ export const ConnectCard = ({
         }
       },
       onError: (err) => {
+        if (err === CANCELLATION_TOKEN) {
+          return
+        }
         toast({
           title: `Failed to connect to ${int.provider.displayName}`,
           description: `${err}`,
@@ -250,60 +313,56 @@ export const ConnectCard = ({
   const formSchema = int.provider.def.resourceSettings ?? z.object({})
 
   return (
-    <ProviderCard provider={int.provider}>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          className={cn('mt-2', className)}
+          disabled={connect.isLoading}
+          variant="ghost"
+          onClick={(e) => {
+            onEvent?.({type: 'open'})
+            if (!connectFn) {
+              // Allow the default behavior of opening the dialog
+              return
+            }
+            // Prevent dialog from automatically opening
+            // as we invoke provider client side JS
+            e.preventDefault()
+            connect.mutate(undefined)
+          }}>
+          {children ?? 'Connect'}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Connect to {int.provider.name}</DialogTitle>
+          <DialogDescription>Using integration ID: {int.id}</DialogDescription>
+        </DialogHeader>
+        <SchemaForm
+          ref={formRef}
+          schema={formSchema}
+          formData={{}}
+          // formData should be non-null at this point, we should fix the typing
+          loading={connect.isLoading}
+          onSubmit={({formData}) => {
+            console.log('resource form submitted', formData)
+            connect.mutate({integrationId: int.id, settings: formData})
+          }}
+          hideSubmitButton
+        />
+        {/* Children here */}
+        <DialogFooter>
           <Button
-            className="mt-2"
-            disabled={connect.isLoading}
-            variant="ghost"
-            onClick={(e) => {
-              onEvent?.({type: 'open'})
-              if (!connectFn) {
-                // Allow the default behavior of opening the dialog
-                return
-              }
-              // Prevent dialog from automatically opening
-              // as we invoke provider client side JS
-              e.preventDefault()
-              connect.mutate(undefined)
-            }}>
-            Connect
+            disabled={createResource.isLoading}
+            onClick={() => formRef.current?.submit()}
+            type="submit">
+            {createResource.isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Submit
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Connect to {int.provider.name}</DialogTitle>
-            <DialogDescription>
-              Using integration ID: {int.id}
-            </DialogDescription>
-          </DialogHeader>
-          <SchemaForm
-            ref={formRef}
-            schema={formSchema}
-            formData={{}}
-            // formData should be non-null at this point, we should fix the typing
-            loading={connect.isLoading}
-            onSubmit={({formData}) => {
-              console.log('resource form submitted', formData)
-              connect.mutate({integrationId: int.id, settings: formData})
-            }}
-            hideSubmitButton
-          />
-          {/* Children here */}
-          <DialogFooter>
-            <Button
-              disabled={createResource.isLoading}
-              onClick={() => formRef.current?.submit()}
-              type="submit">
-              {createResource.isLoading && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Submit
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </ProviderCard>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

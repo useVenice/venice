@@ -50,9 +50,8 @@ type Resource = RouterOutput['listConnections'][number]
 
 export default function ResourcesPage() {
   const res = trpcReact.listConnections.useQuery({})
-  const infos = trpcReact.listIntegrationInfos.useQuery({})
 
-  if (!res.data || !infos.data) {
+  if (!res.data) {
     return <div>Loading...</div>
   }
 
@@ -62,12 +61,7 @@ export default function ResourcesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Resources
         </h2>
-
-        <VeniceConnectButton
-          endUserId={null}
-          integrationIds={infos.data.map((i) => i.id)}
-          providerMetaByName={providerByName}
-        />
+        <VeniceConnectButton providerMetaByName={providerByName} />
       </header>
       <p>Resources are created based on integration configurations</p>
       {res.isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

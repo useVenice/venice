@@ -103,7 +103,7 @@
   }
 }
 
-/* Custom stuff */
+/* TODO: Move this to schema-form.css */
 
 @layer components {
   .schema-form {

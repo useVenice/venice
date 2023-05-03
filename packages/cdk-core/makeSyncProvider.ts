@@ -92,7 +92,6 @@ export type OpenDialogFn = (
 ) => void
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
-  endUserId: EndUserId | undefined | null
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
