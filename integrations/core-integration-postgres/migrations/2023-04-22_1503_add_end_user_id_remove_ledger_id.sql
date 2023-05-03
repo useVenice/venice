@@ -45,9 +45,9 @@ CREATE POLICY end_user_access ON public.raw_commodity
   WITH CHECK (end_user_id = auth.uid());
 
 -- WARNING: Will need to rerun 2023-01-07_create-views.sql manually due to dependecy on ledger_resource_id
-ALTER TABLE "public"."raw_transaction" DROP COLUMN "ledger_resource_id";
-ALTER TABLE "public"."raw_account" DROP COLUMN "ledger_resource_id";
-ALTER TABLE "public"."raw_commodity" DROP COLUMN "ledger_resource_id";
+ALTER TABLE "public"."raw_transaction" DROP COLUMN "ledger_resource_id" CASCADE;
+ALTER TABLE "public"."raw_account" DROP COLUMN "ledger_resource_id" CASCADE;
+ALTER TABLE "public"."raw_commodity" DROP COLUMN "ledger_resource_id" CASCADE;
 
 -- Update references which were previously missed
 
