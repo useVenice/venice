@@ -55,7 +55,9 @@ export default function IntegrationsPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Configured integrations
       </h2>
-
+      {integrationsRes.isFetching && (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      )}
       {integrationsRes.data ? (
         <div className="flex flex-wrap">
           {integrationsRes.data.map((int) => {
