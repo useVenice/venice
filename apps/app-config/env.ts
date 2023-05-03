@@ -11,11 +11,14 @@ export const zCommonEnv = zEnvVars({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
   NEXT_PUBLIC_POSTHOG_WRITEKEY: z.string().optional(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+  NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME: z.string().default('supabase'),
 
-  // TODO: Deprecate me?
+  // Deprecated
+  // TODO: Deprecate me? prefix with NEXT_PUBLIC please
   DEFAULT_CONNECT_ENV: zEnvName.default('sandbox'),
 
-  // TODO: Make use of me...
+  // TODO: Make use of me... prefix with NEXT_PUBLIC please
   NODE_ENV: z
     .string()
     .optional()
@@ -30,6 +33,8 @@ export const zBackendEnv = zEnvVars({
     .string()
     .trim()
     .describe('Used for validating authenticity of accessToken'),
+
+  CLERK_SECRET_KEY: z.string(),
 
   SENTRY_CRON_MONITOR_ID: z
     .string()

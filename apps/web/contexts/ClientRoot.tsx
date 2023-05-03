@@ -5,6 +5,7 @@ import type {RealtimeClient} from '@supabase/realtime-js'
 import {QueryClientProvider} from '@tanstack/react-query'
 import React, {useEffect, useRef} from 'react'
 
+import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider, trpcReact} from '@usevenice/engine-frontend'
 import {Toaster} from '@usevenice/ui/new-components'
@@ -23,7 +24,10 @@ export function ClientRootWithClerk(props: {
   const auth = useAuth()
   const status: AsyncStatus = auth.isLoaded ? 'loading' : 'success'
   useEffect(() => {
-    void auth.getToken({template: 'supabase'}).then((t) => setAccessToken(t))
+    // TODO: Are we better off signing ourselves server side and avoid needing a round-trip to Clerk?
+    // Access token is needed because we need to connect to supabase-realtime
+    const template = commonEnv.NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME
+    void auth.getToken({template}).then((t) => setAccessToken(t))
   }, [auth])
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
