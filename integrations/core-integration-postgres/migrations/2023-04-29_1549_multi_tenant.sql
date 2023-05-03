@@ -60,6 +60,25 @@ $function$;
 
 --- User policies ---
 
+DO
+$do$
+BEGIN
+   IF EXISTS (
+      SELECT FROM pg_catalog.pg_roles
+      WHERE  rolname = 'authenticated') THEN
+      RAISE NOTICE 'Role "authenticated" already exists. Skipping.';
+   ELSE
+      -- We should probably stop depending on objects built into the supabase schema at some point
+      -- For now we do this for the test environment
+      CREATE ROLE "authenticated";
+      CREATE ROLE "authenticator";
+      GRANT "authenticated" TO "postgres";
+      GRANT "authenticated" TO "authenticator";
+      GRANT USAGE ON SCHEMA public TO "authenticated";
+   END IF;
+END
+$do$;
+
 DROP POLICY IF EXISTS org_member_access ON public.integration;
 CREATE POLICY org_member_access ON "public"."integration" TO authenticated
   USING (org_id = jwt_org_id())
