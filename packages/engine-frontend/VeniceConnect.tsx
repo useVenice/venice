@@ -73,7 +73,10 @@ export function VeniceConnectButton({
 }: VeniceConnectProps & {className?: string; children?: React.ReactNode}) {
   const [open, setOpen] = React.useState(false)
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    // non modal dialog do not add pointer events none to the body
+    // which workaround issue with multiple portals (dropdown, dialog) conflicting
+    // as well as other modals introduced by things like Plaid
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
         {children ?? (
           <Button className={className} variant="default">
@@ -135,7 +138,10 @@ export function VeniceConnect({
     .filter((i): i is NonNullable<typeof i> => !!i)
   const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
 
-  const connections = (listConnectionsRes.data ?? [])
+  // TODO: seems that we are still displaying some data from cache, fix me here...
+  // Also maybe connect should be deployed to a different domain to prevent unexpected state persistence
+  // that can cause sublte bugs
+  const connections = ((showExisting && listConnectionsRes.data) || [])
     .map((conn) => {
       const integration = integrationById[conn.integrationId]
       if (!integration) {
@@ -372,7 +378,10 @@ export const WithProviderConnect = ({
 
   // console.log('int', int.id, 'open', open)
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    // non modal dialog do not add pointer events none to the body
+    // which workaround issue with multiple portals (dropdown, dialog) conflicting
+    // as well as other modals introduced by things like Plaid
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       {children({
         // Children is responsible for rendering dialog triggers as needed
         openConnect: () => {
