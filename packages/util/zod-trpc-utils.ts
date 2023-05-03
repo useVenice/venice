@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import * as R from 'remeda'
-import {z} from 'zod'
-
-import type {AnyRouter} from '@trpc/server'
+import type {AnyProcedure, AnyRouter, inferProcedureParams} from '@trpc/server'
 import {initTRPC} from '@trpc/server'
+import {z} from 'zod'
 
 import type {AnyZFunction, ZFunction} from './zod-function-utils'
 
@@ -43,4 +42,33 @@ export function preprocessArgsTuple<
     // console.log('Preprocessed', ret)
     return ret
   }, schema)
+}
+
+export function getInputSchema<T extends AnyProcedure>(proc: T) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (!proc._def.inputs[0]) {
+    throw new Error(`${proc.name} has no runtime input schema`)
+  }
+  // TODO: We are unable to know whether the parser was
+  // zodType object, enum or something else.
+  // @see https://github.com/trpc/trpc/issues/4295
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return proc._def.inputs[0] as z.ZodType<
+    inferProcedureParams<T>['_input_out'],
+    any,
+    inferProcedureParams<T>['_input_in']
+  >
+}
+
+export function getOutputSchema<T extends AnyProcedure>(proc: T) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (!proc._def.output) {
+    throw new Error(`${proc.name} has no runtime output schema`)
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return proc._def.output as z.ZodType<
+    inferProcedureParams<T>['_output_out'],
+    z.ZodTypeDef,
+    inferProcedureParams<T>['_output_in']
+  >
 }

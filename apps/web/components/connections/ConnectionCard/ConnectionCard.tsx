@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {DialogPrimitive, Loading} from '@usevenice/ui'
+import {DialogPrimitive, LoadingText} from '@usevenice/ui'
 import {
   CircleFilledIcon,
   DeleteIcon,
@@ -88,7 +88,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
     return (
       <TaggedCard
         tagColor={status === 'disconnected' ? 'venice-red' : 'venice-green'}>
-        <div className="flex grow flex-col justify-between py-2 px-3" ref={ref}>
+        <div className="flex grow flex-col justify-between px-3 py-2" ref={ref}>
           <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
             {institution?.logoUrl ? (
               <Image
@@ -191,11 +191,10 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
                 onDeletionConfirmed={(opts) => {
                   if (opts?.deleteAssociatedData) {
                     deleteAssociatedData.mutate(undefined, {
-                      onSuccess: () =>
-                        deleteResource.mutate([{id: resourceId}, {}]),
+                      onSuccess: () => deleteResource.mutate([resourceId, {}]),
                     })
                   } else {
-                    deleteResource.mutate([{id: resourceId}, {}])
+                    deleteResource.mutate([resourceId, {}])
                   }
                 }}
               />
@@ -213,7 +212,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               {status ? <ConnectionStatus status={status} /> : null}
               <p className="text-sm font-medium text-venice-gray">
                 {syncInProgress ? (
-                  <Loading text="Syncing" />
+                  <LoadingText text="Syncing" />
                 ) : lastSyncCompletedAt ? (
                   `Synced ${formatDistanceToNowStrict(
                     new Date(lastSyncCompletedAt),

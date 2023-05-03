@@ -6,6 +6,8 @@ export const zExternalId = z.union([z.string(), z.number()])
 
 /** Provider independent ids */
 export const BASE_META_IDS = {
+  user: 'user',
+  organization: 'org',
   pipeline: 'pipe',
 } as const
 
@@ -41,17 +43,20 @@ export type Id<TName extends string = string> = {
 }
 
 /** Unfortunately userId is mostly *not* prefixed */
-export const zUserId = z.string().min(1).brand<'usr'>()
+export const zUserId = zId('user')
 export type UserId = z.infer<typeof zUserId>
 
 export const zEndUserId = z.string().min(1).brand<'end_user'>()
 export type EndUserId = z.infer<typeof zEndUserId>
 
+export const zExtEndUserId = z.string().min(1).brand<'ext_end_user'>()
+export type ExtEndUserId = z.infer<typeof zExtEndUserId>
+
 export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
   return z.string().refine(
     // Add support for doubly-prefixed ids...
     (s): s is Id[TPrefix] => s.startsWith(`${prefix}_`),
-    `Not a valid ${IDS_INVERTED[prefix]} id`,
+    `Is not a valid ${IDS_INVERTED[prefix]} id, expecting ${prefix}_`,
   )
 }
 
@@ -69,6 +74,11 @@ export function extractId(id: Id[keyof Id]) {
   // rest.join shall have a type of string which is actually totally the correct type
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return [prefix as IdPrefix, providerName!, rest.join('_')] as const
+}
+
+// TODO: Should we have a branded type for providerName?
+export function extractProviderName(id: Id['int'] | Id['reso']) {
+  return extractId(id)[1]
 }
 
 export function swapPrefix<TPrefix extends IdPrefix>(

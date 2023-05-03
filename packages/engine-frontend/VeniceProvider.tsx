@@ -10,8 +10,8 @@ import type {
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk-core'
-import type {AnySyncRouter, SyncEngineConfig} from '@usevenice/engine-backend'
-import {_zContext} from '@usevenice/engine-backend/auth-utils'
+import {zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
+import type {ContextFactoryOptions, FlatRouter} from '@usevenice/engine-backend'
 import {DialogContent, DialogRoot} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
@@ -20,10 +20,7 @@ export type {CreateTRPCReact} from '@trpc/react-query'
 export type SyncEngineCommonConfig<
   TProviders extends readonly AnySyncProvider[],
   TLinks extends Record<string, LinkFactory>,
-> = Pick<
-  SyncEngineConfig<TProviders, TLinks>,
-  'providers' | 'apiUrl' | 'parseJwtPayload'
->
+> = Pick<ContextFactoryOptions<TProviders, TLinks>, 'providers' | 'apiUrl'>
 
 type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
 type ConnectFn = ReturnType<UseConnectHook<AnyProviderDef>>
@@ -33,7 +30,7 @@ interface DialogConfig {
   options: Parameters<UseConnectScope['openDialog']>[1]
 }
 
-const trpc = createTRPCReact<AnySyncRouter>()
+const trpc = createTRPCReact<FlatRouter>()
 
 export const VeniceContext = React.createContext<{
   trpc: typeof trpc
@@ -42,10 +39,7 @@ export const VeniceContext = React.createContext<{
   connectFnMapRef: React.RefObject<Record<string, ConnectFn | undefined>>
 
   providerByName: Record<string, AnySyncProvider>
-
   endUserId: EndUserId | undefined
-  isAdmin: boolean
-  developerMode: boolean
   openDialog: OpenDialogFn
 } | null>(null)
 
@@ -83,23 +77,22 @@ export function VeniceProvider<
   const __DEBUG__ =
     typeof window !== 'undefined' && window.location.href.includes('localhost')
 
-  const zAuthContext = _zContext({parseJwtPayload: config.parseJwtPayload})
+  // TODO: Fix me up
+
+  const viewer = zViewerFromUnverifiedJwtToken.parse(accessToken)
 
   const {developerMode: _developerMode} = options
-  const {endUserId, isAdmin = false} = zAuthContext.parse<'typed'>({
-    accessToken,
-  })
-  const developerMode = (isAdmin && _developerMode) || false
+  const endUserId = viewer.role === 'end_user' ? viewer.endUserId : undefined
 
   if (typeof window !== 'undefined') {
-    console.log('[VeniceProvider]', {endUserId, isAdmin, accessToken})
+    console.log('[VeniceProvider]', {endUserId, accessToken})
   }
 
   const url = config.apiUrl
   const trpcClient = React.useMemo(
     () =>
       // Disable reqeuest batching in DEBUG mode for easier debugging
-      // createTRPCProxyClient<AnySyncRouter>({
+      // createTRPCProxyClient<FlatRouter>({
       trpc.createClient({
         links: [
           (__DEBUG__ ? httpLink : httpBatchLink)({
@@ -128,7 +121,7 @@ export function VeniceProvider<
 
   const connectFnMap = R.mapToObj(config.providers, (p) => [
     p.name,
-    p.useConnectHook?.({endUserId, openDialog}),
+    p.useConnectHook?.({openDialog}),
   ])
   const connectFnMapRef = React.useRef<typeof connectFnMap>(connectFnMap)
 
@@ -146,20 +139,10 @@ export function VeniceProvider<
             trpcClient,
             queryClient,
             endUserId,
-            isAdmin,
-            developerMode,
             openDialog,
             providerByName: R.mapToObj(config.providers, (p) => [p.name, p]),
           }),
-          [
-            trpcClient,
-            queryClient,
-            endUserId,
-            isAdmin,
-            developerMode,
-            openDialog,
-            config.providers,
-          ],
+          [trpcClient, queryClient, endUserId, openDialog, config.providers],
         )}>
         {children}
         {/*

@@ -40,6 +40,7 @@ export interface Database {
           config: Json
           created_at: string
           id: string
+          org_id: string
           provider_name: string
           updated_at: string
         }
@@ -47,6 +48,7 @@ export interface Database {
           config?: Json
           created_at?: string
           id?: string
+          org_id: string
           provider_name?: string
           updated_at?: string
         }
@@ -54,6 +56,7 @@ export interface Database {
           config?: Json
           created_at?: string
           id?: string
+          org_id?: string
           provider_name?: string
           updated_at?: string
         }

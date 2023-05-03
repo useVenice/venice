@@ -7,8 +7,8 @@ import {DataTable} from '../../components/DataTable'
 import {createSSRHelpers} from '../../server'
 
 export const getServerSideProps = (async (ctx) => {
-  const {user, getPageProps, ssg} = await createSSRHelpers(ctx)
-  if (!user?.id) {
+  const {viewer, getPageProps, ssg} = await createSSRHelpers(ctx)
+  if (viewer.role !== 'user') {
     return {redirect: {destination: '/admin/auth', permanent: false}}
   }
   await ssg.adminSearchEndUsers.prefetch({})

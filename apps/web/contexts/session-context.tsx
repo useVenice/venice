@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type {Session, SupabaseClient} from '@supabase/supabase-js'
-import {xAdminAppMetadataKey} from '@usevenice/engine-backend'
 
 import React from 'react'
 import {browserAnalytics} from '../lib/browser-analytics'
 import type {Database} from '../supabase/supabase.gen'
+import type {Viewer, ViewerRole} from '@usevenice/cdk-core'
+import {hasRole, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 
 /** TODO This ought to be a bit more generic... */
 type AsyncStatus = 'loading' | 'error' | 'success'
+// TODO: Rename this to viewerContext...
 type SessionContextValue = [
   session: Session | null | undefined,
-  info: {status: AsyncStatus; error: unknown; supabase: SupabaseClient | null},
+  info: {status: AsyncStatus; error: unknown; supabase: SupabaseClient},
 ]
-export const SessionContext = React.createContext<SessionContextValue>([
-  undefined,
-  {status: 'loading', error: null, supabase: null},
-])
+export const SessionContext = React.createContext<
+  SessionContextValue | undefined
+>(undefined)
 
 export interface SessionContextProps {
   supabase: SupabaseClient<Database>
@@ -24,6 +25,7 @@ export interface SessionContextProps {
 
 // TODO: Introduce an additional session context that takes into account accessToken in url param etc.
 /** Technically the supabase session context */
+// TODO: Rename this to SupabaseViewerProvider
 export function SessionContextProvider({
   supabase: supabase,
   ...props
@@ -76,24 +78,54 @@ export function SessionContextProvider({
   return <SessionContext.Provider {...props} value={value} />
 }
 
-export function useSession() {
+export function useViewerInfo(): {
+  viewer: Viewer
+  status: AsyncStatus
+  user?: Session['user'] | null
+  accessToken?: string | null
+  supabase: SupabaseClient
+}
+export function useViewerInfo<R extends ViewerRole>(
+  allowedRoles: R[],
+): {
+  viewer: Viewer<R>
+  status: AsyncStatus
+  user?: Session['user'] | null
+  accessToken?: string | null
+  supabase: SupabaseClient
+}
+export function useViewerInfo<R extends ViewerRole>(allowedRoles?: R[]) {
   const context = React.useContext(SessionContext)
   if (context === undefined) {
-    throw new Error('useSession must be used within a SessionContextProvider.')
+    throw new Error('useViewer must be used within a SessionContextProvider.')
   }
-  return context
+  const [session, {status, supabase}] = context
+  const viewer = zViewerFromUnverifiedJwtToken.parse(session?.access_token)
+
+  if (allowedRoles && !hasRole(viewer, allowedRoles)) {
+    throw new Error(
+      `Viewer does not have any of the required roles: ${allowedRoles.join(
+        ', ',
+      )}`,
+    )
+  }
+  return {
+    viewer,
+    status,
+    user: session?.user,
+    accessToken: session?.access_token,
+    supabase,
+  }
 }
 
-export function useAuthState() {
-  const [session] = useSession()
-  const isAdmin = session?.user.app_metadata?.[xAdminAppMetadataKey] === true
-  return {user: session?.user, isAdmin}
-}
-
+/** Use carefully, should only be used with viewer of type `user` */
 export function useSupabase() {
-  const [, {supabase}] = useSession()
-  if (!supabase) {
+  const context = React.useContext(SessionContext)
+  if (context === undefined) {
+    throw new Error('useSupabase must be used within a SessionContextProvider.')
+  }
+  if (!context[1].supabase) {
     throw new Error('Missing supabase in SessionContext')
   }
-  return supabase
+  return context[1].supabase
 }

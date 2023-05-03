@@ -50,6 +50,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const tellerProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-teller.svg'},
   ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {

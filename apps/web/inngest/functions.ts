@@ -1,13 +1,10 @@
 import '@usevenice/app-config/register.node'
 
-import {
-  backendEnv,
-  veniceBackendConfig,
-  veniceRouter,
-} from '@usevenice/app-config/backendConfig'
+import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import type {EndUserId} from '@usevenice/cdk-core'
 import {zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
+import {flatRouter} from '@usevenice/engine-backend'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeSentryClient} from '../lib/makeSentryClient'
 import {serverAnalytics} from '../lib/server-analytics'
@@ -24,9 +21,10 @@ export const scheduleSyncs = inngest.createFunction(
     : {cron: '0 * * * *'}, // Once an hour, https://crontab.guru/#0_*_*_*_*
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
-      const pipelines = await veniceBackendConfig.metaService.findPipelines({
-        secondsSinceLastSync: 1 * 60 * 60, // Every hour
-      })
+      const pipelines = await contextFactory.config
+        .getMetaService({role: 'system'})
+        // Every hour
+        .findPipelines({secondsSinceLastSync: 1 * 60 * 60})
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
       if (pipelines.length > 0) {
         await inngest.send(
@@ -55,9 +53,9 @@ export const syncPipeline = inngest.createFunction(
     // TODO: Figure out what is the userId we ought to be using...
     // Otherwise connections could be overwritten with the wrong id...
     // This upsert stuff is dangerous...
-    await veniceRouter
-      .createCaller({isAdmin: true, endUserId: 'usr_TASK_NOOP' as EndUserId})
-      .syncPipeline([{id: pipelineId}, {}])
+    await flatRouter
+      .createCaller(contextFactory.fromViewer({role: 'system'}))
+      .syncPipeline([pipelineId, {}])
     console.log('did sync pipeline', pipelineId)
     return pipelineId
   },
@@ -78,9 +76,9 @@ export const syncResource = inngest.createFunction(
       )
       console.log('endUserId', endUserId)
       await ensureDefaultResourceAndPipelines(endUserId)
-      await veniceRouter
-        .createCaller({endUserId})
-        .syncResource([{id: resourceId as never}, {}])
+      await flatRouter
+        .createCaller(contextFactory.fromViewer({role: 'system'}))
+        .syncResource([resourceId, {}])
 
       console.log('did sync pipeline', resourceId)
       return resourceId

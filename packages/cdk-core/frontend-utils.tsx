@@ -1,8 +1,7 @@
 import React from 'react'
+import useScriptHook from 'react-script-hook'
 
 import {Deferred} from '@usevenice/util'
-
-import useScriptHook from 'react-script-hook'
 
 export function useScript(src: string) {
   const [loaded, error] = useScriptHook({src, checkForExisting: true})
@@ -21,6 +20,7 @@ export function useScript(src: string) {
 
 export const CANCELLATION_TOKEN = 'CANCELLED'
 
+/** Used by yodlee container among others */
 export function DivContainer(props: {
   id: string
   /** Does not cause re-render */

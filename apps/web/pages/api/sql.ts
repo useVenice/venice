@@ -6,20 +6,16 @@ import {DatabaseError, Papa} from '@usevenice/app-config/backendConfig'
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
 import {z} from '@usevenice/util'
 import {runAsAdmin, sql} from '../../server'
-import {respondToCORS, serverGetApiUserId} from '../../server/api-helpers'
+import {respondToCORS, serverGetViewer} from '../../server/server-helpers'
 
 export default (async (req, res) => {
   // Is this necessary? Can be useful for admin console though
   if (respondToCORS(req, res)) {
     return
   }
-  const [userId, {isAdmin}] = await serverGetApiUserId({req, res})
-  if (!userId) {
+  const viewer = await serverGetViewer({req, res})
+  if (viewer.role !== 'system') {
     res.status(401).send('Unauthorized')
-    return
-  }
-  if (!isAdmin) {
-    res.status(403).send('Forbidden')
     return
   }
 
@@ -31,7 +27,7 @@ export default (async (req, res) => {
 
   const format = z.enum(['csv', 'json']).default('json').parse(acceptedFormat)
 
-  console.log('[sql] Will run query for user', {query, userId})
+  console.log('[sql] Will run query for user', {query, viewer})
   try {
     // TODO: Should we limit admin user to RLS also? Otherwise we might as well
     // proxy the pgMeta endpoint just like we proxy rest / graphql

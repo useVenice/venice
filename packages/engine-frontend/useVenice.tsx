@@ -33,8 +33,8 @@ export const zUseVeniceOptions = z.object({
 export type UseVenice = ReturnType<typeof useVenice>
 
 export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
-  const {trpc, endUserId, isAdmin, developerMode} = VeniceProvider.useContext()
-  const integrationsRes = trpc.listIntegrations.useQuery(
+  const {trpc, endUserId} = VeniceProvider.useContext()
+  const integrationsRes = trpc.listIntegrationInfos.useQuery(
     {},
     {enabled: !!endUserId, staleTime: 15 * 60 * 1000},
   )
@@ -56,8 +56,6 @@ export function useVenice({envName, keywords, ...options}: UseVeniceOptions) {
     insRes,
     deleteResource,
     checkResource,
-    isAdmin,
-    developerMode,
     veniceConnect,
   }
 }
@@ -192,7 +190,7 @@ export function useVeniceConnect({
         console.log(`[useVeniceConnect] ${int.id} Pre connect`, preConnIpt)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const preConnRes = await trpcCtx.preConnect.fetch(
-          [int, opt, preConnIpt],
+          [int.id, opt, preConnIpt],
           {staleTime: 15 * 60 * 1000}, // Good for 15 minutes
         )
         console.log(`[useVeniceConnect] ${int.id} preConnnectRes`, preConnRes)
@@ -216,7 +214,7 @@ export function useVeniceConnect({
         setIsConnecting(true)
         console.log(`[useVeniceConnect] ${int.id} innerConnectRes`, res)
 
-        const postConRes = await client.postConnect.mutate([res, int, opt])
+        const postConRes = await client.postConnect.mutate([res, int.id, opt])
         await trpcCtx.listConnections.invalidate()
         console.log(`[useVeniceConnect] ${int.id} postConnectRes`, postConRes)
         setIsConnecting(false)

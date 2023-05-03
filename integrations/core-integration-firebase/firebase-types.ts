@@ -119,11 +119,11 @@ export type Timestamp =
 export interface Doc<TId extends string = string> {
   id: TId
   createdAt?: Timestamp | null
-  createdByUserId?: UserId | null
-  createdByBookId?: LedgerId | null
+  createdByUserId?: DeprecatedUserId | null
+  createdByBookId?: DeprecatedLedgerId | null
   updatedAt?: Timestamp | null
-  updatedByUserId?: UserId | null
-  updatedByBookId?: LedgerId | null
+  updatedByUserId?: DeprecatedUserId | null
+  updatedByBookId?: DeprecatedLedgerId | null
   deletedAt?: Timestamp | null
 }
 

@@ -1,10 +1,12 @@
-import '@stoplight/elements/styles.min.css' // this pollutes the global CSS space
+import '@stoplight/elements/styles.min.css'
+
+// this pollutes the global CSS space
 
 import {API as StoplightElements} from '@stoplight/elements'
 import {useQuery} from '@tanstack/react-query'
-import {Loading} from '@usevenice/ui'
 
 import {getRestEndpoint} from '@usevenice/app-config/constants'
+import {LoadingText} from '@usevenice/ui'
 
 export default function RestExplorerPage() {
   const oasDocument = useQuery({
@@ -13,7 +15,7 @@ export default function RestExplorerPage() {
   })
   // console.log('oas', oasDocument.data)
   if (!oasDocument.data) {
-    return <Loading />
+    return <LoadingText />
   }
 
   return (

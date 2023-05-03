@@ -1,14 +1,19 @@
 import type {MaybePromise, z} from '@usevenice/util'
+import {R} from '@usevenice/util'
+
 import type {EndUserId} from './id.types'
+import {makeId} from './id.types'
 import type {
   CheckResourceContext,
   CheckResourceOptions,
   ConnectContext,
   ConnectOptions,
+  IntegrationMetadata,
   OpenDialogFn,
   ResourceUpdate,
   WebhookReturnType,
 } from './makeSyncProvider'
+import type {ZStandard} from './meta.types'
 import type {
   Destination,
   ResoUpdateData,
@@ -16,10 +21,6 @@ import type {
   StateUpdateData,
   SyncOperation,
 } from './protocol'
-
-import {R} from '@usevenice/util'
-import {makeId} from './id.types'
-import type {ZStandard} from './meta.types'
 
 /** Maybe this should be renamed to `schemas` */
 export interface IntegrationDef {
@@ -49,6 +50,8 @@ export interface IntegrationImpl<
   [k: string]: unknown
   def: TDef
   name: TDef['name']['_def']['value']
+  /** TODO: Move this to IntegrationDef rather than Impl */
+  metadata?: IntegrationMetadata
 
   standardMappers?: {
     institution?: (
@@ -85,7 +88,7 @@ export interface IntegrationImpl<
   ) => Promise<T['_types']['connectInput']>
 
   useConnectHook?: (scope: {
-    userId: UserId | undefined
+    userId: DeprecatedUserId | undefined
     openDialog: OpenDialogFn
   }) => (
     connectInput: T['_types']['connectInput'],

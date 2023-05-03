@@ -1,7 +1,12 @@
 'use client'
 
-import {VeniceConnectEmbed} from '@usevenice/connect'
+import 'next/image'
+
+import '@/pages/global.css'
+
 import {useSearchParams} from 'next/navigation'
+
+import {VeniceConnectEmbed} from '@usevenice/connect'
 
 export default function Demo() {
   const params = useSearchParams()

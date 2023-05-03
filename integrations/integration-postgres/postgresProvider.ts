@@ -20,11 +20,15 @@ const _def = makeSyncProvider.def({
   // in the list of integrations...
   // How do we create default resources for integrations that are basically single resource?
   resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
+    // gotta make sourceQueries a Textarea
+
     sourceQueries: z
       .object({
         invoice: z.string().nullish(),
       })
-      .nullish(),
+      // .nullish() does not translate well to jsonSchema
+      // @see https://share.cleanshot.com/w0KVx1Y2
+      .optional(),
   }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: zCast<EntityPayloadWithExternal | ZCommon['Entity']>(),
@@ -33,6 +37,11 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const postgresProvider = makeSyncProvider({
+  metadata: {
+    categories: ['database'],
+    logoUrl: '/_assets/logo-postgres.png',
+    stage: 'ga',
+  },
   ...makeSyncProvider.defaults,
   def,
   standardMappers: {

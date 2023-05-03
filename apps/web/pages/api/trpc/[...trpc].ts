@@ -3,37 +3,24 @@ import '@usevenice/app-config/register.node'
 import * as trpcNext from '@trpc/server/adapters/next'
 import type {NextApiHandler} from 'next'
 
-import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {contextFactory} from '@usevenice/app-config/backendConfig'
+import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {R} from '@usevenice/util'
-import {getAccessToken, respondToCORS} from '../../../server/api-helpers'
 
-// export const appRouter = trpcServer.mergeRouters(veniceRouter, customRouter)
-// export type AppRouter = typeof appRouter
-// export type TRPCType = CreateTRPCReact<AppRouter, unknown, null>
+import {respondToCORS, serverGetViewer} from '../../../server/server-helpers'
 
 const handler = trpcNext.createNextApiHandler({
-  router: veniceRouter,
-  createContext: ({req}) => {
-    console.log('[createContext]', {
-      query: req.query,
-      headers: req.headers,
-    })
-    const ctx = syncEngine.zContext.parse<'typed'>({
-      accessToken: getAccessToken(req),
-    })
-    console.log('[createContext] Got ctx', ctx)
-    return ctx
+  router: flatRouter,
+  createContext: async ({req, res}) => {
+    const viewer = await serverGetViewer({req, res})
+    console.log('[trpc.createContext]', {query: req.query, viewer})
+    return contextFactory.fromViewer(viewer)
   },
   onError: ({error}) => {
     console.warn('error', error)
   },
 })
 
-// This probably needs to be refactored into sync-backend package together with
-// perhaps the cli package
-// - [ ] Remove RouterContext no longer needed
-// - [ ] Do the same logic for veniceCli httpServer that does not use next
 export default R.identity<NextApiHandler>((req, res) => {
   if (respondToCORS(req, res)) {
     return

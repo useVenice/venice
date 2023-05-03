@@ -17,7 +17,7 @@ import {
 import {CodeIcon, DownloadIcon, SyncIcon} from '@usevenice/ui/icons'
 import {joinPath} from '@usevenice/util'
 import type {InferGetServerSidePropsType} from 'next'
-import {GetServerSideProps} from 'next'
+import type {GetServerSideProps} from 'next'
 import Link from 'next/link'
 import {useState} from 'react'
 import {CopyTextButton} from '../../components/CopyTextButton'

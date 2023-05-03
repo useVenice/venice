@@ -1,9 +1,8 @@
-import type {UserId} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import type {UseVenice} from '@usevenice/engine-frontend'
 import {useVenice, VeniceProvider} from '@usevenice/engine-frontend'
 import {AddFilledIcon} from '@usevenice/ui/icons'
-import type {InferGetServerSidePropsType} from 'next'
-import type {GetServerSideProps} from 'next'
+import type {GetServerSideProps, InferGetServerSidePropsType} from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -16,15 +15,16 @@ import {LoadingIndicatorOverlayV2} from '../../components/loading-indicators'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
 import {TaggedCard} from '../../components/TaggedCard'
-import type {Connection} from '../../lib/supabase-queries'
 import {createSSRHelpers, ensureDefaultResourceAndPipelines} from '../../server'
+
+type Connection = RouterOutput['listConnections'][number]
 
 const VENICE_DATABASE_IMAGE_ID = 'venice-database-image'
 
 // Should this be moved to _app getInitialProps?
 export const getServerSideProps = (async (context) => {
-  const {user, getPageProps, ssg} = await createSSRHelpers(context)
-  if (!user?.id) {
+  const {viewer, getPageProps, ssg} = await createSSRHelpers(context)
+  if (viewer.role !== 'user') {
     return {
       redirect: {
         destination: '/admin/auth',
@@ -34,19 +34,19 @@ export const getServerSideProps = (async (context) => {
   }
 
   const [integrations] = await Promise.all([
-    ssg.listIntegrations.fetch({}),
+    ssg.listIntegrationInfos.fetch({}),
     ssg.listConnections.fetch({}),
     ssg.searchInstitutions.prefetch({keywords: undefined}),
   ])
 
-  await ensureDefaultResourceAndPipelines(user.id, {
+  await ensureDefaultResourceAndPipelines(viewer.userId, {
     heronIntegrationId: integrations.find((i) => i.providerName === 'heron')
       ?.id,
   })
   return {
     props: {
       ...getPageProps(),
-      userId: user.id as UserId,
+      userId: viewer.userId,
       integrations,
     },
   }
@@ -68,11 +68,7 @@ export default function ConnectionsPage(
   // connect immediately, until we have a dedicated screen for immediate connect anyways.
   React.useEffect(() => {
     props.integrations.forEach((int) =>
-      trpcCtx.preConnect.prefetch([
-        {id: int.id as never},
-        {envName: 'sandbox'},
-        {},
-      ]),
+      trpcCtx.preConnect.prefetch([int.id, {envName: 'sandbox'}, {}]),
     )
   }, [props.integrations, trpcCtx])
 
@@ -194,7 +190,7 @@ function ConnectionsColumn(props: ConnectionsColumnProps) {
               }}
               onSandboxSimulateDisconnect={() =>
                 checkResource.mutate([
-                  {id: source.id},
+                  source.id,
                   {sandboxSimulateDisconnect: true},
                 ])
               }
@@ -256,7 +252,7 @@ function VeniceDatabaseSection() {
         src="/db-links-line.svg"
         alt="Line for links"
       />
-      <ul className="absolute top-[12.8rem] left-[1.2rem] flex min-w-[9rem] flex-col">
+      <ul className="absolute left-[1.2rem] top-[12.8rem] flex min-w-[9rem] flex-col">
         <li>
           <Link
             href="/explore-data"

@@ -45,6 +45,7 @@ const def = makeSyncProvider.def({
 })
 
 export const wiseProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-wise.png'},
   ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {

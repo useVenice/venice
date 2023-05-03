@@ -1,4 +1,4 @@
-import {plaidProvider} from '@usevenice/app-config/env'
+import {plaidProvider} from '@usevenice/app-config/providers'
 import {VeniceProvider} from '@usevenice/engine-frontend'
 import {
   Button,
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
   ZodForm,
 } from '@usevenice/ui'
-import {GetServerSideProps} from 'next'
+import type {GetServerSideProps} from 'next'
 import {useState} from 'react'
 import {serverAnalytics} from '../lib/server-analytics'
 import {serverGetUser} from '../server'

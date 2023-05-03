@@ -41,6 +41,7 @@
     "@usevenice/integration-toggl": "workspace:*",
     "@usevenice/integration-venmo": "workspace:*",
     "@usevenice/integration-wise": "workspace:*",
+    "@usevenice/integration-brex": "workspace:*",
     "@usevenice/integration-yodlee": "workspace:*",
     "@usevenice/util": "workspace:*",
     "chokidar": "3.5.3",

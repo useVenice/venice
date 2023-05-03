@@ -7,8 +7,9 @@ import {nodeHTTPRequestHandler} from '@trpc/server/adapters/node-http'
 import {json} from 'micro'
 import ngrok from 'ngrok'
 
-import {syncEngine, veniceRouter} from '@usevenice/app-config/backendConfig'
-import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {contextFactory} from '@usevenice/app-config/backendConfig'
+import type {EndUserId, Id, UserId} from '@usevenice/cdk-core'
+import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import type {NonEmptyArray} from '@usevenice/util'
 import {parseUrl, R, z, zFunction, zodInsecureDebug} from '@usevenice/util'
 
@@ -21,11 +22,26 @@ if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
-export const cli = cliFromRouter(veniceRouter, {
+const {USER_ID, END_USER_ID, ORG_ID, SYSTEM} = process.env
+const endUserId = END_USER_ID as EndUserId | undefined
+const userId = USER_ID as UserId | undefined
+const orgId = ORG_ID as Id['org'] | undefined
+
+export const cli = cliFromRouter(flatRouter, {
   cleanup: () => {}, // metaService.shutdown?
   // Bypass auth when running sync from CLI
   // We should improve this for usage on single machines
-  context: {endUserId: process.env['USER_ID'] as undefined, isAdmin: true},
+  context: contextFactory.fromViewer(
+    endUserId && orgId
+      ? {role: 'end_user', endUserId, orgId}
+      : userId
+      ? {role: 'user', userId}
+      : orgId
+      ? {role: 'org', orgId}
+      : SYSTEM
+      ? {role: 'system'}
+      : {role: 'anon'},
+  ),
   // syncEngine.zContext.parse<'typed'>({
   //   accessToken: process.env['ACCESS_TOKEN'],
   // })
@@ -61,17 +77,14 @@ cli
             req.body = ret.body // Still need this even for GET since we exhausted the stream otherwise handler will hang
           }
           return nodeHTTPRequestHandler({
-            router: veniceRouter,
+            router: flatRouter,
             path: procedure,
             req,
             res,
-            createContext: ({req}) => {
-              const a = syncEngine.zContext.parse<'typed'>({
-                accessToken:
-                  req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
-              })
-              return a
-            },
+            createContext: ({req}) =>
+              contextFactory.fromJwtToken(
+                req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
+              ),
             // onError: ({error}) => {
             //   // error.message = 'new message...'
             // },

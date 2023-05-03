@@ -85,6 +85,7 @@ export function makeMetaLinks(metaBase: MetaService) {
 
         // Can we run this in one transaction?
         if (institution && institutionId) {
+          // Technically requires elevated permissions...
           await patch('institution', institutionId, {
             id: institutionId,
             external: institution.data,
@@ -164,6 +165,7 @@ export function makeMetaLinks(metaBase: MetaService) {
       },
     })
 
+  // TODO: Dedupe with contextHelpers
   const patch = async <TTable extends keyof ZRaw>(
     tableName: TTable,
     id: Id[(typeof IDS)[TTable]],

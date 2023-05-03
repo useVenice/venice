@@ -3,7 +3,8 @@ import type {SyncEngineCommonConfig} from '@usevenice/engine-frontend'
 import {joinPath, zParser} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
-import {PROVIDERS, zCommonEnv} from './env'
+import {zCommonEnv} from './env'
+import {PROVIDERS} from './providers'
 
 export {Papa} from '@usevenice/integration-import'
 
@@ -38,8 +39,6 @@ export const veniceCommonConfig = {
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
-
-  // parseJwtPayload // use default here
 } satisfies SyncEngineCommonConfig<
   readonly AnySyncProvider[],
   Record<string, LinkFactory>

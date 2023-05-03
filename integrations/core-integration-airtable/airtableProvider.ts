@@ -15,6 +15,7 @@ const def = makeSyncProvider.def({
 export const airtableProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
   def,
+  // metadata: {logoUrl: '/_assets/logo-airtable.png'},
   destinationSync: ({settings}) => {
     const airtable = makeAirtableClient(settings)
     airtable.initBase()

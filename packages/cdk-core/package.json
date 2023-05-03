@@ -5,12 +5,14 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@trpc/server": "10.18.0",
+    "@trpc/server": "10.21.1",
     "@usevenice/util": "workspace:*",
+    "jsonwebtoken": "9.0.0",
     "react": "*",
     "react-script-hook": "1.7.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "9.0.2",
     "@types/react": "*"
   }
 }

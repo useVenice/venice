@@ -1,17 +1,18 @@
-import {Auth, ThemeSupa} from '@supabase/auth-ui-react'
+import {Auth} from '@supabase/auth-ui-react'
+import {ThemeSupa} from '@supabase/auth-ui-shared'
 import {Container} from '@usevenice/ui'
 import Image from 'next/image'
 
 import {PageLayout} from '../../components/PageLayout'
 import {RedirectTo} from '../../components/RedirectTo'
-import {useSession, useSupabase} from '../../contexts/session-context'
+import {useSupabase, useViewerInfo} from '../../contexts/session-context'
 import {VeniceTheme} from '../../themes'
 
 export default function AdminAuthScreen() {
-  const [session] = useSession()
+  const {viewer} = useViewerInfo()
   const supabase = useSupabase()
 
-  if (session) {
+  if (viewer.role !== 'user') {
     return <RedirectTo url="/admin" />
   }
 

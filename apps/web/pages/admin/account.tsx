@@ -3,8 +3,8 @@ import {z} from '@usevenice/util'
 import type {GetServerSideProps} from 'next'
 import {PageHeader} from '../../components/PageHeader'
 import {PageLayout} from '../../components/PageLayout'
-import {serverGetUser} from '../../server'
 import {Profile} from '../../components/account'
+import {serverGetUser} from '../../server'
 
 enum PrimaryTabsKey {
   profile = 'profile',
@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<ServerSideProps> = async (
   }
 
   // TODO when/why can user.email be null?
-  const username = z.string().parse(user.email)
+  const username = z.string().parse(user.id) // TODO: Get email
   return {
     props: {
       username,

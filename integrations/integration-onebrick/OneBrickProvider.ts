@@ -3,7 +3,7 @@ import React from 'react'
 import type {SyncOperation} from '@usevenice/cdk-core'
 import {makeSyncProvider, zEndUserId, zWebhookInput} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, Deferred, R, Rx, md5Hash, parseMoney, rxjs, z} from '@usevenice/util'
+import {A, Deferred, md5Hash, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   accountItemSchema,
@@ -52,6 +52,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const oneBrickProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-onebrick.png'},
   ...veniceProviderBase(def, {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {

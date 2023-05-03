@@ -8,8 +8,8 @@
       "version": "17.0.2"
     },
     "tailwindcss": {
-      "callees": ["twMerge"],
-      "config": "apps/web/tailwind.config.js"
+      "callees": ["twMerge", "cn"],
+      "config": "apps/web/tailwind.config.eslint.js"
     }
   },
   "plugins": [

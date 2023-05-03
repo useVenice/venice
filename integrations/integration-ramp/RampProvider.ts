@@ -57,6 +57,11 @@ const def = makeSyncProvider.def({
 })
 
 export const rampProvider = makeSyncProvider({
+  metadata: {
+    categories: ['banking'],
+    logoUrl: '/_assets/logo-ramp.png',
+    stage: 'beta',
+  },
   ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

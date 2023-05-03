@@ -30,6 +30,7 @@ function toISO(mootaDate: string) {
 }
 
 export const mootaProvider = makeSyncProvider({
+  metadata: {categories: ['banking'], logoUrl: '/_assets/logo-moota.png'},
   ...veniceProviderBase(mootaProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

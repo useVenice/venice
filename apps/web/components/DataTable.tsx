@@ -1,18 +1,19 @@
+'use client'
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
 import {GridCellKind} from '@glideapps/glide-data-grid'
-import {Card, cn} from '@usevenice/ui'
-import {BankIcon} from '@usevenice/ui/icons'
 import clsx from 'clsx'
 import dynamic from 'next/dynamic'
 import type {ReactNode} from 'react'
 import React from 'react'
 
+import {Card, cn} from '@usevenice/ui'
+import {BankIcon} from '@usevenice/ui/icons'
 import {produce} from '@usevenice/util'
 
 import '@glideapps/glide-data-grid/dist/index.css'
 
-import {VeniceDataGridTheme} from '../themes'
 const DataEditor = dynamic(
   () => import('@glideapps/glide-data-grid').then((r) => r.DataEditor),
   {ssr: false},
@@ -63,7 +64,13 @@ export function DataTable({isFetching, rows}: DataTableProps) {
     }
   }
 
-  return !columns.length ? null : (
+  return !columns.length || !rows.length ? (
+    isFetching ? (
+      <DataTableSkeleton />
+    ) : (
+      <div className="mt-4">No data available</div>
+    )
+  ) : (
     <DataEditor
       className={cn(isFetching && 'opacity-70')}
       getCellContent={getData}
@@ -85,7 +92,7 @@ export function DataTable({isFetching, rows}: DataTableProps) {
           }),
         )
       }}
-      theme={VeniceDataGridTheme}
+      // theme={VeniceDataGridTheme}
     />
   )
 }
@@ -134,11 +141,11 @@ function DataTableSkeletonRow(props: DataTableSkeletonRowProps) {
   const rect = <div className={clsx('h-4 w-[5rem] rounded', bgColor)} />
   return (
     <li className="flex justify-between border-b border-venice-gray-muted/50">
-      <div className="shrink-0 py-2 px-3">{square}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow justify-center py-2 px-3">{rect}</div>
-      <div className="flex grow-[3] justify-center py-2 px-3">{rect}</div>
+      <div className="shrink-0 px-3 py-2">{square}</div>
+      <div className="flex grow justify-center px-3 py-2">{rect}</div>
+      <div className="flex grow justify-center px-3 py-2">{rect}</div>
+      <div className="flex grow justify-center px-3 py-2">{rect}</div>
+      <div className="flex grow-[3] justify-center px-3 py-2">{rect}</div>
     </li>
   )
 }

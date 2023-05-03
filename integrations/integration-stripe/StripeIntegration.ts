@@ -6,8 +6,8 @@ import {
   zCommon,
 } from '@usevenice/cdk-ledger'
 import {A, Rx, rxjs, z, zCast} from '@usevenice/util'
-import type {components} from './stripe.gen'
 
+import type {components} from './stripe.gen'
 import {makeStripeClient} from './StripeClient'
 
 const stripeDef = {
@@ -37,6 +37,11 @@ const helpers = defHelpers(stripeDef)
 
 export const stripeImpl = {
   name: 'stripe',
+  metadata: {
+    categories: ['commerce'],
+    logoUrl: '/_assets/logo-stripe.png',
+    stage: 'beta',
+  },
   def: stripeDef,
   helpers,
   extension: {

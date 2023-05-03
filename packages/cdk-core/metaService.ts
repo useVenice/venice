@@ -18,7 +18,7 @@ export interface MetaTable<
     limit?: number
     offset?: number
   }): Promise<readonly T[]>
-  set(id: TID, data: T): Promise<void>
+  set(id: TID, data: Omit<T, 'id'>): Promise<void>
   patch?(id: TID, partial: ObjectPartialDeep<NoInfer<T>>): Promise<void>
   delete(id: TID): Promise<void>
 }
@@ -55,4 +55,6 @@ export interface MetaService {
     resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
+  /** Id is used to check RLS policy right now for end user */
+  listIntegrationIds: (opts?: {id?: Id['int']}) => Promise<ReadonlyArray<Id['int']>>
 }

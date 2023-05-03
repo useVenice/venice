@@ -9,6 +9,7 @@ module.exports = {
     '^node:(.+)$',
     '<THIRD_PARTY_MODULES>',
     '^@usevenice/(.+)$',
+    '^@/(.+)$',
     '^[./]',
   ],
   importOrderCaseInsensitive: true,
@@ -19,6 +20,7 @@ module.exports = {
   importOrderSortSpecifiers: true,
   jsxSingleQuote: false,
   plugins: [
+    // This plugin breaks on makeSyncEngine.ts... So commenting out for now.
     require.resolve('@ianvs/prettier-plugin-sort-imports'),
     require.resolve('prettier-plugin-packagejson'),
     require.resolve('prettier-plugin-tailwindcss'), // needs to come last
@@ -28,7 +30,7 @@ module.exports = {
   semi: false,
   singleQuote: true,
   tabWidth: 2,
-  tailwindConfig: './apps/web/tailwind.config.js',
+  tailwindConfig: './apps/web/tailwind.config.ts',
   trailingComma: 'all',
   useTabs: false,
 }

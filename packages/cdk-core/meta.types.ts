@@ -71,25 +71,44 @@ export type ZRaw = {
   [k in keyof typeof zRaw]: z.infer<(typeof zRaw)[k]>
 }
 /** Should this be a factory function so we can use typed config / settings? */
+// TODO: Consider auto-generating this from database, via a tool such as zapetos, pgtyped
+// or prisma, though would need to allow us to override for things like id prefix as well
+// as more specific type than just jsonb
+
+const zBase = z.object({
+  createdAt: z.date(), // should be string but slonik returns date
+  updatedAt: z.date(), // should be string but slonik returns date
+})
 export const zRaw = {
-  integration: z.object({
+  integration: zBase.extend({
     id: zId('int'),
+    providerName: z.string(),
     config: zJsonObject.nullish(),
+    endUserAccess: z
+      .boolean()
+      .nullish()
+      .describe(
+        "Allow end user to create resources using this integration's configuration",
+      ),
+    orgId: zId('org'),
+    displayName: z.string().nullish(),
   }),
-  resource: z.object({
+  resource: zBase.extend({
     id: zId('reso'),
+    providerName: z.string(),
+    displayName: z.string().nullish(),
     endUserId: zEndUserId.nullish(),
-    integrationId: zId('int').nullish(),
+    integrationId: zId('int'),
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),
     // TODO: Does envName belong in Raw layer or Standard layer?
     /** Development env often allows connection to production institutions */
     envName: zEnvName.nullish(),
     standard: zStandard.resource.omit({id: true}).nullish(),
-    displayName: z.string().nullish(),
   }),
-  pipeline: z.object({
+  pipeline: zBase.extend({
     id: zId('pipe'),
+    providerName: z.string(),
     sourceId: zId('reso').nullish(),
     sourceState: zJsonObject.nullish(),
     destinationId: zId('reso').nullish(),
@@ -109,8 +128,9 @@ export const zRaw = {
     lastSyncStartedAt: z.date().nullish(),
     lastSyncCompletedAt: z.date().nullish(),
   }),
-  institution: z.object({
+  institution: zBase.extend({
     id: zId('ins'),
+    providerName: z.string(),
     standard: zStandard.institution.omit({id: true}).nullish(),
     external: zJsonObject.nullish(),
   }),

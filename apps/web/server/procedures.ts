@@ -57,7 +57,7 @@ export async function ensureDefaultResourceAndPipelines(
   options?: {heronIntegrationId?: string},
 ) {
   return runAsAdmin(async (trxn) => {
-    const postgresResoId = '' // TODO: Get the current workspace postgres resource id and re-enable me once fixed...
+    const postgresResoId = '' // TODO: Get the current org postgres resource id and re-enable me once fixed...
     // Also need to think more clearly through orchestration
     if (options?.heronIntegrationId && postgresResoId) {
       await trxn

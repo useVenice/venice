@@ -20,6 +20,7 @@ const def = makeSyncProvider.def({
 })
 
 export const mongodbProvider = makeSyncProvider({
+  metadata: {categories: ['database'], logoUrl: '/_assets/logo-mongodb.png'},
   ...makeSyncProvider.defaults,
   def,
   destinationSync: ({settings}) => {

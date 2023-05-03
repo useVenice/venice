@@ -1,8 +1,8 @@
 'use client'
 
-import type {AnySyncRouterOutput} from '@usevenice/engine-backend'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {CopyTextIcon, Loading, SyncIcon} from '@usevenice/ui'
+import {CopyTextIcon, LoadingText, SyncIcon} from '@usevenice/ui'
 import {formatDistanceToNowStrict} from 'date-fns'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {ResourceCard} from './ResourceCard'
@@ -13,7 +13,7 @@ import {
 import {ArrowRight} from 'lucide-react'
 
 export function PipelinesTable(props: {
-  pipelines: AnySyncRouterOutput['listPipelines']
+  pipelines: RouterOutput['listPipelines']
 }) {
   const {trpc} = VeniceProvider.useContext()
   const dispatch = trpc.dispatch.useMutation()
@@ -45,7 +45,7 @@ export function PipelinesTable(props: {
             <td className="p-4">
               <p className="text-sm font-medium text-venice-gray">
                 {pipe.syncInProgress ? (
-                  <Loading text="Syncing" />
+                  <LoadingText text="Syncing" />
                 ) : pipe.lastSyncCompletedAt ? (
                   `${formatDistanceToNowStrict(
                     new Date(pipe.lastSyncCompletedAt),

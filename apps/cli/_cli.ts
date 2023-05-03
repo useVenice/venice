@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import '@usevenice/app-config/register.node'
 
-import type {PROVIDERS} from '@usevenice/app-config/env'
+import type {PROVIDERS} from '@usevenice/app-config/providers'
 import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
 import {
   makePostgresClient,
   makePostgresMetaService,
 } from '@usevenice/core-integration-postgres'
-import {makeJwtClient} from '@usevenice/engine-backend'
+import {makeJwtClient} from '@usevenice/cdk-core'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
 import {makeMootaClient} from '@usevenice/integration-moota'
@@ -66,6 +66,7 @@ if (require.main === module) {
     pgMeta: () =>
       makePostgresMetaService({
         databaseUrl: env().POSTGRES_OR_WEBHOOK_URL,
+        viewer: {role: 'system'},
       }) as {},
     plaid: () =>
       R.pipe(makePlaidClient(intConfig('plaid')), (p) =>

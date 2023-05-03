@@ -5,7 +5,8 @@ import tablemark from 'tablemark'
 
 import {buildUrl, R, zParser} from '@usevenice/util'
 
-import {DOCUMENTED_PROVIDERS, parseIntConfigsFromRawEnv, zAllEnv} from './env'
+import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
+import {DOCUMENTED_PROVIDERS} from './providers'
 
 const envList = R.pipe(
   zAllEnv.shape,

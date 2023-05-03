@@ -3,6 +3,12 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import {useEffect} from 'react'
 
+/**
+ * DOES NOT work in next.js 13 app dir
+ * @see https://github.com/vercel/next.js/discussions/41934
+ * Will have a use a wrapper around next.js 13 Link
+ * https://github.com/vercel/next.js/discussions/42016
+ */
 export function useGlobalRouteTransitionEffect(): void {
   const router = useRouter()
   useEffect(() => {

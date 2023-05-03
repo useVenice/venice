@@ -2,9 +2,10 @@ import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
 import {defHelpers} from '@usevenice/cdk-core'
 import type {EntityPayload} from '@usevenice/cdk-ledger'
 import {cachingLink} from '@usevenice/cdk-ledger'
-import {Rx, fromCompletion, rxjs, z, zCast} from '@usevenice/util'
-import {makeHeronClient} from './HeronClient'
+import {fromCompletion, Rx, rxjs, z, zCast} from '@usevenice/util'
+
 import type {components} from './heron.gen'
+import {makeHeronClient} from './HeronClient'
 
 export const heronDef = {
   name: z.literal('heron'),
@@ -24,6 +25,15 @@ const helpers = defHelpers(heronDef)
 export const heronImpl = {
   def: heronDef,
   name: 'heron',
+  metadata: {
+    displayName: 'Heron Data',
+    stage: 'beta',
+    categories: ['enrichment'],
+    // This reaches into the next.js public folder which is technically outside the integration directory itself.
+    // Low priority to figure out how to have the svg assets be self-contained also
+    // also we may need mdx support for the description etc.
+    logoUrl: '/_assets/logo-heron.png',
+  },
 
   standardMappers: {
     resource() {

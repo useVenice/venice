@@ -33,6 +33,7 @@ export * from './string-utils'
 export * from './type-utils'
 export * from './url-utils'
 export * from './zod-function-utils'
+export * from './zod-jsonschema-utils'
 export * from './zod-trpc-utils'
 export * from './zod-utils'
 // codegen:end

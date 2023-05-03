@@ -6,13 +6,14 @@
   "module": "./index.ts",
   "dependencies": {
     "@tanstack/react-query": "*",
-    "@trpc/client": "10.18.0",
-    "@trpc/react-query": "10.18.0",
-    "@trpc/server": "10.18.0",
+    "@trpc/client": "10.21.1",
+    "@trpc/react-query": "10.21.1",
+    "@trpc/server": "10.21.1",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
+    "lucide-react": "*",
     "react": "*",
     "react-dom": "*"
   },

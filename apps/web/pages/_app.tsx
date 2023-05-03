@@ -11,12 +11,12 @@ import {QueryParamProvider} from 'use-query-params'
 
 import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {Loading, UIProvider} from '@usevenice/ui'
+import {LoadingText, UIProvider} from '@usevenice/ui'
 
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import superjson from 'superjson'
 import {accessTokenAtom, developerModeAtom} from '../contexts/atoms'
-import {SessionContextProvider, useSession} from '../contexts/session-context'
+import {SessionContextProvider, useViewerInfo} from '../contexts/session-context'
 import {useGlobalRouteTransitionEffect} from '../hooks/useGlobalRouteTransitionEffect'
 
 import {InvalidateQueriesOnPostgresChanges} from '../contexts/realtime'
@@ -39,14 +39,14 @@ function _VeniceProvider({
   queryClient: QueryClient
 }) {
   const accessTokenQueryParam = useAtomValue(accessTokenAtom)
-  const [session, meta] = useSession()
+  const {status, accessToken: _accessToken} = useViewerInfo()
 
   // console.log('session.accessToken', session?.access_token)
-  const accessToken = session?.access_token ?? accessTokenQueryParam
+  const accessToken = _accessToken ?? accessTokenQueryParam
   const developerMode = useAtomValue(developerModeAtom)
 
-  if (meta.status === 'loading') {
-    return <Loading />
+  if (status === 'loading') {
+    return <LoadingText />
   }
   // return null
 
@@ -96,7 +96,7 @@ export function MyApp({Component, pageProps}: AppProps<PageProps>) {
             }>
             <SessionContextProvider supabase={supabase}>
               <_VeniceProvider queryClient={queryClient}>
-                <InvalidateQueriesOnPostgresChanges supabase={supabase} />
+                <InvalidateQueriesOnPostgresChanges client={supabase} />
                 <UIProvider>
                   <Component {...pageProps} />
                 </UIProvider>

@@ -1,7 +1,9 @@
 import type {MaybePromise} from '@usevenice/util'
+import {titleCase} from '@usevenice/util'
+import {urlFromImage} from '@usevenice/util'
 import {castIs, R, z} from '@usevenice/util'
 
-import type {EndUserId, ExternalId} from './id.types'
+import type {EndUserId, ExtEndUserId, ExternalId} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
 import {zEnvName} from './meta.types'
@@ -13,6 +15,54 @@ import type {
   StateUpdateData,
   SyncOperation,
 } from './protocol'
+
+export type ProviderMeta = ReturnType<typeof metaForProvider>
+
+export const metaForProvider = (provider: AnySyncProvider) => ({
+  // ...provider,
+  name: provider.name,
+  displayName: provider.metadata?.displayName ?? titleCase(provider.name),
+  logoUrl: provider.metadata?.logoSvg
+    ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
+    : provider.metadata?.logoUrl,
+  stage: provider.metadata?.stage ?? 'alpha',
+  platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
+  categories: provider.metadata?.categories ?? ['other'],
+  supportedModes: R.compact([
+    provider.sourceSync ? ('source' as const) : null,
+    provider.destinationSync ? ('destination' as const) : null,
+  ]),
+  hasPreConnect: provider.preConnect != null,
+  hasUseConnectHook: provider.useConnectHook != null,
+  hasPostConnect: provider.postConnect != null,
+  def: provider.def,
+  // This is the only non-serializable attribute for network...
+  // should it really be part of meta?
+  useConnectHook: provider.useConnectHook,
+})
+
+export const zIntegrationCategory = z.enum([
+  'banking',
+  'accounting',
+  'commerce',
+  'enrichment',
+  'database',
+  'flat-files',
+  'streaming',
+  'other',
+])
+
+export const zIntegrationStage = z.enum(['hidden', 'alpha', 'beta', 'ga'])
+
+export interface IntegrationMetadata {
+  logoUrl?: string
+  logoSvg?: string
+  displayName?: string
+  platforms?: Array<'cloud' | 'local'>
+  stage?: z.infer<typeof zIntegrationStage>
+  // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
+  categories?: Array<z.infer<typeof zIntegrationCategory>>
+}
 
 // MARK: - Shared connect types
 
@@ -42,7 +92,6 @@ export type OpenDialogFn = (
 ) => void
 
 export type UseConnectHook<T extends AnyProviderDef> = (scope: {
-  endUserId: EndUserId | undefined
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
@@ -59,7 +108,7 @@ export interface CheckResourceContext {
 export interface ConnectContext<TSettings>
   extends Omit<ConnectOptions, 'resourceExternalId'>,
     CheckResourceContext {
-  endUserId: EndUserId
+  extEndUserId: ExtEndUserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */
   redirectUrl?: string
   resource?: {
@@ -91,7 +140,10 @@ export const zCheckResourceOptions = z.object({
 })
 
 /** Extra props not on ResoUpdateData */
-export interface ResourceUpdate<TEntity extends AnyEntityPayload, TSettings>
+export interface ResourceUpdate<
+    TEntity extends AnyEntityPayload = AnyEntityPayload,
+    TSettings = unknown,
+  >
   // make `ResoUpdateData.id` not prefixed so we can have better inheritance
   extends Omit<ResoUpdateData<TSettings>, 'id'> {
   // Subset of resoUpdate
@@ -414,6 +466,7 @@ export function makeSyncProvider<
   TExtension,
 >(impl: {
   def: T
+  metadata?: IntegrationMetadata
   standardMappers: TMappers
 
   // MARK: - Connection management

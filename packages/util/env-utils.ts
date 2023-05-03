@@ -214,18 +214,30 @@ export function getEnvVars(): Record<string, string | undefined> {
 /** Do not use together with webpack Define plugin (including NEXT_PUBLIC_...) */
 export function getEnvVar(
   key: string,
-  opts?: {json?: false},
+  opts?: {json?: false; required?: false},
 ): string | undefined
 export function getEnvVar(
   key: string,
-  opts: {json: true},
+  opts?: {json?: false; required: true},
+): string
+export function getEnvVar(
+  key: string,
+  opts: {json: true; required?: false},
 ): JsonValue | undefined
 export function getEnvVar(
   key: string,
-  opts?: {json?: boolean},
+  opts: {json: true; required: true},
+): JsonValue
+export function getEnvVar(
+  key: string,
+  opts?: {json?: boolean; required?: boolean},
 ): JsonValue | undefined {
-  return R.pipe(
+  const ret = R.pipe(
     getEnvVars()[key] ?? undefined,
     (val) => (opts?.json ? safeJSONParse(val) : val) as JsonValue | undefined,
   )
+  if (opts?.required && ret === undefined) {
+    throw new Error(`Missing required env var ${key}`)
+  }
+  return ret
 }

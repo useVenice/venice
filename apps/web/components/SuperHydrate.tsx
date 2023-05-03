@@ -7,7 +7,11 @@ import type {SuperJSONResult} from 'superjson/dist/types'
 
 export type DehydratedState = SuperJSONResult
 
-/** Hydrate using superjson */
+/**
+ * Hydrate using superjson
+ * TODO: Figure out if we can use SuperHydrate multiple times for different parts of the app
+ * or if it can only be called once for the entire app's state without ability to merge them together
+ */
 export function SuperHydrate(props: {
   dehydratedState?: DehydratedState
   children: React.ReactNode
