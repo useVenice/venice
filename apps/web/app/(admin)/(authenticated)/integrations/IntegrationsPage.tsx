@@ -195,7 +195,7 @@ export function IntegrationSheet({
                 alt={provider.displayName}
               />
             ) : (
-              <caption>{provider.displayName}</caption>
+              <span>{provider.displayName}</span>
             )}
             <Badge
               variant="secondary"

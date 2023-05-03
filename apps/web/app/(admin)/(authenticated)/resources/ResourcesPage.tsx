@@ -184,7 +184,7 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
                 alt={provider.displayName}
               />
             ) : (
-              <caption>{provider.displayName}</caption>
+              <span>{provider.displayName}</span>
             )}
             <Badge
               variant="secondary"

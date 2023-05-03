@@ -144,7 +144,7 @@ export const ProviderLogo = ({
     />
   ) : (
     <div className={cn('flex flex-col items-center justify-center', className)}>
-      <caption>{provider.displayName}</caption>
+      <span>{provider.displayName}</span>
     </div>
   )
 
