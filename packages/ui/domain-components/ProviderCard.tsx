@@ -22,7 +22,6 @@ export type ImageComponent = React.FC<
 
 export interface UIPropsNoChildren {
   className?: string
-  children?: React.ReactNode
   Image?: ImageComponent
 }
 

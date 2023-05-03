@@ -1,7 +1,7 @@
 'use client'
 
 import {useMutation} from '@tanstack/react-query'
-import {Loader2} from 'lucide-react'
+import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
 
 import type {
@@ -11,8 +11,12 @@ import type {
   ProviderMeta,
   UseConnectHook,
 } from '@usevenice/cdk-core'
-import {CANCELLATION_TOKEN, extractId} from '@usevenice/cdk-core'
-import {extractProviderName, zIntegrationCategory} from '@usevenice/cdk-core'
+import {
+  CANCELLATION_TOKEN,
+  extractId,
+  extractProviderName,
+  zIntegrationCategory,
+} from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
 import type {UIProps, UIPropsNoChildren} from '@usevenice/ui/domain-components'
 import {ProviderCard, ResourceCard} from '@usevenice/ui/domain-components'
@@ -25,6 +29,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
   useToast,
 } from '@usevenice/ui/new-components'
 import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
@@ -197,8 +208,7 @@ export function VeniceConnect({
           key={conn.id}
           resource={conn}
           provider={conn.integration.provider}>
-          <ProviderConnectButton
-            key={conn.id}
+          <ResourceDropdownMenu
             integration={conn.integration}
             resource={conn}
             connectFn={connectFnMap[conn.integration.provider.name]}
@@ -206,6 +216,14 @@ export function VeniceConnect({
               onEvent?.({type: e.type, intId: conn.integration.id})
             }}
           />
+          {/* <ProviderConnectButton
+            integration={conn.integration}
+            resource={conn}
+            connectFn={connectFnMap[conn.integration.provider.name]}
+            onEvent={(e) => {
+              onEvent?.({type: e.type, intId: conn.integration.id})
+            }}
+          /> */}
         </ResourceCard>
       ))}
       {/* Add new  */}
@@ -227,17 +245,56 @@ export function VeniceConnect({
 type Resource = RouterOutput['listConnections'][number]
 
 export const ProviderConnectButton = ({
-  integration: int,
-  resource,
-  connectFn,
   onEvent,
   className,
-  children,
+  ...props
 }: UIProps & {
   integration: {id: Id['int']; provider: ProviderMeta}
   resource?: Resource
   connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
   onEvent?: (event: {type: ConnectEventType}) => void
+}) => (
+  <WithProviderConnect {...props}>
+    {({loading, label, openConnect: open, variant}) => (
+      <DialogTrigger asChild>
+        <Button
+          className={cn('mt-2', className)}
+          disabled={loading}
+          variant={variant}
+          onClick={(e) => {
+            onEvent?.({type: 'open'})
+            if (!props.connectFn) {
+              // Allow the default behavior of opening the dialog
+              return
+            }
+            // Prevent dialog from automatically opening
+            // as we invoke provider client side JS
+            e.preventDefault()
+            open()
+          }}>
+          {label}
+        </Button>
+      </DialogTrigger>
+    )}
+  </WithProviderConnect>
+)
+
+export const WithProviderConnect = ({
+  integration: int,
+  resource,
+  connectFn,
+  children,
+}: {
+  integration: {id: Id['int']; provider: ProviderMeta}
+  resource?: Resource
+  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  onEvent?: (event: {type: ConnectEventType}) => void
+  children: (props: {
+    openConnect: () => void
+    label: string
+    variant: 'default' | 'ghost'
+    loading: boolean
+  }) => React.ReactNode
 }) => {
   // console.log('ConnectCard', int.id, int.provider)
   const envName = 'sandbox' as const
@@ -255,6 +312,8 @@ export const ProviderConnectButton = ({
   const {toast} = useToast()
 
   const connect = useMutation(
+    // not sure if it's the right idea to have create and connect together in
+    // one mutation, starting to feel a bit confusing...
     async (input?: RouterInput['createResource']) => {
       // For postgres and various integrations that does not require client side JS
       if (input) {
@@ -311,27 +370,19 @@ export const ProviderConnectButton = ({
   const formRef = React.useRef<SchemaFormElement>(null)
   const formSchema = int.provider.def.resourceSettings ?? z.object({})
 
+  console.log('int', int.id, 'open', open)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className={cn('mt-2', className)}
-          disabled={connect.isLoading}
-          variant={resource?.status === 'disconnected' ? 'default' : 'ghost'}
-          onClick={(e) => {
-            onEvent?.({type: 'open'})
-            if (!connectFn) {
-              // Allow the default behavior of opening the dialog
-              return
-            }
-            // Prevent dialog from automatically opening
-            // as we invoke provider client side JS
-            e.preventDefault()
-            connect.mutate(undefined)
-          }}>
-          {children ?? (resource ? 'Reconnect' : 'Connect')}
-        </Button>
-      </DialogTrigger>
+      {children({
+        // Children is responsible for rendering dialog triggers as needed
+        openConnect: () => {
+          connect.mutate(undefined)
+        },
+        loading: connect.isLoading,
+        variant: resource?.status === 'disconnected' ? 'default' : 'ghost',
+        label: resource ? 'Reconnect' : 'Connect',
+      })}
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Connect to {int.provider.name}</DialogTitle>
@@ -363,5 +414,59 @@ export const ProviderConnectButton = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export function ResourceDropdownMenu(
+  props: UIProps & {
+    integration: {id: Id['int']; provider: ProviderMeta}
+    resource: Resource
+    connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+    onEvent?: (event: {type: ConnectEventType}) => void
+  },
+) {
+  const [open, setOpen] = React.useState(false)
+  // TODO: Implement delete
+  return (
+    // Not necessarily happy that we have to wrap the whole thing here inside
+    // WithProviderConnect but also don't know of a better option
+    <WithProviderConnect {...props}>
+      {(connectProps) => (
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">Options</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>{props.resource.id}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onSelect={() => {
+                  // Need to explicitly close dropdown menu
+                  // otherwise pointer:none will remain on the body for some reason
+                  // if a dialog inside opens immediately... (e.g. editing postgres)
+                  setOpen(false)
+                  connectProps.openConnect()
+                }}>
+                <Link2 className="mr-2 h-4 w-4" />
+                <span>{connectProps.label}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                <span>Sync</span>
+              </DropdownMenuItem>
+              {/* Rename */}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Trash2 className="mr-2 h-4 w-4" />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </WithProviderConnect>
   )
 }
