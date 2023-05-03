@@ -1,3 +1,5 @@
+import './global.css'
+
 export const metadata = {
   title: 'Venice — Financial data, fast.',
   icons: [{url: '/favicon.svg', type: 'image/svg+xml'}],

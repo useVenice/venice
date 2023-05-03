@@ -1,5 +1,3 @@
-import './global.css'
-
 import {ClerkProvider} from '@clerk/nextjs/app-beta'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import React from 'react'
