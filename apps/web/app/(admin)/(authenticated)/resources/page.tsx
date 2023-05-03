@@ -1,5 +1,5 @@
 import {SuperHydrate} from '@/components/SuperHydrate'
-import {createServerComponentHelpers} from '@/server'
+import {createServerComponentHelpers} from '@/server/server-component-helpers'
 
 import _ResourcePage from './ResourcesPage'
 

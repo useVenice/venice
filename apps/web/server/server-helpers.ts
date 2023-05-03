@@ -9,7 +9,6 @@ import type {
 } from 'next'
 import type {ReadonlyHeaders} from 'next/dist/server/web/spec-extension/adapters/headers'
 import type {ReadonlyRequestCookies} from 'next/dist/server/web/spec-extension/adapters/request-cookies'
-import {cookies} from 'next/headers'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 
@@ -63,12 +62,6 @@ export async function createSSRHelpers(context: NextContext) {
       dehydratedState: superjson.serialize(dehydrate(queryClient)),
     }),
   }
-}
-
-export function createServerComponentHelpers(opts?: {
-  params: {[kAccessToken]?: string | string[]}
-}) {
-  return createSSRHelpers({cookies, params: opts?.params})
 }
 
 /** Determine the current viewer in this order

@@ -2,7 +2,7 @@ import {getViewerId} from '@usevenice/cdk-core'
 
 import {SuperHydrate} from '@/components/SuperHydrate'
 import {ClientRoot} from '@/contexts/ClientRoot'
-import {createServerComponentHelpers} from '@/server'
+import {createServerComponentHelpers} from '@/server/server-component-helpers'
 
 import ConnectPage from './ConnectPage'
 
