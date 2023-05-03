@@ -128,6 +128,9 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
 
   const {toast} = useToast()
 
+  // TODO: dedupe the logic here with ResourceDropdownMenu inside VeniceConnect
+  // Probabliy by rendering the actual ResourceDropdownMenu here...
+
   const updateResource = trpcReact.updateResource.useMutation({
     onSuccess: () => {
       setOpen(false)

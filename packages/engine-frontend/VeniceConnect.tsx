@@ -370,7 +370,7 @@ export const WithProviderConnect = ({
   const formRef = React.useRef<SchemaFormElement>(null)
   const formSchema = int.provider.def.resourceSettings ?? z.object({})
 
-  console.log('int', int.id, 'open', open)
+  // console.log('int', int.id, 'open', open)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {children({
@@ -417,6 +417,10 @@ export const WithProviderConnect = ({
   )
 }
 
+/**
+ * TODO: Add loading indicator when mutations are happening as a result of
+ * selecting dropdown menu action
+ */
 export function ResourceDropdownMenu(
   props: UIProps & {
     integration: {id: Id['int']; provider: ProviderMeta}
@@ -425,7 +429,56 @@ export function ResourceDropdownMenu(
     onEvent?: (event: {type: ConnectEventType}) => void
   },
 ) {
+  const {toast} = useToast()
   const [open, setOpen] = React.useState(false)
+
+  // Add me when we introduce displayName field
+  // const updateResource = trpcReact.updateResource.useMutation({
+  //   onSuccess: () => {
+  //     setOpen(false)
+  //     toast({title: 'Resource updated', variant: 'success'})
+  //   },
+  //   onError: (err) => {
+  //     toast({
+  //       title: 'Failed to save resource',
+  //       description: `${err.message}`,
+  //       variant: 'destructive',
+  //     })
+  //   },
+  // })
+  const deleteResource = trpcReact.deleteResoruce.useMutation({
+    onSuccess: () => {
+      setOpen(false)
+      toast({title: 'Resource deleted', variant: 'success'})
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to delete resource',
+        description: `${err.message}`,
+        variant: 'destructive',
+      })
+    },
+  })
+  const syncResource = trpcReact.dispatch.useMutation({
+    onSuccess: () => {
+      setOpen(false)
+      toast({title: 'Sync requested', variant: 'success'})
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to start sync',
+        description: `${err.message}`,
+        variant: 'destructive',
+      })
+    },
+  })
+  // Is there a way to build the variables into useMutation already?
+  const syncResourceMutate = () =>
+    syncResource.mutate({
+      name: 'sync/resource-requested',
+      data: {resourceId: props.resource.id},
+    })
+
   // TODO: Implement delete
   return (
     // Not necessarily happy that we have to wrap the whole thing here inside
@@ -451,7 +504,7 @@ export function ResourceDropdownMenu(
                 <Link2 className="mr-2 h-4 w-4" />
                 <span>{connectProps.label}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => syncResourceMutate()}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 <span>Sync</span>
               </DropdownMenuItem>
@@ -459,7 +512,8 @@ export function ResourceDropdownMenu(
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => deleteResource.mutate({id: props.resource.id})}>
                 <Trash2 className="mr-2 h-4 w-4" />
                 <span>Delete</span>
               </DropdownMenuItem>
