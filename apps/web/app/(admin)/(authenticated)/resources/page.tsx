@@ -1,9 +1,9 @@
 import {SuperHydrate} from '@/components/SuperHydrate'
 import {createServerComponentHelpers} from '@/server/server-component-helpers'
 
-import _ResourcePage from './ResourcesPage'
+import ResourcePage from './ResourcesPage'
 
-export default async function ResourcesPage() {
+export default async function ResourcesPageContainer() {
   const {ssg, getDehydratedState} = await createServerComponentHelpers()
 
   await Promise.all([
@@ -20,7 +20,7 @@ export default async function ResourcesPage() {
 
   return (
     <SuperHydrate dehydratedState={getDehydratedState()}>
-      <_ResourcePage />
+      <ResourcePage />
     </SuperHydrate>
   )
 }
