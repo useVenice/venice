@@ -12,7 +12,10 @@ import {makeStripeClient} from './StripeClient'
 
 const stripeDef = {
   name: z.literal('stripe'),
-  integrationConfig: z.object({}),
+  integrationConfig: z.object({
+    clientId: z.string(),
+    clientSecret: z.string(),
+  }),
   resourceSettings: z.object({secretKey: z.string()}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({

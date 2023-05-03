@@ -2,16 +2,16 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
 
+import readline from 'node:readline'
+
 import {fsProvider} from '@usevenice/app-config/providers'
 import {sync} from '@usevenice/cdk-core'
-
 import {brexImpl} from '@usevenice/integration-brex'
 import {heronImpl} from '@usevenice/integration-heron'
 import {mergeImpl} from '@usevenice/integration-merge'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {stripeImpl} from '@usevenice/integration-stripe'
 import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
-import readline from 'node:readline'
 
 const srcPath = './apps/tests/__encrypted__/meta'
 const destPath = './temp'
@@ -51,7 +51,7 @@ switch (process.argv[2]) {
         },
       } satisfies (typeof stripeImpl)['helpers']['_inputOpType']),
       destination: stripeImpl.destinationSync({
-        config: {},
+        config: {clientId: '', clientSecret: ''},
         endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},

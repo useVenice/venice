@@ -10,10 +10,8 @@ import {
 export const zConfig = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
-  /** For proxies */
-  url: z.string().nullish(),
-  /** For webhooks */
-  verifierToken: z.string().nullish(),
+  url: z.string().nullish().describe('For proxies, not typically needed'),
+  verifierToken: z.string().nullish().describe('For webhooks'),
 })
 
 export const zCreds = z.object({

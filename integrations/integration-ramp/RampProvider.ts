@@ -22,10 +22,12 @@ type RampSyncOperation = (typeof def)['_opType']
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('ramp'),
+  integrationConfig: z.object({
+    clientId: z.string(),
+    clientSecret: z.string(),
+  }),
   resourceSettings: z.object({
     accessToken: z.string().nullish(),
-    clientId: z.string().nullish(),
-    clientSecret: z.string().nullish(),
     startAfterTransactionId: z.string().nullish(),
   }),
   connectInput: z.object({
@@ -158,10 +160,10 @@ export const rampProvider = makeSyncProvider({
   //     rampProvider.sourceSync(conn)
   //   return rxjs.concat(sync$)
   // },
-  sourceSync: ({settings}) => {
+  sourceSync: ({settings, config}) => {
     const client = makeRampClient({
-      clientId: settings.clientId ?? '',
-      clientSecret: settings.clientSecret ?? '',
+      clientId: config.clientId ?? '',
+      clientSecret: config.clientSecret ?? '',
     })
     async function* iterateEntities() {
       const accessToken = await client.getAccessToken()

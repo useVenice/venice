@@ -3,7 +3,6 @@
 import '@usevenice/app-config/register.node'
 
 import {sync} from '@usevenice/cdk-core'
-
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {stripeImpl} from '@usevenice/integration-stripe'
 
@@ -47,7 +46,7 @@ function getDestination(name: string) {
   switch (name) {
     case 'stripe':
       return stripeImpl.destinationSync({
-        config: {},
+        config: {clientId: '', clientSecret: ''},
         endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},
