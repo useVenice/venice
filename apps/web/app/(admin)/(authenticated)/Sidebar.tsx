@@ -13,11 +13,11 @@ const sectionedLinks: Array<{
 }> = [
   {
     items: [
-      {
-        title: 'Home',
-        href: '/',
-        icon: 'Home',
-      },
+      // {
+      //   title: 'Home',
+      //   href: '/',
+      //   icon: 'Home',
+      // },
       {
         title: 'Magic Link',
         href: '/magic-link',
