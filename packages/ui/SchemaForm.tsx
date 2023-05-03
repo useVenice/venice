@@ -49,13 +49,12 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
       {...props}
       ref={forwardedRef}
       formData={formData}
-      // eslint-disable-next-line tailwindcss/no-custom-classname
       className={cn('schema-form', loading && 'loading', props.className)}
       schema={jsonSchema}
       validator={validator}
-      templates={{
-        ...(hideSubmitButton && {ButtonTemplates: {SubmitButton: () => null}}),
-        ...props.templates,
+      uiSchema={{
+        ...(hideSubmitButton && {'ui:submitButtonOptions': {norender: true}}),
+        ...props.uiSchema,
       }}
       onSubmit={(data) => {
         if (!data.formData) {
