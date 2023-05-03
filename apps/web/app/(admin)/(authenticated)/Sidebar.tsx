@@ -82,7 +82,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function Sidebar({className}: SidebarProps) {
   const pathname = usePathname()
   return (
-    <nav className={cn('flex h-full flex-col', className)}>
+    <nav className={cn('flex flex-col', className)}>
       <ScrollArea className="h-full px-2">
         <div className="space-y-4 py-4">
           {sectionedLinks.map((section, i) => (
