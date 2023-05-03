@@ -2,7 +2,7 @@
 
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {CopyTextIcon, Loading, SyncIcon} from '@usevenice/ui'
+import {CopyTextIcon, LoadingText, SyncIcon} from '@usevenice/ui'
 import {formatDistanceToNowStrict} from 'date-fns'
 import {copyToClipboard} from '../contexts/common-contexts'
 import {ResourceCard} from './ResourceCard'
@@ -45,7 +45,7 @@ export function PipelinesTable(props: {
             <td className="p-4">
               <p className="text-sm font-medium text-venice-gray">
                 {pipe.syncInProgress ? (
-                  <Loading text="Syncing" />
+                  <LoadingText text="Syncing" />
                 ) : pipe.lastSyncCompletedAt ? (
                   `${formatDistanceToNowStrict(
                     new Date(pipe.lastSyncCompletedAt),

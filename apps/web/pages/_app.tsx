@@ -11,7 +11,7 @@ import {QueryParamProvider} from 'use-query-params'
 
 import {commonEnv, veniceCommonConfig} from '@usevenice/app-config/commonConfig'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {Loading, UIProvider} from '@usevenice/ui'
+import {LoadingText, UIProvider} from '@usevenice/ui'
 
 import {createBrowserSupabaseClient} from '@supabase/auth-helpers-nextjs'
 import superjson from 'superjson'
@@ -46,7 +46,7 @@ function _VeniceProvider({
   const developerMode = useAtomValue(developerModeAtom)
 
   if (status === 'loading') {
-    return <Loading />
+    return <LoadingText />
   }
   // return null
 

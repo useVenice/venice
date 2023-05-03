@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query'
 import {VeniceProvider} from '@usevenice/engine-frontend'
-import {DialogPrimitive, Loading} from '@usevenice/ui'
+import {DialogPrimitive, LoadingText} from '@usevenice/ui'
 import {
   CircleFilledIcon,
   DeleteIcon,
@@ -212,7 +212,7 @@ export const ConnectionCard = forwardRef<HTMLDivElement, ConnectionCardProps>(
               {status ? <ConnectionStatus status={status} /> : null}
               <p className="text-sm font-medium text-venice-gray">
                 {syncInProgress ? (
-                  <Loading text="Syncing" />
+                  <LoadingText text="Syncing" />
                 ) : lastSyncCompletedAt ? (
                   `Synced ${formatDistanceToNowStrict(
                     new Date(lastSyncCompletedAt),

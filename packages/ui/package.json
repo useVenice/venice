@@ -25,6 +25,7 @@
     "@ts-react/form": "1.2.0",
     "class-variance-authority": "0.6.0",
     "clsx": "1.2.1",
+    "date-fns": "*",
     "framer-motion": "6.5.1",
     "jotai": "1.8.4",
     "lucide-react": "*",

@@ -204,9 +204,8 @@ export function VeniceConnect({
             connectFn={connectFnMap[conn.integration.provider.name]}
             onEvent={(e) => {
               onEvent?.({type: e.type, intId: conn.integration.id})
-            }}>
-            Reconnect
-          </ProviderConnectButton>
+            }}
+          />
         </ResourceCard>
       ))}
       {/* Add new  */}
@@ -318,7 +317,7 @@ export const ProviderConnectButton = ({
         <Button
           className={cn('mt-2', className)}
           disabled={connect.isLoading}
-          variant="ghost"
+          variant={resource?.status === 'disconnected' ? 'default' : 'ghost'}
           onClick={(e) => {
             onEvent?.({type: 'open'})
             if (!connectFn) {
@@ -330,7 +329,7 @@ export const ProviderConnectButton = ({
             e.preventDefault()
             connect.mutate(undefined)
           }}>
-          {children ?? 'Connect'}
+          {children ?? (resource ? 'Reconnect' : 'Connect')}
         </Button>
       </DialogTrigger>
       <DialogContent>

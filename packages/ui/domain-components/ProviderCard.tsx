@@ -1,10 +1,11 @@
+import {formatDistanceToNowStrict} from 'date-fns'
 import {Landmark} from 'lucide-react'
 import React from 'react'
 
-import type {ProviderMeta} from '@usevenice/cdk-core'
-import type {ZStandard} from '@usevenice/cdk-core'
+import type {ProviderMeta, ZStandard} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 
+import {LoadingText} from '../components/LoadingText'
 import {Badge, Card} from '../new-components'
 import {cn} from '../utils'
 
@@ -42,12 +43,14 @@ export const ResourceCard = ({
   provider: ProviderMeta
 }) => (
   <Card
-    className={cn('m-3 flex h-48 w-48 flex-col items-center p-2', className)}>
-    <div className="flex self-stretch">
+    className={cn(
+      'm-3 flex h-36 w-36 flex-col items-center p-2 sm:h-48 sm:w-48',
+      className,
+    )}>
+    <div className="flex h-6 items-center justify-between self-stretch">
       <Badge
         variant="secondary"
         className={cn(
-          'ml-auto',
           resource.status === 'healthy' && 'bg-green-200',
           resource.status === 'manual' && 'bg-blue-200',
           (resource.status === 'error' || resource.status === 'disconnected') &&
@@ -55,6 +58,18 @@ export const ResourceCard = ({
         )}>
         {resource.syncInProgress ? 'Syncing' : resource.status}
       </Badge>
+      <span className="ml-2 truncate text-right text-xs">
+        {resource.syncInProgress ? (
+          <LoadingText text="Syncing" />
+        ) : resource.lastSyncCompletedAt ? (
+          `Synced ${formatDistanceToNowStrict(
+            new Date(resource.lastSyncCompletedAt),
+            {addSuffix: true},
+          )}`
+        ) : (
+          'No sync information'
+        )}
+      </span>
     </div>
 
     {resource.institutionId ? (
@@ -89,8 +104,11 @@ export const ProviderCard = ({
   showStageBadge?: boolean
 }) => (
   <Card
-    className={cn('m-3 flex h-48 w-48 flex-col items-center p-2', className)}>
-    <div className="flex self-stretch">
+    className={cn(
+      'm-3 flex h-36 w-36 flex-col items-center p-2 sm:h-48 sm:w-48',
+      className,
+    )}>
+    <div className="flex h-6 self-stretch">
       {showStageBadge && (
         <Badge
           variant="secondary"
