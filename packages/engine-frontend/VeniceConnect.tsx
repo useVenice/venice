@@ -115,6 +115,9 @@ export function VeniceConnect({
   const integrations = integrationIds
     .map((id) => {
       const provider = providerMetaByName[extractProviderName(id)]
+      if (!provider) {
+        console.warn('Missing provider for integration', id)
+      }
       return provider ? {id, provider} : null
     })
     .filter((i): i is NonNullable<typeof i> => !!i)
@@ -139,6 +142,9 @@ export function VeniceConnect({
     }))
     .filter((item) => item.integrations.length > 0)
 
+  if (!integrations.length) {
+    return <div>No end user integrations configured</div>
+  }
   return (
     <div className="flex flex-wrap">
       {false &&

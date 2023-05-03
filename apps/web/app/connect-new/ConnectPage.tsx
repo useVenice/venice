@@ -9,8 +9,10 @@ export default function ConnectPage({viewer}: {viewer: Viewer}) {
 
   // Should never happen because of pre-fetching
   if (!intsRes.data) {
-    return <div>Missing integration data</div>
+    return <div>Loading...</div>
   }
+
+  console.log('[ConnectPage] intsRes.data', intsRes.data)
   return (
     <VeniceConnect
       integrationIds={intsRes.data.map((int) => int.id)}

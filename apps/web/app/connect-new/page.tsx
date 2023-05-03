@@ -42,10 +42,15 @@ export default async function ConnectPageContainer({
   await ssg.listIntegrationInfos.prefetch({})
 
   return (
-    <ClientRoot accessToken={viewer.accessToken} authStatus="success">
-      <SuperHydrate dehydratedState={getDehydratedState()}>
-        <ConnectPage viewer={viewer} />
-      </SuperHydrate>
-    </ClientRoot>
+    <div className="h-screen w-screen p-6">
+      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
+        Venice Connect
+      </h2>
+      <ClientRoot accessToken={viewer.accessToken} authStatus="success">
+        <SuperHydrate dehydratedState={getDehydratedState()}>
+          <ConnectPage viewer={viewer} />
+        </SuperHydrate>
+      </ClientRoot>
+    </div>
   )
 }
