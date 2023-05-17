@@ -56,10 +56,10 @@ export const postgresProvider = makeSyncProvider({
   // 3) Improve type safety
   // 4) Implement parallel runs
   sourceSync: ({endUser, settings: {databaseUrl, sourceQueries}}) => {
-    const {getPool, sql} = makePostgresClient({
+    const {getPool, sql, getMigrator} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
-      migrationTableName: 'ls_migrations',
+      migrationTableName: '_migrations',
     })
     // TODO: Never let slonik transform the field names...
     const rawClient = makePostgresClient({
@@ -69,6 +69,8 @@ export const postgresProvider = makeSyncProvider({
 
     async function* iterateEntities() {
       const pool = await getPool()
+      const migrator = await getMigrator()
+      await migrator.up()
 
       for (const entityName of ['account', 'transaction'] as const) {
         const res = await pool.query<{
@@ -82,7 +84,7 @@ export const postgresProvider = makeSyncProvider({
           updated_at: string
         }>(
           sql`SELECT * FROM ${sql.identifier([
-            'raw_' + entityName,
+            entityName,
           ])} WHERE end_user_id = ${endUser?.id ?? null}`,
         )
         yield res.rows.map((row) =>
@@ -130,10 +132,10 @@ export const postgresProvider = makeSyncProvider({
       // migrationsPath: __dirname + '/migrations',
       endUser,
     })
-    const {getPool} = makePostgresClient({
+    const {getPool, getMigrator} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
-      migrationTableName: 'ls_migrations',
+      migrationTableName: '_migrations',
     })
     let batches: Record<string, Array<{id: string; [k: string]: unknown}>> = {}
 
@@ -142,7 +144,7 @@ export const postgresProvider = makeSyncProvider({
         const {
           data: {id, entityName, providerName, sourceId = null, ...data},
         } = op
-        const tableName = `raw_${entityName}`
+        const tableName = entityName
         const batch = batches[tableName] ?? []
         batches[tableName] = batch
         batch.push({
@@ -162,6 +164,10 @@ export const postgresProvider = makeSyncProvider({
           return op
         }
         const pool = await getPool()
+        const migrator = await getMigrator()
+        // TODO: Make it so that we don't need to run migrations on every commit
+        const migrations = await migrator.up()
+        console.log('[postgres] migrations ran', migrations)
         console.log(`[postgres] Will commit ${size} entities`)
         await pool.transaction((client) =>
           Promise.all(
