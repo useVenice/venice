@@ -53,6 +53,7 @@ export default (async (req, res) => {
 
   const {helpers} = contextFactory.fromViewer(viewer)
   const reso = await helpers.getResourceOrFail(resourceId as Id['reso'])
+  console.log('reso', reso)
 
   const {getPool, sql} = makePostgresClient(zPgConfig.parse(reso.settings))
   const pool = await getPool()

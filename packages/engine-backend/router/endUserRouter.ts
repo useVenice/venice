@@ -153,6 +153,7 @@ export const endUserRouter = trpc.router({
       return resoId
     }),
 
+  // TODO: Run server-side validation
   updateResource: protectedProcedure
     .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
     .mutation(async ({input: {id, ...input}, ctx}) =>

@@ -119,8 +119,8 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself integration
   const formSchema = zRaw.resource
-    .pick({endUserAccess: true, displayName: true})
-    .extend({config: provider.def.resourceSettings ?? z.object({})})
+    .pick({displayName: true})
+    .extend({settings: provider.def.resourceSettings ?? z.object({})})
 
   const [open, setOpen] = React.useState(false)
 
@@ -208,7 +208,7 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
           <SchemaForm
             ref={formRef}
             schema={formSchema}
-            formData={reso}
+            formData={{settings: reso.settings, displayName: reso.displayName}}
             loading={updateResource.isLoading}
             onSubmit={({formData}) => {
               console.log('formData submitted', formData)
