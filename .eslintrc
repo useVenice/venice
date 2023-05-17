@@ -9,7 +9,7 @@
     },
     "tailwindcss": {
       "callees": ["twMerge", "cn"],
-      "config": "apps/web/tailwind.config.eslint.js"
+      "config": "apps/web/tailwind.config.ts"
     }
   },
   "plugins": [
