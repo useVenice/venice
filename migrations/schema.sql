@@ -393,6 +393,33 @@ COMMENT ON CONSTRAINT fk_source_id ON public.pipeline IS '@graphql({"foreign_nam
 
 
 --
+-- Name: integration end_user_access; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY end_user_access ON public.integration TO end_user USING ((((org_id)::text = (public.jwt_org_id())::text) AND (end_user_access = true)));
+
+
+--
+-- Name: pipeline end_user_access; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY end_user_access ON public.pipeline TO end_user USING (( SELECT (ARRAY( SELECT resource.id
+           FROM public.resource
+          WHERE (((resource.integration_id)::text IN ( SELECT integration.id
+                   FROM public.integration
+                  WHERE ((integration.org_id)::text = (public.jwt_org_id())::text))) AND ((resource.end_user_id)::text = (( SELECT public.jwt_end_user_id() AS jwt_end_user_id))::text))) && ARRAY[pipeline.source_id, pipeline.destination_id])));
+
+
+--
+-- Name: resource end_user_access; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY end_user_access ON public.resource TO end_user USING ((((integration_id)::text IN ( SELECT integration.id
+   FROM public.integration
+  WHERE ((integration.org_id)::text = (public.jwt_org_id())::text))) AND ((end_user_id)::text = (( SELECT public.jwt_end_user_id() AS jwt_end_user_id))::text)));
+
+
+--
 -- Name: institution; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
@@ -496,6 +523,7 @@ ALTER TABLE public.resource ENABLE ROW LEVEL SECURITY;
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
+GRANT USAGE ON SCHEMA public TO end_user;
 GRANT USAGE ON SCHEMA public TO org;
 
 
@@ -503,6 +531,7 @@ GRANT USAGE ON SCHEMA public TO org;
 -- Name: TABLE institution; Type: ACL; Schema: public; Owner: -
 --
 
+GRANT SELECT ON TABLE public.institution TO end_user;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.institution TO org;
 
 
@@ -514,9 +543,24 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.integration TO org;
 
 
 --
+-- Name: COLUMN integration.id; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT(id) ON TABLE public.integration TO end_user;
+
+
+--
+-- Name: COLUMN integration.org_id; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT(org_id) ON TABLE public.integration TO end_user;
+
+
+--
 -- Name: TABLE pipeline; Type: ACL; Schema: public; Owner: -
 --
 
+GRANT SELECT ON TABLE public.pipeline TO end_user;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.pipeline TO org;
 
 
@@ -524,7 +568,15 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.pipeline TO org;
 -- Name: TABLE resource; Type: ACL; Schema: public; Owner: -
 --
 
+GRANT SELECT,DELETE ON TABLE public.resource TO end_user;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.resource TO org;
+
+
+--
+-- Name: COLUMN resource.display_name; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT UPDATE(display_name) ON TABLE public.resource TO end_user;
 
 
 --

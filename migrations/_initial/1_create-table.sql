@@ -9,6 +9,11 @@
 -- TODO(p3): Switch to the references / primary key syntax
 -- TODO(p3): Use varchar rather than character varying to be shorter
 
+CREATE TABLE IF NOT EXISTS "public"."migrations" (
+    name text NOT NULL,
+    hash text NOT NULL,
+    date timestamp with time zone DEFAULT now() NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS "public"."integration" (
   "id" character varying NOT NULL DEFAULT generate_ulid(),
