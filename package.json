@@ -19,6 +19,7 @@
     "validate": "run-s --silent typecheck lint test",
     "venice": "tsx ./bin/venice",
     "migration": "tsx ./apps/cli/pgMigrator-cli",
+    "graphile-migrate": "pnpm --silent --dir apps/web graphile-migrate",
     "worker:setup": "tsx ./bin/venice setupWorker",
     "worker:run": "tsx ./bin/venice runWorker",
     "env:pull": "vercel env pull --environment production .env && vercel env pull --environment development .env.development"
@@ -49,7 +50,6 @@
     "eslint-plugin-promise": "6.0.1",
     "eslint-plugin-tailwindcss": "3.12.0",
     "eslint-plugin-unicorn": "43.0.2",
-    "graphile-migrate": "1.4.1",
     "husky": "8.0.1",
     "jest": "29.0.1",
     "jest-date-mock": "1.0.8",

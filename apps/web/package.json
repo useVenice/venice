@@ -9,7 +9,8 @@
     "codegen:sdk": "openapi-typescript http://localhost:3000/api/rest --output ./sdk/venice.gen.ts",
     "codegen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
     "dev": "next dev",
-    "start": "next start"
+    "start": "next start",
+    "graphile-migrate": "graphile-migrate"
   },
   "dependencies": {
     "@clerk/nextjs": "4.16.4",
@@ -80,6 +81,7 @@
     "@types/react-dom": "18.0.10",
     "autoprefixer": "*",
     "csstype": "*",
+    "graphile-migrate": "1.4.1",
     "jiti": "*",
     "node-loader": "2.0.0",
     "openapi-typescript": "6.2.1",
