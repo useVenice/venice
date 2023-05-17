@@ -1,8 +1,8 @@
 import './global.css'
 
 export const metadata = {
-  title: 'Venice — Financial data, fast.',
-  icons: [{url: '/favicon.svg', type: 'image/svg+xml'}],
+  title: 'Gondola, your financial DB',
+  // icons: [{url: '/favicon.svg', type: 'image/svg+xml'}],
 }
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
