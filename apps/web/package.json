@@ -36,6 +36,7 @@
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/connect": "workspace:*",
+    "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/ui": "workspace:*",

@@ -1,11 +1,23 @@
 import '@usevenice/app-config/register.node'
 
+import {TRPCError} from '@trpc/server'
 import type {NextApiHandler} from 'next'
 
-import {DatabaseError, Papa} from '@usevenice/app-config/backendConfig'
+import {
+  contextFactory,
+  DatabaseError,
+  Papa,
+} from '@usevenice/app-config/backendConfig'
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
+import type {Id} from '@usevenice/cdk-core'
+import {hasRole} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
-import {runAsAdmin, sql} from '../../server'
+
+import {
+  makePostgresClient,
+  zPgConfig,
+} from '@/../../integrations/core-integration-postgres'
+
 import {respondToCORS, serverGetViewer} from '../../server/server-helpers'
 
 export default (async (req, res) => {
@@ -13,28 +25,44 @@ export default (async (req, res) => {
   if (respondToCORS(req, res)) {
     return
   }
-  const viewer = await serverGetViewer({req, res})
-  if (viewer.role !== 'system') {
-    res.status(401).send('Unauthorized')
-    return
-  }
 
-  const {q: query, [kAcceptUrlParam]: acceptedFormat, dl: download} = req.query
+  const {
+    q: query,
+    [kAcceptUrlParam]: acceptedFormat,
+    dl: download,
+    resourceId,
+  } = req.query
   if (!query) {
     res.status(400).send('sql query param q is required')
     return
   }
-
   const format = z.enum(['csv', 'json']).default('json').parse(acceptedFormat)
+
+  if (typeof resourceId !== 'string') {
+    res.status(400).send('resourceId is required')
+    return
+  }
+
+  const viewer = await serverGetViewer({req, res})
+
+  if (!hasRole(viewer, ['user', 'org', 'system'])) {
+    throw new TRPCError({
+      code: viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
+    })
+  }
+
+  const {helpers} = contextFactory.fromViewer(viewer)
+  const reso = await helpers.getResourceOrFail(resourceId as Id['reso'])
+
+  const {getPool, sql} = makePostgresClient(zPgConfig.parse(reso.settings))
+  const pool = await getPool()
 
   console.log('[sql] Will run query for user', {query, viewer})
   try {
     // TODO: Should we limit admin user to RLS also? Otherwise we might as well
     // proxy the pgMeta endpoint just like we proxy rest / graphql
-    const result = await runAsAdmin((trxn) =>
-      // @ts-expect-error
-      trxn.query(sql([query])),
-    )
+    // @ts-expect-error
+    const result = await pool.query(sql([query]))
 
     if (download) {
       // TODO: Better filename would be nice.
