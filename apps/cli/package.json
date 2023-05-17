@@ -7,6 +7,7 @@
     "@usevenice/airbyte": "workspace:*",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/core-integration-firebase": "workspace:*",
     "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",

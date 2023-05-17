@@ -2,12 +2,26 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
 
-import {sync} from '@usevenice/cdk-core'
+import {logLink, sync} from '@usevenice/cdk-core'
+import {mapStandardEntityLink} from '@usevenice/cdk-ledger'
+import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {stripeImpl} from '@usevenice/integration-stripe'
+import type {rxjs} from '@usevenice/util'
+import {R, Rx} from '@usevenice/util'
 
 function getSource(name: string) {
   switch (name) {
+    case 'plaid':
+      return plaidProvider.sourceSync({
+        endUser: null,
+        config: plaidProvider.def.integrationConfig.parse({
+          clientId: process.env['int_plaid__clientId'] ?? '',
+          secrets: {sandbox: process.env['int_plaid__secrets__sandbox'] ?? ''},
+        }),
+        settings: {accessToken: process.env['PLAID_ACCESS_TOKEN'] ?? ''},
+        state: {},
+      })
     case 'postgres':
       return postgresProvider.sourceSync({
         endUser: null,
@@ -42,7 +56,7 @@ function getSource(name: string) {
   }
 }
 
-function getDestination(name: string) {
+function getDestination(name: string | undefined) {
   switch (name) {
     case 'stripe':
       return stripeImpl.destinationSync({
@@ -51,13 +65,39 @@ function getDestination(name: string) {
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},
       })
+    case 'postgres':
+      return postgresProvider.destinationSync({
+        endUser: null,
+        settings: {
+          databaseUrl:
+            process.env['int_postgres__database_url'] ??
+            'postgresql://postgres@localhost/postgres',
+        },
+      })
+    case undefined:
+      return (obs: rxjs.Observable<unknown>) =>
+        obs.pipe(
+          Rx.tap((msg) => {
+            console.log(JSON.stringify(msg))
+          }),
+        )
     default:
       throw new Error(`Unknown destination: ${name}`)
   }
 }
 
 sync({
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
   source: getSource(process.argv[2]!) as any,
-  destination: getDestination(process.argv[3]!),
+  links: R.compact([
+    process.argv[2] === 'plaid' &&
+      mapStandardEntityLink({
+        id: 'reso_plaid_demo',
+        integration: {provider: plaidProvider},
+        settings: {},
+      }),
+    process.argv[2] === 'plaid' && logLink({prefix: 'preDest'}),
+  ]),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+  destination: getDestination(process.argv[3]) as any,
 }).catch(console.error)

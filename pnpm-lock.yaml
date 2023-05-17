@@ -299,6 +299,9 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
       '@usevenice/core-integration-firebase':
         specifier: workspace:*
         version: link:../../integrations/core-integration-firebase

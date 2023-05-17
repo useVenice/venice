@@ -10,12 +10,12 @@ import {
 import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
-import {R, Rx, joinPath, zParser} from '@usevenice/util'
+import {joinPath, R, Rx, zParser} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
 import {getServerUrl} from './constants'
-import type {PROVIDERS} from './providers'
 import {zAllEnv} from './env'
+import type {PROVIDERS} from './providers'
 
 export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
 export {Papa} from '@usevenice/integration-import'
@@ -60,6 +60,8 @@ export const contextFactory = getContextFactory({
   // In contrast, resource shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
+
+  // TODO: Deprecate me. This does not make much sense to have getLinksForPipeline
   getLinksForPipeline: ({source, links, destination}) => {
     if (destination.integration.provider.name === 'beancount') {
       return [
