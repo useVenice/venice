@@ -44,8 +44,6 @@ import {
 } from '@usevenice/ui/new-components'
 import {z} from '@usevenice/util'
 
-import '@usevenice/ui'
-
 type Resource = RouterOutput['listConnections'][number]
 
 export default function ResourcesPage() {

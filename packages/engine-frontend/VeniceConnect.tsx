@@ -109,24 +109,34 @@ export function VeniceConnectButton({
 // TODO: Wrap this in memo so it does not re-render as much as possible.
 // Also it would be nice if there was an easy way to automatically prefetch on the server side
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
-export function VeniceConnect({
+export function VeniceConnect(props: VeniceConnectProps) {
+  const listIntegrationsRes = trpcReact.listIntegrationInfos.useQuery({})
+  const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
+  if (!listIntegrationsRes.data) {
+    return <div>Loading...</div>
+  }
+  return <_VeniceConnect integrationIds={integrationIds} {...props} />
+}
+
+/** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
+export function _VeniceConnect({
   providerMetaByName,
   onEvent,
   showExisting,
   className,
+  integrationIds,
   ...uiProps
-}: VeniceConnectProps) {
+}: VeniceConnectProps & {integrationIds: Array<Id['int']>}) {
   // VeniceConnect should be fetching its own integrationIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
   // and cannot run on server-side per-se
-  const listIntegrationsRes = trpcReact.listIntegrationInfos.useQuery({})
+
   const listConnectionsRes = trpcReact.listConnections.useQuery(
     {},
     {enabled: showExisting},
   )
 
-  const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
   const integrations = integrationIds
     .map((id) => {
       const provider = providerMetaByName[extractProviderName(id)]
@@ -186,9 +196,6 @@ export function VeniceConnect({
     }))
     .filter((item) => item.integrations.length > 0)
 
-  if (!listIntegrationsRes.data) {
-    return <div>Loading...</div>
-  }
   if (!integrations.length) {
     return <div>No end user integrations configured</div>
   }
