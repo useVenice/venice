@@ -1,6 +1,7 @@
 import {authMiddleware} from '@clerk/nextjs'
 
-export default authMiddleware()
+// Disable redirects
+export default authMiddleware({publicRoutes: [/^(.*)/]})
 
 export const config = {
   /*
