@@ -1,6 +1,7 @@
 'use client'
 
 import {OrganizationSwitcher, useAuth, UserButton} from '@clerk/nextjs'
+import NextTopLoader from 'nextjs-toploader'
 
 import {NoSSR} from '@/components/NoSSR'
 import {RedirectToNext13} from '@/components/RedirectTo'
@@ -62,6 +63,7 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
 
   return (
     <div className="flex h-screen w-screen flex-col">
+      <NextTopLoader showSpinner={false} />
       <main className="ml-[240px] mt-12">
         {auth.orgId ? children : <div>Create an org to begin</div>}
       </main>
