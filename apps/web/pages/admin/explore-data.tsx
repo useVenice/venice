@@ -1,7 +1,7 @@
 import {
   getRestEndpoint,
   kAcceptUrlParam,
-  xPatUrlParamKey,
+  kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
 import {
   Button,
@@ -51,7 +51,7 @@ export default function ExploreDataPage({
 
   const csvUrl = getRestEndpoint(null)
   csvUrl.pathname = joinPath(csvUrl.pathname, selectedTable)
-  csvUrl.searchParams.set(xPatUrlParamKey, pat)
+  csvUrl.searchParams.set(kApikeyUrlParam, pat)
   csvUrl.searchParams.set(kAcceptUrlParam, 'csv')
 
   return (

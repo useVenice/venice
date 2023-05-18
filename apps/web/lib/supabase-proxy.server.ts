@@ -2,8 +2,8 @@ import {backendEnv} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {
   kAcceptUrlParam,
-  xPatHeaderKey,
-  xPatUrlParamKey,
+  kApikeyHeader,
+  kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {parseUrl, stringifyUrl} from '@usevenice/util'
@@ -54,11 +54,11 @@ export async function proxySupabase({
         .on('proxyReq', function (proxyReq) {
           const parsed = parseUrl(proxyReq.path)
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-          delete parsed.query[xPatUrlParamKey]
+          delete parsed.query[kApikeyUrlParam]
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete parsed.query[kAcceptUrlParam]
           proxyReq.path = stringifyUrl(parsed)
-          proxyReq.removeHeader(xPatHeaderKey)
+          proxyReq.removeHeader(kApikeyHeader)
         })
         .once('proxyRes', (proxyRes) => {
           if (proxyRes.headers['content-type']?.startsWith('text/csv')) {

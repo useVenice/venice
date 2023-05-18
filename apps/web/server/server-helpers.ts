@@ -1,8 +1,8 @@
-import {auth as serverComponentGetAuth} from '@clerk/nextjs'
+import {clerkClient, auth as serverComponentGetAuth} from '@clerk/nextjs'
 import {getAuth} from '@clerk/nextjs/server'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
-import type {TRPCError} from '@trpc/server'
+import {TRPCError} from '@trpc/server'
 import {getHTTPStatusCodeFromError} from '@trpc/server/http'
 import type {
   GetServerSidePropsContext,
@@ -17,9 +17,9 @@ import type {SuperJSONResult} from 'superjson/dist/types'
 
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {
-  xPatAppMetadataKey,
-  xPatHeaderKey,
-  xPatUrlParamKey,
+  kApikeyHeader,
+  kApikeyMetadata,
+  kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
 import type {Id, UserId, Viewer} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/cdk-core'
@@ -27,7 +27,6 @@ import {flatRouter} from '@usevenice/engine-backend'
 import {fromMaybeArray} from '@usevenice/util'
 
 import {kAccessToken} from '../lib/constants'
-import {runAsAdmin, sql} from './procedures'
 
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
@@ -105,6 +104,9 @@ export async function serverGetViewer(
       ? Object.fromEntries(context.searchParams.entries())
       : context.searchParams) ?? {}
 
+  // console.log('headers', headers)
+  // console.log('searchParams', searchParams)
+
   // access token via query param
   let accessToken = fromMaybeArray(searchParams[kAccessToken])[0]
   let viewer = jwt.verifyViewer(accessToken)
@@ -119,23 +121,26 @@ export async function serverGetViewer(
   }
 
   // personal access token via query param or header
-  const apiKey =
+  const apikey =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    fromMaybeArray(searchParams[xPatUrlParamKey])[0] || headers[xPatHeaderKey]
+    fromMaybeArray(searchParams[kApikeyUrlParam] || headers[kApikeyHeader])[0]
 
   // No more api keys, gotta fix me here.
-  if (apiKey) {
-    const row = await runAsAdmin((pool) =>
-      pool.maybeOne<{
-        id: string
-        raw_app_metadata: Record<string, unknown>
-      }>(sql`
-        SELECT id, raw_app_meta_data FROM auth.users
-        WHERE raw_app_meta_data ->> ${xPatAppMetadataKey} = ${apiKey}
-      `),
-    )
-    if (row) {
-      return {role: 'user', userId: row.id as UserId}
+  if (apikey) {
+    const [id, key] = decodeApikey(apikey)
+
+    const res = id.startsWith('user_')
+      ? await clerkClient.users.getUser(id)
+      : id.startsWith('org_')
+      ? await clerkClient.organizations.getOrganization({organizationId: id})
+      : null
+
+    // console.log('apikey', {apiKey: apikey, id, key, res})
+
+    if (res?.privateMetadata?.[kApikeyMetadata] === key) {
+      return res.id.startsWith('user_')
+        ? {role: 'user', userId: res.id as Id['user']}
+        : {role: 'org', orgId: res.id as Id['org']}
     }
   }
 
@@ -183,6 +188,17 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   return false
 }
 
+export async function withErrorHandler(fn: () => Promise<NextResponse>) {
+  try {
+    return await fn()
+  } catch (err) {
+    if (err instanceof TRPCError) {
+      return trpcErrorResponse(err)
+    }
+    return NextResponse.json({error: {message: `${err}`}}, {status: 500})
+  }
+}
+
 export function trpcErrorResponse(err: TRPCError) {
   const status = getHTTPStatusCodeFromError(err)
   // https://trpc.io/docs/server/error-handling
@@ -190,4 +206,32 @@ export function trpcErrorResponse(err: TRPCError) {
     {error: {message: err.message, code: err.code}},
     {status},
   )
+}
+
+export function decodeApikey(apikey: string) {
+  try {
+    const [id, key, ...rest] = atob(apikey).split(':')
+    if (!id || !key || rest.length > 0) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid API Key format',
+      })
+    }
+    return [id, key] as const
+  } catch (err) {
+    if (`${err}`.includes('InvalidCharacterError')) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid API Key format',
+      })
+    }
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: `${err}`,
+    })
+  }
+}
+
+export function encodeApiKey(id: string, key: string) {
+  return btoa(`${id}:${key}`)
 }

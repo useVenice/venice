@@ -25,8 +25,8 @@ import {atomWithQueryParam} from '../../contexts/utils/atomWithQueryParam'
 import {
   getGraphqlEndpoint,
   getRestEndpoint,
-  xPatHeaderKey,
-  xPatUrlParamKey,
+  kApikeyHeader,
+  kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
 import type {SqlExplorerProps} from '../../components/api-access/SqlExplorer'
 import {SqlExplorer} from '../../components/api-access/SqlExplorer'
@@ -269,7 +269,7 @@ function APIKeysCard({pat}: APIKeysCardProps) {
               Header example:
             </span>
             <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 px-2 py-1 font-mono text-xs text-venice-gray">
-              <code>{xPatHeaderKey}: myPersonalAccessTokenHere</code>
+              <code>{kApikeyHeader}: myPersonalAccessTokenHere</code>
             </pre>
           </div>
         </div>
@@ -280,7 +280,7 @@ function APIKeysCard({pat}: APIKeysCardProps) {
               Query param example:
             </span>
             <pre className="mt-2 max-w-lg truncate rounded-md bg-black-500 px-2 py-1 font-mono text-xs text-venice-gray">
-              <code>?{xPatUrlParamKey}=myPersonalAccessTokenHere</code>
+              <code>?{kApikeyUrlParam}=myPersonalAccessTokenHere</code>
             </pre>
           </div>
         </div>

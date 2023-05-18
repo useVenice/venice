@@ -1,7 +1,7 @@
 import {createGraphiQLFetcher} from '@graphiql/toolkit'
 import {
   getGraphqlEndpoint,
-  xPatHeaderKey,
+  kApikeyHeader,
 } from '@usevenice/app-config/constants'
 import {useConstant} from '@usevenice/ui'
 import {GraphiQL} from 'graphiql'
@@ -13,7 +13,7 @@ export function GraphQLExplorer({pat}: {pat?: string}) {
     createGraphiQLFetcher({url: getGraphqlEndpoint(null).pathname}),
   )
   const headersString = React.useMemo(
-    () => JSON.stringify({[xPatHeaderKey]: pat}, null, 4),
+    () => JSON.stringify({[kApikeyHeader]: pat}, null, 4),
     [pat],
   )
 
