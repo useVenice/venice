@@ -34,8 +34,18 @@ export function InvalidateQueriesOnPostgresChanges(props: {
     void trpcUtils.listConnections.invalidate()
     void trpcUtils.listPipelines.invalidate()
   }, [trpcUtils])
-  usePostgresChanges(props.client, 'resource', invalidate)
-  usePostgresChanges(props.client, 'pipeline', invalidate)
+  usePostgresChanges(props.client, 'resource', () => {
+    void trpcUtils.listResources.invalidate()
+    invalidate()
+  })
+  usePostgresChanges(props.client, 'pipeline', () => {
+    void trpcUtils.listPipelines2.invalidate()
+    invalidate()
+  })
+  usePostgresChanges(props.client, 'integration', () => {
+    void trpcUtils.adminListIntegrations.invalidate()
+    void trpcUtils.listIntegrationInfos.invalidate()
+  })
   return null
 }
 

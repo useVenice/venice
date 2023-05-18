@@ -38,6 +38,13 @@ export const protectedRouter = trpc.router({
       const resources = await ctx.helpers.metaService.tables.resource.list({})
       return resources
     }),
+  listPipelines2: protectedProcedure
+    .input(z.object({}).optional())
+    .query(async ({ctx}) => {
+      const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
+      return pipelines
+    }),
+
   listConnections: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {

@@ -4,7 +4,7 @@ import type {RJSFSchema} from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import React from 'react'
 
-import type {z} from '@usevenice/util'
+import {z} from '@usevenice/util'
 import {zodToJsonSchema} from '@usevenice/util'
 
 import {cn} from './utils'
@@ -17,6 +17,16 @@ export const JsonSchemaForm = withTheme(theme) as typeof Form
 /** For use with createRef... */
 export type SchemaFormElement = Form
 
+export type SchemaFormProps<TSchema extends z.ZodTypeAny> = Omit<
+  FormProps<z.infer<TSchema>>,
+  'schema' | 'validator' | 'onSubmit'
+> & {
+  schema: TSchema
+  hideSubmitButton?: boolean
+  onSubmit?: (data: {formData: z.infer<TSchema>}) => void
+  loading?: boolean
+}
+
 // Consider renaming this to zodSchemaForm
 export const SchemaForm = React.forwardRef(function SchemaForm<
   TSchema extends z.ZodTypeAny,
@@ -28,19 +38,19 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
     onSubmit,
     loading,
     ...props
-  }: Omit<FormProps<z.infer<TSchema>>, 'schema' | 'validator' | 'onSubmit'> & {
-    schema: TSchema
-    hideSubmitButton?: boolean
-    onSubmit?: (data: {formData: z.infer<TSchema>}) => void
-    loading?: boolean
-  },
+  }: SchemaFormProps<TSchema>,
   forwardedRef: React.ForwardedRef<Form<z.infer<TSchema>>>,
 ) {
   const jsonSchema = zodToJsonSchema(schema) as RJSFSchema
 
   // We cache the formState so that re-render does not cause immediate loss
   // though this may sometimes cause stale data? Need to think more about it.
-  const [formData, setFormData] = React.useState<z.infer<TSchema>>(_formData)
+  const [formData, setFormData] = React.useState<z.infer<TSchema>>(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    (schema instanceof z.ZodObject ? schema.partial() : schema).parse(
+      _formData,
+    ),
+  )
   // console.log('[SchemaForm] jsonSchema', jsonSchema)
 
   return (
