@@ -2,6 +2,8 @@ import {auth as serverComponentGetAuth} from '@clerk/nextjs'
 import {getAuth} from '@clerk/nextjs/server'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
+import type {TRPCError} from '@trpc/server'
+import {getHTTPStatusCodeFromError} from '@trpc/server/http'
 import type {
   GetServerSidePropsContext,
   NextApiRequest,
@@ -9,6 +11,7 @@ import type {
 } from 'next'
 import type {ReadonlyHeaders} from 'next/dist/server/web/spec-extension/adapters/headers'
 import type {ReadonlyRequestCookies} from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+import {NextResponse} from 'next/server'
 import superjson from 'superjson'
 import type {SuperJSONResult} from 'superjson/dist/types'
 
@@ -178,4 +181,13 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
     return true
   }
   return false
+}
+
+export function trpcErrorResponse(err: TRPCError) {
+  const status = getHTTPStatusCodeFromError(err)
+  // https://trpc.io/docs/server/error-handling
+  return NextResponse.json(
+    {error: {message: err.message, code: err.code}},
+    {status},
+  )
 }
