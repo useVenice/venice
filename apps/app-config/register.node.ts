@@ -1,10 +1,18 @@
 // Polyfill fetch on node to support proxy agent...
 // Should we use node-fetch directly?
 import crossFetch, {Headers, Request, Response} from 'cross-fetch'
-globalThis.fetch = crossFetch
-globalThis.Headers = Headers
-globalThis.Request = Request
-globalThis.Response = Response
+
+/**
+ * Do not relace global version unnecessarily.
+ * causes among other issue clerk/nextjs to fail mysteriously
+ * @see https://share.cleanshot.com/BcYr73DF
+ */
+if (!globalThis.fetch) {
+  globalThis.fetch = crossFetch
+  globalThis.Headers = Headers
+  globalThis.Request = Request
+  globalThis.Response = Response
+}
 
 import '@usevenice/core-integration-airtable/register.node'
 import '@usevenice/core-integration-mongodb/register.node'
