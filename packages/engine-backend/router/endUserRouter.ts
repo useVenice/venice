@@ -140,6 +140,7 @@ export const endUserRouter = trpc.router({
         triggerDefaultSync: false,
         // TODO: Should no longer depend on external ID
         resourceExternalId: _extId,
+        settings,
         ...(await int.provider.checkResource?.({
           config: int.config,
           settings,

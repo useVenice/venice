@@ -365,6 +365,7 @@ export const WithProviderConnect = ({
             variant: 'success',
           })
         }
+        setOpen(false)
       },
       onError: (err) => {
         if (err === CANCELLATION_TOKEN) {
@@ -419,10 +420,10 @@ export const WithProviderConnect = ({
         {/* Children here */}
         <DialogFooter>
           <Button
-            disabled={createResource.isLoading}
+            disabled={connect.isLoading}
             onClick={() => formRef.current?.submit()}
             type="submit">
-            {createResource.isLoading && (
+            {connect.isLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             Submit
