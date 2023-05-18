@@ -32,6 +32,12 @@ export const protectedRouter = trpc.router({
     // not sure what `viewer` is quite for here...
     await inngest.send(input.name, {data: input.data, user: ctx.viewer})
   }),
+  listResources: protectedProcedure
+    .input(z.object({}).optional())
+    .query(async ({ctx}) => {
+      const resources = await ctx.helpers.metaService.tables.resource.list({})
+      return resources
+    }),
   listConnections: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {

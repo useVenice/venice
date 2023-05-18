@@ -108,11 +108,11 @@ export const zRaw = {
   }),
   pipeline: zBase.extend({
     id: zId('pipe'),
-    providerName: z.string(),
-    sourceId: zId('reso').nullish(),
-    sourceState: zJsonObject.nullish(),
-    destinationId: zId('reso').nullish(),
-    destinationState: zJsonObject.nullish(),
+    // TODO: Remove nullish now that pipelines are more fixed
+    sourceId: zId('reso').optional(),
+    sourceState: zJsonObject.optional(),
+    destinationId: zId('reso').optional(),
+    destinationState: zJsonObject.optional(),
     linkOptions: z
       .array(
         z.union([

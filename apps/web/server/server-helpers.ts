@@ -188,6 +188,7 @@ export function respondToCORS(req: NextApiRequest, res: NextApiResponse) {
   return false
 }
 
+/** TODO: Turn this into a middleware that gets used in most places... */
 export async function withErrorHandler(fn: () => Promise<NextResponse>) {
   try {
     return await fn()

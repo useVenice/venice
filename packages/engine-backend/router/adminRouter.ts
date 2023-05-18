@@ -54,6 +54,24 @@ export const adminRouter = trpc.router({
   adminListIntegrations: adminProcedure.query(async ({ctx}) =>
     ctx.helpers.list('integration', {}),
   ),
+  adminUpsertPipeline: adminProcedure
+    .input(
+      zRaw.pipeline
+        .pick({
+          id: true,
+          sourceId: true,
+          destinationId: true,
+          sourceState: true,
+          destinationState: true,
+        })
+        .partial()
+        // Due to insert on conflict update we need provide all values
+        .required({sourceId: true, destinationId: true}),
+    )
+    .mutation(({input: {id: _id, ...input}, ctx}) => {
+      const id = _id ? _id : makeId('pipe', makeUlid())
+      return ctx.helpers.patchReturning('pipeline', id, input)
+    }),
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
