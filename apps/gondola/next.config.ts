@@ -17,11 +17,11 @@ const nextConfig: NextConfig = {
   ],
   env: {
     NEXT_PUBLIC_PORT: process.env['PORT'] ?? '',
-    NEXT_PUBLIC_NODE_ENV: process.env['NODE_ENV'],
+    NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
   },
   // suppress error where 'debug' module requires 'supports-color' module dynamically
   // @see https://share.cleanshot.com/dWSLnpnS
-  experimental: {esmExternals: 'loose', appDir: true},
+  experimental: {esmExternals: 'loose', typedRoutes: true},
   reactStrictMode: true,
   rewrites: async () => ({
     beforeFiles: [
