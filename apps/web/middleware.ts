@@ -1,21 +1,16 @@
-import {withClerkMiddleware} from '@clerk/nextjs/server'
-import {NextResponse} from 'next/server'
+import {authMiddleware} from '@clerk/nextjs'
 
-export default withClerkMiddleware(() => NextResponse.next())
+export default authMiddleware()
 
-// Stop Middleware running on static files and public folder
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next
-     * - static (static files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - public folder
-     * - connect (Venice connect, which has separate auth logic)
-     */
-    '/((?!static|.*\\..*|_next|favicon.ico|connect).*)',
-    '/',
-  ],
+  /*
+   * Match all request paths except for the ones starting with:
+   * - _next
+   * - static (static files)
+   * - favicon.ico (favicon file)
+   * - public folder
+   * - public folder
+   * - connect (Venice connect, which has separate auth logic)
+   */
+  matcher: ['/((?!.*\\..*|_next|connect).*)', '/', '/(api|trpc)(.*)'],
 }

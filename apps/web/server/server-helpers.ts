@@ -1,4 +1,4 @@
-import {auth as serverComponentGetAuth} from '@clerk/nextjs/app-beta'
+import {auth as serverComponentGetAuth} from '@clerk/nextjs'
 import {getAuth} from '@clerk/nextjs/server'
 import {dehydrate, QueryClient} from '@tanstack/react-query'
 import {createServerSideHelpers} from '@trpc/react-query/server'
@@ -37,7 +37,10 @@ type NextContext =
   | {
       headers?: () => ReadonlyHeaders
       cookies?: () => ReadonlyRequestCookies
-      params?: Record<string, string[] | string | undefined>
+      /** Query Params */
+      searchParams?:
+        | Record<string, string[] | string | undefined>
+        | URLSearchParams
     }
 
 export async function createSSRHelpers(context: NextContext) {
@@ -47,15 +50,18 @@ export async function createSSRHelpers(context: NextContext) {
   const queryClient = new QueryClient()
   const viewer = await serverGetViewer(context)
 
+  const ctx = contextFactory.fromViewer(viewer)
+
   const ssg = createServerSideHelpers({
     queryClient,
     router: flatRouter,
-    ctx: contextFactory.fromViewer(viewer),
+    ctx,
     // transformer: superjson,
   })
   return {
     viewer,
     ssg,
+    ctx,
     getDehydratedState: () => superjson.serialize(dehydrate(queryClient)),
     /** @deprecated */
     getPageProps: (): PageProps => ({
@@ -87,15 +93,17 @@ export async function serverGetViewer(
     'req' in context
       ? context.req.headers
       : Object.fromEntries(context.headers?.().entries() ?? [])
-  const params =
-    'query' in context
+  const searchParams =
+    ('query' in context
       ? context.query
       : 'req' in context
       ? context.req.query
-      : context.params ?? {}
+      : context.searchParams instanceof URLSearchParams
+      ? Object.fromEntries(context.searchParams.entries())
+      : context.searchParams) ?? {}
 
   // access token via query param
-  let accessToken = fromMaybeArray(params[kAccessToken])[0]
+  let accessToken = fromMaybeArray(searchParams[kAccessToken])[0]
   let viewer = jwt.verifyViewer(accessToken)
   if (viewer.role !== 'anon') {
     return {...viewer, accessToken}
@@ -110,8 +118,9 @@ export async function serverGetViewer(
   // personal access token via query param or header
   const apiKey =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    fromMaybeArray(params[xPatUrlParamKey])[0] || headers[xPatHeaderKey]
+    fromMaybeArray(searchParams[xPatUrlParamKey])[0] || headers[xPatHeaderKey]
 
+  // No more api keys, gotta fix me here.
   if (apiKey) {
     const row = await runAsAdmin((pool) =>
       pool.maybeOne<{

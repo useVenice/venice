@@ -1,4 +1,4 @@
-import {ClerkProvider} from '@clerk/nextjs/app-beta'
+import {ClerkProvider} from '@clerk/nextjs'
 // import {TRPCProvider} from '@usevenice/engine-frontend'
 import React from 'react'
 

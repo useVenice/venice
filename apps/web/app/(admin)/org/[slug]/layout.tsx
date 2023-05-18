@@ -1,7 +1,7 @@
 import {
   clerkClient,
   auth as serverComponentGetAuth,
-} from '@clerk/nextjs/app-beta'
+} from '@clerk/nextjs'
 import {notFound} from 'next/navigation'
 
 import OrgLayoutClient from './layout-client'

@@ -29,7 +29,7 @@ export default async function ConnectPageContainer({
   searchParams: Record<string, string | string[] | undefined>
 }) {
   const {ssg, getDehydratedState, viewer} = await createServerComponentHelpers({
-    params: {_token: searchParams['token']},
+    searchParams: {_token: searchParams['token']},
   })
   if (viewer.role !== 'end_user') {
     return (

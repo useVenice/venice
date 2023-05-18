@@ -1,4 +1,4 @@
-import {auth as serverComponentGetAuth} from '@clerk/nextjs/app-beta'
+import {auth as serverComponentGetAuth} from '@clerk/nextjs'
 
 export default function OrgHomePage() {
   return (
