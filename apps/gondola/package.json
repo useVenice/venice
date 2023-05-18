@@ -55,6 +55,7 @@
     "next": "13.4.2",
     "next-query-params": "4.1.0",
     "next-router-query": "0.1.3",
+    "nextjs-toploader": "1.4.2",
     "node-http-proxy-json": "0.1.9",
     "nprogress": "^0.2.0",
     "posthog-js": "1.51.5",
