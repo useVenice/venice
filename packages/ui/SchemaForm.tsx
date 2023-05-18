@@ -4,7 +4,7 @@ import type {RJSFSchema} from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import React from 'react'
 
-import {z} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 import {zodToJsonSchema} from '@usevenice/util'
 
 import {cn} from './utils'
@@ -47,9 +47,12 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   // though this may sometimes cause stale data? Need to think more about it.
   const [formData, setFormData] = React.useState<z.infer<TSchema>>(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    (schema instanceof z.ZodObject ? schema.partial() : schema).parse(
-      _formData,
-    ),
+    _formData
+      ? (schema instanceof z.ZodObject ? schema.partial() : schema).parse(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          R.mapValues(_formData, (v) => (v === null ? undefined : v)),
+        )
+      : undefined,
   )
   // console.log('[SchemaForm] jsonSchema', jsonSchema)
 

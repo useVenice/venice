@@ -1,11 +1,10 @@
 'use client'
 
+import {zId} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
 import {SchemaSheet, SchemaTable} from '@usevenice/ui'
 import {z} from '@usevenice/util'
-
-import {zId, ZRaw} from '@/../../packages/cdk-core'
-import {RouterOutput} from '@/../../packages/engine-backend'
 
 export default function PipelinesPage() {
   const res = trpcReact.listPipelines2.useQuery()
@@ -16,7 +15,7 @@ export default function PipelinesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Pipelines
         </h2>
-        <NewPipelineButton />
+        <PipelineSheetButton />
       </header>
       <p>
         Pipelines connect resources together by syncing data from source
@@ -28,7 +27,7 @@ export default function PipelinesPage() {
           {
             key: '$actions',
             title: '',
-            render: (pipeline) => <NewPipelineButton pipeline={pipeline} />,
+            render: (pipeline) => <PipelineSheetButton pipeline={pipeline} />,
           },
           {key: 'id'},
           {key: 'sourceId'},
@@ -43,7 +42,7 @@ export default function PipelinesPage() {
 
 type Pipeline = RouterOutput['listPipelines2'][number]
 
-export function NewPipelineButton(props: {pipeline?: Pipeline}) {
+export function PipelineSheetButton(props: {pipeline?: Pipeline}) {
   const resourcesRes = trpcReact.listResources.useQuery()
 
   const zResoId = z.enum((resourcesRes.data ?? []).map((r) => r.id) as [string])

@@ -6,9 +6,9 @@ import React from 'react'
 
 import type {z} from '@usevenice/util'
 
+import type {ButtonProps} from './new-components'
 import {
   Button,
-  ButtonProps,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -18,7 +18,8 @@ import {
   SheetTrigger,
   useToast,
 } from './new-components'
-import {SchemaForm, SchemaFormProps} from './SchemaForm'
+import type {SchemaFormElement, SchemaFormProps} from './SchemaForm'
+import {SchemaForm} from './SchemaForm'
 
 export function SchemaSheet<T extends z.ZodTypeAny>({
   schema,
@@ -40,6 +41,9 @@ export function SchemaSheet<T extends z.ZodTypeAny>({
   const [open, setOpen] = React.useState(false)
 
   const {toast} = useToast()
+
+  const formRef = React.useRef<SchemaFormElement>(null)
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -60,6 +64,7 @@ export function SchemaSheet<T extends z.ZodTypeAny>({
         </SheetHeader>
         <SchemaForm
           {...formProps}
+          ref={formRef}
           schema={schema}
           formData={initialValues}
           onSubmit={({formData}) => {
@@ -78,8 +83,19 @@ export function SchemaSheet<T extends z.ZodTypeAny>({
               },
             })
           }}
+          hideSubmitButton
         />
-        <SheetFooter>{/* Cancel here */}</SheetFooter>
+        <SheetFooter>
+          <Button
+            disabled={mutation.isLoading}
+            type="submit"
+            onClick={() => formRef.current?.submit()}>
+            {mutation.isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Submit
+          </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
