@@ -1,6 +1,6 @@
 'use client'
 
-import {Copy, MoreHorizontal, Pencil, Trash} from 'lucide-react'
+import {Copy, MoreHorizontal, Pencil, RefreshCcw, Trash} from 'lucide-react'
 import React from 'react'
 
 import {zId} from '@usevenice/cdk-core'
@@ -29,6 +29,10 @@ export default function PipelinesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Pipelines
         </h2>
+        {/*
+        Would be better if the button was more explicit...
+        Should probably render sheets / dialogs etc. without trigger by default.
+         */}
         <PipelineSheet />
       </header>
       <p>
@@ -88,6 +92,22 @@ function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
       })
     },
   })
+  const syncPipeline = trpcReact.syncPipeline.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Pipeline synced',
+        description: pipeline.id,
+        variant: 'success',
+      })
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to sync pipeline',
+        description: `${err.message} ${pipeline.id}`,
+        variant: 'destructive',
+      })
+    },
+  })
   return (
     <DropdownMenu>
       <PipelineSheet ref={ref} pipeline={pipeline} triggerButton={false} />
@@ -109,6 +129,11 @@ function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={() => syncPipeline.mutate([pipeline.id, {}])}>
+          <RefreshCcw className="mr-2 h-4 w-4" />
+          Sync pipeline
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => ref.current?.setOpen(true)}>
           <Pencil className="mr-2 h-4 w-4" />
           Edit pipeline

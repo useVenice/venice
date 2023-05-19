@@ -142,6 +142,7 @@ export async function serverGetViewer(
         ? {role: 'user', userId: res.id as Id['user']}
         : {role: 'org', orgId: res.id as Id['org']}
     }
+    // console.warn('Invalid api key, ignoroing', {apiKey: apikey, id, key, res})
   }
 
   const auth =
