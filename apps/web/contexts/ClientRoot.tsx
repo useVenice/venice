@@ -33,17 +33,31 @@ export function ClientRootWithClerk(props: {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).auth = auth
 
-  return <ClientRoot {...props} accessToken={accessToken} authStatus={status} />
+  return (
+    <ClientRoot
+      {...props}
+      accessToken={accessToken}
+      trpcAccessToken={null} // Workaround for token expired error
+      authStatus={status}
+    />
+  )
 }
 
 export function ClientRoot({
   authStatus: status,
   accessToken,
   children,
+  trpcAccessToken,
 }: {
   children: React.ReactNode
   /** Viewer will be inferred from this... */
   accessToken?: string | null
+  /**
+   * temporary solution to token expired error.. As authorization header
+   * prevents clerk from using cookie auth
+   * @see https://clerk.com/docs/request-authentication/cross-origin
+   */
+  trpcAccessToken?: string | null
   authStatus: AsyncStatus
 }) {
   console.log('[ClientRoot] rendering initialToken?', accessToken != null)
@@ -55,6 +69,7 @@ export function ClientRoot({
 
   const {current: realtime} = useRef(createRealtimeClient())
 
+  // TODO: Gotta maintain real time connection over time...
   useEffect(() => {
     if (!realtime.isConnected()) {
       realtime.connect()
@@ -82,7 +97,11 @@ export function ClientRoot({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider queryClient={queryClient} accessToken={accessToken}>
+      <TRPCProvider
+        queryClient={queryClient}
+        accessToken={
+          trpcAccessToken !== undefined ? trpcAccessToken : accessToken
+        }>
         <InvalidateQueriesOnPostgresChanges client={realtime} />
         <ViewerContext.Provider
           value={React.useMemo(

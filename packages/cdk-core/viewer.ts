@@ -159,8 +159,11 @@ export const makeJwtClient = zFunction(
         }
         return zViewerFromJwtPayload.parse(data)
       } catch (err) {
-        // This dependency is not great... But don't know of a better pattern for now
-        throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
+        if (!`${err}`.includes('TokenExpiredError')) {
+          // This dependency is not great... But don't know of a better pattern for now
+          throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
+        }
+        return {role: 'anon'}
       }
     },
     signViewer: (
