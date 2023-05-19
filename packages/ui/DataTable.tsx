@@ -50,8 +50,9 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   )
+  // Hide id column by default... We need a better way to do this though
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({id: false})
   const [rowSelection, setRowSelection] = React.useState({})
 
   const columns = React.useMemo(

@@ -1,17 +1,13 @@
 'use client'
 
-import {MoreHorizontal} from 'lucide-react'
+import {Copy, MoreHorizontal, Pencil} from 'lucide-react'
 import React from 'react'
 
 import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {
-  DataTable,
-  SchemaSheet,
-  SchemaSheetRef,
-  SchemaSheetRefValue,
-} from '@usevenice/ui'
+import type {SchemaSheetRef, SchemaSheetRefValue} from '@usevenice/ui'
+import {DataTable, SchemaSheet} from '@usevenice/ui'
 import {
   Button,
   DropdownMenu,
@@ -67,11 +63,19 @@ export default function PipelinesPage() {
                       onClick={() =>
                         navigator.clipboard.writeText(pipeline.id)
                       }>
-                      Copy pipeline ID
+                      <Copy className="mr-2 h-4 w-4" />
+                      <div>
+                        Copy Pipeline ID
+                        <br />
+                        <pre className="text-muted-foreground">
+                          {pipeline.id}
+                        </pre>
+                      </div>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onSelect={() => ref.current?.setOpen(true)}>
+                      <Pencil className="mr-2 h-4 w-4" />
                       Edit pipeline
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -83,6 +87,7 @@ export default function PipelinesPage() {
             accessorKey: 'id',
             header: 'ID',
             cell: ({row}) => <pre>{row.getValue('id')}</pre>,
+
           },
           {
             accessorKey: 'sourceId',

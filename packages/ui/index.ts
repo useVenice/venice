@@ -1,6 +1,6 @@
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx},./new-components/index.ts"}
 export * from './components/index'
-export * from './DataDable'
+export * from './DataTable'
 export * from './domain-components/index'
 export * from './hooks/index'
 export * from './icons/index'
