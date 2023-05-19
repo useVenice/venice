@@ -10,6 +10,7 @@ export * from './Label'
 export * from './ScrollArea'
 export * from './Separator'
 export * from './Sheet'
+export * from './Table'
 export * from './Toast'
 export * from './Toaster'
 // codegen:end
