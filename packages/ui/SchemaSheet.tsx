@@ -28,6 +28,7 @@ export interface SchemaSheetRefValue {
 
 export type SchemaSheetRef = React.ForwardedRef<SchemaSheetRefValue>
 
+/** Maybe should be called mutationSheet? */
 export const SchemaSheet = React.forwardRef(function SchemaSheet<
   T extends z.ZodTypeAny,
 >(

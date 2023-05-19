@@ -35,7 +35,7 @@ export default function PipelinesPage() {
         resource to destination resoruce
       </p>
       <DataTable
-        data={res.data ?? []}
+        query={res}
         columns={[
           {
             id: 'actions',
@@ -87,7 +87,6 @@ export default function PipelinesPage() {
             accessorKey: 'id',
             header: 'ID',
             cell: ({row}) => <pre>{row.getValue('id')}</pre>,
-
           },
           {
             accessorKey: 'sourceId',

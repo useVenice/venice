@@ -1,5 +1,6 @@
 'use client'
 
+import type {UseQueryResult} from '@tanstack/react-query'
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -19,6 +20,7 @@ import React from 'react'
 
 import {R} from '@usevenice/util'
 
+import {LoadingText} from './components'
 import {
   Button,
   Checkbox,
@@ -36,15 +38,18 @@ import {
 } from './new-components'
 
 interface DataTableProps<TData, TValue> {
+  query: UseQueryResult<TData[]>
   columns: Array<ColumnDef<TData, TValue>>
-  data: TData[]
   enableSelect?: boolean
+  // data: TData[]
+  // loading?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns: _columns,
-  data,
+  query,
   enableSelect,
+  ...props
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -85,7 +90,7 @@ export function DataTable<TData, TValue>({
   )
 
   const table = useReactTable({
-    data,
+    data: query.data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -175,7 +180,13 @@ export function DataTable<TData, TValue>({
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center">
-                  No results.
+                  {query.isLoading ? (
+                    <LoadingText />
+                  ) : query.isError ? (
+                    `Error: ${query.error}`
+                  ) : (
+                    'No results'
+                  )}
                 </TableCell>
               </TableRow>
             )}
