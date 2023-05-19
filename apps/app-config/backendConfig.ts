@@ -63,6 +63,7 @@ export const contextFactory = getContextFactory({
 
   // TODO: Deprecate me. This does not make much sense to have getLinksForPipeline
   getLinksForPipeline: ({source, links, destination}) => {
+    // console.log('getLinksForPipeline', {source, links, destination})
     if (destination.integration.provider.name === 'beancount') {
       return [
         ...links,

@@ -1,4 +1,5 @@
 import {TRPCError} from '@trpc/server'
+
 import type {
   AnySyncProvider,
   EndUserId,
@@ -6,12 +7,13 @@ import type {
   LinkFactory,
   MetaService,
 } from '@usevenice/cdk-core'
+import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
+import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
 import {R} from '@usevenice/util'
+
 import type {_Integration, _Pipeline} from './contextHelpers'
 import {getContextHelpers} from './contextHelpers'
 import type {PipelineInput, ResourceInput} from './types'
-import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
-import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
 
 type Helpers = ReturnType<typeof getContextHelpers>
 
@@ -64,7 +66,7 @@ export function getContextFactory<
   TLinks extends Record<string, LinkFactory>,
 >(config: ContextFactoryOptions<TProviders, TLinks>) {
   const {
-    // getLinksForPipeline,
+    getLinksForPipeline,
     apiUrl,
     getRedirectUrl,
     getMetaService,
@@ -75,7 +77,11 @@ export function getContextFactory<
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getHelpers = (viewer: Viewer) =>
-    getContextHelpers({metaService: getMetaService(viewer), providerMap})
+    getContextHelpers({
+      metaService: getMetaService(viewer),
+      providerMap,
+      getLinksForPipeline,
+    })
 
   function fromViewer(viewer: Viewer): RouterContext {
     return {
