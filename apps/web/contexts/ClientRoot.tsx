@@ -120,19 +120,26 @@ export function ClientRoot({
 export const InvalidateQueriesOnPostgresChanges = React.memo(
   function InvalidateQueriesOnPostgresChanges(props: {client: RealtimeClient}) {
     const trpcUtils = trpcReact.useContext()
-
-    const invalidateConnections = React.useCallback(() => {
+    console.log('InvalidateQueriesOnPostgresChanges')
+    const invalidate = React.useCallback(() => {
       void trpcUtils.listConnections.invalidate()
       void trpcUtils.listPipelines.invalidate()
     }, [trpcUtils])
-    usePostgresChanges(props.client, 'resource', invalidateConnections)
-    usePostgresChanges(props.client, 'pipeline', invalidateConnections)
-
-    // prettier-ignore
-    usePostgresChanges(props.client, 'integration', React.useCallback(() => {
-      void trpcUtils.adminGetIntegration.invalidate()
+    usePostgresChanges(props.client, 'resource', () => {
+      console.log('invalidate resources and related')
+      void trpcUtils.listResources.invalidate()
+      invalidate()
+    })
+    usePostgresChanges(props.client, 'pipeline', () => {
+      console.log('invalidate pipelines and related')
+      void trpcUtils.listPipelines2.invalidate()
+      invalidate()
+    })
+    usePostgresChanges(props.client, 'integration', () => {
+      console.log('invalidate integrations and related')
       void trpcUtils.adminListIntegrations.invalidate()
-    }, [trpcUtils]))
+      void trpcUtils.listIntegrationInfos.invalidate()
+    })
     return null
   },
 )

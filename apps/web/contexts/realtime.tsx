@@ -25,6 +25,8 @@ export function createRealtimeClient() {
 }
 
 // MARK: - React
+
+/** @deprecated The new one is in ClientRoot */
 export function InvalidateQueriesOnPostgresChanges(props: {
   client: SupabaseClient | RealtimeClient
 }) {
