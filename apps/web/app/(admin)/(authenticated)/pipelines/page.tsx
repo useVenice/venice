@@ -1,9 +1,20 @@
 'use client'
 
+import {MoreHorizontal} from 'lucide-react'
+
 import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {SchemaSheet, SchemaTable} from '@usevenice/ui'
+import {DataTable, SchemaSheet} from '@usevenice/ui'
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@usevenice/ui/new-components'
 import {z} from '@usevenice/util'
 
 export default function PipelinesPage() {
@@ -21,7 +32,59 @@ export default function PipelinesPage() {
         Pipelines connect resources together by syncing data from source
         resource to destination resoruce
       </p>
-      <SchemaTable
+      <DataTable
+        data={res.data ?? []}
+        columns={[
+          {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({row}) => {
+              const pipeline = row.original
+              return (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        navigator.clipboard.writeText(pipeline.id)
+                      }>
+                      Copy pipeline ID
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>View customer</DropdownMenuItem>
+                    <DropdownMenuItem>View pipeline details</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
+            },
+          },
+          {
+            accessorKey: 'id',
+            header: 'ID',
+            cell: ({row}) => <pre>{row.getValue('id')}</pre>,
+          },
+          {
+            accessorKey: 'sourceId',
+            header: 'Source Id',
+            cell: ({row}) => <pre>{row.getValue('sourceId')}</pre>,
+          },
+          {
+            accessorKey: 'destinationId',
+            header: 'Destination Id',
+            cell: ({row}) => <pre>{row.getValue('destinationId')}</pre>,
+          },
+
+          // {key: 'lastSyncStartedAt'},
+          // {key: 'lastSyncCompletedAt'},
+        ]}
+      />
+      {/* <SchemaTable
         items={res.data ?? []}
         columns={[
           {
@@ -35,7 +98,7 @@ export default function PipelinesPage() {
           {key: 'lastSyncStartedAt'},
           {key: 'lastSyncCompletedAt'},
         ]}
-      />
+      /> */}
     </div>
   )
 }
