@@ -31,26 +31,10 @@ export default function EndUsersPage() {
             id: 'actions',
             cell: ({row}) => <EndUserMenu endUser={row.original} />,
           },
-          {
-            accessorKey: 'id',
-            header: 'ID',
-            // cell: ({row}) => <pre>{row.getValue('id')}</pre>,
-          },
-          {
-            accessorKey: 'resourceCount',
-            header: '# Resources',
-            // cell: ({row}) => <pre>{row.getValue('resourceCount')}</pre>,
-          },
-          {
-            accessorKey: 'firstCreatedAt',
-            header: 'First created',
-            // cell: ({row}) => <pre>{row.getValue('firstCreatedAt')}</pre>,
-          },
-          {
-            accessorKey: 'lastUpdatedAt',
-            header: 'Last updated',
-            // cell: ({row}) => <pre>{row.getValue('lastUpdatedAt')}</pre>,
-          },
+          {accessorKey: 'id'},
+          {accessorKey: 'resourceCount', header: '# Resources'},
+          {accessorKey: 'firstCreatedAt', header: 'First created'},
+          {accessorKey: 'lastUpdatedAt', header: 'Last updated'},
         ]}
       />
     </div>
@@ -87,14 +71,22 @@ function EndUserMenu({endUser}: {endUser: EndUser}) {
         <DropdownMenuItem
           onSelect={() => {
             if (orgId) {
-              void createConnectToken
+              createConnectToken
                 .mutateAsync({endUserId: endUser.id, orgId})
                 .then((token) => {
-                  // Could be a problem if this is blocked by a popup blocker
+                  // This is a problem because due to pop up blockers...
                   const url = new URL('/connect', getServerUrl(null))
                   url.searchParams.set('token', token)
+
                   window.open(url)
                 })
+                .catch((err) =>
+                  toast({
+                    title: 'Failed to create connect token',
+                    description: `${err}`,
+                    variant: 'destructive',
+                  }),
+                )
             }
           }}>
           <RefreshCcw className="mr-2 h-4 w-4" />
