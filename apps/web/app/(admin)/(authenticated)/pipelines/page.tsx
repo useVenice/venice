@@ -154,7 +154,13 @@ const PipelineSheet = React.forwardRef(function PipelineSheetButton(
 ) {
   const resourcesRes = trpcReact.listResources.useQuery()
 
-  const zResoId = z.enum((resourcesRes.data ?? []).map((r) => r.id) as [string])
+  const zResoId = z.union(
+    (resourcesRes.data ?? []).map((r) =>
+      z
+        .literal(r.id)
+        .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
+    ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
+  )
   // Filter for only sources vs destinations when saving...
   // This is where it would be a nice advantage to use something like an Airbyte
   // so we don't have to build the whole admin ui

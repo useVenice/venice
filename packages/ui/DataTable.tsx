@@ -41,15 +41,12 @@ interface DataTableProps<TData, TValue> {
   query: UseQueryResult<TData[]>
   columns: Array<ColumnDef<TData, TValue>>
   enableSelect?: boolean
-  // data: TData[]
-  // loading?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns: _columns,
   query,
   enableSelect,
-  ...props
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
