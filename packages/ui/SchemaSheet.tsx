@@ -21,24 +21,51 @@ import {
 import type {SchemaFormElement, SchemaFormProps} from './SchemaForm'
 import {SchemaForm} from './SchemaForm'
 
-export function SchemaSheet<T extends z.ZodTypeAny>({
-  schema,
-  mutation,
-  initialValues,
-  title,
-  buttonProps,
-  formProps,
-}: {
-  formProps?: Omit<SchemaFormProps<T>, 'onSubmit' | 'schema' | 'formData'>
-  buttonProps?: ButtonProps
-  schema: T
-  initialValues?: Partial<z.infer<T>>
-  // TODO: Fix the typing here. Schema needs to conform to mutation typing, but
-  // mutation does not need to conform to schema typing here...
-  mutation: UseMutationResult<any, any, z.infer<T>, any>
-  title?: string
-}) {
+export interface SchemaSheetRefValue {
+  open: boolean
+  setOpen: (open: boolean) => void
+}
+
+export type SchemaSheetRef = React.ForwardedRef<SchemaSheetRefValue>
+
+export const SchemaSheet = React.forwardRef(function SchemaSheet<
+  T extends z.ZodTypeAny,
+>(
+  {
+    schema,
+    mutation,
+    initialValues,
+    title,
+    formProps,
+    triggerButton = true,
+    buttonProps,
+  }: {
+    formProps?: Omit<SchemaFormProps<T>, 'onSubmit' | 'schema' | 'formData'>
+    schema: T
+    initialValues?: Partial<z.infer<T>>
+    // TODO: Fix the typing here. Schema needs to conform to mutation typing, but
+    // mutation does not need to conform to schema typing here...
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutation: UseMutationResult<any, any, z.infer<T>, any>
+
+    title?: string
+    // Trigger button
+    triggerButton?: boolean
+    buttonProps?: ButtonProps
+  },
+  ref: SchemaSheetRef,
+) {
   const [open, setOpen] = React.useState(false)
+
+  React.useImperativeHandle(ref, () => ({
+    open,
+    // Need to wrap with setTimeout otherwise body cursor:pointer will be
+    // incorectly toggled when opening sheet from say a dropdown menu
+    setOpen: (newOpen) =>
+      setTimeout(() => {
+        setOpen(newOpen)
+      }, 0),
+  }))
 
   const {toast} = useToast()
 
@@ -46,14 +73,16 @@ export function SchemaSheet<T extends z.ZodTypeAny>({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="default" {...buttonProps}>
-          {mutation.isLoading && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {title ?? 'Open'}
-        </Button>
-      </SheetTrigger>
+      {triggerButton && (
+        <SheetTrigger asChild>
+          <Button variant="default" {...buttonProps}>
+            {mutation.isLoading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {title ?? 'Open'}
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent
         position="right"
         size="xl"
@@ -99,4 +128,4 @@ export function SchemaSheet<T extends z.ZodTypeAny>({
       </SheetContent>
     </Sheet>
   )
-}
+})

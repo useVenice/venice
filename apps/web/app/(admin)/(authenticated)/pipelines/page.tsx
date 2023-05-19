@@ -1,11 +1,17 @@
 'use client'
 
 import {MoreHorizontal} from 'lucide-react'
+import React from 'react'
 
 import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {DataTable, SchemaSheet} from '@usevenice/ui'
+import {
+  DataTable,
+  SchemaSheet,
+  SchemaSheetRef,
+  SchemaSheetRefValue,
+} from '@usevenice/ui'
 import {
   Button,
   DropdownMenu,
@@ -26,7 +32,7 @@ export default function PipelinesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Pipelines
         </h2>
-        <PipelineSheetButton />
+        <PipelineSheet />
       </header>
       <p>
         Pipelines connect resources together by syncing data from source
@@ -40,8 +46,15 @@ export default function PipelinesPage() {
             enableHiding: false,
             cell: ({row}) => {
               const pipeline = row.original
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              const ref = React.useRef<SchemaSheetRefValue>(null)
               return (
                 <DropdownMenu>
+                  <PipelineSheet
+                    ref={ref}
+                    pipeline={pipeline}
+                    triggerButton={false}
+                  />
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
                       <span className="sr-only">Open menu</span>
@@ -57,8 +70,10 @@ export default function PipelinesPage() {
                       Copy pipeline ID
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>View customer</DropdownMenuItem>
-                    <DropdownMenuItem>View pipeline details</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => ref.current?.setOpen(true)}>
+                      Edit pipeline
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               )
@@ -84,28 +99,16 @@ export default function PipelinesPage() {
           // {key: 'lastSyncCompletedAt'},
         ]}
       />
-      {/* <SchemaTable
-        items={res.data ?? []}
-        columns={[
-          {
-            key: '$actions',
-            title: '',
-            render: (pipeline) => <PipelineSheetButton pipeline={pipeline} />,
-          },
-          {key: 'id'},
-          {key: 'sourceId'},
-          {key: 'destinationId'},
-          {key: 'lastSyncStartedAt'},
-          {key: 'lastSyncCompletedAt'},
-        ]}
-      /> */}
     </div>
   )
 }
 
 type Pipeline = RouterOutput['listPipelines2'][number]
 
-export function PipelineSheetButton(props: {pipeline?: Pipeline}) {
+const PipelineSheet = React.forwardRef(function PipelineSheetButton(
+  props: {pipeline?: Pipeline; triggerButton?: boolean},
+  ref: SchemaSheetRef,
+) {
   const resourcesRes = trpcReact.listResources.useQuery()
 
   const zResoId = z.enum((resourcesRes.data ?? []).map((r) => r.id) as [string])
@@ -124,6 +127,8 @@ export function PipelineSheetButton(props: {pipeline?: Pipeline}) {
   const upsertPipeline = trpcReact.adminUpsertPipeline.useMutation()
   return (
     <SchemaSheet
+      ref={ref}
+      triggerButton={props.triggerButton}
       title={props.pipeline ? 'Edit' : 'New Pipeline'}
       buttonProps={{variant: props.pipeline ? 'ghost' : 'default'}}
       formProps={{uiSchema: {id: {'ui:readonly': true}}}}
@@ -132,4 +137,4 @@ export function PipelineSheetButton(props: {pipeline?: Pipeline}) {
       initialValues={props.pipeline}
     />
   )
-}
+})
