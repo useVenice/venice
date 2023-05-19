@@ -44,7 +44,12 @@ export const protectedRouter = trpc.router({
       const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
       return pipelines
     }),
-
+  deletePipeline: protectedProcedure
+    .input(z.object({id: zId('pipe')}))
+    .mutation(async ({ctx, input}) => {
+      await ctx.helpers.metaService.tables.pipeline.delete(input.id)
+      return true
+    }),
   listConnections: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {

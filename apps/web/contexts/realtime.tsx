@@ -29,20 +29,23 @@ export function InvalidateQueriesOnPostgresChanges(props: {
   client: SupabaseClient | RealtimeClient
 }) {
   const trpcUtils = trpcReact.useContext()
-
+  console.log('InvalidateQueriesOnPostgresChanges')
   const invalidate = React.useCallback(() => {
     void trpcUtils.listConnections.invalidate()
     void trpcUtils.listPipelines.invalidate()
   }, [trpcUtils])
   usePostgresChanges(props.client, 'resource', () => {
+    console.log('invalidate resources and related')
     void trpcUtils.listResources.invalidate()
     invalidate()
   })
   usePostgresChanges(props.client, 'pipeline', () => {
+    console.log('invalidate pipelines and related')
     void trpcUtils.listPipelines2.invalidate()
     invalidate()
   })
   usePostgresChanges(props.client, 'integration', () => {
+    console.log('invalidate integrations and related')
     void trpcUtils.adminListIntegrations.invalidate()
     void trpcUtils.listIntegrationInfos.invalidate()
   })

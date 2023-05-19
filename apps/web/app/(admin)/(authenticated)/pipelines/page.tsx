@@ -1,6 +1,6 @@
 'use client'
 
-import {Copy, MoreHorizontal, Pencil} from 'lucide-react'
+import {Copy, MoreHorizontal, Pencil, Trash} from 'lucide-react'
 import React from 'react'
 
 import {zId} from '@usevenice/cdk-core'
@@ -16,6 +16,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  useToast,
 } from '@usevenice/ui/new-components'
 import {z} from '@usevenice/util'
 
@@ -40,48 +41,7 @@ export default function PipelinesPage() {
           {
             id: 'actions',
             enableHiding: false,
-            cell: ({row}) => {
-              const pipeline = row.original
-              // eslint-disable-next-line react-hooks/rules-of-hooks
-              const ref = React.useRef<SchemaSheetRefValue>(null)
-              return (
-                <DropdownMenu>
-                  <PipelineSheet
-                    ref={ref}
-                    pipeline={pipeline}
-                    triggerButton={false}
-                  />
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        navigator.clipboard.writeText(pipeline.id)
-                      }>
-                      <Copy className="mr-2 h-4 w-4" />
-                      <div>
-                        Copy Pipeline ID
-                        <br />
-                        <pre className="text-muted-foreground">
-                          {pipeline.id}
-                        </pre>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => ref.current?.setOpen(true)}>
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Edit pipeline
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )
-            },
+            cell: ({row}) => <PipelineMenu pipeline={row.original} />,
           },
           {
             accessorKey: 'id',
@@ -108,6 +68,60 @@ export default function PipelinesPage() {
 }
 
 type Pipeline = RouterOutput['listPipelines2'][number]
+
+function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
+  const ref = React.useRef<SchemaSheetRefValue>(null)
+  const {toast} = useToast()
+  const deletePipeline = trpcReact.deletePipeline.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Pipeline deleted',
+        description: pipeline.id,
+        variant: 'success',
+      })
+    },
+    onError: (err) => {
+      toast({
+        title: 'Failed to delete pipeline',
+        description: `${err.message} ${pipeline.id}`,
+        variant: 'destructive',
+      })
+    },
+  })
+  return (
+    <DropdownMenu>
+      <PipelineSheet ref={ref} pipeline={pipeline} triggerButton={false} />
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(pipeline.id)}>
+          <Copy className="mr-2 h-4 w-4" />
+          <div>
+            Copy Pipeline ID
+            <br />
+            <pre className="text-muted-foreground">{pipeline.id}</pre>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => ref.current?.setOpen(true)}>
+          <Pencil className="mr-2 h-4 w-4" />
+          Edit pipeline
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => deletePipeline.mutate({id: pipeline.id})}>
+          <Trash className="mr-2 h-4 w-4" />
+          Delete pipeline
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 const PipelineSheet = React.forwardRef(function PipelineSheetButton(
   props: {pipeline?: Pipeline; triggerButton?: boolean},
