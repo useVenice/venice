@@ -1,10 +1,11 @@
-import walkNodes from 'jsonschema-nodewalker'
 import type {z} from 'zod'
 import _zodToJsonSchema from 'zod-to-json-schema'
 
+import {jsonSchemaWalkNodes} from './jsonschema-nodewalker'
+
 /** Warning will modify input */
 export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
-  walkNodes(jsonSchema, (node, meta) => {
+  jsonSchemaWalkNodes(jsonSchema, (node, meta) => {
     // Skip if we already have one..
     if (node.title) {
       return
@@ -18,6 +19,23 @@ export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
   return jsonSchema
 }
 
+export function enumDescriptionToTitle<T = unknown>(jsonSchema: T) {
+  jsonSchemaWalkNodes(jsonSchema, (node) => {
+    if (node.anyOf && !node.type) {
+      node.type = 'string' // Small hack for react-jsonschema-form
+      // without type nothing renders....
+    }
+    // Skip if we already have one..
+    if (node.const && node.description) {
+      node.title = node.description
+      delete node.description
+    }
+  })
+  return jsonSchema
+}
+
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
-  return defaultTitleAsJsonPath(_zodToJsonSchema(schema))
+  return defaultTitleAsJsonPath(
+    enumDescriptionToTitle(_zodToJsonSchema(schema)),
+  )
 }

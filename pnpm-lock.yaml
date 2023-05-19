@@ -1803,9 +1803,6 @@ importers:
       json-stringify-pretty-compact:
         specifier: 3.0.0
         version: 3.0.0
-      jsonschema-nodewalker:
-        specifier: 1.0.6
-        version: 1.0.6
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -1861,8 +1858,8 @@ importers:
         specifier: 3.21.4
         version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
       zod-to-json-schema:
-        specifier: 3.20.4
-        version: 3.20.4(zod@3.21.4)
+        specifier: 3.21.1
+        version: 3.21.1(zod@3.21.4)
     devDependencies:
       '@types/accounting':
         specifier: 0.4.2
@@ -12655,10 +12652,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /jsonschema-nodewalker@1.0.6:
-    resolution: {integrity: sha512-F7/B9BSAsY8EYenI48qj6/tJRjJv3Jc63MKhLV9jD126dta7BQOmVI3OzbWsEzcSQEq5wK6FL73cg/1NE3TYlw==}
-    dev: false
-
   /jsonwebtoken@8.5.1:
     resolution: {integrity: sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==}
     engines: {node: '>=4', npm: '>=1.4.28'}
@@ -18702,10 +18695,10 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /zod-to-json-schema@3.20.4(zod@3.21.4):
-    resolution: {integrity: sha512-Un9+kInJ2Zt63n6Z7mLqBifzzPcOyX+b+Exuzf7L1+xqck9Q2EPByyTRduV3kmSPaXaRer1JCsucubpgL1fipg==}
+  /zod-to-json-schema@3.21.1(zod@3.21.4):
+    resolution: {integrity: sha512-y5g0MPxDq+YG/T+cHGPYH4PcBpyCqwK6wxeJ76MR563y0gk/14HKfebq8xHiItY7lkc9GDFygCnkvNDTvAhYAg==}
     peerDependencies:
-      zod: ^3.20.0
+      zod: ^3.21.4
     dependencies:
       zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     dev: false
