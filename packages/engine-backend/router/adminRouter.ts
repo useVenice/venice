@@ -131,7 +131,11 @@ export const adminRouter = trpc.router({
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) =>
-      ctx.helpers.metaService.searchEndUsers({keywords}),
+      ctx.helpers.metaService
+        .searchEndUsers({keywords})
+        // EndUsers must have non empty IDs
+        // This fitlers out data that belongs to the org rather than specific end users
+        .then((rows) => rows.filter((u) => !!u.id)),
     ),
   adminGetIntegration: adminProcedure
     .input(zId('int'))
