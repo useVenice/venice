@@ -178,4 +178,21 @@ export const adminRouter = trpc.router({
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
+
+  // Manually run to repair mapping issues
+  remapEntities: adminProcedure
+    // .input(z.object({}).nullish())
+    .mutation(async ({ctx}) => {
+      if (ctx.viewer.role !== 'system') {
+        return
+      }
+      // TODO: support pagination
+      const inss = await ctx.helpers.metaService.tables.institution.list({})
+      for (const ins of inss) {
+        console.log('Remap institution', ins.id)
+        const provider = ctx.providerMap[ins.providerName]
+        const standard = provider?.standardMappers?.institution?.(ins.external)
+        await ctx.helpers.patch('institution', ins.id, {standard})
+      }
+    }),
 })
