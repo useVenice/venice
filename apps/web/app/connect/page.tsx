@@ -56,7 +56,9 @@ export default async function ConnectPageContainer({
           src={org.logoUrl ?? org.experimental_imageUrl}
           className="mr-4 rounded-lg"
         />
-        <h2 className="text-2xl font-semibold tracking-tight">{org.name}</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {org.name} - {viewer.endUserId}
+        </h2>
       </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
