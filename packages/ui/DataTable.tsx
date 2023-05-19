@@ -43,6 +43,8 @@ interface DataTableProps<TData, TValue> {
   enableSelect?: boolean
 }
 
+// TODO: Create a schemaDataTable that define columns based on zod schema
+// For example displaying relativeDate, etc.
 export function DataTable<TData, TValue>({
   columns: _columns,
   query,
