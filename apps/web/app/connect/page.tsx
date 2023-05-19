@@ -1,3 +1,6 @@
+import {clerkClient} from '@clerk/nextjs'
+import Image from 'next/image'
+
 import {getViewerId} from '@usevenice/cdk-core'
 
 import {SuperHydrate} from '@/components/SuperHydrate'
@@ -37,16 +40,24 @@ export default async function ConnectPageContainer({
     )
   }
 
-  await Promise.all([
+  const [org] = await Promise.all([
+    clerkClient.organizations.getOrganization({organizationId: viewer.orgId}),
     ssg.listIntegrationInfos.prefetch({}),
     ssg.listConnections.prefetch({}),
   ])
 
   return (
     <div className="h-screen w-screen p-6">
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Venice Connect
-      </h2>
+      <header className="flex items-center">
+        <Image
+          width={50}
+          height={50}
+          alt={org.slug ?? ''}
+          src={org.logoUrl ?? org.experimental_imageUrl}
+          className="mr-4 rounded-lg"
+        />
+        <h2 className="text-2xl font-semibold tracking-tight">{org.name}</h2>
+      </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
           <ConnectPage />
