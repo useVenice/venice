@@ -3,7 +3,9 @@ import type {Id} from '@usevenice/cdk-core'
 import {contextFactory} from '@/../app-config/backendConfig'
 import {serverComponentGetViewer} from '@/server/server-component-helpers'
 
-export default async function SqlPage({
+import {SqlPage} from './SqlPage'
+
+export default async function SqlPageServer({
   params: {resourceId},
 }: {
   params: {resourceId: Id['reso']}
@@ -18,11 +20,5 @@ export default async function SqlPage({
     )
   }
 
-  return (
-    <div className="p-6">
-      <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        SQL for resource {resource.id}
-      </h2>
-    </div>
-  )
+  return <SqlPage resourceId={resourceId} />
 }
