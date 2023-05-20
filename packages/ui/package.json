@@ -34,6 +34,7 @@
     "jotai": "1.8.4",
     "lucide-react": "*",
     "nanoid": "3.3.4",
+    "re-resizable": "6.9.9",
     "react": "*",
     "react-dom": "*",
     "react-hook-form": "7.43.1",

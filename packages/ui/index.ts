@@ -12,3 +12,5 @@ export * from './UIProvider'
 export * from './utils'
 export * from './ZodForm'
 // codegen:end
+
+export {Resizable} from 're-resizable'

@@ -64,7 +64,7 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
   return (
     <div className="flex h-screen w-screen flex-col">
       <NextTopLoader showSpinner={false} />
-      <main className="ml-[240px] mt-12">
+      <main className="ml-[240px] mt-12 grow">
         {auth.orgId ? children : <div>Create an org to begin</div>}
       </main>
       <Sidebar className="fixed bottom-0 left-0 top-12 w-[240px] border-r bg-background" />

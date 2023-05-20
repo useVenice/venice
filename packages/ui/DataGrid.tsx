@@ -16,9 +16,11 @@ import {cn} from './utils'
 
 interface DataGridProps<TData extends Record<string, unknown>> {
   query: UseQueryResult<TData[]>
+  className?: string
 }
 
 export function DataGrid<TData extends Record<string, unknown>>({
+  className,
   query,
 }: DataGridProps<TData>) {
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
@@ -78,7 +80,7 @@ export function DataGrid<TData extends Record<string, unknown>>({
     )
   ) : (
     <DataEditor
-      className={cn(query.isFetching && 'opacity-70')}
+      className={cn(query.isFetching && 'opacity-70', className)}
       getCellContent={getData}
       getCellsForSelection={true} // Enables copy
       copyHeaders
