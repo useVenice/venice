@@ -21,7 +21,9 @@ const nextConfig: NextConfig = {
   },
   // suppress error where 'debug' module requires 'supports-color' module dynamically
   // @see https://share.cleanshot.com/dWSLnpnS
-  experimental: {esmExternals: 'loose', typedRoutes: true},
+  experimental: {
+    // esmExternals: 'loose', typedRoutes: true
+  },
   reactStrictMode: true,
   rewrites: async () => ({
     beforeFiles: [
