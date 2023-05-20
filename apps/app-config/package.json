@@ -9,6 +9,7 @@
     "dev": "pnpm tsx watch ./_generateDocs.bin.ts"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "0.3.1",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/core-integration-airtable": "workspace:*",
@@ -22,6 +23,7 @@
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",
+    "@usevenice/integration-brex": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
     "@usevenice/integration-foreceipt": "workspace:*",
     "@usevenice/integration-heron": "workspace:*",
@@ -41,7 +43,6 @@
     "@usevenice/integration-toggl": "workspace:*",
     "@usevenice/integration-venmo": "workspace:*",
     "@usevenice/integration-wise": "workspace:*",
-    "@usevenice/integration-brex": "workspace:*",
     "@usevenice/integration-yodlee": "workspace:*",
     "@usevenice/util": "workspace:*",
     "chokidar": "3.5.3",

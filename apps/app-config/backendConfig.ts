@@ -10,18 +10,16 @@ import {
 import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
-import {joinPath, R, Rx, zParser} from '@usevenice/util'
+import {joinPath, R, Rx} from '@usevenice/util'
 
 import {veniceCommonConfig} from './commonConfig'
 import {getServerUrl} from './constants'
-import {zAllEnv} from './env'
+import {env} from './env'
 import type {PROVIDERS} from './providers'
 
 export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'
-
-const env = zParser(zAllEnv).parseUnknown(process.env)
 
 export const backendEnv = env
 

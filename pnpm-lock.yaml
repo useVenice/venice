@@ -145,6 +145,9 @@ importers:
 
   apps/app-config:
     dependencies:
+      '@t3-oss/env-nextjs':
+        specifier: 0.3.1
+        version: 0.3.1(typescript@5.0.4)(zod@3.21.4)
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
@@ -6489,6 +6492,27 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       defer-to-connect: 2.0.1
+
+  /@t3-oss/env-core@0.3.1(typescript@5.0.4)(zod@3.21.4):
+    resolution: {integrity: sha512-iEnBuWeSjzqQLDTUw7H+YhstV4OZrGXTkQGL6ZOMxZQoCmwGX7GVS+1KCd5RvCzOtrIAD9jeOItSWNjC7sG4Sg==}
+    peerDependencies:
+      typescript: '>=4.7.2'
+      zod: ^3.0.0
+    dependencies:
+      typescript: 5.0.4
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    dev: false
+
+  /@t3-oss/env-nextjs@0.3.1(typescript@5.0.4)(zod@3.21.4):
+    resolution: {integrity: sha512-W1OgOn5xtpdEGraAQesyLzO2aNLRfSJEyK6qjQFfEUnrPbkvB+WxABX2bPMqfn4KJQ8pziLCSdBFiUN8OagqAg==}
+    peerDependencies:
+      typescript: '>=4.7.2'
+      zod: ^3.0.0
+    dependencies:
+      '@t3-oss/env-core': 0.3.1(typescript@5.0.4)(zod@3.21.4)
+      typescript: 5.0.4
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    dev: false
 
   /@tanstack/query-core@4.27.0:
     resolution: {integrity: sha512-sm+QncWaPmM73IPwFlmWSKPqjdTXZeFf/7aEmWh00z7yl2FjqophPt0dE1EHW9P1giMC5rMviv7OUbSDmWzXXA==}

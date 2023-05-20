@@ -3,20 +3,12 @@
 import {useRouter} from 'next/router'
 import {BooleanParam, createEnumParam, StringParam} from 'use-query-params'
 
-import type {EnvName} from '@usevenice/cdk-core'
-import {zEnvName} from '@usevenice/cdk-core'
 import {parseQueryParams, shallowOmitUndefined} from '@usevenice/util'
 
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {kAccessToken, kEnv} from '../lib/constants'
 import {atomWithQueryParam} from './utils/atomWithQueryParam'
 
 export const accessTokenAtom = atomWithQueryParam(kAccessToken, '', StringParam)
-export const envAtom = atomWithQueryParam<EnvName>(
-  kEnv,
-  commonEnv.DEFAULT_CONNECT_ENV,
-  createEnumParam(zEnvName.options),
-)
 
 export const developerModeAtom = atomWithQueryParam(
   'developerMode',

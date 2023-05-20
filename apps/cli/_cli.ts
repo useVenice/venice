@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import '@usevenice/app-config/register.node'
 
+import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {PROVIDERS} from '@usevenice/app-config/providers'
-import {parseIntConfigsFromRawEnv, zAllEnv} from '@usevenice/app-config/env'
+import {makeJwtClient} from '@usevenice/cdk-core'
 import {
   makePostgresClient,
   makePostgresMetaService,
 } from '@usevenice/core-integration-postgres'
-import {makeJwtClient} from '@usevenice/cdk-core'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
+import {makeHeronClient} from '@usevenice/integration-heron'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
+import {makeMergeClient} from '@usevenice/integration-merge'
 import {makeMootaClient} from '@usevenice/integration-moota'
 import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // Make this import dynamic at runtime, so we can do
@@ -26,19 +28,20 @@ import {makeTogglClient} from '@usevenice/integration-toggl'
 import {makeWiseClient} from '@usevenice/integration-wise'
 import {makeYodleeClient} from '@usevenice/integration-yodlee'
 import type {ZFunctionMap} from '@usevenice/util'
-import {getEnvVar, R, z, zodInsecureDebug, zParser} from '@usevenice/util'
+import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
-import {makeMergeClient} from '@usevenice/integration-merge'
-import {makeHeronClient} from '@usevenice/integration-heron'
 
 if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
 }
 
 function env() {
-  return zParser(zAllEnv).parseUnknown(process.env)
+  process.env['SKIP_ENV_VALIDATION'] = 'true'
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return require('@usevenice/app-config/env')
+    .env as typeof import('@usevenice/app-config/env')['env']
 }
 
 function intConfig<T extends (typeof PROVIDERS)[number]['name']>(name: T) {

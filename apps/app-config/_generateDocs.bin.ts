@@ -3,13 +3,14 @@ import * as path from 'node:path'
 
 import tablemark from 'tablemark'
 
-import {buildUrl, R, zParser} from '@usevenice/util'
+import {buildUrl, R} from '@usevenice/util'
 
-import {parseIntConfigsFromRawEnv, zAllEnv} from './env'
+import {env, envConfig} from './env'
+import {parseIntConfigsFromRawEnv} from './integration-envs'
 import {DOCUMENTED_PROVIDERS} from './providers'
 
 const envList = R.pipe(
-  zAllEnv.shape,
+  {...envConfig.server, ...envConfig.client},
   R.toPairs,
   R.filter(
     ([key]) =>
@@ -124,7 +125,6 @@ console.log(`Wrote ${dotEnvExampleOutPath}`)
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('Test out loading env vars')
-  const env = zParser(zAllEnv).parseUnknown(process.env)
   const configs = parseIntConfigsFromRawEnv()
   console.log('Parsed env', env)
   console.log('Parsed intConfigs', configs)
