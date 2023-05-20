@@ -62,9 +62,6 @@ export default function PipelinesPage() {
             header: 'Destination Id',
             cell: ({row}) => <pre>{row.getValue('destinationId')}</pre>,
           },
-
-          // {key: 'lastSyncStartedAt'},
-          // {key: 'lastSyncCompletedAt'},
         ]}
       />
     </div>

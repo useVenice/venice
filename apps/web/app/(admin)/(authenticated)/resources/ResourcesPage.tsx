@@ -1,25 +1,15 @@
 'use client'
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  Text,
-  Badge as TremorBadge,
-} from '@tremor/react'
-import {Loader2, Radio} from 'lucide-react'
+import {Copy, Database, Loader2, MoreHorizontal, Pencil} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
 import {providerByName} from '@usevenice/app-config/providers'
 import {extractProviderName, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
+import {VeniceConnectButton, trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
-import {cn, SchemaForm} from '@usevenice/ui'
+import {DataTable, SchemaForm, cn} from '@usevenice/ui'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +22,12 @@ import {
   AlertDialogTrigger,
   Badge,
   Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
   Separator,
   Sheet,
   SheetContent,
@@ -39,8 +35,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-  useToast,
+  useToast
 } from '@usevenice/ui/new-components'
 import {z} from '@usevenice/util'
 
@@ -48,11 +43,6 @@ type Resource = RouterOutput['listConnections'][number]
 
 export default function ResourcesPage() {
   const res = trpcReact.listConnections.useQuery({})
-
-  if (!res.data) {
-    return <div>Loading...</div>
-  }
-
   return (
     <div className="p-6">
       <header className="flex items-center">
@@ -62,58 +52,83 @@ export default function ResourcesPage() {
         <VeniceConnectButton providerMetaByName={providerByName} />
       </header>
       <p>Resources are created based on integration configurations</p>
-      {res.isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      <ResourcesTable resources={res.data} />
+      <DataTable
+        query={res}
+        columns={[
+          {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({row}) => <ResourceMenu resource={row.original} />,
+          },
+          {accessorKey: 'endUserId'},
+          {accessorKey: 'id'},
+          {accessorKey: 'status'},
+          {accessorKey: 'integrationId'},
+          {accessorKey: 'institutionId'},
+        ]}
+      />
     </div>
   )
 }
 
-// TODO: Abstract to introduce the definition of `column` so we don't need to manually
-// sync order between header and body...
-export const ResourcesTable = (props: {resources: Resource[]}) => (
-  // overflow-x-scroll Didn't work. Ideally we would like to always show a table with scrollbar
-  <Table className="mt-5">
-    <TableHead>
-      <TableRow>
-        <TableHeaderCell>Status</TableHeaderCell>
-        <TableHeaderCell>ID</TableHeaderCell>
-        <TableHeaderCell>Integration</TableHeaderCell>
-        <TableHeaderCell>Institution</TableHeaderCell>
-        <TableHeaderCell>End user Id</TableHeaderCell>
-        <TableHeaderCell>Settings</TableHeaderCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {props.resources.map((reso) => (
-        <TableRow key={reso.id}>
-          <TableCell>
-            <TremorBadge color="emerald" icon={Radio}>
-              {reso.status}
-            </TremorBadge>
-          </TableCell>
-          <TableCell>{reso.id}</TableCell>
-          <TableCell>
-            <Text>{reso.integrationId}</Text>
-          </TableCell>
-          <TableCell>
-            <Text>{reso.institutionId}</Text>
-          </TableCell>
-          <TableCell>
-            <Text>{reso.endUserId}</Text>
-          </TableCell>
-          <TableCell>
-            <EditResourceSheet resource={reso} />
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-)
+function ResourceMenu({resource}: {resource: Resource}) {
+  const [sheetOpen, setSheetOpen] = React.useState(false)
+  return (
+    <DropdownMenu>
+      <EditResourceSheet
+        resource={resource}
+        open={sheetOpen}
+        setOpen={setSheetOpen}
+      />
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(resource.id)}>
+          <Copy className="mr-2 h-4 w-4" />
+          <div>
+            Copy resource ID
+            <br />
+            <pre className="text-muted-foreground">{resource.id}</pre>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Database className="mr-2 h-4 w-4" />
+          Run SQL
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => setTimeout(() => setSheetOpen(true), 0)}>
+          <Pencil className="mr-2 h-4 w-4" />
+          Edit resource
+        </DropdownMenuItem>
+        {/* <DropdownMenuItem
+          onSelect={() => deleteresource.mutate({id: resource.id})}>
+          <Trash className="mr-2 h-4 w-4" />
+          Delete resource
+        </DropdownMenuItem> */}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
 
 // Should this live inside VeniceConnect actually?
 // Also lots of dupe code we can refactor when we need to use the same pattern for
 // integrations, connections, etc.
-export function EditResourceSheet({resource: reso}: {resource: Resource}) {
+function EditResourceSheet({
+  resource: reso,
+  open,
+  setOpen,
+}: {
+  resource: Resource
+  open: boolean
+  setOpen: (open: boolean) => void
+}) {
   const provider = providerByName[extractProviderName(reso.id)]!
 
   // Consider calling this provider, actually seem to make more sense...
@@ -121,8 +136,6 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
   const formSchema = zRaw.resource
     .pick({displayName: true})
     .extend({settings: provider.def.resourceSettings ?? z.object({})})
-
-  const [open, setOpen] = React.useState(false)
 
   const {toast} = useToast()
 
@@ -161,11 +174,6 @@ export function EditResourceSheet({resource: reso}: {resource: Resource}) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button className="mt-2" variant="ghost">
-          Edit
-        </Button>
-      </SheetTrigger>
       <SheetContent
         position="right"
         size="lg"
