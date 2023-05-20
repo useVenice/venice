@@ -79,7 +79,10 @@ export default function OrgLayoutClient({
       <header className="fixed inset-x-0 top-0 flex h-12 items-center gap-2 border-b bg-background p-4">
         {/* Not working because of bug in clerk js that is unclear that results in hydration issue.. */}
         <NoSSR>
-          <OrganizationSwitcher hidePersonal />
+          <div className="mb-[-6px]">
+            {/* Compensate for mysterious 6px bottom padding not explainable */}
+            <OrganizationSwitcher hidePersonal />
+          </div>
           {/* <TopLav /> */}
           <div className="grow" /> {/* Spacer */}
           <UserButton showName />
