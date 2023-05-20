@@ -54,7 +54,10 @@ export async function GET(
       })
     }
 
-    const {getPool, sql} = makePostgresClient(zPgConfig.parse(reso.settings))
+    const {getPool, sql} = makePostgresClient({
+      ...zPgConfig.parse(reso.settings),
+      transformFieldNames: false,
+    })
     const pool = await getPool()
 
     console.log('[sql] Will run query for user', {query, viewer})
