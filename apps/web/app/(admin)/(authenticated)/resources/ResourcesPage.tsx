@@ -2,14 +2,15 @@
 
 import {Copy, Database, Loader2, MoreHorizontal, Pencil} from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 import {providerByName} from '@usevenice/app-config/providers'
 import {extractProviderName, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {VeniceConnectButton, trpcReact} from '@usevenice/engine-frontend'
+import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
-import {DataTable, SchemaForm, cn} from '@usevenice/ui'
+import {cn, DataTable, SchemaForm} from '@usevenice/ui'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +36,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  useToast
+  useToast,
 } from '@usevenice/ui/new-components'
 import {z} from '@usevenice/util'
 
@@ -98,10 +99,14 @@ function ResourceMenu({resource}: {resource: Resource}) {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Database className="mr-2 h-4 w-4" />
-          Run SQL
-        </DropdownMenuItem>
+        {resource.providerName === 'postgres' && (
+          <DropdownMenuItem asChild>
+            <Link href={`/resources/${resource.id}/sql`}>
+              <Database className="mr-2 h-4 w-4" />
+              Run SQL
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           onSelect={() => setTimeout(() => setSheetOpen(true), 0)}>
           <Pencil className="mr-2 h-4 w-4" />
