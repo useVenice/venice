@@ -58,11 +58,11 @@ const sectionedLinks: Array<{
   {
     title: 'Developers',
     items: [
-      {
-        title: 'Logs',
-        href: '/logs',
-        icon: 'Footprints',
-      },
+      // {
+      //   title: 'Logs',
+      //   href: '/logs',
+      //   icon: 'Footprints',
+      // },
       {
         title: 'API Keys',
         href: '/api-keys',
@@ -72,6 +72,11 @@ const sectionedLinks: Array<{
         title: 'Documentation',
         href: '/docs',
         icon: 'FileText',
+      },
+      {
+        title: 'Settings',
+        href: '/settings',
+        icon: 'Settings',
       },
     ],
   },
