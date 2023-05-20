@@ -22,7 +22,7 @@ export function CodeEditor(props: EditorProps) {
     <MonacoEditor
       language={language}
       value={value}
-      theme="venice"
+      // theme="venice"
       beforeMount={(monaco) => {
         monaco.editor.defineTheme('venice', veniceEditorTheme)
       }}
@@ -34,21 +34,21 @@ export function CodeEditor(props: EditorProps) {
       // TODO: handle scrollbar better
       options={{
         // https://stackoverflow.com/questions/53448735/is-there-a-way-to-completely-hide-the-gutter-of-monaco-editor
-        folding: false,
-        fontSize: 14,
-        // fontFamily: '',
-        lineDecorationsWidth: 0,
-        lineNumbers: 'off',
+        // folding: false,
+        // fontSize: 14,
+        // // fontFamily: '',
+        // lineDecorationsWidth: 0,
+        // // lineNumbers: 'off',
         minimap: {enabled: false},
-        overviewRulerLanes: 0,
-        renderLineHighlight: 'none',
-        roundedSelection: true,
-        scrollbar: {
-          vertical: 'hidden',
-          horizontal: 'hidden',
-          handleMouseWheel: false,
-        },
-        wordWrap: 'on',
+        // overviewRulerLanes: 0,
+        // renderLineHighlight: 'none',
+        // roundedSelection: true,
+        // scrollbar: {
+        //   vertical: 'hidden',
+        //   horizontal: 'hidden',
+        //   handleMouseWheel: false,
+        // },
+        // wordWrap: 'on',
       }}
       onChange={onChange}
     />

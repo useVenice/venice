@@ -14,10 +14,12 @@ import {
   makePostgresClient,
   zPgConfig,
 } from '@usevenice/core-integration-postgres'
-import {z} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 
 import {serverComponentGetViewer} from '@/server/server-component-helpers'
 import {trpcErrorResponse} from '@/server/server-helpers'
+
+// TODO: Document searchParams and share it with client (as least the typing if nothing else)
 
 export async function GET(
   request: NextRequest,
@@ -64,9 +66,22 @@ export async function GET(
 
     const res =
       format === 'csv'
-        ? new NextResponse(Papa.unparse([...result.rows]), {
-            headers: {'Content-Type': 'text/csv'},
-          })
+        ? new NextResponse(
+            Papa.unparse([
+              ...result.rows.map((r) =>
+                R.mapValues(r, (v) =>
+                  v instanceof Date
+                    ? v.toISOString()
+                    : typeof v === 'object'
+                    ? JSON.stringify(v)
+                    : v,
+                ),
+              ),
+            ]),
+            {
+              headers: {'Content-Type': 'text/csv'},
+            },
+          )
         : NextResponse.json(result.rows)
 
     if (download) {

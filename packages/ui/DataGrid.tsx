@@ -5,20 +5,25 @@ import '@glideapps/glide-data-grid/dist/index.css'
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
 import {DataEditor, GridCellKind} from '@glideapps/glide-data-grid'
+import type {UseQueryResult} from '@tanstack/react-query'
 import clsx from 'clsx'
 import React from 'react'
 
 import {produce} from '@usevenice/util'
 
+import {LoadingText} from './components'
 import {cn} from './utils'
 
-interface DataGridProps {
-  isFetching: boolean
-  rows: Array<Record<string, unknown>>
+interface DataGridProps<TData extends Record<string, unknown>> {
+  query: UseQueryResult<TData[]>
 }
 
-export function DataGrid({isFetching, rows}: DataGridProps) {
+export function DataGrid<TData extends Record<string, unknown>>({
+  query,
+}: DataGridProps<TData>) {
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
+
+  const rows = React.useMemo(() => query.data ?? [], [query.data])
 
   const [columns, setColumns] = React.useState<GridColumn[]>([])
   React.useLayoutEffect(() => {
@@ -57,15 +62,23 @@ export function DataGrid({isFetching, rows}: DataGridProps) {
     }
   }
 
+  if (!query.isFetched) {
+    return null
+  }
+
+  if (query.isFetching) {
+    return <LoadingText />
+  }
+
   return !columns.length || !rows.length ? (
-    isFetching ? (
+    query.isFetching ? (
       <DataGridSkeleton />
     ) : (
-      <div className="mt-4">No data available</div>
+      <div>No data available</div>
     )
   ) : (
     <DataEditor
-      className={cn(isFetching && 'opacity-70')}
+      className={cn(query.isFetching && 'opacity-70')}
       getCellContent={getData}
       getCellsForSelection={true} // Enables copy
       copyHeaders
