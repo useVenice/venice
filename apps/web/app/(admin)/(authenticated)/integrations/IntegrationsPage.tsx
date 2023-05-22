@@ -63,7 +63,16 @@ export default function IntegrationsPage() {
           {integrationsRes.data.map((int) => {
             const provider = providerByName[int.providerName]!
             return (
-              <ProviderCard key={int.id} provider={provider}>
+              <ProviderCard
+                key={int.id}
+                provider={provider}
+                labels={
+                  // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
+                  int.providerName === 'plaid' && int.config?.['envName']
+                    ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+                      [`${int.config?.['envName']}`]
+                    : []
+                }>
                 <IntegrationSheet
                   integration={int}
                   providerName={provider.name}
@@ -296,7 +305,6 @@ export function IntegrationSheet({
   )
 }
 
-const ProviderCard = (props: {
-  provider: ProviderMeta
-  children?: React.ReactNode
-}) => <_ProviderCard Image={Image as any} showStageBadge {...props} />
+const ProviderCard = (props: React.ComponentProps<typeof _ProviderCard>) => (
+  <_ProviderCard Image={Image as any} showStageBadge {...props} />
+)

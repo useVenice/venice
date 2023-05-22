@@ -95,12 +95,14 @@ export const ResourceCard = ({
 export const ProviderCard = ({
   provider,
   showStageBadge = false,
+  labels = [],
   className,
   children,
   ...uiProps
 }: UIProps & {
   provider: ProviderMeta
   showStageBadge?: boolean
+  labels?: string[]
 }) => (
   <Card
     className={cn(
@@ -108,6 +110,11 @@ export const ProviderCard = ({
       className,
     )}>
     <div className="flex h-6 self-stretch">
+      {labels.map((label) => (
+        <Badge key={label} variant="secondary">
+          {label}
+        </Badge>
+      ))}
       {showStageBadge && (
         <Badge
           variant="secondary"

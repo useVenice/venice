@@ -42,6 +42,8 @@ import {z} from '@usevenice/util'
 
 type Resource = RouterOutput['listConnections'][number]
 
+// TODO: separate into sources & destinations
+
 export default function ResourcesPage() {
   const res = trpcReact.listConnections.useQuery({})
   return (

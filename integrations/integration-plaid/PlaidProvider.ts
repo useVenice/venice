@@ -46,20 +46,29 @@ import {
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {ErrorShape} from './plaid.types'
 import {
-  makePlaidClient,
+  makePlaidClient as _makePlaidClient,
   zCountryCode,
   zLanguage,
-  zPlaidClientConfig,
   zPlaidEnvName,
   zProducts,
   zWebhook,
 } from './PlaidClient'
 
+function makePlaidClient(config: (typeof def)['_types']['integrationConfig']) {
+  return _makePlaidClient({
+    clientId: config.clientId,
+    secrets: {[config.envName]: config.clientSecret},
+  }).fromEnv(config.envName)
+}
+
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
-  integrationConfig: zPlaidClientConfig.extend({
+  integrationConfig: z.object({
+    envName: zPlaidEnvName,
+    clientId: z.string(),
+    clientSecret: z.string(),
     clientName: z
       .string()
       .max(30)
@@ -235,7 +244,7 @@ export const plaidProvider = makeSyncProvider({
             ? 'error'
             : 'healthy',
         statusMessage: err?.error_message,
-        labels: envName !== 'production' ? [envName] : [],
+        labels: [envName],
       }
     },
   },
@@ -256,7 +265,6 @@ export const plaidProvider = makeSyncProvider({
   ) => {
     if (input.sandboxPublicTokenCreate) {
       return makePlaidClient(config)
-        .fromEnv('sandbox')
         .sandboxPublicTokenCreate({
           initial_products: [Products.Transactions],
           institution_id: 'ins_109508', // First Platipus bank
@@ -264,13 +272,6 @@ export const plaidProvider = makeSyncProvider({
         .then(({data: res}) => res)
     }
     return makePlaidClient(config)
-      .fromEnv(
-        input.envName ??
-          // TODO: Fix me
-          (process.env['NEXT_PUBLIC_VERCEL_ENV'] !== 'production'
-            ? 'sandbox'
-            : 'production'),
-      )
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
         institution_id: institutionExternalId
@@ -361,12 +362,11 @@ export const plaidProvider = makeSyncProvider({
   },
 
   postConnect: async ({publicToken: public_token, meta}, config) => {
-    const client: PlaidApi = makePlaidClient(config).fromToken(public_token)
+    const client: PlaidApi = makePlaidClient(config)
 
-    const envName = inferPlaidEnvFromToken(public_token)
     const [{data: res}, {data: insRes}] = await Promise.all([
       client.itemPublicTokenExchange({public_token}),
-      meta?.institution?.institution_id && envName
+      meta?.institution?.institution_id && config.envName
         ? client.institutionsGetById({
             institution_id: meta.institution.institution_id,
             // Is this right? Get all country codes...
@@ -410,15 +410,15 @@ export const plaidProvider = makeSyncProvider({
 
   checkResource: async ({config, settings, options, context}) => {
     console.log('[Plaid] checkResource', options, context)
-    const client = makePlaidClient(config).fromToken(settings.accessToken)
-    const envName = inferPlaidEnvFromToken(settings.accessToken)
+    const client = makePlaidClient(config)
+
     const itemId: string =
       settings.itemId ??
       settings.item?.item_id ??
       (await client
         .itemGet({access_token: settings.accessToken})
         .then((r) => r.data.item.item_id))
-    const resoUpdate = {envName, resourceExternalId: itemId}
+    const resoUpdate = {envName: config.envName, resourceExternalId: itemId}
 
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
@@ -454,7 +454,6 @@ export const plaidProvider = makeSyncProvider({
 
   revokeResource: (settings, config) =>
     makePlaidClient(config)
-      .fromToken(settings.accessToken)
       .itemRemove({access_token: settings.accessToken})
       .catch((err: IAxiosError) => {
         // TODO: Centralize me inside PlaidClient...
@@ -472,7 +471,7 @@ export const plaidProvider = makeSyncProvider({
   sourceSync: ({config, settings, state}) => {
     const {accessToken} = settings
     // Explicit typing to make TS Compiler job easier...
-    const client: PlaidApi = makePlaidClient(config).fromToken(accessToken)
+    const client: PlaidApi = makePlaidClient(config)
 
     async function* iterateEntities() {
       // Sync item
@@ -495,9 +494,7 @@ export const plaidProvider = makeSyncProvider({
       const {item_id: itemId} = item
       yield [
         def._opRes(itemId, {
-          envName:
-            shouldSync(state, 'resource') &&
-            inferPlaidEnvFromToken(settings.accessToken),
+          envName: shouldSync(state, 'resource') && config.envName,
           settings: shouldSync(state, 'resource') && {
             item,
             status,
@@ -685,7 +682,7 @@ export const plaidProvider = makeSyncProvider({
     // a management layer for that, which will be process-wide and
     // eventually distributed rate limiter too
     // @see https://share.cleanshot.com/w7xCNK
-    const client = makePlaidClient(config).fromEnv('sandbox')
+    const client = makePlaidClient(config)
     async function* iterateInstitutions() {
       let offset = 0
       while (true) {
