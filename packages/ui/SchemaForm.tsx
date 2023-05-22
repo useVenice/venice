@@ -51,10 +51,10 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   const [formData, setFormData] = React.useState<z.infer<TSchema>>(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     _formData
-      ? (schema instanceof z.ZodObject ? schema.partial() : schema).parse(
+      ? (schema instanceof z.ZodObject ? schema.partial() : schema).safeParse(
           // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           R.mapValues(_formData, (v) => (v === null ? undefined : v)),
-        )
+        ).data
       : undefined,
   )
   // console.log('[SchemaForm] jsonSchema', jsonSchema)

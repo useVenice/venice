@@ -147,7 +147,7 @@ export function IntegrationSheet({
   const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
-      toast({title: 'Integration created', variant: 'success'})
+      toast({title: 'Integration saved', variant: 'success'})
     },
     onError: (err) => {
       toast({
@@ -225,10 +225,11 @@ export function IntegrationSheet({
           <SchemaForm
             ref={formRef}
             schema={formSchema}
-            formData={{
-              endUserAccess: int?.endUserAccess,
-              config: int?.config ?? {}, // {} because required
-            }}
+            formData={
+              int
+                ? {endUserAccess: int.endUserAccess, config: int.config ?? {}} // {} because required
+                : undefined
+            }
             // formData should be non-null at this point, we should fix the typing
             loading={upsertIntegration.isLoading}
             onSubmit={({formData}) => {

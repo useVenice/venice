@@ -150,14 +150,6 @@ export function plaidMapHolding(
   }
 }
 
-export interface PlaidClientCredentials {
-  client_id: string
-  /** No longer used by the api */
-  public_key: string
-  secrets: Partial<{[K in PlaidEnvName]: string}>
-  urls: Partial<{[K in PlaidEnvName]: string}>
-}
-
 export function inferPlaidEnvFromToken(
   publicOrAccessToken: string,
 ): PlaidEnvName | null {
