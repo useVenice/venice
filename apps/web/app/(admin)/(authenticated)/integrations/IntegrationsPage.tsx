@@ -8,14 +8,13 @@ import {
   availableProviders,
   providerByName,
 } from '@usevenice/app-config/providers'
-import {
-  zIntegrationCategory,
-  zRaw,
-  type ProviderMeta,
-} from '@usevenice/cdk-core'
+import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {ProviderCard as _ProviderCard} from '@usevenice/ui/domain-components'
+import {
+  IntegrationCard as _IntegrationCard,
+  ProviderCard as _ProviderCard,
+} from '@usevenice/ui/domain-components'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,21 +62,15 @@ export default function IntegrationsPage() {
           {integrationsRes.data.map((int) => {
             const provider = providerByName[int.providerName]!
             return (
-              <ProviderCard
+              <IntegrationCard
                 key={int.id}
                 provider={provider}
-                labels={
-                  // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
-                  int.providerName === 'plaid' && int.config?.['envName']
-                    ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
-                      [`${int.config?.['envName']}`]
-                    : []
-                }>
+                integration={int}>
                 <IntegrationSheet
                   integration={int}
                   providerName={provider.name}
                 />
-              </ProviderCard>
+              </IntegrationCard>
             )
           })}
         </div>
@@ -308,3 +301,7 @@ export function IntegrationSheet({
 const ProviderCard = (props: React.ComponentProps<typeof _ProviderCard>) => (
   <_ProviderCard Image={Image as any} showStageBadge {...props} />
 )
+
+const IntegrationCard = (
+  props: React.ComponentProps<typeof _IntegrationCard>,
+) => <_IntegrationCard Image={Image as any} showStageBadge {...props} />

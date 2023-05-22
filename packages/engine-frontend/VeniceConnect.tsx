@@ -241,6 +241,9 @@ export function _VeniceConnect({
       ))}
       {/* Add new  */}
       {integrations.map((int) => (
+        // TODO: Make use of integrationCard rather than ProviderCard
+        // once we allow for mapStandardIntegration such that integration labels
+        // can show up properly (e.g. sandbox, production labels)
         <ProviderCard {...uiProps} key={int.id} provider={int.provider}>
           <ProviderConnectButton
             integration={int}

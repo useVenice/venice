@@ -2,7 +2,7 @@ import {formatDistanceToNowStrict} from 'date-fns'
 import {Landmark} from 'lucide-react'
 import React from 'react'
 
-import type {ProviderMeta, ZStandard} from '@usevenice/cdk-core'
+import type {Id, ProviderMeta, ZStandard} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 
 import {LoadingText} from '../components/LoadingText'
@@ -90,6 +90,28 @@ export const ResourceCard = ({
     {/* Deleting */}
     {children}
   </Card>
+)
+
+export const IntegrationCard = ({
+  integration: int,
+  ...props
+}: React.ComponentProps<typeof ProviderCard> & {
+  integration: {
+    id: Id['int']
+    providerName: string
+    config?: Record<string, unknown> | null
+  }
+}) => (
+  <ProviderCard
+    {...props}
+    labels={
+      // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
+      int.providerName === 'plaid' && int.config?.['envName']
+        ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
+          [`${int.config?.['envName']}`]
+        : []
+    }
+  />
 )
 
 export const ProviderCard = ({
