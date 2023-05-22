@@ -108,7 +108,6 @@ export const endUserRouter = trpc.router({
           // No need for each integration to worry about this, unlike in the case of handleWebhook.
           endUserId:
             ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
-          envName: connCtxInput.envName,
           triggerDefaultSync:
             !syncInBackground && resoUpdate.triggerDefaultSync,
         })

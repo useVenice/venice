@@ -7,7 +7,6 @@ import type {
 } from '@usevenice/util'
 
 import type {ExternalId, Id} from './id.types'
-import type {EnvName} from './meta.types'
 
 /**
  * This will be standardized over time into either
@@ -42,8 +41,6 @@ export interface ResoUpdateData<
     externalId: ExternalId
     data: TInsData
   }
-  /** Should this be an inherent part of the data? */
-  envName?: EnvName
 }
 export interface StateUpdateData<TSrcOptions = {}, TDestOptions = {}> {
   sourceState?: ObjectPartialDeep<NoInfer<TSrcOptions>>

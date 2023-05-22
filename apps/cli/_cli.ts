@@ -71,14 +71,8 @@ if (require.main === module) {
         databaseUrl: env().POSTGRES_OR_WEBHOOK_URL,
         viewer: {role: 'system'},
       }) as {},
-    plaid: () =>
-      R.pipe(makePlaidClient(intConfig('plaid')), (p) =>
-        process.env['PLAID_ACCESS_TOKEN']
-          ? p.fromToken(process.env['PLAID_ACCESS_TOKEN'])
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            p.fromEnv(process.env['PLAID_ENV'] as any),
-      ) as {},
-    onebrick: () => makeOneBrickClient(intConfig('onebrick')),
+    plaid: () => makePlaidClient(intConfig('plaid')) as {},
+    onebrick: () => makeOneBrickClient(intConfig('onebrick')) as {},
     teller: () => makeTellerClient(intConfig('teller')),
     stripe: () =>
       makeStripeClient({apiKey: process.env['STRIPE_TEST_SECRET_KEY']!}),

@@ -46,20 +46,13 @@ import {
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {ErrorShape} from './plaid.types'
 import {
-  makePlaidClient as _makePlaidClient,
+  makePlaidClient,
   zCountryCode,
   zLanguage,
   zPlaidEnvName,
   zProducts,
   zWebhook,
 } from './PlaidClient'
-
-function makePlaidClient(config: (typeof def)['_types']['integrationConfig']) {
-  return _makePlaidClient({
-    clientId: config.clientId,
-    secrets: {[config.envName]: config.clientSecret},
-  }).fromEnv(config.envName)
-}
 
 const _def = makeSyncProvider.def({
   ...veniceProviderBase.def,
@@ -103,13 +96,6 @@ const _def = makeSyncProvider.def({
       ? {}
       : // Development mode only
         {sandboxPublicTokenCreate: z.boolean().optional()}),
-    envName:
-      // Temp approach to prevent users from using development credentials which are limited to 100 max
-      // Will need to rethink how this works later, perhaps by redesigning preconnect / postConnect and the connect flow
-      // all together into one.
-      process.env.NODE_ENV === 'production'
-        ? z.enum(['sandbox', 'production'])
-        : zPlaidEnvName.optional(),
     language: zLanguage.optional(),
   }),
   connectInput: z.union([
@@ -225,7 +211,6 @@ export const plaidProvider = makeSyncProvider({
       name: ins.name,
       logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,
-      envName: undefined,
       categories: ['banking'],
     }),
     resource: (settings) => {
@@ -418,7 +403,7 @@ export const plaidProvider = makeSyncProvider({
       (await client
         .itemGet({access_token: settings.accessToken})
         .then((r) => r.data.item.item_id))
-    const resoUpdate = {envName: config.envName, resourceExternalId: itemId}
+    const resoUpdate = {resourceExternalId: itemId}
 
     if (options.updateWebhook) {
       await client.itemWebhookUpdate({
@@ -494,7 +479,6 @@ export const plaidProvider = makeSyncProvider({
       const {item_id: itemId} = item
       yield [
         def._opRes(itemId, {
-          envName: shouldSync(state, 'resource') && config.envName,
           settings: shouldSync(state, 'resource') && {
             item,
             status,

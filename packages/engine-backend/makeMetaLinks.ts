@@ -24,10 +24,7 @@ import {deepMerge, infer, R} from '@usevenice/util'
 // Should the mapping of the StandardInstitution happen inside here?
 
 export function makeMetaLinks(metaBase: MetaService) {
-  type Res = Pick<
-    ZRaw['resource'],
-    'id' | 'envName' | 'integrationId' | 'endUserId'
-  >
+  type Res = Pick<ZRaw['resource'], 'id' | 'integrationId' | 'endUserId'>
   type Pipe = Pick<
     ZRaw['pipeline'],
     'id' | 'sourceId' | 'destinationId' | 'linkOptions'
@@ -112,7 +109,6 @@ export function makeMetaLinks(metaBase: MetaService) {
           institutionId,
           // maybe we should distinguish between setDefaults (from existingResource) vs. actually
           // updating the values...
-          envName: op.envName ?? resource.envName,
           endUserId: resource.endUserId,
         })
       },

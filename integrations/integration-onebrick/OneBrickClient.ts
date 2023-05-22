@@ -8,8 +8,8 @@ import {
 
 import {inferOneBrickEnvFromToken} from './onebrick-utils'
 
-export type EnvName = z.infer<typeof zEnvName>
-export const zEnvName = z.enum(['sandbox', 'production'])
+export type OneBrickEnvName = z.infer<typeof zOneBrickEnvName>
+export const zOneBrickEnvName = z.enum(['sandbox', 'production'])
 export const inputTokenSchema = {accessToken: z.string().nullish()}
 export const inputAuthOneBrickSchema = z
   .object({
@@ -160,13 +160,30 @@ export const otpSchema = z.object({
   deviceId: z.string().nullish(),
 })
 
-export const zOneBrickConfig = z.object({
-  secrets: z.record(zEnvName, z.string()),
+export const zOneBrickMultiConfig = z.object({
+  publicTokens: z.record(zOneBrickEnvName, z.string()),
   accessToken: z.string().nullish(),
   clientId: z.string().nullish(),
   clientSecret: z.string().nullish(),
   redirectUrl: z.string().nullish(),
 })
+
+export const zOneBrickConfig = z.object({
+  envName: zOneBrickEnvName,
+  clientId: z.string(),
+  clientSecret: z.string(),
+  publicToken: z.string(),
+  // TODO: Move these into settings
+  accessToken: z.string().nullish(),
+  redirectUrl: z.string().nullish(),
+})
+
+export function makeOneBrickClient(config: z.infer<typeof zOneBrickConfig>) {
+  return makeOneBrickMultiClient({
+    ...config,
+    publicTokens: {[config.envName]: config.publicToken},
+  }).fromEnv(config.envName)
+}
 
 /**
  * TODO: Switch to v2 api and OpenAPI based implementation
@@ -179,95 +196,98 @@ export const zOneBrickConfig = z.object({
  * @see https://docs.readme.com/reference/getapiregistry
  *
  */
-export const makeOneBrickClient = zFunction(zOneBrickConfig, (cfg) => {
-  function defaultUrl(envName: EnvName) {
-    switch (envName) {
-      case 'sandbox':
-        return 'https://sandbox.onebrick.io/v1'
-      case 'production':
-        return 'https://api.onebrick.io/v1'
+export const makeOneBrickMultiClient = zFunction(
+  zOneBrickMultiConfig,
+  (cfg) => {
+    function defaultUrl(envName: OneBrickEnvName) {
+      switch (envName) {
+        case 'sandbox':
+          return 'https://sandbox.onebrick.io/v1'
+        case 'production':
+          return 'https://api.onebrick.io/v1'
+      }
     }
-  }
-  const fromEnv = memoize((envName: EnvName | undefined) => {
-    const secret = envName && cfg.secrets[envName]
-    if (!envName || !secret) {
-      throw new Error(`Unable to get client envName=${envName}`)
-    }
-    return createHTTPClient({
-      baseURL: defaultUrl(envName ?? 'sandbox'), // For testing with mock data
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${cfg.accessToken ?? secret}`,
-      },
+    const fromEnv = memoize((envName: OneBrickEnvName | undefined) => {
+      const secret = envName && cfg.publicTokens[envName]
+      if (!envName || !secret) {
+        throw new Error(`Unable to get client envName=${envName}`)
+      }
+      return createHTTPClient({
+        baseURL: defaultUrl(envName ?? 'sandbox'), // For testing with mock data
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cfg.accessToken ?? secret}`,
+        },
+      })
     })
-  })
 
-  function fromToken(token: string) {
-    return fromEnv(inferOneBrickEnvFromToken(token) ?? undefined)
-  }
+    function fromToken(token: string) {
+      return fromEnv(inferOneBrickEnvFromToken(token) ?? undefined)
+    }
 
-  return {
-    /**
-     * References:
-     * - https://technical-docs.onebrick.io/reference/generate-otp-in-gopay
-     * - https://technical-docs.onebrick.io/reference/generate-otp-in-ovo
-     *
-     * Examples:
-     * - GoPay: CLIENT=<client-name> tsx <dir-cli> --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec' generateOTP --institution_id 11 --username '+628123456789'
-     * - OVO: CLIENT=<client-name>  <dir-cli> --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec' generateOTP --institution_id 12 --username '+628123456789'
-     */
-    generateOTP: zFunction(inputAuthOneBrickSchema, (params) =>
-      fromToken(params.accessToken ?? '')
-        .post<{data: unknown}>('/auth', params)
-        .then((r) => otpSchema.parse(r.data.data)),
-    ),
-
-    /**
-     * References:
-     * - https://technical-docs.onebrick.io/reference/generate-user-access-token-in-gopay
-     * - https://technical-docs.onebrick.io/reference/generate-user-access-token-in-ovo
-     *
-     * Examples:
-     * - GoPay: CLIENT=<client-name> tsx <dir-cli> generateUserAccessToken --uniqueId '1DF31390-1CA5-4428-B698-D0791658FA8F' --username '+6285172117757' --sessionId '20AAC44A-01F0-4F29-9940-2E3764C6B497' --otpToken 'fb5dfdd8-a34f-42f7-84fc-79f2d5615c06' --otp '6427'  --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
-     * - OVO: CLIENT=<client-name> tsx <dir-cli> generateUserAccessToken --refId '9005a8f8-9be6-4abd-ae81-6d580318c5ad' --username '+628123456789' --deviceId 'cd6fd5f6-10da-4b22-b684-1cfd1a5c9407' --pin '111111' --otpNumber 'https://ovo.id/app/login?code=7b654f4272ead4a2634d2752214e900ebc8e13b4975f09fb92d05a0947a49b31' --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
-     */
-    generateUserAccessToken: zFunction(
-      otpSchema.extend(inputTokenSchema),
-      (params) =>
+    return {
+      fromEnv,
+      /**
+       * References:
+       * - https://technical-docs.onebrick.io/reference/generate-otp-in-gopay
+       * - https://technical-docs.onebrick.io/reference/generate-otp-in-ovo
+       *
+       * Examples:
+       * - GoPay: CLIENT=<client-name> tsx <dir-cli> --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec' generateOTP --institution_id 11 --username '+628123456789'
+       * - OVO: CLIENT=<client-name>  <dir-cli> --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec' generateOTP --institution_id 12 --username '+628123456789'
+       */
+      generateOTP: zFunction(inputAuthOneBrickSchema, (params) =>
         fromToken(params.accessToken ?? '')
-          .post(`/auth/${params.refId ? 'ovo' : 'gopay'}`, params)
-          .then((r) => userAccessTokenSchema.parse(r.data)),
-    ),
-    /**
-     * Reference: https://technical-docs.onebrick.io/reference/get-institution-list-1
-     *
-     * Example: tsx packages/@universal/usevenice-providers/onebrick/OnebrickClient.ts getInstitutions --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
-     */
-    getInstitutions: zFunction(z.object(inputTokenSchema), (params) =>
-      fromToken(params.accessToken ?? '')
-        .get<{data: unknown[]}>('/institution/list')
-        .then((r) => r.data.data.map((i) => institutionSchema.parse(i))),
-    ),
-    /**
-     * Reference: https://technical-docs.onebrick.io/reference/transaction-list
-     *
-     * Example: CLIENT=<client-name> tsx <dir-cli> getTransactions --from 2022-06-01 --to 2022-07-10 --accessToken 'access-sandbox-78ce0669-d9fc-495f-b3ab-f19534143932' //Default value is date as of the API request minus 3 months
-     */
-    getTransactions: zFunction(inputOneBrickTransactionSchema, (params) => {
-      const today = DateTime.local()
-      const start_date = today.minus({month: 3}).toISODate()
-      const end_date = today.toISODate()
-      const from = params.from ?? start_date
-      const to = params.to ?? end_date
-      return fromToken(params.accessToken ?? '')
-        .get<{data: unknown[]}>('/transaction/list', {
-          params: {...params, from, to},
-        })
-        .then((r) => r.data.data.map((i) => transactionBrickSchema.parse(i)))
-    }),
+          .post<{data: unknown}>('/auth', params)
+          .then((r) => otpSchema.parse(r.data.data)),
+      ),
 
-    /**
+      /**
+       * References:
+       * - https://technical-docs.onebrick.io/reference/generate-user-access-token-in-gopay
+       * - https://technical-docs.onebrick.io/reference/generate-user-access-token-in-ovo
+       *
+       * Examples:
+       * - GoPay: CLIENT=<client-name> tsx <dir-cli> generateUserAccessToken --uniqueId '1DF31390-1CA5-4428-B698-D0791658FA8F' --username '+6285172117757' --sessionId '20AAC44A-01F0-4F29-9940-2E3764C6B497' --otpToken 'fb5dfdd8-a34f-42f7-84fc-79f2d5615c06' --otp '6427'  --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
+       * - OVO: CLIENT=<client-name> tsx <dir-cli> generateUserAccessToken --refId '9005a8f8-9be6-4abd-ae81-6d580318c5ad' --username '+628123456789' --deviceId 'cd6fd5f6-10da-4b22-b684-1cfd1a5c9407' --pin '111111' --otpNumber 'https://ovo.id/app/login?code=7b654f4272ead4a2634d2752214e900ebc8e13b4975f09fb92d05a0947a49b31' --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
+       */
+      generateUserAccessToken: zFunction(
+        otpSchema.extend(inputTokenSchema),
+        (params) =>
+          fromToken(params.accessToken ?? '')
+            .post(`/auth/${params.refId ? 'ovo' : 'gopay'}`, params)
+            .then((r) => userAccessTokenSchema.parse(r.data)),
+      ),
+      /**
+       * Reference: https://technical-docs.onebrick.io/reference/get-institution-list-1
+       *
+       * Example: tsx packages/@universal/usevenice-providers/onebrick/OnebrickClient.ts getInstitutions --accessToken 'public-sandbox-c52daf0f-63e8-4d96-9d26-43dcc0dc6fec'
+       */
+      getInstitutions: zFunction(z.object(inputTokenSchema), (params) =>
+        fromToken(params.accessToken ?? '')
+          .get<{data: unknown[]}>('/institution/list')
+          .then((r) => r.data.data.map((i) => institutionSchema.parse(i))),
+      ),
+      /**
+       * Reference: https://technical-docs.onebrick.io/reference/transaction-list
+       *
+       * Example: CLIENT=<client-name> tsx <dir-cli> getTransactions --from 2022-06-01 --to 2022-07-10 --accessToken 'access-sandbox-78ce0669-d9fc-495f-b3ab-f19534143932' //Default value is date as of the API request minus 3 months
+       */
+      getTransactions: zFunction(inputOneBrickTransactionSchema, (params) => {
+        const today = DateTime.local()
+        const start_date = today.minus({month: 3}).toISODate()
+        const end_date = today.toISODate()
+        const from = params.from ?? start_date
+        const to = params.to ?? end_date
+        return fromToken(params.accessToken ?? '')
+          .get<{data: unknown[]}>('/transaction/list', {
+            params: {...params, from, to},
+          })
+          .then((r) => r.data.data.map((i) => transactionBrickSchema.parse(i)))
+      }),
+
+      /**
      * Reference: https://technical-docs.onebrick.io/reference/account-list
      *
      * Example:
@@ -276,13 +296,13 @@ export const makeOneBrickClient = zFunction(zOneBrickConfig, (cfg) => {
      - CLIENT=<client-name> tsx <dir-cli> getAccountList --accessToken 'access-sandbox-dbd3d177-66b1-43ca-8b63-76d9f1e08666'
      - CLIENT=<client-name> tsx <dir-cli> getAccountList --accessToken 'access-sandbox-b8f1ca81-18b3-4205-b6c2-92c4e175c38a' //OVO
     */
-    getAccountList: zFunction(z.object(inputTokenSchema), (params) =>
-      fromToken(params.accessToken ?? '')
-        .get<{data: unknown[]}>('/account/list')
-        .then((r) => r.data.data.map((i) => accountItemSchema.parse(i))),
-    ),
+      getAccountList: zFunction(z.object(inputTokenSchema), (params) =>
+        fromToken(params.accessToken ?? '')
+          .get<{data: unknown[]}>('/account/list')
+          .then((r) => r.data.data.map((i) => accountItemSchema.parse(i))),
+      ),
 
-    /**
+      /**
      * Reference: https://technical-docs.onebrick.io/reference/account-detail
      *
      * Example:
@@ -291,30 +311,31 @@ export const makeOneBrickClient = zFunction(zOneBrickConfig, (cfg) => {
       - CLIENT=<client-name> tsx <dir-cli> --accessToken 'access-sandbox-6b4dcc1d-2077-401e-893a-dcc08695be26' getAccountDetail --accountId '553318600'
       - CLIENT=<client-name> tsx <dir-cli> --accessToken 'access-sandbox-b8f1ca81-18b3-4205-b6c2-92c4e175c38a' getAccountDetail --accountId '0001100752595017' //OVO
     */
-    getAccountDetail: zFunction(
-      inputAccountSchema.extend(inputTokenSchema),
-      (params) =>
-        fromToken(params.accessToken ?? '')
-          .get<{data: unknown[]}>('/account/list')
-          .then((r) => r.data.data.map((i) => accountItemSchema.parse(i))),
-    ),
+      getAccountDetail: zFunction(
+        inputAccountSchema.extend(inputTokenSchema),
+        (params) =>
+          fromToken(params.accessToken ?? '')
+            .get<{data: unknown[]}>('/account/list')
+            .then((r) => r.data.data.map((i) => accountItemSchema.parse(i))),
+      ),
 
-    *iterateAllTransactions(params: typeof inputOneBrickTransactionSchema) {
-      const today = DateTime.local()
-      const {
-        from = today.minus({month: 1}).toISODate(),
-        to = today.toISODate(),
-      } = inputOneBrickTransactionSchema.parse(params)
+      *iterateAllTransactions(params: typeof inputOneBrickTransactionSchema) {
+        const today = DateTime.local()
+        const {
+          from = today.minus({month: 1}).toISODate(),
+          to = today.toISODate(),
+        } = inputOneBrickTransactionSchema.parse(params)
 
-      while (true) {
-        const transactions = this.getTransactions({
-          ...params,
-          from,
-          to,
-        })
-        yield transactions
-        break
-      }
-    },
-  }
-})
+        while (true) {
+          const transactions = this.getTransactions({
+            ...params,
+            from,
+            to,
+          })
+          yield transactions
+          break
+        }
+      },
+    }
+  },
+)

@@ -1,12 +1,9 @@
 import type {MaybePromise} from '@usevenice/util'
-import {titleCase} from '@usevenice/util'
-import {urlFromImage} from '@usevenice/util'
-import {castIs, R, z} from '@usevenice/util'
+import {castIs, R, titleCase, urlFromImage, z} from '@usevenice/util'
 
 import type {EndUserId, ExtEndUserId, ExternalId} from './id.types'
 import {makeId, zExternalId} from './id.types'
 import type {ZStandard} from './meta.types'
-import {zEnvName} from './meta.types'
 import type {
   AnyEntityPayload,
   Destination,
@@ -71,7 +68,6 @@ export interface IntegrationMetadata {
 export type ConnectOptions = z.input<typeof zConnectOptions>
 export const zConnectOptions = z.object({
   // userId: UserId,
-  envName: zEnvName,
   /** Noop if `connectionId` is specified */
   institutionExternalId: zExternalId.nullish(),
   resourceExternalId: zExternalId.nullish(),
@@ -106,7 +102,7 @@ export interface CheckResourceContext {
 
 /** Context providers get during the connection establishing phase */
 export interface ConnectContext<TSettings>
-  extends Omit<ConnectOptions, 'resourceExternalId'>,
+  extends Omit<ConnectOptions, 'resourceExternalId' | 'envName'>,
     CheckResourceContext {
   extEndUserId: ExtEndUserId
   /** Used for OAuth based integrations, e.g. https://plaid.com/docs/link/oauth/#create-and-register-a-redirect-uri */

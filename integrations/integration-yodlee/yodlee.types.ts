@@ -6,7 +6,6 @@ import {z, zCast} from '@usevenice/util'
 import type {Institution, ProviderDetail, UserDetail} from './yodlee.generated'
 import {$UserDetail} from './yodlee.generated'
 import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
-import type {YodleeEnvName} from './YodleeClient'
 
 // TODO: Deprecate most of me and use the types generated from openAPI
 
@@ -162,9 +161,7 @@ export const zYodleeAccount = z.object({
   isDeleted: z.boolean().nullish(),
 })
 
-export const zYodleeInstitution = zCast<
-  Institution & {_envName: YodleeEnvName}
->()
+export const zYodleeInstitution = zCast<Institution>()
 
 /** TODO: Extract me into zod-utils - zod from JSONSchema */
 export const zYodleeProvider = zCast<ProviderDetail>().superRefine(

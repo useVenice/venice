@@ -68,7 +68,7 @@ export default function ConnectionsPage(
   // connect immediately, until we have a dedicated screen for immediate connect anyways.
   React.useEffect(() => {
     props.integrations.forEach((int) =>
-      trpcCtx.preConnect.prefetch([int.id, {envName: 'sandbox'}, {}]),
+      trpcCtx.preConnect.prefetch([int.id, {}, {}]),
     )
   }, [props.integrations, trpcCtx])
 

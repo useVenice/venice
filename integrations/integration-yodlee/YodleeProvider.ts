@@ -26,12 +26,12 @@ import {
   type YodleeAccount,
   type YodleeTransaction,
 } from './yodlee.types'
-import type {YodleeEnvName} from './YodleeClient'
 import {
   makeYodleeClient,
   zAccessToken,
   zConfig,
   zUserCreds,
+  zYodleeEnvName,
   zYodleeId,
 } from './YodleeClient'
 
@@ -51,7 +51,7 @@ const _def = makeSyncProvider.def({
   resourceSettings: zSettings,
   institutionData: zYodleeInstitution,
   // Should accessToken be cached based on provider / userId?
-  connectInput: z.object({accessToken: zAccessToken}),
+  connectInput: z.object({accessToken: zAccessToken, envName: zYodleeEnvName}),
   connectOutput: z.object({
     providerAccountId: zYodleeId,
     providerId: zYodleeId, // Technically optional
@@ -192,7 +192,6 @@ export const yodleeProvider = makeSyncProvider({
       logoUrl: ins.logo,
       loginUrl: ins.loginUrl,
       name: ins.name ?? `<${ins.id}>`,
-      envName: ins._envName,
     }),
     resource: (settings) => ({
       id: `${settings.providerAccountId}`,
@@ -226,17 +225,16 @@ export const yodleeProvider = makeSyncProvider({
     }),
   },
   // TODO: handle reconnecting scenario
-  preConnect: async (config, {envName, extEndUserId: userId}) => {
+  preConnect: async (config, {extEndUserId: userId}) => {
     const loginName =
-      envName === 'sandbox' ? config.sandbox?.sandboxLoginName : userId
+      config.envName === 'sandbox' ? config?.sandboxLoginName : userId
     if (!loginName) {
-      throw new Error('[Yodlee] Snadbox login name not configured')
+      throw new Error('[Yodlee] Sandbox login name not configured')
     }
     const accessToken = await makeYodleeClient(config, {
       role: 'admin',
-      envName,
     }).generateAccessToken(loginName)
-    return {accessToken}
+    return {accessToken, envName: config.envName}
   },
   // Without closure we get type issues in venice.config.ts, not sure why
   // https://share.cleanshot.com/X3cQDA
@@ -244,15 +242,15 @@ export const yodleeProvider = makeSyncProvider({
   postConnect: async (
     {providerAccountId, providerId},
     config,
-    {envName, extEndUserId: userId},
+    {extEndUserId: userId},
   ) => {
     // Should we get accessToken & loginName from the preConnect phase?
     const loginName =
-      envName === 'sandbox' ? config.sandbox?.sandboxLoginName : userId
+      config.envName === 'sandbox' ? config?.sandboxLoginName : userId
     if (!loginName) {
-      throw new Error('[Yodlee] Snadbox login name not configured')
+      throw new Error('[Yodlee] Sandbox login name not configured')
     }
-    const yodlee = makeYodleeClient(config, {role: 'user', envName, loginName})
+    const yodlee = makeYodleeClient(config, {role: 'user', loginName})
     const [providerAccount, provider, user] = await Promise.all([
       yodlee.getProviderAccount(providerAccountId),
       yodlee.getProvider(providerId),
@@ -262,7 +260,6 @@ export const yodleeProvider = makeSyncProvider({
     return {
       resourceExternalId: providerAccountId,
       settings: {
-        envName,
         loginName,
         providerAccountId,
         provider,
@@ -271,7 +268,7 @@ export const yodleeProvider = makeSyncProvider({
         accessToken: yodlee.accessToken,
       },
       institution: provider
-        ? {externalId: providerId, data: {...provider, _envName: envName}}
+        ? {externalId: providerId, data: {...provider}}
         : undefined,
     }
   },
@@ -318,13 +315,12 @@ export const yodleeProvider = makeSyncProvider({
   metaSync: ({config}) => {
     // console.log('[yodlee.metaSync]', config)
     // TODO: Should environment name be part of the yodlee institution id itself?
-    const envName: YodleeEnvName = 'sandbox'
-    const yodlee = makeYodleeClient(config, {role: 'admin', envName})
+    const yodlee = makeYodleeClient(config, {role: 'admin'})
     return rxjs.from(yodlee.iterateInstitutions()).pipe(
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
       Rx.map((ins) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        yodleeProviderDef._insOpData(ins.id!, {...ins, _envName: envName}),
+        yodleeProviderDef._insOpData(ins.id!, {...ins}),
       ),
     )
   },

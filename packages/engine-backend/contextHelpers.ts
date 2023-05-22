@@ -251,7 +251,6 @@ export function getContextHelpers({
     int: Awaited<ReturnType<typeof getIntegrationOrFail>>,
     {
       endUserId: userId,
-      envName,
       settings,
       institution,
       ...resoUpdate
@@ -259,16 +258,13 @@ export function getContextHelpers({
   ) => {
     console.log('[_syncResourceUpdate]', int.id, {
       userId,
-      envName,
       settings,
       institution,
       ...resoUpdate,
     })
     const id = makeId('reso', int.provider.name, resoUpdate.resourceExternalId)
     await metaLinks
-      .handlers({
-        resource: {id, integrationId: int.id, endUserId: userId, envName},
-      })
+      .handlers({resource: {id, integrationId: int.id, endUserId: userId}})
       .resoUpdate({type: 'resoUpdate', id, settings, institution})
 
     // TODO: This should be happening async

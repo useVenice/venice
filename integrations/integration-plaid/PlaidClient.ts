@@ -37,6 +37,12 @@ export const zLanguage = z.enum([
 ])
 
 export const zPlaidClientConfig = z.object({
+  envName: zPlaidEnvName,
+  clientId: z.string(),
+  clientSecret: z.string(),
+})
+
+export const zPlaidMultiClientConfig = z.object({
   clientId: z.string(),
   // Cannot use record type because hard to convert to json schema
   secrets: z.object({
@@ -54,23 +60,33 @@ export const zWebhook = zCast<WebhookShape>()
  *
  * After all, Plaid generates the api clients from OpenApi definitions anyways...
  */
-export const makePlaidClient = zFunction(zPlaidClientConfig, (cfg) => {
-  const fromEnv = memoize((envName: EnvName | undefined) => {
-    const secret = envName && cfg.secrets[envName]
-    if (!envName || !secret) {
-      throw new Error(`Unable to get client envName=${envName}`)
-    }
-    const configuration = new Configuration({
-      basePath: PlaidEnvironments[envName],
-      baseOptions: {
-        headers: {'PLAID-CLIENT-ID': cfg.clientId, 'PLAID-SECRET': secret},
-        httpsAgent: getDefaultProxyAgent(),
-      },
+export const makePlaidMultiClient = zFunction(
+  zPlaidMultiClientConfig,
+  (cfg) => {
+    const fromEnv = memoize((envName: EnvName | undefined) => {
+      const secret = envName && cfg.secrets[envName]
+      if (!envName || !secret) {
+        throw new Error(`Unable to get client envName=${envName}`)
+      }
+      const configuration = new Configuration({
+        basePath: PlaidEnvironments[envName],
+        baseOptions: {
+          headers: {'PLAID-CLIENT-ID': cfg.clientId, 'PLAID-SECRET': secret},
+          httpsAgent: getDefaultProxyAgent(),
+        },
+      })
+      return new PlaidApi(configuration)
     })
-    return new PlaidApi(configuration)
-  })
 
-  const fromToken = (token: string) => fromEnv(inferPlaidEnvFromToken(token))
+    const fromToken = (token: string) => fromEnv(inferPlaidEnvFromToken(token))
 
-  return {fromToken, fromEnv}
-})
+    return {fromToken, fromEnv}
+  },
+)
+
+export function makePlaidClient(config: z.infer<typeof zPlaidClientConfig>) {
+  return makePlaidMultiClient({
+    clientId: config.clientId,
+    secrets: {[config.envName]: config.clientSecret},
+  }).fromEnv(config.envName)
+}

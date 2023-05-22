@@ -18,7 +18,8 @@ import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
 export const zYodleeEnvName = z.enum(['sandbox', 'development', 'production'])
 
-export const zEnvConfig = z.object({
+export const zConfig = z.object({
+  envName: zYodleeEnvName,
   clientId: z.string(),
   clientSecret: z.string(),
   adminLoginName: z.string(),
@@ -32,8 +33,6 @@ export const zEnvConfig = z.object({
   proxy: z.object({url: z.string(), cert: z.string()}).nullish(),
 })
 
-export const zConfig = z.record(zYodleeEnvName, zEnvConfig)
-
 export const zAccessToken = z.object({
   accessToken: z.string(),
   issuedAt: z.string(),
@@ -41,7 +40,6 @@ export const zAccessToken = z.object({
 })
 
 const zCommonCreds = z.object({
-  envName: zYodleeEnvName,
   // Cache
   accessToken: zAccessToken.nullish(),
 })
@@ -77,17 +75,13 @@ function baseUrlFromEnvName(envName: Yodlee.EnvName) {
   }
 }
 
-export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
-  const config = _cfg[creds.envName]
-  if (!config) {
-    throw new Error(`[YodleeClient] Missing config for env ${creds.envName}`)
-  }
+export const makeYodleeClient = zFunction([zConfig, zCreds], (cfg, creds) => {
   let accessToken = creds.accessToken
   const httpsAgent =
-    getDefaultProxyAgent() ?? (config.proxy && $makeProxyAgent(config.proxy))
+    getDefaultProxyAgent() ?? (cfg.proxy && $makeProxyAgent(cfg.proxy))
 
   const http = createHTTPClient({
-    baseURL: baseUrlFromEnvName(creds.envName),
+    baseURL: baseUrlFromEnvName(cfg.envName),
     httpsAgent,
 
     headers: {
@@ -135,7 +129,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
       shouldSkipRefresh: (req) => !!req.url?.endsWith('auth/token'),
       refresh: async () => {
         accessToken = await generateAccessToken(
-          creds.role === 'user' ? creds.loginName : config.adminLoginName,
+          creds.role === 'user' ? creds.loginName : cfg.adminLoginName,
         )
         // TODO: Add a callback upon access token being generated
       },
@@ -155,8 +149,8 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
         api.request.request({...opts, headers: {...opts.headers, loginName}}),
     })
       .generateAccessToken({
-        clientId: config.clientId,
-        secret: config.clientSecret,
+        clientId: cfg.clientId,
+        secret: cfg.clientSecret,
       })
       .then((r) => zAccessToken.parse(r.token)),
   )
@@ -182,7 +176,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
     generateAccessToken,
     getProvider,
     async registerUser(user: {loginName: string; email: string}) {
-      const token = await generateAccessToken(config.adminLoginName)
+      const token = await generateAccessToken(cfg.adminLoginName)
       return http
         .post<{user: Yodlee.User}>(
           '/user/register',
@@ -414,7 +408,7 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (_cfg, creds) => {
 
     async *iterateUserDataFromLinks(links: Yodlee.Link[]) {
       for (const link of links) {
-        const token = await generateAccessToken(config.adminLoginName)
+        const token = await generateAccessToken(cfg.adminLoginName)
         const userData = await http
           .get<{userData: Yodlee.UserData[]}>(link.href, {
             headers: {Authorization: `Bearer ${token.accessToken}`},

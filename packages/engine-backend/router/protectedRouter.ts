@@ -292,7 +292,6 @@ export const protectedRouter = trpc.router({
         await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...(opts?.import && {
             endUserId: reso.endUserId ?? undefined,
-            envName: reso.envName ?? undefined,
           }),
           ...resoUpdate,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -382,7 +381,6 @@ export const protectedRouter = trpc.router({
       await ctx.asOrgIfNeeded._syncResourceUpdate(reso.integration, {
         endUserId: reso.endUserId,
         settings: reso.settings,
-        // What about envName
         resourceExternalId: extractId(reso.id)[2],
         institution: reso.institution && {
           externalId: extractId(reso.institution.id)[2],

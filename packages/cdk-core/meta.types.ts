@@ -41,8 +41,6 @@ export const zStandard = {
       z.string().url().optional(),
     ),
     categories: z.array(zInstitutionCategory).nullish(),
-    /** Environment specific providers */
-    envName: zEnvName.optional(),
   }),
   resource: z.object({
     id: zId('reso'),
@@ -101,9 +99,6 @@ export const zRaw = {
     integrationId: zId('int'),
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),
-    // TODO: Does envName belong in Raw layer or Standard layer?
-    /** Development env often allows connection to production institutions */
-    envName: zEnvName.nullish(),
     standard: zStandard.resource.omit({id: true}).nullish(),
   }),
   pipeline: zBase.extend({

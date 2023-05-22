@@ -12,12 +12,8 @@ export const useYodleeConnect: UseConnectHook<typeof yodleeProviderDef> = (
 ) => {
   const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
   return async (
-    {accessToken},
-    {
-      envName,
-      resourceExternalId: providerAccountId,
-      institutionExternalId: providerId,
-    },
+    {accessToken, envName},
+    {resourceExternalId: providerAccountId, institutionExternalId: providerId},
   ) => {
     console.log('[yodlee] connect', {
       accessToken,

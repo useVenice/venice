@@ -99,9 +99,9 @@ export const oneBrickProvider = makeSyncProvider({
       return null
     },
   }),
-  preConnect: (config, {envName}) =>
+  preConnect: (config) =>
     Promise.resolve({
-      publicToken: config.secrets[envName as 'production' | 'sandbox'],
+      publicToken: config.publicToken,
       redirect_url: config.redirectUrl,
     }),
   useConnectHook: (_) => {
@@ -129,30 +129,29 @@ export const oneBrickProvider = makeSyncProvider({
   },
 
   sourceSync: ({settings, config}) => {
-    const client = makeOneBrickClient({
+    makeOneBrickClient({
       ...config,
       accessToken: settings.accessToken,
     })
     async function* iterateEntities() {
-      const res = await client.getAccountList({
-        accessToken: settings.accessToken,
-      })
-      yield res.map((a) =>
-        _op({
-          type: 'data',
-          data: {id: a.accountId, entity: a, entityName: 'account'},
-        }),
-      )
-
-      const res2 = await client.getTransactions({
-        accessToken: settings.accessToken,
-      })
-      yield res2.map((t) =>
-        _op({
-          type: 'data',
-          data: {id: t.reference_id, entity: t, entityName: 'transaction'},
-        }),
-      )
+      // const res = await client.getAccountList({
+      //   accessToken: settings.accessToken,
+      // })
+      // yield res.map((a) =>
+      //   _op({
+      //     type: 'data',
+      //     data: {id: a.accountId, entity: a, entityName: 'account'},
+      //   }),
+      // )
+      // const res2 = await client.getTransactions({
+      //   accessToken: settings.accessToken,
+      // })
+      // yield res2.map((t) =>
+      //   _op({
+      //     type: 'data',
+      //     data: {id: t.reference_id, entity: t, entityName: 'transaction'},
+      //   }),
+      // )
     }
 
     return rxjs

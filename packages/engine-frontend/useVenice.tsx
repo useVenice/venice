@@ -1,19 +1,20 @@
+import {createTRPCClientProxy} from '@trpc/client'
 import React, {useState} from 'react'
+
 // Used to help the typechecker otherwise ts-match would complain about expression being infinitely deep...
 
 import type {ConnectOptions, Id} from '@usevenice/cdk-core'
-import {CANCELLATION_TOKEN, extractId, zEnvName} from '@usevenice/cdk-core'
+import {CANCELLATION_TOKEN, extractId} from '@usevenice/cdk-core'
 import type {IntegrationInput} from '@usevenice/engine-backend'
+import {Button, Card, SettingsIcon, ZodForm} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
-import {createTRPCClientProxy} from '@trpc/client'
-import {Button, Card, SettingsIcon, ZodForm} from '@usevenice/ui'
 import {browserAnalytics} from '../../apps/web/lib/browser-analytics'
 import {VeniceProvider} from './VeniceProvider'
 
 export type UseVeniceOptions = z.infer<typeof zUseVeniceOptions>
 export const zUseVeniceOptions = z.object({
-  envName: zEnvName,
+  envName: z.enum(['sandbox', 'development', 'production']),
   /**
    * Wait to create concept of user / customer in service providers
    * until the last possible moment. Otherwise preConnect will be eagerly called
@@ -130,7 +131,6 @@ export function useVeniceConnect({
           resourceExternalId: opts.resourceId
             ? extractId(opts.resourceId)[2]
             : undefined,
-          envName,
         }
 
         const preConnInputSchema =
@@ -152,7 +152,7 @@ export function useVeniceConnect({
                     <Card className="grid gap-6 p-6">
                       <h2 className="grid grid-cols-[auto_1fr] items-center gap-2">
                         <SettingsIcon className="h-5 w-5 fill-venice-gray-muted" />
-                        <span className="text-base text-offwhite">
+                        <span className="text-offwhite text-base">
                           Connect parameters
                         </span>
                       </h2>
@@ -243,7 +243,6 @@ export function useVeniceConnect({
       }
     },
     [
-      envName,
       endUserId,
       providerByName,
       options.enablePreconnectPrompt,

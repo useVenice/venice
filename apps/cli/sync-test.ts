@@ -16,8 +16,12 @@ function getSource(name: string) {
       return plaidProvider.sourceSync({
         endUser: null,
         config: plaidProvider.def.integrationConfig.parse({
+          envName: 'sandbox',
           clientId: process.env['int_plaid__clientId'] ?? '',
-          secrets: {sandbox: process.env['int_plaid__secrets__sandbox'] ?? ''},
+          clientSecret:
+            process.env['int_plaid__clientSecret'] ??
+            process.env['int_plaid__secrets__sandbox'] ??
+            '',
         }),
         settings: {accessToken: process.env['PLAID_ACCESS_TOKEN'] ?? ''},
         state: {},
