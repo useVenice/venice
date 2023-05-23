@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import handlebars from 'handlebars'
+
 import {extractId, handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
 import {
@@ -24,7 +27,10 @@ const _def = makeSyncProvider.def({
 
     sourceQueries: z
       .object({
-        invoice: z.string().nullish(),
+        invoice: z
+          .string()
+          .nullish()
+          .describe('Should order by lastModifiedAt and id descending'),
       })
       // .nullish() does not translate well to jsonSchema
       // @see https://share.cleanshot.com/w0KVx1Y2
@@ -32,6 +38,16 @@ const _def = makeSyncProvider.def({
   }),
   destinationInputEntity: zCast<EntityPayloadWithExternal>(),
   sourceOutputEntity: zCast<EntityPayloadWithExternal | ZCommon['Entity']>(),
+  sourceState: z
+    .object({
+      invoice: z
+        .object({
+          lastModifiedAt: z.string().optional(),
+          lastRowId: z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 })
 
 const def = makeSyncProvider.def.helpers(_def)
@@ -55,7 +71,11 @@ export const postgresProvider = makeSyncProvider({
   // 2) Impelemnt incremental Sync
   // 3) Improve type safety
   // 4) Implement parallel runs
-  sourceSync: ({endUser, settings: {databaseUrl, sourceQueries}}) => {
+  sourceSync: ({
+    endUser,
+    settings: {databaseUrl, sourceQueries},
+    state = {},
+  }) => {
     const {getPool, sql, getMigrator} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
@@ -103,22 +123,41 @@ export const postgresProvider = makeSyncProvider({
       }
 
       const rawPool = await rawClient.getPool()
-      for (const [_entityName, query] of Object.entries(sourceQueries ?? {})) {
+      for (const [_entityName, _query] of Object.entries(sourceQueries ?? {})) {
         const entityName = _entityName as keyof NonNullable<
           typeof sourceQueries
         >
-        if (!query) {
+        const queryState = state[_entityName as keyof typeof state]
+        if (!_query) {
           return
         }
+        // If schema is known, we can use prepared statements instead. But in this case
+        // we do not know the schema
+        const query = handlebars.compile(_query)({
+          ...queryState,
+          endUserId: endUser?.id,
+        })
 
-        const res = await rawPool.query(
+        const res = await rawPool.query<{id?: string; modifiedAt?: string}>(
           rawClient.sql([query] as unknown as TemplateStringsArray),
         )
-        yield res.rows.map((row) =>
-          def._op('data', {
-            data: {entityName, id: `${row['id']}`, entity: row},
-          }),
-        )
+        const lastRow = res.rows[res.rows.length - 1]
+
+        yield R.compact([
+          ...res.rows.map((row) =>
+            def._op('data', {
+              data: {entityName, id: `${row.id}`, entity: row},
+            }),
+          ),
+          lastRow?.modifiedAt &&
+            lastRow.id &&
+            def._opState({
+              invoice: {
+                lastModifiedAt: lastRow.modifiedAt,
+                lastRowId: lastRow.id,
+              },
+            }),
+        ])
       }
     }
 

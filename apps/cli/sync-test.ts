@@ -29,6 +29,7 @@ function getSource(name: string) {
     case 'postgres':
       return postgresProvider.sourceSync({
         endUser: null,
+        state: {},
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
           sourceQueries: {

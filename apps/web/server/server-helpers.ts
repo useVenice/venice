@@ -144,7 +144,7 @@ export async function serverGetViewer(
     }
     // console.warn('Invalid api key, ignoroing', {apiKey: apikey, id, key, res})
   }
-  // TODO: Do not crash...
+  // TODO: Do not crash if we do not have middleware... super annoying...
   const auth =
     'req' in context ? getAuth(context.req) : serverComponentGetAuth()
   if (auth.userId) {

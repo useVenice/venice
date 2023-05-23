@@ -79,6 +79,7 @@ switch (process.argv[2]) {
   case 'source-postgres': {
     sync({
       source: postgresProvider.sourceSync({
+        state: undefined,
         endUser: null,
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
