@@ -1,11 +1,17 @@
 import '@usevenice/app-config/register.node'
 
+import {clerkClient} from '@clerk/nextjs'
+
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import type {EndUserId} from '@usevenice/cdk-core'
-import {zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
+import {makeId, zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
 import {inngest} from '@usevenice/engine-backend/events'
+
+import {makeUlid} from '@/../../packages/util'
+import {zAuth} from '@/lib/schemas'
+
 import {makeSentryClient} from '../lib/makeSentryClient'
 import {serverAnalytics} from '../lib/server-analytics'
 import {ensureDefaultResourceAndPipelines, getPool, sql} from '../server'
@@ -86,6 +92,61 @@ export const syncResource = inngest.createFunction(
       console.error('Error running syncResource', err)
       throw err
     }
+  },
+)
+
+// TODO: Should the default source and destinations be configured on the integration level instead of
+// organization level?
+// either way we will have to ensure that organizations can only create pipelines between
+// resources that they own
+export const createDefaultPipeline = inngest.createFunction(
+  {name: 'Create default pipeline'},
+  {event: 'connect/resource-connected'},
+  async ({event}) => {
+    const ctx = contextFactory.fromViewer({role: 'system'})
+    const resource = await ctx.helpers.getResourceExpandedOrFail(
+      event.data.resourceId,
+    )
+    const [_org, pipelines] = await Promise.all([
+      clerkClient.organizations.getOrganization({
+        organizationId: resource.integration.orgId,
+      }),
+      ctx.helpers.metaService.findPipelines({resourceIds: [resource.id]}),
+    ])
+    if (pipelines.length > 0) {
+      return `${pipelines.length} pipelines already exist, skipping`
+    }
+
+    const org = zAuth.organization.parse(_org)
+    const helpers = ctx.as('org', {orgId: org.id})
+    const {defaultSource, defaultDestination} = org.publicMetadata.automations
+    if (
+      defaultSource?.sourceResourceId &&
+      defaultSource.destinationIntegrationIds.includes(resource.integrationId)
+    ) {
+      const pipelineId = makeId('pipe', makeUlid())
+
+      await helpers.patch('pipeline', pipelineId, {
+        destinationId: resource.id,
+        sourceId: defaultSource.sourceResourceId,
+      })
+      await inngest.send('sync/pipeline-requested', {data: {pipelineId}})
+      return `Created default source pipeline ${pipelineId}`
+    }
+
+    if (
+      defaultDestination?.destinationResourceId &&
+      defaultDestination.sourceIntegrationids.includes(resource.integrationId)
+    ) {
+      const pipelineId = makeId('pipe', makeUlid())
+      await helpers.patch('pipeline', pipelineId, {
+        sourceId: resource.id,
+        destinationId: defaultDestination.destinationResourceId,
+      })
+      await inngest.send('sync/pipeline-requested', {data: {pipelineId}})
+      return `Created default destination pipeline ${pipelineId}`
+    }
+    return 'No automation performed'
   },
 )
 
