@@ -1,1 +1,1 @@
-export {cn} from '@usevenice/ui'
+export {cn} from '@usevenice/ui/utils'

@@ -74,6 +74,10 @@ const nextConfig = {
       test: /\.node$/,
       use: [{loader: 'node-loader'}],
     })
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      handlebars: 'handlebars/dist/handlebars.js',
+    }
     config.resolve.fallback = {
       fs: false,
       child_process: false, // Reference: https://stackoverflow.com/questions/54459442/module-not-found-error-cant-resolve-child-process-how-to-fix
