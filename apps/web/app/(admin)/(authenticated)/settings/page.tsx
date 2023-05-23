@@ -7,6 +7,7 @@ import {trpcReact as _trpcReact} from '@usevenice/engine-frontend'
 import {LoadingText, SchemaForm, useWithToast} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
+import {zOrgMetadata} from '@/lib/schemas'
 import type {AppRouter} from '@/pages/api/trpc/[...trpc]'
 
 /** Move this somewhere where other components can access */
@@ -21,6 +22,7 @@ export default function SettingsPage() {
     onError,
   })
   const resourcesRes = trpcReact.listResources.useQuery()
+  const integrationsRes = trpcReact.listIntegrationInfos.useQuery({})
 
   const zResoId = z.union(
     (resourcesRes.data ?? []).map((r) =>
@@ -29,23 +31,28 @@ export default function SettingsPage() {
         .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
+  const zIntId = z.union(
+    (integrationsRes.data ?? []).map((i) =>
+      z
+        .literal(i.id)
+        .describe(i.providerName ? `${i.providerName} <${i.id}>` : i.id),
+    ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
+  )
 
-  const formSchema = z.object({
-    defaultDestinationId: zResoId
-      .optional()
-      .describe(
-        'Create a pipeline to this destination whenever a new source-type resource is created',
-      ),
-    defaultSourceId: zResoId
-      .optional()
-      .describe(
-        'Create a pipeline to this source whenever a new destination-type resource is created',
-      ),
+  const formSchema = zOrgMetadata({
+    srcResoId: zResoId,
+    destResoId: zResoId,
+    destIntId: zIntId,
+    srcIntId: zIntId,
   })
 
   // console.log('org public meta', org.organization?.publicMetadata)
 
-  if (!org.organization || resourcesRes.isLoading) {
+  if (
+    !org.organization ||
+    resourcesRes.isLoading ||
+    integrationsRes.isLoading
+  ) {
     return <LoadingText />
   }
 

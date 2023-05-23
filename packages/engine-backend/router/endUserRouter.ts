@@ -111,6 +111,9 @@ export const endUserRouter = trpc.router({
           triggerDefaultSync:
             !syncInBackground && resoUpdate.triggerDefaultSync,
         })
+
+        await inngest.send('connect/resource-connected', {data: {resourceId}})
+
         if (syncInBackground) {
           await inngest.send('sync/resource-requested', {data: {resourceId}})
         }

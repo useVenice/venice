@@ -1,5 +1,7 @@
 import {
   debugProvider,
+  extractProviderName,
+  Id,
   metaForProvider,
   zIntegrationStage,
 } from '@usevenice/cdk-core'
@@ -82,3 +84,8 @@ export const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
 export const availableProviders = allProviders.filter(
   (p) => p.stage !== 'hidden',
 )
+
+export function providerMetaForId(id: Id['reso'] | Id['int']) {
+  const providerName = extractProviderName(id)
+  return providerByName[providerName]
+}

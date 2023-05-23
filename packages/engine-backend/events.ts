@@ -1,8 +1,9 @@
+import type {EventPayload} from 'inngest'
+import {Inngest} from 'inngest'
+
 import {zId} from '@usevenice/cdk-core'
 import type {NonEmptyArray} from '@usevenice/util'
 import {z} from '@usevenice/util'
-import type {EventPayload} from 'inngest'
-import {Inngest} from 'inngest'
 
 // TODO: Implement webhook as events too
 
@@ -22,6 +23,7 @@ const eventMap = {
   'sync/scheduler-debug': {},
   'sync/pipeline-requested': {pipelineId: zId('pipe')},
   'sync/resource-requested': {resourceId: zId('reso')},
+  'connect/resource-connected': {resourceId: zId('reso')},
   'webhook/received': {
     /** For debugging requests */
     traceId: z.string(),
