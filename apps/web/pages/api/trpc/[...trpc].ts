@@ -1,16 +1,37 @@
 import '@usevenice/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
+import {clerkClient} from '@clerk/nextjs'
+import {TRPCError} from '@trpc/server'
 import type {NextApiHandler} from 'next'
 
 import {contextFactory} from '@usevenice/app-config/backendConfig'
 import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
+import {adminProcedure, trpc} from '@usevenice/engine-backend/router/_base'
 import {R} from '@usevenice/util'
+
+import {zAuth} from '@/lib/schemas'
 
 import {respondToCORS, serverGetViewer} from '../../../server/server-helpers'
 
+const customRouter = trpc.router({
+  updateOrganization: adminProcedure
+    .input(zAuth.organization.pick({id: true, publicMetadata: true}))
+    .mutation(async ({ctx, input: {id, ...update}}) => {
+      if (ctx.viewer.role !== 'system' && ctx.viewer.orgId !== id) {
+        throw new TRPCError({code: 'UNAUTHORIZED'})
+      }
+      const org = await clerkClient.organizations.updateOrganization(id, update)
+      return org
+    }),
+})
+
+const appRouter = trpc.mergeRouters(flatRouter, customRouter)
+
+export type AppRouter = typeof appRouter
+
 const handler = trpcNext.createNextApiHandler({
-  router: flatRouter,
+  router: appRouter,
   createContext: async ({req, res}) => {
     const viewer = await serverGetViewer({req, res})
     console.log('[trpc.createContext]', {query: req.query, viewer})

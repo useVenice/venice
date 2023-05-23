@@ -26,3 +26,5 @@ export const nestedRouter = trpc.router({
 export type FlatRouter = typeof flatRouter
 export type RouterInput = inferRouterInputs<typeof flatRouter>
 export type RouterOutput = inferRouterOutputs<typeof flatRouter>
+
+export type {AnyRouter} from '@trpc/server'

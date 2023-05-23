@@ -2,9 +2,13 @@ import type {QueryClient} from '@tanstack/react-query'
 import {createTRPCReact, httpBatchLink, httpLink} from '@trpc/react-query'
 import React from 'react'
 
-import type {FlatRouter} from '@usevenice/engine-backend'
+import type {AnyRouter, FlatRouter} from '@usevenice/engine-backend'
 
 export const trpcReact = createTRPCReact<FlatRouter>()
+
+export type TRPCReact<TRouter extends AnyRouter> = ReturnType<
+  typeof createTRPCReact<TRouter>
+>
 
 // TODO: Make use of this from VeniceProvider?
 export function TRPCProvider({

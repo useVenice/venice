@@ -6,7 +6,7 @@ import React from 'react'
 
 import {getServerUrl, kAcceptUrlParam} from '@usevenice/app-config/constants'
 import type {Id} from '@usevenice/cdk-core'
-import {Kbd, Resizable} from '@usevenice/ui'
+import {Kbd, Resizable, useWithToast} from '@usevenice/ui'
 import {CodeEditor} from '@usevenice/ui/CodeEditor'
 import {DataGrid} from '@usevenice/ui/DataGrid'
 import {
@@ -15,7 +15,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  useToast,
 } from '@usevenice/ui/new-components'
 
 import {NoSSR} from '@/components/NoSSR'
@@ -195,29 +194,4 @@ export function SqlPage({resourceId}: {resourceId: Id['reso']}) {
       </div>
     </div>
   )
-}
-
-export function useWithToast() {
-  const {toast} = useToast()
-  const withToast = (
-    fn: () => Promise<unknown>,
-    opts: {title?: string; description?: string} = {},
-  ) =>
-    fn()
-      .then((res) => {
-        toast({
-          variant: 'success',
-          title: opts.title ?? 'Success',
-          description: opts.description,
-        })
-        return res
-      })
-      .catch((err) => {
-        toast({
-          variant: 'destructive',
-          title: `Error: ${err}`,
-          description: opts.description,
-        })
-      })
-  return {withToast}
 }

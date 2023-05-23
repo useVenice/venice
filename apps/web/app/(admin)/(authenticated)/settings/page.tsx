@@ -1,10 +1,25 @@
 'use client'
 
-import {trpcReact} from '@/../../packages/engine-frontend'
-import {SchemaForm} from '@/../../packages/ui'
-import {z} from '@/../../packages/util'
+import {useOrganization} from '@clerk/nextjs'
+
+import type {TRPCReact} from '@usevenice/engine-frontend'
+import {trpcReact as _trpcReact} from '@usevenice/engine-frontend'
+import {LoadingText, SchemaForm, useWithToast} from '@usevenice/ui'
+import {z} from '@usevenice/util'
+
+import type {AppRouter} from '@/pages/api/trpc/[...trpc]'
+
+/** Move this somewhere where other components can access */
+const trpcReact = _trpcReact as unknown as TRPCReact<AppRouter>
 
 export default function SettingsPage() {
+  const {onSuccess, onError} = useWithToast()
+
+  const org = useOrganization()
+  const updateOrg = trpcReact.updateOrganization.useMutation({
+    onSuccess,
+    onError,
+  })
   const resourcesRes = trpcReact.listResources.useQuery()
 
   const zResoId = z.union(
@@ -18,13 +33,38 @@ export default function SettingsPage() {
   const formSchema = z.object({
     defaultDestinationId: zResoId
       .optional()
-      .describe('Create a pipeline to this destination whenever a new source is created'),
+      .describe(
+        'Create a pipeline to this destination whenever a new source-type resource is created',
+      ),
+    defaultSourceId: zResoId
+      .optional()
+      .describe(
+        'Create a pipeline to this source whenever a new destination-type resource is created',
+      ),
   })
+
+  // console.log('org public meta', org.organization?.publicMetadata)
+
+  if (!org.organization || resourcesRes.isLoading) {
+    return <LoadingText />
+  }
 
   return (
     <div className="p-6">
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">Settings</h2>
-      <SchemaForm schema={formSchema} />
+      <SchemaForm
+        schema={formSchema}
+        formData={org.organization?.publicMetadata ?? {}}
+        onSubmit={({formData}) => {
+          if (!org.organization?.id) {
+            return
+          }
+          updateOrg.mutate({
+            id: org.organization.id,
+            publicMetadata: formData,
+          })
+        }}
+      />
     </div>
   )
 }

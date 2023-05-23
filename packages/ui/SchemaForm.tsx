@@ -48,15 +48,7 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
 
   // We cache the formState so that re-render does not cause immediate loss
   // though this may sometimes cause stale data? Need to think more about it.
-  const [formData, setFormData] = React.useState<z.infer<TSchema>>(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    _formData
-      ? (schema instanceof z.ZodObject ? schema.partial() : schema).safeParse(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          R.mapValues(_formData, (v) => (v === null ? undefined : v)),
-        ).data
-      : undefined,
-  )
+  const [formData, setFormData] = React.useState<z.infer<TSchema>>(_formData)
   // console.log('[SchemaForm] jsonSchema', jsonSchema)
 
   return (

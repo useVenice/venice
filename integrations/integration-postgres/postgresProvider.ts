@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import handlebars from 'handlebars'
-
 import {extractId, handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
 import {
@@ -88,6 +86,8 @@ export const postgresProvider = makeSyncProvider({
     })
 
     async function* iterateEntities() {
+      const handlebars = await import('handlebars')
+
       const pool = await getPool()
       const migrator = await getMigrator()
       await migrator.up()
