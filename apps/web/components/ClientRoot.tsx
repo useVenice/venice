@@ -28,9 +28,10 @@ export function ClientRootWithClerk(props: {
   useEffect(() => {
     // TODO: Are we better off signing ourselves server side and avoid needing a round-trip to Clerk?
     // Access token is needed because we need to connect to supabase-realtime
+    console.log('[ClientRoot] regenerate supabase auth token')
     const template = commonEnv.NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME
     void auth.getToken({template}).then((t) => setAccessToken(t))
-  }, [auth])
+  }, [auth, auth.userId, auth.orgId])
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
   ;(globalThis as any).auth = auth
@@ -76,6 +77,7 @@ export function ClientRoot({
     if (!realtime.isConnected()) {
       realtime.connect()
     }
+    console.log('realtime setAuth')
     realtime.setAuth(accessToken ?? null)
   }, [realtime, accessToken])
 

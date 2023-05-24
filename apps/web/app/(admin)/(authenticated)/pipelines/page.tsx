@@ -24,6 +24,8 @@ import {z} from '@usevenice/util'
 export default function PipelinesPage() {
   const res = trpcReact.listPipelines2.useQuery()
 
+  ;(globalThis as any).listPipelines2Res = res
+
   return (
     <div className="p-6">
       <header className="flex items-center">
