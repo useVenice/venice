@@ -1,14 +1,50 @@
+import {zId} from '@usevenice/cdk-core'
 import type {CommandDefinitionMap} from '@usevenice/ui'
-import {OpenApiGeneratorV31, z} from '@usevenice/util'
-
-import {zId} from '@/../../packages/cdk-core'
+import {z} from '@usevenice/util'
 
 export interface CommandContext {
   activeEntity: {__typename: string; id: string}
 }
 
 export const commands = {
-  delete_pipeline: {
+  go_home: {
+    icon: 'Home',
+  },
+  go_to_settings: {
+    icon: 'Settings',
+  },
+  copy_id: {
+    icon: 'Copy',
+  },
+
+  'resource:edit': {
+    icon: 'Pencil',
+  },
+  'resource:delete': {
+    icon: 'Trash',
+  },
+  'resource:sync': {
+    icon: 'RefreshCw',
+  },
+  'postgres/run_sql': {
+    icon: 'Database',
+    group: 'resource',
+    // Only show me for postgres resources
+  },
+  'plaid/simulate_disconnect': {
+    icon: 'Unlink',
+    group: 'resource',
+    // Only show me for sandbox plaid resources
+  },
+
+  'pipeline:edit': {
+    icon: 'Pencil',
+  },
+  'pipeline:sync': {
+    icon: 'RefreshCw',
+    group: 'pipeline',
+  },
+  'pipeline:delete': {
     icon: 'Trash',
     params: z
       .object({
@@ -18,13 +54,3 @@ export const commands = {
     handler: ({ctx}) => {},
   },
 } satisfies CommandDefinitionMap<CommandContext>
-
-const generator = new OpenApiGeneratorV31([commands.delete_pipeline.params])
-
-// const doc = generator.generateDocument({
-//   openapi: '',
-//   info: {title: '', version: ''},
-// })
-const components = generator.generateComponents()
-// console.log(JSON.stringify(doc, null, 2))
-console.log(JSON.stringify(components, null, 2))
