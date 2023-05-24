@@ -37,9 +37,9 @@ import {R, sort} from '@usevenice/util'
 export {plaidProvider, fsProvider}
 
 export const DOCUMENTED_PROVIDERS = [
-  plaidProvider,
-  mergeImpl as unknown as typeof plaidProvider,
-  heronImpl as unknown as typeof plaidProvider,
+  plaidProvider as unknown as typeof debugProvider,
+  mergeImpl as unknown as typeof debugProvider,
+  heronImpl as unknown as typeof debugProvider,
 ] as const
 
 export const PROVIDERS = [
@@ -53,12 +53,12 @@ export const PROVIDERS = [
   airtableProvider,
   webhookProvider,
   // Ledger
-  yodleeProvider,
+  yodleeProvider as unknown as typeof debugProvider,
   beancountProvider,
   importProvider,
   lunchmoneyProvider,
-  oneBrickProvider,
-  tellerProvider,
+  oneBrickProvider as unknown as typeof debugProvider,
+  tellerProvider as unknown as typeof debugProvider,
   rampProvider,
   wiseProvider,
   togglProvider,
@@ -71,8 +71,8 @@ export const PROVIDERS = [
   saltedgeProvider,
   venmoProvider,
   // New ones
-  stripeImpl as unknown as typeof plaidProvider, // Hack for now..
-  brexImpl as unknown as typeof plaidProvider, // Hack for now..
+  stripeImpl as unknown as typeof debugProvider, // Hack for now..
+  brexImpl as unknown as typeof debugProvider, // Hack for now..
 ] as const
 
 export const allProviders = sort(PROVIDERS.map(metaForProvider)).desc((p) =>

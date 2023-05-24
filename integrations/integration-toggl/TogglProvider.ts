@@ -1,9 +1,7 @@
-import React from 'react'
-
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
-import {A, Deferred, R, Rx, rxjs, z} from '@usevenice/util'
+import {A, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   itemProjectResponseSchema,
@@ -77,30 +75,6 @@ export const togglProvider = makeSyncProvider({
       return null
     },
   }),
-
-  useConnectHook: (_) => {
-    const [isShowPromt, setIsShowPromt] = React.useState(false)
-
-    const [deferred] = React.useState(
-      new Deferred<(typeof def)['_types']['connectOutput']>(),
-    )
-
-    React.useEffect(() => {
-      if (isShowPromt) {
-        const email = window.prompt('Input Your Email')
-        const password = window.prompt('Input Your Password')
-        const apiToken =
-          !email || !password ? window.prompt('...or input Your API Token') : ''
-        deferred.resolve({email, password, apiToken: apiToken ?? ''})
-        setIsShowPromt(false)
-      }
-    }, [isShowPromt, deferred])
-
-    return (_opts) => {
-      setIsShowPromt(true)
-      return deferred.promise
-    }
-  },
 
   postConnect: (input) => ({
     resourceExternalId: input.apiToken,

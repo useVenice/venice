@@ -81,3 +81,5 @@ export const heronServer = {
     )
   },
 } satisfies IntegrationServer<typeof heronSchemas>
+
+export default heronServer

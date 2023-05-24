@@ -2,7 +2,7 @@
 
 import {initTRPC} from '@trpc/server'
 
-import type {AnyEntityPayload, AnySyncProvider} from '@usevenice/cdk-core'
+import type {AnyEntityPayload, AnyIntegrationImpl} from '@usevenice/cdk-core'
 import {
   fromMaybePromise,
   R,
@@ -20,7 +20,7 @@ import {readJson} from './utils'
 const trpcServer = initTRPC.create()
 const procedure = trpcServer.procedure
 
-export function makeAirbyteConnector(provider: AnySyncProvider) {
+export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
   const connSpec = z.object({
     settings: provider.def.resourceSettings ?? z.object({}),
     // For now, unclear whether it should actually live in airbyte config

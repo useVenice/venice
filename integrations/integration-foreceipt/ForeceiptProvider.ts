@@ -155,9 +155,6 @@ export const foreceiptProvider = makeSyncProvider({
       },
     },
   }),
-  // useConnectHook: (_) => (_opts) =>
-  //   new Deferred<typeof def['_types']['connectOutput']>().promise,
-
   // TODO: Need to check and fix the issue
   // postConnect: async (input, config) => {
   //   const settings = def._type('resourceSettings', {

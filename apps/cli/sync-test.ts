@@ -98,7 +98,8 @@ sync({
     process.argv[2] === 'plaid' &&
       mapStandardEntityLink({
         id: 'reso_plaid_demo',
-        integration: {provider: plaidProvider},
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+        integration: {provider: plaidProvider as any},
         settings: {},
       }),
     process.argv[2] === 'plaid' && logLink({prefix: 'preDest'}),

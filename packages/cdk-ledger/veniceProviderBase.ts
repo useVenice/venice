@@ -16,6 +16,21 @@ export const zStream = z.enum([
   ...(R.keys(zStandard) as Array<keyof typeof zStandard>),
 ])
 
+export const baseIntegrationSchemas = {
+  sourceState: z
+    .object({
+      /** If missing, means sync all streams */
+      streams: z.array(zStream).nullish(),
+      /** Account ids to sync */
+      accountIds: z.array(z.string()).nullish(),
+      /** Date to sync since */
+      sinceDate: z.string().nullish() /** ISO8601 */,
+    })
+    .default({}),
+  // How do we omit destination defs for source only providers and vice versa?
+  destinationInputEntity: zEntityPayload,
+}
+
 /**
  * TODO: Narrow the type of AnyProviderDef to only those whose `sourceState`
  * and `destinationInputEntity` match the type needed for venice

@@ -43,6 +43,7 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'brex',
     dirName: 'integration-brex',
     varName: 'integrationBrex',
     imports: {
@@ -61,6 +62,7 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'heron',
     dirName: 'integration-heron',
     varName: 'integrationHeron',
     imports: {
@@ -75,6 +77,7 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'merge',
     dirName: 'integration-merge',
     varName: 'integrationMerge',
     imports: {
@@ -85,11 +88,25 @@ module.exports = [
   },
   {dirName: 'integration-moota', varName: 'integrationMoota', imports: {}},
   {
+    name: 'onebrick',
     dirName: 'integration-onebrick',
     varName: 'integrationOnebrick',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-onebrick/def',
+      client: '@usevenice/integration-onebrick/client',
+      server: '@usevenice/integration-onebrick/server',
+    },
   },
-  {dirName: 'integration-plaid', varName: 'integrationPlaid', imports: {}},
+  {
+    name: 'plaid',
+    dirName: 'integration-plaid',
+    varName: 'integrationPlaid',
+    imports: {
+      def: '@usevenice/integration-plaid/def',
+      client: '@usevenice/integration-plaid/client',
+      server: '@usevenice/integration-plaid/server',
+    },
+  },
   {
     dirName: 'integration-postgres',
     varName: 'integrationPostgres',
@@ -108,6 +125,7 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'stripe',
     dirName: 'integration-stripe',
     varName: 'integrationStripe',
     imports: {
@@ -115,9 +133,27 @@ module.exports = [
       server: '@usevenice/integration-stripe/server',
     },
   },
-  {dirName: 'integration-teller', varName: 'integrationTeller', imports: {}},
+  {
+    name: 'teller',
+    dirName: 'integration-teller',
+    varName: 'integrationTeller',
+    imports: {
+      def: '@usevenice/integration-teller/def',
+      client: '@usevenice/integration-teller/client',
+      server: '@usevenice/integration-teller/server',
+    },
+  },
   {dirName: 'integration-toggl', varName: 'integrationToggl', imports: {}},
   {dirName: 'integration-venmo', varName: 'integrationVenmo', imports: {}},
   {dirName: 'integration-wise', varName: 'integrationWise', imports: {}},
-  {dirName: 'integration-yodlee', varName: 'integrationYodlee', imports: {}},
+  {
+    name: 'yodlee',
+    dirName: 'integration-yodlee',
+    varName: 'integrationYodlee',
+    imports: {
+      def: '@usevenice/integration-yodlee/def',
+      client: '@usevenice/integration-yodlee/client',
+      server: '@usevenice/integration-yodlee/server',
+    },
+  },
 ]

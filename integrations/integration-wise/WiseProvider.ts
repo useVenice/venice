@@ -1,8 +1,6 @@
-import React from 'react'
-
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, Deferred, R, Rx, rxjs, z} from '@usevenice/util'
+import {A, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   makeWiseClient,
@@ -82,40 +80,6 @@ export const wiseProvider = makeSyncProvider({
       return null
     },
   }),
-  // preConnect: ({envName, ...input}) =>
-  //   Promise.resolve({
-  //     envName,
-  //     ...input
-  //   }),
-
-  useConnectHook: (_) => {
-    const [options, setOptions] = React.useState<
-      (typeof def)['_types']['connectInput'] | null
-    >(null)
-
-    const [deferred] = React.useState(
-      new Deferred<(typeof def)['_types']['connectOutput']>(),
-    )
-
-    React.useEffect(() => {
-      if (options?.envName) {
-        // Will use it once we know the clientId either for sandbox or live environment, https://sandbox.transferwise.tech/settings/ (we only know the api key as access token)
-        // window.open(
-        //   `https://sandbox.transferwise.tech/oauth/authorize/?client_id=${options.clientId}&redirect_uri=${options.redirectUri}`,
-        // )
-        const apiToken = window.prompt('Input Your Wise Api Token', '')
-        deferred.resolve({...options, envName: options.envName, apiToken})
-      }
-    }, [options, deferred])
-
-    return (opts) => {
-      setOptions({
-        ...opts,
-        envName: opts.envName,
-      })
-      return deferred.promise
-    }
-  },
 
   postConnect: (input) => ({
     resourceExternalId: input.apiToken ?? '',

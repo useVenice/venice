@@ -1,12 +1,10 @@
-import React from 'react'
-
 import {makeSyncProvider} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   makeStandardId,
   veniceProviderBase,
 } from '@usevenice/cdk-ledger'
-import {A, Deferred, md5Hash, R, Rx, rxjs, z} from '@usevenice/util'
+import {A, md5Hash, R, Rx, rxjs, z} from '@usevenice/util'
 
 import {
   businessResponseSchema,
@@ -102,46 +100,6 @@ export const rampProvider = makeSyncProvider({
       }),
     },
   }),
-
-  // TODO: Need to find a way to skip unnecessary pipe/resource
-  useConnectHook: (_) => {
-    const [isShowPromt, setIsShowPromt] = React.useState(false)
-    const [deferred] = React.useState(
-      new Deferred<(typeof def)['_types']['connectOutput']>(),
-    )
-
-    React.useEffect(() => {
-      if (isShowPromt) {
-        const clientId = window.prompt('Input Ramp Client ID')
-        const clientSecret = window.prompt('Input Ramp Client Secret')
-
-        // Pass the clientId and clientSecret for now because of the CORS issue when run the oauth
-        deferred.resolve({
-          clientId: clientId ?? '',
-          clientSecret: clientSecret ?? '',
-        })
-        // makeRampClient(zRampConfig.parse({clientId: '5gyTltFyF9yzcDidg9IcavfG0UsYg5crY5GpmK4kE4HOAN6k', clientSecret: 'pWrVEjy0TtZ1DZHaiZ6srwrJcCWnrKJoF3irwq5mdbIbUDL0'}))
-        //   .getAccessToken()
-        //   .then((res) => deferred.resolve({ clientId: clientId ?? '', clientSecret: clientSecret ?? ''}))
-        //   .catch(console.log)
-
-        // TODO: Use it when we use authorization code
-        // const clientId = window.prompt('Input Ramp Client ID', '5gyTltFyF9yzcDidg9IcavfG0UsYg5crY5GpmK4kE4HOAN6k')
-        // const clientSecret = window.prompt('Input Ramp Client Secret', 'pWrVEjy0TtZ1DZHaiZ6srwrJcCWnrKJoF3irwq5mdbIbUDL0')
-        // if(clientId && clientSecret) {
-        //   window.open(
-        //     makeRampClient({clientId, clientSecret}).getAuthorizeUrl(`${redirectUri}/api/webhook/ramp`),
-        //     'popup',
-        //   )
-        // }
-      }
-    }, [isShowPromt, deferred])
-
-    return (_opts) => {
-      setIsShowPromt(true)
-      return deferred.promise
-    }
-  },
 
   postConnect: (input) => ({
     resourceExternalId: input.clientId ?? '',

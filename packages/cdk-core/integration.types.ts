@@ -41,7 +41,7 @@ export interface IntegrationSchemas {
 }
 
 export interface IntegrationDef<
-  TSchemas extends IntegrationSchemas,
+  TSchemas extends IntegrationSchemas = IntegrationSchemas,
   T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
 > {
   name: TSchemas['name']['_def']['value']
@@ -195,6 +195,15 @@ export interface IntegrationServer<
     >
   >
 }
+
+export interface IntegrationImpl<TSchemas extends IntegrationSchemas>
+  extends IntegrationDef<TSchemas>,
+    IntegrationServer<TSchemas>,
+    IntegrationClient<TSchemas> {
+  // helpers: IntHelpers<TSchemas>
+}
+
+export type AnyIntegrationImpl = IntegrationImpl<IntegrationSchemas>
 
 // MARK: - Runtime helpers
 

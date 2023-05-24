@@ -44,8 +44,13 @@ function env() {
     .env as typeof import('@usevenice/app-config/env')['env']
 }
 
-function intConfig<T extends (typeof PROVIDERS)[number]['name']>(name: T) {
-  const config = parseIntConfigsFromRawEnv()[name]
+// Hack for plaid for now...
+type hackName = 'plaid' | 'yodlee' | 'onebrick' | 'teller'
+function intConfig<T extends (typeof PROVIDERS)[number]['name'] | hackName>(
+  name: T,
+) {
+  const config =
+    parseIntConfigsFromRawEnv()[name as Exclude<typeof name, hackName>]
   if (!config) {
     throw new Error(`${name} provider is not configured`)
   }

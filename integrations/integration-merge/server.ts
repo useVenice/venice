@@ -104,3 +104,5 @@ export const mergeServer = {
       .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
   },
 } satisfies IntegrationServer<typeof mergeSchemas>
+
+export default mergeServer

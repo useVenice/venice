@@ -47,3 +47,5 @@ export const mergeClient = {
       })
   },
 } satisfies IntegrationClient<typeof mergeSchemas>
+
+export default mergeClient

@@ -8,6 +8,7 @@ import {join as pathJoin} from 'node:path'
 
 import prettier from 'prettier'
 
+import {IntegrationDef} from '@usevenice/cdk-core'
 import {camelCase} from '@usevenice/util/string-utils'
 
 import prettierConfig from '../../prettier.config'
@@ -32,7 +33,13 @@ const integrationList = fs
   .filter((r) => r.isDirectory())
   .map((r) => {
     const path = pathJoin(__dirname, '../../integrations', r.name)
+    const def = fs.existsSync(pathJoin(path, 'def.ts'))
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (require(`@usevenice/${r.name}/def`).default as IntegrationDef)
+      : undefined
+
     return {
+      name: def?.name,
       dirName: r.name,
       varName: camelCase(r.name),
       imports: {
@@ -68,9 +75,9 @@ for (const entry of entries) {
           `import {default as ${int.varName}} from '${int.imports[entry]}'`,
       )
       .join('\n')}
-    export const ${entry}Integrations = [${list
-      .map(({varName}) => `${varName},`)
-      .join('\n')}] as const
+    export const ${entry}Integrations = {${list
+      .map(({name, varName}) => `${name}: ${varName},`)
+      .join('\n')}}
   `,
   )
 }
