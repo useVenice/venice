@@ -42,7 +42,14 @@ module.exports = [
     varName: 'integrationBeancount',
     imports: {},
   },
-  {dirName: 'integration-brex', varName: 'integrationBrex', imports: {}},
+  {
+    dirName: 'integration-brex',
+    varName: 'integrationBrex',
+    imports: {
+      def: '@usevenice/integration-brex/def',
+      server: '@usevenice/integration-brex/server',
+    },
+  },
   {
     dirName: 'integration-expensify',
     varName: 'integrationExpensify',
@@ -53,14 +60,29 @@ module.exports = [
     varName: 'integrationForeceipt',
     imports: {},
   },
-  {dirName: 'integration-heron', varName: 'integrationHeron', imports: {}},
+  {
+    dirName: 'integration-heron',
+    varName: 'integrationHeron',
+    imports: {
+      def: '@usevenice/integration-heron/def',
+      server: '@usevenice/integration-heron/server',
+    },
+  },
   {dirName: 'integration-import', varName: 'integrationImport', imports: {}},
   {
     dirName: 'integration-lunchmoney',
     varName: 'integrationLunchmoney',
     imports: {},
   },
-  {dirName: 'integration-merge', varName: 'integrationMerge', imports: {}},
+  {
+    dirName: 'integration-merge',
+    varName: 'integrationMerge',
+    imports: {
+      def: '@usevenice/integration-merge/def',
+      client: '@usevenice/integration-merge/client',
+      server: '@usevenice/integration-merge/server',
+    },
+  },
   {dirName: 'integration-moota', varName: 'integrationMoota', imports: {}},
   {
     dirName: 'integration-onebrick',

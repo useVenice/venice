@@ -23,7 +23,7 @@ import type {
 } from './protocol'
 
 /** Maybe this should be renamed to `schemas` */
-export interface IntegrationDef {
+export interface IntegrationSchemas {
   name: z.ZodLiteral<string>
   integrationConfig?: z.ZodTypeAny
   resourceSettings?: z.ZodTypeAny
@@ -40,18 +40,27 @@ export interface IntegrationDef {
   destinationInputEntity?: z.ZodTypeAny
 }
 
-export type ExtendDef<TDef extends IntegrationDef> = ReturnType<
-  typeof defHelpers<TDef>
->
-export interface IntegrationImpl<
-  TDef extends IntegrationDef,
-  T extends ExtendDef<TDef> = ExtendDef<TDef>,
+export interface IntegrationDef<
+  TSchemas extends IntegrationSchemas,
+  T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
 > {
-  [k: string]: unknown
-  def: TDef
-  name: TDef['name']['_def']['value']
-  /** TODO: Move this to IntegrationDef rather than Impl */
+  name: TSchemas['name']['_def']['value']
+  def: TSchemas
   metadata?: IntegrationMetadata
+
+  // standardMappers?: Partial<{
+  //   [k in T['_types']['sourceOutputEntity']['entityName']]: (
+  //     entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
+  //     settings: T['_types']['resourceSettings'],
+  //   ) => import('../cdk-ledger').EntityPayload | null
+  // }> & {
+  //   institution?: (
+  //     data: T['_types']['institutionData'],
+  //   ) => Omit<ZStandard['institution'], 'id'>
+  //   resource: (
+  //     settings: T['_types']['resourceSettings'],
+  //   ) => Omit<ZStandard['resource'], 'id'>
+  // }
 
   standardMappers?: {
     institution?: (
@@ -77,7 +86,29 @@ export interface IntegrationImpl<
           settings: T['_types']['resourceSettings'],
         ) => import('../cdk-ledger').EntityPayload | null)
   }
+}
 
+export type IntHelpers<TDef extends IntegrationSchemas> = ReturnType<
+  typeof intHelpers<TDef>
+>
+
+export interface IntegrationClient<
+  TDef extends IntegrationSchemas,
+  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+> {
+  useConnectHook?: (scope: {
+    userId: DeprecatedUserId | undefined
+    openDialog: OpenDialogFn
+  }) => (
+    connectInput: T['_types']['connectInput'],
+    context: ConnectOptions,
+  ) => Promise<T['_types']['connectOutput']>
+}
+
+export interface IntegrationServer<
+  TDef extends IntegrationSchemas,
+  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+> {
   // MARK: - Connect
 
   preConnect?: (
@@ -86,14 +117,6 @@ export interface IntegrationImpl<
     // TODO: Turn this into an object instead
     input: T['_types']['preConnectInput'],
   ) => Promise<T['_types']['connectInput']>
-
-  useConnectHook?: (scope: {
-    userId: DeprecatedUserId | undefined
-    openDialog: OpenDialogFn
-  }) => (
-    connectInput: T['_types']['connectInput'],
-    context: ConnectOptions,
-  ) => Promise<T['_types']['connectOutput']>
 
   postConnect?: (
     connectOutput: T['_types']['connectOutput'],
@@ -175,8 +198,12 @@ export interface IntegrationImpl<
 
 // MARK: - Runtime helpers
 
-export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
-  type _types = {[k in keyof TDef]: _infer<TDef[k]>}
+/** TODO: Helpers should receive the whole Def as input so we can do the re-mapping at the source layer */
+
+export function intHelpers<TSchemas extends IntegrationSchemas>(
+  schemas: TSchemas,
+) {
+  type _types = {[k in keyof TSchemas]: _infer<TSchemas[k]>}
   type InsOpData = Extract<
     SyncOperation<{
       id: string
@@ -214,7 +241,7 @@ export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
     _types['resourceSettings']
   >
   return {
-    ...def,
+    ...schemas,
     _types: {} as _types,
     _resUpdateType: {} as resoUpdate,
     _stateUpdateType: {} as stateUpdate,
@@ -237,7 +264,7 @@ export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
         // We don't prefix in `_opData`, should we actually prefix here?
         ...rest,
         // TODO: ok so this is a sign that we should be prefixing using a link of some kind...
-        id: makeId('reso', def.name.value, id),
+        id: makeId('reso', schemas.name.value, id),
         type: 'resoUpdate',
       }) as OpRes,
     _opState: (
@@ -266,7 +293,7 @@ export function defHelpers<TDef extends IntegrationDef>(def: TDef) {
       type: 'data',
       data: {
         // We don't prefix in `_opData`, should we actually prefix here?
-        id: makeId('ins', def.name.value, id),
+        id: makeId('ins', schemas.name.value, id),
         entityName: 'institution',
         entity: insitutionData,
       },

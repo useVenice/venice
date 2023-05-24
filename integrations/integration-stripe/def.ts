@@ -1,11 +1,15 @@
-import type {IntegrationDef} from '@usevenice/cdk-core'
-import {defHelpers} from '@usevenice/cdk-core'
-import {veniceProviderBase, zCommon} from '@usevenice/cdk-ledger'
-import {z, zCast} from '@usevenice/util'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {
+  makePostingsMap,
+  veniceProviderBase,
+  zCommon,
+} from '@usevenice/cdk-ledger'
+import {A, z, zCast} from '@usevenice/util'
 
 import type {components} from './stripe.gen'
 
-export const stripeDef = {
+export const stripeSchemas = {
   name: z.literal('stripe'),
   integrationConfig: z.object({
     clientId: z.string(),
@@ -29,8 +33,52 @@ export const stripeDef = {
     .extend({transactionSyncCursor: z.string().nullish()})
     .default({}),
   destinationInputEntity: zCommon.Entity,
-} satisfies IntegrationDef
+} satisfies IntegrationSchemas
 
-export const helpers = defHelpers(stripeDef)
+export const stripeDef = {
+  def: stripeSchemas,
+  name: 'stripe',
+  metadata: {
+    categories: ['commerce'],
+    logoUrl: '/_assets/logo-stripe.png',
+    stage: 'beta',
+  },
+  extension: {
+    sourceMapEntity: {
+      account: ({entity: a}) => ({
+        id: a.id,
+        entityName: 'account',
+        entity: {
+          name: a.settings?.dashboard.display_name ?? '',
+          type: 'asset/digital_wallet',
+          institutionName: a.settings?.payments.statement_descriptor,
+          defaultUnit: a.default_currency?.toUpperCase() as Unit,
+          // informationalBalances: {
+          //   available: A(
+          //     a.balance?.available[0]?.amount ?? 0,
+          //     a.default_currency?.toUpperCase() as Unit,
+          //   ),
+          // },
+        },
+      }),
+      transaction: ({entity: t}) => ({
+        id: t.id,
+        entityName: 'transaction',
+        entity: {
+          date: new Date(t.created).toISOString(),
+          description: t.description ?? '',
+          postingsMap: makePostingsMap({
+            main: {
+              accountExternalId: t.source as ExternalId,
+              amount: A(t.amount, t.currency as Unit),
+            },
+          }),
+        },
+      }),
+    },
+  },
+} satisfies IntegrationDef<typeof stripeSchemas>
+
+export const helpers = intHelpers(stripeSchemas)
 
 export default stripeDef

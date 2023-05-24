@@ -1,62 +1,13 @@
-import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
-import {defHelpers} from '@usevenice/cdk-core'
-import type {EntityPayload} from '@usevenice/cdk-ledger'
+import type {IntegrationServer} from '@usevenice/cdk-core'
 import {cachingLink} from '@usevenice/cdk-ledger'
-import {fromCompletion, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {fromCompletion, Rx, rxjs} from '@usevenice/util'
 
+import type {heronSchemas} from './def'
+import {helpers} from './def'
 import type {components} from './heron.gen'
 import {makeHeronClient} from './HeronClient'
 
-export const heronDef = {
-  name: z.literal('heron'),
-  integrationConfig: z.object({apiKey: z.string()}),
-  // is endUserId actually needed here?
-  // How do we create default resources for integrations that are basically single resource?
-  destinationInputEntity: zCast<EntityPayload>(),
-  sourceOutputEntity: z.object({
-    id: z.string(),
-    entityName: z.literal('transaction'),
-    entity: zCast<components['schemas']['TransactionEnriched']>(),
-  }),
-} satisfies IntegrationDef
-
-const helpers = defHelpers(heronDef)
-
-export const heronImpl = {
-  def: heronDef,
-  name: 'heron',
-  metadata: {
-    displayName: 'Heron Data',
-    stage: 'beta',
-    categories: ['enrichment'],
-    // This reaches into the next.js public folder which is technically outside the integration directory itself.
-    // Low priority to figure out how to have the svg assets be self-contained also
-    // also we may need mdx support for the description etc.
-    logoUrl: '/_assets/logo-heron.png',
-  },
-
-  standardMappers: {
-    resource() {
-      return {
-        displayName: 'Heron',
-        // status: healthy vs. disconnected...
-        // labels: test vs. production
-      }
-    },
-  },
-  extension: {
-    sourceMapEntity: {
-      transaction: (entity) => ({
-        id: entity.id,
-        entityName: 'transaction',
-        entity: {
-          date: entity.entity.date ?? '',
-          description: entity.entity.description ?? '',
-        },
-      }),
-    },
-  },
-
+export const heronServer = {
   sourceSync: ({endUser, config}) => {
     const client = makeHeronClient({apiKey: config.apiKey})
     async function* iterateEntities() {
@@ -129,4 +80,4 @@ export const heronImpl = {
       }),
     )
   },
-} satisfies IntegrationImpl<typeof heronDef>
+} satisfies IntegrationServer<typeof heronSchemas>

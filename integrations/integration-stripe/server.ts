@@ -1,55 +1,12 @@
-import type {IntegrationImpl} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk-core'
 import {handlersLink} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-ledger'
-import {A, Rx, rxjs} from '@usevenice/util'
+import {Rx, rxjs} from '@usevenice/util'
 
-import {helpers, stripeDef} from './def'
+import type {stripeSchemas} from './def'
+import {helpers} from './def'
 import {makeStripeClient} from './StripeClient'
 
-export const stripeImpl = {
-  name: 'stripe',
-  metadata: {
-    categories: ['commerce'],
-    logoUrl: '/_assets/logo-stripe.png',
-    stage: 'beta',
-  },
-  def: stripeDef,
-  helpers,
-  extension: {
-    sourceMapEntity: {
-      account: ({entity: a}) => ({
-        id: a.id,
-        entityName: 'account',
-        entity: {
-          name: a.settings?.dashboard.display_name ?? '',
-          type: 'asset/digital_wallet',
-          institutionName: a.settings?.payments.statement_descriptor,
-          defaultUnit: a.default_currency?.toUpperCase() as Unit,
-          // informationalBalances: {
-          //   available: A(
-          //     a.balance?.available[0]?.amount ?? 0,
-          //     a.default_currency?.toUpperCase() as Unit,
-          //   ),
-          // },
-        },
-      }),
-      transaction: ({entity: t}) => ({
-        id: t.id,
-        entityName: 'transaction',
-        entity: {
-          date: new Date(t.created).toISOString(),
-          description: t.description ?? '',
-          postingsMap: makePostingsMap({
-            main: {
-              accountExternalId: t.source as ExternalId,
-              amount: A(t.amount, t.currency as Unit),
-            },
-          }),
-        },
-      }),
-    },
-  },
-
+export const stripeServer = {
   sourceSync: ({settings, state}) => {
     const client = makeStripeClient({apiKey: settings.secretKey})
     async function* iterateEntities() {
@@ -150,6 +107,6 @@ export const stripeImpl = {
       },
     })
   },
-} satisfies IntegrationImpl<typeof stripeDef>
+} satisfies IntegrationServer<typeof stripeSchemas>
 
-export default stripeImpl
+export default stripeServer

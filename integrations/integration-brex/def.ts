@@ -1,14 +1,13 @@
 /** Used for the side effect of window.MergeLink */
-import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
-import {defHelpers} from '@usevenice/cdk-core'
-import {Rx, rxjs, z, zCast} from '@usevenice/util'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {z, zCast} from '@usevenice/util'
 
 import type {components} from './__generated__/transactions.gen'
-import {makeBrexClient} from './BrexClient'
 
 // TODO: Split into 3 files... Def aka common / Client / Server
 
-export const brexDef = {
+export const brexSchemas = {
   name: z.literal('brex'),
   integrationConfig: z.object({
     clientId: z.string(),
@@ -36,12 +35,10 @@ export const brexDef = {
       >(),
     }),
   ]),
-} satisfies IntegrationDef
+} satisfies IntegrationSchemas
 
-const helpers = defHelpers(brexDef)
-
-export const brexImpl = {
-  def: brexDef,
+export const brexDef = {
+  def: brexSchemas,
   name: 'brex',
   metadata: {
     categories: ['banking'],
@@ -79,23 +76,8 @@ export const brexImpl = {
       // }),
     },
   },
+} satisfies IntegrationDef<typeof brexSchemas>
 
-  sourceSync: ({settings}) => {
-    const client = makeBrexClient({
-      accessToken: settings.accessToken,
-    })
+export const helpers = intHelpers(brexSchemas)
 
-    // TODO: Paginate obviously
-    return rxjs
-      .from(
-        client.transactions
-          .get('/v2/transactions/card/primary', {})
-          .then((res) =>
-            (res.items ?? [])?.map((txn) =>
-              helpers._opData('transaction', txn.id ?? '', txn),
-            ),
-          ),
-      )
-      .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
-  },
-} satisfies IntegrationImpl<typeof brexDef>
+export default brexDef
