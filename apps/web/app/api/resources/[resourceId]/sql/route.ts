@@ -16,8 +16,8 @@ import {
 } from '@usevenice/core-integration-postgres'
 import {R, z} from '@usevenice/util'
 
-import {serverComponentGetViewer} from '@/server/server-component-helpers'
-import {trpcErrorResponse} from '@/server/server-helpers'
+import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
+import {trpcErrorResponse} from '@/lib-server/server-helpers'
 
 // TODO: Document searchParams and share it with client (as least the typing if nothing else)
 

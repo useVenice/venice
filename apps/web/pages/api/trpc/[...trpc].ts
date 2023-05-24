@@ -10,9 +10,12 @@ import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import {adminProcedure, trpc} from '@usevenice/engine-backend/router/_base'
 import {R} from '@usevenice/util'
 
-import {zAuth} from '@/lib/schemas'
+import {zAuth} from '@/lib-common/schemas'
 
-import {respondToCORS, serverGetViewer} from '../../../server/server-helpers'
+import {
+  respondToCORS,
+  serverGetViewer,
+} from '../../../lib-server/server-helpers'
 
 const customRouter = trpc.router({
   updateOrganization: adminProcedure

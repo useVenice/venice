@@ -6,8 +6,8 @@ import {trpcReact} from '@usevenice/engine-frontend'
 import {SchemaForm} from '@usevenice/ui'
 import {useToast} from '@usevenice/ui/new-components'
 
-import {copyToClipboard} from '@/contexts/common-contexts'
-import {useCurrengOrg} from '@/contexts/viewer-context'
+import {copyToClipboard} from '@/lib-client/copyToClipboard'
+import {useCurrengOrg} from '@/components/viewer-context'
 
 const formSchema = adminRouterSchema.adminCreateConnectToken.input.omit({
   orgId: true,

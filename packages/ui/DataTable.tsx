@@ -20,7 +20,7 @@ import React from 'react'
 
 import {R} from '@usevenice/util'
 
-import {LoadingText} from './components'
+import {LoadingText} from './LoadingText'
 import {
   Button,
   Checkbox,

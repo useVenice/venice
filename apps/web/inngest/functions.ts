@@ -8,13 +8,13 @@ import type {EndUserId} from '@usevenice/cdk-core'
 import {makeId, zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
 import {inngest} from '@usevenice/engine-backend/events'
+import {makeUlid} from '@usevenice/util'
 
-import {makeUlid} from '@/../../packages/util'
-import {zAuth} from '@/lib/schemas'
+import {zAuth} from '@/lib-common/schemas'
 
-import {makeSentryClient} from '../lib/makeSentryClient'
-import {serverAnalytics} from '../lib/server-analytics'
-import {ensureDefaultResourceAndPipelines, getPool, sql} from '../server'
+import {ensureDefaultResourceAndPipelines, getPool, sql} from '../lib-server'
+import {serverAnalytics} from '../lib-server/analytics-server'
+import {makeSentryClient} from '../lib-server/sentry-client'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sentry = makeSentryClient({dsn: commonEnv.NEXT_PUBLIC_SENTRY_DSN!})

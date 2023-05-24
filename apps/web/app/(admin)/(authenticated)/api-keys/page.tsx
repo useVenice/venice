@@ -5,8 +5,8 @@ import type {Viewer} from '@usevenice/cdk-core'
 import {hasRole} from '@usevenice/cdk-core'
 import {makeUlid} from '@usevenice/util'
 
-import {encodeApiKey} from '@/server'
-import {serverComponentGetViewer} from '@/server/server-component-helpers'
+import {encodeApiKey} from '@/lib-server'
+import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
 
 export default async function ApiKeyPage() {
   const viewer = await serverComponentGetViewer()

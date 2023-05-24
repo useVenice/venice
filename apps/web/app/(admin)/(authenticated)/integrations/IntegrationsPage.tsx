@@ -41,8 +41,8 @@ import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
 import {SchemaForm} from '@usevenice/ui/SchemaForm'
 import {titleCase, z} from '@usevenice/util'
 
-import {useCurrengOrg} from '@/contexts/viewer-context'
-import {cn} from '@/lib/utils'
+import {useCurrengOrg} from '@/components/viewer-context'
+import {cn} from '@/lib-client/ui-utils'
 
 type Integration = RouterOutput['adminListIntegrations'][number]
 

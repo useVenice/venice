@@ -1,5 +1,3 @@
-import type {AnySyncProvider, LinkFactory} from '@usevenice/cdk-core'
-import type {SyncEngineCommonConfig} from '@usevenice/engine-frontend'
 import {joinPath} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
@@ -20,9 +18,5 @@ export const veniceCommonConfig = {
 
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
-} satisfies SyncEngineCommonConfig<
-  readonly AnySyncProvider[],
-  Record<string, LinkFactory>
->
-
+}
 // console.log('Using config', veniceConfig) // Too verbose...

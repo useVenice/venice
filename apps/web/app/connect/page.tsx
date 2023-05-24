@@ -4,8 +4,8 @@ import Image from 'next/image'
 import {getViewerId} from '@usevenice/cdk-core'
 
 import {SuperHydrate} from '@/components/SuperHydrate'
-import {ClientRoot} from '@/contexts/ClientRoot'
-import {createServerComponentHelpers} from '@/server/server-component-helpers'
+import {ClientRoot} from '@/components/ClientRoot'
+import {createServerComponentHelpers} from '@/lib-server/server-component-helpers'
 
 import ConnectPage from './ConnectPage'
 

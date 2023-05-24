@@ -5,7 +5,7 @@ import {usePathname} from 'next/navigation'
 
 import {Button, ScrollArea} from '@usevenice/ui/new-components'
 
-import {cn} from '@/lib/utils'
+import {cn} from '@/lib-client/ui-utils'
 
 const sectionedLinks: Array<{
   title?: string

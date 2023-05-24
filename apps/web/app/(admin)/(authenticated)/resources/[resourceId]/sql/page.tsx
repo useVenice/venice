@@ -1,7 +1,7 @@
 import type {Id} from '@usevenice/cdk-core'
 
 import {contextFactory} from '@/../app-config/backendConfig'
-import {serverComponentGetViewer} from '@/server/server-component-helpers'
+import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
 
 import {SqlPage} from './SqlPage'
 

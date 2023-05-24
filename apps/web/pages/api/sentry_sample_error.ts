@@ -1,5 +1,5 @@
 import {NextApiHandler} from 'next'
-import {serverAnalytics} from '../../lib/server-analytics'
+import {serverAnalytics} from '../../lib-server/analytics-server'
 
 //  true
 export default (async (_req, _res) => {

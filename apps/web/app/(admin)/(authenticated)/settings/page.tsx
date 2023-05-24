@@ -7,7 +7,7 @@ import {trpcReact as _trpcReact} from '@usevenice/engine-frontend'
 import {LoadingText, SchemaForm, useWithToast} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
-import {zOrgMetadata} from '@/lib/schemas'
+import {zOrgMetadata} from '@/lib-common/schemas'
 import type {AppRouter} from '@/pages/api/trpc/[...trpc]'
 
 /** Move this somewhere where other components can access */

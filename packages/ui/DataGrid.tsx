@@ -11,7 +11,7 @@ import React from 'react'
 
 import {produce} from '@usevenice/util'
 
-import {LoadingText} from './components'
+import {LoadingText} from './LoadingText'
 import {cn} from './utils'
 
 interface DataGridProps<TData extends Record<string, unknown>> {

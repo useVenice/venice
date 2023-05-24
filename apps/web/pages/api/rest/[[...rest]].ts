@@ -6,8 +6,8 @@ import {getRestEndpoint} from '@usevenice/app-config/constants'
 import {joinPath, R} from '@usevenice/util'
 import type {NextApiHandler} from 'next'
 import modifyResponse from 'node-http-proxy-json'
-import {serverAnalytics} from '../../../lib/server-analytics'
-import {proxySupabase} from '../../../lib/supabase-proxy.server'
+import {serverAnalytics} from '../../../lib-server/analytics-server'
+import {proxySupabase} from '../../../lib-server/supabase-proxy'
 
 type Swagger2Spec = Parameters<(typeof converter)['convertObj']>[0]
 

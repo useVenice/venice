@@ -5,7 +5,7 @@ import React from 'react'
 import type {Id, ProviderMeta, ZStandard} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 
-import {LoadingText} from '../components/LoadingText'
+import {LoadingText} from '../LoadingText'
 import {Badge, Card} from '../new-components'
 import {cn} from '../utils'
 
