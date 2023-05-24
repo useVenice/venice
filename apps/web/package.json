@@ -58,7 +58,6 @@
     "react-dom": "18.2.0",
     "superjson": "1.9.1",
     "swagger2openapi": "7.0.8",
-    "tailwind-merge": "1.6.0",
     "tailwindcss-animate": "^1.0.5"
   },
   "devDependencies": {

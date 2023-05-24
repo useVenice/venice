@@ -12,11 +12,9 @@
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
-    "@usevenice/util": "workspace:*",
-    "react": "*"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "*",
     "openapi-typescript": "6.2.1"
   }
 }

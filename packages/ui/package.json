@@ -6,7 +6,6 @@
   "module": "./index.ts",
   "dependencies": {
     "@glideapps/glide-data-grid": "5.2.1",
-    "@hookform/resolvers": "2.9.11",
     "@monaco-editor/react": "4.4.6",
     "@radix-ui/react-alert-dialog": "1.0.3",
     "@radix-ui/react-checkbox": "1.0.1",
@@ -20,30 +19,29 @@
     "@radix-ui/react-slot": "1.0.0",
     "@radix-ui/react-tabs": "1.0.0",
     "@radix-ui/react-toast": "1.0.0",
-    "@react-hookz/web": "*",
+    "@react-hookz/web": "23.0.1",
     "@rjsf/core": "5.6.2",
     "@rjsf/utils": "5.6.2",
     "@rjsf/validator-ajv8": "5.6.2",
     "@tanstack/react-table": "8.9.1",
     "@tremor/react": "2.4.0",
-    "@ts-react/form": "1.2.0",
     "class-variance-authority": "0.6.0",
     "clsx": "1.2.1",
+    "cmdk": "0.2.0",
     "date-fns": "^2.29.3",
-    "framer-motion": "6.5.1",
-    "jotai": "1.8.4",
     "lucide-react": "*",
-    "nanoid": "3.3.4",
     "re-resizable": "6.9.9",
-    "react": "*",
-    "react-dom": "*",
     "react-hook-form": "7.43.1",
-    "tailwind-merge": "*"
+    "tailwind-merge": "1.6.0"
   },
   "devDependencies": {
     "@tanstack/react-query": "*",
     "@types/react": "*",
     "@usevenice/cdk-core": "*",
     "@usevenice/engine-backend": "*"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
   }
 }

@@ -12,10 +12,6 @@
     "@usevenice/core-integration-firebase": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "firebase": "9.8.1",
-    "react": "*"
-  },
-  "devDependencies": {
-    "@types/react": "*"
+    "firebase": "9.8.1"
   }
 }

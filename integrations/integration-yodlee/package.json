@@ -14,15 +14,15 @@
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/standard": "workspace:*",
-    "@usevenice/util": "workspace:*",
-    "csstype": "*",
-    "react": "*",
-    "react-dom": "*"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
     "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
     "openapi-typescript": "6.2.1",
     "openapi-typescript-codegen": "0.23.0"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }

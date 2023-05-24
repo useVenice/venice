@@ -12,12 +12,13 @@
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/ui": "workspace:*",
-    "@usevenice/util": "workspace:*",
-    "lucide-react": "*",
-    "react": "*",
-    "react-dom": "*"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "*"
+  },
+  "peerDependencies": {
+    "lucide-react": "*",
+    "react": "*"
   }
 }

@@ -9,10 +9,12 @@
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
-    "@usevenice/util": "workspace:*",
-    "react": "*"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "*"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }

@@ -15,12 +15,13 @@
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
     "plaid": "12.3.0",
-    "react": "*",
-    "react-dom": "*",
     "react-plaid-link": "3.3.2"
   },
   "devDependencies": {
     "@types/react": "*",
     "openapi-typescript": "6.2.1"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }
