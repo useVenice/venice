@@ -159,7 +159,23 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {query.isLoading ||
+            query.isRefetching ||
+            !table.getRowModel().rows?.length ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center">
+                  {query.isLoading || query.isRefetching ? (
+                    <LoadingText />
+                  ) : query.isError ? (
+                    `Error: ${query.error}`
+                  ) : (
+                    'No results'
+                  )}
+                </TableCell>
+              </TableRow>
+            ) : (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -174,20 +190,6 @@ export function DataTable<TData, TValue>({
                   ))}
                 </TableRow>
               ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center">
-                  {query.isLoading ? (
-                    <LoadingText />
-                  ) : query.isError ? (
-                    `Error: ${query.error}`
-                  ) : (
-                    'No results'
-                  )}
-                </TableCell>
-              </TableRow>
             )}
           </TableBody>
         </Table>
