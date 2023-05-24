@@ -411,26 +411,14 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(react-dom@18.2.0)(react@18.2.0)
       '@sentry/nextjs':
-        specifier: 7.52.1
-        version: 7.52.1(next@13.4.3)(react@18.2.0)(webpack@5.74.0)
+        specifier: 7.53.0
+        version: 7.53.0(next@13.4.3)(react@18.2.0)(webpack@5.74.0)
       '@stoplight/elements':
         specifier: 7.7.10
         version: 7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@0.5.6)(react-dom@18.2.0)(react@18.2.0)
-      '@supabase/auth-helpers-nextjs':
-        specifier: 0.6.1
-        version: 0.6.1(@supabase/supabase-js@2.21.0)
-      '@supabase/auth-ui-react':
-        specifier: 0.3.5
-        version: 0.3.5(@supabase/supabase-js@2.21.0)
-      '@supabase/auth-ui-shared':
-        specifier: 0.1.3
-        version: 0.1.3(@supabase/supabase-js@2.21.0)
       '@supabase/realtime-js':
         specifier: 2.7.2
         version: 2.7.2
-      '@supabase/supabase-js':
-        specifier: 2.21.0
-        version: 2.21.0
       '@tanstack/query-core':
         specifier: 4.27.0
         version: 4.27.0
@@ -482,12 +470,6 @@ importers:
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
-      cookies-next:
-        specifier: 2.1.1
-        version: 2.1.1
-      date-fns:
-        specifier: ^2.29.3
-        version: 2.29.3
       graphiql:
         specifier: ^2.2.0
         version: 2.2.0(@codemirror/language@6.0.0)(@types/node@18.11.18)(@types/react@18.0.27)(graphql-ws@5.11.3)(graphql@16.6.0)(react-dom@18.2.0)(react-is@17.0.2)(react@18.2.0)
@@ -503,12 +485,6 @@ importers:
       inngest:
         specifier: 1.3.1
         version: 1.3.1
-      jotai:
-        specifier: 1.8.3
-        version: 1.8.3(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(react@18.2.0)
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
       lucide-react:
         specifier: 0.192.0
         version: 0.192.0(react@18.2.0)
@@ -521,12 +497,6 @@ importers:
       next:
         specifier: 13.4.3
         version: 13.4.3(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      next-query-params:
-        specifier: 4.1.0
-        version: 4.1.0(next@13.4.3)(react@18.2.0)(use-query-params@2.1.0)
-      next-router-query:
-        specifier: 0.1.3
-        version: 0.1.3(next@13.4.3)(react@18.2.0)
       nextjs-toploader:
         specifier: 1.4.2
         version: 1.4.2(next@13.4.3)(react-dom@18.2.0)(react@18.2.0)
@@ -554,12 +524,6 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
-      react-hook-form:
-        specifier: ^7.43.1
-        version: 7.43.1(react@18.2.0)
-      react-responsive-carousel:
-        specifier: 3.2.23
-        version: 3.2.23
       superjson:
         specifier: 1.9.1
         version: 1.9.1
@@ -572,12 +536,6 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.5
         version: 1.0.5(tailwindcss@3.3.1)
-      ts-pattern:
-        specifier: 4.0.5
-        version: 4.0.5
-      use-query-params:
-        specifier: 2.1.0
-        version: 2.1.0(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@sentry/cli':
         specifier: 2.13.0
@@ -650,26 +608,14 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1(react-dom@18.2.0)(react@18.2.0)
       '@sentry/nextjs':
-        specifier: 7.52.1
-        version: 7.52.1(next@13.4.3)(react@18.2.0)(webpack@5.74.0)
+        specifier: 7.53.0
+        version: 7.53.0(next@13.4.3)(react@18.2.0)(webpack@5.74.0)
       '@stoplight/elements':
         specifier: 7.7.10
         version: 7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@0.5.6)(react-dom@18.2.0)(react@18.2.0)
-      '@supabase/auth-helpers-nextjs':
-        specifier: 0.6.1
-        version: 0.6.1(@supabase/supabase-js@2.21.0)
-      '@supabase/auth-ui-react':
-        specifier: 0.3.5
-        version: 0.3.5(@supabase/supabase-js@2.21.0)
-      '@supabase/auth-ui-shared':
-        specifier: 0.1.3
-        version: 0.1.3(@supabase/supabase-js@2.21.0)
       '@supabase/realtime-js':
         specifier: 2.7.2
         version: 2.7.2
-      '@supabase/supabase-js':
-        specifier: 2.21.0
-        version: 2.21.0
       '@tanstack/query-core':
         specifier: 4.27.0
         version: 4.27.0
@@ -724,12 +670,6 @@ importers:
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
-      cookies-next:
-        specifier: 2.1.1
-        version: 2.1.1
-      date-fns:
-        specifier: ^2.29.3
-        version: 2.29.3
       graphiql:
         specifier: ^2.2.0
         version: 2.2.0(@codemirror/language@6.0.0)(@types/node@18.11.18)(@types/react@18.0.27)(graphql-ws@5.11.3)(graphql@16.6.0)(react-dom@18.2.0)(react-is@17.0.2)(react@18.2.0)
@@ -745,12 +685,6 @@ importers:
       inngest:
         specifier: 1.3.1
         version: 1.3.1
-      jotai:
-        specifier: 1.8.3
-        version: 1.8.3(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(react@18.2.0)
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
       lucide-react:
         specifier: 0.192.0
         version: 0.192.0(react@18.2.0)
@@ -763,12 +697,6 @@ importers:
       next:
         specifier: 13.4.3
         version: 13.4.3(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      next-query-params:
-        specifier: 4.1.0
-        version: 4.1.0(next@13.4.3)(react@18.2.0)(use-query-params@2.1.0)
-      next-router-query:
-        specifier: 0.1.3
-        version: 0.1.3(next@13.4.3)(react@18.2.0)
       nextjs-toploader:
         specifier: 1.4.2
         version: 1.4.2(next@13.4.3)(react-dom@18.2.0)(react@18.2.0)
@@ -796,12 +724,6 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
-      react-hook-form:
-        specifier: ^7.43.1
-        version: 7.43.1(react@18.2.0)
-      react-responsive-carousel:
-        specifier: 3.2.23
-        version: 3.2.23
       superjson:
         specifier: 1.9.1
         version: 1.9.1
@@ -814,12 +736,6 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.5
         version: 1.0.5(tailwindcss@3.3.1)
-      ts-pattern:
-        specifier: 4.0.5
-        version: 4.0.5
-      use-query-params:
-        specifier: 2.1.0
-        version: 2.1.0(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@sentry/cli':
         specifier: 2.13.0
@@ -1728,7 +1644,7 @@ importers:
         specifier: 1.2.1
         version: 1.2.1
       date-fns:
-        specifier: '*'
+        specifier: ^2.29.3
         version: 2.29.3
       framer-motion:
         specifier: 6.5.1
@@ -5698,13 +5614,13 @@ packages:
       string-argv: 0.3.1
     dev: false
 
-  /@sentry-internal/tracing@7.52.1:
-    resolution: {integrity: sha512-6N99rE+Ek0LgbqSzI/XpsKSLUyJjQ9nychViy+MP60p1x+hllukfTsDbNtUNrPlW0Bx+vqUrWKkAqmTFad94TQ==}
+  /@sentry-internal/tracing@7.53.0:
+    resolution: {integrity: sha512-0UrXhZ9wJo3bkzwVq/DkJVnTFmPI+71fjTS0AdyVzP2WYX+qF5NfmsndjWHK0m/g/ZWnfqEqXHmKa6Vt/PyoEQ==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/core': 7.52.1
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/core': 7.53.0
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       tslib: 1.14.1
     dev: false
 
@@ -5718,15 +5634,15 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/browser@7.52.1:
-    resolution: {integrity: sha512-HrCOfieX68t+Wj42VIkraLYwx8kN5311SdBkHccevWs2Y2dZU7R9iLbI87+nb5kpOPQ7jVWW7d6QI/yZmliYgQ==}
+  /@sentry/browser@7.53.0:
+    resolution: {integrity: sha512-P+vn+RdDZQ9ODjYmr9j1vo+YlbTXEnNKlXL+ECoD4yoSNizN21Q1BBoiLSn1kipcdfbgUix+eEFNdhbpNxPQwA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.52.1
-      '@sentry/core': 7.52.1
-      '@sentry/replay': 7.52.1
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry-internal/tracing': 7.53.0
+      '@sentry/core': 7.53.0
+      '@sentry/replay': 7.53.0
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       tslib: 1.14.1
     dev: false
 
@@ -5775,12 +5691,12 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/core@7.52.1:
-    resolution: {integrity: sha512-36clugQu5z/9jrit1gzI7KfKbAUimjRab39JeR0mJ6pMuKLTTK7PhbpUAD4AQBs9qVeXN2c7h9SVZiSA0UDvkg==}
+  /@sentry/core@7.53.0:
+    resolution: {integrity: sha512-TKMWWEvwT8tSqyIWuCexUk+fIoMA8ZAzGJdOfPW9XRL38RrXA9O+7V5xxK98X/bPHQ6UQF/QceookGOqqpmQyQ==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       tslib: 1.14.1
     dev: false
 
@@ -5793,12 +5709,12 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/integrations@7.52.1:
-    resolution: {integrity: sha512-4uejF01723wzEHjcP5AcNcV+Z/6U27b1LyaDu0jY3XDry98MMjhS/ASzecLpaEFxi3dh/jMTUrNp1u7WMj59Lg==}
+  /@sentry/integrations@7.53.0:
+    resolution: {integrity: sha512-6GC5ULGnSHjPlOFdK3E1tW/4FitaX+Wm0daBdYl5EYUz9haWWdlKXfi0ELzW+SWDJVE1o86zEyZ4saCUhwz52g==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       localforage: 1.10.0
       tslib: 1.14.1
     dev: false
@@ -5812,8 +5728,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/nextjs@7.52.1(next@13.4.3)(react@18.2.0)(webpack@5.74.0):
-    resolution: {integrity: sha512-zd1StGdAn0vSS21l4gVyzCtfnEbJ+e5ZIgLZiaLUOSvKdMAtIlhXTotpn7CILIx+PzjOwiRFWp1XtSoU4FZyZg==}
+  /@sentry/nextjs@7.53.0(next@13.4.3)(react@18.2.0)(webpack@5.74.0):
+    resolution: {integrity: sha512-XCQxl456gMjqCfnilASvOPUUktDK0NZ8hJPG1yNMeCHpzRgwdfxC3o+vMJzpVgFUBxwlZwsa08vj7+YZ1bMPMQ==}
     engines: {node: '>=8'}
     peerDependencies:
       next: ^10.0.8 || ^11.0 || ^12.0 || ^13.0
@@ -5824,12 +5740,12 @@ packages:
         optional: true
     dependencies:
       '@rollup/plugin-commonjs': 24.0.0(rollup@2.78.0)
-      '@sentry/core': 7.52.1
-      '@sentry/integrations': 7.52.1
-      '@sentry/node': 7.52.1
-      '@sentry/react': 7.52.1(react@18.2.0)
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/core': 7.53.0
+      '@sentry/integrations': 7.53.0
+      '@sentry/node': 7.53.0
+      '@sentry/react': 7.53.0(react@18.2.0)
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       '@sentry/webpack-plugin': 1.20.0
       chalk: 3.0.0
       next: 13.4.3(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
@@ -5843,14 +5759,14 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/node@7.52.1:
-    resolution: {integrity: sha512-n3frjYbkY/+eZ5RTQMaipv6Hh9w3ia40GDeRK6KJQit7OLKLmXisD+FsdYzm8Jc784csSvb6HGGVgqLpO1p9Og==}
+  /@sentry/node@7.53.0:
+    resolution: {integrity: sha512-iuavyakRJ0ci6+fCwmDRlDRn7IddOOM41iTTUl+K3AiFNdyIeK0Ix8tEOmIrSWA2pbanTFVicWfR3MuiAvsKGw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.52.1
-      '@sentry/core': 7.52.1
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry-internal/tracing': 7.53.0
+      '@sentry/core': 7.53.0
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       cookie: 0.4.2
       https-proxy-agent: 5.0.1
       lru_map: 0.3.3
@@ -5874,27 +5790,27 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/react@7.52.1(react@18.2.0):
-    resolution: {integrity: sha512-RRH+GJE5TNg5QS86bSjSZuR2snpBTOO5/SU9t4BOqZMknzhMVTClGMm84hffJa9pMPMJPQ2fWQAbhrlD8RcF6w==}
+  /@sentry/react@7.53.0(react@18.2.0):
+    resolution: {integrity: sha512-CSafT8yTtvI0j73ppDRvhL/pIl+jaQVFAHmGJXEVfVxTw/2VK1R+8yEhP83x4mRlM34sFZYWQe86OUc8BXaRgw==}
     engines: {node: '>=8'}
     peerDependencies:
       react: 15.x || 16.x || 17.x || 18.x
     dependencies:
-      '@sentry/browser': 7.52.1
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/browser': 7.53.0
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       tslib: 1.14.1
     dev: false
 
-  /@sentry/replay@7.52.1:
-    resolution: {integrity: sha512-A+RaUmpU9/yBHnU3ATemc6wAvobGno0yf5R6fZYkAFoo2FCR2YG6AXxkTazymIf8v2DnLGaSDORYDPdhQClU9A==}
+  /@sentry/replay@7.53.0:
+    resolution: {integrity: sha512-RHQJoevR0aPg0gpqtyKvz1z4zP/bQgNgPQCtW1QqH2rMwlUq09u1J63hufUkOFspGo/TqoBgGq0GxG2M2D0QHw==}
     engines: {node: '>=12'}
     dependencies:
-      '@sentry/core': 7.52.1
-      '@sentry/types': 7.52.1
-      '@sentry/utils': 7.52.1
+      '@sentry/core': 7.53.0
+      '@sentry/types': 7.53.0
+      '@sentry/utils': 7.53.0
     dev: false
 
   /@sentry/types@6.19.7:
@@ -5902,8 +5818,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /@sentry/types@7.52.1:
-    resolution: {integrity: sha512-OMbGBPrJsw0iEXwZ2bJUYxewI1IEAU2e1aQGc0O6QW5+6hhCh+8HO8Xl4EymqwejjztuwStkl6G1qhK+Q0/Row==}
+  /@sentry/types@7.53.0:
+    resolution: {integrity: sha512-hqlbrCL8nfDfjlF6wh4NHNW9plhWJ1m2BSqRyspcxOC44e293BPfwjUzr0aQapJK/aRkHROnfAtzsEu2awNPzg==}
     engines: {node: '>=8'}
     dev: false
 
@@ -5915,11 +5831,11 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@sentry/utils@7.52.1:
-    resolution: {integrity: sha512-MPt1Xu/jluulknW8CmZ2naJ53jEdtdwCBSo6fXJvOTI0SDqwIPbXDVrsnqLAhVJuIN7xbkj96nuY/VBR6S5sWg==}
+  /@sentry/utils@7.53.0:
+    resolution: {integrity: sha512-T3F2DkXB9fDjUIAcrOMrGCnquyTQxTyTb5Mh+NbFBevQn32fHehQ62VraLhe20HTVy8YBFkXisvLu6HeOZ5Mog==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.52.1
+      '@sentry/types': 7.53.0
       tslib: 1.14.1
     dev: false
 
@@ -5967,10 +5883,6 @@ packages:
   /@socket.io/component-emitter@3.1.0:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
     dev: true
-
-  /@stitches/core@1.2.8:
-    resolution: {integrity: sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==}
-    dev: false
 
   /@stoplight/elements-core@7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@0.5.6)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Z/cj6EtYxfT4bDC9DA9WyNUQdhahiPqJcNsWnC/+yPSAqAnqDfzlkVT0iyiRxOfF0OzVfw3rfzadbYlcx/PNAw==}
@@ -6392,69 +6304,6 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@supabase/auth-helpers-nextjs@0.6.1(@supabase/supabase-js@2.21.0):
-    resolution: {integrity: sha512-ffDAR4pW2Cosj/CuuGRAhzOFfHtqzdgax7zqRGGyq334gxxPplsmJFGaLPRJ3Z/4mTSIJHyFd6LYdHMN0a+5Bw==}
-    peerDependencies:
-      '@supabase/supabase-js': ^2.0.4
-    dependencies:
-      '@supabase/auth-helpers-shared': 0.3.4(@supabase/supabase-js@2.21.0)
-      '@supabase/supabase-js': 2.21.0
-    dev: false
-
-  /@supabase/auth-helpers-shared@0.3.4(@supabase/supabase-js@2.21.0):
-    resolution: {integrity: sha512-8I3D0SPHHexkFTSfPg0nZgJSVazWoB3tZDpT6IjRv6w89vDMUzO99Lit4H9anVLF4teW8c/nJJxawDNbDlgbgg==}
-    peerDependencies:
-      '@supabase/supabase-js': ^2.0.4
-    dependencies:
-      '@supabase/supabase-js': 2.21.0
-      jose: 4.14.3
-    dev: false
-
-  /@supabase/auth-ui-react@0.3.5(@supabase/supabase-js@2.21.0):
-    resolution: {integrity: sha512-3X9rlLwQliRZ386qFjsCdHvMYQIzAByXT4uWcHssFIX4s0ymwkIH49UJDb6vtpswDV4z9ZOxF0igPZyEyZT32w==}
-    peerDependencies:
-      '@supabase/supabase-js': ^2.8.0
-    dependencies:
-      '@stitches/core': 1.2.8
-      '@supabase/auth-ui-shared': 0.1.3(@supabase/supabase-js@2.21.0)
-      '@supabase/supabase-js': 2.21.0
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /@supabase/auth-ui-shared@0.1.3(@supabase/supabase-js@2.21.0):
-    resolution: {integrity: sha512-GoyW+3EiDcy+sQdmdkezx9fpsRSogHJwTdzxgf79PjyLbpyAKCnTVhOB02tiMHZ0uIZ+afAQ8CmNEwwxwHVnJw==}
-    peerDependencies:
-      '@supabase/supabase-js': ^2.8.0
-    dependencies:
-      '@supabase/supabase-js': 2.21.0
-    dev: false
-
-  /@supabase/functions-js@2.1.1:
-    resolution: {integrity: sha512-bIR1Puae6W+1/MzPfYBWOG/SCWGo4B5CB7c0ZZksvliNEAzhxNBJ0UFKYINcGdGtxG8ZC+1xr3utWpNZNwnoRw==}
-    dependencies:
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@supabase/gotrue-js@2.24.0:
-    resolution: {integrity: sha512-ZsH4K5cbMTjfMytXaDYVYs9l9igmlZFxiwXn7J2IP/CklWR5qmLCma+dvat5rccPLITVkN6oAZbKxDzW+pEgCg==}
-    dependencies:
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@supabase/postgrest-js@1.1.1:
-    resolution: {integrity: sha512-jhdBah1JIxkZUp+5QH5JS7Uq9teGwh0Bs3FzbhnVlH619FSUFquTpHuNDxLsJmqEe8r3Wcnw19Dz0t3wEpkfug==}
-    dependencies:
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@supabase/realtime-js@2.7.2:
     resolution: {integrity: sha512-Fi6xAl5PUkqnjl3wo4rdcQIbMG3+yTRX1aUZe/yfvTG84RMvmCXJ1yN6MmafVLeZpU1xkaz5Vx4L0tnHcLiy6w==}
     dependencies:
@@ -6462,28 +6311,6 @@ packages:
       '@types/websocket': 1.0.5
       websocket: 1.0.34
     transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@supabase/storage-js@2.5.1:
-    resolution: {integrity: sha512-nkR0fQA9ScAtIKA3vNoPEqbZv1k5B5HVRYEvRWdlP6mUpFphM9TwPL2jZ/ztNGMTG5xT6SrHr+H7Ykz8qzbhjw==}
-    dependencies:
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@supabase/supabase-js@2.21.0:
-    resolution: {integrity: sha512-FW3ZzBoc4orSgfX0dXrmJoXAcI/hiekmqXTkN64vjtUF2Urp3UjyAf71UTtV9Jl6ejHoe3K++e0+Rg9zKUJh5w==}
-    dependencies:
-      '@supabase/functions-js': 2.1.1
-      '@supabase/gotrue-js': 2.24.0
-      '@supabase/postgrest-js': 1.1.1
-      '@supabase/realtime-js': 2.7.2
-      '@supabase/storage-js': 2.5.1
-      cross-fetch: 3.1.5
-    transitivePeerDependencies:
-      - encoding
       - supports-color
     dev: false
 
@@ -6704,10 +6531,6 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 18.11.18
-    dev: false
-
-  /@types/cookie@0.4.1:
-    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
     dev: false
 
   /@types/cookies@0.7.7:
@@ -8749,14 +8572,6 @@ packages:
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
-    dev: false
-
-  /cookies-next@2.1.1:
-    resolution: {integrity: sha512-AZGZPdL1hU3jCjN2UMJTGhLOYzNUN9Gm+v8BdptYIHUdwz397Et1p+sZRfvAl8pKnnmMdX2Pk9xDRKCGBum6GA==}
-    dependencies:
-      '@types/cookie': 0.4.1
-      '@types/node': 16.18.6
-      cookie: 0.4.2
     dev: false
 
   /copy-anything@3.0.2:
@@ -12413,10 +12228,6 @@ packages:
       '@panva/asn1.js': 1.0.0
     dev: false
 
-  /jose@4.14.3:
-    resolution: {integrity: sha512-YPM9Q+dmsna4CGWNn5+oHFsuXJdxvKAOVoNjpe2nje3odSoX5Xz4s71rP50vM8uUKJyQtMnEGPmbVCVR+G4W5g==}
-    dev: false
-
   /jotai@1.3.9(@babel/core@7.21.0)(react-query@3.39.3)(react@18.2.0):
     resolution: {integrity: sha512-b6DvH9gf+7TfjaboCO54g+C0yhaakIaUBtjLf0dk1p15FWCzNw/93sezdXy9cCaZ8qcEdMLJcjBwQlORmIq29g==}
     engines: {node: '>=12.7.0'}
@@ -12454,45 +12265,6 @@ packages:
       '@babel/core': 7.21.0
       react: 18.2.0
       react-query: 3.39.3(react-dom@18.2.0)(react@18.2.0)
-    dev: false
-
-  /jotai@1.8.3(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(react@18.2.0):
-    resolution: {integrity: sha512-bNAs/DMD6BEB4xxVku33CI+ZIFyCWG82Ms6JnvYunEvGCnviTTDBl+m0HKgijoHmcNM3fxQ5MARdG+wwokNxog==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@babel/core': '*'
-      '@babel/template': '*'
-      '@tanstack/query-core': '*'
-      '@urql/core': '*'
-      immer: '*'
-      optics-ts: '*'
-      react: '>=16.8'
-      valtio: '*'
-      wonka: '*'
-      xstate: '*'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@babel/template':
-        optional: true
-      '@tanstack/query-core':
-        optional: true
-      '@urql/core':
-        optional: true
-      immer:
-        optional: true
-      optics-ts:
-        optional: true
-      valtio:
-        optional: true
-      wonka:
-        optional: true
-      xstate:
-        optional: true
-    dependencies:
-      '@babel/core': 7.21.0
-      '@tanstack/query-core': 4.27.0
-      react: 18.2.0
     dev: false
 
   /jotai@1.8.4(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(react@18.2.0):
@@ -13743,30 +13515,6 @@ packages:
 
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
-
-  /next-query-params@4.1.0(next@13.4.3)(react@18.2.0)(use-query-params@2.1.0):
-    resolution: {integrity: sha512-jjoQByM9s2d4wCUBUazhgHNVztm18meCtVoDj6v45+LZIQfxAF5QYVFKCbDYarI3iXD4xcZprztqLtALiiV8nQ==}
-    peerDependencies:
-      next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      use-query-params: ^2.0.0
-    dependencies:
-      next: 13.4.3(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      tslib: 2.4.1
-      use-query-params: 2.1.0(react-dom@18.2.0)(react@18.2.0)
-    dev: false
-
-  /next-router-query@0.1.3(next@13.4.3)(react@18.2.0):
-    resolution: {integrity: sha512-IvIX+JWidA0MybYBMp7h/D3Ok0ZkgrK2j73spj+UJemq3on8LD3U4eDZQ1FPPulSp07y9qlx1VThac8b6SMb+w==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      next: '*'
-      react: '>=16'
-    dependencies:
-      next: 13.4.3(@babel/core@7.21.0)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-    dev: false
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
@@ -16347,10 +16095,6 @@ packages:
     dependencies:
       randombytes: 2.1.0
 
-  /serialize-query-params@2.0.1:
-    resolution: {integrity: sha512-MCw3M1sc0N0vTxsXfInqogI7Cygsnlv4Vdy1Sc+QAN50bpteYCIQRRS3FXT/mcCKOLxCR8ohLg29WmeOEXyjmw==}
-    dev: false
-
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
     dev: false
@@ -17729,6 +17473,7 @@ packages:
 
   /ts-pattern@4.0.5:
     resolution: {integrity: sha512-Bq44KCEt7JVaNLa148mBCJkcQf4l7jtLEBDuDdeuLynWDA+1a60P4D0rMkqSM9mOKLQbIWUddE9h3XKyKwBeqA==}
+    dev: true
 
   /ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
@@ -18122,17 +17867,6 @@ packages:
     dependencies:
       '@types/react': 18.0.27
       react: 18.2.0
-    dev: false
-
-  /use-query-params@2.1.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-CMxIQWoPeeQfvXy8FwO6IKBhgOQrtLTgR2oBDdExaayK9RIDEuMgMZmxUOmdi3AatBJb6GJz6NbDT4HJm5mSVw==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      serialize-query-params: 2.0.1
     dev: false
 
   /use-resize-observer@9.1.0(react-dom@18.2.0)(react@18.2.0):

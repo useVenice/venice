@@ -1,4 +1,4 @@
-import {NextApiHandler} from 'next'
+import type {NextApiHandler} from 'next'
 
 export default ((_req, res) => {
   res.send({ok: true})

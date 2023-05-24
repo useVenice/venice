@@ -2,7 +2,6 @@
 
 import type {RealtimePostgresChangesPayload} from '@supabase/realtime-js'
 import {RealtimeClient} from '@supabase/realtime-js'
-import type {SupabaseClient} from '@supabase/supabase-js'
 import React from 'react'
 
 import {commonEnv} from '@usevenice/app-config/commonConfig'
@@ -25,7 +24,7 @@ export function createRealtimeClient() {
 }
 
 export function subscribePostgresChanges(
-  client: SupabaseClient | RealtimeClient,
+  client: RealtimeClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
@@ -55,7 +54,7 @@ export function subscribePostgresChanges(
 
 /** Ties to component lifecycle. Prefer global ones for subscription */
 export function usePostgresChanges(
-  client: SupabaseClient | RealtimeClient,
+  client: RealtimeClient,
   tableName: keyof Database['public']['Tables'],
   fn: (change: RealtimePostgresChangesPayload<Record<string, unknown>>) => void,
 ) {
@@ -63,9 +62,7 @@ export function usePostgresChanges(
 }
 
 export const InvalidateQueriesOnPostgresChanges = React.memo(
-  function InvalidateQueriesOnPostgresChanges(props: {
-    client: RealtimeClient | SupabaseClient
-  }) {
+  function InvalidateQueriesOnPostgresChanges(props: {client: RealtimeClient}) {
     const trpcUtils = trpcReact.useContext()
     console.log('InvalidateQueriesOnPostgresChanges')
     const invalidate = React.useCallback(() => {
