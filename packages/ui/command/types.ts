@@ -26,10 +26,14 @@ export type CommandDefinitionMap<TCtx = unknown> = Record<
   CommandDefinitionInput<TCtx>
 >
 
-export interface CommandComponentProps<TCtx = any> {
+export interface CommandComponentProps<
+  TCtx = any,
+  TDefs extends CommandDefinitionMap<TCtx> = CommandDefinitionMap<TCtx>,
+> {
   placeholder?: string
   emptyMessage?: string
-  definitions: CommandDefinitionMap<TCtx>
+  definitions: TDefs
+  onSelect?: (key: keyof TDefs) => void
 }
 
 // TODO: Detect shortcut conflicts

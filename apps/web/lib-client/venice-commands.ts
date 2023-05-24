@@ -6,7 +6,7 @@ export interface CommandContext {
   activeEntity: {__typename: string; id: string}
 }
 
-export const commands = {
+export const veniceCommands = {
   go_home: {
     icon: 'Home',
   },
@@ -52,6 +52,6 @@ export const commands = {
         pipeline: zId('pipe').openapi('pipeline'),
       })
       .openapi('delete_pipeline_params'),
-    handler: ({ctx}) => {},
+    handler: () => {},
   },
 } satisfies CommandDefinitionMap<CommandContext>

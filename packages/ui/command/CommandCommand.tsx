@@ -21,6 +21,7 @@ export function CommandContent({
   definitions,
   emptyMessage = 'No commands found.',
   placeholder = 'Search...',
+  onSelect,
 }: CommandComponentProps) {
   const {commandGroups} = React.useMemo(
     () => prepareCommands({definitions}),
@@ -37,11 +38,14 @@ export function CommandContent({
             {commands.map((cmd) => (
               <CommandItem
                 key={cmd.key}
+                // if we don't specify "value" onSelect would get the innerText... which is not desirable
+                value={cmd.key}
                 onSelect={(currentValue) => {
                   console.log('command selected', currentValue)
                   // cmd.handler(currentValue)
                   // setValue(currentValue === value ? '' : currentValue)
                   // setOpen(false)
+                  onSelect?.(currentValue)
                 }}>
                 {cmd.icon && (
                   <Icon
@@ -94,7 +98,13 @@ export function CommandPopover(props: CommandComponentProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <CommandInline {...props} />
+        <CommandInline
+          {...props}
+          onSelect={(key) => {
+            setOpen(false)
+            props.onSelect?.(key)
+          }}
+        />
       </PopoverContent>
     </Popover>
   )
@@ -114,7 +124,13 @@ export function CommandBar(props: CommandComponentProps) {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:top-32">
-      <CommandContent {...props} />
+      <CommandContent
+        {...props}
+        onSelect={(key) => {
+          setOpen(false)
+          props.onSelect?.(key)
+        }}
+      />
     </CommandDialog>
   )
 }

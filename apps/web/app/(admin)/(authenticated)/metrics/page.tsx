@@ -7,7 +7,7 @@ import {
   CommandPopover,
 } from '@usevenice/ui'
 
-import {commands} from '@/lib-client/commands'
+import {veniceCommands} from '@/lib-client/venice-commands'
 
 export default function ComingSoonPage() {
   return (
@@ -15,14 +15,14 @@ export default function ComingSoonPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Coming soon
       </h2>
-      <CommandBar definitions={commands} />
+      <CommandBar definitions={veniceCommands} />
 
       <div className="m-5 border p-5">
-        <CommandPopover definitions={commands} />
+        <CommandPopover definitions={veniceCommands} />
         <ComboboxDemo />
       </div>
       <div className="m-5 border p-5">
-        <CommandInline definitions={commands} />
+        <CommandInline definitions={veniceCommands} />
       </div>
     </div>
   )
