@@ -36,7 +36,12 @@ export function jsonSchemaWalkNodes(
   onNode: OnNode,
   meta?: Meta,
 ) {
-  return _walkNodes(node as Node, onNode, meta, {isRoot: true})
+  try {
+    return _walkNodes(node as Node, onNode, meta, {isRoot: true})
+  } catch (err) {
+    console.error('Error walking schema', JSON.stringify(node, null, 2))
+    throw err
+  }
 }
 
 function _walkNodes(
@@ -51,11 +56,13 @@ function _walkNodes(
     lineage: [...lineage, node],
     path: isRoot ? path : [...path, meta.name],
   }
-
+  if (!node) {
+    console.error('Missing node', {node, meta, isRoot})
+  }
   if (node.type === 'array') {
     childMeta.isArrayItem = true
     meta.childArrayItem =
-      _walkNodes(node.items!, onNode, childMeta) ?? undefined
+      _walkNodes(node.items ?? {}, onNode, childMeta) ?? undefined
   } else if (node.type === 'object') {
     const required = new Set(node.required || [])
 

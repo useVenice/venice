@@ -1,10 +1,4 @@
-import type {Id} from '@usevenice/cdk-core'
-import {
-  debugProvider,
-  extractProviderName,
-  metaForProvider,
-  zIntegrationStage,
-} from '@usevenice/cdk-core'
+import {debugProvider} from '@usevenice/cdk-core'
 import {airtableProvider} from '@usevenice/core-integration-airtable'
 import {firebaseProvider} from '@usevenice/core-integration-firebase'
 import {fsProvider} from '@usevenice/core-integration-fs'
@@ -32,7 +26,6 @@ import {togglProvider} from '@usevenice/integration-toggl'
 import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 import {yodleeProvider} from '@usevenice/integration-yodlee'
-import {R, sort} from '@usevenice/util'
 
 export {plaidProvider, fsProvider}
 
@@ -44,7 +37,16 @@ export const DOCUMENTED_PROVIDERS = [
 
 export const PROVIDERS = [
   ...DOCUMENTED_PROVIDERS,
-  // Core
+
+  // Ledger
+  yodleeProvider as unknown as typeof debugProvider,
+  oneBrickProvider as unknown as typeof debugProvider,
+  tellerProvider as unknown as typeof debugProvider,
+  // New ones
+  stripeImpl as unknown as typeof debugProvider, // Hack for now..
+  brexImpl as unknown as typeof debugProvider, // Hack for now..
+
+  // TODO: Migrate these over to the new paradigm
   debugProvider,
   fsProvider,
   firebaseProvider,
@@ -52,13 +54,9 @@ export const PROVIDERS = [
   corePostgresProvider,
   airtableProvider,
   webhookProvider,
-  // Ledger
-  yodleeProvider as unknown as typeof debugProvider,
   beancountProvider,
   importProvider,
   lunchmoneyProvider,
-  oneBrickProvider as unknown as typeof debugProvider,
-  tellerProvider as unknown as typeof debugProvider,
   rampProvider,
   wiseProvider,
   togglProvider,
@@ -70,22 +68,4 @@ export const PROVIDERS = [
   QBOProvider,
   saltedgeProvider,
   venmoProvider,
-  // New ones
-  stripeImpl as unknown as typeof debugProvider, // Hack for now..
-  brexImpl as unknown as typeof debugProvider, // Hack for now..
 ] as const
-
-export const allProviders = sort(PROVIDERS.map(metaForProvider)).desc((p) =>
-  zIntegrationStage.options.indexOf(p.stage),
-)
-
-export const providerByName = R.mapToObj(allProviders, (p) => [p.name, p])
-
-export const availableProviders = allProviders.filter(
-  (p) => p.stage !== 'hidden',
-)
-
-export function providerMetaForId(id: Id['reso'] | Id['int']) {
-  const providerName = extractProviderName(id)
-  return providerByName[providerName]
-}

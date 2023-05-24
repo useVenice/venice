@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-import {providerByName} from '@usevenice/app-config/providers'
+import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
 import {extractProviderName, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
@@ -54,7 +54,7 @@ export default function ResourcesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Resources
         </h2>
-        <VeniceConnectButton providerMetaByName={providerByName} />
+        <VeniceConnectButton clientIntegrations={clientIntegrations} />
       </header>
       <p>Resources are created based on integration configurations</p>
       <DataTable
@@ -138,13 +138,14 @@ function EditResourceSheet({
   open: boolean
   setOpen: (open: boolean) => void
 }) {
-  const provider = providerByName[extractProviderName(reso.id)]!
+  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+  const provider = catalogRes.data?.[extractProviderName(reso.id)]
 
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself integration
   const formSchema = zRaw.resource
     .pick({displayName: true})
-    .extend({settings: provider.def.resourceSettings ?? z.object({})})
+    .extend({settings: z.object({})})
 
   const {toast} = useToast()
 
@@ -180,6 +181,10 @@ function EditResourceSheet({
   const mutating = deleteResource.isLoading || updateResource.isLoading
 
   const formRef = React.useRef<SchemaFormElement>(null)
+
+  if (!provider) {
+    return null
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -225,6 +230,13 @@ function EditResourceSheet({
           <SchemaForm
             ref={formRef}
             schema={formSchema}
+            jsonSchemaTransform={(schema) => ({
+              ...schema,
+              properties: {
+                ...schema.properties,
+                settings: provider.schemas.resourceSettings,
+              },
+            })}
             formData={{settings: reso.settings, displayName: reso.displayName}}
             loading={updateResource.isLoading}
             onSubmit={({formData}) => {
@@ -236,7 +248,6 @@ function EditResourceSheet({
             }}
             hideSubmitButton
           />
-          {!provider.def.integrationConfig && <p>No configuration needed</p>}
         </div>
         <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">

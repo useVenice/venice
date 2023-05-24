@@ -7,8 +7,8 @@ import React from 'react'
 import type {
   AnyProviderDef,
   Id,
+  IntegrationClient,
   OpenDialogFn,
-  ProviderMeta,
   UseConnectHook,
 } from '@usevenice/cdk-core'
 import {
@@ -50,7 +50,7 @@ type ConnectEventType = 'open' | 'close' | 'error'
 export interface VeniceConnectProps extends UIPropsNoChildren {
   /** Whether to display the existing connections */
   showExisting?: boolean
-  providerMetaByName: Record<string, ProviderMeta>
+  clientIntegrations: Record<string, IntegrationClient>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
 
@@ -112,21 +112,36 @@ export function VeniceConnectButton({
 export function VeniceConnect(props: VeniceConnectProps) {
   const listIntegrationsRes = trpcReact.listIntegrationInfos.useQuery({})
   const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
-  if (!listIntegrationsRes.data) {
+  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+
+  if (!listIntegrationsRes.data || !catalogRes.data) {
     return <div>Loading...</div>
   }
-  return <_VeniceConnect integrationIds={integrationIds} {...props} />
+  return (
+    <_VeniceConnect
+      integrationIds={integrationIds}
+      catalog={catalogRes.data}
+      {...props}
+    />
+  )
 }
+
+type Catalog = RouterOutput['getIntegrationCatalog']
+type ProviderMeta = Catalog[string]
 
 /** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
 export function _VeniceConnect({
-  providerMetaByName,
+  catalog,
+  clientIntegrations,
   onEvent,
   showExisting,
   className,
   integrationIds,
   ...uiProps
-}: VeniceConnectProps & {integrationIds: Array<Id['int']>}) {
+}: VeniceConnectProps & {
+  integrationIds: Array<Id['int']>
+  catalog: Catalog
+}) {
   // VeniceConnect should be fetching its own integrationIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
@@ -139,7 +154,7 @@ export function _VeniceConnect({
 
   const integrations = integrationIds
     .map((id) => {
-      const provider = providerMetaByName[extractProviderName(id)]
+      const provider = catalog[extractProviderName(id)]
       if (!provider) {
         console.warn('Missing provider for integration', id)
       }
@@ -182,7 +197,7 @@ export function _VeniceConnect({
     R.uniq,
     R.mapToObj((name: string) => [
       name,
-      providerMetaByName[name]?.useConnectHook?.({openDialog}),
+      clientIntegrations[name]?.useConnectHook?.({openDialog}),
     ]),
   )
 
@@ -384,7 +399,6 @@ export const WithProviderConnect = ({
 
   const [open, setOpen] = React.useState(false)
   const formRef = React.useRef<SchemaFormElement>(null)
-  const formSchema = int.provider.def.resourceSettings ?? z.object({})
 
   // console.log('int', int.id, 'open', open)
   return (
@@ -409,7 +423,10 @@ export const WithProviderConnect = ({
         </DialogHeader>
         <SchemaForm
           ref={formRef}
-          schema={formSchema}
+          schema={z.object({})}
+          jsonSchemaTransform={(schema) =>
+            int.provider.schemas.resourceSettings ?? schema
+          }
           formData={{}}
           // formData should be non-null at this point, we should fix the typing
           loading={connect.isLoading}
@@ -442,7 +459,10 @@ export const WithProviderConnect = ({
  */
 export function ResourceDropdownMenu(
   props: UIProps & {
-    integration: {id: Id['int']; provider: ProviderMeta}
+    integration: {
+      id: Id['int']
+      provider: ProviderMeta
+    }
     resource: Resource
     connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
     onEvent?: (event: {type: ConnectEventType}) => void

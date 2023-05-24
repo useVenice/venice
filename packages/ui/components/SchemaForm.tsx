@@ -22,6 +22,7 @@ export type SchemaFormProps<TSchema extends z.ZodTypeAny> = Omit<
   'schema' | 'validator' | 'onSubmit'
 > & {
   schema: TSchema
+  jsonSchemaTransform?: (schema: RJSFSchema) => RJSFSchema
   hideSubmitButton?: boolean
   onSubmit?: (data: {formData: z.infer<TSchema>}) => void
   loading?: boolean
@@ -34,6 +35,7 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   {
     schema,
     hideSubmitButton,
+    jsonSchemaTransform,
     formData: _formData,
     onSubmit,
     loading,
@@ -41,7 +43,8 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   }: SchemaFormProps<TSchema>,
   forwardedRef: React.ForwardedRef<Form<z.infer<TSchema>>>,
 ) {
-  const jsonSchema = zodToJsonSchema(schema) as RJSFSchema
+  const _jsonSchema = zodToJsonSchema(schema) as RJSFSchema
+  const jsonSchema = jsonSchemaTransform?.(_jsonSchema) ?? _jsonSchema
   // For debugging
   ;(window as any).formSchema = schema
   ;(window as any).formJsonSchema = jsonSchema

@@ -4,10 +4,6 @@ import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-import {
-  availableProviders,
-  providerByName,
-} from '@usevenice/app-config/providers'
 import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
@@ -26,6 +22,7 @@ import {
   AlertDialogTrigger,
   Badge,
   Button,
+  LoadingText,
   SchemaForm,
   Separator,
   Sheet,
@@ -46,6 +43,10 @@ type Integration = RouterOutput['adminListIntegrations'][number]
 
 export default function IntegrationsPage() {
   const integrationsRes = trpcReact.adminListIntegrations.useQuery()
+  const catalog = trpcReact.getIntegrationCatalog.useQuery()
+  if (!integrationsRes.data || !catalog.data) {
+    return <LoadingText />
+  }
 
   return (
     <div className="p-6">
@@ -58,7 +59,7 @@ export default function IntegrationsPage() {
       {integrationsRes.data ? (
         <div className="flex flex-wrap">
           {integrationsRes.data.map((int) => {
-            const provider = providerByName[int.providerName]!
+            const provider = catalog.data[int.providerName]!
             return (
               <IntegrationCard
                 key={int.id}
@@ -81,7 +82,7 @@ export default function IntegrationsPage() {
         Available integrations
       </h2>
       {zIntegrationCategory.options.map((category) => {
-        const providers = availableProviders.filter((p) =>
+        const providers = Object.values(catalog.data).filter((p) =>
           p.categories.includes(category),
         )
         if (!providers.length) {
@@ -121,6 +122,8 @@ export default function IntegrationsPage() {
   )
 }
 
+// import {defIntegrations } from '@usevenice/app-config/integrations/integrations.def'
+
 export function IntegrationSheet({
   integration: int,
   providerName,
@@ -128,13 +131,14 @@ export function IntegrationSheet({
   integration?: Omit<Integration, 'providerName'>
   providerName: string
 }) {
-  const provider = providerByName[providerName]!
+  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+  const provider = catalogRes.data?.[providerName]
 
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself integration
   const formSchema = zRaw.integration
     .pick({endUserAccess: true})
-    .extend({config: provider.def.integrationConfig ?? z.object({})})
+    .extend({config: z.object({})})
 
   const {orgId} = useCurrengOrg()
 
@@ -171,6 +175,10 @@ export function IntegrationSheet({
   const mutating = deleteIntegration.isLoading || upsertIntegration.isLoading
 
   const formRef = React.useRef<SchemaFormElement>(null)
+
+  if (!provider) {
+    return <LoadingText />
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -223,6 +231,13 @@ export function IntegrationSheet({
           <SchemaForm
             ref={formRef}
             schema={formSchema}
+            jsonSchemaTransform={(schema) => ({
+              ...schema,
+              properties: {
+                ...schema.properties,
+                config: provider.schemas.integrationConfig,
+              },
+            })}
             formData={
               int
                 ? {endUserAccess: int.endUserAccess, config: int.config ?? {}} // {} because required
@@ -240,7 +255,9 @@ export function IntegrationSheet({
             }}
             hideSubmitButton
           />
-          {!provider.def.integrationConfig && <p>No configuration needed</p>}
+          {!provider.schemas.integrationConfig && (
+            <p>No configuration needed</p>
+          )}
         </div>
         <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">

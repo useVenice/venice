@@ -1,8 +1,16 @@
 import type {MaybePromise} from '@usevenice/util'
-import {castIs, R, titleCase, urlFromImage, z} from '@usevenice/util'
+import {
+  castIs,
+  R,
+  titleCase,
+  urlFromImage,
+  z,
+  zodToJsonSchema,
+} from '@usevenice/util'
 
 import type {EndUserId, ExtEndUserId, ExternalId} from './id.types'
 import {makeId, zExternalId} from './id.types'
+import type {IntegrationSchemas} from './integration.types'
 import type {ZStandard} from './meta.types'
 import type {
   AnyEntityPayload,
@@ -13,7 +21,8 @@ import type {
   SyncOperation,
 } from './protocol'
 
-export type ProviderMeta = ReturnType<typeof metaForProvider>
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type JSONSchema = {} // ReturnType<typeof zodToJsonSchema> | JSONSchema7Definition
 
 export const metaForProvider = (provider: AnySyncProvider) => ({
   // ...provider,
@@ -32,10 +41,9 @@ export const metaForProvider = (provider: AnySyncProvider) => ({
   hasPreConnect: provider.preConnect != null,
   hasUseConnectHook: provider.useConnectHook != null,
   hasPostConnect: provider.postConnect != null,
-  def: provider.def,
-  // This is the only non-serializable attribute for network...
-  // should it really be part of meta?
-  useConnectHook: provider.useConnectHook,
+  schemas: R.mapValues(provider.def ?? {}, (schema) =>
+    schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
+  ) as Record<keyof IntegrationSchemas, JSONSchema>,
 })
 
 export const zIntegrationCategory = z.enum([

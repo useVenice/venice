@@ -93,11 +93,11 @@ export type IntHelpers<TDef extends IntegrationSchemas> = ReturnType<
 >
 
 export interface IntegrationClient<
-  TDef extends IntegrationSchemas,
+  TDef extends IntegrationSchemas = IntegrationSchemas,
   T extends IntHelpers<TDef> = IntHelpers<TDef>,
 > {
   useConnectHook?: (scope: {
-    userId: DeprecatedUserId | undefined
+    // userId: DeprecatedUserId | undefined
     openDialog: OpenDialogFn
   }) => (
     connectInput: T['_types']['connectInput'],
