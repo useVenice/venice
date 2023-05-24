@@ -15,6 +15,7 @@ export const commands = {
   },
   copy_id: {
     icon: 'Copy',
+    subtitle: 'reso_plaid_01H17ZDXSQ6JN63SHCXK3FEK3E',
   },
 
   'resource:edit': {

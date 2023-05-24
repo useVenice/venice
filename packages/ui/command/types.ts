@@ -10,6 +10,7 @@ export interface CommandDefinitionInput<
   icon?: IconName
   shortcut?: string
   title?: string
+  subtitle?: string
   /** CommandGroup.heading */
   group?: string
 

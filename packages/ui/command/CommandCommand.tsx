@@ -10,8 +10,10 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   CommandShortcut,
 } from '../shadcn/Command'
+import {cn} from '../utils'
 import type {CommandComponentProps} from './types'
 import {prepareCommands} from './types'
 
@@ -29,27 +31,46 @@ export function CommandContent({
     <Command>
       <CommandInput placeholder={placeholder} />
       <CommandEmpty>{emptyMessage}</CommandEmpty>
-      {Object.entries(commandGroups).map(([groupName, commands]) => (
-        <CommandGroup key={groupName} heading={groupName}>
-          {commands.map((cmd) => (
-            <CommandItem
-              key={cmd.key}
-              onSelect={(currentValue) => {
-                console.log('command selected', currentValue)
-                // cmd.handler(currentValue)
-                // setValue(currentValue === value ? '' : currentValue)
-                // setOpen(false)
-              }}>
-              {cmd.icon && <Icon name={cmd.icon} className="mr-2 h-4 w-4" />}
-              <span>{cmd.title}</span>
-              {cmd.shortcut && (
-                // Need to render shortcut better... $mod+K => ⌘S
-                <CommandShortcut>{cmd.shortcut}</CommandShortcut>
-              )}
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      ))}
+      <CommandList>
+        {Object.entries(commandGroups).map(([groupName, commands]) => (
+          <CommandGroup key={groupName} heading={groupName}>
+            {commands.map((cmd) => (
+              <CommandItem
+                key={cmd.key}
+                onSelect={(currentValue) => {
+                  console.log('command selected', currentValue)
+                  // cmd.handler(currentValue)
+                  // setValue(currentValue === value ? '' : currentValue)
+                  // setOpen(false)
+                }}>
+                {cmd.icon && (
+                  <Icon
+                    name={cmd.icon}
+                    className={cn(
+                      'mr-2 h-4 w-4 shrink-0',
+                      cmd.subtitle && 'mt-[2px] self-start',
+                    )}
+                  />
+                )}
+                <div className="flex flex-col gap-1 overflow-hidden">
+                  <span>{cmd.title}</span>
+                  {cmd.subtitle && (
+                    <pre
+                      title={cmd.subtitle}
+                      className="overflow-hidden text-ellipsis text-muted-foreground">
+                      {cmd.subtitle}
+                    </pre>
+                  )}
+                </div>
+                {cmd.shortcut && (
+                  // Need to render shortcut better... $mod+K => ⌘S
+                  <CommandShortcut>{cmd.shortcut}</CommandShortcut>
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        ))}
+      </CommandList>
     </Command>
   )
 }
@@ -92,7 +113,7 @@ export function CommandBar(props: CommandComponentProps) {
   }, [])
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
+    <CommandDialog open={open} onOpenChange={setOpen} className="sm:top-32">
       <CommandContent {...props} />
     </CommandDialog>
   )

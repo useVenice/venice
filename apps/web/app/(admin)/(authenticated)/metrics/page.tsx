@@ -1,6 +1,11 @@
 'use client'
 
-import {ComboboxDemo, CommandBar, CommandPopover} from '@usevenice/ui'
+import {
+  ComboboxDemo,
+  CommandBar,
+  CommandInline,
+  CommandPopover,
+} from '@usevenice/ui'
 
 import {commands} from '@/lib-client/commands'
 
@@ -14,8 +19,11 @@ export default function ComingSoonPage() {
 
       <div className="m-5 border p-5">
         <CommandPopover definitions={commands} />
+        <ComboboxDemo />
       </div>
-      <ComboboxDemo />
+      <div className="m-5 border p-5">
+        <CommandInline definitions={commands} />
+      </div>
     </div>
   )
 }
