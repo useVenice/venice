@@ -5,6 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "5.0.0",
     "@blossomfinance/iso-4217-currencies": "0.2.5",
     "@trpc/server": "10.21.1",
     "accounting": "0.4.1",

@@ -6,7 +6,6 @@ import '@glideapps/glide-data-grid/dist/index.css'
 import type {GridCell, GridColumn, Item} from '@glideapps/glide-data-grid'
 import {DataEditor, GridCellKind} from '@glideapps/glide-data-grid'
 import type {UseQueryResult} from '@tanstack/react-query'
-import clsx from 'clsx'
 import React from 'react'
 
 import {produce} from '@usevenice/util'
@@ -122,8 +121,8 @@ interface DataGridSkeletonRowProps {
 
 function DataGridSkeletonRow(props: DataGridSkeletonRowProps) {
   const {bgColor} = props
-  const square = <div className={clsx('h-4 w-4 rounded', bgColor)} />
-  const rect = <div className={clsx('h-4 w-[5rem] rounded', bgColor)} />
+  const square = <div className={cn('h-4 w-4 rounded', bgColor)} />
+  const rect = <div className={cn('h-4 w-[5rem] rounded', bgColor)} />
   return (
     <li className="flex justify-between border-b border-venice-gray-muted/50">
       <div className="shrink-0 px-3 py-2">{square}</div>
