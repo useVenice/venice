@@ -6,16 +6,18 @@ import React from 'react'
 
 import {getServerUrl, kAcceptUrlParam} from '@usevenice/app-config/constants'
 import type {Id} from '@usevenice/cdk-core'
-import {Kbd, Resizable, useWithToast} from '@usevenice/ui'
-import {CodeEditor} from '@usevenice/ui/CodeEditor'
-import {DataGrid} from '@usevenice/ui/DataGrid'
 import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@usevenice/ui/new-components'
+  Kbd,
+  Resizable,
+  useWithToast,
+} from '@usevenice/ui'
+import {CodeEditor} from '@usevenice/ui/components/CodeEditor'
+import {DataGrid} from '@usevenice/ui/components/DataGrid'
 
 import {NoSSR} from '@/components/NoSSR'
 

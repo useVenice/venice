@@ -20,7 +20,6 @@ import React from 'react'
 
 import {R} from '@usevenice/util'
 
-import {LoadingText} from './LoadingText'
 import {
   Button,
   Checkbox,
@@ -35,7 +34,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './new-components'
+} from '../shadcn'
+import {LoadingText} from './LoadingText'
 
 interface DataTableProps<TData, TValue> {
   query: UseQueryResult<TData[]>

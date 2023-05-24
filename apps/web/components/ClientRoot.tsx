@@ -7,7 +7,7 @@ import React, {useEffect, useRef} from 'react'
 import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider} from '@usevenice/engine-frontend'
-import {Toaster} from '@usevenice/ui/new-components'
+import {Toaster} from '@usevenice/ui'
 
 import {createQueryClient} from '../lib-client/react-query-client'
 import {

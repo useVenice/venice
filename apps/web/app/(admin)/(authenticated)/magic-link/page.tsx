@@ -3,11 +3,10 @@
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {adminRouterSchema} from '@usevenice/engine-backend/router/adminRouter'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {SchemaForm} from '@usevenice/ui'
-import {useToast} from '@usevenice/ui/new-components'
+import {SchemaForm, useToast} from '@usevenice/ui'
 
-import {copyToClipboard} from '@/lib-client/copyToClipboard'
 import {useCurrengOrg} from '@/components/viewer-context'
+import {copyToClipboard} from '@/lib-client/copyToClipboard'
 
 const formSchema = adminRouterSchema.adminCreateConnectToken.input.omit({
   orgId: true,

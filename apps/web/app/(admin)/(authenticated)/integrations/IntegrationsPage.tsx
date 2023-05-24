@@ -11,11 +11,10 @@ import {
 import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
+import type {SchemaFormElement} from '@usevenice/ui'
 import {
   IntegrationCard as _IntegrationCard,
   ProviderCard as _ProviderCard,
-} from '@usevenice/ui/domain-components'
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -27,6 +26,7 @@ import {
   AlertDialogTrigger,
   Badge,
   Button,
+  SchemaForm,
   Separator,
   Sheet,
   SheetContent,
@@ -36,9 +36,7 @@ import {
   SheetTitle,
   SheetTrigger,
   useToast,
-} from '@usevenice/ui/new-components'
-import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
-import {SchemaForm} from '@usevenice/ui/SchemaForm'
+} from '@usevenice/ui'
 import {titleCase, z} from '@usevenice/util'
 
 import {useCurrengOrg} from '@/components/viewer-context'

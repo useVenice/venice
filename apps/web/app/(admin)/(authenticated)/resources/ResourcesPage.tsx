@@ -10,7 +10,6 @@ import {extractProviderName, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
-import {cn, DataTable, SchemaForm} from '@usevenice/ui'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,12 +22,15 @@ import {
   AlertDialogTrigger,
   Badge,
   Button,
+  cn,
+  DataTable,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  SchemaForm,
   Separator,
   Sheet,
   SheetContent,
@@ -37,7 +39,7 @@ import {
   SheetHeader,
   SheetTitle,
   useToast,
-} from '@usevenice/ui/new-components'
+} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
 type Resource = RouterOutput['listConnections'][number]

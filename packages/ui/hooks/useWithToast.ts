@@ -1,4 +1,4 @@
-import {useToast} from '../new-components'
+import {useToast} from '../shadcn'
 
 interface ToastOptions {
   title?: string

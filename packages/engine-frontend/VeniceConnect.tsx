@@ -18,8 +18,7 @@ import {
   zIntegrationCategory,
 } from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
-import type {UIProps, UIPropsNoChildren} from '@usevenice/ui/domain-components'
-import {ProviderCard, ResourceCard} from '@usevenice/ui/domain-components'
+import type {SchemaFormElement, UIProps, UIPropsNoChildren} from '@usevenice/ui'
 import {
   Button,
   Dialog,
@@ -36,10 +35,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  ProviderCard,
+  ResourceCard,
+  SchemaForm,
   useToast,
-} from '@usevenice/ui/new-components'
-import type {SchemaFormElement} from '@usevenice/ui/SchemaForm'
-import {SchemaForm} from '@usevenice/ui/SchemaForm'
+} from '@usevenice/ui'
 import {cn} from '@usevenice/ui/utils'
 import {R, titleCase, z} from '@usevenice/util'
 

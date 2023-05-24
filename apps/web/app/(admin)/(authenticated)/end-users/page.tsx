@@ -6,9 +6,9 @@ import {Copy, MoreHorizontal, RefreshCcw} from 'lucide-react'
 import {getServerUrl} from '@usevenice/app-config/constants'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
-import {DataTable} from '@usevenice/ui'
 import {
   Button,
+  DataTable,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   useToast,
-} from '@usevenice/ui/new-components'
+} from '@usevenice/ui'
 
 export default function EndUsersPage() {
   const res = trpcReact.adminSearchEndUsers.useQuery({})

@@ -7,17 +7,18 @@ import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaSheetRef, SchemaSheetRefValue} from '@usevenice/ui'
-import {DataTable, SchemaSheet} from '@usevenice/ui'
 import {
   Button,
+  DataTable,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  SchemaSheet,
   useToast,
-} from '@usevenice/ui/new-components'
+} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
 export default function PipelinesPage() {

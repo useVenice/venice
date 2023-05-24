@@ -7,7 +7,7 @@ import React from 'react'
 import type {z} from '@usevenice/util'
 import {zodToJsonSchema} from '@usevenice/util'
 
-import {cn} from './utils'
+import {cn} from '../utils'
 
 const theme: ThemeProps = {widgets: {}}
 

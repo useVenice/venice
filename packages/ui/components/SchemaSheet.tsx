@@ -6,7 +6,6 @@ import React from 'react'
 
 import type {z} from '@usevenice/util'
 
-import type {ButtonProps} from './new-components'
 import {
   Button,
   Sheet,
@@ -17,7 +16,8 @@ import {
   SheetTitle,
   SheetTrigger,
   useToast,
-} from './new-components'
+} from '../shadcn'
+import type {ButtonProps} from '../shadcn'
 import type {SchemaFormElement, SchemaFormProps} from './SchemaForm'
 import {SchemaForm} from './SchemaForm'
 
