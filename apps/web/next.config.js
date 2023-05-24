@@ -2,6 +2,8 @@ const path = require('node:path')
 const webpack = require('webpack')
 const {withSentryConfig} = require('@sentry/nextjs')
 
+const integrationInfos = require('../app-config/integrations/meta')
+
 /**
  * Meta: change from `@type` to @satisfies once ts 5.0 is out
  * @type {import('next').NextConfig}
@@ -9,34 +11,7 @@ const {withSentryConfig} = require('@sentry/nextjs')
 const nextConfig = {
   transpilePackages: [
     path.resolve(__dirname, '../app-config'),
-    path.resolve(__dirname, '../../integrations/core-integration-airtable'),
-    path.resolve(__dirname, '../../integrations/core-integration-firebase'),
-    path.resolve(__dirname, '../../integrations/core-integration-fs'),
-    path.resolve(__dirname, '../../integrations/core-integration-mongodb'),
-    path.resolve(__dirname, '../../integrations/core-integration-postgres'),
-    path.resolve(__dirname, '../../integrations/core-integration-redis'),
-    path.resolve(__dirname, '../../integrations/core-integration-webhook'),
-    path.resolve(__dirname, '../../integrations/integration-alphavantage'),
-    path.resolve(__dirname, '../../integrations/integration-beancount'),
-    path.resolve(__dirname, '../../integrations/integration-expensify'),
-    path.resolve(__dirname, '../../integrations/integration-foreceipt'),
-    path.resolve(__dirname, '../../integrations/integration-heron'),
-    path.resolve(__dirname, '../../integrations/integration-import'),
-    path.resolve(__dirname, '../../integrations/integration-lunchmoney'),
-    path.resolve(__dirname, '../../integrations/integration-moota'),
-    path.resolve(__dirname, '../../integrations/integration-onebrick'),
-    path.resolve(__dirname, '../../integrations/integration-plaid'),
-    path.resolve(__dirname, '../../integrations/integration-postgres'),
-    path.resolve(__dirname, '../../integrations/integration-qbo'),
-    path.resolve(__dirname, '../../integrations/integration-ramp'),
-    path.resolve(__dirname, '../../integrations/integration-saltedge'),
-    path.resolve(__dirname, '../../integrations/integration-splitwise'),
-    path.resolve(__dirname, '../../integrations/integration-stripe'),
-    path.resolve(__dirname, '../../integrations/integration-teller'),
-    path.resolve(__dirname, '../../integrations/integration-toggl'),
-    path.resolve(__dirname, '../../integrations/integration-venmo'),
-    path.resolve(__dirname, '../../integrations/integration-wise'),
-    path.resolve(__dirname, '../../integrations/integration-yodlee'),
+    // Should we generate this list from fs also?
     path.resolve(__dirname, '../../packages/cdk-core'),
     path.resolve(__dirname, '../../packages/cdk-ledger'),
     path.resolve(__dirname, '../../packages/engine-backend'),
@@ -45,6 +20,9 @@ const nextConfig = {
     path.resolve(__dirname, '../../packages/ui'),
     path.resolve(__dirname, '../../packages/util'),
     path.resolve(__dirname, '../../packages/connect'),
+    ...integrationInfos.map(({dirName}) =>
+      path.resolve(__dirname, `../../integrations/${dirName}`),
+    ),
   ],
   env: {
     NEXT_PUBLIC_PORT: process.env['PORT'] ?? '',

@@ -1,42 +1,10 @@
-import type {IntegrationDef, IntegrationImpl} from '@usevenice/cdk-core'
-import {defHelpers, handlersLink} from '@usevenice/cdk-core'
-import {
-  makePostingsMap,
-  veniceProviderBase,
-  zCommon,
-} from '@usevenice/cdk-ledger'
-import {A, Rx, rxjs, z, zCast} from '@usevenice/util'
+import type {IntegrationImpl} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {A, Rx, rxjs} from '@usevenice/util'
 
-import type {components} from './stripe.gen'
+import {helpers, stripeDef} from './def'
 import {makeStripeClient} from './StripeClient'
-
-const stripeDef = {
-  name: z.literal('stripe'),
-  integrationConfig: z.object({
-    clientId: z.string(),
-    clientSecret: z.string(),
-  }),
-  resourceSettings: z.object({secretKey: z.string()}),
-  sourceOutputEntity: z.discriminatedUnion('entityName', [
-    z.object({
-      id: z.string(),
-      entityName: z.literal('account'),
-      entity: zCast<components['schemas']['account']>(),
-    }),
-    z.object({
-      id: z.string(),
-      entityName: z.literal('transaction'),
-      entity: zCast<components['schemas']['balance_transaction']>(),
-    }),
-  ]),
-  sourceState: veniceProviderBase.def.sourceState
-    .removeDefault()
-    .extend({transactionSyncCursor: z.string().nullish()})
-    .default({}),
-  destinationInputEntity: zCommon.Entity,
-} satisfies IntegrationDef
-
-const helpers = defHelpers(stripeDef)
 
 export const stripeImpl = {
   name: 'stripe',
@@ -183,3 +151,5 @@ export const stripeImpl = {
     })
   },
 } satisfies IntegrationImpl<typeof stripeDef>
+
+export default stripeImpl

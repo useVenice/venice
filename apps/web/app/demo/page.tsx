@@ -1,8 +1,7 @@
 'use client'
 
 import 'next/image'
-
-import '@/pages/global.css'
+import '../global.css'
 
 import {useSearchParams} from 'next/navigation'
 

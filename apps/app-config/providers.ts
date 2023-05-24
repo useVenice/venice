@@ -1,7 +1,7 @@
+import type {Id} from '@usevenice/cdk-core'
 import {
   debugProvider,
   extractProviderName,
-  Id,
   metaForProvider,
   zIntegrationStage,
 } from '@usevenice/cdk-core'

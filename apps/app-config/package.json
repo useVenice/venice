@@ -57,6 +57,7 @@
   "devDependencies": {
     "@types/find-config": "1.0.1",
     "@types/tunnel": "0.0.3",
+    "prettier": "2.8.8",
     "tablemark": "3.0.0"
   },
   "//": "find-config is needed for the @next/env patch"
