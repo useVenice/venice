@@ -1,11 +1,9 @@
 import type {Db} from 'mongodb'
+import {MongoClient} from 'mongodb'
 
 import type {AnyEntityPayload} from '@usevenice/cdk-core'
 import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import {defineProxyFn, z, zCast, zFunction} from '@usevenice/util'
-
-export const $mongodb =
-  defineProxyFn<() => typeof import('mongodb')>('$mongodb')
+import {z, zCast, zFunction} from '@usevenice/util'
 
 export const zMongoConnection = z.object({
   databaseUrl: z.string(),
@@ -38,7 +36,6 @@ const zData = zCast<AnyEntityPayload>()
 export const mongoDBConnection = zFunction(
   zMongoConnection,
   ({databaseUrl, databaseName}) => {
-    const {MongoClient} = $mongodb()
     let db: Db
     const initMongoDB = async () => {
       const client = new MongoClient(databaseUrl)

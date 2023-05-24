@@ -4,7 +4,7 @@ import {useAuth} from '@clerk/nextjs'
 import {QueryClientProvider} from '@tanstack/react-query'
 import React, {useEffect, useRef} from 'react'
 
-import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {env} from '@usevenice/app-config/env'
 import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider} from '@usevenice/engine-frontend'
 import {Toaster} from '@usevenice/ui'
@@ -29,7 +29,7 @@ export function ClientRootWithClerk(props: {
     // TODO: Are we better off signing ourselves server side and avoid needing a round-trip to Clerk?
     // Access token is needed because we need to connect to supabase-realtime
     console.log('[ClientRoot] regenerate supabase auth token')
-    const template = commonEnv.NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME
+    const template = env.NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME
     void auth.getToken({template}).then((t) => setAccessToken(t))
   }, [auth, auth.userId, auth.orgId])
 

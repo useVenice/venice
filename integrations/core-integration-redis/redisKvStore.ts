@@ -1,23 +1,13 @@
-import type {createNodeRedisClient} from 'handy-redis'
+import {createNodeRedisClient} from 'handy-redis'
 
 import {zKVStore} from '@usevenice/cdk-core'
-import {
-  defineProxyFn,
-  memoize,
-  safeJSONParse,
-  z,
-  zFunction,
-} from '@usevenice/util'
-
-export const $createNodeRedisClient = defineProxyFn<
-  () => typeof createNodeRedisClient
->('createNodeRedisClient')
+import {memoize, safeJSONParse, z, zFunction} from '@usevenice/util'
 
 export const makeRedisKVStore = zFunction(
   z.object({redisUrl: z.string().optional()}),
   zKVStore,
   ({redisUrl}) => {
-    const redis = memoize(() => $createNodeRedisClient()({url: redisUrl}))
+    const redis = memoize(() => createNodeRedisClient({url: redisUrl}))
     return {
       get: (id) =>
         redis().get(id).then(safeJSONParse) as Promise<Record<string, unknown>>,

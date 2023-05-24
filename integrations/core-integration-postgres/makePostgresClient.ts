@@ -1,3 +1,5 @@
+import {SlonikMigrator} from '@slonik/migrator'
+import {createPool, createTypeParserPreset, sql} from 'slonik'
 import {createInterceptors} from 'slonik-interceptor-preset'
 import type {
   PrimitiveValueExpression,
@@ -6,7 +8,6 @@ import type {
 
 import type {MaybeArray} from '@usevenice/util'
 import {
-  defineProxyFn,
   fromMaybeArray,
   isPlainObject,
   memoize,
@@ -16,9 +17,7 @@ import {
   zFunction,
 } from '@usevenice/util'
 
-export const $slonik = defineProxyFn<() => typeof import('slonik')>('slonik')
-export const $slonikMigrator =
-  defineProxyFn<() => typeof import('@slonik/migrator')>('@slonik/migrator')
+export {DatabaseError} from 'pg'
 
 export const zPgConfig = z.object({
   databaseUrl: z.string(),
@@ -30,8 +29,6 @@ export const zPgConfig = z.object({
 export const makePostgresClient = zFunction(
   zPgConfig,
   ({databaseUrl, migrationsPath, migrationTableName, ...opts}) => {
-    const {createPool, sql, createTypeParserPreset} = $slonik()
-    const {SlonikMigrator} = $slonikMigrator()
     const getPool = memoize(
       async () => {
         const pool = await createPool(databaseUrl, {
@@ -122,7 +119,6 @@ export function upsertByIdQuery(
     return null
   }
 
-  const {sql} = $slonik()
   const toSqlId = (str: string) => sql.identifier([snakeCase(str)])
 
   const table = toSqlId(tableName)
@@ -197,7 +193,6 @@ export function applyLimitOffset<T extends Record<string, any>>(
   query: TaggedTemplateLiteralInvocation<T>,
   opts: {limit?: number; offset?: number},
 ) {
-  const {sql} = $slonik()
   const limit = opts.limit ? sql`LIMIT ${opts.limit}` : sql``
   const offset = opts.offset ? sql`OFFSET ${opts.offset}` : sql``
   return sql<T>`${query} ${limit} ${offset}`

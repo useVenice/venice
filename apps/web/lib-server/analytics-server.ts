@@ -1,8 +1,9 @@
-import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {PostHog} from 'posthog-node'
+
+import {env} from '@usevenice/app-config/env'
 import {zUserId} from '@usevenice/cdk-core'
 import {zEvent, zUserTraits} from '@usevenice/engine-backend/events'
 import {noopFunctionMap, z, zFunction} from '@usevenice/util'
-import {PostHog} from 'posthog-node'
 
 export const makeServerAnalytics = zFunction(z.string(), (writeKey: string) => {
   const posthog = new PostHog(writeKey, {})
@@ -41,6 +42,6 @@ export const makeServerAnalytics = zFunction(z.string(), (writeKey: string) => {
   }
 })
 
-export const serverAnalytics = commonEnv.NEXT_PUBLIC_POSTHOG_WRITEKEY
-  ? makeServerAnalytics(commonEnv.NEXT_PUBLIC_POSTHOG_WRITEKEY)
+export const serverAnalytics = env.NEXT_PUBLIC_POSTHOG_WRITEKEY
+  ? makeServerAnalytics(env.NEXT_PUBLIC_POSTHOG_WRITEKEY)
   : noopFunctionMap<ReturnType<typeof makeServerAnalytics>>()

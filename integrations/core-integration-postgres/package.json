@@ -2,9 +2,6 @@
   "name": "@usevenice/core-integration-postgres",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": [
-    "register.node.ts"
-  ],
   "module": "./index.ts",
   "dependencies": {
     "@slonik/migrator": "0.11.3",

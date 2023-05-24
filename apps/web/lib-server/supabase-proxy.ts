@@ -1,20 +1,23 @@
+import type {IncomingMessage} from 'node:http'
+
+import {createProxy} from 'http-proxy'
+import type {NextApiRequest, NextApiResponse} from 'next'
+
 import {backendEnv} from '@usevenice/app-config/backendConfig'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
 import {
   kAcceptUrlParam,
   kApikeyHeader,
   kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
+import {env} from '@usevenice/app-config/env'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {parseUrl, stringifyUrl} from '@usevenice/util'
-import {createProxy} from 'http-proxy'
-import type {NextApiRequest, NextApiResponse} from 'next'
-import type {IncomingMessage} from 'node:http'
+
 import {respondToCORS, serverGetViewer} from '.'
 
 // TODO: Centralize this
 const jwtClient = makeJwtClient({
-  secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY!,
+  secretOrPublicKey: backendEnv.JWT_SECRET_OR_PUBLIC_KEY,
 })
 
 const proxy = createProxy()
@@ -75,11 +78,11 @@ export async function proxySupabase({
         .once('error', reject)
         .web(req, res, {
           changeOrigin: true,
-          target: new URL(targetPath, commonEnv.NEXT_PUBLIC_SUPABASE_URL).href,
+          target: new URL(targetPath, env.NEXT_PUBLIC_SUPABASE_URL).href,
           // target: 'http://localhost:3010/api/debug',
           ignorePath: true,
           headers: {
-            apikey: commonEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            apikey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
             ...(accessToken && {authorization: `Bearer ${accessToken}`}),
             // Technically this is only for pgREST. However it's not as convenient to
             // handle this within [[...rest]].page for now so we do it here.

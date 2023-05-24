@@ -1,29 +1,15 @@
+// @deprecated Most likely no longer serves any purpose now that integrations
+// have different entry points for client vs. server
+
 // Polyfill fetch on node to support proxy agent...
 // Should we use node-fetch directly?
-import crossFetch, {Headers, Request, Response} from 'cross-fetch'
-
-/**
- * Do not relace global version unnecessarily.
- * causes among other issue clerk/nextjs to fail mysteriously
- * @see https://share.cleanshot.com/BcYr73DF
- */
-if (!globalThis.fetch) {
-  globalThis.fetch = crossFetch
-  globalThis.Headers = Headers
-  globalThis.Request = Request
-  globalThis.Response = Response
-}
-
-import '@usevenice/core-integration-airtable/register.node'
-import '@usevenice/core-integration-mongodb/register.node'
-import '@usevenice/core-integration-postgres/register.node'
-import '@usevenice/core-integration-redis/register.node'
 
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import url from 'node:url'
 
 import chokidar from 'chokidar'
+import crossFetch, {Headers, Request, Response} from 'cross-fetch'
 import {readFile} from 'read-file-safe'
 import tunnel from 'tunnel'
 import {writeFile as _writeFile} from 'write-file-safe'
@@ -43,6 +29,18 @@ import {
   memoize,
 } from '@usevenice/util'
 
+/**
+ * Do not relace global version unnecessarily.
+ * causes among other issue clerk/nextjs to fail mysteriously
+ * @see https://share.cleanshot.com/BcYr73DF
+ */
+if (!globalThis.fetch) {
+  globalThis.fetch = crossFetch
+  globalThis.Headers = Headers
+  globalThis.Request = Request
+  globalThis.Response = Response
+}
+
 if (process.env['SILENT']) {
   console.log = () => {} // To suppress spurious log
   console.debug = () => {} // To suppress spurious log
@@ -51,7 +49,9 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
-implementProxyFn($getFetchFn, () => crossFetch, {replaceExisting: true})
+implementProxyFn($getFetchFn, () => globalThis.fetch ?? crossFetch, {
+  replaceExisting: true,
+})
 implementProxyFn(
   $makeProxyAgent,
   (input) => {

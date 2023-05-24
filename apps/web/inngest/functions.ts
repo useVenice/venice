@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 import {clerkClient} from '@clerk/nextjs'
 
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
-import {commonEnv} from '@usevenice/app-config/commonConfig'
+import {env} from '@usevenice/app-config/env'
 import type {EndUserId} from '@usevenice/cdk-core'
 import {makeId, zEndUserId, zId, zUserId} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
@@ -17,7 +17,7 @@ import {serverAnalytics} from '../lib-server/analytics-server'
 import {makeSentryClient} from '../lib-server/sentry-client'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const sentry = makeSentryClient({dsn: commonEnv.NEXT_PUBLIC_SENTRY_DSN!})
+const sentry = makeSentryClient({dsn: env.NEXT_PUBLIC_SENTRY_DSN!})
 
 export const scheduleSyncs = inngest.createFunction(
   {name: 'Schedule pipeline syncs'},

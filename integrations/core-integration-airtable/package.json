@@ -2,9 +2,7 @@
   "name": "@usevenice/core-integration-airtable",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": [
-    "register.node.ts"
-  ],
+  "sideEffects": [],
   "module": "./index.ts",
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",

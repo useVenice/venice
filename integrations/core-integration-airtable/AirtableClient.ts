@@ -1,9 +1,7 @@
 import type {Base, FieldSet, Records} from 'airtable'
+import Airtable from 'airtable'
 
-import {defineProxyFn, titleCase, z, zFunction} from '@usevenice/util'
-
-export const $airtable =
-  defineProxyFn<() => typeof import('airtable')>('$airtable')
+import {titleCase, z, zFunction} from '@usevenice/util'
 
 export const zAirtableResourceSettings = z.object({
   apiKey: z.string(),
@@ -26,7 +24,6 @@ export const zTransaction = zAccount.extend({
 export const makeAirtableClient = zFunction(
   zAirtableResourceSettings,
   ({apiKey, airtableBase}) => {
-    const Airtable = $airtable()
     let base: Base
     const initBase = () => {
       base = new Airtable({apiKey}).base(airtableBase)

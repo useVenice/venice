@@ -12,12 +12,11 @@ import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
 import {joinPath, R, Rx} from '@usevenice/util'
 
-import {veniceCommonConfig} from './commonConfig'
 import {getServerUrl} from './constants'
 import {env} from './env'
-import type {PROVIDERS} from './providers'
+import {PROVIDERS} from './providers'
 
-export {DatabaseError} from '@usevenice/core-integration-postgres/register.node'
+export {DatabaseError} from '@usevenice/core-integration-postgres/makePostgresClient'
 export {Papa} from '@usevenice/integration-import'
 export {makePostgresClient} from '@usevenice/integration-postgres'
 
@@ -44,7 +43,9 @@ export type VeniceInput = PipelineInput<
 >
 
 export const contextFactory = getContextFactory({
-  ...veniceCommonConfig,
+  providers: PROVIDERS,
+  // routerUrl: 'http://localhost:3010/api', // apiUrl?
+  apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
   getMetaService: (viewer) =>
