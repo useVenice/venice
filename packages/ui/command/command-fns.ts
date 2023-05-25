@@ -9,7 +9,7 @@ export type PreparedCommand = ReturnType<
 export function prepareCommands({
   definitions,
 }: {
-  definitions: CommandDefinitionMap
+  definitions: CommandDefinitionMap<any>
 }) {
   const commands = Object.entries(definitions).map(([key, value]) => {
     const [_group, titleInGroup] = (key.split('/').pop() ?? '').split(':')

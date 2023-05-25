@@ -36,11 +36,13 @@ export interface CommandComponentProps<
 function CommandItemContainer({
   command: _cmd,
   onSelect,
+  params,
 }: {
   command: ReturnType<typeof prepareCommands>['commands'][number]
+  params?: Record<string, unknown>
   onSelect?: (value: string) => void
 }) {
-  const cmd = {..._cmd, ..._cmd.useCommand?.()}
+  const cmd = {..._cmd, ..._cmd.useCommand?.(undefined as never)}
   return (
     <CommandItem
       // Value is used for filtering commands
@@ -48,7 +50,7 @@ function CommandItemContainer({
       value={R.compact([cmd.title, cmd.subtitle, cmd.shortcut]).join(' ')}
       onSelect={(currentValue) => {
         console.log('command selected', currentValue)
-        void cmd.execute?.({ctx: {}, params: {}})
+        void cmd.execute?.({ctx: {}, params: params ?? {}})
         onSelect?.(currentValue)
       }}>
       {cmd.icon && (
@@ -111,6 +113,7 @@ export function CommandContent({
                 key={cmd.key}
                 command={cmd}
                 onSelect={onSelect}
+                params={initialParams}
               />
             ))}
           </CommandGroup>

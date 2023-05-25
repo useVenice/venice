@@ -21,19 +21,41 @@ export interface _CommandDefinitionInput<
   group?: string
 
   params?: TParams
-
   execute?: (options: {params: _infer<TParams, {}>; ctx: TCtx}) => TRet
 }
 
 export interface CommandDefinitionInput<
   TCtx = unknown,
   TParams extends z.AnyZodObject = z.AnyZodObject,
+  TRet = unknown,
 > extends _CommandDefinitionInput<TCtx, TParams> {
-  /** Used for overriding... */
-  useCommand?: () => _CommandDefinitionInput<TCtx, TParams>
+  /** Used for overriding... the _:never param is needed to force typing */
+  useCommand?: (
+    _: never,
+    // Cannot redefine params because it is used for filtering the list of
+    // commands to render in the first place...
+  ) => Omit<_CommandDefinitionInput<TCtx, TParams, TRet>, 'params'>
 }
 
 export type CommandDefinitionMap<TCtx = unknown> = Record<
   string,
   CommandDefinitionInput<TCtx>
 >
+
+/**
+ * Workaround limitation of satisfies not being able to have generic params
+ * @see https://share.cleanshot.com/0bfZhflf
+ */
+export function cmdInit<TCtx = unknown>() {
+  function makeCmds<TInput extends CommandDefinitionMap<TCtx>>(cmds: TInput) {
+    return cmds
+  }
+
+  function make<
+    TParams extends z.AnyZodObject = z.AnyZodObject,
+    TRet = unknown,
+  >(input: CommandDefinitionInput<TCtx, TParams, TRet>) {
+    return input
+  }
+  return {make, makeCmds}
+}

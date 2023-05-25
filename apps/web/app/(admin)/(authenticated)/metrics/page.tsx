@@ -22,7 +22,7 @@ export default function ComingSoonPage() {
       <div className="m-5 border p-5">
         <CommandPopover
           definitions={veniceCommands}
-          initialParams={{pipeline: 'pipe_123'}}
+          initialParams={{id: 'pipe_123'}}
           hideGroupHeadings
         />
         <ComboboxDemo />
@@ -31,7 +31,7 @@ export default function ComingSoonPage() {
         <CommandInline
           hideGroupHeadings
           definitions={veniceCommands}
-          initialParams={{pipeline: 'pipe_123'}}
+          initialParams={{id: 'pipe_123'}}
         />
       </div>
     </div>
