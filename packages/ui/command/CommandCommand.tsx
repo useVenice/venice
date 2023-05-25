@@ -18,20 +18,20 @@ import type {CommandComponentProps} from './types'
 import {prepareCommands} from './types'
 
 function CommandItemContainer({
-  command: cmd,
+  command: _cmd,
   onSelect,
 }: {
   command: ReturnType<typeof prepareCommands>['commands'][number]
   onSelect?: (value: string) => void
 }) {
-  const execute = cmd.useExecute ? cmd.useExecute() : cmd.execute
+  const cmd = {..._cmd, ..._cmd.useCommand?.()}
   return (
     <CommandItem
       // if we don't specify "value" onSelect would get the innerText... which is not desirable
       value={cmd.key}
       onSelect={(currentValue) => {
         console.log('command selected', currentValue)
-        void execute?.({ctx: {}, params: {}})
+        void cmd.execute?.({ctx: {}, params: {}})
         onSelect?.(currentValue)
       }}>
       {cmd.icon && (

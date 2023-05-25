@@ -16,11 +16,18 @@ export const veniceCommands = {
     icon: 'Settings',
   },
   toggle_dark_mode: {
-    icon: 'Moon',
-    useExecute: () => {
-      const {setTheme, resolvedTheme} = useTheme()
-      return () => {
-        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+    // TODO: Give the choice of dark / light / system via an enum somehoe
+    // as right now the there are no easy ways to "reset"
+    useCommand: () => {
+      const {setTheme, resolvedTheme, theme} = useTheme()
+      return {
+        icon:
+          theme === 'dark'
+            ? 'SunMedium'
+            : theme === 'light'
+            ? 'Moon'
+            : 'Laptop',
+        execute: () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark'),
       }
     },
   },

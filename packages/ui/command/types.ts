@@ -3,7 +3,7 @@ import {R, titleCase} from '@usevenice/util'
 
 import type {IconName} from '../components/Icon'
 
-export interface CommandDefinitionInput<
+export interface _CommandDefinitionInput<
   TCtx = unknown,
   TParams extends z.AnyZodObject = z.AnyZodObject,
 > {
@@ -16,15 +16,18 @@ export interface CommandDefinitionInput<
 
   params?: TParams
 
-  useExecute?: () => (options: {
-    params: z.infer<TParams>
-    ctx: TCtx
-  }) => void | Promise<void>
-
   execute?: (options: {
     params: z.infer<TParams>
     ctx: TCtx
   }) => void | Promise<void>
+}
+
+export interface CommandDefinitionInput<
+  TCtx = unknown,
+  TParams extends z.AnyZodObject = z.AnyZodObject,
+> extends _CommandDefinitionInput<TCtx, TParams> {
+  /** Used for overriding... */
+  useCommand?: () => _CommandDefinitionInput<TCtx, TParams>
 }
 
 export type CommandDefinitionMap<TCtx = unknown> = Record<
