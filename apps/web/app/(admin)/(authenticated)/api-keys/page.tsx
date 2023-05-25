@@ -1,11 +1,4 @@
-import {clerkClient} from '@clerk/nextjs'
-
-import {kApikeyMetadata} from '@usevenice/app-config/constants'
-import type {Viewer} from '@usevenice/cdk-core'
-import {hasRole} from '@usevenice/cdk-core'
-import {makeUlid} from '@usevenice/util'
-
-import {encodeApiKey} from '@/lib-server'
+import {getOrCreateApikey} from '@/lib-server'
 import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
 
 export default async function ApiKeyPage() {
@@ -19,37 +12,4 @@ export default async function ApiKeyPage() {
       <pre>{apikey}</pre>
     </div>
   )
-}
-
-async function getOrCreateApikey(viewer: Viewer) {
-  const orgId = hasRole(viewer, ['org', 'user']) ? viewer.orgId : null
-  const userId = hasRole(viewer, ['user']) ? viewer.userId : null
-
-  if (orgId) {
-    const res = await clerkClient.organizations.getOrganization({
-      organizationId: orgId,
-    })
-    if (typeof res.privateMetadata[kApikeyMetadata] === 'string') {
-      return encodeApiKey(orgId, res.privateMetadata[kApikeyMetadata])
-    }
-    const key = `key_${makeUlid()}`
-    // updateMetadata will do a deepMerge, unlike simple update
-    await clerkClient.organizations.updateOrganizationMetadata(orgId, {
-      privateMetadata: {[kApikeyMetadata]: key},
-    })
-    return encodeApiKey(orgId, key)
-  }
-  if (userId) {
-    const res = await clerkClient.users.getUser(userId)
-    if (typeof res.privateMetadata[kApikeyMetadata] === 'string') {
-      return encodeApiKey(userId, res.privateMetadata[kApikeyMetadata])
-    }
-    const key = `key_${makeUlid()}`
-    // updateMetadata will do a deepMerge, unlike simple update
-    await clerkClient.users.updateUserMetadata(userId, {
-      privateMetadata: {[kApikeyMetadata]: key},
-    })
-    return encodeApiKey(userId, key)
-  }
-  return null
 }

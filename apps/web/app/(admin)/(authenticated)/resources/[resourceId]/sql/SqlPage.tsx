@@ -4,7 +4,11 @@ import {useQuery} from '@tanstack/react-query'
 import {ChevronDown, Loader2} from 'lucide-react'
 import React from 'react'
 
-import {getServerUrl, kAcceptUrlParam} from '@usevenice/app-config/constants'
+import {
+  getServerUrl,
+  kAcceptUrlParam,
+  kApikeyUrlParam,
+} from '@usevenice/app-config/constants'
 import type {Id} from '@usevenice/cdk-core'
 import {
   Button,
@@ -31,12 +35,14 @@ function sqlUrl(opts: {
   query: string
   format?: 'csv' | 'json'
   download?: boolean
+  apikey: string
 }) {
   const url = new URL(
     `/api/resources/${opts.resourceId}/sql`,
     getServerUrl(null),
   )
   url.searchParams.set('q', opts.query)
+  url.searchParams.set(kApikeyUrlParam, opts.apikey)
   if (opts.format) {
     url.searchParams.set(kAcceptUrlParam, opts.format)
   }
@@ -46,13 +52,21 @@ function sqlUrl(opts: {
   return url
 }
 
-export function SqlPage({resourceId}: {resourceId: Id['reso']}) {
+export function SqlPage({
+  resourceId,
+  apikey,
+}: {
+  resourceId: Id['reso']
+  apikey: string
+}) {
   const [queryText, setQueryText] = React.useState('')
 
   const res = useQuery<Array<Record<string, unknown>>>({
     queryKey: ['sql', resourceId, queryText],
     queryFn: () =>
-      fetch(sqlUrl({resourceId, query: queryText})).then((r) => r.json()),
+      fetch(sqlUrl({apikey, resourceId, query: queryText})).then((r) =>
+        r.json(),
+      ),
     // set low cache time because we don't want useQuery to return
     // the cached result causing the output to update without user
     // explicitly execute the query leading to a confusing behavior.
@@ -65,7 +79,7 @@ export function SqlPage({resourceId}: {resourceId: Id['reso']}) {
   const listTablesRes = useQuery({
     queryKey: ['sql', resourceId, qListTable],
     queryFn: () =>
-      fetch(sqlUrl({resourceId, query: qListTable})).then(
+      fetch(sqlUrl({apikey, resourceId, query: qListTable})).then(
         (r) =>
           r.json() as Promise<
             Array<{table_name: string; table_type: 'BASE TABLE' | 'VIEW'}>
@@ -80,7 +94,7 @@ export function SqlPage({resourceId}: {resourceId: Id['reso']}) {
   const {withToast} = useWithToast()
 
   function resultsUrl(opts: {format?: 'csv' | 'json'; download?: boolean}) {
-    return sqlUrl({...opts, resourceId, query: queryText}).toString()
+    return sqlUrl({...opts, apikey, resourceId, query: queryText}).toString()
   }
 
   return (

@@ -23,9 +23,9 @@ export const getGraphqlEndpoint = (
 export const getRestEndpoint = (req: GetServerSidePropsContext['req'] | null) =>
   new URL('/api/rest', getServerUrl(req))
 
-export const kApikeyHeader = 'x-apikey'
 export const kApikeyUrlParam = 'apikey'
 export const kApikeyMetadata = 'apikey'
+export const kApikeyHeader = 'x-apikey'
 
 export const kAcceptUrlParam = '_accept'
 

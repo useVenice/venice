@@ -12,7 +12,7 @@ import {makeUlid} from '@usevenice/util'
 
 import {zAuth} from '@/lib-common/schemas'
 
-import {ensureDefaultResourceAndPipelines, getPool, sql} from '../lib-server'
+import {getPool, sql} from '../lib-server'
 import {serverAnalytics} from '../lib-server/analytics-server'
 import {makeSentryClient} from '../lib-server/sentry-client'
 
@@ -81,7 +81,6 @@ export const syncResource = inngest.createFunction(
         sql`SELECT end_user_id FROM resource WHERE id = ${resourceId}`,
       )
       console.log('endUserId', endUserId)
-      await ensureDefaultResourceAndPipelines(endUserId)
       await flatRouter
         .createCaller(contextFactory.fromViewer({role: 'system'}))
         .syncResource([resourceId, {}])

@@ -53,6 +53,24 @@ export const vDefinitions = {
       ctx.setPipelineSheetState({pipeline, open: true})
     },
   }),
+  'pipeline:sync': cmd.identity({
+    icon: 'RefreshCw',
+    group: 'pipeline',
+    params: z.object({pipeline: zClient.pipeline}),
+    execute: ({params: {pipeline}, ctx}) => {
+      void ctx.withToast(() =>
+        ctx.trpcCtx.client.syncPipeline.mutate([pipeline.id, {}]),
+      )
+    },
+  }),
+  'pipeline:delete': {
+    icon: 'Trash',
+    params: z.object({
+      id: zId('pipe'),
+    }),
+
+    execute: () => {},
+  },
   'pipeline:create': cmd.identity({
     icon: 'Plus',
     execute: ({ctx}) => {
@@ -78,17 +96,5 @@ export const vDefinitions = {
 
   'resource:edit': {
     icon: 'Pencil',
-  },
-  'pipeline:sync': {
-    icon: 'RefreshCw',
-    group: 'pipeline',
-  },
-  'pipeline:delete': {
-    icon: 'Trash',
-    params: z.object({
-      id: zId('pipe'),
-    }),
-
-    execute: () => {},
   },
 } satisfies CommandDefinitionMap<CommandContext>

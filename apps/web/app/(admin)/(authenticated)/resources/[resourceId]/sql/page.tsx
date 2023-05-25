@@ -1,6 +1,7 @@
 import type {Id} from '@usevenice/cdk-core'
 
 import {contextFactory} from '@/../app-config/backendConfig'
+import {getOrCreateApikey} from '@/lib-server'
 import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
 
 import {SqlPage} from './SqlPage'
@@ -11,6 +12,7 @@ export default async function SqlPageServer({
   params: {resourceId: Id['reso']}
 }) {
   const viewer = await serverComponentGetViewer()
+  const apikey = await getOrCreateApikey(viewer)
   const ctx = contextFactory.fromViewer(viewer)
 
   const resource = await ctx.helpers.getResourceOrFail(resourceId)
@@ -20,5 +22,5 @@ export default async function SqlPageServer({
     )
   }
 
-  return <SqlPage resourceId={resourceId} />
+  return <SqlPage apikey={apikey} resourceId={resourceId} />
 }
