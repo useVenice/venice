@@ -28,3 +28,5 @@ export const kApikeyUrlParam = 'apikey'
 export const kApikeyMetadata = 'apikey'
 
 export const kAcceptUrlParam = '_accept'
+
+export const __DEV__ = getServerUrl(null).includes('localhost')

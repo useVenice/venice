@@ -3,16 +3,25 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 
+import {__DEV__} from '@usevenice/app-config/constants'
+import type {IconName} from '@usevenice/ui'
 import {Button, ScrollArea} from '@usevenice/ui'
+import {R} from '@usevenice/util'
 
 import {cn} from '@/lib-client/ui-utils'
 
+interface LinkItem {
+  href: string
+  title: string
+  icon?: IconName
+}
+
 const sectionedLinks: Array<{
   title?: string
-  items: Array<{href: string; title: string; icon?: keyof typeof lucide}>
+  items: LinkItem[]
 }> = [
   {
-    items: [
+    items: R.compact<LinkItem>([
       // {
       //   title: 'Home',
       //   href: '/',
@@ -23,12 +32,12 @@ const sectionedLinks: Array<{
         href: '/magic-link',
         icon: 'Wand',
       },
-      {
+      __DEV__ && {
         title: 'Metrics',
         href: '/metrics',
         icon: 'BarChart2',
       },
-    ],
+    ]),
   },
   {
     title: 'Entities',
