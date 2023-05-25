@@ -1,46 +1,53 @@
-import React from 'react'
+import type {
+  ButtonProps,
+  CommandComponentProps,
+  CommandDraft,
+} from '@usevenice/ui'
+import {CommandBar, CommandButton, CommandPopover} from '@usevenice/ui'
 
-import type {CommandComponentProps, SchemaSheetRefValue} from '@usevenice/ui'
-import {CommandPopover} from '@usevenice/ui'
-
-import {PipelineSheet} from '@/app/(admin)/(authenticated)/pipelines/page'
-
-import {useCommandContext} from './command-context'
+import type {CommandContext} from './command-context'
+import {WithCommandContext} from './command-context'
 import {veniceCommands} from './command-definitions'
 
-export function CommandMenu(
+export function VCommandMenu(
   props: Pick<CommandComponentProps, 'initialParams'>,
 ) {
-  const _ctx = useCommandContext()
-  const ref = React.useRef<SchemaSheetRefValue>(null)
-
-  const ctx = React.useMemo(
-    () =>
-      ({
-        ..._ctx,
-        // Hack around not being able to pass open/setOpen to pipeline sheet yet
-        setPipelineSheetState: (newState) => {
-          if (typeof newState === 'object') {
-            ref.current?.setOpen(newState.open)
-          }
-          _ctx.setPipelineSheetState(newState)
-        },
-      } satisfies typeof _ctx),
-    [_ctx],
-  )
   return (
-    <>
-      <PipelineSheet
-        ref={ref}
-        triggerButton={false}
-        pipeline={ctx.pipelineSheetState.pipeline}
-      />
-      <CommandPopover
-        {...props}
-        ctx={ctx}
-        definitions={veniceCommands}
-        hideGroupHeadings
-      />
-    </>
+    <WithCommandContext>
+      {(ctx) => (
+        <CommandPopover
+          {...props}
+          ctx={ctx}
+          definitions={veniceCommands}
+          hideGroupHeadings
+        />
+      )}
+    </WithCommandContext>
   )
 }
+
+export function VCommandBar() {
+  return (
+    <WithCommandContext>
+      {(ctx) => (
+        <CommandBar ctx={ctx} definitions={veniceCommands} hideGroupHeadings />
+      )}
+    </WithCommandContext>
+  )
+}
+
+export function VCommandButton<TKey extends keyof typeof veniceCommands>(
+  props: ButtonProps & {
+    command: CommandDraft<typeof veniceCommands, TKey, CommandContext>
+  },
+) {
+  return (
+    <WithCommandContext>
+      {(ctx) => (
+        <CommandButton {...props} ctx={ctx} definitions={veniceCommands} />
+      )}
+    </WithCommandContext>
+  )
+}
+
+// TODO: Add VCommandButton

@@ -1,31 +1,40 @@
 import {R, titleCase, z} from '@usevenice/util'
 
-import type {_infer, CommandDefinitionMap} from './types'
+import type {
+  _infer,
+  CommandDefinitionInput,
+  CommandDefinitionMap,
+} from './types'
 
 export type PreparedCommand = ReturnType<
   typeof prepareCommands
 >['commands'][number]
+
+export function prepareCommand([key, value]: [
+  key: string,
+  def: CommandDefinitionInput<any>,
+]) {
+  const [_group, titleInGroup] = (key.split('/').pop() ?? '').split(':')
+  const title = titleInGroup ? [titleInGroup, _group].join(' ') : _group
+  const group = titleInGroup ? _group : ''
+  const params = value.params ?? z.object({})
+  return {
+    ...value,
+    params,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    hasParams: Object.keys(params.shape).length > 0,
+    title: value.title ?? titleCase(title),
+    group: titleCase(value.group ?? group),
+    key,
+  }
+}
 
 export function prepareCommands({
   definitions,
 }: {
   definitions: CommandDefinitionMap<any>
 }) {
-  const commands = Object.entries(definitions).map(([key, value]) => {
-    const [_group, titleInGroup] = (key.split('/').pop() ?? '').split(':')
-    const title = titleInGroup ? [titleInGroup, _group].join(' ') : _group
-    const group = titleInGroup ? _group : ''
-    const params = value.params ?? z.object({})
-    return {
-      ...value,
-      params,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      hasParams: Object.keys(params.shape).length > 0,
-      title: value.title ?? titleCase(title),
-      group: titleCase(value.group ?? group),
-      key,
-    }
-  })
+  const commands = Object.entries(definitions).map(prepareCommand)
   const commandGroups = R.groupBy(commands, (c) => c.group)
 
   return {commandGroups, commands}
@@ -63,6 +72,7 @@ export function filterCommands({
   return {commands, commandGroups}
 }
 
+/** WARNING: Only works with commands that do not have react hooks... */
 export function executeCommand<
   TDef extends CommandDefinitionMap<TCtx>,
   TKey extends keyof TDef,
@@ -76,7 +86,6 @@ export function executeCommand<
   command: [key: TKey, params: _infer<TDef[TKey]['params'], {}>]
   ctx: TCtx
 }) {
-  // Need to deal with commands with dynamic useCommandDef hooks
   return definitions[key]?.execute?.({params, ctx}) as ReturnType<
     NonNullable<TDef[TKey]['execute']>
   >

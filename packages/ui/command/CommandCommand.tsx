@@ -4,7 +4,13 @@ import React from 'react'
 import {R} from '@usevenice/util'
 
 import {Icon} from '../components/Icon'
-import {Button, Popover, PopoverContent, PopoverTrigger} from '../shadcn'
+import {
+  Button,
+  ButtonProps,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../shadcn'
 import {
   Command,
   CommandDialog,
@@ -16,8 +22,8 @@ import {
   CommandShortcut,
 } from '../shadcn/Command'
 import {cn} from '../utils'
-import {filterCommands, prepareCommands} from './command-fns'
-import type {CommandDefinitionMap} from './types'
+import {filterCommands, prepareCommand, prepareCommands} from './command-fns'
+import type {_infer, CommandDefinitionMap} from './types'
 
 export interface CommandComponentProps<
   TCtx = any,
@@ -34,6 +40,42 @@ export interface CommandComponentProps<
 }
 
 // TODO: Detect shortcut conflict
+
+export type CommandDraft<
+  TDef extends CommandDefinitionMap<TCtx>,
+  TKey extends keyof TDef,
+  TCtx = unknown,
+> = [key: TKey, params: _infer<TDef[TKey]['params'], {}>]
+
+export function CommandButton<
+  TDef extends CommandDefinitionMap<TCtx>,
+  TKey extends keyof TDef,
+  TCtx = unknown,
+>({
+  command: [key, params],
+  definitions,
+  ctx,
+  ...buttonProps
+}: {
+  definitions: TDef
+  command: CommandDraft<TDef, TKey, TCtx>
+  ctx: TCtx
+} & ButtonProps) {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const _cmd = prepareCommand([key as string, definitions[key]!])
+  const cmd = {..._cmd, ..._cmd.useCommand?.(undefined as never)}
+
+  return (
+    <Button
+      {...buttonProps}
+      onClick={(e) => {
+        void cmd.execute?.({ctx, params: params ?? {}})
+        buttonProps.onClick?.(e)
+      }}>
+      {cmd.title}
+    </Button>
+  )
+}
 
 function CommandItemContainer({
   command: _cmd,
@@ -160,6 +202,7 @@ export function CommandPopover(props: CommandComponentProps) {
   )
 }
 
+/** Automatically registers keyboard shortcut and show command in a dialog */
 export function CommandBar(props: CommandComponentProps) {
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {

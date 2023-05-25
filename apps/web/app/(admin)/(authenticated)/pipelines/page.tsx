@@ -3,10 +3,9 @@
 import {Copy, MoreHorizontal, Pencil, RefreshCcw, Trash} from 'lucide-react'
 import React from 'react'
 
-import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
-import type {SchemaSheetRef, SchemaSheetRefValue} from '@usevenice/ui'
+import type {SchemaSheetRefValue} from '@usevenice/ui'
 import {
   Button,
   DataTable,
@@ -16,12 +15,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  SchemaSheet,
   useToast,
 } from '@usevenice/ui'
-import {z} from '@usevenice/util'
 
-import {CommandMenu} from '@/commands/command-components'
+import {VCommandButton, VCommandMenu} from '@/commands/command-components'
+import {PipelineSheet} from '@/components/PipelineSheet'
 
 export default function PipelinesPage() {
   const res = _trpcReact.listPipelines2.useQuery()
@@ -38,7 +36,7 @@ export default function PipelinesPage() {
         Would be better if the button was more explicit...
         Should probably render sheets / dialogs etc. without trigger by default.
          */}
-        <PipelineSheet />
+        <VCommandButton command={['pipeline:create', {}]} />
       </header>
       <p>
         Pipelines connect resources together by syncing data from source
@@ -51,7 +49,7 @@ export default function PipelinesPage() {
             id: 'actions',
             enableHiding: false,
             cell: ({row}) => (
-              <CommandMenu initialParams={{pipeline: row.original}} />
+              <VCommandMenu initialParams={{pipeline: row.original}} />
             ),
           },
           {
@@ -77,6 +75,7 @@ export default function PipelinesPage() {
 
 type Pipeline = RouterOutput['listPipelines2'][number]
 
+// @ts-expect-error
 function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
   const ref = React.useRef<SchemaSheetRefValue>(null)
   const {toast} = useToast()
@@ -151,43 +150,3 @@ function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
     </DropdownMenu>
   )
 }
-
-export const PipelineSheet = React.forwardRef(function PipelineSheet(
-  props: {pipeline?: Pipeline; triggerButton?: boolean},
-  ref: SchemaSheetRef,
-) {
-  const resourcesRes = _trpcReact.listResources.useQuery()
-
-  const zResoId = z.union(
-    (resourcesRes.data ?? []).map((r) =>
-      z
-        .literal(r.id)
-        .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
-    ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
-  )
-  // Filter for only sources vs destinations when saving...
-  // This is where it would be a nice advantage to use something like an Airbyte
-  // so we don't have to build the whole admin ui
-  // But then that won't work if admin ui cannot be embedded
-  const formSchema = z.object({
-    ...(props.pipeline && ({id: zId('pipe')} as {})),
-    sourceId: zResoId,
-    destinationId: zResoId,
-    sourceState: z.record(z.any()).optional(),
-    destinationState: z.record(z.any()).optional(),
-  })
-
-  const upsertPipeline = _trpcReact.adminUpsertPipeline.useMutation()
-  return (
-    <SchemaSheet
-      ref={ref}
-      triggerButton={props.triggerButton}
-      title={props.pipeline ? 'Edit' : 'New Pipeline'}
-      buttonProps={{variant: props.pipeline ? 'ghost' : 'default'}}
-      formProps={{uiSchema: {id: {'ui:readonly': true}}}}
-      schema={formSchema}
-      mutation={upsertPipeline}
-      initialValues={props.pipeline}
-    />
-  )
-})

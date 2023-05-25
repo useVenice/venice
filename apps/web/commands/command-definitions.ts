@@ -51,11 +51,17 @@ export const veniceCommands = {
       }
     },
   }),
-  'resource:edit': cmd.identity({
+  'pipeline:edit': cmd.identity({
     icon: 'Pencil',
     params: z.object({pipeline: zClient.pipeline}),
     execute: ({params: {pipeline}, ctx}) => {
       ctx.setPipelineSheetState({pipeline, open: true})
+    },
+  }),
+  'pipeline:create': cmd.identity({
+    icon: 'Plus',
+    execute: ({ctx}) => {
+      ctx.setPipelineSheetState({pipeline: undefined, open: true})
     },
   }),
   'resource:delete': {
@@ -75,7 +81,7 @@ export const veniceCommands = {
     // Only show me for sandbox plaid resources
   },
 
-  'pipeline:edit': {
+  'resource:edit': {
     icon: 'Pencil',
   },
   'pipeline:sync': {
