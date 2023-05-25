@@ -6,7 +6,7 @@ import React from 'react'
 
 import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {trpcReact} from '@usevenice/engine-frontend'
+import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
 import {
   IntegrationCard as _IntegrationCard,
@@ -42,8 +42,8 @@ import {cn} from '@/lib-client/ui-utils'
 type Integration = RouterOutput['adminListIntegrations'][number]
 
 export default function IntegrationsPage() {
-  const integrationsRes = trpcReact.adminListIntegrations.useQuery()
-  const catalog = trpcReact.getIntegrationCatalog.useQuery()
+  const integrationsRes = _trpcReact.adminListIntegrations.useQuery()
+  const catalog = _trpcReact.getIntegrationCatalog.useQuery()
   if (!integrationsRes.data || !catalog.data) {
     return <LoadingText />
   }
@@ -131,7 +131,7 @@ export function IntegrationSheet({
   integration?: Omit<Integration, 'providerName'>
   providerName: string
 }) {
-  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
   const provider = catalogRes.data?.[providerName]
 
   // Consider calling this provider, actually seem to make more sense...
@@ -146,7 +146,7 @@ export function IntegrationSheet({
   const verb = int ? 'Edit' : 'Add'
   const {toast} = useToast()
 
-  const upsertIntegration = trpcReact.adminUpsertIntegration.useMutation({
+  const upsertIntegration = _trpcReact.adminUpsertIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Integration saved', variant: 'success'})
@@ -159,7 +159,7 @@ export function IntegrationSheet({
       })
     },
   })
-  const deleteIntegration = trpcReact.adminDeleteIntegration.useMutation({
+  const deleteIntegration = _trpcReact.adminDeleteIntegration.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Integration deleted', variant: 'success'})

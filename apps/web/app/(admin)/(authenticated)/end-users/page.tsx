@@ -5,7 +5,7 @@ import {Copy, MoreHorizontal, RefreshCcw} from 'lucide-react'
 
 import {getServerUrl} from '@usevenice/app-config/constants'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {trpcReact} from '@usevenice/engine-frontend'
+import {_trpcReact} from '@usevenice/engine-frontend'
 import {
   Button,
   DataTable,
@@ -19,7 +19,7 @@ import {
 } from '@usevenice/ui'
 
 export default function EndUsersPage() {
-  const res = trpcReact.adminSearchEndUsers.useQuery({})
+  const res = _trpcReact.adminSearchEndUsers.useQuery({})
 
   return (
     <div className="p-6">
@@ -45,7 +45,7 @@ type EndUser = RouterOutput['adminSearchEndUsers'][number]
 
 function EndUserMenu({endUser}: {endUser: EndUser}) {
   const {toast} = useToast()
-  const createConnectToken = trpcReact.adminCreateConnectToken.useMutation({})
+  const createConnectToken = _trpcReact.adminCreateConnectToken.useMutation({})
   const {orgId} = useAuth()
 
   return (

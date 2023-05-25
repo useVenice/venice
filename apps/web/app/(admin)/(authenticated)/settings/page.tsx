@@ -2,16 +2,13 @@
 
 import {useOrganization} from '@clerk/nextjs'
 
-import type {TRPCReact} from '@usevenice/engine-frontend'
-import {trpcReact as _trpcReact} from '@usevenice/engine-frontend'
 import {LoadingText, SchemaForm, useWithToast} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
+import {trpcReact} from '@/lib-client/trpcReact'
 import {zOrgMetadata} from '@/lib-common/schemas'
-import type {AppRouter} from '@/pages/api/trpc/[...trpc]'
 
 /** Move this somewhere where other components can access */
-const trpcReact = _trpcReact as unknown as TRPCReact<AppRouter>
 
 export default function SettingsPage() {
   const {onSuccess, onError} = useWithToast()

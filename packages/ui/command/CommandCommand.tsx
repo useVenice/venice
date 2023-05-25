@@ -23,10 +23,12 @@ export interface CommandComponentProps<
   TCtx = any,
   TDefs extends CommandDefinitionMap<TCtx> = CommandDefinitionMap<TCtx>,
 > {
+  ctx: TCtx
   placeholder?: string
   emptyMessage?: string
   definitions: TDefs
   onSelect?: (key: keyof TDefs) => void
+  /** TODO: Better type initialParams from TDefs to be a union of params */
   initialParams?: Record<string, unknown>
   hideGroupHeadings?: boolean
 }
@@ -37,9 +39,11 @@ function CommandItemContainer({
   command: _cmd,
   onSelect,
   params,
+  ctx,
 }: {
   command: ReturnType<typeof prepareCommands>['commands'][number]
   params?: Record<string, unknown>
+  ctx: unknown
   onSelect?: (value: string) => void
 }) {
   const cmd = {..._cmd, ..._cmd.useCommand?.(undefined as never)}
@@ -50,7 +54,7 @@ function CommandItemContainer({
       value={R.compact([cmd.title, cmd.subtitle, cmd.shortcut]).join(' ')}
       onSelect={(currentValue) => {
         console.log('command selected', currentValue)
-        void cmd.execute?.({ctx: {}, params: params ?? {}})
+        void cmd.execute?.({ctx, params: params ?? {}})
         onSelect?.(currentValue)
       }}>
       {cmd.icon && (
@@ -81,6 +85,7 @@ function CommandItemContainer({
 }
 
 export function CommandContent({
+  ctx,
   definitions,
   emptyMessage = 'No commands found.',
   placeholder = 'Search...',
@@ -111,6 +116,7 @@ export function CommandContent({
             {commands.map((cmd) => (
               <CommandItemContainer
                 key={cmd.key}
+                ctx={ctx}
                 command={cmd}
                 onSelect={onSelect}
                 params={initialParams}

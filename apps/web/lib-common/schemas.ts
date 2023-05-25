@@ -1,9 +1,9 @@
 import type {clerkClient} from '@clerk/nextjs'
 
-import {z} from '@usevenice/util'
-
-import {zId} from '@/../../packages/cdk-core'
-import {kApikeyMetadata} from '@/../app-config/constants'
+import {kApikeyMetadata} from '@usevenice/app-config/constants'
+import {zId} from '@usevenice/cdk-core'
+import type {RouterOutput} from '@usevenice/engine-backend'
+import {z, zRecord} from '@usevenice/util'
 
 export type ClerkOrg = Awaited<
   ReturnType<(typeof clerkClient)['organizations']['getOrganization']>
@@ -79,4 +79,30 @@ export const zAuth = {
 
 export type ZAuth = {
   [k in keyof typeof zAuth]: z.infer<(typeof zAuth)[k]>
+}
+
+type Pipeline = RouterOutput['listPipelines2'][number]
+type Resource = RouterOutput['listConnections'][number]
+type Integration = RouterOutput['adminListIntegrations'][number]
+type Provider = RouterOutput['getIntegrationCatalog'][string]
+
+export const zClient = {
+  pipeline: zRecord<Pipeline>().refine(
+    (p) => zId('pipe').safeParse(p.id).success,
+    {message: 'Invalid pipeline'},
+  ),
+  resource: zRecord<Resource>().refine(
+    (r) => zId('reso').safeParse(r.id).success,
+    {message: 'Invalid resource'},
+  ),
+  integration: zRecord<Integration>().refine(
+    (i) => zId('int').safeParse(i.id).success,
+    {message: 'Invalid integration'},
+  ),
+  provider: zRecord<Provider>().refine((p) => p.__typename === 'provider', {
+    message: 'Invalid pipeline',
+  }),
+}
+export type ZClient = {
+  [k in keyof typeof zClient]: z.infer<(typeof zClient)[k]>
 }

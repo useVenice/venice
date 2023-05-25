@@ -5,11 +5,10 @@ import type {CommandDefinitionMap} from '@usevenice/ui'
 import {cmdInit, useWithToast} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
-import {copyToClipboard} from './copyToClipboard'
+import {zClient} from '@/lib-common/schemas'
 
-export interface CommandContext {
-  activeEntity: {__typename: string; id: string}
-}
+import {copyToClipboard} from '../lib-client/copyToClipboard'
+import type {CommandContext} from './command-context'
 
 const cmd = cmdInit<CommandContext>()
 
@@ -36,7 +35,7 @@ export const veniceCommands = {
       }
     },
   },
-  copy_id: cmd.make({
+  copy_id: cmd.identity({
     icon: 'Copy',
     subtitle: 'reso_plaid_01H17ZDXSQ6JN63SHCXK3FEK3E',
     params: z.object({id: z.string()}),
@@ -52,9 +51,13 @@ export const veniceCommands = {
       }
     },
   }),
-  'resource:edit': {
+  'resource:edit': cmd.identity({
     icon: 'Pencil',
-  },
+    params: z.object({pipeline: zClient.pipeline}),
+    execute: ({params: {pipeline}, ctx}) => {
+      ctx.setPipelineSheetState({pipeline, open: true})
+    },
+  }),
   'resource:delete': {
     icon: 'Trash',
   },

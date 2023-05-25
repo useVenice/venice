@@ -5,7 +5,7 @@ import React from 'react'
 
 import {zId} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {trpcReact} from '@usevenice/engine-frontend'
+import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaSheetRef, SchemaSheetRefValue} from '@usevenice/ui'
 import {
   Button,
@@ -21,8 +21,10 @@ import {
 } from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
+import {CommandMenu} from '@/commands/command-components'
+
 export default function PipelinesPage() {
-  const res = trpcReact.listPipelines2.useQuery()
+  const res = _trpcReact.listPipelines2.useQuery()
 
   ;(globalThis as any).listPipelines2Res = res
 
@@ -48,7 +50,9 @@ export default function PipelinesPage() {
           {
             id: 'actions',
             enableHiding: false,
-            cell: ({row}) => <PipelineMenu pipeline={row.original} />,
+            cell: ({row}) => (
+              <CommandMenu initialParams={{pipeline: row.original}} />
+            ),
           },
           {
             accessorKey: 'id',
@@ -76,7 +80,7 @@ type Pipeline = RouterOutput['listPipelines2'][number]
 function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
   const ref = React.useRef<SchemaSheetRefValue>(null)
   const {toast} = useToast()
-  const deletePipeline = trpcReact.deletePipeline.useMutation({
+  const deletePipeline = _trpcReact.deletePipeline.useMutation({
     onSuccess: () => {
       toast({
         title: 'Pipeline deleted',
@@ -92,7 +96,7 @@ function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
       })
     },
   })
-  const syncPipeline = trpcReact.syncPipeline.useMutation({
+  const syncPipeline = _trpcReact.syncPipeline.useMutation({
     onSuccess: () => {
       toast({
         title: 'Pipeline synced',
@@ -148,11 +152,11 @@ function PipelineMenu({pipeline}: {pipeline: Pipeline}) {
   )
 }
 
-const PipelineSheet = React.forwardRef(function PipelineSheetButton(
+export const PipelineSheet = React.forwardRef(function PipelineSheet(
   props: {pipeline?: Pipeline; triggerButton?: boolean},
   ref: SchemaSheetRef,
 ) {
-  const resourcesRes = trpcReact.listResources.useQuery()
+  const resourcesRes = _trpcReact.listResources.useQuery()
 
   const zResoId = z.union(
     (resourcesRes.data ?? []).map((r) =>
@@ -173,7 +177,7 @@ const PipelineSheet = React.forwardRef(function PipelineSheetButton(
     destinationState: z.record(z.any()).optional(),
   })
 
-  const upsertPipeline = trpcReact.adminUpsertPipeline.useMutation()
+  const upsertPipeline = _trpcReact.adminUpsertPipeline.useMutation()
   return (
     <SchemaSheet
       ref={ref}

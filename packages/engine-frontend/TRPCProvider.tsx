@@ -4,7 +4,7 @@ import React from 'react'
 
 import type {AnyRouter, FlatRouter} from '@usevenice/engine-backend'
 
-export const trpcReact = createTRPCReact<FlatRouter>()
+export const _trpcReact = createTRPCReact<FlatRouter>()
 
 export type TRPCReact<TRouter extends AnyRouter> = ReturnType<
   typeof createTRPCReact<TRouter>
@@ -30,7 +30,7 @@ export function TRPCProvider({
     () =>
       // Disable reqeuest batching in DEBUG mode for easier debugging
       // createTRPCProxyClient<FlatRouter>({
-      trpcReact.createClient({
+      _trpcReact.createClient({
         links: [
           (__DEBUG__ ? httpLink : httpBatchLink)({
             url: apiUrl ?? '/api/trpc',
@@ -46,8 +46,8 @@ export function TRPCProvider({
 
   return (
     // TODO: Figure out the purpose of ssrState and ssrContext in trpc.Provider
-    <trpcReact.Provider queryClient={queryClient} client={trpcClient}>
+    <_trpcReact.Provider queryClient={queryClient} client={trpcClient}>
       {children}
-    </trpcReact.Provider>
+    </_trpcReact.Provider>
   )
 }

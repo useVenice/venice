@@ -5,7 +5,7 @@ import {RealtimeClient} from '@supabase/realtime-js'
 import React from 'react'
 
 import {env} from '@usevenice/app-config/env'
-import {trpcReact} from '@usevenice/engine-frontend'
+import {_trpcReact} from '@usevenice/engine-frontend'
 import {joinPath} from '@usevenice/util'
 
 import type {Database} from '../supabase/supabase.gen'
@@ -63,7 +63,7 @@ export function usePostgresChanges(
 
 export const InvalidateQueriesOnPostgresChanges = React.memo(
   function InvalidateQueriesOnPostgresChanges(props: {client: RealtimeClient}) {
-    const trpcUtils = trpcReact.useContext()
+    const trpcUtils = _trpcReact.useContext()
     console.log('InvalidateQueriesOnPostgresChanges')
     const invalidate = React.useCallback(() => {
       void trpcUtils.listConnections.invalidate()

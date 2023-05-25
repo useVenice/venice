@@ -8,7 +8,7 @@ import React from 'react'
 import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
 import {extractProviderName, zRaw} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
-import {trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
+import {_trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
 import {
   AlertDialog,
@@ -47,7 +47,7 @@ type Resource = RouterOutput['listConnections'][number]
 // TODO: separate into sources & destinations
 
 export default function ResourcesPage() {
-  const res = trpcReact.listConnections.useQuery({})
+  const res = _trpcReact.listConnections.useQuery({})
   return (
     <div className="p-6">
       <header className="flex items-center">
@@ -76,7 +76,7 @@ export default function ResourcesPage() {
   )
 }
 
-function ResourceMenu({resource}: {resource: Resource}) {
+  function ResourceMenu({resource}: {resource: Resource}) {
   const [sheetOpen, setSheetOpen] = React.useState(false)
   return (
     <DropdownMenu>
@@ -138,7 +138,7 @@ function EditResourceSheet({
   open: boolean
   setOpen: (open: boolean) => void
 }) {
-  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
   const provider = catalogRes.data?.[extractProviderName(reso.id)]
 
   // Consider calling this provider, actually seem to make more sense...
@@ -152,7 +152,7 @@ function EditResourceSheet({
   // TODO: dedupe the logic here with ResourceDropdownMenu inside VeniceConnect
   // Probabliy by rendering the actual ResourceDropdownMenu here...
 
-  const updateResource = trpcReact.updateResource.useMutation({
+  const updateResource = _trpcReact.updateResource.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Resource updated', variant: 'success'})
@@ -165,7 +165,7 @@ function EditResourceSheet({
       })
     },
   })
-  const deleteResource = trpcReact.deleteResoruce.useMutation({
+  const deleteResource = _trpcReact.deleteResoruce.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Resource deleted', variant: 'success'})

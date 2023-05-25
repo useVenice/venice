@@ -80,7 +80,11 @@ export const castIs = <T>() =>(_input: unknown): _input is T => true
 
 /** `zCast<TOut>()` standalone */
 export const zCast = <T>(...args: Parameters<(typeof z)['unknown']>) =>
-  z.unknown(...args).refine(castIs<T>())
+  z.unknown(...args) as z.ZodType<T, z.ZodTypeDef, unknown>
+
+/** Alternative to zCast that only accepts Records as inputs */
+export const zRecord = <T extends Record<string, unknown>>() =>
+  z.record(z.unknown()) as z.ZodType<T, z.ZodTypeDef, Record<string, unknown>>
 
 /** `castInput(schema)<TInput>()` */
 export const castInput =

@@ -2,7 +2,7 @@
 
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {adminRouterSchema} from '@usevenice/engine-backend/router/adminRouter'
-import {trpcReact} from '@usevenice/engine-frontend'
+import {_trpcReact} from '@usevenice/engine-frontend'
 import {SchemaForm, useToast} from '@usevenice/ui'
 
 import {useCurrengOrg} from '@/components/viewer-context'
@@ -16,7 +16,7 @@ export default function MagicLinkPage() {
   const {orgId} = useCurrengOrg()
   const {toast} = useToast()
 
-  const createToken = trpcReact.adminCreateConnectToken.useMutation({
+  const createToken = _trpcReact.adminCreateConnectToken.useMutation({
     onError: (err) => {
       toast({
         title: 'Error creating magic link',

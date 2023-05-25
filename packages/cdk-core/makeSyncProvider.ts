@@ -26,6 +26,7 @@ type JSONSchema = {} // ReturnType<typeof zodToJsonSchema> | JSONSchema7Definiti
 
 export const metaForProvider = (provider: AnySyncProvider) => ({
   // ...provider,
+  __typename: 'provider' as const,
   name: provider.name,
   displayName: provider.metadata?.displayName ?? titleCase(provider.name),
   logoUrl: provider.metadata?.logoSvg

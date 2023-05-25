@@ -47,15 +47,14 @@ export type CommandDefinitionMap<TCtx = unknown> = Record<
  * @see https://share.cleanshot.com/0bfZhflf
  */
 export function cmdInit<TCtx = unknown>() {
-  function makeCmds<TInput extends CommandDefinitionMap<TCtx>>(cmds: TInput) {
-    return cmds
+  return {
+    identity<TParams extends z.AnyZodObject = z.AnyZodObject, TRet = unknown>(
+      input: CommandDefinitionInput<TCtx, TParams, TRet>,
+    ) {
+      return input
+    },
+    makeCmds<TInput extends CommandDefinitionMap<TCtx>>(cmds: TInput) {
+      return cmds
+    },
   }
-
-  function make<
-    TParams extends z.AnyZodObject = z.AnyZodObject,
-    TRet = unknown,
-  >(input: CommandDefinitionInput<TCtx, TParams, TRet>) {
-    return input
-  }
-  return {make, makeCmds}
 }

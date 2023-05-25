@@ -8,7 +8,7 @@ import {
 } from '@usevenice/ui'
 
 import {GlobalCommandBar} from '@/components/GlobalCommandBar'
-import {veniceCommands} from '@/lib-client/venice-commands'
+import {veniceCommands} from '@/commands/command-definitions'
 
 export default function ComingSoonPage() {
   return (

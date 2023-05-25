@@ -43,7 +43,7 @@ import {
 import {cn} from '@usevenice/ui/utils'
 import {R, titleCase, z} from '@usevenice/util'
 
-import {trpcReact} from './TRPCProvider'
+import {_trpcReact} from './TRPCProvider'
 
 type ConnectEventType = 'open' | 'close' | 'error'
 
@@ -110,9 +110,9 @@ export function VeniceConnectButton({
 // Also it would be nice if there was an easy way to automatically prefetch on the server side
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect(props: VeniceConnectProps) {
-  const listIntegrationsRes = trpcReact.listIntegrationInfos.useQuery({})
+  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({})
   const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
-  const catalogRes = trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 
   if (!listIntegrationsRes.data || !catalogRes.data) {
     return <div>Loading...</div>
@@ -147,7 +147,7 @@ export function _VeniceConnect({
   // This is esp true when we are operating in client envs (js embed)
   // and cannot run on server-side per-se
 
-  const listConnectionsRes = trpcReact.listConnections.useQuery(
+  const listConnectionsRes = _trpcReact.listConnections.useQuery(
     {},
     {enabled: showExisting},
   )
@@ -332,12 +332,12 @@ export const WithProviderConnect = ({
   const resourceExternalId = resource ? extractId(resource.id)[2] : undefined
 
   // TODO: Handle preConnectInput schema and such... for example for Plaid
-  const preConnect = trpcReact.preConnect.useQuery(
+  const preConnect = _trpcReact.preConnect.useQuery(
     [int.id, {resourceExternalId}, {}],
     {enabled: int.provider.hasPreConnect},
   )
-  const postConnect = trpcReact.postConnect.useMutation()
-  const createResource = trpcReact.createResource.useMutation()
+  const postConnect = _trpcReact.postConnect.useMutation()
+  const createResource = _trpcReact.createResource.useMutation()
 
   const {toast} = useToast()
 
@@ -485,7 +485,7 @@ export function ResourceDropdownMenu(
   //     })
   //   },
   // })
-  const deleteResource = trpcReact.deleteResoruce.useMutation({
+  const deleteResource = _trpcReact.deleteResoruce.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Resource deleted', variant: 'success'})
@@ -498,7 +498,7 @@ export function ResourceDropdownMenu(
       })
     },
   })
-  const syncResource = trpcReact.dispatch.useMutation({
+  const syncResource = _trpcReact.dispatch.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Sync requested', variant: 'success'})
