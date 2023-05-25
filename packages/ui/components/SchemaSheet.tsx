@@ -93,6 +93,7 @@ export const SchemaSheet = React.forwardRef(function SchemaSheet<
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <SchemaForm
+          className="overflow-scroll"
           {...formProps}
           ref={formRef}
           schema={schema}
