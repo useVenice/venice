@@ -7,11 +7,13 @@ import {
   CommandPopover,
 } from '@usevenice/ui'
 
+import {GlobalCommandBar} from '@/components/GlobalCommandBar'
 import {veniceCommands} from '@/lib-client/venice-commands'
 
 export default function ComingSoonPage() {
   return (
     <div className="p-6">
+      <GlobalCommandBar />
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Coming soon
       </h2>

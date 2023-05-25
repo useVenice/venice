@@ -131,8 +131,9 @@ export function CommandBar(props: CommandComponentProps) {
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && e.metaKey) {
+      if (e.key === 'p' && e.metaKey) {
         setOpen((open) => !open)
+        e.preventDefault()
       }
     }
     document.addEventListener('keydown', down)

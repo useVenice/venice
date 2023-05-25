@@ -30,6 +30,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME: z
       .string()
       .default('supabase'),
+    NEXT_PUBLIC_COMMANDBAR_ORG_ID: z.string().optional(),
   },
   runtimeEnv: {
     CLERK_SECRET_KEY: process.env['CLERK_SECRET_KEY'],
@@ -47,6 +48,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
     INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
     INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
+    NEXT_PUBLIC_COMMANDBAR_ORG_ID: process.env['NEXT_PUBLIC_COMMANDBAR_ORG_ID'],
   },
   onInvalidAccess: (variable: string) => {
     throw new Error(
@@ -57,3 +59,6 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 } satisfies Parameters<typeof createEnv>[0]
 
 export const env = createEnv(envConfig)
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+;(globalThis as any).env = env

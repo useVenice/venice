@@ -2,6 +2,7 @@ import {useAuth} from '@clerk/nextjs'
 import React from 'react'
 
 import type {Viewer} from '@usevenice/cdk-core'
+import {getViewerId} from '@usevenice/cdk-core'
 
 /** TODO This ought to be a bit more generic... */
 export type AsyncStatus = 'initial' | 'loading' | 'error' | 'success'
@@ -26,7 +27,9 @@ export function useViewerContext() {
       'useViewerContext must be used within a ViewerContext.Provder',
     )
   }
-  return context
+  const viewerId = getViewerId(context.viewer)
+
+  return React.useMemo(() => ({...context, viewerId}), [context, viewerId])
 }
 
 export const useCurrengOrg = () => {
