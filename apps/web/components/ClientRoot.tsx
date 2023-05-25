@@ -2,6 +2,7 @@
 
 import {useAuth} from '@clerk/nextjs'
 import {QueryClientProvider} from '@tanstack/react-query'
+import {ThemeProvider} from 'next-themes'
 import React, {useEffect, useRef} from 'react'
 
 import {env} from '@usevenice/app-config/env'
@@ -112,8 +113,10 @@ export function ClientRoot({
             () => ({accessToken, status, viewer}),
             [accessToken, status, viewer],
           )}>
-          {children}
-          <Toaster />
+          <ThemeProvider attribute="class" enableSystem defaultTheme="system">
+            {children}
+            <Toaster />
+          </ThemeProvider>
         </ViewerContext.Provider>
       </TRPCProvider>
     </QueryClientProvider>

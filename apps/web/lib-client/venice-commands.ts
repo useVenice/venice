@@ -1,3 +1,5 @@
+import {useTheme} from 'next-themes'
+
 import {zId} from '@usevenice/cdk-core'
 import type {CommandDefinitionMap} from '@usevenice/ui'
 import {z} from '@usevenice/util'
@@ -12,6 +14,15 @@ export const veniceCommands = {
   },
   go_to_settings: {
     icon: 'Settings',
+  },
+  toggle_dark_mode: {
+    icon: 'Moon',
+    useExecute: () => {
+      const {setTheme, resolvedTheme} = useTheme()
+      return () => {
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+      }
+    },
   },
   copy_id: {
     icon: 'Copy',
@@ -47,11 +58,11 @@ export const veniceCommands = {
   },
   'pipeline:delete': {
     icon: 'Trash',
-    params: z
-      .object({
-        pipeline: zId('pipe').openapi('pipeline'),
-      })
-      .openapi('delete_pipeline_params'),
-    handler: () => {},
+    params: z.object({
+      pipeline: zId('pipe'),
+      // .openapi('pipeline'),
+    }),
+    // .openapi('delete_pipeline_params'),
+    execute: () => {},
   },
 } satisfies CommandDefinitionMap<CommandContext>

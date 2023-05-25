@@ -15,7 +15,13 @@ export interface CommandDefinitionInput<
   group?: string
 
   params?: TParams
-  handler?: (options: {
+
+  useExecute?: () => (options: {
+    params: z.infer<TParams>
+    ctx: TCtx
+  }) => void | Promise<void>
+
+  execute?: (options: {
     params: z.infer<TParams>
     ctx: TCtx
   }) => void | Promise<void>

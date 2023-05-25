@@ -17,6 +17,50 @@ import {cn} from '../utils'
 import type {CommandComponentProps} from './types'
 import {prepareCommands} from './types'
 
+function CommandItemContainer({
+  command: cmd,
+  onSelect,
+}: {
+  command: ReturnType<typeof prepareCommands>['commands'][number]
+  onSelect?: (value: string) => void
+}) {
+  const execute = cmd.useExecute ? cmd.useExecute() : cmd.execute
+  return (
+    <CommandItem
+      // if we don't specify "value" onSelect would get the innerText... which is not desirable
+      value={cmd.key}
+      onSelect={(currentValue) => {
+        console.log('command selected', currentValue)
+        void execute?.({ctx: {}, params: {}})
+        onSelect?.(currentValue)
+      }}>
+      {cmd.icon && (
+        <Icon
+          name={cmd.icon}
+          className={cn(
+            'mr-2 h-4 w-4 shrink-0',
+            cmd.subtitle && 'mt-[2px] self-start',
+          )}
+        />
+      )}
+      <div className="flex flex-col gap-1 overflow-hidden">
+        <span>{cmd.title}</span>
+        {cmd.subtitle && (
+          <pre
+            title={cmd.subtitle}
+            className="overflow-hidden text-ellipsis text-muted-foreground">
+            {cmd.subtitle}
+          </pre>
+        )}
+      </div>
+      {cmd.shortcut && (
+        // Need to render shortcut better... $mod+K => ⌘S
+        <CommandShortcut>{cmd.shortcut}</CommandShortcut>
+      )}
+    </CommandItem>
+  )
+}
+
 export function CommandContent({
   definitions,
   emptyMessage = 'No commands found.',
@@ -36,41 +80,11 @@ export function CommandContent({
         {Object.entries(commandGroups).map(([groupName, commands]) => (
           <CommandGroup key={groupName} heading={groupName}>
             {commands.map((cmd) => (
-              <CommandItem
+              <CommandItemContainer
                 key={cmd.key}
-                // if we don't specify "value" onSelect would get the innerText... which is not desirable
-                value={cmd.key}
-                onSelect={(currentValue) => {
-                  console.log('command selected', currentValue)
-                  // cmd.handler(currentValue)
-                  // setValue(currentValue === value ? '' : currentValue)
-                  // setOpen(false)
-                  onSelect?.(currentValue)
-                }}>
-                {cmd.icon && (
-                  <Icon
-                    name={cmd.icon}
-                    className={cn(
-                      'mr-2 h-4 w-4 shrink-0',
-                      cmd.subtitle && 'mt-[2px] self-start',
-                    )}
-                  />
-                )}
-                <div className="flex flex-col gap-1 overflow-hidden">
-                  <span>{cmd.title}</span>
-                  {cmd.subtitle && (
-                    <pre
-                      title={cmd.subtitle}
-                      className="overflow-hidden text-ellipsis text-muted-foreground">
-                      {cmd.subtitle}
-                    </pre>
-                  )}
-                </div>
-                {cmd.shortcut && (
-                  // Need to render shortcut better... $mod+K => ⌘S
-                  <CommandShortcut>{cmd.shortcut}</CommandShortcut>
-                )}
-              </CommandItem>
+                command={cmd}
+                onSelect={onSelect}
+              />
             ))}
           </CommandGroup>
         ))}
