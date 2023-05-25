@@ -1,6 +1,8 @@
 import {MoreHorizontal} from 'lucide-react'
 import React from 'react'
 
+import {R} from '@usevenice/util'
+
 import {Icon} from '../components/Icon'
 import {Button, Popover, PopoverContent, PopoverTrigger} from '../shadcn'
 import {
@@ -27,8 +29,9 @@ function CommandItemContainer({
   const cmd = {..._cmd, ..._cmd.useCommand?.()}
   return (
     <CommandItem
-      // if we don't specify "value" onSelect would get the innerText... which is not desirable
-      value={cmd.key}
+      // Value is used for filtering commands
+      // Workaround for https://github.com/pacocoursey/cmdk/issues/140
+      value={R.compact([cmd.title, cmd.subtitle, cmd.shortcut]).join(' ')}
       onSelect={(currentValue) => {
         console.log('command selected', currentValue)
         void cmd.execute?.({ctx: {}, params: {}})
