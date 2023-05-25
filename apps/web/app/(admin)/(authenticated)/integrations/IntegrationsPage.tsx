@@ -235,7 +235,9 @@ export function IntegrationSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                config: provider.schemas.integrationConfig,
+                ...(provider.schemas.integrationConfig && {
+                  config: provider.schemas.integrationConfig,
+                }),
               },
             })}
             formData={

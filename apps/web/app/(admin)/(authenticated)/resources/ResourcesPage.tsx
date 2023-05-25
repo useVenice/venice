@@ -76,7 +76,7 @@ export default function ResourcesPage() {
   )
 }
 
-  function ResourceMenu({resource}: {resource: Resource}) {
+function ResourceMenu({resource}: {resource: Resource}) {
   const [sheetOpen, setSheetOpen] = React.useState(false)
   return (
     <DropdownMenu>
@@ -234,7 +234,9 @@ function EditResourceSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                settings: provider.schemas.resourceSettings,
+                ...(provider.schemas.resourceSettings && {
+                  settings: provider.schemas.resourceSettings,
+                }),
               },
             })}
             formData={{settings: reso.settings, displayName: reso.displayName}}
