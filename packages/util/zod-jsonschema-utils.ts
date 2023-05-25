@@ -1,3 +1,4 @@
+import {OpenApiGeneratorV31} from '@asteasolutions/zod-to-openapi'
 import type {z} from 'zod'
 import _zodToJsonSchema from 'zod-to-json-schema'
 
@@ -38,4 +39,8 @@ export function zodToJsonSchema(schema: z.ZodTypeAny) {
   return defaultTitleAsJsonPath(
     enumDescriptionToTitle(_zodToJsonSchema(schema)),
   )
+}
+
+export function zodToOpenApi(schema: z.ZodTypeAny) {
+  return new OpenApiGeneratorV31([schema]).generateComponents().components
 }

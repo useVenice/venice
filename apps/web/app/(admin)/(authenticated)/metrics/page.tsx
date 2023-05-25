@@ -20,11 +20,19 @@ export default function ComingSoonPage() {
       <CommandBar definitions={veniceCommands} />
 
       <div className="m-5 border p-5">
-        <CommandPopover definitions={veniceCommands} />
+        <CommandPopover
+          definitions={veniceCommands}
+          initialParams={{pipeline: 'pipe_123'}}
+          hideGroupHeadings
+        />
         <ComboboxDemo />
       </div>
       <div className="m-5 border p-5">
-        <CommandInline definitions={veniceCommands} />
+        <CommandInline
+          hideGroupHeadings
+          definitions={veniceCommands}
+          initialParams={{pipeline: 'pipe_123'}}
+        />
       </div>
     </div>
   )

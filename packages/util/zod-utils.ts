@@ -4,7 +4,6 @@ import {extendZodWithOpenApi} from '@asteasolutions/zod-to-openapi'
 
 extendZodWithOpenApi(z)
 
-export {OpenApiGeneratorV31} from '@asteasolutions/zod-to-openapi'
 export {z}
 
 export function parseIf<T>(value: unknown, typeguard: (v: unknown) => v is T) {

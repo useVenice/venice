@@ -16,8 +16,22 @@ import {
   CommandShortcut,
 } from '../shadcn/Command'
 import {cn} from '../utils'
-import type {CommandComponentProps} from './types'
-import {prepareCommands} from './types'
+import {filterCommands, prepareCommands} from './command-fns'
+import type {CommandDefinitionMap} from './types'
+
+export interface CommandComponentProps<
+  TCtx = any,
+  TDefs extends CommandDefinitionMap<TCtx> = CommandDefinitionMap<TCtx>,
+> {
+  placeholder?: string
+  emptyMessage?: string
+  definitions: TDefs
+  onSelect?: (key: keyof TDefs) => void
+  initialParams?: Record<string, unknown>
+  hideGroupHeadings?: boolean
+}
+
+// TODO: Detect shortcut conflict
 
 function CommandItemContainer({
   command: _cmd,
@@ -69,11 +83,19 @@ export function CommandContent({
   emptyMessage = 'No commands found.',
   placeholder = 'Search...',
   onSelect,
+  initialParams,
+  hideGroupHeadings,
 }: CommandComponentProps) {
-  const {commandGroups} = React.useMemo(
-    () => prepareCommands({definitions}),
-    [definitions],
-  )
+  const {commandGroups} = React.useMemo(() => {
+    const prepared = prepareCommands({definitions})
+    if (initialParams) {
+      return filterCommands({
+        commands: prepared.commands,
+        params: initialParams,
+      })
+    }
+    return prepared
+  }, [definitions, initialParams])
 
   return (
     <Command>
@@ -81,7 +103,9 @@ export function CommandContent({
       <CommandEmpty>{emptyMessage}</CommandEmpty>
       <CommandList>
         {Object.entries(commandGroups).map(([groupName, commands]) => (
-          <CommandGroup key={groupName} heading={groupName}>
+          <CommandGroup
+            key={groupName}
+            heading={!hideGroupHeadings && groupName}>
             {commands.map((cmd) => (
               <CommandItemContainer
                 key={cmd.key}

@@ -1,11 +1,17 @@
 import type {z} from '@usevenice/util'
-import {R, titleCase} from '@usevenice/util'
 
 import type {IconName} from '../components/Icon'
+
+export type _infer<T, TDefault = unknown> = T extends z.ZodTypeAny
+  ? z.infer<T>
+  : TDefault
+
+export interface CommandParam {}
 
 export interface _CommandDefinitionInput<
   TCtx = unknown,
   TParams extends z.AnyZodObject = z.AnyZodObject,
+  TRet = unknown,
 > {
   icon?: IconName
   shortcut?: string
@@ -16,10 +22,7 @@ export interface _CommandDefinitionInput<
 
   params?: TParams
 
-  execute?: (options: {
-    params: z.infer<TParams>
-    ctx: TCtx
-  }) => void | Promise<void>
+  execute?: (options: {params: _infer<TParams, {}>; ctx: TCtx}) => TRet
 }
 
 export interface CommandDefinitionInput<
@@ -34,36 +37,3 @@ export type CommandDefinitionMap<TCtx = unknown> = Record<
   string,
   CommandDefinitionInput<TCtx>
 >
-
-export interface CommandComponentProps<
-  TCtx = any,
-  TDefs extends CommandDefinitionMap<TCtx> = CommandDefinitionMap<TCtx>,
-> {
-  placeholder?: string
-  emptyMessage?: string
-  definitions: TDefs
-  onSelect?: (key: keyof TDefs) => void
-}
-
-// TODO: Detect shortcut conflicts
-export function prepareCommands({
-  definitions,
-}: {
-  definitions: CommandDefinitionMap
-}) {
-  const commands = Object.entries(definitions).map(([key, value]) => {
-    const [_group, titleInGroup] = (key.split('/').pop() ?? '').split(':')
-    const title = titleInGroup ? [titleInGroup, _group].join(' ') : _group
-    const group = titleInGroup ? _group : ''
-
-    return {
-      ...value,
-      title: value.title ?? titleCase(title),
-      group: titleCase(value.group ?? group),
-      key,
-    }
-  })
-  const commandGroups = R.groupBy(commands, (c) => c.group)
-
-  return {commandGroups, commands}
-}

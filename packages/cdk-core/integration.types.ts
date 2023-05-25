@@ -316,7 +316,7 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
   }
 }
 
-// MARK: - Generic Helpers, perhaps move to separate file?ß
+// MARK: - Generic Helpers, perhaps move to separate file?
 
 type _infer<T> = T extends z.ZodTypeAny ? z.infer<T> : never
 type OmitNever<T> = Omit<T, NeverKeys<T>>

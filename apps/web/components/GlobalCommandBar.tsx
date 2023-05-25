@@ -4,8 +4,8 @@ import {useRouter} from 'next/navigation'
 import React from 'react'
 
 import {env} from '@usevenice/app-config/env'
+import {prepareCommands} from '@usevenice/ui/command/command-fns'
 
-import {prepareCommands} from '@/../../packages/ui'
 import {veniceCommands} from '@/lib-client/venice-commands'
 
 import {useViewerContext} from './viewer-context'
