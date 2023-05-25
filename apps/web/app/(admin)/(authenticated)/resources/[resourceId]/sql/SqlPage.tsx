@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
   Kbd,
   Resizable,
+  ScrollArea,
   useWithToast,
 } from '@usevenice/ui'
 import {CodeEditor} from '@usevenice/ui/components/CodeEditor'
@@ -102,11 +103,11 @@ export function SqlPage({
       <h2 className="mx-6 mb-4 mt-6 text-2xl font-semibold tracking-tight">
         SQL Explorer
       </h2>
-      <div className="grow">
+      <div className="flex grow flex-col overflow-hidden">
         <Resizable
           defaultSize={{height: '50%', width: '100%'}}
           className="flex border-b-2 px-6">
-          <div className="w-32">
+          <ScrollArea className="w-32">
             {listTablesRes.isLoading && <Loader2 className="animate-spin" />}
             {Object.entries(listTablesRes.data ?? {}).map(([title, tables]) =>
               !tables.length ? null : (
@@ -125,7 +126,7 @@ export function SqlPage({
                 </div>
               ),
             )}
-          </div>
+          </ScrollArea>
           <div className="grow">
             <CodeEditor
               language="sql"

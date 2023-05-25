@@ -3,9 +3,9 @@
 import {OrganizationSwitcher, useAuth, UserButton} from '@clerk/nextjs'
 import NextTopLoader from 'nextjs-toploader'
 
-import {VCommandBar} from '@/vcommands/vcommand-components'
 import {NoSSR} from '@/components/NoSSR'
 import {RedirectToNext13} from '@/components/RedirectTo'
+import {VCommandBar} from '@/vcommands/vcommand-components'
 
 import {Sidebar} from './Sidebar'
 
@@ -66,7 +66,10 @@ export default function AuthedLayout({children}: {children: React.ReactNode}) {
     <div className="flex h-screen w-screen flex-col">
       <NextTopLoader showSpinner={false} />
       <VCommandBar />
-      <main className="ml-[240px] mt-12 grow">
+      {/* max-h-[calc(100vh-3em)] should normally not be needed, but otherwise
+      layout on sql page doesn't work when results are long :( donno how to prevent
+      it otherwise without setting overflow hidden prop */}
+      <main className="ml-[240px] mt-12 max-h-[calc(100vh-3em)] grow">
         {auth.orgId ? children : <div>Create an org to begin</div>}
       </main>
       <Sidebar className="fixed bottom-0 left-0 top-12 w-[240px] border-r bg-background" />
