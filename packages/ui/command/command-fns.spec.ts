@@ -2,7 +2,7 @@ import {zId} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
 
 import {executeCommand, filterCommands, prepareCommands} from './command-fns'
-import type {CommandDefinitionMap} from './types'
+import type {CommandDefinitionMap} from './command-types'
 
 const definitions = {
   navigate: {},

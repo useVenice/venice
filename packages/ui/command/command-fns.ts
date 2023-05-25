@@ -1,10 +1,10 @@
 import {R, titleCase, z} from '@usevenice/util'
 
 import type {
-  _infer,
   CommandDefinitionInput,
   CommandDefinitionMap,
-} from './types'
+  CommandDraft,
+} from './command-types'
 
 export type PreparedCommand = ReturnType<
   typeof prepareCommands
@@ -29,6 +29,7 @@ export function prepareCommand([key, value]: [
   }
 }
 
+// TODO: Detect shortcut conflict
 export function prepareCommands({
   definitions,
 }: {
@@ -83,7 +84,7 @@ export function executeCommand<
   ctx,
 }: {
   definitions: TDef
-  command: [key: TKey, params: _infer<TDef[TKey]['params'], {}>]
+  command: CommandDraft<TDef, TKey, TCtx>
   ctx: TCtx
 }) {
   return definitions[key]?.execute?.({params, ctx}) as ReturnType<

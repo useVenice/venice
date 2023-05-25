@@ -4,13 +4,8 @@ import React from 'react'
 import {R} from '@usevenice/util'
 
 import {Icon} from '../components/Icon'
-import {
-  Button,
-  ButtonProps,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '../shadcn'
+import type {ButtonProps} from '../shadcn'
+import {Button, Popover, PopoverContent, PopoverTrigger} from '../shadcn'
 import {
   Command,
   CommandDialog,
@@ -23,7 +18,7 @@ import {
 } from '../shadcn/Command'
 import {cn} from '../utils'
 import {filterCommands, prepareCommand, prepareCommands} from './command-fns'
-import type {_infer, CommandDefinitionMap} from './types'
+import type {_infer, CommandDefinitionMap, CommandDraft} from './command-types'
 
 export interface CommandComponentProps<
   TCtx = any,
@@ -38,14 +33,6 @@ export interface CommandComponentProps<
   initialParams?: Record<string, unknown>
   hideGroupHeadings?: boolean
 }
-
-// TODO: Detect shortcut conflict
-
-export type CommandDraft<
-  TDef extends CommandDefinitionMap<TCtx>,
-  TKey extends keyof TDef,
-  TCtx = unknown,
-> = [key: TKey, params: _infer<TDef[TKey]['params'], {}>]
 
 export function CommandButton<
   TDef extends CommandDefinitionMap<TCtx>,

@@ -8,11 +8,11 @@ import {z} from '@usevenice/util'
 import {zClient} from '@/lib-common/schemas'
 
 import {copyToClipboard} from '../lib-client/copyToClipboard'
-import type {CommandContext} from './command-context'
+import type {CommandContext} from './vcommand-context'
 
 const cmd = cmdInit<CommandContext>()
 
-export const veniceCommands = {
+export const vDefinitions = {
   go_home: {
     icon: 'Home',
   },

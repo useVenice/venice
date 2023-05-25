@@ -6,7 +6,11 @@ export type _infer<T, TDefault = unknown> = T extends z.ZodTypeAny
   ? z.infer<T>
   : TDefault
 
-export interface CommandParam {}
+export type CommandDraft<
+  TDef extends CommandDefinitionMap<TCtx>,
+  TKey extends keyof TDef,
+  TCtx = unknown,
+> = [key: TKey, params: _infer<TDef[TKey]['params'], {}>]
 
 export interface _CommandDefinitionInput<
   TCtx = unknown,

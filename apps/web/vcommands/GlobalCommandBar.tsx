@@ -6,9 +6,9 @@ import React from 'react'
 import {env} from '@usevenice/app-config/env'
 import {prepareCommands} from '@usevenice/ui/command/command-fns'
 
-import {veniceCommands} from '@/commands/command-definitions'
+import {vDefinitions} from '@/vcommands/vcommand-definitions'
 
-import {useViewerContext} from './viewer-context'
+import {useViewerContext} from '../components/viewer-context'
 
 export function GlobalCommandBar() {
   const [ready, setReady] = React.useState(false)
@@ -21,7 +21,7 @@ export function GlobalCommandBar() {
   return ready ? <_GlobalCommandBar /> : null
 }
 
-const {commands} = prepareCommands({definitions: veniceCommands})
+const {commands} = prepareCommands({definitions: vDefinitions})
 
 function _GlobalCommandBar() {
   const {viewerId} = useViewerContext()

@@ -18,7 +18,7 @@ import {
   useToast,
 } from '@usevenice/ui'
 
-import {VCommandButton, VCommandMenu} from '@/commands/command-components'
+import {VCommandButton, VCommandMenu} from '@/vcommands/vcommand-components'
 import {PipelineSheet} from '@/components/PipelineSheet'
 
 export default function PipelinesPage() {

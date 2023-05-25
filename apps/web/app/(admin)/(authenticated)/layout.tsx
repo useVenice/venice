@@ -3,7 +3,7 @@
 import {OrganizationSwitcher, useAuth, UserButton} from '@clerk/nextjs'
 import NextTopLoader from 'nextjs-toploader'
 
-import {VCommandBar} from '@/commands/command-components'
+import {VCommandBar} from '@/vcommands/vcommand-components'
 import {NoSSR} from '@/components/NoSSR'
 import {RedirectToNext13} from '@/components/RedirectTo'
 

@@ -7,9 +7,9 @@ import {
   CommandPopover,
 } from '@usevenice/ui'
 
-import {useCommandContext} from '@/commands/command-context'
-import {veniceCommands} from '@/commands/command-definitions'
-import {GlobalCommandBar} from '@/components/GlobalCommandBar'
+import {GlobalCommandBar} from '@/vcommands/GlobalCommandBar'
+import {useCommandContext} from '@/vcommands/vcommand-context'
+import {vDefinitions} from '@/vcommands/vcommand-definitions'
 
 export default function ComingSoonPage() {
   const ctx = useCommandContext()
@@ -19,12 +19,12 @@ export default function ComingSoonPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Coming soon
       </h2>
-      <CommandBar ctx={ctx} definitions={veniceCommands} />
+      <CommandBar ctx={ctx} definitions={vDefinitions} />
 
       <div className="m-5 border p-5">
         <CommandPopover
           ctx={ctx}
-          definitions={veniceCommands}
+          definitions={vDefinitions}
           initialParams={{id: 'pipe_123'}}
           hideGroupHeadings
         />
@@ -34,7 +34,7 @@ export default function ComingSoonPage() {
         <CommandInline
           ctx={ctx}
           hideGroupHeadings
-          definitions={veniceCommands}
+          definitions={vDefinitions}
           initialParams={{id: 'pipe_123'}}
         />
       </div>
