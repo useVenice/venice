@@ -29,9 +29,10 @@ export interface CommandDefinitionInput<
   TParams extends z.AnyZodObject = z.AnyZodObject,
   TRet = unknown,
 > extends _CommandDefinitionInput<TCtx, TParams> {
-  /** Used for overriding... the _:never param is needed to force typing */
+  /** How to allow dynamic command definition modification outside of react components? */
   useCommand?: (
-    _: never,
+    /** use _ for params even if unused for overriding */
+    initialParams: Partial<_infer<TParams, {}>>,
     // Cannot redefine params because it is used for filtering the list of
     // commands to render in the first place...
   ) => Omit<_CommandDefinitionInput<TCtx, TParams, TRet>, 'params'>

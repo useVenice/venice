@@ -2,7 +2,7 @@ import {useTheme} from 'next-themes'
 
 import {zId} from '@usevenice/cdk-core'
 import type {CommandDefinitionMap} from '@usevenice/ui'
-import {cmdInit, useWithToast} from '@usevenice/ui'
+import {cmdInit} from '@usevenice/ui'
 import {z} from '@usevenice/util'
 
 import {zClient} from '@/lib-common/schemas'
@@ -37,19 +37,14 @@ export const veniceCommands = {
   },
   copy_id: cmd.identity({
     icon: 'Copy',
-    subtitle: 'reso_plaid_01H17ZDXSQ6JN63SHCXK3FEK3E',
-    params: z.object({id: z.string()}),
-    // TODO: Add withToast into context so we do not need to useCommand here
-    // and the copy_id command can be available everywhere.
-    useCommand: (_) => {
-      const {withToast} = useWithToast()
-      return {
-        execute: ({params: {id}}) =>
-          withToast(() => copyToClipboard(id), {
-            title: 'Copied to clipboard',
-          }),
-      }
-    },
+    params: z.object({pipeline: z.object({id: z.string()})}),
+    useCommand: (initial) => ({
+      subtitle: initial.pipeline?.id,
+      execute: ({params, ctx}) =>
+        ctx.withToast(() => copyToClipboard(params.pipeline.id), {
+          title: 'Copied to clipboard',
+        }),
+    }),
   }),
   'pipeline:edit': cmd.identity({
     icon: 'Pencil',
