@@ -175,14 +175,18 @@ export const makeJwtClient = zFunction(
         ...(viewer.role === 'end_user' && {
           role: 'end_user',
           sub: `${viewer.orgId}/${viewer.endUserId}`,
+          end_user_id: viewer.endUserId, // Needed for RLS
+          org_id: viewer.orgId, // Needed for RLS
         }),
         ...(viewer.role === 'org' && {
           role: 'org',
           sub: viewer.orgId,
+          org_id: viewer.orgId, // Needed for RLS
         }),
         ...(viewer.role === 'user' && {
           role: 'authenticated',
           sub: viewer.userId,
+          org_id: viewer.orgId, // Needed for RLS
         }),
         // Partial is a lie, it should not happen
       } satisfies Partial<z.input<typeof zViewerFromJwtPayload>>

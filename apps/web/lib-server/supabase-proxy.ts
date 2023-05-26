@@ -47,6 +47,7 @@ export async function proxySupabase({
 
   // aud:apikey So we can check in logs if needed
   const accessToken = jwtClient.signViewer(viewer)
+  console.log('accessToken', accessToken)
 
   await Promise.all([
     onUserId?.(viewer.userId),
