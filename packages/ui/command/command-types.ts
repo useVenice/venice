@@ -24,7 +24,12 @@ export interface _CommandDefinitionInput<
   /** CommandGroup.heading */
   group?: string
 
+  /** ParamsSchema */
   params?: TParams
+
+  // TODO: add support for this. alternative to destructive: boolean prop also
+  // requireConfirmation?: boolean | {} // AlertProps
+
   execute?: (options: {params: _infer<TParams, {}>; ctx: TCtx}) => TRet
 }
 

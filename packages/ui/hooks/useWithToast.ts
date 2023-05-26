@@ -3,7 +3,6 @@ import {useToast} from '../shadcn'
 interface WithToastOptions {
   title?: string
   description?: string
-  loadingTitle?: string
 }
 
 export function useWithToast(defaultOptions: WithToastOptions = {}) {
@@ -24,22 +23,28 @@ export function useWithToast(defaultOptions: WithToastOptions = {}) {
     })
 
   const withToast = (
-    fn: () => Promise<unknown>,
-    options: WithToastOptions = {},
+    fn: () => unknown,
+    {
+      showLoading = 'Running',
+      ...options
+    }: WithToastOptions & {
+      showLoading?: string | false
+    } = {},
   ) => {
     const opts = {...defaultOptions, ...options}
-    const loading = toast({
-      variant: 'loading',
-      title: opts.loadingTitle ?? 'Running...',
-    })
-    return fn()
+    const loadingToast = showLoading
+      ? toast({variant: 'loading', title: showLoading})
+      : null
+    // TODO: useMutation hook here rather than tracking it ourselves...
+
+    return Promise.resolve(fn())
       .then((res) => {
-        loading.dismiss()
+        loadingToast?.dismiss()
         onSuccessFn(opts)()
         return res
       })
       .catch((err) => {
-        loading.dismiss()
+        loadingToast?.dismiss()
         onErrorFn(opts)(err)
       })
   }

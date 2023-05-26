@@ -7,11 +7,11 @@ import {
 } from '@usevenice/ui'
 
 import {GlobalCommandBar} from '@/vcommands/GlobalCommandBar'
-import {useCommandContext} from '@/vcommands/vcommand-context'
+import {useCommandContextValue} from '@/vcommands/vcommand-context'
 import {vDefinitions} from '@/vcommands/vcommand-definitions'
 
 export default function ComingSoonPage() {
-  const ctx = useCommandContext()
+  const ctx = useCommandContextValue()
   return (
     <div className="p-6">
       <GlobalCommandBar />

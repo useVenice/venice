@@ -92,8 +92,13 @@ export const debugCommands = {
       })
     },
   },
-  test_cmd: {
-    execute: () => console.log('noop'),
+  test_alert: {
+    execute: ({ctx}) =>
+      ctx.setAlertDialogState({
+        title: 'Are you sure?',
+        description: 'This is a test',
+        onConfirm: () => delay(5000).then(() => 'done'),
+      }),
   },
 } satisfies CommandDefinitionMap<CommandContext>
 
