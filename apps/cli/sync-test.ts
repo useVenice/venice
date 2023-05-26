@@ -65,7 +65,7 @@ function getDestination(name: string | undefined) {
   switch (name) {
     case 'stripe':
       return stripeImpl.destinationSync({
-        config: {clientId: '', clientSecret: ''},
+        config: {apikeyAuth: true},
         endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},

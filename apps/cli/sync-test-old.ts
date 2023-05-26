@@ -51,7 +51,7 @@ switch (process.argv[2]) {
         },
       } satisfies (typeof stripeImpl)['helpers']['_inputOpType']),
       destination: stripeImpl.destinationSync({
-        config: {clientId: '', clientSecret: ''},
+        config: {},
         endUser: null,
         settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
         state: {},
