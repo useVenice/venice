@@ -1,6 +1,7 @@
 import {cookies} from 'next/headers'
 
-import type {kAccessToken} from '../lib-common/constants'
+import type {kAccessToken} from '@usevenice/app-config/constants'
+
 import {createSSRHelpers, serverGetViewer} from './server-helpers'
 
 export function createServerComponentHelpers(opts?: {

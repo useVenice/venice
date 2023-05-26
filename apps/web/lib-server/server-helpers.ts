@@ -17,6 +17,7 @@ import type {SuperJSONResult} from 'superjson/dist/types'
 
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {
+  kAccessToken,
   kApikeyHeader,
   kApikeyMetadata,
   kApikeyUrlParam,
@@ -25,8 +26,6 @@ import type {Id, UserId, Viewer} from '@usevenice/cdk-core'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {flatRouter} from '@usevenice/engine-backend'
 import {fromMaybeArray} from '@usevenice/util'
-
-import {kAccessToken} from '../lib-common/constants'
 
 export interface PageProps {
   dehydratedState?: SuperJSONResult // SuperJSONResult<import('@tanstack/react-query').DehydratedState>
