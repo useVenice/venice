@@ -63,7 +63,8 @@ const AlertDialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex flex-col space-y-2 text-center sm:text-left',
+      // overflow-hidden is needed for break-words to work @see https://github.com/tailwindlabs/tailwindcss/issues/10004
+      'flex flex-col space-y-2 overflow-hidden text-center sm:text-left',
       className,
     )}
     {...props}
@@ -91,7 +92,7 @@ const AlertDialogTitle = React.forwardRef<
 >(({className, ...props}, ref) => (
   <AlertDialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold', className)}
+    className={cn('break-words text-lg font-semibold', className)}
     {...props}
   />
 ))
@@ -116,7 +117,9 @@ const AlertDialogAction = React.forwardRef<
 >(({className, ...props}, ref) => (
   <AlertDialogPrimitive.Action
     ref={ref}
-    className={cn(buttonVariants(), className)}
+    // When rendering asChild, we don't want to apply buttonVariants
+    // because that would override child variants @see https://github.com/shadcn/ui/issues/461
+    className={cn(!props.asChild && buttonVariants(), className)}
     {...props}
   />
 ))
@@ -129,7 +132,9 @@ const AlertDialogCancel = React.forwardRef<
   <AlertDialogPrimitive.Cancel
     ref={ref}
     className={cn(
-      buttonVariants({variant: 'outline'}),
+      // When rendering asChild, we don't want to apply buttonVariants
+      // because that would override child variants @see https://github.com/shadcn/ui/issues/461
+      !props.asChild && buttonVariants({variant: 'outline'}),
       'mt-2 sm:mt-0',
       className,
     )}

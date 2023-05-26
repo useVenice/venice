@@ -35,11 +35,20 @@ export const pipelineCommands = {
       )
     },
   }),
-  'pipeline:delete': {
+  'pipeline:delete': cmd.identity({
     icon: 'Trash',
     params: z.object({pipeline: zClient.pipeline}),
-    execute: () => {},
-  },
+    execute: ({ctx, params}) =>
+      ctx.setAlertDialogState({
+        title: `Confirm deleting pipeline ${params.pipeline.id}`,
+        destructive: true,
+        // 1) i18n this string so it's shorter and 2) support markdown syntax 3) make user confirm by typing id
+        description:
+          'Already synchronized data will be untouched. However this will delete any incremental sync state so when a new pipeline is created you will have to sync from scratch.',
+        onConfirm: () =>
+          ctx.trpcCtx.client.deletePipeline.mutate({id: params.pipeline.id}),
+      }),
+  }),
 } satisfies CommandDefinitionMap<CommandContext>
 
 export const resourceCommands = {
