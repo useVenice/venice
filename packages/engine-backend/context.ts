@@ -9,6 +9,7 @@ import type {
 } from '@usevenice/cdk-core'
 import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
+import {isVeniceProvider} from '@usevenice/cdk-ledger'
 import {R} from '@usevenice/util'
 
 import type {_Integration, _Pipeline} from './contextHelpers'
@@ -73,6 +74,12 @@ export function getContextFactory<
     providers,
     jwtSecret,
   } = config
+  for (const provider of providers) {
+    if (typeof provider.name !== 'string') {
+      console.error('Invalid provider', provider)
+      throw new Error(`Invalid provider: name=${provider.name}`)
+    }
+  }
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 

@@ -1,9 +1,9 @@
 import onebrickClientIntegration from './client'
-import {onebrickSchemas} from './def'
+import oneBrickDef from './def'
 import onebrickServerIntegration from './server'
 
 export const oneBrickProvider = {
-  ...onebrickSchemas,
+  ...oneBrickDef,
   ...onebrickClientIntegration,
   ...onebrickServerIntegration,
 }

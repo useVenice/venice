@@ -36,6 +36,7 @@ export const onebrickSchemas = {
   ]),
   webhookInput: zWebhookInput,
 } satisfies IntegrationSchemas
+
 export const helpers = intHelpers(onebrickSchemas)
 
 export const oneBrickDef = {
