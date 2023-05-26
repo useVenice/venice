@@ -1,6 +1,6 @@
 /** Used for the side effect of window.MergeLink */
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, zIntOauthApikeyAuth} from '@usevenice/cdk-core'
+import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
 import {z, zCast} from '@usevenice/util'
 
 import type {components} from './__generated__/transactions.gen'
@@ -9,7 +9,7 @@ import type {components} from './__generated__/transactions.gen'
 
 export const brexSchemas = {
   name: z.literal('brex'),
-  integrationConfig: zIntOauthApikeyAuth,
+  integrationConfig: zIntAuth.oauthOrApikeyAuth,
   institutionData: z.unknown(),
   resourceSettings: z.object({
     accessToken: z.string(),

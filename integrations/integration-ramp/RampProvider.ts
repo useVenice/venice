@@ -1,4 +1,4 @@
-import {makeSyncProvider, zIntOauth} from '@usevenice/cdk-core'
+import {makeSyncProvider, zIntAuth} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   makeStandardId,
@@ -20,7 +20,7 @@ type RampSyncOperation = (typeof def)['_opType']
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('ramp'),
-  integrationConfig: zIntOauth,
+  integrationConfig: zIntAuth.oauth,
   resourceSettings: z.object({
     accessToken: z.string().nullish(),
     startAfterTransactionId: z.string().nullish(),
@@ -116,10 +116,7 @@ export const rampProvider = makeSyncProvider({
   //   return rxjs.concat(sync$)
   // },
   sourceSync: ({settings, config}) => {
-    const client = makeRampClient({
-      clientId: config.clientId ?? '',
-      clientSecret: config.clientSecret ?? '',
-    })
+    const client = makeRampClient(config.oauth)
     async function* iterateEntities() {
       const accessToken = await client.getAccessToken()
       // const accessToken = await client.getToken({

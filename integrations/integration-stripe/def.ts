@@ -1,5 +1,5 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, zIntOauthApikeyAuth} from '@usevenice/cdk-core'
+import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   veniceProviderBase,
@@ -11,7 +11,7 @@ import type {components} from './stripe.gen'
 
 export const stripeSchemas = {
   name: z.literal('stripe'),
-  integrationConfig: zIntOauthApikeyAuth,
+  integrationConfig: zIntAuth.oauthOrApikeyAuth,
   resourceSettings: z.object({secretKey: z.string()}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
