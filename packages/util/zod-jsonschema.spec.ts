@@ -128,9 +128,11 @@ test('enum description to title 2', () => {
               "additionalProperties": false,
               "properties": {
                 "clientId": {
+                  "title": "oauth.clientId",
                   "type": "string",
                 },
                 "clientSecret": {
+                  "title": "oauth.clientSecret",
                   "type": "string",
                 },
               },
@@ -147,7 +149,6 @@ test('enum description to title 2', () => {
             },
           ],
           "title": "oauth",
-          "type": "object",
         },
       },
       "required": [

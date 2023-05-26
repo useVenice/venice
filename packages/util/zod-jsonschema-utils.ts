@@ -13,7 +13,9 @@ export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
       return
     }
     // TODO: We can also handle json metadata here as desired
-    const title = [...(meta?.path ?? []), meta.name].join('.')
+    const title = [...(meta?.path ?? []), meta.name]
+      .filter((n) => !!n) // Filter out nesting from things like anyOf
+      .join('.')
     if (title && !title.endsWith('.')) {
       node.title = title
     }
