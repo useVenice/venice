@@ -171,6 +171,8 @@ export const postgresProvider = makeSyncProvider({
       // migrationsPath: __dirname + '/migrations',
       endUser,
     })
+    // TODO: Probably need to require these sql files to work... turn them into js files
+
     const {getPool, getMigrator} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',

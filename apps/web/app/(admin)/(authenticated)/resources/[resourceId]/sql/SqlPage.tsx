@@ -149,13 +149,17 @@ export function SqlPage({
                 <ChevronDown className="ml-2" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={resultsUrl({download: true, format: 'csv'})}
-                    target="_blank"
-                    rel="noreferrer">
-                    Download CSV
-                  </a>
+                <DropdownMenuItem
+                  onClick={() =>
+                    withToast(
+                      () =>
+                        navigator.clipboard.writeText(
+                          `=IMPORTDATA("${resultsUrl({format: 'csv'})}")`,
+                        ),
+                      {title: 'Copied to clipboard'},
+                    )
+                  }>
+                  Copy Google Sheets IMPORTDATA formula
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
@@ -169,14 +173,6 @@ export function SqlPage({
                   }>
                   Copy CSV URL
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <a
-                    href={resultsUrl({download: true, format: 'json'})}
-                    target="_blank"
-                    rel="noreferrer">
-                    Download JSON
-                  </a>
-                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
                     withToast(
@@ -188,6 +184,22 @@ export function SqlPage({
                     )
                   }>
                   Copy JSON URL
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a
+                    href={resultsUrl({download: true, format: 'csv'})}
+                    target="_blank"
+                    rel="noreferrer">
+                    Download CSV
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a
+                    href={resultsUrl({download: true, format: 'json'})}
+                    target="_blank"
+                    rel="noreferrer">
+                    Download JSON
+                  </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

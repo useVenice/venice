@@ -82,7 +82,7 @@ export async function GET(
               ),
             ]),
             {
-              headers: {'Content-Type': 'text/csv'},
+              // headers: {'Content-Type': 'text/csv'},
             },
           )
         : NextResponse.json(result.rows)
