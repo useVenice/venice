@@ -46,8 +46,8 @@ export const SchemaForm = React.forwardRef(function SchemaForm<
   const _jsonSchema = zodToJsonSchema(schema) as RJSFSchema
   const jsonSchema = jsonSchemaTransform?.(_jsonSchema) ?? _jsonSchema
   // For debugging
-  ;(window as any).formSchema = schema
-  ;(window as any).formJsonSchema = jsonSchema
+  ;(globalThis as any).formSchema = schema
+  ;(globalThis as any).formJsonSchema = jsonSchema
 
   // We cache the formState so that re-render does not cause immediate loss
   // though this may sometimes cause stale data? Need to think more about it.

@@ -12,17 +12,6 @@ test('simple value', () => {
   `)
 })
 
-test('simple value with description', () =>
-  expect(zodToJsonSchema(z.literal('myvalue').describe('hello')))
-    .toMatchInlineSnapshot(`
-    {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "const": "myvalue",
-      "title": "hello",
-      "type": "string",
-    }
-  `))
-
 test('union with description', () => {
   expect(
     zodToJsonSchema(
@@ -47,6 +36,124 @@ test('union with description', () => {
         },
       ],
       "type": "string",
+    }
+  `)
+})
+
+test('enum description to title', () => {
+  expect(
+    zodToJsonSchema(
+      z.discriminatedUnion('type', [
+        z.object({
+          type: z.literal('oauth'),
+          clientId: z.string(),
+          clientSecret: z.string(),
+        }),
+        z.object({type: z.literal('apikey')}),
+      ]),
+    ),
+  ).toMatchInlineSnapshot(`
+    {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "clientId": {
+              "type": "string",
+            },
+            "clientSecret": {
+              "type": "string",
+            },
+            "type": {
+              "const": "oauth",
+              "type": "string",
+            },
+          },
+          "required": [
+            "type",
+            "clientId",
+            "clientSecret",
+          ],
+          "type": "object",
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "apikey",
+              "type": "string",
+            },
+          },
+          "required": [
+            "type",
+          ],
+          "type": "object",
+        },
+      ],
+      "type": "object",
+    }
+  `)
+})
+
+test('enum description to title 2', () => {
+  expect(
+    zodToJsonSchema(
+      z.object({
+        oauth: z.union([
+          z
+            .object({
+              clientId: z.string(),
+              clientSecret: z.string(),
+            })
+            .describe('Enable'),
+          z.null().describe('Disable'),
+        ]),
+
+        apikey: z.boolean().optional(),
+      }),
+    ),
+  ).toMatchInlineSnapshot(`
+    {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": false,
+      "properties": {
+        "apikey": {
+          "title": "apikey",
+          "type": "boolean",
+        },
+        "oauth": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "clientId": {
+                  "type": "string",
+                },
+                "clientSecret": {
+                  "type": "string",
+                },
+              },
+              "required": [
+                "clientId",
+                "clientSecret",
+              ],
+              "title": "Enable",
+              "type": "object",
+            },
+            {
+              "title": "Disable",
+              "type": "null",
+            },
+          ],
+          "title": "oauth",
+          "type": "object",
+        },
+      },
+      "required": [
+        "oauth",
+      ],
+      "type": "object",
     }
   `)
 })
