@@ -27,10 +27,10 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
       const types = R.uniq(node.anyOf.map((x) => x.type))
       // Small hack for react-jsonschema-form
       // without type sometimes nothing renders.... (e.g. enum of string)
-      if (types.length > 1) {
-        console.warn(`Multiple types in anyOf: ${types}, skip defaulting`)
+      if (types.length === 1) {
+        // console.warn(`Multiple types in anyOf: ${types}, skip defaulting`)
+        node.type = types[0]
       }
-      node.type = types[0]
     }
     // Ensure option title
     const parent = meta.lineage && meta.lineage[meta.lineage.length - 1]
@@ -49,7 +49,6 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
 
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
   // Defaulting title should occur last, this way we don't end up with extraneous one
-
   return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))
 }
 

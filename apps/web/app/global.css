@@ -127,6 +127,10 @@
   .schema-form .form-group {
     @apply mb-2;
   }
+  /* Tend to be used for object fields */
+  .schema-form .panel {
+    @apply border border-gray-300 shadow rounded p-4;
+  }
   .schema-form label.control-label {
     @apply mb-1 block font-bold;
   }
