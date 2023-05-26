@@ -124,12 +124,12 @@ export function CommandContent({
 }: CommandComponentProps) {
   const {commandGroups} = React.useMemo(() => {
     const prepared = prepareCommands({definitions})
-    if (initialParams) {
-      return filterCommands({
-        commands: prepared.commands,
-        params: initialParams,
-      })
-    }
+    return filterCommands({
+      commands: prepared.commands,
+      // Filter regardless because without initialParams we currently only want global commands.
+      params: initialParams ?? {},
+    })
+
     return prepared
   }, [definitions, initialParams])
 

@@ -5,7 +5,6 @@ import {executeCommand, filterCommands, prepareCommands} from './command-fns'
 import type {CommandDefinitionMap} from './command-types'
 
 const definitions = {
-  navigate: {},
   sync: {
     execute: () => 'synced',
   },
@@ -31,9 +30,10 @@ test('filter commands not patching params', () => {
   expect(filtered.commands).toHaveLength(0)
 })
 
-test('global commands', () => {
+test('implicit global commands', () => {
   const filtered = filterCommands({commands, params: {}})
-  expect(filtered.commands.length).toBeGreaterThan(0)
+  expect(filtered.commands.length).toEqual(1)
+  expect(filtered.commands[0]?.key).toBe('sync')
 })
 
 test('executeCommand', () => {
