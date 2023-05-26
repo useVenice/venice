@@ -2,7 +2,7 @@ import {createSyncStoragePersister} from '@tanstack/query-sync-storage-persister
 import {QueryClient} from '@tanstack/react-query'
 import {persistQueryClient} from '@tanstack/react-query-persist-client'
 
-import {__DEV__} from '@usevenice/app-config/constants'
+import {__DEBUG__} from '@usevenice/app-config/constants'
 
 export function createQueryClient() {
   const queryClient = new QueryClient({
@@ -16,8 +16,8 @@ export function createQueryClient() {
         // No longer need to refetch now that we always get data from server first
         staleTime: 5 * 60 * 1000, // 5 mins by default, reduce refetching...
         // Too many requests for going between devTool and not... alternative is to change the stale time
-        refetchOnWindowFocus: !__DEV__,
-        refetchOnMount: !__DEV__,
+        refetchOnWindowFocus: !__DEBUG__,
+        refetchOnMount: !__DEBUG__,
       },
     },
   })

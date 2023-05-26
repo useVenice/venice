@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 
-import {__DEV__} from '@usevenice/app-config/constants'
+import {__DEBUG__} from '@usevenice/app-config/constants'
 import type {IconName} from '@usevenice/ui'
 import {Button, Icon, ScrollArea} from '@usevenice/ui'
 import {R} from '@usevenice/util'
@@ -32,7 +32,7 @@ const sectionedLinks: Array<{
         href: '/magic-link',
         icon: 'Wand',
       },
-      __DEV__ && {
+      __DEBUG__ && {
         title: 'Metrics',
         href: '/metrics',
         icon: 'BarChart2',

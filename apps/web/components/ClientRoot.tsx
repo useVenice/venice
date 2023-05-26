@@ -10,6 +10,8 @@ import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
 import {TRPCProvider} from '@usevenice/engine-frontend'
 import {Toaster} from '@usevenice/ui'
 
+import {__DEBUG__} from '@/../app-config/constants'
+
 import {createQueryClient} from '../lib-client/react-query-client'
 import {
   createRealtimeClient,
@@ -103,6 +105,7 @@ export function ClientRoot({
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider
+        debug={__DEBUG__}
         queryClient={queryClient}
         accessToken={
           trpcAccessToken !== undefined ? trpcAccessToken : accessToken

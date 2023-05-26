@@ -16,17 +16,14 @@ export function TRPCProvider({
   queryClient,
   children,
   accessToken,
+  debug,
 }: {
   apiUrl?: string
   queryClient: QueryClient
   accessToken?: string | null
   children: React.ReactNode
+  debug?: boolean
 }) {
-  const __DEBUG__ =
-    typeof window !== 'undefined' &&
-    (window.location.href.includes('localhost') ||
-      window.localStorage.getItem('__DEBUG__'))
-
   // TODO: Should we keep trpcClient the and useRef for the accessToken instead?
   const trpcClient = React.useMemo(
     () =>
@@ -34,7 +31,7 @@ export function TRPCProvider({
       // createTRPCProxyClient<FlatRouter>({
       _trpcReact.createClient({
         links: [
-          (__DEBUG__ ? httpLink : httpBatchLink)({
+          (debug ? httpLink : httpBatchLink)({
             url: apiUrl ?? '/api/trpc',
             headers: () => ({
               ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
@@ -42,7 +39,7 @@ export function TRPCProvider({
           }),
         ],
       }),
-    [__DEBUG__, accessToken, apiUrl],
+    [debug, accessToken, apiUrl],
   )
   ;(globalThis as any).trpcClient = trpcClient
 

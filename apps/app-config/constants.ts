@@ -29,6 +29,10 @@ export const kApikeyHeader = 'x-apikey'
 
 export const kAcceptUrlParam = '_accept'
 
-export const __DEV__ = getServerUrl(null).includes('localhost')
-
 export const kAccessToken = '_token' as const
+
+export const __DEBUG__ =
+  getServerUrl(null).includes('localhost') ||
+  Boolean(
+    typeof window !== 'undefined' && window.localStorage.getItem('__DEBUG__'),
+  )
