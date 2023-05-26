@@ -158,7 +158,12 @@ export const ProviderCard = ({
         </Badge>
       )}
     </div>
-    <ProviderLogo {...uiProps} provider={provider} className="grow" />
+    <ProviderLogo
+      {...uiProps}
+      provider={provider}
+      // min-h-0 is a hack where some images do not shrink in height @see https://share.cleanshot.com/jMX1bzLP
+      className="min-h-0 grow"
+    />
     {children}
   </Card>
 )
