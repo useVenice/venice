@@ -77,6 +77,12 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'mercury',
+    dirName: 'integration-mercury',
+    varName: 'integrationMercury',
+    imports: {def: '@usevenice/integration-mercury/def'},
+  },
+  {
     name: 'merge',
     dirName: 'integration-merge',
     varName: 'integrationMerge',

@@ -36,7 +36,9 @@ const integrationList = fs
   .map((r) => {
     const path = pathJoin(__dirname, '../../integrations', r.name)
     const def = fs.existsSync(pathJoin(path, 'def.ts'))
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      ? // TODO: Automate generation of package.json is still needed, otherwise does not work for new packages
+        // @see https://share.cleanshot.com/wDmqwsHS
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (require(`@usevenice/${r.name}/def`).default as IntegrationDef)
       : undefined
 

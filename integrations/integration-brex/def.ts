@@ -1,11 +1,8 @@
-/** Used for the side effect of window.MergeLink */
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
 import {z, zCast} from '@usevenice/util'
 
 import type {components} from './__generated__/transactions.gen'
-
-// TODO: Split into 3 files... Def aka common / Client / Server
 
 export const brexSchemas = {
   name: z.literal('brex'),

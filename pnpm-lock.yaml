@@ -205,6 +205,9 @@ importers:
       '@usevenice/integration-lunchmoney':
         specifier: workspace:*
         version: link:../../integrations/integration-lunchmoney
+      '@usevenice/integration-mercury':
+        specifier: workspace:*
+        version: link:../../integrations/integration-mercury
       '@usevenice/integration-merge':
         specifier: workspace:*
         version: link:../../integrations/integration-merge
@@ -889,6 +892,25 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
+
+  integrations/integration-mercury:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
+      '@usevenice/standard':
+        specifier: workspace:*
+        version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+    devDependencies:
+      openapi-typescript:
+        specifier: 6.2.1
+        version: 6.2.1
 
   integrations/integration-merge:
     dependencies:
@@ -16793,7 +16815,7 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
     dependencies:
-      tailwindcss: 3.3.1(postcss@8.4.21)
+      tailwindcss: 3.3.1(postcss@8.4.14)
     dev: true
 
   /tailwindcss-radix@2.5.0:

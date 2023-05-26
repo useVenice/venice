@@ -3,6 +3,7 @@ import {default as integrationBrex_def} from '@usevenice/integration-brex/def'
 import {default as integrationBrex_server} from '@usevenice/integration-brex/server'
 import {default as integrationHeron_def} from '@usevenice/integration-heron/def'
 import {default as integrationHeron_server} from '@usevenice/integration-heron/server'
+import {default as integrationMercury_def} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge_client} from '@usevenice/integration-merge/client'
 import {default as integrationMerge_def} from '@usevenice/integration-merge/def'
 import {default as integrationMerge_server} from '@usevenice/integration-merge/server'
@@ -29,6 +30,10 @@ const integrationBrex = {
 const integrationHeron = {
   ...integrationHeron_def,
   ...integrationHeron_server,
+}
+
+const integrationMercury = {
+  ...integrationMercury_def,
 }
 
 const integrationMerge = {
@@ -69,6 +74,7 @@ const integrationYodlee = {
 export const mergedIntegrations = {
   brex: integrationBrex,
   heron: integrationHeron,
+  mercury: integrationMercury,
   merge: integrationMerge,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,

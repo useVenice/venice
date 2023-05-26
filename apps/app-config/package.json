@@ -29,6 +29,7 @@
     "@usevenice/integration-heron": "workspace:*",
     "@usevenice/integration-import": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
+    "@usevenice/integration-mercury": "workspace:*",
     "@usevenice/integration-merge": "workspace:*",
     "@usevenice/integration-moota": "workspace:*",
     "@usevenice/integration-onebrick": "workspace:*",
