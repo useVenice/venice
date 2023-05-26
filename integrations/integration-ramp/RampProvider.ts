@@ -1,4 +1,4 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
+import {makeSyncProvider, zIntOauth} from '@usevenice/cdk-core'
 import {
   makePostingsMap,
   makeStandardId,
@@ -20,10 +20,7 @@ type RampSyncOperation = (typeof def)['_opType']
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
   name: z.literal('ramp'),
-  integrationConfig: z.object({
-    clientId: z.string(),
-    clientSecret: z.string(),
-  }),
+  integrationConfig: zIntOauth,
   resourceSettings: z.object({
     accessToken: z.string().nullish(),
     startAfterTransactionId: z.string().nullish(),
