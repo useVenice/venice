@@ -23,7 +23,9 @@ export function TRPCProvider({
   children: React.ReactNode
 }) {
   const __DEBUG__ =
-    typeof window !== 'undefined' && window.location.href.includes('localhost')
+    typeof window !== 'undefined' &&
+    (window.location.href.includes('localhost') ||
+      window.localStorage.getItem('__DEBUG__'))
 
   // TODO: Should we keep trpcClient the and useRef for the accessToken instead?
   const trpcClient = React.useMemo(

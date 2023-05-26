@@ -32,24 +32,24 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
       .default('supabase'),
     NEXT_PUBLIC_COMMANDBAR_ORG_ID: z.string().optional(),
   },
-  runtimeEnv: {
+  runtimeEnv: overrideFromLocalStorage({
     CLERK_SECRET_KEY: process.env['CLERK_SECRET_KEY'],
+    INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
+    INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
     JWT_SECRET_OR_PUBLIC_KEY: process.env['JWT_SECRET_OR_PUBLIC_KEY'],
-    POSTGRES_OR_WEBHOOK_URL: process.env['POSTGRES_OR_WEBHOOK_URL'],
-    SENTRY_CRON_MONITOR_ID: process.env['SENTRY_CRON_MONITOR_ID'],
-    NEXT_PUBLIC_SENTRY_ORG: process.env['NEXT_PUBLIC_SENTRY_ORG'],
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env['NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY'],
     NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME:
       process.env['NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME'],
+    NEXT_PUBLIC_COMMANDBAR_ORG_ID: process.env['NEXT_PUBLIC_COMMANDBAR_ORG_ID'],
     NEXT_PUBLIC_POSTHOG_WRITEKEY: process.env['NEXT_PUBLIC_POSTHOG_WRITEKEY'],
     NEXT_PUBLIC_SENTRY_DSN: process.env['NEXT_PUBLIC_SENTRY_DSN'],
+    NEXT_PUBLIC_SENTRY_ORG: process.env['NEXT_PUBLIC_SENTRY_ORG'],
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'],
     NEXT_PUBLIC_SUPABASE_URL: process.env['NEXT_PUBLIC_SUPABASE_URL'],
-    INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
-    INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
-    NEXT_PUBLIC_COMMANDBAR_ORG_ID: process.env['NEXT_PUBLIC_COMMANDBAR_ORG_ID'],
-  },
+    POSTGRES_OR_WEBHOOK_URL: process.env['POSTGRES_OR_WEBHOOK_URL'],
+    SENTRY_CRON_MONITOR_ID: process.env['SENTRY_CRON_MONITOR_ID'],
+  }),
   onInvalidAccess: (variable: string) => {
     throw new Error(
       `❌ Attempted to access server-side environment variable ${variable} on the client`,
@@ -62,3 +62,19 @@ export const env = createEnv(envConfig)
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 ;(globalThis as any).env = env
+
+/** Allow NEXT_PUBLIC values to be overwriten from localStorage for debugging purposes */
+function overrideFromLocalStorage<T>(runtimeEnv: T) {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    for (const key in runtimeEnv) {
+      if (key.startsWith('NEXT_PUBLIC_')) {
+        const value = window.localStorage.getItem(key)
+        if (value != null) {
+          runtimeEnv[key] = value as T[Extract<keyof T, string>]
+          console.warn(`[env] Overriding from localStorage ${key} = ${value}`)
+        }
+      }
+    }
+  }
+  return runtimeEnv
+}
