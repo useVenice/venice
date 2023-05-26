@@ -129,8 +129,6 @@ export function CommandContent({
       // Filter regardless because without initialParams we currently only want global commands.
       params: initialParams ?? {},
     })
-
-    return prepared
   }, [definitions, initialParams])
 
   return (
