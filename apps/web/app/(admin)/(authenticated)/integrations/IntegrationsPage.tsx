@@ -82,8 +82,8 @@ export default function IntegrationsPage() {
         Available integrations
       </h2>
       {zIntegrationCategory.options.map((category) => {
-        const providers = Object.values(catalog.data).filter((p) =>
-          p.categories.includes(category),
+        const providers = Object.values(catalog.data).filter(
+          (p) => p.categories.includes(category) && p.stage !== 'hidden',
         )
         if (!providers.length) {
           return null

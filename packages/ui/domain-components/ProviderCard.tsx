@@ -105,6 +105,8 @@ export const IntegrationCard = ({
 }) => (
   <ProviderCard
     {...props}
+    showName={false}
+    // Temporary hack due to presence of labels for plaid. Need better design for ProviderCard and IntegrationCard
     labels={
       // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
       int.providerName === 'plaid' && int.config?.['envName']
@@ -118,6 +120,7 @@ export const IntegrationCard = ({
 export const ProviderCard = ({
   provider,
   showStageBadge = false,
+  showName = true,
   labels = [],
   className,
   children,
@@ -126,6 +129,7 @@ export const ProviderCard = ({
   provider: ProviderMeta
   showStageBadge?: boolean
   labels?: string[]
+  showName?: boolean
 }) => (
   <Card
     className={cn(
@@ -133,6 +137,9 @@ export const ProviderCard = ({
       className,
     )}>
     <div className="flex h-6 self-stretch">
+      {showName && (
+        <span className="text-sm text-muted-foreground">{provider.name}</span>
+      )}
       {labels.map((label) => (
         <Badge key={label} variant="secondary">
           {label}
