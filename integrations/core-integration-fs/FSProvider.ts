@@ -41,7 +41,11 @@ const def = makeSyncProvider.def({
 })
 
 export const fsProvider = makeSyncProvider({
-  metadata: {platforms: ['local'], displayName: 'File system'},
+  metadata: {
+    platforms: ['local'],
+    displayName: 'File system',
+    categories: ['flat-files-and-spreadsheets'],
+  },
   ...makeSyncProvider.defaults,
   def,
   sourceSync: ({settings, state}) =>

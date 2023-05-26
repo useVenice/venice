@@ -14,6 +14,7 @@ const def = makeSyncProvider.def({
 
 export const airtableProvider = makeSyncProvider({
   ...makeSyncProvider.defaults,
+  metadata: {categories: ['database'], logoUrl: '/_assets/logo-airtable.svg'},
   def,
   // metadata: {logoUrl: '/_assets/logo-airtable.png'},
   destinationSync: ({settings}) => {

@@ -54,6 +54,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const foreceiptProvider = makeSyncProvider({
+  metadata: {categories: ['expense-management']},
   ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

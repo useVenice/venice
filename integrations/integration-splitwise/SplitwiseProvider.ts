@@ -41,6 +41,7 @@ const _def = makeSyncProvider.def({
 const def = makeSyncProvider.def.helpers(_def)
 
 export const splitwiseProvider = makeSyncProvider({
+  metadata: {categories: ['personal-finance']},
   ...veniceProviderBase(def, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

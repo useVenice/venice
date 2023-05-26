@@ -51,10 +51,12 @@ export const zIntegrationCategory = z.enum([
   'banking',
   'accounting',
   'commerce',
+  'expense-management',
   'enrichment',
   'database',
-  'flat-files',
+  'flat-files-and-spreadsheets',
   'streaming',
+  'personal-finance',
   'other',
 ])
 

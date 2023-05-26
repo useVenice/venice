@@ -55,7 +55,7 @@ const def = makeSyncProvider.def({
 
 export const rampProvider = makeSyncProvider({
   metadata: {
-    categories: ['banking'],
+    categories: ['banking', 'expense-management'],
     logoUrl: '/_assets/logo-ramp.png',
     stage: 'beta',
   },

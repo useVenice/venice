@@ -81,7 +81,7 @@ const def = makeSyncProvider.def({
 export const importProvider = makeSyncProvider({
   metadata: {
     displayName: 'CSV Import',
-    categories: ['flat-files'],
+    categories: ['flat-files-and-spreadsheets'],
     logoUrl: '/_assets/logo-import.png',
   },
   ...veniceProviderBase(def, {

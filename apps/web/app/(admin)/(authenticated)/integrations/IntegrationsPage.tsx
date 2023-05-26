@@ -4,7 +4,11 @@ import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-import {zIntegrationCategory, zRaw} from '@usevenice/cdk-core'
+import {
+  zIntegrationCategory,
+  zIntegrationStage,
+  zRaw,
+} from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
@@ -34,7 +38,7 @@ import {
   SheetTrigger,
   useToast,
 } from '@usevenice/ui'
-import {titleCase, z} from '@usevenice/util'
+import {inPlaceSort, R, titleCase, z} from '@usevenice/util'
 
 import {useCurrengOrg} from '@/components/viewer-context'
 import {cn} from '@/lib-client/ui-utils'
@@ -82,9 +86,15 @@ export default function IntegrationsPage() {
         Available integrations
       </h2>
       {zIntegrationCategory.options.map((category) => {
-        const providers = Object.values(catalog.data).filter(
-          (p) => p.categories.includes(category) && p.stage !== 'hidden',
+        const stageByIndex = R.mapToObj.indexed(
+          zIntegrationStage.options,
+          (o, i) => [o, i],
         )
+        const providers = inPlaceSort(
+          Object.values(catalog.data).filter(
+            (p) => p.categories.includes(category) && p.stage !== 'hidden',
+          ),
+        ).desc((p) => stageByIndex[p.stage])
         if (!providers.length) {
           return null
         }

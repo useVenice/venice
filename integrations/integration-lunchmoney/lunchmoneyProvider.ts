@@ -34,6 +34,7 @@ const _def = makeSyncProvider.def({
 export const lunchmoneyProviderDef = makeSyncProvider.def.helpers(_def)
 
 export const lunchmoneyProvider = makeSyncProvider({
+  metadata: {categories: ['personal-finance']},
   ...veniceProviderBase(lunchmoneyProviderDef, {
     sourceMapEntity: {
       account: ({entity: a}) => ({

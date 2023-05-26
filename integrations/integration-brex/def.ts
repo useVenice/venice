@@ -35,7 +35,7 @@ export const brexDef = {
   def: brexSchemas,
   name: 'brex',
   metadata: {
-    categories: ['banking'],
+    categories: ['banking', 'expense-management'],
     logoUrl: '/_assets/logo-brex.png',
     stage: 'beta',
   },

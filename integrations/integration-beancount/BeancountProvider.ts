@@ -30,7 +30,7 @@ const def = makeSyncProvider.def({
 })
 
 export const beancountProvider = makeSyncProvider({
-  metadata: {platforms: ['local']},
+  metadata: {categories: ['personal-finance'], platforms: ['local']},
   ...veniceProviderBase(def, {sourceMapEntity: undefined}),
   destinationSync: ({state: options}) =>
     cachingLink((cache) => fromCompletion(outputBeanFiles(cache, options))),
