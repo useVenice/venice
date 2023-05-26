@@ -1,7 +1,9 @@
 'use client'
 
+import {Loader2} from 'lucide-react'
 import React from 'react'
 
+import {cn} from '../utils'
 // MARK: - useToast
 import type {ToastActionElement} from './Toast'
 import {
@@ -23,7 +25,16 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({id, title, description, action, ...props}) {
         return (
-          <Toast key={id} {...props}>
+          <Toast
+            key={id}
+            {...props}
+            className={cn(
+              props.variant === 'loading' && 'flex items-center justify-start',
+              props.className,
+            )}>
+            {props.variant === 'loading' && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (

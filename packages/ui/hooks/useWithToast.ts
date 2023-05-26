@@ -1,21 +1,22 @@
 import {useToast} from '../shadcn'
 
-interface ToastOptions {
+interface WithToastOptions {
   title?: string
   description?: string
+  loadingTitle?: string
 }
 
-export function useWithToast(defaultOptions: ToastOptions = {}) {
+export function useWithToast(defaultOptions: WithToastOptions = {}) {
   const {toast} = useToast()
 
-  const onSuccessFn = (opts: ToastOptions) => () =>
+  const onSuccessFn = (opts: WithToastOptions) => () =>
     toast({
       variant: 'success',
       title: opts.title ?? 'Success',
       description: opts.description,
     })
 
-  const onErrorFn = (opts: ToastOptions) => (err: unknown) =>
+  const onErrorFn = (opts: WithToastOptions) => (err: unknown) =>
     toast({
       variant: 'destructive',
       title: `Error: ${err}`,
@@ -24,20 +25,26 @@ export function useWithToast(defaultOptions: ToastOptions = {}) {
 
   const withToast = (
     fn: () => Promise<unknown>,
-    options: ToastOptions = {},
+    options: WithToastOptions = {},
   ) => {
     const opts = {...defaultOptions, ...options}
+    const loading = toast({
+      variant: 'loading',
+      title: opts.loadingTitle ?? 'Running...',
+    })
     return fn()
       .then((res) => {
+        loading.dismiss()
         onSuccessFn(opts)()
         return res
       })
       .catch((err) => {
+        loading.dismiss()
         onErrorFn(opts)(err)
       })
   }
   const onSuccess = onSuccessFn(defaultOptions)
   const onError = onErrorFn(defaultOptions)
 
-  return {withToast, onSuccess, onError}
+  return {withToast, onSuccess, onError, toast}
 }

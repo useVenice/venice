@@ -2,9 +2,8 @@
 
 import {
   ComboboxDemo,
-  CommandBar,
   CommandInline,
-  CommandPopover,
+  CommandPopover
 } from '@usevenice/ui'
 
 import {GlobalCommandBar} from '@/vcommands/GlobalCommandBar'
@@ -19,7 +18,6 @@ export default function ComingSoonPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Coming soon
       </h2>
-      <CommandBar ctx={ctx} definitions={vDefinitions} />
 
       <div className="m-5 border p-5">
         <CommandPopover

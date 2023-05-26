@@ -164,6 +164,7 @@ export function SqlPage({
         </Resizable>
         <div className="h-[100%] min-h-[100px] px-6">
           <div className="flex items-center p-1">
+            {/* Consider turning this dropdown menu into commands also */}
             <DropdownMenu>
               <DropdownMenuTrigger className="flex px-1 text-secondary-foreground">
                 Results
