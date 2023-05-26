@@ -1,6 +1,6 @@
 import {useTheme} from 'next-themes'
 
-import type {CommandDefinitionMap} from '@usevenice/ui'
+import type {CommandDefinitionInput, CommandDefinitionMap} from '@usevenice/ui'
 import {cmdInit} from '@usevenice/ui'
 import {delay, z} from '@usevenice/util'
 
@@ -12,23 +12,29 @@ import type {CommandContext} from './vcommand-context'
 
 const cmd = cmdInit<CommandContext>()
 
+const _pipelineCommand = {
+  group: 'pipeline',
+  params: z.object({pipeline: zClient.pipeline}),
+} satisfies CommandDefinitionInput<CommandContext>
+
 export const pipelineCommands = {
   'pipeline:create': cmd.identity({
+    ..._pipelineCommand,
+    params: undefined,
     icon: 'Plus',
     execute: ({ctx}) =>
       ctx.setPipelineSheetState({pipeline: undefined, open: true}),
   }),
   'pipeline:edit': cmd.identity({
+    ..._pipelineCommand,
     icon: 'Pencil',
-    params: z.object({pipeline: zClient.pipeline}),
     execute: ({params: {pipeline}, ctx}) => {
       ctx.setPipelineSheetState({pipeline, open: true})
     },
   }),
   'pipeline:sync': cmd.identity({
+    ..._pipelineCommand,
     icon: 'RefreshCw',
-    group: 'pipeline',
-    params: z.object({pipeline: zClient.pipeline}),
     execute: ({params: {pipeline}, ctx}) => {
       void ctx.withToast(() =>
         ctx.trpcCtx.client.syncPipeline.mutate([pipeline.id, {}]),
@@ -37,7 +43,7 @@ export const pipelineCommands = {
   }),
   'pipeline:delete': cmd.identity({
     icon: 'Trash',
-    params: z.object({pipeline: zClient.pipeline}),
+    ..._pipelineCommand,
     execute: ({ctx, params}) =>
       ctx.setAlertDialogState({
         title: `Confirm deleting pipeline ${params.pipeline.id}`,
@@ -51,29 +57,32 @@ export const pipelineCommands = {
   }),
 } satisfies CommandDefinitionMap<CommandContext>
 
+const _resourceCommand = {
+  group: 'resource',
+  params: z.object({resource: zClient.resource}),
+} satisfies CommandDefinitionInput<CommandContext>
+
 export const resourceCommands = {
   'resource:edit': {
+    ..._resourceCommand,
     icon: 'Pencil',
-    params: z.object({resource: zClient.resource}),
   },
   'resource:delete': {
+    ..._resourceCommand,
     icon: 'Trash',
-    params: z.object({resource: zClient.resource}),
   },
   'resource:sync': {
+    ..._resourceCommand,
     icon: 'RefreshCw',
-    params: z.object({resource: zClient.resource}),
   },
   'postgres/run_sql': {
+    ..._resourceCommand,
     icon: 'Database',
-    group: 'resource',
-    params: z.object({resource: zClient.resource}),
     // Only show me for postgres resources
   },
   'plaid/simulate_disconnect': {
+    ..._resourceCommand,
     icon: 'Unlink',
-    group: 'resource',
-    params: z.object({resource: zClient.resource}),
     // Only show me for sandbox plaid resources
   },
 } satisfies CommandDefinitionMap<CommandContext>
@@ -93,8 +102,13 @@ export const entityCommands = {
   }),
 } satisfies CommandDefinitionMap<CommandContext>
 
+const _debugCommand = {
+  group: 'debug',
+} satisfies CommandDefinitionInput<CommandContext>
+
 export const debugCommands = {
   test_toast: {
+    ..._debugCommand,
     execute: ({ctx}) => {
       void ctx.withToast(() => delay(1000).then(() => 'done'), {
         title: 'Hello world',
@@ -102,6 +116,7 @@ export const debugCommands = {
     },
   },
   test_alert: {
+    ..._debugCommand,
     execute: ({ctx}) =>
       ctx.setAlertDialogState({
         title: 'Are you sure?',
@@ -111,17 +126,19 @@ export const debugCommands = {
   },
 } satisfies CommandDefinitionMap<CommandContext>
 
-export const vDefinitions = {
-  ...pipelineCommands,
-  ...resourceCommands,
-  ...entityCommands,
-  ...(__DEBUG__ && debugCommands),
-  // TODO: Dedupe with the links from the navigation sidebar
+const _navCommand = {
+  group: 'navigation',
+} satisfies CommandDefinitionInput<CommandContext>
+
+// TODO: Dedupe with the links from the navigation sidebar
+export const navCommands = {
   go_to_home: {
+    ..._navCommand,
     icon: 'Home',
     execute: ({ctx}) => ctx.router.push('/'),
   },
   go_to_settings: {
+    ..._navCommand,
     icon: 'Settings',
     execute: ({ctx}) => ctx.router.push('/settings'),
   },
@@ -141,4 +158,32 @@ export const vDefinitions = {
       }
     },
   },
+} satisfies CommandDefinitionMap<CommandContext>
+
+export const miscCommands = {
+  toggle_dark_mode: {
+    // TODO: Give the choice of dark / light / system via an enum somehoe
+    // as right now the there are no easy ways to "reset"
+    useCommand: () => {
+      const {setTheme, resolvedTheme, theme} = useTheme()
+      return {
+        icon:
+          theme === 'dark'
+            ? 'SunMedium'
+            : theme === 'light'
+            ? 'Moon'
+            : 'Laptop',
+        execute: () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark'),
+      }
+    },
+  },
+} satisfies CommandDefinitionMap<CommandContext>
+
+export const vDefinitions = {
+  ...pipelineCommands,
+  ...resourceCommands,
+  ...entityCommands,
+  ...navCommands,
+  ...miscCommands,
+  ...(__DEBUG__ && debugCommands),
 } satisfies CommandDefinitionMap<CommandContext>

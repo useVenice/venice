@@ -65,19 +65,15 @@ export const InvalidateQueriesOnPostgresChanges = React.memo(
   function InvalidateQueriesOnPostgresChanges(props: {client: RealtimeClient}) {
     const trpcUtils = _trpcReact.useContext()
     console.log('InvalidateQueriesOnPostgresChanges')
-    const invalidate = React.useCallback(() => {
-      void trpcUtils.listConnections.invalidate()
-      void trpcUtils.listPipelines.invalidate()
-    }, [trpcUtils])
+
     usePostgresChanges(props.client, 'resource', () => {
       console.log('invalidate resources and related')
       void trpcUtils.listResources.invalidate()
-      invalidate()
+      void trpcUtils.listConnections.invalidate()
     })
     usePostgresChanges(props.client, 'pipeline', () => {
       console.log('invalidate pipelines and related')
-      void trpcUtils.listPipelines2.invalidate()
-      invalidate()
+      void trpcUtils.listPipelines.invalidate()
     })
     usePostgresChanges(props.client, 'integration', () => {
       console.log('invalidate integrations and related')

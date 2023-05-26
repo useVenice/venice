@@ -63,6 +63,8 @@ export function cmdInit<TCtx = unknown>() {
     ) {
       return input
     },
+    // Add an `extend` method would be nice, but hard to type so nvm
+
     makeCmds<TInput extends CommandDefinitionMap<TCtx>>(cmds: TInput) {
       return cmds
     },

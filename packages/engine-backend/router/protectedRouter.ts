@@ -8,7 +8,7 @@ import {
   zStandard,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
-import {R, joinPath, rxjs, z} from '@usevenice/util'
+import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import {inngest, zEvent} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
@@ -37,7 +37,7 @@ export const protectedRouter = trpc.router({
       const resources = await ctx.helpers.metaService.tables.resource.list({})
       return resources
     }),
-  listPipelines2: protectedProcedure
+  listPipelines: protectedProcedure
     .input(z.object({}).optional())
     .query(async ({ctx}) => {
       const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
@@ -127,75 +127,6 @@ export const protectedRouter = trpc.router({
               ?.lastSyncCompletedAt,
           }
         })
-    }),
-  listPipelines: protectedProcedure
-    .input(z.object({}).optional())
-    .query(async ({ctx}) => {
-      // Add info about what it takes to `reconnect` here for resources which
-      // has disconnected
-      const resources = await ctx.helpers.metaService.tables.resource.list({})
-      const [institutions, pipelines] = await Promise.all([
-        ctx.helpers.metaService.tables.institution.list({
-          ids: R.compact(resources.map((c) => c.institutionId)),
-        }),
-        ctx.helpers.metaService.findPipelines({
-          resourceIds: resources.map((c) => c.id),
-        }),
-      ])
-
-      const insById = R.mapToObj(institutions, (ins) => [ins.id, ins])
-      const resoById = R.mapToObj(resources, (ins) => [ins.id, ins])
-
-      function parseResource(reso?: (typeof resources)[number] | null) {
-        if (!reso) {
-          return reso
-        }
-        const providerName = extractId(reso.id)[1]
-        const institution = insById[reso.institutionId!]
-        const mappers = ctx.providerMap[providerName]?.standardMappers
-        const standardReso = zStandard.resource
-          .omit({id: true})
-          .nullish()
-          .parse(mappers?.resource?.(reso.settings))
-        const standardIns = zStandard.institution
-          .omit({id: true})
-          .nullish()
-          .parse(institution && mappers?.institution?.(institution?.external))
-
-        return {
-          ...reso,
-          ...standardReso,
-          id: reso.id,
-          providerName,
-          displayName:
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            reso.displayName ||
-            standardReso?.displayName ||
-            standardIns?.name ||
-            '',
-          institution:
-            standardIns && institution
-              ? {...standardIns, id: institution.id}
-              : null,
-        }
-      }
-
-      return R.sortBy(pipelines, [
-        (p) => p.lastSyncCompletedAt ?? '',
-        'desc',
-      ]).map(({sourceId, destinationId, ...pipe}) => ({
-        ...pipe,
-        syncInProgress:
-          (pipe.lastSyncStartedAt && !pipe.lastSyncCompletedAt) ||
-          (pipe.lastSyncStartedAt &&
-            pipe.lastSyncCompletedAt &&
-            pipe.lastSyncStartedAt > pipe.lastSyncCompletedAt),
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        source: parseResource(resoById[sourceId!])!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        destination: parseResource(resoById[destinationId!])!,
-      }))
     }),
   listIntegrationInfos: protectedProcedure
     .input(z.object({type: z.enum(['source', 'destination']).nullish()}))

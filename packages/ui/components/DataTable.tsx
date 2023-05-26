@@ -18,7 +18,7 @@ import {
 import {ChevronDown} from 'lucide-react'
 import React from 'react'
 
-import {R} from '@usevenice/util'
+import {R, titleCase} from '@usevenice/util'
 
 import {
   Button,
@@ -83,7 +83,12 @@ export function DataTable<TData, TValue>({
           enableSorting: false,
           enableHiding: false,
         },
-        ..._columns,
+        ..._columns.map((col) => {
+          if ('accessorKey' in col && typeof col.accessorKey === 'string') {
+            return {header: titleCase(col.accessorKey), ...col} as typeof col
+          }
+          return col
+        }),
       ]),
     [_columns, enableSelect],
   )

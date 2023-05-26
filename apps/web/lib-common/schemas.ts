@@ -81,7 +81,7 @@ export type ZAuth = {
   [k in keyof typeof zAuth]: z.infer<(typeof zAuth)[k]>
 }
 
-type Pipeline = RouterOutput['listPipelines2'][number]
+type Pipeline = RouterOutput['listPipelines'][number]
 type Resource = RouterOutput['listConnections'][number]
 type Integration = RouterOutput['adminListIntegrations'][number]
 type Provider = RouterOutput['getIntegrationCatalog'][string]
