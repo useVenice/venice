@@ -62,13 +62,23 @@ export function DataGrid<TData extends Record<string, unknown>>({
     }
   }
 
-  if (query.isFetching) {
+  if (query.fetchStatus === 'fetching') {
     return <DataGridSkeleton />
   }
 
-  return !columns.length || !rows.length ? (
-    <div>No data available</div>
-  ) : (
+  if (query.status === 'error') {
+    return <div>Error: {`${query.error}`}</div>
+  } else if (query.status === 'loading') {
+    // isLoading = isPending @see https://github.com/TanStack/query/discussions/4252
+    return null
+  }
+  // Query status is guaranteed success now
+
+  if (!columns.length) {
+    return <div>No data</div>
+  }
+
+  return (
     <DataEditor
       className={cn(query.isFetching && 'opacity-70', className)}
       getCellContent={getData}
