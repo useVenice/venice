@@ -33,6 +33,7 @@
     "lucide-react": "*",
     "re-resizable": "6.9.9",
     "react-hook-form": "7.43.1",
+    "sql-formatter": "12.2.1",
     "tailwind-merge": "1.6.0"
   },
   "devDependencies": {

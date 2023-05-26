@@ -1,5 +1,7 @@
-import type {Monaco, OnChange} from '@monaco-editor/react'
+import type {Monaco, OnChange, OnMount} from '@monaco-editor/react'
 import MonacoEditor from '@monaco-editor/react'
+import React from 'react'
+import {format} from 'sql-formatter'
 
 interface EditorProps {
   language: string
@@ -14,9 +16,14 @@ interface EditorProps {
   }>
 }
 
+export type Editor = Parameters<OnMount>[0]
+
 // TODO: support adding validation rules so we can disable execute/download
 // for invalid queries.
-export function CodeEditor(props: EditorProps) {
+export const CodeEditor = React.forwardRef(function CodeEditor(
+  props: EditorProps,
+  ref: React.ForwardedRef<Editor | null>,
+) {
   const {language, onChange, value, setKeybindings = () => []} = props
   return (
     <MonacoEditor
@@ -25,11 +32,41 @@ export function CodeEditor(props: EditorProps) {
       // theme="venice"
       beforeMount={(monaco) => {
         monaco.editor.defineTheme('venice', veniceEditorTheme)
+        // @see https://stackoverflow.com/questions/66325637/how-to-format-format-a-piece-of-codes/66344338#66344338
+        // define a document formatting provider
+        // then you contextmenu will add an "Format Document" action
+        monaco.languages.registerDocumentFormattingEditProvider('sql', {
+          provideDocumentFormattingEdits(model, opts) {
+            const text = format(model.getValue(), {tabWidth: opts.tabSize})
+            return [{range: model.getFullModelRange(), text}]
+          },
+        })
+        // define a range formatting provider
+        // select some codes and right click those codes
+        // you contextmenu will have an "Format Selection" action
+        monaco.languages.registerDocumentRangeFormattingEditProvider('sql', {
+          provideDocumentRangeFormattingEdits(model, range, options) {
+            const currentText = model.getValueInRange(range)
+            const text = format(currentText, {tabWidth: options.tabSize})
+            return [{range, text}]
+          },
+        })
       }}
       onMount={(editor, monaco) => {
+        if (typeof ref === 'function') {
+          ref(editor)
+        } else if (ref) {
+          ref.current = editor
+        }
         for (const {key, run} of setKeybindings(monaco)) {
           editor.addCommand(key, run)
         }
+        editor.addCommand(
+          monaco.KeyMod.Alt | monaco.KeyMod.Shift | monaco.KeyCode.KeyF,
+          () => {
+            void editor.getAction('editor.action.formatDocument')?.run()
+          },
+        )
       }}
       // TODO: handle scrollbar better
       options={{
@@ -53,7 +90,7 @@ export function CodeEditor(props: EditorProps) {
       onChange={onChange}
     />
   )
-}
+})
 
 /** TODO: Figure out how to get the typing without such convolution */
 type IStandaloneThemeData = Parameters<Monaco['editor']['defineTheme']>[1]

@@ -26,7 +26,7 @@ export interface SchemaSheetRefValue {
   setOpen: (open: boolean) => void
 }
 
-export type SchemaSheetRef = React.ForwardedRef<SchemaSheetRefValue>
+export type SchemaSheetRef = React.ForwardedRef<SchemaSheetRefValue | null>
 
 /** Maybe should be called mutationSheet? */
 export const SchemaSheet = React.forwardRef(function SchemaSheet<

@@ -21,7 +21,7 @@ import {
   ScrollArea,
   useWithToast,
 } from '@usevenice/ui'
-import {CodeEditor} from '@usevenice/ui/components/CodeEditor'
+import {CodeEditor, Editor} from '@usevenice/ui/components/CodeEditor'
 import {DataGrid} from '@usevenice/ui/components/DataGrid'
 
 import {NoSSR} from '@/components/NoSSR'
@@ -100,6 +100,8 @@ export function SqlPage({
     return sqlUrl({...opts, apikey, resourceId, query: queryText}).toString()
   }
 
+  const editorRef = React.useRef<Editor | null>(null)
+
   return (
     <div className="flex h-[100%] flex-col">
       <h2 className="mx-6 mb-4 mt-6 text-2xl font-semibold tracking-tight">
@@ -131,6 +133,7 @@ export function SqlPage({
           </ScrollArea>
           <div className="grow">
             <CodeEditor
+              ref={editorRef}
               language="sql"
               value={queryText}
               onChange={(newText) => setQueryText(newText ?? '')}
@@ -206,8 +209,19 @@ export function SqlPage({
               </DropdownMenuContent>
             </DropdownMenu>
             <Button
-              variant="secondary"
+              variant="ghost"
               className="ml-auto"
+              onClick={() =>
+                editorRef.current
+                  ?.getAction('editor.action.formatDocument')
+                  ?.run()
+              }>
+              Format
+              <Kbd shortcut="⌥ ⇧ F" />
+            </Button>
+            <Button
+              variant="secondary"
+              className="ml-3"
               onClick={() => res.refetch()}
               disabled={res.isFetching}>
               {res.isFetching && (
