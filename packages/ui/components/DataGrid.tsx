@@ -11,7 +11,6 @@ import React from 'react'
 import {produce} from '@usevenice/util'
 
 import {cn} from '../utils'
-import {LoadingText} from './LoadingText'
 
 interface DataGridProps<TData extends Record<string, unknown>> {
   query: UseQueryResult<TData[]>
@@ -63,20 +62,12 @@ export function DataGrid<TData extends Record<string, unknown>>({
     }
   }
 
-  if (!query.isFetched) {
-    return null
-  }
-
   if (query.isFetching) {
-    return <LoadingText />
+    return <DataGridSkeleton />
   }
 
   return !columns.length || !rows.length ? (
-    query.isFetching ? (
-      <DataGridSkeleton />
-    ) : (
-      <div>No data available</div>
-    )
+    <div>No data available</div>
   ) : (
     <DataEditor
       className={cn(query.isFetching && 'opacity-70', className)}

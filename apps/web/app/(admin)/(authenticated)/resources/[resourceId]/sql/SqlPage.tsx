@@ -68,16 +68,18 @@ export function SqlPage({
       fetch(sqlUrl({apikey, resourceId, query: queryText})).then((r) =>
         r.json(),
       ),
-    // set low cache time because we don't want useQuery to return
-    // the cached result causing the output to update without user
-    // explicitly execute the query leading to a confusing behavior.
-    cacheTime: 1000,
+    // Don't cache at all, sql editor always want fresh data
+    cacheTime: 0, // aka gcTime
+    staleTime: 0,
     // manual fetching only
     enabled: false,
     // this is needed so the output is not wiped when selecting a different query
     keepPreviousData: true,
   })
   const listTablesRes = useQuery({
+    // cacheTime: 0, // aka gcTime
+    // staleTime: 0,
+    refetchOnMount: true,
     queryKey: ['sql', resourceId, qListTable],
     queryFn: () =>
       fetch(sqlUrl({apikey, resourceId, query: qListTable})).then(
@@ -108,7 +110,7 @@ export function SqlPage({
           defaultSize={{height: '50%', width: '100%'}}
           className="flex border-b-2 px-6">
           <ScrollArea className="w-32">
-            {listTablesRes.isLoading && <Loader2 className="animate-spin" />}
+            {listTablesRes.isFetching && <Loader2 className="animate-spin" />}
             {Object.entries(listTablesRes.data ?? {}).map(([title, tables]) =>
               !tables.length ? null : (
                 <div key={title}>
