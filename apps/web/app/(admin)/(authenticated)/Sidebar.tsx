@@ -73,14 +73,9 @@ const sectionedLinks: Array<{
       //   icon: 'Footprints',
       // },
       {
-        title: 'API Keys',
-        href: '/api-keys',
+        title: 'API',
+        href: '/api-access',
         icon: 'Key',
-      },
-      {
-        title: 'Documentation',
-        href: '/docs',
-        icon: 'FileText',
       },
       {
         title: 'Settings',
