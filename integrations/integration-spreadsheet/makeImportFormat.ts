@@ -36,7 +36,7 @@ export function makeImportFormatMap<
     ? z.ZodObject<{preset: z.ZodLiteral<T['name']>; row: T['rowSchema']}>
     : never
 
-  const zCSVEntity = z.discriminatedUnion(
+  const zSpreadsheetEntity = z.discriminatedUnion(
     'preset',
     R.values(map as Record<string, ImportFormat>).map((f) =>
       z.object({
@@ -49,5 +49,5 @@ export function makeImportFormatMap<
     ],
   )
 
-  return {formats: map, zPreset, zCSVEntity}
+  return {formats: map, zPreset, zSpreadsheetEntity}
 }

@@ -17,7 +17,7 @@ import {env} from './env'
 import {PROVIDERS} from './providers'
 
 export {DatabaseError} from '@usevenice/core-integration-postgres/makePostgresClient'
-export {Papa} from '@usevenice/integration-import'
+export {Papa} from '@usevenice/integration-spreadsheet'
 export {makePostgresClient} from '@usevenice/integration-postgres'
 
 export const backendEnv = env

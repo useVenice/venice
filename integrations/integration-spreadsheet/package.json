@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/integration-import",
+  "name": "@usevenice/integration-spreadsheet",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [

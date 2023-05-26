@@ -70,7 +70,6 @@ module.exports = [
       server: '@usevenice/integration-heron/server',
     },
   },
-  {dirName: 'integration-import', varName: 'integrationImport', imports: {}},
   {
     dirName: 'integration-lunchmoney',
     varName: 'integrationLunchmoney',
@@ -128,6 +127,11 @@ module.exports = [
   {
     dirName: 'integration-splitwise',
     varName: 'integrationSplitwise',
+    imports: {},
+  },
+  {
+    dirName: 'integration-spreadsheet',
+    varName: 'integrationSpreadsheet',
     imports: {},
   },
   {

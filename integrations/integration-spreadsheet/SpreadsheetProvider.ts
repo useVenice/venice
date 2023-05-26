@@ -23,7 +23,7 @@ import {makeImportFormatMap} from './makeImportFormat'
 
 // MARK: - Importing all supported formats
 
-const {formats, zCSVEntity, zPreset} = makeImportFormatMap({
+const {formats, zSpreadsheetEntity, zPreset} = makeImportFormatMap({
   ramp: rampFormat,
   'apple-card': formatAppleCard,
   'alliant-credit-union': formatAlliantCreditUnion,
@@ -39,17 +39,17 @@ const {formats, zCSVEntity, zPreset} = makeImportFormatMap({
   wise: formatWise,
 })
 
-type ImportEntity = z.infer<typeof zCSVEntity>
+type SpreadsheetEntity = z.infer<typeof zSpreadsheetEntity>
 
 const zSrcEntitySchema = z.object({
   /** Row number */
   id: z.string(),
   /** `row` */
   entityName: z.string(),
-  entity: zCSVEntity,
+  entity: zSpreadsheetEntity,
 })
 
-type ImportSyncOperation = SyncOperation<z.infer<typeof zSrcEntitySchema>>
+type SpreadsheetSyncOperation = SyncOperation<z.infer<typeof zSrcEntitySchema>>
 
 // MARK: -
 
@@ -64,7 +64,7 @@ const zConfig = z
 
 const def = makeSyncProvider.def({
   ...veniceProviderBase.def,
-  name: z.literal('import'),
+  name: z.literal('spreadsheet'),
   resourceSettings: z.object({
     preset: zPreset,
     /** This is outdated. Should be the same as the resource external ID */
@@ -78,11 +78,11 @@ const def = makeSyncProvider.def({
   sourceState: z.object({csvString: z.string()}),
 })
 
-export const importProvider = makeSyncProvider({
+export const spreadsheetProvider = makeSyncProvider({
   metadata: {
-    displayName: 'CSV Import',
+    displayName: 'Spreadsheet (CSV, Google Sheets, Excel)',
     categories: ['flat-files-and-spreadsheets'],
-    logoUrl: '/_assets/logo-import.png',
+    logoUrl: '/_assets/logo-spreadsheet.png',
   },
   ...veniceProviderBase(def, {
     // what do we do with the fact that conn has preset and entity itself has preset?
@@ -96,19 +96,22 @@ export const importProvider = makeSyncProvider({
   sourceSync: ({settings, state}) =>
     rxjs.from(formats[settings.preset].parseRows(state.csvString)).pipe(
       Rx.map(
-        (row, index): ImportSyncOperation => ({
+        (row, index): SpreadsheetSyncOperation => ({
           // This part is rather generic. we don't know what a row represents just yet
           // At some point we can extract core-integration-csv out of integration-csv
           type: 'data',
           data: {
             id: `row_${index}`,
             entityName: 'csv_row',
-            entity: {preset: settings.preset, row} as ImportEntity,
+            entity: {preset: settings.preset, row} as SpreadsheetEntity,
           },
         }),
       ),
       Rx.concatWith(
-        rxjs.from<ImportSyncOperation[]>([{type: 'commit'}, {type: 'ready'}]),
+        rxjs.from<SpreadsheetSyncOperation[]>([
+          {type: 'commit'},
+          {type: 'ready'},
+        ]),
       ),
     ),
 })

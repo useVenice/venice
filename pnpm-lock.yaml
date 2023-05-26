@@ -199,9 +199,6 @@ importers:
       '@usevenice/integration-heron':
         specifier: workspace:*
         version: link:../../integrations/integration-heron
-      '@usevenice/integration-import':
-        specifier: workspace:*
-        version: link:../../integrations/integration-import
       '@usevenice/integration-lunchmoney':
         specifier: workspace:*
         version: link:../../integrations/integration-lunchmoney
@@ -235,6 +232,9 @@ importers:
       '@usevenice/integration-splitwise':
         specifier: workspace:*
         version: link:../../integrations/integration-splitwise
+      '@usevenice/integration-spreadsheet':
+        specifier: workspace:*
+        version: link:../../integrations/integration-spreadsheet
       '@usevenice/integration-stripe':
         specifier: workspace:*
         version: link:../../integrations/integration-stripe
@@ -853,31 +853,6 @@ importers:
         specifier: 6.2.1
         version: 6.2.1
 
-  integrations/integration-import:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      papaparse:
-        specifier: 5.3.2
-        version: 5.3.2
-      xlsx:
-        specifier: 0.17.5
-        version: 0.17.5
-    devDependencies:
-      '@types/papaparse':
-        specifier: 5.3.5
-        version: 5.3.5
-
   integrations/integration-lunchmoney:
     dependencies:
       '@usevenice/cdk-core':
@@ -1093,6 +1068,31 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
+
+  integrations/integration-spreadsheet:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
+      '@usevenice/standard':
+        specifier: workspace:*
+        version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+      papaparse:
+        specifier: 5.3.2
+        version: 5.3.2
+      xlsx:
+        specifier: 0.17.5
+        version: 0.17.5
+    devDependencies:
+      '@types/papaparse':
+        specifier: 5.3.5
+        version: 5.3.5
 
   integrations/integration-stripe:
     dependencies:
@@ -6490,7 +6490,7 @@ packages:
   /@types/papaparse@5.3.5:
     resolution: {integrity: sha512-R1icl/hrJPFRpuYj9PVG03WBAlghJj4JW9Py5QdR8FFSxaLmZRyu7xYDCCBZIJNfUv3MYaeBbhBoX958mUTAaw==}
     dependencies:
-      '@types/node': 18.8.3
+      '@types/node': 18.11.18
     dev: true
 
   /@types/parse5@6.0.3:

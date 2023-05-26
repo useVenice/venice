@@ -33,28 +33,32 @@ const integrationList = fs
     withFileTypes: true,
   })
   .filter((r) => r.isDirectory())
-  .map((r) => {
-    const path = pathJoin(__dirname, '../../integrations', r.name)
+  .map((d) => {
+    const path = pathJoin(__dirname, '../../integrations', d.name)
     const def = fs.existsSync(pathJoin(path, 'def.ts'))
       ? // TODO: Automate generation of package.json is still needed, otherwise does not work for new packages
         // @see https://share.cleanshot.com/wDmqwsHS
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (require(`@usevenice/${r.name}/def`).default as IntegrationDef)
+        (require(`@usevenice/${d.name}/def`).default as IntegrationDef)
       : undefined
+    // we do some validation also
 
+    if (def && `integration-${def.name}` !== d.name) {
+      throw new Error(`Mismatched integration: ${def.name} dir: ${d.name}`)
+    }
     return {
       name: def?.name,
-      dirName: r.name,
-      varName: camelCase(r.name),
+      dirName: d.name,
+      varName: camelCase(d.name),
       imports: {
         def: fs.existsSync(pathJoin(path, 'def.ts'))
-          ? `@usevenice/${r.name}/def`
+          ? `@usevenice/${d.name}/def`
           : undefined,
         client: fs.existsSync(pathJoin(path, 'client.ts'))
-          ? `@usevenice/${r.name}/client`
+          ? `@usevenice/${d.name}/client`
           : undefined,
         server: fs.existsSync(pathJoin(path, 'server.ts'))
-          ? `@usevenice/${r.name}/server`
+          ? `@usevenice/${d.name}/server`
           : undefined,
       },
     }
