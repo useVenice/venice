@@ -45,7 +45,7 @@ export default function IntegrationsPage() {
   const integrationsRes = _trpcReact.adminListIntegrations.useQuery()
   const catalog = _trpcReact.getIntegrationCatalog.useQuery()
   if (!integrationsRes.data || !catalog.data) {
-    return <LoadingText />
+    return <LoadingText className="block p-4" />
   }
 
   return (
@@ -177,7 +177,7 @@ export function IntegrationSheet({
   const formRef = React.useRef<SchemaFormElement>(null)
 
   if (!provider) {
-    return <LoadingText />
+    return <LoadingText className="block p-4" />
   }
 
   return (

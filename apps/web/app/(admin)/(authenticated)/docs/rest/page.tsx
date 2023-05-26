@@ -17,7 +17,7 @@ export default function RestExplorerPage() {
   })
   // console.log('oas', oasDocument.data)
   if (!oasDocument.data) {
-    return <LoadingText />
+    return <LoadingText className="block p-4" />
   }
 
   return (

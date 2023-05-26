@@ -9,7 +9,6 @@ import type {
 } from '@usevenice/cdk-core'
 import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
-import {isVeniceProvider} from '@usevenice/cdk-ledger'
 import {R} from '@usevenice/util'
 
 import type {_Integration, _Pipeline} from './contextHelpers'

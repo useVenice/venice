@@ -50,7 +50,7 @@ export default function SettingsPage() {
     resourcesRes.isLoading ||
     integrationsRes.isLoading
   ) {
-    return <LoadingText />
+    return <LoadingText className="block p-4" />
   }
 
   return (

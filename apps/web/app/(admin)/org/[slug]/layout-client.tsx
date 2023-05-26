@@ -61,7 +61,9 @@ export default function OrgLayoutClient({
   })
 
   if (!ready) {
-    return <LoadingText text={`Switching to ${orgSlug}`} />
+    return (
+      <LoadingText className="block p-4" text={`Switching to ${orgSlug}`} />
+    )
   }
 
   if (auth.isLoaded && !auth.isSignedIn) {
