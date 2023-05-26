@@ -11,6 +11,9 @@ import {
 } from '@usevenice/app-config/constants'
 import type {Id} from '@usevenice/cdk-core'
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +24,8 @@ import {
   ScrollArea,
   useWithToast,
 } from '@usevenice/ui'
-import {CodeEditor, Editor} from '@usevenice/ui/components/CodeEditor'
+import type {Editor} from '@usevenice/ui/components/CodeEditor'
+import {CodeEditor} from '@usevenice/ui/components/CodeEditor'
 import {DataGrid} from '@usevenice/ui/components/DataGrid'
 
 import {NoSSR} from '@/components/NoSSR'
@@ -104,9 +108,21 @@ export function SqlPage({
 
   return (
     <div className="flex h-[100%] flex-col">
-      <h2 className="mx-6 mb-4 mt-6 text-2xl font-semibold tracking-tight">
-        SQL Explorer
-      </h2>
+      <Breadcrumb className="p-4">
+        <BreadcrumbItem>
+          {/* We need typed routes... https://github.com/shadcn/ui/pull/133 */}
+          <BreadcrumbLink href="/resources">Resources</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink>{resourceId}</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href={`/resources/${resourceId}/sql`}>
+            SQL Explorer
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+
       <div className="flex grow flex-col overflow-hidden">
         <Resizable
           defaultSize={{height: '50%', width: '100%'}}

@@ -1,17 +1,17 @@
-import * as lucide from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 
 import {__DEV__} from '@usevenice/app-config/constants'
 import type {IconName} from '@usevenice/ui'
-import {Button, ScrollArea} from '@usevenice/ui'
+import {Button, Icon, ScrollArea} from '@usevenice/ui'
 import {R} from '@usevenice/util'
 
 import {cn} from '@/lib-client/ui-utils'
 
+type TypedHref = Extract<React.ComponentProps<typeof Link>['href'], string>
 interface LinkItem {
-  href: string
+  href: TypedHref
   title: string
   icon?: IconName
 }
@@ -105,21 +105,24 @@ export function Sidebar({className}: SidebarProps) {
                 {section.title}
               </h2>
               <div className="space-y-1">
-                {section.items.map((link) => {
-                  const Icon =
-                    link.icon && (lucide[link.icon] as lucide.LucideIcon)
-                  return (
-                    <Link href={link.href} key={link.href}>
-                      <Button
-                        variant={pathname === link.href ? 'outline' : 'ghost'}
-                        size="sm"
-                        className="w-full justify-start">
-                        {Icon && <Icon className="mr-2 h-4 w-4" />}
-                        {link.title}
-                      </Button>
-                    </Link>
-                  )
-                })}
+                {section.items.map((link) => (
+                  <Link href={link.href} key={link.href}>
+                    <Button
+                      variant={
+                        pathname === link.href ||
+                        pathname?.startsWith(link.href + '/')
+                          ? 'outline'
+                          : 'ghost'
+                      }
+                      size="sm"
+                      className="w-full justify-start">
+                      {link.icon && (
+                        <Icon name={link.icon} className="mr-2 h-4 w-4" />
+                      )}
+                      {link.title}
+                    </Button>
+                  </Link>
+                ))}
               </div>
             </div>
           ))}
