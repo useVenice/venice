@@ -45,7 +45,7 @@ function env() {
 }
 
 // Hack for plaid for now...
-type hackName = 'plaid' | 'yodlee' | 'onebrick' | 'teller'
+type hackName = 'plaid' | 'yodlee' | 'onebrick' | 'teller' | 'ramp' | 'brex'
 function intConfig<T extends (typeof PROVIDERS)[number]['name'] | hackName>(
   name: T,
 ) {

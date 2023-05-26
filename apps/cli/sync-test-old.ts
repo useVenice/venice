@@ -62,7 +62,7 @@ switch (process.argv[2]) {
   case 'source-brex': {
     sync({
       source: brexImpl.sourceSync({
-        config: {clientId: '', clientSecret: ''},
+        config: {apikeyAuth: true},
         endUser: null,
         settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
         state: {},
