@@ -4,6 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
+    "@slonik/migrator": "0.11.3",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",

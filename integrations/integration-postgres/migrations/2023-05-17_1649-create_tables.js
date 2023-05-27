@@ -1,3 +1,10 @@
+/** @type {import('@slonik/migrator').Migration} */
+exports.up = async ({context: {connection, sql}}) => {
+  await connection.query({type: 'SLONIK_TOKEN_SQL', sql: query, values: []})
+  return
+}
+
+const query = `
 CREATE TABLE IF NOT EXISTS "public"."transaction" (
   id character varying DEFAULT concat('txn_', public.generate_ulid()) NOT NULL,
   provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
@@ -51,3 +58,4 @@ CREATE INDEX IF NOT EXISTS commodity_updated_at ON commodity (updated_at);
 CREATE INDEX IF NOT EXISTS commodity_provider_name ON commodity (provider_name);
 CREATE INDEX IF NOT EXISTS commodity_source_id ON commodity (source_id);
 CREATE INDEX IF NOT EXISTS commodity_end_user_id ON commodity (end_user_id);
+`

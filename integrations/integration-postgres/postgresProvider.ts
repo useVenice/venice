@@ -89,6 +89,11 @@ export const postgresProvider = makeSyncProvider({
       const handlebars = await import('handlebars')
 
       const pool = await getPool()
+
+      // Side effects to ensure files are packaged by webpack
+      // Make sure to update this list when we run migrations
+      import('./migrations/2023-05-17_1630-ulid-function')
+      import('./migrations/2023-05-17_1649-create_tables')
       const migrator = await getMigrator()
       await migrator.up()
 

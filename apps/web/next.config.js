@@ -30,17 +30,7 @@ const nextConfig = {
   },
   // suppress error where 'debug' module requires 'supports-color' module dynamically
   // @see https://share.cleanshot.com/dWSLnpnS
-  experimental: {
-    esmExternals: 'loose',
-    typedRoutes: true,
-    outputFileTracingRoot: path.join(__dirname, '../../'),
-    outputFileTracingIncludes: {
-      'api/inngest': ['./integrations/integration-postgres/migrations/*'],
-      'api/trpc/[...trpc]': [
-        './integrations/integration-postgres/migrations/*',
-      ],
-    },
-  },
+  experimental: {esmExternals: 'loose', typedRoutes: true},
   reactStrictMode: true,
   rewrites: async () => ({
     beforeFiles: [

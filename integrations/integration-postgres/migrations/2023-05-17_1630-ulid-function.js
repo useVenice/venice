@@ -1,5 +1,10 @@
+/** @type {import('@slonik/migrator').Migration} */
+exports.up = async ({context: {connection, sql}}) => {
+  await connection.query({type: 'SLONIK_TOKEN_SQL', sql: query, values: []})
+  return
+}
 
-
+const query = `
 -- pgulid is based on OK Log's Go implementation of the ULID spec
 --
 -- https://github.com/oklog/ulid
@@ -79,3 +84,4 @@ END
 $$
 LANGUAGE plpgsql
 VOLATILE;
+`
