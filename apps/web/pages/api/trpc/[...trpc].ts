@@ -1,37 +1,13 @@
 import '@usevenice/app-config/register.node'
 
 import * as trpcNext from '@trpc/server/adapters/next'
-import {clerkClient} from '@clerk/nextjs'
-import {TRPCError} from '@trpc/server'
 import type {NextApiHandler} from 'next'
 
 import {contextFactory} from '@usevenice/app-config/backendConfig'
-import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
-import {adminProcedure, trpc} from '@usevenice/engine-backend/router/_base'
-import {R} from '@usevenice/util'
+import {parseWebhookRequest} from '@usevenice/engine-backend'
 
-import {zAuth} from '@/lib-common/schemas'
-
-import {
-  respondToCORS,
-  serverGetViewer,
-} from '../../../lib-server/server-helpers'
-
-const customRouter = trpc.router({
-  updateOrganization: adminProcedure
-    .input(zAuth.organization.pick({id: true, publicMetadata: true}))
-    .mutation(async ({ctx, input: {id, ...update}}) => {
-      if (ctx.viewer.role !== 'system' && ctx.viewer.orgId !== id) {
-        throw new TRPCError({code: 'UNAUTHORIZED'})
-      }
-      const org = await clerkClient.organizations.updateOrganization(id, update)
-      return org
-    }),
-})
-
-const appRouter = trpc.mergeRouters(flatRouter, customRouter)
-
-export type AppRouter = typeof appRouter
+import {appRouter} from '@/lib-server/appRouter'
+import {respondToCORS, serverGetViewer} from '@/lib-server/server-helpers'
 
 const handler = trpcNext.createNextApiHandler({
   router: appRouter,
@@ -45,7 +21,7 @@ const handler = trpcNext.createNextApiHandler({
   },
 })
 
-export default R.identity<NextApiHandler>((req, res) => {
+export default (function trpcHandler(req, res) {
   if (respondToCORS(req, res)) {
     return
   }
@@ -66,4 +42,4 @@ export default R.identity<NextApiHandler>((req, res) => {
     req.body = ret.body
   }
   return handler(req, res)
-})
+} satisfies NextApiHandler)
