@@ -116,7 +116,11 @@ export function ClientRoot({
             () => ({accessToken, status, viewer}),
             [accessToken, status, viewer],
           )}>
-          <ThemeProvider attribute="class" enableSystem defaultTheme="system">
+          {/* Default theme needs to be light otherwise if set to system
+            1) Darkmode does not work properly yet, esp on integrations page
+            2) tailwind seems to have issue including .dark color scheme  https://github.com/shadcn/ui/issues/515
+             */}
+          <ThemeProvider attribute="class" enableSystem defaultTheme="light">
             {children}
             <Toaster />
           </ThemeProvider>
