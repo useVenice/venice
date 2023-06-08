@@ -1,11 +1,11 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, objectFromArray, Rx, rxjs, z, zCast} from '@usevenice/util'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {A, objectFromArray, z, zCast} from '@usevenice/util'
 
-import {makeMootaClient, zConfig} from './mootaClient'
+import {zConfig} from './mootaClient'
 
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const mootaSchemas = {
   name: z.literal('moota'),
   integrationConfig: zConfig,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -20,18 +20,20 @@ const _def = makeSyncProvider.def({
       entity: zCast<Moota.Transaction>(),
     }),
   ]),
-})
+} satisfies IntegrationSchemas
 
-export const mootaProviderDef = makeSyncProvider.def.helpers(_def)
+export const mootaHelpers = intHelpers(mootaSchemas)
 
 function toISO(mootaDate: string) {
   // Local timezone
   return mootaDate.replace(' ', 'T') + '+07:00' // Always Jakarta time
 }
 
-export const mootaProvider = makeSyncProvider({
+export const mootaDef = {
+  name: 'moota',
+  def: mootaSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-moota.png'},
-  ...veniceProviderBase(mootaProviderDef, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: a.bank_id,
@@ -72,35 +74,7 @@ export const mootaProvider = makeSyncProvider({
         },
       }),
     },
-  }),
-  sourceSync: ({config}) => {
-    const moota = makeMootaClient(config)
-    const accounts: Moota.BankAccount[] = []
-    async function* iterateEntities() {
-      for await (const acc of moota.iterateAllBankAccounts()) {
-        accounts.push(...acc.data)
-        yield acc.data.map((a) =>
-          mootaProviderDef._opData('account', a.bank_id, a),
-        )
-      }
-
-      for (const {bank_id} of accounts) {
-        for await (const transaction of moota.iterateAllTransactions({
-          bank_id,
-        })) {
-          yield transaction.data.map((t) =>
-            mootaProviderDef._opData('transaction', t.mutation_id, t),
-          )
-        }
-      }
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(
-        Rx.mergeMap((ops) =>
-          rxjs.from([...ops, mootaProviderDef._op('commit')]),
-        ),
-      )
   },
-})
+} satisfies IntegrationDef<typeof mootaSchemas>
+
+export default mootaDef

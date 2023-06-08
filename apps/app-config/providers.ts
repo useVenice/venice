@@ -9,7 +9,6 @@ import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
 import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
-import {mootaProvider} from '@usevenice/integration-moota'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {rampProvider} from '@usevenice/integration-ramp'
@@ -48,5 +47,4 @@ export const PROVIDERS = [
   foreceiptProvider,
 
   splitwiseProvider,
-  mootaProvider,
 ] as const

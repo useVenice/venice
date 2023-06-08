@@ -9,6 +9,8 @@ import {default as integrationMercury_def} from '@usevenice/integration-mercury/
 import {default as integrationMerge_client} from '@usevenice/integration-merge/client'
 import {default as integrationMerge_def} from '@usevenice/integration-merge/def'
 import {default as integrationMerge_server} from '@usevenice/integration-merge/server'
+import {default as integrationMoota_def} from '@usevenice/integration-moota/def'
+import {default as integrationMoota_server} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick_client} from '@usevenice/integration-onebrick/client'
 import {default as integrationOnebrick_def} from '@usevenice/integration-onebrick/def'
 import {default as integrationOnebrick_server} from '@usevenice/integration-onebrick/server'
@@ -52,6 +54,11 @@ const integrationMerge = {
   ...integrationMerge_def,
   ...integrationMerge_client,
   ...integrationMerge_server,
+}
+
+const integrationMoota = {
+  ...integrationMoota_def,
+  ...integrationMoota_server,
 }
 
 const integrationOnebrick = {
@@ -103,6 +110,7 @@ export const mergedIntegrations = {
   heron: integrationHeron,
   mercury: integrationMercury,
   merge: integrationMerge,
+  moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
   qbo: integrationQbo,

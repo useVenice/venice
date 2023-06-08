@@ -95,7 +95,15 @@ module.exports = [
       server: '@usevenice/integration-merge/server',
     },
   },
-  {dirName: 'integration-moota', varName: 'integrationMoota', imports: {}},
+  {
+    name: 'moota',
+    dirName: 'integration-moota',
+    varName: 'integrationMoota',
+    imports: {
+      def: '@usevenice/integration-moota/def',
+      server: '@usevenice/integration-moota/server',
+    },
+  },
   {
     name: 'onebrick',
     dirName: 'integration-onebrick',

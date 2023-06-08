@@ -3,6 +3,7 @@ import {default as integrationAirtable} from '@usevenice/integration-airtable/se
 import {default as integrationBrex} from '@usevenice/integration-brex/server'
 import {default as integrationHeron} from '@usevenice/integration-heron/server'
 import {default as integrationMerge} from '@usevenice/integration-merge/server'
+import {default as integrationMoota} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/server'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/server'
 import {default as integrationQbo} from '@usevenice/integration-qbo/server'
@@ -16,6 +17,7 @@ export const serverIntegrations = {
   brex: integrationBrex,
   heron: integrationHeron,
   merge: integrationMerge,
+  moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
   qbo: integrationQbo,

@@ -4,6 +4,7 @@ import {default as integrationBrex} from '@usevenice/integration-brex/def'
 import {default as integrationHeron} from '@usevenice/integration-heron/def'
 import {default as integrationMercury} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge} from '@usevenice/integration-merge/def'
+import {default as integrationMoota} from '@usevenice/integration-moota/def'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/def'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
 import {default as integrationQbo} from '@usevenice/integration-qbo/def'
@@ -19,6 +20,7 @@ export const defIntegrations = {
   heron: integrationHeron,
   mercury: integrationMercury,
   merge: integrationMerge,
+  moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
   qbo: integrationQbo,
