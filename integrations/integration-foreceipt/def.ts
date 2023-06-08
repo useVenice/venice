@@ -1,21 +1,17 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {SerializedTimestamp} from '@usevenice/core-integration-firebase'
-import {
-  firebaseProvider,
-  serializeTimestamp,
-} from '@usevenice/core-integration-firebase'
 import type {Standard} from '@usevenice/standard'
 import type {Merge} from '@usevenice/util'
-import {A, objectFromArray, R, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {A, objectFromArray, R, z, zCast} from '@usevenice/util'
 
 import type {_parseResourceInfo} from './foreceipt-utils'
 import type {ForeceiptClientOptions} from './ForeceiptClient'
 import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 
 // type ForeceiptSyncOperation = typeof def['_opType']
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const foreceiptSchemas = {
   name: z.literal('foreceipt'),
   // integrationConfig: zForeceiptConfig,
   resourceSettings: z.object({
@@ -50,12 +46,15 @@ const _def = makeSyncProvider.def({
       >(),
     }),
   ]),
-})
-const def = makeSyncProvider.def.helpers(_def)
+} satisfies IntegrationSchemas
 
-export const foreceiptProvider = makeSyncProvider({
+export const foreceiptHelpers = intHelpers(foreceiptSchemas)
+
+export const foreceiptDef = {
+  name: 'foreceipt',
+  def: foreceiptSchemas,
   metadata: {categories: ['expense-management']},
-  ...veniceProviderBase(def, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
@@ -155,84 +154,7 @@ export const foreceiptProvider = makeSyncProvider({
         }
       },
     },
-  }),
-  // TODO: Need to check and fix the issue
-  // postConnect: async (input, config) => {
-  //   const settings = def._type('resourceSettings', {
-  //     ...input,
-  //   })
-  //   const source$: rxjs.Observable<ForeceiptSyncOperation> =
-  //     foreceiptProvider.sourceSync({settings, config, options: {}})
-
-  //   return {
-  //     externalId: `${input._id}`,
-  //     settings,
-  //     source$,
-  //   }
-  // },
-
-  sourceSync: ({settings}) => {
-    const client = makeForeceiptClient({...settings})
-    const getInfo = client.getInfo
-    let info: Awaited<ReturnType<typeof getInfo>>
-    const raw$ = rxjs.of(client.initFb()).pipe(
-      Rx.mergeMap((fb) => {
-        console.log(client.fbSettings, '===firebase init ===')
-        return rxjs
-          .from(client.getQuery$())
-          .pipe(
-            Rx.mergeMap(([q, res]) => {
-              info = res
-              return firebaseProvider.sourceSync({
-                endUser: null,
-                settings: client.fbSettings,
-                state: {_fb: fb, _queries: Object.values(q)},
-              })
-            }),
-          )
-          .pipe(
-            // Hack it with concatMap
-            // TODO: Need to get better understanding of rxjs by re-read references from @tony's, concatMap is very slow, but also cannot use the mergeMap. Need check another map
-            // Or we should cache the http request
-            Rx.mergeMap((op) => {
-              const r =
-                op.type === 'data' && op.data.entityName === 'Receipts'
-                  ? (op.data.entity as Foreceipt.Receipt)
-                  : null
-              return rxjs.of(
-                op.type !== 'data'
-                  ? def._op('commit')
-                  : def._op('data', {
-                      data:
-                        op.data.entityName === 'Receipts'
-                          ? {
-                              id: r?.content.id ?? op.data.id,
-                              entity: {
-                                ...r,
-                                _docId: op.data.id,
-                                create_time: serializeTimestamp(
-                                  r?.create_time as FirebaseFirestore.Timestamp,
-                                ),
-                                last_update_time: serializeTimestamp(
-                                  r?.last_update_time as FirebaseFirestore.Timestamp,
-                                ),
-                              } as Foreceipt.Receipt,
-                              entityName: 'transaction',
-                              info,
-                            }
-                          : {
-                              id: op.data.id,
-                              entity: op.data.entity as Foreceipt.Account,
-                              entityName: 'account',
-                              info,
-                            },
-                    }),
-              )
-            }),
-          )
-      }),
-    )
-
-    return raw$.pipe(Rx.mergeMap((op) => rxjs.of(op)))
   },
-})
+} satisfies IntegrationDef<typeof foreceiptSchemas>
+
+export default foreceiptDef

@@ -61,9 +61,13 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'foreceipt',
     dirName: 'integration-foreceipt',
     varName: 'integrationForeceipt',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-foreceipt/def',
+      server: '@usevenice/integration-foreceipt/server',
+    },
   },
   {
     name: 'heron',

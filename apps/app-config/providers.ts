@@ -7,13 +7,11 @@ import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
-import {foreceiptProvider} from '@usevenice/integration-foreceipt'
 import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {rampProvider} from '@usevenice/integration-ramp'
 import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
-import {togglProvider} from '@usevenice/integration-toggl'
 import {wiseProvider} from '@usevenice/integration-wise'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
@@ -42,5 +40,4 @@ export const PROVIDERS = [
   lunchmoneyProvider,
   rampProvider,
   wiseProvider,
-  foreceiptProvider,
 ] as const

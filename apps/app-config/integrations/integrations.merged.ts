@@ -3,6 +3,8 @@ import {default as integrationAirtable_def} from '@usevenice/integration-airtabl
 import {default as integrationAirtable_server} from '@usevenice/integration-airtable/server'
 import {default as integrationBrex_def} from '@usevenice/integration-brex/def'
 import {default as integrationBrex_server} from '@usevenice/integration-brex/server'
+import {default as integrationForeceipt_def} from '@usevenice/integration-foreceipt/def'
+import {default as integrationForeceipt_server} from '@usevenice/integration-foreceipt/server'
 import {default as integrationHeron_def} from '@usevenice/integration-heron/def'
 import {default as integrationHeron_server} from '@usevenice/integration-heron/server'
 import {default as integrationMercury_def} from '@usevenice/integration-mercury/def'
@@ -43,6 +45,11 @@ const integrationAirtable = {
 const integrationBrex = {
   ...integrationBrex_def,
   ...integrationBrex_server,
+}
+
+const integrationForeceipt = {
+  ...integrationForeceipt_def,
+  ...integrationForeceipt_server,
 }
 
 const integrationHeron = {
@@ -121,6 +128,7 @@ const integrationYodlee = {
 export const mergedIntegrations = {
   airtable: integrationAirtable,
   brex: integrationBrex,
+  foreceipt: integrationForeceipt,
   heron: integrationHeron,
   mercury: integrationMercury,
   merge: integrationMerge,
