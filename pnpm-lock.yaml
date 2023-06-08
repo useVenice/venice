@@ -161,12 +161,6 @@ importers:
       '@usevenice/core-integration-postgres':
         specifier: workspace:*
         version: link:../../integrations/core-integration-postgres
-      '@usevenice/core-integration-redis':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-redis
-      '@usevenice/core-integration-webhook':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-webhook
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -230,6 +224,9 @@ importers:
       '@usevenice/integration-ramp':
         specifier: workspace:*
         version: link:../../integrations/integration-ramp
+      '@usevenice/integration-redis':
+        specifier: workspace:*
+        version: link:../../integrations/integration-redis
       '@usevenice/integration-saltedge':
         specifier: workspace:*
         version: link:../../integrations/integration-saltedge
@@ -251,6 +248,9 @@ importers:
       '@usevenice/integration-venmo':
         specifier: workspace:*
         version: link:../../integrations/integration-venmo
+      '@usevenice/integration-webhook':
+        specifier: workspace:*
+        version: link:../../integrations/integration-webhook
       '@usevenice/integration-wise':
         specifier: workspace:*
         version: link:../../integrations/integration-wise
@@ -665,30 +665,6 @@ importers:
         specifier: 8.6.5
         version: 8.6.5
 
-  integrations/core-integration-redis:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      handy-redis:
-        specifier: 2.3.1
-        version: 2.3.1
-      redis:
-        specifier: 3.1.2
-        version: 3.1.2
-
-  integrations/core-integration-webhook:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-
   integrations/integration-airtable:
     dependencies:
       '@usevenice/cdk-core':
@@ -1049,6 +1025,21 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
+  integrations/integration-redis:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+      handy-redis:
+        specifier: 2.3.1
+        version: 2.3.1
+      redis:
+        specifier: 3.1.2
+        version: 3.1.2
+
   integrations/integration-saltedge:
     dependencies:
       '@usevenice/cdk-core':
@@ -1165,6 +1156,15 @@ importers:
       '@usevenice/standard':
         specifier: workspace:*
         version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
+  integrations/integration-webhook:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util

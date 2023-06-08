@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/core-integration-webhook",
+  "name": "@usevenice/integration-webhook",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",

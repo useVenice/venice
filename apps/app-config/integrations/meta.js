@@ -7,12 +7,7 @@ module.exports = [
     imports: {},
   },
   {
-    dirName: 'core-integration-redis',
-    varName: 'coreIntegrationRedis',
-    imports: {},
-  },
-  {
-    dirName: 'core-integration-webhook',
+    dirName: 'integration-webhook',
     varName: 'coreIntegrationWebhook',
     imports: {},
   },
@@ -179,6 +174,7 @@ module.exports = [
       server: '@usevenice/integration-ramp/server',
     },
   },
+  {dirName: 'integration-redis', varName: 'integrationRedis', imports: {}},
   {
     name: 'saltedge',
     dirName: 'integration-saltedge',

@@ -1,27 +1,17 @@
-import type {AnyEntityPayload} from '@usevenice/cdk-core'
-import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import {createHTTPClient, rxjs, z, zCast} from '@usevenice/util'
+import type {IntegrationServer} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
+import {createHTTPClient, rxjs} from '@usevenice/util'
 
-const webhookProviderDef = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('webhook'),
-  resourceSettings: z.object({
-    destinationUrl: z.string(),
-  }),
-  destinationInputEntity: zCast<AnyEntityPayload>(),
-})
+import type {webhookHelpers, webhookSchemas} from './def'
 
-export const webhookProvider = makeSyncProvider({
-  metadata: {categories: ['streaming'], logoUrl: '/_assets/logo-webhook.png'},
-  ...makeSyncProvider.defaults,
-  def: webhookProviderDef,
+export const webhookServer = {
   destinationSync: ({settings: {destinationUrl}}) => {
     const http = createHTTPClient({baseURL: destinationUrl})
     let batch = {
       resUpdates: [] as unknown[],
       stateUpdates: [] as unknown[],
       entities: [] as Array<
-        (typeof webhookProviderDef)['_types']['destinationInputEntity']
+        (typeof webhookHelpers)['_types']['destinationInputEntity']
       >,
     }
 
@@ -48,4 +38,6 @@ export const webhookProvider = makeSyncProvider({
       },
     })
   },
-})
+} satisfies IntegrationServer<typeof webhookSchemas>
+
+export default webhookServer

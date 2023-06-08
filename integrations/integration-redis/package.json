@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/core-integration-redis",
+  "name": "@usevenice/integration-redis",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [],
