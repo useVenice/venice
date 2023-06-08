@@ -1,18 +1,15 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
-import {A, R, Rx, rxjs, z} from '@usevenice/util'
-
 import {
-  itemProjectResponseSchema,
-  itemTimeEntriesSchema,
-  makeTogglClient,
-} from './TogglCient'
+  IntegrationDef,
+  IntegrationSchemas,
+  intHelpers,
+} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
+import type {Standard} from '@usevenice/standard'
+import {A, R, z} from '@usevenice/util'
 
-type TogglSyncOperation = (typeof def)['_opType']
+import {itemProjectResponseSchema, itemTimeEntriesSchema} from './TogglCient'
 
-const def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const togglSchemas = {
   name: z.literal('toggl'),
   // integrationConfig: zTogglConfig,
   connectInput: z.object({
@@ -40,10 +37,14 @@ const def = makeSyncProvider.def({
       entity: itemTimeEntriesSchema,
     }),
   ]),
-})
+} satisfies IntegrationSchemas
 
-export const togglProvider = makeSyncProvider({
-  ...veniceProviderBase(def, {
+export const togglHelpers = intHelpers(togglSchemas)
+
+export const togglDef = {
+  name: 'toggl',
+  def: togglSchemas,
+  extension: {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity
@@ -74,44 +75,7 @@ export const togglProvider = makeSyncProvider({
       }
       return null
     },
-  }),
-
-  postConnect: (input) => ({
-    resourceExternalId: input.apiToken,
-    settings: {
-      apiToken: input.apiToken,
-      email: input.email,
-      password: input.password,
-    },
-    triggerDefaultSync: true,
-  }),
-
-  sourceSync: ({settings}) => {
-    const client = makeTogglClient({...settings})
-    async function* iterateEntities() {
-      const user = await client.getMe()
-      const res = await client.getProjects(`${user.default_workspace_id}`)
-      yield res.map((a) =>
-        _op({
-          type: 'data',
-          data: {id: `${a.id}`, entity: a, entityName: 'account'},
-        }),
-      )
-
-      // TODO: Need to pass params if necessary
-      const res2 = await client.getTimeEntries()
-      yield res2.map((t) =>
-        _op({
-          type: 'data',
-          data: {id: `${t.id}`, entity: t, entityName: 'transaction'},
-        }),
-      )
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, _op({type: 'commit'})])))
   },
-})
+} satisfies IntegrationDef<typeof togglSchemas>
 
-const _op: typeof R.identity<TogglSyncOperation> = R.identity
+export default togglDef

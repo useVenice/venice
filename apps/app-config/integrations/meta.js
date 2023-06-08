@@ -181,7 +181,15 @@ module.exports = [
       server: '@usevenice/integration-teller/server',
     },
   },
-  {dirName: 'integration-toggl', varName: 'integrationToggl', imports: {}},
+  {
+    name: 'toggl',
+    dirName: 'integration-toggl',
+    varName: 'integrationToggl',
+    imports: {
+      def: '@usevenice/integration-toggl/def',
+      server: '@usevenice/integration-toggl/server',
+    },
+  },
   {
     name: 'venmo',
     dirName: 'integration-venmo',

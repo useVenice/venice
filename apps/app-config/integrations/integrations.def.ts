@@ -12,6 +12,7 @@ import {default as integrationSaltedge} from '@usevenice/integration-saltedge/de
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
+import {default as integrationToggl} from '@usevenice/integration-toggl/def'
 import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/def'
 
@@ -29,6 +30,7 @@ export const defIntegrations = {
   splitwise: integrationSplitwise,
   stripe: integrationStripe,
   teller: integrationTeller,
+  toggl: integrationToggl,
   venmo: integrationVenmo,
   yodlee: integrationYodlee,
 }

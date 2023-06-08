@@ -42,6 +42,5 @@ export const PROVIDERS = [
   lunchmoneyProvider,
   rampProvider,
   wiseProvider,
-  togglProvider,
   foreceiptProvider,
 ] as const

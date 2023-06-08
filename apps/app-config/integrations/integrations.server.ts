@@ -11,6 +11,7 @@ import {default as integrationSaltedge} from '@usevenice/integration-saltedge/se
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/server'
 import {default as integrationStripe} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller} from '@usevenice/integration-teller/server'
+import {default as integrationToggl} from '@usevenice/integration-toggl/server'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/server'
 
 export const serverIntegrations = {
@@ -26,5 +27,6 @@ export const serverIntegrations = {
   splitwise: integrationSplitwise,
   stripe: integrationStripe,
   teller: integrationTeller,
+  toggl: integrationToggl,
   yodlee: integrationYodlee,
 }
