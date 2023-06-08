@@ -42,9 +42,13 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'beancount',
     dirName: 'integration-beancount',
     varName: 'integrationBeancount',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-beancount/def',
+      server: '@usevenice/integration-beancount/server',
+    },
   },
   {
     name: 'brex',

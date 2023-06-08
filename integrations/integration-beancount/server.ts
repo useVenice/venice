@@ -1,41 +1,24 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk-core'
 import type {StdCache} from '@usevenice/cdk-ledger'
-import {cachingLink, veniceProviderBase} from '@usevenice/cdk-ledger'
+import {cachingLink} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import {
   $writeFile,
   fromCompletion,
-  isAmountUnit,
   objectEntries,
   stableStringify,
-  z,
 } from '@usevenice/util'
 
 import {beanJsonToDir} from './bean-fs-utils'
 import {convBeanFile, convBeanJsonToStdJson} from './beancountConverters'
+import type {BeancountDestOptions, beancountSchemas} from './def'
 
-export type BeancountDestOptions = z.infer<typeof zBeancountDestOptions>
-export const zBeancountDestOptions = z.object({
-  outPath: z.string(),
-  separateByPeriod: z.boolean().optional(),
-  saveStdJson: z.boolean().optional(),
-  debugSaveBeanJson: z.boolean().optional(),
-  operatingCurrency: z.string().refine(isAmountUnit).optional(),
-})
-
-const def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
-  name: z.literal('beancount'),
-  destinationState: zBeancountDestOptions,
-})
-
-export const beancountProvider = makeSyncProvider({
-  metadata: {categories: ['personal-finance'], platforms: ['local']},
-  ...veniceProviderBase(def, {sourceMapEntity: undefined}),
+export const beancountServer = {
   destinationSync: ({state: options}) =>
     cachingLink((cache) => fromCompletion(outputBeanFiles(cache, options))),
-  sourceSync: undefined,
-})
+} satisfies IntegrationServer<typeof beancountSchemas>
+
+export default beancountServer
 
 export async function outputBeanFiles(
   cache: StdCache,

@@ -6,7 +6,6 @@ import {fsProvider} from '@usevenice/core-integration-fs'
 import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
-import {beancountProvider} from '@usevenice/integration-beancount'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 
@@ -23,13 +22,12 @@ export const DOCUMENTED_PROVIDERS = [
 export const PROVIDERS = [
   ...DOCUMENTED_PROVIDERS,
   // TODO: Migrate these over to the new paradigm
-  debugProvider,
   fsProvider,
-  postgresProvider,
   firebaseProvider,
   mongodbProvider,
   corePostgresProvider,
 
+  debugProvider,
+  postgresProvider,
   webhookProvider,
-  beancountProvider,
 ] as const
