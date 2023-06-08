@@ -6,6 +6,7 @@ import {default as integrationMercury} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge} from '@usevenice/integration-merge/def'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/def'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
+import {default as integrationQbo} from '@usevenice/integration-qbo/def'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
@@ -20,6 +21,7 @@ export const defIntegrations = {
   merge: integrationMerge,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  qbo: integrationQbo,
   saltedge: integrationSaltedge,
   stripe: integrationStripe,
   teller: integrationTeller,

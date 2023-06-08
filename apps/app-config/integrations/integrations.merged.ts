@@ -15,6 +15,8 @@ import {default as integrationOnebrick_server} from '@usevenice/integration-oneb
 import {default as integrationPlaid_client} from '@usevenice/integration-plaid/client'
 import {default as integrationPlaid_def} from '@usevenice/integration-plaid/def'
 import {default as integrationPlaid_server} from '@usevenice/integration-plaid/server'
+import {default as integrationQbo_def} from '@usevenice/integration-qbo/def'
+import {default as integrationQbo_server} from '@usevenice/integration-qbo/server'
 import {default as integrationSaltedge_def} from '@usevenice/integration-saltedge/def'
 import {default as integrationSaltedge_server} from '@usevenice/integration-saltedge/server'
 import {default as integrationStripe_def} from '@usevenice/integration-stripe/def'
@@ -64,6 +66,11 @@ const integrationPlaid = {
   ...integrationPlaid_server,
 }
 
+const integrationQbo = {
+  ...integrationQbo_def,
+  ...integrationQbo_server,
+}
+
 const integrationSaltedge = {
   ...integrationSaltedge_def,
   ...integrationSaltedge_server,
@@ -98,6 +105,7 @@ export const mergedIntegrations = {
   merge: integrationMerge,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  qbo: integrationQbo,
   saltedge: integrationSaltedge,
   stripe: integrationStripe,
   teller: integrationTeller,

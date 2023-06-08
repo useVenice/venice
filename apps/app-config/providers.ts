@@ -12,7 +12,6 @@ import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {mootaProvider} from '@usevenice/integration-moota'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
-import {QBOProvider} from '@usevenice/integration-qbo'
 import {rampProvider} from '@usevenice/integration-ramp'
 import {splitwiseProvider} from '@usevenice/integration-splitwise'
 import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
@@ -50,5 +49,4 @@ export const PROVIDERS = [
 
   splitwiseProvider,
   mootaProvider,
-  QBOProvider,
 ] as const

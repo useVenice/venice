@@ -121,7 +121,15 @@ module.exports = [
     varName: 'integrationPostgres',
     imports: {},
   },
-  {dirName: 'integration-qbo', varName: 'integrationQbo', imports: {}},
+  {
+    name: 'qbo',
+    dirName: 'integration-qbo',
+    varName: 'integrationQbo',
+    imports: {
+      def: '@usevenice/integration-qbo/def',
+      server: '@usevenice/integration-qbo/server',
+    },
+  },
   {dirName: 'integration-ramp', varName: 'integrationRamp', imports: {}},
   {
     name: 'saltedge',

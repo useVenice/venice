@@ -1,13 +1,13 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import type {EnumOf} from '@usevenice/util'
-import {A, DateTime, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {A, DateTime, z, zCast} from '@usevenice/util'
 
-import {makeQBOClient, zConfig, zCreds} from './QBOClient'
+import {zConfig, zCreds} from './QBOClient'
 
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const qboSchemas = {
   name: z.literal('qbo'),
   integrationConfig: zConfig,
   resourceSettings: zCreds,
@@ -42,38 +42,20 @@ const _def = makeSyncProvider.def({
       ]),
     }),
   ]),
-})
+} satisfies IntegrationSchemas
 
-export const QBOProviderDef = makeSyncProvider.def.helpers(_def)
+export const qboHelpers = intHelpers(qboSchemas)
 
-const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
-  QBO.Account['Classification'],
-  Standard.AccountType
-> = {
-  Asset: 'asset',
-  Equity: 'equity',
-  Liability: 'liability',
-  Revenue: 'income',
-  Expense: 'expense',
-}
-
-function mapQboAccountType(a: QBO.Account) {
-  // TODO: Take into account a.AccountType and a.AccountSubtype
-  return QBO_CLASSFICATION_TO_ACCOUNT_TYPE[a.Classification]
-}
-/** Prefix id with realmId to get id global within QBO provider */
-function globalId(realmId: string, entityId: string) {
-  return `${realmId}_${entityId}` as ExternalId
-}
-
-export const QBOProvider = makeSyncProvider({
+export const qboDef = {
+  name: 'qbo',
+  def: qboSchemas,
   metadata: {
     displayName: 'Quickbooks Online',
     stage: 'beta',
     categories: ['accounting'],
     logoUrl: '/_assets/logo-qbo.svg',
   },
-  ...veniceProviderBase(QBOProviderDef, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: a.Id,
@@ -315,37 +297,8 @@ export const QBOProvider = makeSyncProvider({
         }
       },
     },
-  }),
-  sourceSync: ({config, settings}) => {
-    const qbo = makeQBOClient(config, settings)
-    async function* iterateEntities() {
-      for await (const res of qbo.getAll('Account')) {
-        yield res.entities.map((a) =>
-          QBOProviderDef._opData('account', a.Id, a),
-        )
-      }
-      const updatedSince = undefined
-      for (const type of Object.values(TRANSACTION_TYPE_NAME)) {
-        for await (const res of qbo.getAll(type, {updatedSince})) {
-          const entities = res.entities as QBO.Transaction[]
-          yield entities.map((t) =>
-            QBOProviderDef._opData('transaction', t.Id, {
-              type: type as 'Purchase',
-              entity: t as QBO.Purchase,
-              realmId: settings.realmId,
-            }),
-          )
-        }
-      }
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(
-        Rx.mergeMap((ops) => rxjs.from([...ops, QBOProviderDef._op('commit')])),
-      )
   },
-})
+} satisfies IntegrationDef<typeof qboSchemas>
 
 export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
   Purchase: 'Purchase',
@@ -354,3 +307,25 @@ export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
   Invoice: 'Invoice',
   Payment: 'Payment',
 }
+
+const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
+  QBO.Account['Classification'],
+  Standard.AccountType
+> = {
+  Asset: 'asset',
+  Equity: 'equity',
+  Liability: 'liability',
+  Revenue: 'income',
+  Expense: 'expense',
+}
+
+function mapQboAccountType(a: QBO.Account) {
+  // TODO: Take into account a.AccountType and a.AccountSubtype
+  return QBO_CLASSFICATION_TO_ACCOUNT_TYPE[a.Classification]
+}
+/** Prefix id with realmId to get id global within QBO provider */
+function globalId(realmId: string, entityId: string) {
+  return `${realmId}_${entityId}` as ExternalId
+}
+
+export default qboDef
