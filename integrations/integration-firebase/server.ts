@@ -1,7 +1,7 @@
 import firebase from 'firebase/compat/app'
 
-import type {AnyEntityPayload, Link, SyncOperation} from '@usevenice/cdk-core'
-import {handlersLink, makeSyncProvider, mergeReady} from '@usevenice/cdk-core'
+import type {IntegrationServer, Link, SyncOperation} from '@usevenice/cdk-core'
+import {handlersLink, mergeReady} from '@usevenice/cdk-core'
 import {
   defineProxyFn,
   fromCompletion,
@@ -12,10 +12,11 @@ import {
   rxjs,
   tapTeartown,
   z,
-  zCast,
   zFunction,
 } from '@usevenice/util'
 
+import type {firebaseSchemas} from './def'
+import {zSettings} from './def'
 import type {AnyQuery} from './firebase-types'
 import {
   getPathForQuery,
@@ -23,20 +24,11 @@ import {
   getQuerySnapshot$,
   isTimestamp,
 } from './firebase-utils'
-import {makeFirebaseAuth, zFirebaseUserConfig} from './firebaseAuth'
+import {makeFirebaseAuth} from './firebaseAuth'
 import {MultiBatch} from './MultiBatch'
 
 export const $admin =
   defineProxyFn<() => typeof import('firebase-admin')>('firebase-admin')
-
-export const zServiceAccount = z
-  .object({project_id: z.string()})
-  .catchall(z.unknown())
-
-const zSettings = z.discriminatedUnion('role', [
-  z.object({role: z.literal('admin'), serviceAccount: zServiceAccount}),
-  z.object({role: z.literal('user')}).merge(zFirebaseUserConfig),
-])
 
 type AuthSettings = z.infer<typeof zSettings>
 
@@ -81,37 +73,7 @@ function fromQuery<T extends Record<string, unknown>>(query: AnyQuery<T>) {
     // logLink({prefix: queryPath}),
   )
 }
-
-const def = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('firebase'),
-  resourceSettings: zSettings,
-  sourceState: z.object({
-    /**
-     * Only used for sourceSync, not destSync. Though these are not technically states...
-     * And they are not safe to just erase if fullSync = true.
-     * TODO: Introduce a separate sourceOptions / destinationOptions type later when it becomes an
-     * actual problem... for now this issue only impacts FirebaseProvider and FSProvider
-     * which are not actually being used as top level providers
-     */
-    collectionPaths: z.array(z.string()).nullish(),
-    /**
-     * NEXT: We should use a JSON representation of query so that it can be transfered over the network
-     * However firestore doesn't expose serialize / deserialize, therefore using Query type directly as a short
-     * term hack...
-     * @see https://firebase.google.com/docs/firestore/reference/rest/v1/StructuredQuery
-     */
-    _queries: zCast<AnyQuery[] | undefined>(),
-    _fb: zCast<WrappedFirebase | undefined>(),
-  }),
-  sourceOutputEntity: zCast<AnyEntityPayload>(),
-  destinationInputEntity: zCast<AnyEntityPayload>(),
-})
-
-export const firebaseProvider = makeSyncProvider({
-  metadata: {categories: ['database'], logoUrl: '/_assets/logo-firebase.png'},
-  ...makeSyncProvider.defaults,
-  def,
+export const firebaseServer = {
   sourceSync: ({settings, state}) => {
     const {fst, cleanup, connect} = state._fb ?? initFirebase(settings)
     const queries = [
@@ -162,7 +124,7 @@ export const firebaseProvider = makeSyncProvider({
       tapTeartown(cleanup),
     )
   },
-})
+} satisfies IntegrationServer<typeof firebaseSchemas>
 
 export type WrappedFirebase = ReturnType<typeof initFirebase>
 
@@ -233,3 +195,5 @@ export const fromFirestore: Link = Rx.map((op) =>
         isTimestamp(v) ? {seconds: v.seconds, nanoseconds: v.nanoseconds} : v,
       ),
 )
+
+export default firebaseServer

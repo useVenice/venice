@@ -2,11 +2,6 @@
 
 module.exports = [
   {
-    dirName: 'core-integration-firebase',
-    varName: 'coreIntegrationFirebase',
-    imports: {},
-  },
-  {
     dirName: 'core-integration-mongodb',
     varName: 'coreIntegrationMongodb',
     imports: {},
@@ -62,6 +57,15 @@ module.exports = [
     dirName: 'integration-expensify',
     varName: 'integrationExpensify',
     imports: {},
+  },
+  {
+    name: 'firebase',
+    dirName: 'integration-firebase',
+    varName: 'integrationFirebase',
+    imports: {
+      def: '@usevenice/integration-firebase/def',
+      server: '@usevenice/integration-firebase/server',
+    },
   },
   {
     name: 'foreceipt',

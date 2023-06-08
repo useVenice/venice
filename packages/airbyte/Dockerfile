@@ -39,7 +39,7 @@ COPY ./integrations/integration-beancount/package.json ./integrations/integratio
 COPY ./integrations/core-integration-redis/package.json ./integrations/core-integration-redis/package.json
 COPY ./integrations/integration-onebrick/package.json ./integrations/integration-onebrick/package.json
 COPY ./integrations/core-integration-postgres/package.json ./integrations/core-integration-postgres/package.json
-COPY ./integrations/core-integration-firebase/package.json ./integrations/core-integration-firebase/package.json
+COPY ./integrations/integration-firebase/package.json ./integrations/integration-firebase/package.json
 COPY ./integrations/integration-airtable/package.json ./integrations/integration-airtable/package.json
 COPY ./integrations/integration-plaid/package.json ./integrations/integration-plaid/package.json
 COPY ./integrations/integration-moota/package.json ./integrations/integration-moota/package.json

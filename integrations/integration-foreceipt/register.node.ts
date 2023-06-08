@@ -1,1 +1,1 @@
-import '@usevenice/core-integration-firebase/register.node'
+import '@usevenice/integration-firebase/register.node'

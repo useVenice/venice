@@ -5,6 +5,8 @@ import {default as integrationBeancount_def} from '@usevenice/integration-beanco
 import {default as integrationBeancount_server} from '@usevenice/integration-beancount/server'
 import {default as integrationBrex_def} from '@usevenice/integration-brex/def'
 import {default as integrationBrex_server} from '@usevenice/integration-brex/server'
+import {default as integrationFirebase_def} from '@usevenice/integration-firebase/def'
+import {default as integrationFirebase_server} from '@usevenice/integration-firebase/server'
 import {default as integrationForeceipt_def} from '@usevenice/integration-foreceipt/def'
 import {default as integrationForeceipt_server} from '@usevenice/integration-foreceipt/server'
 import {default as integrationFs_def} from '@usevenice/integration-fs/def'
@@ -64,6 +66,11 @@ const integrationBeancount = {
 const integrationBrex = {
   ...integrationBrex_def,
   ...integrationBrex_server,
+}
+
+const integrationFirebase = {
+  ...integrationFirebase_def,
+  ...integrationFirebase_server,
 }
 
 const integrationForeceipt = {
@@ -178,6 +185,7 @@ export const mergedIntegrations = {
   airtable: integrationAirtable,
   beancount: integrationBeancount,
   brex: integrationBrex,
+  firebase: integrationFirebase,
   foreceipt: integrationForeceipt,
   fs: integrationFs,
   heron: integrationHeron,

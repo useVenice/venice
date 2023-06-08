@@ -2,7 +2,7 @@ import type {IntegrationServer} from '@usevenice/cdk-core'
 import {
   firebaseProvider,
   serializeTimestamp,
-} from '@usevenice/core-integration-firebase'
+} from '@usevenice/integration-firebase'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {foreceiptSchemas} from './def'

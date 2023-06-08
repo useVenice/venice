@@ -19,7 +19,7 @@ import type {
   SetOptions,
 } from './firebase-types'
 import {fieldPath} from './firebase-utils'
-import type {WrappedFirebase} from './FirebaseProvider'
+import type {WrappedFirebase} from './server'
 
 type Instruction<TStore extends AnyFirestore = AnyFirestore> =
   | [

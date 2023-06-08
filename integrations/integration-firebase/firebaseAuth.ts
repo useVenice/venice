@@ -1,51 +1,14 @@
-import {UserImpl} from '@firebase/auth/internal'
-import firebase from 'firebase/compat/app'
-
-import {z, zFunction} from '@usevenice/util'
-
 // TODO: Migrate to tree-shakable version 9 of firebase once we confirm
 // compat is working
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 
-export const zFirebaseConfig = z.object({
-  projectId: z.string(),
-  apiKey: z.string(),
-  appId: z.string(),
-  authDomain: z.string(),
-  databaseURL: z.string(),
-  storageBucket: z.string().optional(),
-  measurementId: z.string().optional(),
-  messagingSenderId: z.string().optional(),
-})
+import {UserImpl} from '@firebase/auth/internal'
+import firebase from 'firebase/compat/app'
 
-/**
- * Can be obtained by executing the following in the browser
- * `console.log(JSON.stringify(fba.auth().currentUser.toJSON(), null, 2))`
- */
-export type AuthUserJson = z.infer<typeof zAuthUserJson>
-export const zAuthUserJson = z
-  .object({
-    uid: z.string(),
-    appName: z.string(),
-    stsTokenManager: z.record(z.unknown()),
-  })
-  .catchall(z.unknown())
+import {z, zFunction} from '@usevenice/util'
 
-export const zAuthData = z.discriminatedUnion('method', [
-  z.object({method: z.literal('userJson'), userJson: zAuthUserJson}),
-  z.object({method: z.literal('customToken'), customToken: z.string()}),
-  z.object({
-    method: z.literal('emailPassword'),
-    email: z.string(),
-    password: z.string(),
-  }),
-])
-
-export const zFirebaseUserConfig = z.object({
-  firebaseConfig: zFirebaseConfig,
-  authData: zAuthData,
-})
+import {zAuthData, zFirebaseConfig} from './def'
 
 export const makeFirebaseAuth = zFunction(zFirebaseConfig, (config) => {
   const fba = firebase.initializeApp(config, config.projectId)

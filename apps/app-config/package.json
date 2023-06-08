@@ -13,7 +13,7 @@
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/integration-airtable": "workspace:*",
-    "@usevenice/core-integration-firebase": "workspace:*",
+    "@usevenice/integration-firebase": "workspace:*",
     "@usevenice/integration-fs": "workspace:*",
     "@usevenice/core-integration-mongodb": "workspace:*",
     "@usevenice/core-integration-postgres": "workspace:*",

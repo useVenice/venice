@@ -33,7 +33,6 @@ export const fsServer = {
     }),
 } satisfies IntegrationServer<typeof fsSchemas>
 
-export default fsServer
 // MARK: - Source sync helpers
 
 /** id: filename, entityName: dirname */
@@ -125,3 +124,5 @@ function _readPathData() {
     Rx.filter((e): e is NonNullable<typeof e> => !!e),
   )
 }
+
+export default fsServer
