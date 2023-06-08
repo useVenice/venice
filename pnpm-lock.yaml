@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 neverBuiltDependencies:
   - libpq
@@ -154,9 +158,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/core-integration-airtable':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-airtable
       '@usevenice/core-integration-firebase':
         specifier: workspace:*
         version: link:../../integrations/core-integration-firebase
@@ -181,6 +182,9 @@ importers:
       '@usevenice/engine-frontend':
         specifier: workspace:*
         version: link:../../packages/engine-frontend
+      '@usevenice/integration-airtable':
+        specifier: workspace:*
+        version: link:../../integrations/integration-airtable
       '@usevenice/integration-alphavantage':
         specifier: workspace:*
         version: link:../../integrations/integration-alphavantage
@@ -630,25 +634,6 @@ importers:
         specifier: '*'
         version: 5.74.0(esbuild@0.17.5)
 
-  integrations/core-integration-airtable:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      airtable:
-        specifier: 0.11.4
-        version: 0.11.4
-    devDependencies:
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
-
   integrations/core-integration-firebase:
     dependencies:
       '@firebase/app':
@@ -748,6 +733,25 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
+
+  integrations/integration-airtable:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/standard':
+        specifier: workspace:*
+        version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+      airtable:
+        specifier: 0.11.4
+        version: 0.11.4
+    devDependencies:
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
 
   integrations/integration-alphavantage:
     dependencies:

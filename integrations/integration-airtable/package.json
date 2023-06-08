@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/core-integration-airtable",
+  "name": "@usevenice/integration-airtable",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [],

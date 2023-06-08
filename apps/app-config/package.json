@@ -12,7 +12,7 @@
     "@t3-oss/env-nextjs": "0.3.1",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
-    "@usevenice/core-integration-airtable": "workspace:*",
+    "@usevenice/integration-airtable": "workspace:*",
     "@usevenice/core-integration-firebase": "workspace:*",
     "@usevenice/core-integration-fs": "workspace:*",
     "@usevenice/core-integration-mongodb": "workspace:*",

@@ -1,22 +1,12 @@
-import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {IntegrationServer} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
 import type {Standard} from '@usevenice/standard'
-import {fromCompletion, z, zCast} from '@usevenice/util'
+import {fromCompletion} from '@usevenice/util'
 
-import {makeAirtableClient, zAirtableResourceSettings} from './AirtableClient'
+import {makeAirtableClient} from './AirtableClient'
+import type {airtableSchemas} from './def'
 
-const def = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('airtable'),
-  resourceSettings: zAirtableResourceSettings,
-  destinationInputEntity: zCast<EntityPayloadWithExternal>(),
-})
-
-export const airtableProvider = makeSyncProvider({
-  ...makeSyncProvider.defaults,
-  metadata: {categories: ['database'], logoUrl: '/_assets/logo-airtable.svg'},
-  def,
-  // metadata: {logoUrl: '/_assets/logo-airtable.png'},
+export const airtableServer = {
   destinationSync: ({settings}) => {
     const airtable = makeAirtableClient(settings)
     airtable.initBase()
@@ -59,4 +49,6 @@ export const airtableProvider = makeSyncProvider({
       },
     })
   },
-})
+} satisfies IntegrationServer<typeof airtableSchemas>
+
+export default airtableServer

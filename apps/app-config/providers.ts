@@ -1,7 +1,6 @@
 // @deprecated. Soon to be fully replaced by integrations.merge.ts
 
 import {debugProvider} from '@usevenice/cdk-core'
-import {airtableProvider} from '@usevenice/core-integration-airtable'
 import {firebaseProvider} from '@usevenice/core-integration-firebase'
 import {fsProvider} from '@usevenice/core-integration-fs'
 import {mongodbProvider} from '@usevenice/core-integration-mongodb'
@@ -40,7 +39,6 @@ export const PROVIDERS = [
   firebaseProvider,
   mongodbProvider,
   corePostgresProvider,
-  airtableProvider,
   webhookProvider,
   beancountProvider,
   spreadsheetProvider,

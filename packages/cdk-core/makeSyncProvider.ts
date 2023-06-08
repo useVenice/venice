@@ -66,6 +66,8 @@ export interface IntegrationMetadata {
   logoUrl?: string
   logoSvg?: string
   displayName?: string
+  /** @deprecated way to indicate an integration outputs raw rather than standardized data */
+  layer?: 'core' | 'ledger'
   platforms?: Array<'cloud' | 'local'>
   stage?: z.infer<typeof zIntegrationStage>
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>

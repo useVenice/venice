@@ -2,11 +2,6 @@
 
 module.exports = [
   {
-    dirName: 'core-integration-airtable',
-    varName: 'coreIntegrationAirtable',
-    imports: {},
-  },
-  {
     dirName: 'core-integration-firebase',
     varName: 'coreIntegrationFirebase',
     imports: {},
@@ -31,6 +26,15 @@ module.exports = [
     dirName: 'core-integration-webhook',
     varName: 'coreIntegrationWebhook',
     imports: {},
+  },
+  {
+    name: 'airtable',
+    dirName: 'integration-airtable',
+    varName: 'integrationAirtable',
+    imports: {
+      def: '@usevenice/integration-airtable/def',
+      server: '@usevenice/integration-airtable/server',
+    },
   },
   {
     dirName: 'integration-alphavantage',
