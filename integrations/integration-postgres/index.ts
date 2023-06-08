@@ -2,5 +2,5 @@
 // Previously this used to be called `integration-alka`, but given alka is no longer relevant, how do we want to define this?
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
-export * from './postgresProvider'
+export * from './server'
 // codegen:end

@@ -9,6 +9,7 @@ import {default as integrationMerge} from '@usevenice/integration-merge/server'
 import {default as integrationMoota} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/server'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/server'
+import {default as integrationPostgres} from '@usevenice/integration-postgres/server'
 import {default as integrationQbo} from '@usevenice/integration-qbo/server'
 import {default as integrationRamp} from '@usevenice/integration-ramp/server'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/server'
@@ -31,6 +32,7 @@ export const serverIntegrations = {
   moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  postgres: integrationPostgres,
   qbo: integrationQbo,
   ramp: integrationRamp,
   saltedge: integrationSaltedge,

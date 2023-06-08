@@ -137,9 +137,13 @@ module.exports = [
     },
   },
   {
+    name: 'postgres',
     dirName: 'integration-postgres',
     varName: 'integrationPostgres',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-postgres/def',
+      server: '@usevenice/integration-postgres/server',
+    },
   },
   {
     name: 'qbo',

@@ -23,6 +23,8 @@ import {default as integrationOnebrick_server} from '@usevenice/integration-oneb
 import {default as integrationPlaid_client} from '@usevenice/integration-plaid/client'
 import {default as integrationPlaid_def} from '@usevenice/integration-plaid/def'
 import {default as integrationPlaid_server} from '@usevenice/integration-plaid/server'
+import {default as integrationPostgres_def} from '@usevenice/integration-postgres/def'
+import {default as integrationPostgres_server} from '@usevenice/integration-postgres/server'
 import {default as integrationQbo_def} from '@usevenice/integration-qbo/def'
 import {default as integrationQbo_server} from '@usevenice/integration-qbo/server'
 import {default as integrationRamp_def} from '@usevenice/integration-ramp/def'
@@ -104,6 +106,11 @@ const integrationPlaid = {
   ...integrationPlaid_server,
 }
 
+const integrationPostgres = {
+  ...integrationPostgres_def,
+  ...integrationPostgres_server,
+}
+
 const integrationQbo = {
   ...integrationQbo_def,
   ...integrationQbo_server,
@@ -172,6 +179,7 @@ export const mergedIntegrations = {
   moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  postgres: integrationPostgres,
   qbo: integrationQbo,
   ramp: integrationRamp,
   saltedge: integrationSaltedge,

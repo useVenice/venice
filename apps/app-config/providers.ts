@@ -7,7 +7,6 @@ import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {plaidProvider} from '@usevenice/integration-plaid'
-import {postgresProvider} from '@usevenice/integration-postgres'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
 
@@ -25,9 +24,7 @@ export const PROVIDERS = [
   fsProvider,
   firebaseProvider,
   mongodbProvider,
-  corePostgresProvider,
-
-  debugProvider,
-  postgresProvider,
   webhookProvider,
+  debugProvider,
+  corePostgresProvider,
 ] as const

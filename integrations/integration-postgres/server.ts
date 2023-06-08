@@ -2,68 +2,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import {extractId, handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
+import type {IntegrationServer} from '@usevenice/cdk-core'
+import {extractId, handlersLink} from '@usevenice/cdk-core'
 import {
   makePostgresClient,
   upsertByIdQuery,
-  zPgConfig,
 } from '@usevenice/core-integration-postgres'
-import {R, Rx, rxjs, z, zCast} from '@usevenice/util'
+import {R, Rx, rxjs} from '@usevenice/util'
+
+import type {postgresSchemas} from './def'
 
 export {makePostgresClient} from '@usevenice/core-integration-postgres'
 
-const _def = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('postgres'),
-  // TODO: Should postgres use integration config or resourceSettings?
-  // if it's resourceSettings then it doesn't make as much sense to configure
-  // in the list of integrations...
-  // How do we create default resources for integrations that are basically single resource?
-  resourceSettings: zPgConfig.pick({databaseUrl: true}).extend({
-    // gotta make sourceQueries a Textarea
-
-    sourceQueries: z
-      .object({
-        invoice: z
-          .string()
-          .nullish()
-          .describe('Should order by lastModifiedAt and id descending'),
-      })
-      // .nullish() does not translate well to jsonSchema
-      // @see https://share.cleanshot.com/w0KVx1Y2
-      .optional(),
-  }),
-  destinationInputEntity: zCast<EntityPayloadWithExternal>(),
-  sourceOutputEntity: zCast<EntityPayloadWithExternal | ZCommon['Entity']>(),
-  sourceState: z
-    .object({
-      invoice: z
-        .object({
-          lastModifiedAt: z.string().optional(),
-          lastRowId: z.string().optional(),
-        })
-        .optional(),
-    })
-    .optional(),
-})
-
-const def = makeSyncProvider.def.helpers(_def)
-
-export const postgresProvider = makeSyncProvider({
-  metadata: {
-    categories: ['database'],
-    logoUrl: '/_assets/logo-postgres.png',
-    stage: 'ga',
-  },
-  ...makeSyncProvider.defaults,
-  def,
-  standardMappers: {
-    resource: (_settings) => ({
-      displayName: 'Postgres',
-      status: 'healthy',
-    }),
-  },
+export const postgresServer = {
   // TODO:
   // 1) Implement pagination
   // 2) Impelemnt incremental Sync
@@ -232,4 +183,6 @@ export const postgresProvider = makeSyncProvider({
       },
     })
   },
-})
+} satisfies IntegrationServer<typeof postgresSchemas>
+
+export default postgresServer
