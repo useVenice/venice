@@ -2,11 +2,6 @@
 
 module.exports = [
   {
-    dirName: 'core-integration-mongodb',
-    varName: 'coreIntegrationMongodb',
-    imports: {},
-  },
-  {
     dirName: 'core-integration-postgres',
     varName: 'coreIntegrationPostgres',
     imports: {},
@@ -117,6 +112,15 @@ module.exports = [
       def: '@usevenice/integration-merge/def',
       client: '@usevenice/integration-merge/client',
       server: '@usevenice/integration-merge/server',
+    },
+  },
+  {
+    name: 'mongodb',
+    dirName: 'integration-mongodb',
+    varName: 'integrationMongodb',
+    imports: {
+      def: '@usevenice/integration-mongodb/def',
+      server: '@usevenice/integration-mongodb/server',
     },
   },
   {

@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/core-integration-mongodb",
+  "name": "@usevenice/integration-mongodb",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",

@@ -15,7 +15,7 @@
     "@usevenice/integration-airtable": "workspace:*",
     "@usevenice/integration-firebase": "workspace:*",
     "@usevenice/integration-fs": "workspace:*",
-    "@usevenice/core-integration-mongodb": "workspace:*",
+    "@usevenice/integration-mongodb": "workspace:*",
     "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/core-integration-redis": "workspace:*",
     "@usevenice/core-integration-webhook": "workspace:*",

@@ -8,6 +8,7 @@ import {default as integrationFs} from '@usevenice/integration-fs/server'
 import {default as integrationHeron} from '@usevenice/integration-heron/server'
 import {default as integrationLunchmoney} from '@usevenice/integration-lunchmoney/server'
 import {default as integrationMerge} from '@usevenice/integration-merge/server'
+import {default as integrationMongodb} from '@usevenice/integration-mongodb/server'
 import {default as integrationMoota} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/server'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/server'
@@ -33,6 +34,7 @@ export const serverIntegrations = {
   heron: integrationHeron,
   lunchmoney: integrationLunchmoney,
   merge: integrationMerge,
+  mongodb: integrationMongodb,
   moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,

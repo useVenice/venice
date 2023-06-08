@@ -9,6 +9,7 @@ import {default as integrationHeron} from '@usevenice/integration-heron/def'
 import {default as integrationLunchmoney} from '@usevenice/integration-lunchmoney/def'
 import {default as integrationMercury} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge} from '@usevenice/integration-merge/def'
+import {default as integrationMongodb} from '@usevenice/integration-mongodb/def'
 import {default as integrationMoota} from '@usevenice/integration-moota/def'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/def'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
@@ -36,6 +37,7 @@ export const defIntegrations = {
   lunchmoney: integrationLunchmoney,
   mercury: integrationMercury,
   merge: integrationMerge,
+  mongodb: integrationMongodb,
   moota: integrationMoota,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,

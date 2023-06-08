@@ -158,9 +158,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/core-integration-mongodb':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-mongodb
       '@usevenice/core-integration-postgres':
         specifier: workspace:*
         version: link:../../integrations/core-integration-postgres
@@ -212,6 +209,9 @@ importers:
       '@usevenice/integration-merge':
         specifier: workspace:*
         version: link:../../integrations/integration-merge
+      '@usevenice/integration-mongodb':
+        specifier: workspace:*
+        version: link:../../integrations/integration-mongodb
       '@usevenice/integration-moota':
         specifier: workspace:*
         version: link:../../integrations/integration-moota
@@ -637,18 +637,6 @@ importers:
         specifier: '*'
         version: 5.74.0(esbuild@0.17.5)
 
-  integrations/core-integration-mongodb:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      mongodb:
-        specifier: 4.9.1
-        version: 4.9.1
-
   integrations/core-integration-postgres:
     dependencies:
       '@slonik/migrator':
@@ -924,6 +912,18 @@ importers:
       openapi-typescript:
         specifier: 6.2.1
         version: 6.2.1
+
+  integrations/integration-mongodb:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+      mongodb:
+        specifier: 4.9.1
+        version: 4.9.1
 
   integrations/integration-moota:
     dependencies:

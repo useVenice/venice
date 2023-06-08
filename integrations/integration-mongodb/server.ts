@@ -1,26 +1,14 @@
 import type {Db} from 'mongodb'
 import {MongoClient} from 'mongodb'
 
-import type {AnyEntityPayload} from '@usevenice/cdk-core'
-import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
-import {z, zCast, zFunction} from '@usevenice/util'
+import type {AnyEntityPayload, IntegrationServer} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
+import {zCast, zFunction} from '@usevenice/util'
 
-export const zMongoConnection = z.object({
-  databaseUrl: z.string(),
-  databaseName: z.string(),
-})
+import type {mongoSchemas} from './def'
+import {mongoDef, zMongoConnection} from './def'
 
-const def = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('mongodb'),
-  resourceSettings: zMongoConnection,
-  destinationInputEntity: zCast<AnyEntityPayload>(),
-})
-
-export const mongodbProvider = makeSyncProvider({
-  metadata: {categories: ['database'], logoUrl: '/_assets/logo-mongodb.png'},
-  ...makeSyncProvider.defaults,
-  def,
+export const mongodbProvider = {
   destinationSync: ({settings}) => {
     const mongodb = mongoDBConnection(settings)
     void mongodb.initMongoDB()
@@ -30,7 +18,8 @@ export const mongodbProvider = makeSyncProvider({
       },
     })
   },
-})
+} satisfies IntegrationServer<typeof mongoSchemas>
+
 const zData = zCast<AnyEntityPayload>()
 
 export const mongoDBConnection = zFunction(
@@ -70,3 +59,5 @@ export const mongoDBConnection = zFunction(
     }
   },
 )
+
+export default mongoDef
