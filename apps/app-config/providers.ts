@@ -7,10 +7,8 @@ import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
 import {beancountProvider} from '@usevenice/integration-beancount'
-import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
-import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
 
@@ -34,6 +32,4 @@ export const PROVIDERS = [
 
   webhookProvider,
   beancountProvider,
-  spreadsheetProvider,
-  lunchmoneyProvider,
 ] as const

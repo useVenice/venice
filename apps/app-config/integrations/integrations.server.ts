@@ -3,6 +3,7 @@ import {default as integrationAirtable} from '@usevenice/integration-airtable/se
 import {default as integrationBrex} from '@usevenice/integration-brex/server'
 import {default as integrationForeceipt} from '@usevenice/integration-foreceipt/server'
 import {default as integrationHeron} from '@usevenice/integration-heron/server'
+import {default as integrationLunchmoney} from '@usevenice/integration-lunchmoney/server'
 import {default as integrationMerge} from '@usevenice/integration-merge/server'
 import {default as integrationMoota} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/server'
@@ -11,6 +12,7 @@ import {default as integrationQbo} from '@usevenice/integration-qbo/server'
 import {default as integrationRamp} from '@usevenice/integration-ramp/server'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/server'
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/server'
+import {default as integrationSpreadsheet} from '@usevenice/integration-spreadsheet/server'
 import {default as integrationStripe} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller} from '@usevenice/integration-teller/server'
 import {default as integrationToggl} from '@usevenice/integration-toggl/server'
@@ -22,6 +24,7 @@ export const serverIntegrations = {
   brex: integrationBrex,
   foreceipt: integrationForeceipt,
   heron: integrationHeron,
+  lunchmoney: integrationLunchmoney,
   merge: integrationMerge,
   moota: integrationMoota,
   onebrick: integrationOnebrick,
@@ -30,6 +33,7 @@ export const serverIntegrations = {
   ramp: integrationRamp,
   saltedge: integrationSaltedge,
   splitwise: integrationSplitwise,
+  spreadsheet: integrationSpreadsheet,
   stripe: integrationStripe,
   teller: integrationTeller,
   toggl: integrationToggl,

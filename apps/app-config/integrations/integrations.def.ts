@@ -3,6 +3,7 @@ import {default as integrationAirtable} from '@usevenice/integration-airtable/de
 import {default as integrationBrex} from '@usevenice/integration-brex/def'
 import {default as integrationForeceipt} from '@usevenice/integration-foreceipt/def'
 import {default as integrationHeron} from '@usevenice/integration-heron/def'
+import {default as integrationLunchmoney} from '@usevenice/integration-lunchmoney/def'
 import {default as integrationMercury} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge} from '@usevenice/integration-merge/def'
 import {default as integrationMoota} from '@usevenice/integration-moota/def'
@@ -12,6 +13,7 @@ import {default as integrationQbo} from '@usevenice/integration-qbo/def'
 import {default as integrationRamp} from '@usevenice/integration-ramp/def'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/def'
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/def'
+import {default as integrationSpreadsheet} from '@usevenice/integration-spreadsheet/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
 import {default as integrationToggl} from '@usevenice/integration-toggl/def'
@@ -24,6 +26,7 @@ export const defIntegrations = {
   brex: integrationBrex,
   foreceipt: integrationForeceipt,
   heron: integrationHeron,
+  lunchmoney: integrationLunchmoney,
   mercury: integrationMercury,
   merge: integrationMerge,
   moota: integrationMoota,
@@ -33,6 +36,7 @@ export const defIntegrations = {
   ramp: integrationRamp,
   saltedge: integrationSaltedge,
   splitwise: integrationSplitwise,
+  spreadsheet: integrationSpreadsheet,
   stripe: integrationStripe,
   teller: integrationTeller,
   toggl: integrationToggl,

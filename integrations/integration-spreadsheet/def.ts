@@ -1,8 +1,7 @@
-import type {SyncOperation} from '@usevenice/cdk-core'
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
 import type {UnionToIntersection} from '@usevenice/util'
-import {Rx, rxjs, z} from '@usevenice/util'
+import {z} from '@usevenice/util'
 
 import {
   formatAlliantCreditUnion,
@@ -23,7 +22,11 @@ import {makeImportFormatMap} from './makeImportFormat'
 
 // MARK: - Importing all supported formats
 
-const {formats, zSpreadsheetEntity, zPreset} = makeImportFormatMap({
+const {
+  formats: spreadsheetFormats,
+  zSpreadsheetEntity,
+  zPreset,
+} = makeImportFormatMap({
   ramp: rampFormat,
   'apple-card': formatAppleCard,
   'alliant-credit-union': formatAlliantCreditUnion,
@@ -39,7 +42,7 @@ const {formats, zSpreadsheetEntity, zPreset} = makeImportFormatMap({
   wise: formatWise,
 })
 
-type SpreadsheetEntity = z.infer<typeof zSpreadsheetEntity>
+export {spreadsheetFormats}
 
 const zSrcEntitySchema = z.object({
   /** Row number */
@@ -48,9 +51,6 @@ const zSrcEntitySchema = z.object({
   entityName: z.string(),
   entity: zSpreadsheetEntity,
 })
-
-type SpreadsheetSyncOperation = SyncOperation<z.infer<typeof zSrcEntitySchema>>
-
 // MARK: -
 
 /** Not implemented yet */
@@ -62,8 +62,7 @@ const zConfig = z
   })
   .nullish()
 
-const def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const spreadsheetSchemas = {
   name: z.literal('spreadsheet'),
   resourceSettings: z.object({
     preset: zPreset,
@@ -76,42 +75,27 @@ const def = makeSyncProvider.def({
   // csvString belongs in syncState because among other things we can actually naturally
   // persist the csvString used for every single sync as part of the pipeline_jobs table!
   sourceState: z.object({csvString: z.string()}),
-})
+} satisfies IntegrationSchemas
 
-export const spreadsheetProvider = makeSyncProvider({
+export const spreadsheetHelpers = intHelpers(spreadsheetSchemas)
+
+export const spreadsheetDef = {
+  name: 'spreadsheet',
+  def: spreadsheetSchemas,
   metadata: {
     displayName: 'Spreadsheet (CSV, Google Sheets, Excel)',
     categories: ['flat-files-and-spreadsheets'],
     logoUrl: '/_assets/logo-spreadsheet.png',
   },
-  ...veniceProviderBase(def, {
+  extension: {
     // what do we do with the fact that conn has preset and entity itself has preset?
     sourceMapEntity: ({entity}, conn) =>
-      formats[entity.preset].mapEntity(
+      spreadsheetFormats[entity.preset].mapEntity(
         // A bit of a type hack... but needed
         entity.row as UnionToIntersection<(typeof entity)['row']>,
         conn.accountExternalId as ExternalId,
       ),
-  }),
-  sourceSync: ({settings, state}) =>
-    rxjs.from(formats[settings.preset].parseRows(state.csvString)).pipe(
-      Rx.map(
-        (row, index): SpreadsheetSyncOperation => ({
-          // This part is rather generic. we don't know what a row represents just yet
-          // At some point we can extract core-integration-csv out of integration-csv
-          type: 'data',
-          data: {
-            id: `row_${index}`,
-            entityName: 'csv_row',
-            entity: {preset: settings.preset, row} as SpreadsheetEntity,
-          },
-        }),
-      ),
-      Rx.concatWith(
-        rxjs.from<SpreadsheetSyncOperation[]>([
-          {type: 'commit'},
-          {type: 'ready'},
-        ]),
-      ),
-    ),
-})
+  },
+} satisfies IntegrationDef<typeof spreadsheetSchemas>
+
+export default spreadsheetDef

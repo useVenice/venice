@@ -79,9 +79,13 @@ module.exports = [
     },
   },
   {
+    name: 'lunchmoney',
     dirName: 'integration-lunchmoney',
     varName: 'integrationLunchmoney',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-lunchmoney/def',
+      server: '@usevenice/integration-lunchmoney/server',
+    },
   },
   {
     name: 'mercury',
@@ -170,9 +174,13 @@ module.exports = [
     },
   },
   {
+    name: 'spreadsheet',
     dirName: 'integration-spreadsheet',
     varName: 'integrationSpreadsheet',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-spreadsheet/def',
+      server: '@usevenice/integration-spreadsheet/server',
+    },
   },
   {
     name: 'stripe',

@@ -7,6 +7,8 @@ import {default as integrationForeceipt_def} from '@usevenice/integration-forece
 import {default as integrationForeceipt_server} from '@usevenice/integration-foreceipt/server'
 import {default as integrationHeron_def} from '@usevenice/integration-heron/def'
 import {default as integrationHeron_server} from '@usevenice/integration-heron/server'
+import {default as integrationLunchmoney_def} from '@usevenice/integration-lunchmoney/def'
+import {default as integrationLunchmoney_server} from '@usevenice/integration-lunchmoney/server'
 import {default as integrationMercury_def} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge_client} from '@usevenice/integration-merge/client'
 import {default as integrationMerge_def} from '@usevenice/integration-merge/def'
@@ -27,6 +29,8 @@ import {default as integrationSaltedge_def} from '@usevenice/integration-saltedg
 import {default as integrationSaltedge_server} from '@usevenice/integration-saltedge/server'
 import {default as integrationSplitwise_def} from '@usevenice/integration-splitwise/def'
 import {default as integrationSplitwise_server} from '@usevenice/integration-splitwise/server'
+import {default as integrationSpreadsheet_def} from '@usevenice/integration-spreadsheet/def'
+import {default as integrationSpreadsheet_server} from '@usevenice/integration-spreadsheet/server'
 import {default as integrationStripe_def} from '@usevenice/integration-stripe/def'
 import {default as integrationStripe_server} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller_client} from '@usevenice/integration-teller/client'
@@ -59,6 +63,11 @@ const integrationForeceipt = {
 const integrationHeron = {
   ...integrationHeron_def,
   ...integrationHeron_server,
+}
+
+const integrationLunchmoney = {
+  ...integrationLunchmoney_def,
+  ...integrationLunchmoney_server,
 }
 
 const integrationMercury = {
@@ -108,6 +117,11 @@ const integrationSplitwise = {
   ...integrationSplitwise_server,
 }
 
+const integrationSpreadsheet = {
+  ...integrationSpreadsheet_def,
+  ...integrationSpreadsheet_server,
+}
+
 const integrationStripe = {
   ...integrationStripe_def,
   ...integrationStripe_server,
@@ -144,6 +158,7 @@ export const mergedIntegrations = {
   brex: integrationBrex,
   foreceipt: integrationForeceipt,
   heron: integrationHeron,
+  lunchmoney: integrationLunchmoney,
   mercury: integrationMercury,
   merge: integrationMerge,
   moota: integrationMoota,
@@ -153,6 +168,7 @@ export const mergedIntegrations = {
   ramp: integrationRamp,
   saltedge: integrationSaltedge,
   splitwise: integrationSplitwise,
+  spreadsheet: integrationSpreadsheet,
   stripe: integrationStripe,
   teller: integrationTeller,
   toggl: integrationToggl,

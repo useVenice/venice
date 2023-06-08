@@ -1,17 +1,16 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
-import {A, parseMoney, R, Rx, rxjs, z} from '@usevenice/util'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {A, parseMoney, R, z} from '@usevenice/util'
 
 import {
   assetSchema,
   categorySchema,
-  makeLunchmoneyClient,
   transactionSchema,
   zConfig,
 } from './lunchmoneyClient'
 
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const lunchmoneySchemas = {
   name: z.literal('lunchmoney'),
   integrationConfig: zConfig,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
@@ -29,13 +28,15 @@ const _def = makeSyncProvider.def({
       entity: transactionSchema,
     }),
   ]),
-})
+} satisfies IntegrationSchemas
 
-export const lunchmoneyProviderDef = makeSyncProvider.def.helpers(_def)
+export const lunchmoneyHelpers = intHelpers(lunchmoneySchemas)
 
-export const lunchmoneyProvider = makeSyncProvider({
+export const lunchmoneyDef = {
+  name: 'lunchmoney',
+  def: lunchmoneySchemas,
   metadata: {categories: ['personal-finance']},
-  ...veniceProviderBase(lunchmoneyProviderDef, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
@@ -90,40 +91,7 @@ export const lunchmoneyProvider = makeSyncProvider({
         },
       }),
     },
-  }),
-  sourceSync: ({config}) => {
-    const lunchmoney = makeLunchmoneyClient(config)
-    async function* iterateEntities() {
-      const assets = await lunchmoney.getAssets()
-      const categories = await lunchmoney.getCategories()
-      yield assets.map((a) =>
-        lunchmoneyProviderDef._opData('account', `${a.id}`, {
-          ...a,
-          _type: 'asset',
-        }),
-      )
-
-      yield categories.map((c) =>
-        lunchmoneyProviderDef._opData('account', `${c.id}`, {
-          ...c,
-          _type: 'category',
-        }),
-      )
-
-      for await (const transactions of lunchmoney.iterateAllTransactions({
-        debit_as_negative: true,
-      })) {
-        yield transactions.map((t) =>
-          lunchmoneyProviderDef._opData('transaction', `${t.id}`, t),
-        )
-      }
-    }
-    return rxjs
-      .from(iterateEntities())
-      .pipe(
-        Rx.mergeMap((ops) =>
-          rxjs.from([...ops, lunchmoneyProviderDef._op('commit')]),
-        ),
-      )
   },
-})
+} satisfies IntegrationDef<typeof lunchmoneySchemas>
+
+export default lunchmoneyDef
