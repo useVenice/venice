@@ -318,6 +318,9 @@ importers:
       '@usevenice/core-integration-firebase':
         specifier: workspace:*
         version: link:../../integrations/core-integration-firebase
+      '@usevenice/core-integration-fs':
+        specifier: workspace:*
+        version: link:../../integrations/core-integration-fs
       '@usevenice/core-integration-postgres':
         specifier: workspace:*
         version: link:../../integrations/core-integration-postgres

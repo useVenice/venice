@@ -11,6 +11,7 @@ import {
 import {R, Rx, rxjs} from '@usevenice/util'
 
 import type {postgresSchemas} from './def'
+import {postgresHelpers} from './def'
 
 export {makePostgresClient} from '@usevenice/core-integration-postgres'
 
@@ -64,7 +65,7 @@ export const postgresServer = {
           ])} WHERE end_user_id = ${endUser?.id ?? null}`,
         )
         yield res.rows.map((row) =>
-          def._op('data', {
+          postgresHelpers._op('data', {
             data: {
               entityName,
               entity: row.standard,
@@ -101,25 +102,29 @@ export const postgresServer = {
 
         yield R.compact([
           ...res.rows.map((row) =>
-            def._op('data', {
+            postgresHelpers._op('data', {
               data: {entityName, id: `${row.id}`, entity: row},
             }),
           ),
           lastRow?.modifiedAt &&
             lastRow.id &&
-            def._opState({
+            (postgresHelpers._opState({
               invoice: {
                 lastModifiedAt: lastRow.modifiedAt,
                 lastRowId: lastRow.id,
               },
-            }),
+            }) as never), // Temp hack...
         ])
       }
     }
 
     return rxjs
       .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
+      .pipe(
+        Rx.mergeMap((ops) =>
+          rxjs.from([...ops, postgresHelpers._op('commit')]),
+        ),
+      )
   },
   destinationSync: ({endUser, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {

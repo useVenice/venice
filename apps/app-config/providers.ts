@@ -6,11 +6,8 @@ import {fsProvider} from '@usevenice/core-integration-fs'
 import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'
-import {plaidProvider} from '@usevenice/integration-plaid'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
-
-export {plaidProvider, fsProvider}
 
 export const DOCUMENTED_PROVIDERS = [
   ...(Object.values(mergedIntegrations) as unknown as Array<

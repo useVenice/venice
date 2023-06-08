@@ -4,8 +4,8 @@ import '@usevenice/app-config/register.node'
 
 import readline from 'node:readline'
 
-import {fsProvider} from '@usevenice/app-config/providers'
 import {sync} from '@usevenice/cdk-core'
+import {fsProvider} from '@usevenice/core-integration-fs'
 import {brexImpl} from '@usevenice/integration-brex'
 import {heronImpl} from '@usevenice/integration-heron'
 import {mergeImpl} from '@usevenice/integration-merge'
@@ -80,6 +80,7 @@ switch (process.argv[2]) {
     sync({
       source: postgresProvider.sourceSync({
         state: undefined,
+        config: {},
         endUser: null,
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
