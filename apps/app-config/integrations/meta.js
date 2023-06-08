@@ -200,7 +200,15 @@ module.exports = [
     varName: 'integrationVenmo',
     imports: {def: '@usevenice/integration-venmo/def'},
   },
-  {dirName: 'integration-wise', varName: 'integrationWise', imports: {}},
+  {
+    name: 'wise',
+    dirName: 'integration-wise',
+    varName: 'integrationWise',
+    imports: {
+      def: '@usevenice/integration-wise/def',
+      server: '@usevenice/integration-wise/server',
+    },
+  },
   {
     name: 'yodlee',
     dirName: 'integration-yodlee',

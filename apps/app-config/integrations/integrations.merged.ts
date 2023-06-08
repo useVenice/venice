@@ -33,6 +33,8 @@ import {default as integrationTeller_server} from '@usevenice/integration-teller
 import {default as integrationToggl_def} from '@usevenice/integration-toggl/def'
 import {default as integrationToggl_server} from '@usevenice/integration-toggl/server'
 import {default as integrationVenmo_def} from '@usevenice/integration-venmo/def'
+import {default as integrationWise_def} from '@usevenice/integration-wise/def'
+import {default as integrationWise_server} from '@usevenice/integration-wise/server'
 import {default as integrationYodlee_client} from '@usevenice/integration-yodlee/client'
 import {default as integrationYodlee_def} from '@usevenice/integration-yodlee/def'
 import {default as integrationYodlee_server} from '@usevenice/integration-yodlee/server'
@@ -119,6 +121,11 @@ const integrationVenmo = {
   ...integrationVenmo_def,
 }
 
+const integrationWise = {
+  ...integrationWise_def,
+  ...integrationWise_server,
+}
+
 const integrationYodlee = {
   ...integrationYodlee_def,
   ...integrationYodlee_client,
@@ -142,5 +149,6 @@ export const mergedIntegrations = {
   teller: integrationTeller,
   toggl: integrationToggl,
   venmo: integrationVenmo,
+  wise: integrationWise,
   yodlee: integrationYodlee,
 }

@@ -15,6 +15,7 @@ import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
 import {default as integrationToggl} from '@usevenice/integration-toggl/def'
 import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
+import {default as integrationWise} from '@usevenice/integration-wise/def'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/def'
 
 export const defIntegrations = {
@@ -34,5 +35,6 @@ export const defIntegrations = {
   teller: integrationTeller,
   toggl: integrationToggl,
   venmo: integrationVenmo,
+  wise: integrationWise,
   yodlee: integrationYodlee,
 }
