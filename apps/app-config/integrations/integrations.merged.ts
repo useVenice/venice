@@ -21,6 +21,8 @@ import {default as integrationQbo_def} from '@usevenice/integration-qbo/def'
 import {default as integrationQbo_server} from '@usevenice/integration-qbo/server'
 import {default as integrationSaltedge_def} from '@usevenice/integration-saltedge/def'
 import {default as integrationSaltedge_server} from '@usevenice/integration-saltedge/server'
+import {default as integrationSplitwise_def} from '@usevenice/integration-splitwise/def'
+import {default as integrationSplitwise_server} from '@usevenice/integration-splitwise/server'
 import {default as integrationStripe_def} from '@usevenice/integration-stripe/def'
 import {default as integrationStripe_server} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller_client} from '@usevenice/integration-teller/client'
@@ -83,6 +85,11 @@ const integrationSaltedge = {
   ...integrationSaltedge_server,
 }
 
+const integrationSplitwise = {
+  ...integrationSplitwise_def,
+  ...integrationSplitwise_server,
+}
+
 const integrationStripe = {
   ...integrationStripe_def,
   ...integrationStripe_server,
@@ -115,6 +122,7 @@ export const mergedIntegrations = {
   plaid: integrationPlaid,
   qbo: integrationQbo,
   saltedge: integrationSaltedge,
+  splitwise: integrationSplitwise,
   stripe: integrationStripe,
   teller: integrationTeller,
   venmo: integrationVenmo,

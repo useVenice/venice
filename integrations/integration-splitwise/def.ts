@@ -1,5 +1,6 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import {
   A,
@@ -8,17 +9,13 @@ import {
   math,
   objectFromArray,
   parseMoney,
-  Rx,
-  rxjs,
   z,
 } from '@usevenice/util'
 
 import type {zUser} from './splitwise-schema'
 import {zCurrentUser, zExpense, zGroup} from './splitwise-schema'
-import {makeSplitwiseClient} from './SplitwiseClientNext'
 
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const splitwiseSchemas = {
   name: z.literal('splitwise'),
   resourceSettings: z.object({
     currentUser: zCurrentUser.nullish(),
@@ -37,12 +34,15 @@ const _def = makeSyncProvider.def({
       entity: zExpense.extend({group_name: z.string()}),
     }),
   ]),
-})
-const def = makeSyncProvider.def.helpers(_def)
+} satisfies IntegrationSchemas
 
-export const splitwiseProvider = makeSyncProvider({
+export const splitwiseHelpers = intHelpers(splitwiseSchemas)
+
+export const splitwiseDef = {
+  name: 'splitwise',
+  def: splitwiseSchemas,
   metadata: {categories: ['personal-finance']},
-  ...veniceProviderBase(def, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
@@ -152,54 +152,14 @@ export const splitwiseProvider = makeSyncProvider({
         }
       },
     },
-  }),
-
-  sourceSync: ({settings: {accessToken}}) => {
-    const splitwise = makeSplitwiseClient({accessToken})
-
-    async function* iterateEntities() {
-      const groups = await splitwise.getGroups()
-
-      yield groups.map((a) => def._opData('account', `${a.id}`, a))
-
-      let offset = 0
-      let limit = 100
-
-      while (true) {
-        const expenses = await splitwise.getExpenses({offset, limit})
-        if (expenses.length === 0) {
-          break
-        }
-        yield expenses.map((t) => {
-          // For now it's easiest to get the group name
-          // TODO: Need to check for the better way to get the group name
-          const group_name =
-            groups.find(
-              (a) =>
-                a.name
-                  .toLowerCase()
-                  .includes(formatUser(t.users[0]?.user).toLowerCase()),
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            )?.name || formatUser(t.users[0]?.user)
-          return def._opData('transaction', `${t.id}`, {
-            ...t,
-            group_name,
-          })
-        })
-        offset += expenses.length
-        limit = 500
-      }
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, def._op('commit')])))
   },
-})
+} satisfies IntegrationDef<typeof splitwiseSchemas>
 
 // Helpers
-function formatUser(user?: z.infer<typeof zUser>) {
+export function formatUser(user?: z.infer<typeof zUser>) {
   return user
     ? `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim()
     : 'Unnamed user'
 }
+
+export default splitwiseDef

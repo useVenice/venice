@@ -9,6 +9,7 @@ import {default as integrationOnebrick} from '@usevenice/integration-onebrick/de
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
 import {default as integrationQbo} from '@usevenice/integration-qbo/def'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/def'
+import {default as integrationSplitwise} from '@usevenice/integration-splitwise/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
 import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
@@ -25,6 +26,7 @@ export const defIntegrations = {
   plaid: integrationPlaid,
   qbo: integrationQbo,
   saltedge: integrationSaltedge,
+  splitwise: integrationSplitwise,
   stripe: integrationStripe,
   teller: integrationTeller,
   venmo: integrationVenmo,

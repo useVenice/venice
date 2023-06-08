@@ -12,7 +12,6 @@ import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {rampProvider} from '@usevenice/integration-ramp'
-import {splitwiseProvider} from '@usevenice/integration-splitwise'
 import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
 import {togglProvider} from '@usevenice/integration-toggl'
 import {wiseProvider} from '@usevenice/integration-wise'
@@ -45,6 +44,4 @@ export const PROVIDERS = [
   wiseProvider,
   togglProvider,
   foreceiptProvider,
-
-  splitwiseProvider,
 ] as const

@@ -149,9 +149,13 @@ module.exports = [
     },
   },
   {
+    name: 'splitwise',
     dirName: 'integration-splitwise',
     varName: 'integrationSplitwise',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-splitwise/def',
+      server: '@usevenice/integration-splitwise/server',
+    },
   },
   {
     dirName: 'integration-spreadsheet',

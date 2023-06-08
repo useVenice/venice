@@ -8,6 +8,7 @@ import {default as integrationOnebrick} from '@usevenice/integration-onebrick/se
 import {default as integrationPlaid} from '@usevenice/integration-plaid/server'
 import {default as integrationQbo} from '@usevenice/integration-qbo/server'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/server'
+import {default as integrationSplitwise} from '@usevenice/integration-splitwise/server'
 import {default as integrationStripe} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller} from '@usevenice/integration-teller/server'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/server'
@@ -22,6 +23,7 @@ export const serverIntegrations = {
   plaid: integrationPlaid,
   qbo: integrationQbo,
   saltedge: integrationSaltedge,
+  splitwise: integrationSplitwise,
   stripe: integrationStripe,
   teller: integrationTeller,
   yodlee: integrationYodlee,
