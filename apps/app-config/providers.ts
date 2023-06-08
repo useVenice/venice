@@ -14,11 +14,9 @@ import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import {QBOProvider} from '@usevenice/integration-qbo'
 import {rampProvider} from '@usevenice/integration-ramp'
-import {saltedgeProvider} from '@usevenice/integration-saltedge'
 import {splitwiseProvider} from '@usevenice/integration-splitwise'
 import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
 import {togglProvider} from '@usevenice/integration-toggl'
-import {venmoProvider} from '@usevenice/integration-venmo'
 import {wiseProvider} from '@usevenice/integration-wise'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
@@ -36,9 +34,11 @@ export const PROVIDERS = [
   // TODO: Migrate these over to the new paradigm
   debugProvider,
   fsProvider,
+  postgresProvider,
   firebaseProvider,
   mongodbProvider,
   corePostgresProvider,
+
   webhookProvider,
   beancountProvider,
   spreadsheetProvider,
@@ -49,9 +49,6 @@ export const PROVIDERS = [
   foreceiptProvider,
 
   splitwiseProvider,
-  postgresProvider,
   mootaProvider,
   QBOProvider,
-  saltedgeProvider,
-  venmoProvider,
 ] as const

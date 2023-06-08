@@ -1,27 +1,13 @@
-import {makeSyncProvider} from '@usevenice/cdk-core'
-import {makePostingsMap, veniceProviderBase} from '@usevenice/cdk-ledger'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import type {Brand} from '@usevenice/util'
-import {
-  A,
-  DateTime,
-  objectFromObject,
-  R,
-  Rx,
-  rxjs,
-  startCase,
-  z,
-  zCast,
-} from '@usevenice/util'
+import {A, startCase, z, zCast} from '@usevenice/util'
 
-import {
-  CACHED_CATEGORIES_MAP,
-  makeSaltedgeClient,
-  zConfig,
-} from './saltedgeClient'
+import {CACHED_CATEGORIES_MAP, zConfig} from './saltedgeClient'
 
-const _def = makeSyncProvider.def({
-  ...veniceProviderBase.def,
+export const saltedgeSchemas = {
   name: z.literal('saltedge'),
   integrationConfig: zConfig,
   resourceSettings: zCast<SaltEdge.Connection & {_id: ExternalId}>(),
@@ -29,14 +15,7 @@ const _def = makeSyncProvider.def({
     z.object({
       id: z.string(),
       entityName: z.literal('account'),
-      entity: zCast<
-        {
-          _balancesMap: Record<
-            ISODate,
-            Pick<SaltEdge.Account, 'balance' | 'currency_code'>
-          >
-        } & SaltEdge.Account
-      >(),
+      entity: zCast<SaltEdge.Account>(),
     }),
     z.object({
       id: z.string(),
@@ -44,13 +23,15 @@ const _def = makeSyncProvider.def({
       entity: zCast<SaltEdge.Transaction>(),
     }),
   ]),
-})
+} satisfies IntegrationSchemas
 
-export const saltedgeProviderDef = makeSyncProvider.def.helpers(_def)
+export const saltedgeHelpers = intHelpers(saltedgeSchemas)
 
-export const saltedgeProvider = makeSyncProvider({
+export const saltedgeDef = {
+  name: 'saltedge',
+  def: saltedgeSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-saltedge.png'},
-  ...veniceProviderBase(saltedgeProviderDef, {
+  extension: {
     sourceMapEntity: {
       account: ({entity: a}, c) => ({
         id: a.id,
@@ -65,14 +46,6 @@ export const saltedgeProvider = makeSyncProvider({
             current: A(a.balance, a.currency_code),
           },
           defaultUnit: a.currency_code as Unit,
-          balancesMap: objectFromObject(
-            a._balancesMap ?? {},
-            (_, val): Standard.Balance => ({
-              autoShiftPaddingDate: true,
-              holdings: [A(val.balance, val.currency_code)],
-              disabled: true,
-            }),
-          ),
           type: ((): Standard.AccountType => {
             switch (a.nature) {
               case 'account':
@@ -124,46 +97,7 @@ export const saltedgeProvider = makeSyncProvider({
         },
       }),
     },
-  }),
-
-  sourceSync: ({config, settings}) => {
-    const saltedge = makeSaltedgeClient(config)
-    async function* iterateEntities() {
-      for await (const accounts of saltedge.iterateAllAccounts({
-        connection_id: settings._id,
-      })) {
-        yield accounts.map((a) =>
-          saltedgeProviderDef._opData('account', a.id, {
-            ...a,
-            _balancesMap: {
-              [DateTime.utc().toISODate()]: R.pick(a, [
-                'balance',
-                'currency_code',
-              ]),
-            },
-          }),
-        )
-      }
-
-      const txnGenerator = saltedge.iterateAllTransactions({
-        connection_id: settings._id,
-      }) // TODO: Complete txnGenerator conditials
-
-      for await (const transactions of txnGenerator) {
-        yield transactions.map((t) =>
-          saltedgeProviderDef._opData('transaction', t.id, t),
-        )
-      }
-    }
-
-    return rxjs
-      .from(iterateEntities())
-      .pipe(
-        Rx.mergeMap((ops) =>
-          rxjs.from([...ops, saltedgeProviderDef._op('commit')]),
-        ),
-      )
-
-    // TODO: Move handlePushData
   },
-})
+} satisfies IntegrationDef<typeof saltedgeSchemas>
+
+export default saltedgeDef

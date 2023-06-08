@@ -15,11 +15,14 @@ import {default as integrationOnebrick_server} from '@usevenice/integration-oneb
 import {default as integrationPlaid_client} from '@usevenice/integration-plaid/client'
 import {default as integrationPlaid_def} from '@usevenice/integration-plaid/def'
 import {default as integrationPlaid_server} from '@usevenice/integration-plaid/server'
+import {default as integrationSaltedge_def} from '@usevenice/integration-saltedge/def'
+import {default as integrationSaltedge_server} from '@usevenice/integration-saltedge/server'
 import {default as integrationStripe_def} from '@usevenice/integration-stripe/def'
 import {default as integrationStripe_server} from '@usevenice/integration-stripe/server'
 import {default as integrationTeller_client} from '@usevenice/integration-teller/client'
 import {default as integrationTeller_def} from '@usevenice/integration-teller/def'
 import {default as integrationTeller_server} from '@usevenice/integration-teller/server'
+import {default as integrationVenmo_def} from '@usevenice/integration-venmo/def'
 import {default as integrationYodlee_client} from '@usevenice/integration-yodlee/client'
 import {default as integrationYodlee_def} from '@usevenice/integration-yodlee/def'
 import {default as integrationYodlee_server} from '@usevenice/integration-yodlee/server'
@@ -61,6 +64,11 @@ const integrationPlaid = {
   ...integrationPlaid_server,
 }
 
+const integrationSaltedge = {
+  ...integrationSaltedge_def,
+  ...integrationSaltedge_server,
+}
+
 const integrationStripe = {
   ...integrationStripe_def,
   ...integrationStripe_server,
@@ -70,6 +78,10 @@ const integrationTeller = {
   ...integrationTeller_def,
   ...integrationTeller_client,
   ...integrationTeller_server,
+}
+
+const integrationVenmo = {
+  ...integrationVenmo_def,
 }
 
 const integrationYodlee = {
@@ -86,7 +98,9 @@ export const mergedIntegrations = {
   merge: integrationMerge,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  saltedge: integrationSaltedge,
   stripe: integrationStripe,
   teller: integrationTeller,
+  venmo: integrationVenmo,
   yodlee: integrationYodlee,
 }

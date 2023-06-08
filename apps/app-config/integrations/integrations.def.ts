@@ -6,8 +6,10 @@ import {default as integrationMercury} from '@usevenice/integration-mercury/def'
 import {default as integrationMerge} from '@usevenice/integration-merge/def'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/def'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
+import {default as integrationSaltedge} from '@usevenice/integration-saltedge/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
 import {default as integrationTeller} from '@usevenice/integration-teller/def'
+import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/def'
 
 export const defIntegrations = {
@@ -18,7 +20,9 @@ export const defIntegrations = {
   merge: integrationMerge,
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
+  saltedge: integrationSaltedge,
   stripe: integrationStripe,
   teller: integrationTeller,
+  venmo: integrationVenmo,
   yodlee: integrationYodlee,
 }

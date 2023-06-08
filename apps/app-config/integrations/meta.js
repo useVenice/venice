@@ -124,9 +124,13 @@ module.exports = [
   {dirName: 'integration-qbo', varName: 'integrationQbo', imports: {}},
   {dirName: 'integration-ramp', varName: 'integrationRamp', imports: {}},
   {
+    name: 'saltedge',
     dirName: 'integration-saltedge',
     varName: 'integrationSaltedge',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-saltedge/def',
+      server: '@usevenice/integration-saltedge/server',
+    },
   },
   {
     dirName: 'integration-splitwise',
@@ -158,7 +162,12 @@ module.exports = [
     },
   },
   {dirName: 'integration-toggl', varName: 'integrationToggl', imports: {}},
-  {dirName: 'integration-venmo', varName: 'integrationVenmo', imports: {}},
+  {
+    name: 'venmo',
+    dirName: 'integration-venmo',
+    varName: 'integrationVenmo',
+    imports: {def: '@usevenice/integration-venmo/def'},
+  },
   {dirName: 'integration-wise', varName: 'integrationWise', imports: {}},
   {
     name: 'yodlee',
