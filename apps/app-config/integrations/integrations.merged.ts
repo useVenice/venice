@@ -7,6 +7,8 @@ import {default as integrationBrex_def} from '@usevenice/integration-brex/def'
 import {default as integrationBrex_server} from '@usevenice/integration-brex/server'
 import {default as integrationForeceipt_def} from '@usevenice/integration-foreceipt/def'
 import {default as integrationForeceipt_server} from '@usevenice/integration-foreceipt/server'
+import {default as integrationFs_def} from '@usevenice/integration-fs/def'
+import {default as integrationFs_server} from '@usevenice/integration-fs/server'
 import {default as integrationHeron_def} from '@usevenice/integration-heron/def'
 import {default as integrationHeron_server} from '@usevenice/integration-heron/server'
 import {default as integrationLunchmoney_def} from '@usevenice/integration-lunchmoney/def'
@@ -67,6 +69,11 @@ const integrationBrex = {
 const integrationForeceipt = {
   ...integrationForeceipt_def,
   ...integrationForeceipt_server,
+}
+
+const integrationFs = {
+  ...integrationFs_def,
+  ...integrationFs_server,
 }
 
 const integrationHeron = {
@@ -172,6 +179,7 @@ export const mergedIntegrations = {
   beancount: integrationBeancount,
   brex: integrationBrex,
   foreceipt: integrationForeceipt,
+  fs: integrationFs,
   heron: integrationHeron,
   lunchmoney: integrationLunchmoney,
   mercury: integrationMercury,

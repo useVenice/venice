@@ -2,7 +2,7 @@
 
 import {debugProvider} from '@usevenice/cdk-core'
 import {firebaseProvider} from '@usevenice/core-integration-firebase'
-import {fsProvider} from '@usevenice/core-integration-fs'
+import {fsProvider} from '@usevenice/integration-fs'
 import {mongodbProvider} from '@usevenice/core-integration-mongodb'
 import {corePostgresProvider} from '@usevenice/core-integration-postgres'
 import {webhookProvider} from '@usevenice/core-integration-webhook'

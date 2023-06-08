@@ -161,9 +161,6 @@ importers:
       '@usevenice/core-integration-firebase':
         specifier: workspace:*
         version: link:../../integrations/core-integration-firebase
-      '@usevenice/core-integration-fs':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-fs
       '@usevenice/core-integration-mongodb':
         specifier: workspace:*
         version: link:../../integrations/core-integration-mongodb
@@ -200,6 +197,9 @@ importers:
       '@usevenice/integration-foreceipt':
         specifier: workspace:*
         version: link:../../integrations/integration-foreceipt
+      '@usevenice/integration-fs':
+        specifier: workspace:*
+        version: link:../../integrations/integration-fs
       '@usevenice/integration-heron':
         specifier: workspace:*
         version: link:../../integrations/integration-heron
@@ -318,9 +318,6 @@ importers:
       '@usevenice/core-integration-firebase':
         specifier: workspace:*
         version: link:../../integrations/core-integration-firebase
-      '@usevenice/core-integration-fs':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-fs
       '@usevenice/core-integration-postgres':
         specifier: workspace:*
         version: link:../../integrations/core-integration-postgres
@@ -339,6 +336,9 @@ importers:
       '@usevenice/integration-expensify':
         specifier: workspace:*
         version: link:../../integrations/integration-expensify
+      '@usevenice/integration-fs':
+        specifier: workspace:*
+        version: link:../../integrations/integration-fs
       '@usevenice/integration-heron':
         specifier: workspace:*
         version: link:../../integrations/integration-heron
@@ -664,15 +664,6 @@ importers:
         specifier: 10.2.0
         version: 10.2.0(@firebase/app-compat@0.1.35)(@firebase/app-types@0.8.0)
 
-  integrations/core-integration-fs:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-
   integrations/core-integration-mongodb:
     dependencies:
       '@usevenice/cdk-core':
@@ -840,6 +831,15 @@ importers:
       firebase:
         specifier: 9.8.1
         version: 9.8.1(patch_hash=bmwbs4hhuxm5sycev5w2vhohk4)
+
+  integrations/integration-fs:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
 
   integrations/integration-heron:
     dependencies:

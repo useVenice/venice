@@ -6,7 +6,6 @@ module.exports = [
     varName: 'coreIntegrationFirebase',
     imports: {},
   },
-  {dirName: 'core-integration-fs', varName: 'coreIntegrationFs', imports: {}},
   {
     dirName: 'core-integration-mongodb',
     varName: 'coreIntegrationMongodb',
@@ -71,6 +70,15 @@ module.exports = [
     imports: {
       def: '@usevenice/integration-foreceipt/def',
       server: '@usevenice/integration-foreceipt/server',
+    },
+  },
+  {
+    name: 'fs',
+    dirName: 'integration-fs',
+    varName: 'integrationFs',
+    imports: {
+      def: '@usevenice/integration-fs/def',
+      server: '@usevenice/integration-fs/server',
     },
   },
   {

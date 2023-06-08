@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/core-integration-fs",
+  "name": "@usevenice/integration-fs",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [

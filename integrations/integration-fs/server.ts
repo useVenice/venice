@@ -1,5 +1,6 @@
-import type {AnyEntityPayload, SyncOperation} from '@usevenice/cdk-core'
-import {handlersLink, makeSyncProvider} from '@usevenice/cdk-core'
+import type {IntegrationServer, SyncOperation} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
+import type {z} from '@usevenice/util'
 import {
   $chokidar,
   $path,
@@ -11,43 +12,12 @@ import {
   rxjs,
   safeJSONParse,
   writeJson,
-  z,
-  zCast,
 } from '@usevenice/util'
 
+import type {fsSchemas, zWatchPathsInput} from './def'
 import {_pathFromId} from './makeFsKVStore'
 
-// MARK: - Source Sync
-
-const zWatchPathsInput = z.object({
-  basePath: z.string(),
-  paths: z.array(z.string()).optional(),
-})
-
-const def = makeSyncProvider.def({
-  ...makeSyncProvider.def.defaults,
-  name: z.literal('fs'),
-  resourceSettings: zWatchPathsInput.pick({basePath: true}),
-  /**
-   * `paths` only used for sourceSync, not destSync. Though these are not technically states...
-   * And they are not safe to just erase if fullSync = true.
-   * TODO: Introduce a separate sourceOptions / destinationOptions type later when it becomes an
-   * actual problem... for now this issue only impacts FirebaseProvider and FSProvider
-   * which are not actually being used as top level providers
-   */
-  sourceState: zWatchPathsInput.pick({paths: true}),
-  sourceOutputEntity: zCast<AnyEntityPayload>(),
-  destinationInputEntity: zCast<AnyEntityPayload>(),
-})
-
-export const fsProvider = makeSyncProvider({
-  metadata: {
-    platforms: ['local'],
-    displayName: 'File system',
-    categories: ['flat-files-and-spreadsheets'],
-  },
-  ...makeSyncProvider.defaults,
-  def,
+export const fsServer = {
   sourceSync: ({settings, state}) =>
     _fsWatchPaths$({...settings, ...state}).pipe(_readPathData()),
   destinationSync: ({settings: {basePath}}) =>
@@ -61,8 +31,9 @@ export const fsProvider = makeSyncProvider({
           ),
         ),
     }),
-})
+} satisfies IntegrationServer<typeof fsSchemas>
 
+export default fsServer
 // MARK: - Source sync helpers
 
 /** id: filename, entityName: dirname */

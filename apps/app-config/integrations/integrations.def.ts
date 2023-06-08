@@ -3,6 +3,7 @@ import {default as integrationAirtable} from '@usevenice/integration-airtable/de
 import {default as integrationBeancount} from '@usevenice/integration-beancount/def'
 import {default as integrationBrex} from '@usevenice/integration-brex/def'
 import {default as integrationForeceipt} from '@usevenice/integration-foreceipt/def'
+import {default as integrationFs} from '@usevenice/integration-fs/def'
 import {default as integrationHeron} from '@usevenice/integration-heron/def'
 import {default as integrationLunchmoney} from '@usevenice/integration-lunchmoney/def'
 import {default as integrationMercury} from '@usevenice/integration-mercury/def'
@@ -28,6 +29,7 @@ export const defIntegrations = {
   beancount: integrationBeancount,
   brex: integrationBrex,
   foreceipt: integrationForeceipt,
+  fs: integrationFs,
   heron: integrationHeron,
   lunchmoney: integrationLunchmoney,
   mercury: integrationMercury,

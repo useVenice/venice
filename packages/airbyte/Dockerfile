@@ -27,7 +27,7 @@ COPY ./integrations/integration-venmo/package.json ./integrations/integration-ve
 COPY ./integrations/integration-splitwise/package.json ./integrations/integration-splitwise/package.json
 COPY ./integrations/integration-yodlee/package.json ./integrations/integration-yodlee/package.json
 COPY ./integrations/core-integration-mongodb/package.json ./integrations/core-integration-mongodb/package.json
-COPY ./integrations/core-integration-fs/package.json ./integrations/core-integration-fs/package.json
+COPY ./integrations/integration-fs/package.json ./integrations/integration-fs/package.json
 COPY ./integrations/integration-ramp/package.json ./integrations/integration-ramp/package.json
 COPY ./integrations/integration-wise/package.json ./integrations/integration-wise/package.json
 COPY ./integrations/integration-teller/package.json ./integrations/integration-teller/package.json
