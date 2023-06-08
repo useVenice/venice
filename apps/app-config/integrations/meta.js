@@ -142,7 +142,15 @@ module.exports = [
       server: '@usevenice/integration-qbo/server',
     },
   },
-  {dirName: 'integration-ramp', varName: 'integrationRamp', imports: {}},
+  {
+    name: 'ramp',
+    dirName: 'integration-ramp',
+    varName: 'integrationRamp',
+    imports: {
+      def: '@usevenice/integration-ramp/def',
+      server: '@usevenice/integration-ramp/server',
+    },
+  },
   {
     name: 'saltedge',
     dirName: 'integration-saltedge',

@@ -10,9 +10,7 @@ import {beancountProvider} from '@usevenice/integration-beancount'
 import {lunchmoneyProvider} from '@usevenice/integration-lunchmoney'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
-import {rampProvider} from '@usevenice/integration-ramp'
 import {spreadsheetProvider} from '@usevenice/integration-spreadsheet'
-import {wiseProvider} from '@usevenice/integration-wise'
 
 import {mergedIntegrations} from './integrations/integrations.merged'
 
@@ -38,5 +36,4 @@ export const PROVIDERS = [
   beancountProvider,
   spreadsheetProvider,
   lunchmoneyProvider,
-  rampProvider,
 ] as const

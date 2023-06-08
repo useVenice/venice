@@ -8,6 +8,7 @@ import {default as integrationMoota} from '@usevenice/integration-moota/server'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/server'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/server'
 import {default as integrationQbo} from '@usevenice/integration-qbo/server'
+import {default as integrationRamp} from '@usevenice/integration-ramp/server'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/server'
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/server'
 import {default as integrationStripe} from '@usevenice/integration-stripe/server'
@@ -26,6 +27,7 @@ export const serverIntegrations = {
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
   qbo: integrationQbo,
+  ramp: integrationRamp,
   saltedge: integrationSaltedge,
   splitwise: integrationSplitwise,
   stripe: integrationStripe,

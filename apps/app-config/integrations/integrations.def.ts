@@ -9,6 +9,7 @@ import {default as integrationMoota} from '@usevenice/integration-moota/def'
 import {default as integrationOnebrick} from '@usevenice/integration-onebrick/def'
 import {default as integrationPlaid} from '@usevenice/integration-plaid/def'
 import {default as integrationQbo} from '@usevenice/integration-qbo/def'
+import {default as integrationRamp} from '@usevenice/integration-ramp/def'
 import {default as integrationSaltedge} from '@usevenice/integration-saltedge/def'
 import {default as integrationSplitwise} from '@usevenice/integration-splitwise/def'
 import {default as integrationStripe} from '@usevenice/integration-stripe/def'
@@ -29,6 +30,7 @@ export const defIntegrations = {
   onebrick: integrationOnebrick,
   plaid: integrationPlaid,
   qbo: integrationQbo,
+  ramp: integrationRamp,
   saltedge: integrationSaltedge,
   splitwise: integrationSplitwise,
   stripe: integrationStripe,
