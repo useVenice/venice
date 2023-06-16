@@ -176,6 +176,9 @@ importers:
       '@usevenice/integration-brex':
         specifier: workspace:*
         version: link:../../integrations/integration-brex
+      '@usevenice/integration-debug':
+        specifier: workspace:*
+        version: link:../../integrations/integration-debug
       '@usevenice/integration-expensify':
         specifier: workspace:*
         version: link:../../integrations/integration-expensify
@@ -698,6 +701,15 @@ importers:
       openapi-typescript:
         specifier: 6.2.1
         version: 6.2.1
+
+  integrations/integration-debug:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
 
   integrations/integration-expensify:
     dependencies:

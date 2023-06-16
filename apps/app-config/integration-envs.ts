@@ -2,8 +2,7 @@
 import {makeId} from '@usevenice/cdk-core'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
-import type {PROVIDERS} from './providers'
-import {DOCUMENTED_PROVIDERS} from './providers'
+import {PROVIDERS} from './providers'
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
 const separator = '__'
@@ -11,7 +10,7 @@ const getPrefix = (name: string) => makeId('int', name, '')
 
 // Should this be all providers or only dcoumented ones?
 
-export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
+export const zFlatConfigByProvider = R.mapToObj(PROVIDERS, (p) => [
   p.name,
   zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
     prefix: getPrefix(p.name),

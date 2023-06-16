@@ -2,6 +2,7 @@
 import {default as integrationAirtable} from '@usevenice/integration-airtable/def'
 import {default as integrationBeancount} from '@usevenice/integration-beancount/def'
 import {default as integrationBrex} from '@usevenice/integration-brex/def'
+import {default as integrationDebug} from '@usevenice/integration-debug/def'
 import {default as integrationFirebase} from '@usevenice/integration-firebase/def'
 import {default as integrationForeceipt} from '@usevenice/integration-foreceipt/def'
 import {default as integrationFs} from '@usevenice/integration-fs/def'
@@ -31,6 +32,7 @@ export const defIntegrations = {
   airtable: integrationAirtable,
   beancount: integrationBeancount,
   brex: integrationBrex,
+  debug: integrationDebug,
   firebase: integrationFirebase,
   foreceipt: integrationForeceipt,
   fs: integrationFs,

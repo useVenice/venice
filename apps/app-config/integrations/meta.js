@@ -34,6 +34,15 @@ module.exports = [
     },
   },
   {
+    name: 'debug',
+    dirName: 'integration-debug',
+    varName: 'integrationDebug',
+    imports: {
+      def: '@usevenice/integration-debug/def',
+      server: '@usevenice/integration-debug/server',
+    },
+  },
+  {
     dirName: 'integration-expensify',
     varName: 'integrationExpensify',
     imports: {},

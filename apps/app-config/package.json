@@ -18,6 +18,7 @@
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",
     "@usevenice/integration-brex": "workspace:*",
+    "@usevenice/integration-debug": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
     "@usevenice/integration-firebase": "workspace:*",
     "@usevenice/integration-foreceipt": "workspace:*",
