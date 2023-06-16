@@ -9,4 +9,5 @@ import {z} from '@usevenice/util'
 void makePostgresClient({
   databaseUrl: z.string().parse(process.env['POSTGRES_OR_WEBHOOK_URL']),
   migrationsPath: path.join(__dirname, '../web/migrations'),
+  migrationTableName: '_migrations',
 }).runMigratorCli()
