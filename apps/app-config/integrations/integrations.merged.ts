@@ -18,17 +18,14 @@ import {default as integrationHeron_server} from '@usevenice/integration-heron/s
 import {default as integrationLunchmoney_def} from '@usevenice/integration-lunchmoney/def'
 import {default as integrationLunchmoney_server} from '@usevenice/integration-lunchmoney/server'
 import {default as integrationMercury_def} from '@usevenice/integration-mercury/def'
-import {default as integrationMerge_client} from '@usevenice/integration-merge/client'
 import {default as integrationMerge_def} from '@usevenice/integration-merge/def'
 import {default as integrationMerge_server} from '@usevenice/integration-merge/server'
 import {default as integrationMongodb_def} from '@usevenice/integration-mongodb/def'
 import {default as integrationMongodb_server} from '@usevenice/integration-mongodb/server'
 import {default as integrationMoota_def} from '@usevenice/integration-moota/def'
 import {default as integrationMoota_server} from '@usevenice/integration-moota/server'
-import {default as integrationOnebrick_client} from '@usevenice/integration-onebrick/client'
 import {default as integrationOnebrick_def} from '@usevenice/integration-onebrick/def'
 import {default as integrationOnebrick_server} from '@usevenice/integration-onebrick/server'
-import {default as integrationPlaid_client} from '@usevenice/integration-plaid/client'
 import {default as integrationPlaid_def} from '@usevenice/integration-plaid/def'
 import {default as integrationPlaid_server} from '@usevenice/integration-plaid/server'
 import {default as integrationPostgres_def} from '@usevenice/integration-postgres/def'
@@ -45,7 +42,6 @@ import {default as integrationSpreadsheet_def} from '@usevenice/integration-spre
 import {default as integrationSpreadsheet_server} from '@usevenice/integration-spreadsheet/server'
 import {default as integrationStripe_def} from '@usevenice/integration-stripe/def'
 import {default as integrationStripe_server} from '@usevenice/integration-stripe/server'
-import {default as integrationTeller_client} from '@usevenice/integration-teller/client'
 import {default as integrationTeller_def} from '@usevenice/integration-teller/def'
 import {default as integrationTeller_server} from '@usevenice/integration-teller/server'
 import {default as integrationToggl_def} from '@usevenice/integration-toggl/def'
@@ -55,7 +51,6 @@ import {default as integrationWebhook_def} from '@usevenice/integration-webhook/
 import {default as integrationWebhook_server} from '@usevenice/integration-webhook/server'
 import {default as integrationWise_def} from '@usevenice/integration-wise/def'
 import {default as integrationWise_server} from '@usevenice/integration-wise/server'
-import {default as integrationYodlee_client} from '@usevenice/integration-yodlee/client'
 import {default as integrationYodlee_def} from '@usevenice/integration-yodlee/def'
 import {default as integrationYodlee_server} from '@usevenice/integration-yodlee/server'
 
@@ -110,7 +105,6 @@ const integrationMercury = {
 
 const integrationMerge = {
   ...integrationMerge_def,
-  ...integrationMerge_client,
   ...integrationMerge_server,
 }
 
@@ -126,13 +120,11 @@ const integrationMoota = {
 
 const integrationOnebrick = {
   ...integrationOnebrick_def,
-  ...integrationOnebrick_client,
   ...integrationOnebrick_server,
 }
 
 const integrationPlaid = {
   ...integrationPlaid_def,
-  ...integrationPlaid_client,
   ...integrationPlaid_server,
 }
 
@@ -173,7 +165,6 @@ const integrationStripe = {
 
 const integrationTeller = {
   ...integrationTeller_def,
-  ...integrationTeller_client,
   ...integrationTeller_server,
 }
 
@@ -198,7 +189,6 @@ const integrationWise = {
 
 const integrationYodlee = {
   ...integrationYodlee_def,
-  ...integrationYodlee_client,
   ...integrationYodlee_server,
 }
 

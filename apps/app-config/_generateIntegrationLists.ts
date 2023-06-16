@@ -98,7 +98,11 @@ writePretty(
   `${mergedlist
     .flatMap((int) => {
       const validImports = Object.fromEntries(
-        Object.entries(int.imports).filter(([, v]) => !!v),
+        Object.entries(int.imports)
+          .filter(([, v]) => !!v)
+          // Temp hack because mergedIntegrations are only ever used server side
+          // This avoids server needing to import client side code unnecessarily
+          .filter(([k]) => k !== 'client'),
       )
       return [
         Object.entries(validImports)
