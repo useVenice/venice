@@ -8,7 +8,7 @@
   "dependencies": {
     "@trpc/server": "10.21.1",
     "@usevenice/cdk-core": "workspace:*",
-    "@usevenice/core-integration-postgres": "workspace:*",
+    "@usevenice/integration-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",
     "@zodios/core": "11.0.0-beta.18",
     "@zodios/fetch": "11.0.0-beta.18",

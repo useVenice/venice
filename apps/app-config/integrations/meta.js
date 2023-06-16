@@ -2,16 +2,6 @@
 
 module.exports = [
   {
-    dirName: 'core-integration-postgres',
-    varName: 'coreIntegrationPostgres',
-    imports: {},
-  },
-  {
-    dirName: 'integration-webhook',
-    varName: 'coreIntegrationWebhook',
-    imports: {},
-  },
-  {
     name: 'airtable',
     dirName: 'integration-airtable',
     varName: 'integrationAirtable',
@@ -235,6 +225,15 @@ module.exports = [
     dirName: 'integration-venmo',
     varName: 'integrationVenmo',
     imports: {def: '@usevenice/integration-venmo/def'},
+  },
+  {
+    name: 'webhook',
+    dirName: 'integration-webhook',
+    varName: 'integrationWebhook',
+    imports: {
+      def: '@usevenice/integration-webhook/def',
+      server: '@usevenice/integration-webhook/server',
+    },
   },
   {
     name: 'wise',

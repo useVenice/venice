@@ -4,16 +4,11 @@
 
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import {extractId, handlersLink} from '@usevenice/cdk-core'
-import {
-  makePostgresClient,
-  upsertByIdQuery,
-} from '@usevenice/core-integration-postgres'
 import {R, Rx, rxjs} from '@usevenice/util'
 
 import type {postgresSchemas} from './def'
 import {postgresHelpers} from './def'
-
-export {makePostgresClient} from '@usevenice/core-integration-postgres'
+import {makePostgresClient, upsertByIdQuery} from './makePostgresClient'
 
 export const postgresServer = {
   // TODO:

@@ -7,16 +7,16 @@ import {
   mapStandardEntityLink,
   renameAccountLink,
 } from '@usevenice/cdk-ledger'
-import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
+import {makePostgresMetaService} from '@usevenice/integration-postgres'
 import {joinPath, R, Rx} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
 import {env} from './env'
 import {PROVIDERS} from './providers'
 
-export {DatabaseError} from '@usevenice/core-integration-postgres/makePostgresClient'
+export {DatabaseError} from '@usevenice/integration-postgres/makePostgresClient'
 export {Papa} from '@usevenice/integration-spreadsheet'
 export {makePostgresClient} from '@usevenice/integration-postgres'
 

@@ -4,10 +4,6 @@ import '@usevenice/app-config/register.node'
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {PROVIDERS} from '@usevenice/app-config/providers'
 import {makeJwtClient} from '@usevenice/cdk-core'
-import {
-  makePostgresClient,
-  makePostgresMetaService,
-} from '@usevenice/core-integration-postgres'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeHeronClient} from '@usevenice/integration-heron'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
@@ -20,6 +16,10 @@ import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // Or perhaps we can make it into a register and/or loader for nodejs
 // much like tsx and others
 import {makePlaidClient} from '@usevenice/integration-plaid'
+import {
+  makePostgresClient,
+  makePostgresMetaService,
+} from '@usevenice/integration-postgres'
 import {makeRampClient} from '@usevenice/integration-ramp'
 import {makeSaltedgeClient} from '@usevenice/integration-saltedge'
 import {makeStripeClient} from '@usevenice/integration-stripe'

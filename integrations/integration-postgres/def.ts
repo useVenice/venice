@@ -1,10 +1,11 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
-import {zPgConfig} from '@usevenice/core-integration-postgres'
 import {z, zCast} from '@usevenice/util'
 
-export {makePostgresClient} from '@usevenice/core-integration-postgres'
+import {zPgConfig} from './makePostgresClient'
+
+export {makePostgresClient} from './makePostgresClient'
 
 export const postgresSchemas = {
   name: z.literal('postgres'),

@@ -158,9 +158,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/core-integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-postgres
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -315,9 +312,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/core-integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-postgres
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -521,15 +515,15 @@ importers:
       '@usevenice/connect':
         specifier: workspace:*
         version: link:../../packages/connect
-      '@usevenice/core-integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/core-integration-postgres
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
       '@usevenice/engine-frontend':
         specifier: workspace:*
         version: link:../../packages/engine-frontend
+      '@usevenice/integration-postgres':
+        specifier: workspace:*
+        version: link:../../integrations/integration-postgres
       '@usevenice/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -636,34 +630,6 @@ importers:
       webpack:
         specifier: '*'
         version: 5.74.0(esbuild@0.17.5)
-
-  integrations/core-integration-postgres:
-    dependencies:
-      '@slonik/migrator':
-        specifier: 0.11.3
-        version: 0.11.3(slonik@30.3.1)
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      pg:
-        specifier: 8.8.0
-        version: 8.8.0(pg-native@3.0.1)
-      pg-native:
-        specifier: 3.0.1
-        version: 3.0.1
-      slonik:
-        specifier: 30.3.1
-        version: 30.3.1(pg-native@3.0.1)
-      slonik-interceptor-preset:
-        specifier: 1.2.10
-        version: 1.2.10(pg-native@3.0.1)
-    devDependencies:
-      '@types/pg':
-        specifier: 8.6.5
-        version: 8.6.5
 
   integrations/integration-airtable:
     dependencies:
@@ -977,19 +943,31 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/core-integration-postgres':
-        specifier: workspace:*
-        version: link:../core-integration-postgres
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
       handlebars:
         specifier: 4.7.7
         version: 4.7.7
+      pg:
+        specifier: 8.8.0
+        version: 8.8.0(pg-native@3.0.1)
+      pg-native:
+        specifier: 3.0.1
+        version: 3.0.1
+      slonik:
+        specifier: 30.3.1
+        version: 30.3.1(pg-native@3.0.1)
+      slonik-interceptor-preset:
+        specifier: 1.2.10
+        version: 1.2.10(pg-native@3.0.1)
       zod:
         specifier: 3.21.4
         version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     devDependencies:
+      '@types/pg':
+        specifier: 8.6.5
+        version: 8.6.5
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
@@ -1220,9 +1198,9 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
-      '@usevenice/core-integration-postgres':
+      '@usevenice/integration-postgres':
         specifier: workspace:*
-        version: link:../../integrations/core-integration-postgres
+        version: link:../../integrations/integration-postgres
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -6460,7 +6438,7 @@ packages:
   /@types/pg@8.6.5:
     resolution: {integrity: sha512-tOkGtAqRVkHa/PVZicq67zuujI4Oorfglsr2IbKofDwBSysnaqSx7W1mDqFqdkGE6Fbgh+PZAl0r/BWON/mozw==}
     dependencies:
-      '@types/node': 18.8.3
+      '@types/node': 18.11.18
       pg-protocol: 1.5.0
       pg-types: 2.2.0
     dev: true

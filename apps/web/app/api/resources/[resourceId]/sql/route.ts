@@ -10,10 +10,7 @@ import {
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
 import type {Id} from '@usevenice/cdk-core'
 import {hasRole} from '@usevenice/cdk-core'
-import {
-  makePostgresClient,
-  zPgConfig,
-} from '@usevenice/core-integration-postgres'
+import {makePostgresClient, zPgConfig} from '@usevenice/integration-postgres'
 import {R, z} from '@usevenice/util'
 
 import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
