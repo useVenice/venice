@@ -9,7 +9,7 @@ BEGIN
       WHERE  rolname = 'anon') THEN
       RAISE NOTICE 'Role "anon" does not exists. Skipping grant.';
    ELSE
-      REVOKE ALL PRIVILEGES ON public.migrations from anon, authenticated;
+      REVOKE ALL PRIVILEGES ON public._migrations from anon, authenticated;
    END IF;
 END
 $do$;
