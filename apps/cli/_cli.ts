@@ -2,7 +2,7 @@
 import '@usevenice/app-config/register.node'
 
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
-import type {PROVIDERS} from '@usevenice/app-config/providers'
+import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {makeJwtClient} from '@usevenice/cdk-core'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeHeronClient} from '@usevenice/integration-heron'
@@ -44,13 +44,8 @@ function env() {
     .env as typeof import('@usevenice/app-config/env')['env']
 }
 
-// Hack for plaid for now...
-type hackName = 'plaid' | 'yodlee' | 'onebrick' | 'teller' | 'ramp' | 'brex'
-function intConfig<T extends (typeof PROVIDERS)[number]['name'] | hackName>(
-  name: T,
-) {
-  const config =
-    parseIntConfigsFromRawEnv()[name as Exclude<typeof name, hackName>]
+function intConfig<T extends keyof typeof defIntegrations>(name: T) {
+  const config = parseIntConfigsFromRawEnv()[name]
   if (!config) {
     throw new Error(`${name} provider is not configured`)
   }
@@ -81,7 +76,7 @@ if (require.main === module) {
     teller: () => makeTellerClient(intConfig('teller')),
     stripe: () =>
       makeStripeClient({apiKey: process.env['STRIPE_TEST_SECRET_KEY']!}),
-    ramp: () => makeRampClient(intConfig('ramp')),
+    ramp: () => makeRampClient(intConfig('ramp').oauth),
     wise: () => makeWiseClient(intConfig('wise')),
     toggl: () => makeTogglClient(intConfig('toggl')),
     yodlee: () =>

@@ -1,4 +1,4 @@
-import type {AnySyncProvider, Id, LinkFactory} from '@usevenice/cdk-core'
+import type {AnyIntegrationImpl, Id, LinkFactory} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
 
 // MARK: - Input types
@@ -7,17 +7,18 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
 // Would be nice to improve the typing of this... Make stuff non-optional
 /** https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types */
-export type IntegrationInput<T extends AnySyncProvider = AnySyncProvider> =
-  T extends AnySyncProvider
-    ? {
-        id: Id<T['name']>['int']
-        config?: Partial<_inferInput<T['def']['integrationConfig']>>
-      }
-    : never
+export type IntegrationInput<
+  T extends AnyIntegrationImpl = AnyIntegrationImpl,
+> = T extends AnyIntegrationImpl
+  ? {
+      id: Id<T['name']>['int']
+      config?: Partial<_inferInput<T['def']['integrationConfig']>>
+    }
+  : never
 
 // Is there a way to infer this? Or would that be too much?
-export type ResourceInput<T extends AnySyncProvider = AnySyncProvider> =
-  T extends AnySyncProvider
+export type ResourceInput<T extends AnyIntegrationImpl = AnyIntegrationImpl> =
+  T extends AnyIntegrationImpl
     ? {
         id: Id<T['name']>['reso']
         integrationId?: Id<T['name']>['int']
@@ -27,17 +28,17 @@ export type ResourceInput<T extends AnySyncProvider = AnySyncProvider> =
     : never
 
 export interface PipelineInput<
-  PSrc extends AnySyncProvider = AnySyncProvider,
-  PDest extends AnySyncProvider = AnySyncProvider,
+  PSrc extends AnyIntegrationImpl = AnyIntegrationImpl,
+  PDest extends AnyIntegrationImpl = AnyIntegrationImpl,
   TLinks extends Record<string, LinkFactory> = {},
 > {
   id: Id['pipe']
-  source?: PSrc extends AnySyncProvider ? ResourceInput<PSrc> : never
-  sourceState?: PSrc extends AnySyncProvider
+  source?: PSrc extends AnyIntegrationImpl ? ResourceInput<PSrc> : never
+  sourceState?: PSrc extends AnyIntegrationImpl
     ? Partial<_inferInput<PSrc['def']['sourceState']>>
     : never
-  destination?: PDest extends AnySyncProvider ? ResourceInput<PDest> : never
-  destinationState?: PDest extends AnySyncProvider
+  destination?: PDest extends AnyIntegrationImpl ? ResourceInput<PDest> : never
+  destinationState?: PDest extends AnyIntegrationImpl
     ? Partial<_inferInput<PDest['def']['destinationState']>>
     : never
   /** Used to initialize links */
@@ -51,7 +52,6 @@ export interface PipelineInput<
   >
   watch?: boolean
 }
-
 
 export const zSyncOptions = z.object({
   /** Only sync resource metadata and skip pipelines */

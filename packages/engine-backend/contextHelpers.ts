@@ -3,7 +3,7 @@ import {TRPCError} from '@trpc/server'
 
 import type {
   AnyEntityPayload,
-  AnySyncProvider,
+  AnyIntegrationImpl,
   Destination,
   Id,
   IDS,
@@ -27,7 +27,7 @@ export function getContextHelpers({
   getLinksForPipeline,
 }: {
   metaService: MetaService
-  providerMap: Record<string, AnySyncProvider>
+  providerMap: Record<string, AnyIntegrationImpl>
   // TODO: Fix any type
   getLinksForPipeline?: (pipeline: any) => Link[]
 }) {

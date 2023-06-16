@@ -5,7 +5,6 @@ import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
 
 import type {
-  AnyProviderDef,
   Id,
   IntegrationClient,
   OpenDialogFn,
@@ -54,7 +53,7 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
 
-type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
+type UseConnectScope = Parameters<UseConnectHook>[0]
 interface DialogConfig {
   Component: Parameters<UseConnectScope['openDialog']>[0]
   options: Parameters<UseConnectScope['openDialog']>[1]
@@ -282,7 +281,7 @@ export const ProviderConnectButton = ({
 }: UIProps & {
   integration: {id: Id['int']; provider: ProviderMeta}
   resource?: Resource
-  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
 }) => (
   <WithProviderConnect {...props}>
@@ -318,7 +317,7 @@ export const WithProviderConnect = ({
 }: {
   integration: {id: Id['int']; provider: ProviderMeta}
   resource?: Resource
-  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
   children: (props: {
     openConnect: () => void
@@ -464,7 +463,7 @@ export function ResourceDropdownMenu(
       provider: ProviderMeta
     }
     resource: Resource
-    connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+    connectFn?: ReturnType<UseConnectHook>
     onEvent?: (event: {type: ConnectEventType}) => void
   },
 ) {

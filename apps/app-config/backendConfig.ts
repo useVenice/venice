@@ -14,11 +14,11 @@ import {joinPath, R, Rx} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
 import {env} from './env'
-import {PROVIDERS} from './providers'
+import {mergedIntegrations} from './integrations/integrations.merged'
 
+export {makePostgresClient} from '@usevenice/integration-postgres'
 export {DatabaseError} from '@usevenice/integration-postgres/makePostgresClient'
 export {Papa} from '@usevenice/integration-spreadsheet'
-export {makePostgresClient} from '@usevenice/integration-postgres'
 
 export const backendEnv = env
 
@@ -38,12 +38,12 @@ const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 //   VeniceRouter['_def']['mutations']['syncPipeline']
 // >[0]
 export type VeniceInput = PipelineInput<
-  (typeof PROVIDERS)[number],
-  (typeof PROVIDERS)[number]
+  (typeof mergedIntegrations)[keyof typeof mergedIntegrations],
+  (typeof mergedIntegrations)[keyof typeof mergedIntegrations]
 >
 
 export const contextFactory = getContextFactory({
-  providers: PROVIDERS,
+  providers: Object.values(mergedIntegrations),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,

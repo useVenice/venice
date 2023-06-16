@@ -1,7 +1,7 @@
 import type {
   AnyEntityPayload,
-  AnySyncProvider,
   Id,
+  IntegrationDef,
   Link,
 } from '@usevenice/cdk-core'
 import {handlersLink, transformLink} from '@usevenice/cdk-core'
@@ -27,7 +27,6 @@ import type {
   StdSyncOperation,
 } from './entity-link-types'
 import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
-import {isVeniceProvider} from './veniceProviderBase'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({
@@ -35,11 +34,12 @@ export function mapStandardEntityLink({
   settings: initialSettings,
   id: sourceId,
 }: {
-  integration: {provider: AnySyncProvider}
+  integration: {provider: IntegrationDef}
   settings: unknown
   id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> {
-  if (!isVeniceProvider(provider)) {
+  const sourceMapEntity = provider.extension?.sourceMapEntity
+  if (!sourceMapEntity) {
     throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
   }
   return Rx.mergeMap((op) => {
@@ -48,7 +48,7 @@ export function mapStandardEntityLink({
     }
 
     // TODO: Update the initialReso as we receive resource updates
-    const payload = R.pipe(provider.extension.sourceMapEntity, (map) =>
+    const payload = R.pipe(sourceMapEntity, (map) =>
       typeof map === 'function'
         ? map(op.data, initialSettings)
         : map?.[op.data.entityName]?.(op.data, initialSettings),

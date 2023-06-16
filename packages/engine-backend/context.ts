@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
 import type {
-  AnySyncProvider,
+  AnyIntegrationImpl,
   EndUserId,
   Link,
   LinkFactory,
@@ -26,7 +26,7 @@ export interface RouterContext {
   as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Helpers
 
   // Non-viewer dependent
-  providerMap: Record<string, AnySyncProvider>
+  providerMap: Record<string, AnyIntegrationImpl>
   jwt: JWTClient
   /**
    * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
@@ -42,7 +42,7 @@ export interface RouterContext {
 }
 
 export interface ContextFactoryOptions<
-  TProviders extends readonly AnySyncProvider[],
+  TProviders extends readonly AnyIntegrationImpl[],
   TLinks extends Record<string, LinkFactory>,
 > extends Pick<RouterContext, 'apiUrl' | 'getRedirectUrl'> {
   providers: TProviders
@@ -62,7 +62,7 @@ export interface ContextFactoryOptions<
 }
 
 export function getContextFactory<
-  TProviders extends readonly AnySyncProvider[],
+  TProviders extends readonly AnyIntegrationImpl[],
   TLinks extends Record<string, LinkFactory>,
 >(config: ContextFactoryOptions<TProviders, TLinks>) {
   const {

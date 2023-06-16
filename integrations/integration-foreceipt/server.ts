@@ -1,6 +1,6 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import {
-  firebaseProvider,
+  firebaseServer,
   serializeTimestamp,
 } from '@usevenice/integration-firebase'
 import {Rx, rxjs} from '@usevenice/util'
@@ -37,8 +37,9 @@ export const foreceiptServer = {
           .pipe(
             Rx.mergeMap(([q, res]) => {
               info = res
-              return firebaseProvider.sourceSync({
+              return firebaseServer.sourceSync({
                 endUser: null,
+                config: {},
                 settings: client.fbSettings,
                 state: {_fb: fb, _queries: Object.values(q)},
               })
