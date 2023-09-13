@@ -1,0 +1,16 @@
+{
+  "name": "@usevenice/integration-copilot",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/integration-firebase": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/cdk-ledger": "workspace:*"
+  }
+}

@@ -702,6 +702,25 @@ importers:
         specifier: 6.2.1
         version: 6.2.1
 
+  integrations/integration-copilot:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../../packages/cdk-core
+      '@usevenice/integration-firebase':
+        specifier: workspace:*
+        version: link:../integration-firebase
+      '@usevenice/standard':
+        specifier: workspace:*
+        version: link:../../packages/standard
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+    devDependencies:
+      '@usevenice/cdk-ledger':
+        specifier: workspace:*
+        version: link:../../packages/cdk-ledger
+
   integrations/integration-debug:
     dependencies:
       '@usevenice/cdk-core':
