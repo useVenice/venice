@@ -7,6 +7,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  lis,
   query,
   setDoc,
   where,
@@ -30,14 +31,13 @@ const app = initializeApp({
 })
 
 const auth = getAuth(app)
-const userId =  process.env['COPILOT_USER_ID']!
+const userId = process.env['COPILOT_USER_ID']!
 
 signInWithEmailAndPassword(
   auth,
   process.env['COPILOT_EMAIL']!,
   process.env['COPILOT_PASSWORD']!,
 )
-
   .then(async (creds) => {
     console.log('creds', creds)
     const db = getFirestore(app)
@@ -67,13 +67,24 @@ signInWithEmailAndPassword(
       'bFnoccIZuY11EmmwGtAM',
       'transactions',
     )
-    getDocs(
-      query(
-        col,
-        where('user_id', '==', userId),
-        limit(10),
-      ),
+    getDocs(query(col, where('user_id', '==', userId), limit(10)))
+      .then((snapshot) => {
+        console.log(
+          'snap',
+          snapshot.docs.map((doc) => doc.data()),
+        )
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+
+    const col2 = collection(
+      db,
+      'users',
+      userId,
+      'categories', // also 'budgets'
     )
+    getDocs(query(col2, limit(10)))
       .then((snapshot) => {
         console.log(
           'snap',
@@ -108,14 +119,19 @@ signInWithEmailAndPassword(
     //   // docSnap.data() will be undefined in this case
     //   console.log("No such document!");
     // }
-    // const docRef = doc(db, 'changes', userId)
-    // const docSnap = await getDoc(docRef);
+
+    // const docRef = doc(db, 'users', userId)
+    // const docSnap = await getDoc(docRef)
 
     // if (docSnap.exists()) {
-    //   console.log("Document data:", docSnap.data());
+    //   console.log('Document data:', docSnap.data())
+    //   const collections = await docRef.listCollections()
+    //   for (const col of collections) {
+    //     console.log(`Found subcollection with id: ${col.path}`)
+    //   }
     // } else {
     //   // docSnap.data() will be undefined in this case
-    //   console.log("No such document!");
+    //   console.log('No such document!')
     // }
   })
   .catch((err) => {
