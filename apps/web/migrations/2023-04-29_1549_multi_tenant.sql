@@ -7,7 +7,7 @@ DROP POLICY IF EXISTS admin_access ON institution;
 DROP POLICY IF EXISTS admin_access ON integration;
 DROP POLICY IF EXISTS admin_access ON resource;
 DROP POLICY IF EXISTS admin_access ON pipeline;
-DROP POLICY IF EXISTS admin_access ON migrations;
+DROP POLICY IF EXISTS admin_access ON _migrations;
 
 DROP FUNCTION IF EXISTS auth.is_admin;
 DROP PROCEDURE IF EXISTS auth.set_user_admin;

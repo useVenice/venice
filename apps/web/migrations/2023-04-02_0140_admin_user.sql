@@ -20,9 +20,9 @@ $$;
 -- even though empirically it works because this is security we are gonna be more cautious.
 -- Will see if the supabase team has any ideas...
 -- @see https://usevenice.slack.com/archives/C04NUANB7FW/p1680462683033239
-CREATE OR REPLACE FUNCTION auth.is_admin() 
-    RETURNS boolean 
-    LANGUAGE sql 
+CREATE OR REPLACE FUNCTION auth.is_admin()
+    RETURNS boolean
+    LANGUAGE sql
     STABLE
 AS $function$
   select nullif(current_setting('request.jwt.claims', true), '')::jsonb #> '{app_metadata,isAdmin}' = 'true'::jsonb
@@ -37,7 +37,7 @@ CREATE POLICY "admin_access" ON "public"."integration" USING (auth.is_admin());
 CREATE POLICY "admin_access" ON "public"."resource" USING (auth.is_admin());
 CREATE POLICY "admin_access" ON "public"."pipeline" USING (auth.is_admin());
 
-CREATE POLICY "admin_access" ON "public"."migrations" USING (auth.is_admin());
+CREATE POLICY "admin_access" ON "public"."_migrations" USING (auth.is_admin());
 
 DO $$
 BEGIN
