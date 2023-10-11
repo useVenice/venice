@@ -38,7 +38,7 @@ if (getEnvVar('DEBUG_ZOD')) {
 }
 
 function env() {
-  process.env['SKIP_ENV_VALIDATION'] = 'true'
+  process.env['_SKIP_ENV_VALIDATION'] = 'true'
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return require('@usevenice/app-config/env')
     .env as typeof import('@usevenice/app-config/env')['env']
@@ -75,7 +75,7 @@ if (require.main === module) {
     onebrick: () => makeOneBrickClient(intConfig('onebrick')) as {},
     teller: () => makeTellerClient(intConfig('teller')),
     stripe: () =>
-      makeStripeClient({apiKey: process.env['STRIPE_TEST_SECRET_KEY']!}),
+      makeStripeClient({apiKey: process.env['_STRIPE_TEST_SECRET_KEY']!}),
     ramp: () => makeRampClient(intConfig('ramp').oauth),
     wise: () => makeWiseClient(intConfig('wise')),
     toggl: () => makeTogglClient(intConfig('toggl')),
@@ -94,15 +94,15 @@ if (require.main === module) {
 
     'merge.accounting': () =>
       makeMergeClient({
-        apiKey: process.env['MERGE_TEST_API_KEY'] ?? '',
-        accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+        apiKey: process.env['_MERGE_TEST_API_KEY'] ?? '',
+        accountToken: process.env['_MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
       }).accounting,
     'merge.integrations': () =>
       makeMergeClient({
-        apiKey: process.env['MERGE_TEST_API_KEY'] ?? '',
-        accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+        apiKey: process.env['_MERGE_TEST_API_KEY'] ?? '',
+        accountToken: process.env['_MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
       }).integrations,
-    heron: () => makeHeronClient({apiKey: process.env['HERON_API_KEY']!}),
+    heron: () => makeHeronClient({apiKey: process.env['_HERON_API_KEY']!}),
     nango: () =>
       makeNangoClient({secretKey: process.env['_NANGO_SECRET_KEY']!}),
   }

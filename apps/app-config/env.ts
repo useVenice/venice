@@ -31,6 +31,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME: z
       .string()
       .default('supabase'),
+    NEXT_PUBLIC_NANGO_PUBLIC_KEY: z.string(),
     NEXT_PUBLIC_COMMANDBAR_ORG_ID: z.string().optional(),
   },
   runtimeEnv: overrideFromLocalStorage({
@@ -38,6 +39,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
     INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
     NANGO_SECRET_KEY: process.env['NANGO_SECRET_KEY'],
+    NEXT_PUBLIC_NANGO_PUBLIC_KEY: process.env['NEXT_PUBLIC_NANGO_PUBLIC_KEY'],
     JWT_SECRET_OR_PUBLIC_KEY: process.env['JWT_SECRET_OR_PUBLIC_KEY'],
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env['NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY'],
