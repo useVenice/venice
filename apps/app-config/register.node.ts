@@ -49,12 +49,22 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
-implementProxyFn($getFetchFn, () => globalThis.fetch ?? crossFetch, {
+// Prefer crossfetch for agent aka tunneling support
+// TODO: Fix me by switchig to the undici ProxyAgent.
+// @see https://undici.nodejs.org/#/docs/api/ProxyAgent
+// And https://github.com/nodejs/undici/issues/1489
+implementProxyFn($getFetchFn, () => crossFetch ?? globalThis.fetch, {
   replaceExisting: true,
 })
+
 implementProxyFn(
   $makeProxyAgent,
   (input) => {
+    if (globalThis.fetch !== crossFetch) {
+      console.warn(
+        '[proxy] Using proxy agent with non-polyfilled fetch may not work',
+      )
+    }
     // Seems that the default value get overwritten by explicit undefined
     // value from envkey. Here we try to account for that
     // Would be nice if such hack is not required.
