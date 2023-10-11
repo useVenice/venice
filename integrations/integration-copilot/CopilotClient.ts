@@ -1,15 +1,11 @@
 import {initializeApp} from 'firebase/app'
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
-import {getFirestore, limit} from 'firebase/firestore'
 import {
   collection,
-  collectionGroup,
-  doc,
-  getDoc,
   getDocs,
-  lis,
+  getFirestore,
+  limit,
   query,
-  setDoc,
   where,
 } from 'firebase/firestore'
 
