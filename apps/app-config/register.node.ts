@@ -60,7 +60,7 @@ implementProxyFn($getFetchFn, () => crossFetch ?? globalThis.fetch, {
 implementProxyFn(
   $makeProxyAgent,
   (input) => {
-    if (globalThis.fetch !== crossFetch) {
+    if ($getFetchFn() !== crossFetch) {
       console.warn(
         '[proxy] Using proxy agent with non-polyfilled fetch may not work',
       )

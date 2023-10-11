@@ -2,6 +2,7 @@
 
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
+import type {Standard} from '@usevenice/standard'
 import {z, zCast} from '@usevenice/util'
 
 import {mergeLogoSvg} from './merge-logo.svg'
@@ -78,6 +79,7 @@ export const mergeDef = {
       }
     },
   },
+  // Should be called accounting...
   extension: {
     sourceMapEntity: {
       account: (entity) => ({
@@ -85,11 +87,14 @@ export const mergeDef = {
         entityName: 'account',
         entity: {name: entity.entity.name ?? ''},
       }),
-      // transaction: (entity) => ({
-      //   id: entity.id,
-      //   entityName: 'transaction',
-      //   entity: {date: entity.entity.transaction_date},
-      // }),
+      transaction: (entity) => ({
+        id: entity.id,
+        entityName: 'transaction',
+        entity: {
+          date: entity.entity.transaction_date ?? '',
+          description: entity.entity.line_items?.[0]?.memo ?? '',
+        } satisfies Standard.Transaction,
+      }),
     },
   },
 } satisfies IntegrationDef<typeof mergeSchemas>
