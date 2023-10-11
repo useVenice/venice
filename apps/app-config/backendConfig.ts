@@ -47,6 +47,7 @@ export const contextFactory = getContextFactory({
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
+  nangoSecretKey: env.NANGO_SECRET_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
   getMetaService: (viewer) =>
     makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL, viewer}),

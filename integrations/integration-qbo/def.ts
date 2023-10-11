@@ -54,6 +54,7 @@ export const qboDef = {
     stage: 'beta',
     categories: ['accounting'],
     logoUrl: '/_assets/logo-qbo.svg',
+    nangoProvider: 'quickbooks',
   },
   extension: {
     sourceMapEntity: {

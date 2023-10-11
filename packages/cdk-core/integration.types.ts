@@ -47,6 +47,7 @@ export interface IntegrationDef<
   T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
 > {
   name: TSchemas['name']['_def']['value']
+  // TODO: Rename def to schemas...
   def: TSchemas
   metadata?: IntegrationMetadata
 

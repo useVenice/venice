@@ -19,6 +19,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 
     INNGEST_EVENT_KEY: z.string(),
     INNGEST_SIGNING_KEY: z.string(),
+    NANGO_SECRET_KEY: z.string(),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -36,6 +37,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     CLERK_SECRET_KEY: process.env['CLERK_SECRET_KEY'],
     INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
     INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
+    NANGO_SECRET_KEY: process.env['NANGO_SECRET_KEY'],
     JWT_SECRET_OR_PUBLIC_KEY: process.env['JWT_SECRET_OR_PUBLIC_KEY'],
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env['NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY'],

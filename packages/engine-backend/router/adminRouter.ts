@@ -1,6 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
 import {
+  extractProviderName,
   handlersLink,
   makeId,
   sync,
@@ -91,7 +92,7 @@ export const adminRouter = trpc.router({
         // this makes me wonder if UPSERT should always be the default....
         .required({orgId: true}),
     )
-    .mutation(({input: {id: _id, providerName, ...input}, ctx}) => {
+    .mutation(async ({input: {id: _id, providerName, ...input}, ctx}) => {
       const id = _id
         ? _id
         : providerName && input.orgId
@@ -103,14 +104,41 @@ export const adminRouter = trpc.router({
           message: 'Missing id or providerName/orgId',
         })
       }
+      const provider = ctx.providerMap[extractProviderName(id)]
+
+      if (!provider) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Missing provider for ${extractProviderName(id)}`,
+        })
+      }
+      if (provider.metadata?.nangoProvider) {
+        // Create nango integration here...
+        await ctx.nango.post('/config', {
+          bodyJson: {
+            provider_config_key: id,
+            provider: provider.metadata.nangoProvider,
+            // TODO: gotta fix the typing here...
+            oauth_client_id: (input.config as any).clientId,
+            oauth_client_secret: (input.config as any).clientSecret,
+          },
+        })
+      }
+
       return ctx.helpers.patchReturning('integration', id, input)
     }),
   // Need a tuple for some reason... otherwise seems to not work in practice.
   adminDeleteIntegration: adminProcedure
     .input(z.tuple([zId('int')]))
-    .mutation(({input: [intId], ctx}) =>
-      ctx.helpers.metaService.tables.integration.delete(intId),
-    ),
+    .mutation(async ({input: [intId], ctx}) => {
+      const provider = ctx.providerMap[extractProviderName(intId)]
+      if (provider?.metadata?.nangoProvider) {
+        await ctx.nango.delete('/config/{providerConfigKey}', {
+          path: {providerConfigKey: intId},
+        })
+      }
+      return ctx.helpers.metaService.tables.integration.delete(intId)
+    }),
   adminCreateConnectToken: adminProcedure
     .input(adminRouterSchema.adminCreateConnectToken.input)
     .mutation(({input: {endUserId, orgId, validityInSeconds}, ctx}) => {

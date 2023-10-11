@@ -1,11 +1,13 @@
 import {TRPCError} from '@trpc/server'
 
+import {makeNangoClient} from '@usevenice/cdk-core'
 import type {
   AnyIntegrationImpl,
   EndUserId,
   Link,
   LinkFactory,
   MetaService,
+  NangoClient,
 } from '@usevenice/cdk-core'
 import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
@@ -28,6 +30,7 @@ export interface RouterContext {
   // Non-viewer dependent
   providerMap: Record<string, AnyIntegrationImpl>
   jwt: JWTClient
+  nango: NangoClient
   /**
    * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
    * This is needed for 1) server side rendering and 2) webhook handling
@@ -51,6 +54,7 @@ export interface ContextFactoryOptions<
 
   /** Used for authentication */
   jwtSecret: string
+  nangoSecretKey: string
 
   /** Used to store metadata */
   getMetaService: (viewer: Viewer) => MetaService
@@ -97,6 +101,7 @@ export function getContextFactory<
       // --- Non-viewer dependent
       providerMap,
       jwt,
+      nango: makeNangoClient({secretKey: config.nangoSecretKey}),
       apiUrl,
       getRedirectUrl,
     }

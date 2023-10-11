@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
-import {makeJwtClient} from '@usevenice/cdk-core'
+import {makeJwtClient, makeNangoClient} from '@usevenice/cdk-core'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeHeronClient} from '@usevenice/integration-heron'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
@@ -103,6 +103,8 @@ if (require.main === module) {
         accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
       }).integrations,
     heron: () => makeHeronClient({apiKey: process.env['HERON_API_KEY']!}),
+    nango: () =>
+      makeNangoClient({secretKey: process.env['_NANGO_SECRET_KEY']!}),
   }
 
   const clientFactory = z
