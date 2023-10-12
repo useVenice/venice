@@ -145,8 +145,20 @@ export type NangoProvider = z.infer<typeof zNangoProvider>
 
 export const zIntegrationShort = z.object({
   provider: zNangoProvider,
-  /** aka providerConfigKey */
+  /** aka provider_config_key */
   unique_key: z.string(),
+})
+
+export const zConnectionShort = z.object({
+  /**
+   * This is a very mis-leading property name. It is typically the userId. Notably this means each user would only be able
+   * to connect a single connection for each provider
+   */
+  connection_id: z.string(),
+  created: z.string().datetime(),
+  /** Now this is actually the unique id for the connection */
+  id: z.number(),
+  provider: zNangoProvider,
 })
 
 export const zIntegration = zIntegrationShort.extend({
@@ -177,12 +189,24 @@ export const zUpsertIntegration = zIntegration
 export const endpoints = {
   get: {
     '/config': {input: {}, output: z.array(zIntegrationShort)},
-    '/config/{providerConfigKey}': {
+    '/config/{provider_config_key}': {
       input: {
-        path: z.object({providerConfigKey: z.string()}),
+        path: z.object({provider_config_key: z.string()}),
         query: z.object({include_creds: z.boolean().optional()}),
       },
       output: z.union([zIntegration, zIntegrationShort]),
+    },
+    '/connection': {input: {}, output: z.array(zConnectionShort)},
+    '/connection/{connectionId}': {
+      input: {
+        path: z.object({connectionId: z.string()}),
+        query: z.object({
+          provider_config_key: z.string(),
+          force_refresh: z.boolean().optional(),
+          refresh_token: z.boolean().optional(),
+        }),
+      },
+      output: z.any(),
     },
   },
   post: {
@@ -192,8 +216,15 @@ export const endpoints = {
     '/config': {input: {bodyJson: zUpsertIntegration}, output: z.undefined()},
   },
   delete: {
-    '/config/{providerConfigKey}': {
-      input: {path: z.object({providerConfigKey: z.string()})},
+    '/config/{provider_config_key}': {
+      input: {path: z.object({provider_config_key: z.string()})},
+      output: z.undefined(),
+    },
+    '/connection/{connection_id}': {
+      input: {
+        path: z.object({connection_id: z.string()}),
+        query: z.object({provider_config_key: z.string()}),
+      },
       output: z.undefined(),
     },
   },
