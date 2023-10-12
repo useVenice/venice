@@ -16,8 +16,10 @@ import {getServerUrl} from './constants'
 import {env} from './env'
 import {mergedIntegrations} from './integrations/integrations.merged'
 
-export {makePostgresClient} from '@usevenice/integration-postgres'
-export {DatabaseError} from '@usevenice/integration-postgres/makePostgresClient'
+export {
+  DatabaseError,
+  makePostgresClient,
+} from '@usevenice/integration-postgres/makePostgresClient'
 export {Papa} from '@usevenice/integration-spreadsheet'
 
 export const backendEnv = env

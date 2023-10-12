@@ -3,9 +3,12 @@ import {intHelpers} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal, ZCommon} from '@usevenice/cdk-ledger'
 import {z, zCast} from '@usevenice/util'
 
-import {zPgConfig} from './makePostgresClient'
-
-export {makePostgresClient} from './makePostgresClient'
+export const zPgConfig = z.object({
+  databaseUrl: z.string(),
+  migrationsPath: z.string().optional(),
+  migrationTableName: z.string().optional(),
+  transformFieldNames: z.boolean().optional(),
+})
 
 export const postgresSchemas = {
   name: z.literal('postgres'),

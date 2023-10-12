@@ -13,18 +13,12 @@ import {
   memoize,
   R,
   snakeCase,
-  z,
   zFunction,
 } from '@usevenice/util'
 
-export {DatabaseError} from 'pg'
+import {zPgConfig} from './def'
 
-export const zPgConfig = z.object({
-  databaseUrl: z.string(),
-  migrationsPath: z.string().optional(),
-  migrationTableName: z.string().optional(),
-  transformFieldNames: z.boolean().optional(),
-})
+export {DatabaseError} from 'pg'
 
 export const makePostgresClient = zFunction(
   zPgConfig,

@@ -12,11 +12,8 @@ import type {
 import {zViewer} from '@usevenice/cdk-core'
 import {memoize, R, zFunction} from '@usevenice/util'
 
-import {
-  applyLimitOffset,
-  makePostgresClient,
-  zPgConfig,
-} from './makePostgresClient'
+import {zPgConfig} from './def'
+import {applyLimitOffset, makePostgresClient} from './makePostgresClient'
 
 const getPostgreClient = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
