@@ -5,6 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
+    "@nangohq/frontend": "0.33.8",
     "@tanstack/react-query": "*",
     "@trpc/client": "10.21.1",
     "@trpc/react-query": "10.21.1",

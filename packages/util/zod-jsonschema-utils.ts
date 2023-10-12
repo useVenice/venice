@@ -15,7 +15,7 @@ export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
       .filter((n) => !!n) // Filter out nesting from things like anyOf
       .join('.')
 
-    if (node.title) {
+    if (node.title && jsonPath) {
       // @see https://share.cleanshot.com/16sDgL6D
       node.title = `${jsonPath}: ${node.title}`
     } else if (jsonPath && !jsonPath.endsWith('.')) {

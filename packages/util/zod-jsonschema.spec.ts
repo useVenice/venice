@@ -140,11 +140,11 @@ test('enum description to title 2', () => {
                 "clientId",
                 "clientSecret",
               ],
-              "title": "Enable",
+              "title": "oauth: Enable",
               "type": "object",
             },
             {
-              "title": "Disable",
+              "title": "oauth: Disable",
               "type": "null",
             },
           ],

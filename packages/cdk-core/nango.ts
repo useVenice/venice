@@ -154,7 +154,9 @@ export const zIntegration = zIntegrationShort.extend({
   client_secret: z.string(),
   scopes: z.string(),
   app_link: z.string().nullish(),
-  auth_mode: z.enum(['OAUTH2', 'OAUTH1', 'BASIC']),
+  // In practice we only use nango for oauth integrations
+  // but in theory we could use it for a generic secret store as well
+  auth_mode: z.enum(['OAUTH2', 'OAUTH1', 'BASIC', 'API_KEY']),
 })
 
 export const zUpsertIntegration = zIntegration

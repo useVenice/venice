@@ -7,7 +7,7 @@ import {
   zodToJsonSchema,
 } from '@usevenice/util'
 
-import type {EndUserId, ExtEndUserId, ExternalId} from './id.types'
+import type {EndUserId, ExtEndUserId, ExternalId, Id} from './id.types'
 import {zExternalId} from './id.types'
 import type {
   AnyIntegrationImpl,
@@ -102,7 +102,10 @@ export type UseConnectHook<T extends IntHelpers = IntHelpers> = (scope: {
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],
-  context: ConnectOptions,
+  context: ConnectOptions & {
+    // TODO: Does this belong here?
+    integrationId: Id['int']
+  },
 ) => Promise<T['_types']['connectOutput']>
 
 // MARK: - Server side connect types

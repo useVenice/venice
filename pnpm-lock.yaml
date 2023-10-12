@@ -1316,6 +1316,9 @@ importers:
 
   packages/engine-frontend:
     dependencies:
+      '@nangohq/frontend':
+        specifier: 0.33.8
+        version: 0.33.8
       '@tanstack/react-query':
         specifier: 4.28.0
         version: 4.28.0(react-dom@18.2.0)(react@18.2.0)
@@ -3878,6 +3881,10 @@ packages:
   /@n1ru4l/push-pull-async-iterable-iterator@3.2.0:
     resolution: {integrity: sha512-3fkKj25kEjsfObL6IlKPAlHYPq/oYwUkkQ03zsTTiDjD7vg/RxjdiLeCydqtxHZP0JgsXL3D/X5oAkMGzuUp/Q==}
     engines: {node: '>=12'}
+    dev: false
+
+  /@nangohq/frontend@0.33.8:
+    resolution: {integrity: sha512-iKTo4BDEXaKG6FbZzT9iACr07lGDBhmaS90+tsd92XrFpO8Gk7JGMp13lUS66mfwTcCXqPBXFVSkBvE0QyJi8Q==}
     dev: false
 
   /@next/env@13.4.3:

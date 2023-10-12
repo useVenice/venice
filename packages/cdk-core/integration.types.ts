@@ -1,7 +1,7 @@
 import type {MaybePromise, z} from '@usevenice/util'
 import {R} from '@usevenice/util'
 
-import type {EndUserId} from './id.types'
+import type {EndUserId, Id} from './id.types'
 import {makeId} from './id.types'
 import type {ZStandard} from './meta.types'
 import type {
@@ -100,7 +100,10 @@ export interface IntegrationClient<
     openDialog: OpenDialogFn
   }) => (
     connectInput: T['_types']['connectInput'],
-    context: ConnectOptions,
+    context: ConnectOptions & {
+      // TODO: Does this belong here?
+      integrationId: Id['int']
+    },
   ) => Promise<T['_types']['connectOutput']>
 }
 

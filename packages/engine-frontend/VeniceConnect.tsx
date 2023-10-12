@@ -1,5 +1,6 @@
 'use client'
 
+import Nango from '@nangohq/frontend'
 import {useMutation} from '@tanstack/react-query'
 import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
@@ -7,6 +8,7 @@ import React from 'react'
 import type {
   Id,
   IntegrationClient,
+  IntegrationDef,
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk-core'
@@ -47,9 +49,12 @@ import {_trpcReact} from './TRPCProvider'
 type ConnectEventType = 'open' | 'close' | 'error'
 
 export interface VeniceConnectProps extends UIPropsNoChildren {
+  /** Does this belong here? */
+  nangoPublicKey: string
   /** Whether to display the existing connections */
   showExisting?: boolean
   clientIntegrations: Record<string, IntegrationClient>
+  defIntegrations: Record<string, IntegrationDef>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
 
@@ -132,15 +137,22 @@ type ProviderMeta = Catalog[string]
 export function _VeniceConnect({
   catalog,
   clientIntegrations,
+  defIntegrations,
   onEvent,
   showExisting,
   className,
   integrationIds,
+  nangoPublicKey,
   ...uiProps
 }: VeniceConnectProps & {
   integrationIds: Array<Id['int']>
   catalog: Catalog
 }) {
+  const nango = React.useMemo(
+    () => new Nango({publicKey: nangoPublicKey}),
+    [nangoPublicKey],
+  )
+
   // VeniceConnect should be fetching its own integrationIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
@@ -194,10 +206,21 @@ export function _VeniceConnect({
     integrationIds,
     R.map(extractProviderName),
     R.uniq,
-    R.mapToObj((name: string) => [
-      name,
-      clientIntegrations[name]?.useConnectHook?.({openDialog}),
-    ]),
+    R.mapToObj((name: string) => {
+      let fn = clientIntegrations[name]?.useConnectHook?.({openDialog})
+      const nangoProvider = defIntegrations[name]?.metadata?.nangoProvider
+      if (!fn && nangoProvider) {
+        console.log('adding nnango provider for', nangoProvider)
+
+        fn = async (_, {integrationId}) => {
+          console.log('inputs', integrationId)
+          await nango.auth(integrationId, 'conn_test').then((r) => {
+            console.log('auth', r)
+          })
+        }
+      }
+      return [name, fn]
+    }),
   )
 
   const categories = zIntegrationCategory.options
@@ -359,7 +382,7 @@ export const WithProviderConnect = ({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const connOutput = connectFn
-        ? await connectFn?.(connInput, {})
+        ? await connectFn?.(connInput, {integrationId: int.id})
         : connInput
       console.log(`[VeniceConnect] ${int.id} connOutput`, connOutput)
 
