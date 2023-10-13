@@ -178,7 +178,7 @@ export const zConnection = zConnectionShort.extend({
       refresh_token: z.string().nullish(),
       refresh_token_expires_in: z.number().nullish(),
       token_type: z.string(), //'bearer',
-      scope: z.string(),
+      scope: z.string().optional(),
     }),
   }),
   connection_config: z.record(z.unknown()),

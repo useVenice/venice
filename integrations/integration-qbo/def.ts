@@ -89,10 +89,13 @@ export const qboDef = {
             }
             for (const l of t.entity.Line) {
               postings[l.Id] = {
-                accountExternalId: globalId(
-                  t.realmId,
-                  l.AccountBasedExpenseLineDetail.AccountRef.value,
-                ),
+                // TODO: Handle non-accountBasedExpenseLineDetail
+                accountExternalId:
+                  l.AccountBasedExpenseLineDetail &&
+                  globalId(
+                    t.realmId,
+                    l.AccountBasedExpenseLineDetail.AccountRef.value,
+                  ),
                 amount: A(-1 * sign * l.Amount, t.entity.CurrencyRef.value),
                 memo: l.Description,
               }
@@ -132,10 +135,10 @@ export const qboDef = {
             }
             for (const l of t.entity.Line) {
               postings[l.Id] = {
-                accountExternalId: globalId(
-                  t.realmId,
-                  l.DepositLineDetail.AccountRef.value,
-                ),
+                // Handle https://gist.github.com/tonyxiao/a9873b41c2df76f4f66c226933134a82
+                accountExternalId:
+                  l.DepositLineDetail?.AccountRef &&
+                  globalId(t.realmId, l.DepositLineDetail.AccountRef.value),
                 amount: A(-1 * l.Amount, t.entity.CurrencyRef.value),
                 memo: l.Description,
               }
@@ -265,10 +268,9 @@ export const qboDef = {
                 // QBO uses a default accounts receivable account. but it does not appear possible to know
                 // exactly the id of the default account. therefore we wiill have to make do...
                 // https://c9.qbo.intuit.com/app/invoice?txnId=3968 for instance
-                accountExternalId: globalId(
-                  t.realmId,
-                  t.entity.DepositToAccountRef.value,
-                ),
+                accountExternalId:
+                  t.entity.DepositToAccountRef &&
+                  globalId(t.realmId, t.entity.DepositToAccountRef.value),
               },
               remainder: {
                 accountType: 'asset/accounts_receivable',
