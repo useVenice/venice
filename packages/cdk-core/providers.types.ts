@@ -40,6 +40,7 @@ export const metaForProvider = (provider: AnyIntegrationImpl) => ({
   // TODO: Maybe nangoProvider be more explicit as a base provider?
   hasPostConnect:
     provider.postConnect != null || provider.metadata?.nangoProvider,
+  nangoProvider: provider.metadata?.nangoProvider,
   schemas: R.mapValues(provider.def ?? {}, (schema) =>
     schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
   ) as Record<keyof IntegrationSchemas, JSONSchema>,

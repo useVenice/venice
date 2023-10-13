@@ -8,4 +8,7 @@ export const publicRouter = trpc.router({
   getIntegrationCatalog: publicProcedure.query(({ctx}) =>
     R.mapValues(ctx.providerMap, (provider) => metaForProvider(provider)),
   ),
+  getPublicEnv: publicProcedure.query(({ctx}) =>
+    R.pick(ctx.env, ['NEXT_PUBLIC_NANGO_PUBLIC_KEY']),
+  ),
 })

@@ -63,6 +63,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 } satisfies Parameters<typeof createEnv>[0]
 
 export const env = createEnv(envConfig)
+export type Env = typeof env
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 ;(globalThis as any).env = env

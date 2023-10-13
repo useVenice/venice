@@ -13,6 +13,8 @@ import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
 import {R} from '@usevenice/util'
 
+import type {Env} from '../../apps/app-config/env'
+// Should we actually do this hmm
 import type {_Integration, _Pipeline} from './contextHelpers'
 import {getContextHelpers} from './contextHelpers'
 import type {PipelineInput, ResourceInput} from './types'
@@ -31,6 +33,7 @@ export interface RouterContext {
   providerMap: Record<string, AnyIntegrationImpl>
   jwt: JWTClient
   nango: NangoClient
+  env: Env
   /**
    * Base url of the engine-backend router when deployed, e.g. `localhost:3000/api/usevenice`
    * This is needed for 1) server side rendering and 2) webhook handling
@@ -55,6 +58,7 @@ export interface ContextFactoryOptions<
   /** Used for authentication */
   jwtSecret: string
   nangoSecretKey: string
+  env: Env
 
   /** Used to store metadata */
   getMetaService: (viewer: Viewer) => MetaService
@@ -76,6 +80,7 @@ export function getContextFactory<
     getMetaService,
     providers,
     jwtSecret,
+    env,
   } = config
   for (const provider of providers) {
     if (typeof provider.name !== 'string') {
@@ -101,6 +106,7 @@ export function getContextFactory<
       // --- Non-viewer dependent
       providerMap,
       jwt,
+      env,
       nango: makeNangoClient({secretKey: config.nangoSecretKey}),
       apiUrl,
       getRedirectUrl,

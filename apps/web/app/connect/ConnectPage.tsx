@@ -1,8 +1,6 @@
 'use client'
 
-import {env} from '@usevenice/app-config/env'
 import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
-import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {VeniceConnect} from '@usevenice/engine-frontend'
 
 /**
@@ -10,12 +8,5 @@ import {VeniceConnect} from '@usevenice/engine-frontend'
  * from a server component because it contains function references (i.e. useConnectHook)
  */
 export default function ConnectPage() {
-  return (
-    <VeniceConnect
-      clientIntegrations={clientIntegrations}
-      defIntegrations={defIntegrations}
-      showExisting
-      nangoPublicKey={env.NEXT_PUBLIC_NANGO_PUBLIC_KEY}
-    />
-  )
+  return <VeniceConnect clientIntegrations={clientIntegrations} showExisting />
 }

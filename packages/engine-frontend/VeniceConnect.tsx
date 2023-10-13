@@ -8,7 +8,6 @@ import React from 'react'
 import type {
   Id,
   IntegrationClient,
-  IntegrationDef,
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk-core'
@@ -50,12 +49,9 @@ import {_trpcReact} from './TRPCProvider'
 type ConnectEventType = 'open' | 'close' | 'error'
 
 export interface VeniceConnectProps extends UIPropsNoChildren {
-  /** Does this belong here? */
-  nangoPublicKey: string
   /** Whether to display the existing connections */
   showExisting?: boolean
   clientIntegrations: Record<string, IntegrationClient>
-  defIntegrations: Record<string, IntegrationDef>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
 }
 
@@ -138,19 +134,20 @@ type ProviderMeta = Catalog[string]
 export function _VeniceConnect({
   catalog,
   clientIntegrations,
-  defIntegrations,
   onEvent,
   showExisting,
   className,
   integrationIds,
-  nangoPublicKey,
   ...uiProps
 }: VeniceConnectProps & {
   integrationIds: Array<Id['int']>
   catalog: Catalog
 }) {
+  const nangoPublicKey =
+    _trpcReact.getPublicEnv.useQuery().data?.NEXT_PUBLIC_NANGO_PUBLIC_KEY
+
   const nango = React.useMemo(
-    () => new Nango({publicKey: nangoPublicKey}),
+    () => nangoPublicKey && new Nango({publicKey: nangoPublicKey}),
     [nangoPublicKey],
   )
 
@@ -209,13 +206,16 @@ export function _VeniceConnect({
     R.uniq,
     R.mapToObj((name: string) => {
       let fn = clientIntegrations[name]?.useConnectHook?.({openDialog})
-      const nangoProvider = defIntegrations[name]?.metadata?.nangoProvider
+      const nangoProvider = catalog[name]?.nangoProvider
       if (!fn && nangoProvider) {
         console.log('adding nnango provider for', nangoProvider)
 
         fn = async (_, {integrationId}) => {
           console.log('inputs', integrationId)
           const resoId = makeId('reso', name, makeUlid())
+          if (!nango) {
+            throw new Error('Missing nango public key')
+          }
           return await nango.auth(integrationId, resoId).then((r) => {
             console.log('auth', r)
             if ('message' in r) {

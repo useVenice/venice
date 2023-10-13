@@ -48,6 +48,7 @@ export const contextFactory = getContextFactory({
   providers: Object.values(mergedIntegrations),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
+  env,
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
   nangoSecretKey: env.NANGO_SECRET_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
