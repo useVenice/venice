@@ -16,6 +16,7 @@ import {
   CANCELLATION_TOKEN,
   extractId,
   extractProviderName,
+  makeId,
   zIntegrationCategory,
 } from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
@@ -42,7 +43,7 @@ import {
   useToast,
 } from '@usevenice/ui'
 import {cn} from '@usevenice/ui/utils'
-import {R, titleCase, z} from '@usevenice/util'
+import {makeUlid, R, titleCase, z} from '@usevenice/util'
 
 import {_trpcReact} from './TRPCProvider'
 
@@ -214,8 +215,13 @@ export function _VeniceConnect({
 
         fn = async (_, {integrationId}) => {
           console.log('inputs', integrationId)
-          await nango.auth(integrationId, 'conn_test').then((r) => {
+          const resoId = makeId('reso', name, makeUlid())
+          return await nango.auth(integrationId, resoId).then((r) => {
             console.log('auth', r)
+            if ('message' in r) {
+              throw new Error(`${r.type}: ${r.message}`)
+            }
+            return r
           })
         }
       }

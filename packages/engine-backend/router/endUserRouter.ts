@@ -1,5 +1,6 @@
 import type {ResourceUpdate} from '@usevenice/cdk-core'
 import {
+  extractId,
   makeId,
   zConnectOptions,
   zId,
@@ -72,34 +73,63 @@ export const endUserRouter = trpc.router({
       }) => {
         const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
         console.log('didConnect start', int.provider.name, input, connCtxInput)
-        if (!int.provider.postConnect || !int.provider.def.connectOutput) {
+
+        const resoUpdate = await (async () => {
+          if (
+            !int.provider.postConnect &&
+            int.provider.metadata?.nangoProvider
+          ) {
+            const {connectionId: resoId} = z
+              .object({
+                providerConfigKey: z.string(),
+                connectionId: zId('reso'),
+              })
+              .parse(input)
+            const result = await ctx.nango.get('/connection/{connectionId}', {
+              path: {connectionId: resoId},
+              query: {provider_config_key: intId},
+            })
+
+            return {
+              resourceExternalId: extractId(resoId)[2],
+              settings: {nango: result},
+            } satisfies Omit<ResourceUpdate<any, any>, 'endUserId'>
+          }
+
+          if (!int.provider.postConnect || !int.provider.def.connectOutput) {
+            return null
+          }
+
+          const reso = resourceExternalId
+            ? await ctx.helpers.getResourceOrFail(
+                makeId('reso', int.provider.name, resourceExternalId),
+              )
+            : undefined
+          return await int.provider.postConnect(
+            int.provider.def.connectOutput.parse(input),
+            int.config,
+            {
+              ...connCtxInput,
+              extEndUserId: ctx.extEndUserId,
+              resource: reso
+                ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  {externalId: resourceExternalId!, settings: reso.settings}
+                : undefined,
+              webhookBaseUrl: joinPath(
+                ctx.apiUrl,
+                parseWebhookRequest.pathOf(int.id),
+              ),
+              redirectUrl: ctx.getRedirectUrl?.(int, {
+                endUserId:
+                  ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
+              }),
+            },
+          )
+        })()
+
+        if (!resoUpdate) {
           return 'Noop'
         }
-        const reso = resourceExternalId
-          ? await ctx.helpers.getResourceOrFail(
-              makeId('reso', int.provider.name, resourceExternalId),
-            )
-          : undefined
-        const resoUpdate = await int.provider.postConnect(
-          int.provider.def.connectOutput.parse(input),
-          int.config,
-          {
-            ...connCtxInput,
-            extEndUserId: ctx.extEndUserId,
-            resource: reso
-              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                {externalId: resourceExternalId!, settings: reso.settings}
-              : undefined,
-            webhookBaseUrl: joinPath(
-              ctx.apiUrl,
-              parseWebhookRequest.pathOf(int.id),
-            ),
-            redirectUrl: ctx.getRedirectUrl?.(int, {
-              endUserId:
-                ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
-            }),
-          },
-        )
 
         const syncInBackground =
           resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand

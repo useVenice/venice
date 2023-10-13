@@ -10,6 +10,7 @@ import {
 export const zConfig = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
+  scope: z.string(),
   url: z.string().nullish().describe('For proxies, not typically needed'),
   verifierToken: z.string().nullish().describe('For webhooks'),
 })

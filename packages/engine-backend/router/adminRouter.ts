@@ -113,14 +113,16 @@ export const adminRouter = trpc.router({
         })
       }
       if (provider.metadata?.nangoProvider) {
+        // TODO: Should we use put vs. post? need to fix it up here...
         // Create nango integration here...
-        await ctx.nango.post('/config', {
+        await ctx.nango.put('/config', {
           bodyJson: {
             provider_config_key: id,
             provider: provider.metadata.nangoProvider,
             // TODO: gotta fix the typing here...
             oauth_client_id: (input.config as any).clientId,
             oauth_client_secret: (input.config as any).clientSecret,
+            oauth_scopes: (input.config as any).scope,
           },
         })
       }
@@ -133,8 +135,8 @@ export const adminRouter = trpc.router({
     .mutation(async ({input: [intId], ctx}) => {
       const provider = ctx.providerMap[extractProviderName(intId)]
       if (provider?.metadata?.nangoProvider) {
-        await ctx.nango.delete('/config/{providerConfigKey}', {
-          path: {providerConfigKey: intId},
+        await ctx.nango.delete('/config/{provider_config_key}', {
+          path: {provider_config_key: intId},
         })
       }
       return ctx.helpers.metaService.tables.integration.delete(intId)

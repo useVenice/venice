@@ -141,6 +141,8 @@ const zNangoProvider = z.enum([
   'zoom',
 ])
 
+export const zAuthMode = z.enum(['OAUTH2', 'OAUTH1', 'BASIC', 'API_KEY'])
+
 export type NangoProvider = z.infer<typeof zNangoProvider>
 
 export const zIntegrationShort = z.object({
@@ -161,6 +163,32 @@ export const zConnectionShort = z.object({
   provider: zNangoProvider,
 })
 
+export const zConnection = zConnectionShort.extend({
+  updated_at: z.string().datetime(),
+  provider_config_key: z.string(),
+  credentials: z.object({
+    type: zAuthMode,
+    access_token: z.string(),
+    expires_at: z.string().datetime(),
+    raw: z.object({
+      access_token: z.string(),
+      expires_in: z.number(),
+      refresh_token_expires_in: z.number(),
+      token_type: z.string(), //'bearer',
+      scope: z.string(),
+      expires_at: z.string().datetime(),
+    }),
+  }),
+  connection_config: z.record(z.unknown()),
+  metadata: z.record(z.unknown()).nullable(),
+  credentials_iv: z.string(),
+  credentials_tag: z.string(),
+  environment_id: z.number(),
+  deleted: z.boolean(),
+  deleted_at: z.string().datetime().nullable(),
+  last_fetched_at: z.string().datetime().nullable(),
+})
+
 export const zIntegration = zIntegrationShort.extend({
   client_id: z.string(),
   client_secret: z.string(),
@@ -168,7 +196,7 @@ export const zIntegration = zIntegrationShort.extend({
   app_link: z.string().nullish(),
   // In practice we only use nango for oauth integrations
   // but in theory we could use it for a generic secret store as well
-  auth_mode: z.enum(['OAUTH2', 'OAUTH1', 'BASIC', 'API_KEY']),
+  auth_mode: zAuthMode,
 })
 
 export const zUpsertIntegration = zIntegration
@@ -206,7 +234,7 @@ export const endpoints = {
           refresh_token: z.boolean().optional(),
         }),
       },
-      output: z.any(),
+      output: zConnection,
     },
   },
   post: {
