@@ -8,6 +8,7 @@ import {makeQBOClient} from './QBOClient'
 export const qboServer = {
   sourceSync: ({config, settings}) => {
     const qbo = makeQBOClient(config, settings)
+    const realmId = settings.oauth.connection_config.realmId
     async function* iterateEntities() {
       for await (const res of qbo.getAll('Account')) {
         yield res.entities.map((a) => qboHelpers._opData('account', a.Id, a))
@@ -20,7 +21,7 @@ export const qboServer = {
             qboHelpers._opData('transaction', t.Id, {
               type: type as 'Purchase',
               entity: t as QBO.Purchase,
-              realmId: settings.realmId,
+              realmId,
             }),
           )
         }

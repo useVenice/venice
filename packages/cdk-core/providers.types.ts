@@ -14,7 +14,7 @@ import type {
   IntegrationSchemas,
   IntHelpers,
 } from './integration.types'
-import type {NangoProvider} from './NangoClient'
+import type {NangoProvider} from './oauth/NangoClient'
 import type {AnyEntityPayload, ResoUpdateData, Source} from './protocol'
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

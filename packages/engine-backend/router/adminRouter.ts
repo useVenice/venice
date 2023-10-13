@@ -1,17 +1,17 @@
 import {TRPCError} from '@trpc/server'
 
-import type {
-  UpsertIntegration} from '@usevenice/cdk-core';
 import {
   extractProviderName,
   handlersLink,
   makeId,
+  makeOauthIntegrationServer,
+  oauthBaseSchema,
   sync,
   zEndUserId,
   zId,
   zRaw,
 } from '@usevenice/cdk-core'
-import {HTTPError, makeUlid, rxjs, z} from '@usevenice/util'
+import {makeUlid, rxjs, z} from '@usevenice/util'
 
 import {adminProcedure, trpc} from './_base'
 
@@ -115,25 +115,13 @@ export const adminRouter = trpc.router({
         })
       }
       if (provider.metadata?.nangoProvider) {
-        // TODO: Should we use put vs. post? need to fix it up here...
-        // Create nango integration here...
-        const bodyJson: UpsertIntegration = {
-          provider_config_key: id,
-          provider: provider.metadata.nangoProvider,
-          // TODO: gotta fix the typing here...
-          oauth_client_id: (input.config as any).clientId,
-          oauth_client_secret: (input.config as any).clientSecret,
-          oauth_scopes: (input.config as any).scope,
-        }
-        await ctx.nango.put('/config', {bodyJson}).catch((err) => {
-          if (
-            err instanceof HTTPError &&
-            err.response?.data.type === 'unknown_provider_config'
-          ) {
-            return ctx.nango.post('/config', {bodyJson})
-          }
-          throw err
-        })
+        await makeOauthIntegrationServer({
+          intId: id,
+          nangoClient: ctx.nango,
+          nangoProvider: provider.metadata.nangoProvider,
+        }).upsertIntegration(
+          oauthBaseSchema.integrationConfig.parse(input.config),
+        )
       }
 
       return ctx.helpers.patchReturning('integration', id, input)

@@ -1,7 +1,7 @@
-import type {ResourceUpdate} from '@usevenice/cdk-core'
+import type {OauthBaseTypes, ResourceUpdate} from '@usevenice/cdk-core'
 import {
-  extractId,
   makeId,
+  makeOauthIntegrationServer,
   zConnectOptions,
   zId,
   zPostConnectOptions,
@@ -79,27 +79,14 @@ export const endUserRouter = trpc.router({
             !int.provider.postConnect &&
             int.provider.metadata?.nangoProvider
           ) {
-            const {connectionId: resoId} = z
-              .object({
-                providerConfigKey: z.string(),
-                connectionId: zId('reso'),
-              })
-              .parse(input)
-            const result = await ctx.nango.get('/connection/{connectionId}', {
-              path: {connectionId: resoId},
-              query: {provider_config_key: intId, refresh_token: true},
-            })
-
-            return {
-              resourceExternalId: extractId(resoId)[2],
-              settings: {
-                nango: result,
-                accessToken: result.credentials.access_token,
-                accessTokenExpiresAt: result.credentials.expires_at,
-                refreshToken: result.credentials.raw.refresh_token,
-                realmId: result.connection_config['realmId'],
-              },
-            } satisfies Omit<ResourceUpdate<any, any>, 'endUserId'>
+            return (await makeOauthIntegrationServer({
+              nangoClient: ctx.nango,
+              intId,
+              nangoProvider: int.provider.metadata.nangoProvider,
+            }).postConnect(input as OauthBaseTypes['connectOutput'])) as Omit<
+              ResourceUpdate<any, any>,
+              'endUserId'
+            >
           }
 
           if (!int.provider.postConnect || !int.provider.def.connectOutput) {

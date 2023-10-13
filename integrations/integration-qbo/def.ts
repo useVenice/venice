@@ -1,16 +1,17 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
+import {intHelpers, oauthBaseSchema} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
 
-import {zConfig, zCreds} from './QBOClient'
+import {zConfig, zSettings} from './QBOClient'
 
 export const qboSchemas = {
   name: z.literal('qbo'),
   integrationConfig: zConfig,
-  resourceSettings: zCreds,
+  resourceSettings: zSettings,
+  connectOutput: oauthBaseSchema.connectOutput,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

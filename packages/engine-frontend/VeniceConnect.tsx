@@ -1,7 +1,6 @@
 'use client'
 
-import type {AuthError} from '@nangohq/frontend'
-import Nango from '@nangohq/frontend'
+import NangoFrontend from '@nangohq/frontend'
 import {useMutation} from '@tanstack/react-query'
 import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
@@ -16,7 +15,7 @@ import {
   CANCELLATION_TOKEN,
   extractId,
   extractProviderName,
-  makeId,
+  oauthConnect,
   zIntegrationCategory,
 } from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
@@ -43,13 +42,9 @@ import {
   useToast,
 } from '@usevenice/ui'
 import {cn} from '@usevenice/ui/utils'
-import {makeUlid, R, titleCase, z} from '@usevenice/util'
+import {R, titleCase, z} from '@usevenice/util'
 
 import {_trpcReact} from './TRPCProvider'
-
-function isNangoAuthError(err: unknown): err is AuthError {
-  return typeof err === 'object' && err != null && 'type' in err
-}
 
 type ConnectEventType = 'open' | 'close' | 'error'
 
@@ -156,10 +151,10 @@ export function _VeniceConnect({
   const nangoPublicKey =
     _trpcReact.getPublicEnv.useQuery().data?.NEXT_PUBLIC_NANGO_PUBLIC_KEY
 
-  const nango = React.useMemo(
+  const nangoFrontend = React.useMemo(
     () =>
       nangoPublicKey &&
-      new Nango({publicKey: nangoPublicKey, debug: __DEBUG__}),
+      new NangoFrontend({publicKey: nangoPublicKey, debug: __DEBUG__}),
     [nangoPublicKey],
   )
 
@@ -216,30 +211,19 @@ export function _VeniceConnect({
     integrationIds,
     R.map(extractProviderName),
     R.uniq,
-    R.mapToObj((name: string) => {
-      let fn = clientIntegrations[name]?.useConnectHook?.({openDialog})
-      const nangoProvider = catalog[name]?.nangoProvider
+    R.mapToObj((providerName: string) => {
+      let fn = clientIntegrations[providerName]?.useConnectHook?.({openDialog})
+      const nangoProvider = catalog[providerName]?.nangoProvider
       if (!fn && nangoProvider) {
         console.log('adding nnango provider for', nangoProvider)
-
-        fn = async (_, {integrationId}) => {
-          console.log('inputs', integrationId)
-          const resoId = makeId('reso', name, makeUlid())
-          if (!nango) {
+        fn = (_, {integrationId}) => {
+          if (!nangoFrontend) {
             throw new Error('Missing nango public key')
           }
-          return await nango.auth(integrationId, resoId).catch((err) => {
-            if (isNangoAuthError(err)) {
-              if (err.type === 'user_cancelled') {
-                throw CANCELLATION_TOKEN
-              }
-              throw new Error(`${err.type}: ${err.message}`)
-            }
-            throw err
-          })
+          return oauthConnect({integrationId, nangoFrontend, providerName})
         }
       }
-      return [name, fn]
+      return [providerName, fn]
     }),
   )
 
