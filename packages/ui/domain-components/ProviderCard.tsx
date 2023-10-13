@@ -109,7 +109,7 @@ export const IntegrationCard = ({
     // Temporary hack due to presence of labels for plaid. Need better design for ProviderCard and IntegrationCard
     labels={
       // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
-      int.providerName === 'plaid' && int.config?.['envName']
+      int.config?.['envName']
         ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
           [`${int.config?.['envName']}`]
         : []

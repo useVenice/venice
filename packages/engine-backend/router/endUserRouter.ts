@@ -87,12 +87,18 @@ export const endUserRouter = trpc.router({
               .parse(input)
             const result = await ctx.nango.get('/connection/{connectionId}', {
               path: {connectionId: resoId},
-              query: {provider_config_key: intId},
+              query: {provider_config_key: intId, refresh_token: true},
             })
 
             return {
               resourceExternalId: extractId(resoId)[2],
-              settings: {nango: result},
+              settings: {
+                nango: result,
+                accessToken: result.credentials.access_token,
+                accessTokenExpiresAt: result.credentials.expires_at,
+                refreshToken: result.credentials.raw.refresh_token,
+                realmId: result.connection_config['realmId'],
+              },
             } satisfies Omit<ResourceUpdate<any, any>, 'endUserId'>
           }
 

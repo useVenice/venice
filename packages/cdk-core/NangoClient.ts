@@ -173,10 +173,12 @@ export const zConnection = zConnectionShort.extend({
     raw: z.object({
       access_token: z.string(),
       expires_in: z.number(),
-      refresh_token_expires_in: z.number(),
+      expires_at: z.string().datetime(),
+      /** Refresh token (Only returned if the REFRESH_TOKEN boolean parameter is set to true and the refresh token is available) */
+      refresh_token: z.string().nullish(),
+      refresh_token_expires_in: z.number().nullish(),
       token_type: z.string(), //'bearer',
       scope: z.string(),
-      expires_at: z.string().datetime(),
     }),
   }),
   connection_config: z.record(z.unknown()),
@@ -192,6 +194,7 @@ export const zConnection = zConnectionShort.extend({
 export const zIntegration = zIntegrationShort.extend({
   client_id: z.string(),
   client_secret: z.string(),
+  /** comma deliminated scopes with no spaces in between */
   scopes: z.string(),
   app_link: z.string().nullish(),
   // In practice we only use nango for oauth integrations
@@ -213,6 +216,8 @@ export const zUpsertIntegration = zIntegration
     oauth_scopes: z.string().optional(),
   })
   .partial({auth_mode: true})
+
+export type UpsertIntegration = z.infer<typeof zUpsertIntegration>
 
 export const endpoints = {
   get: {
@@ -251,7 +256,11 @@ export const endpoints = {
     '/connection/{connection_id}': {
       input: {
         path: z.object({connection_id: z.string()}),
-        query: z.object({provider_config_key: z.string()}),
+        query: z.object({
+          provider_config_key: z.string(),
+          force_refresh: z.boolean().optional(),
+          refresh_token: z.boolean().optional(),
+        }),
       },
       output: z.undefined(),
     },
