@@ -46,13 +46,16 @@ export function oauthConnect({
   nangoFrontend,
   providerName,
   integrationId,
+  resourceId,
 }: {
   nangoFrontend: NangoFrontend
   providerName: string
   integrationId: Id['int']
+  /** Should address the re-connect scenario, but let's see... */
+  resourceId?: Id['reso']
 }): Promise<OauthBaseTypes['connectOutput']> {
   return nangoFrontend
-    .auth(integrationId, makeId('reso', providerName, makeUlid()))
+    .auth(integrationId, resourceId ?? makeId('reso', providerName, makeUlid()))
     .then((r) => oauthBaseSchema.connectOutput.parse(r))
     .catch((err) => {
       if (isNangoAuthError(err)) {
