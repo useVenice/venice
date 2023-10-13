@@ -1,5 +1,6 @@
 'use client'
 
+import type {AuthError} from '@nangohq/frontend'
 import Nango from '@nangohq/frontend'
 import {useMutation} from '@tanstack/react-query'
 import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
@@ -45,6 +46,10 @@ import {cn} from '@usevenice/ui/utils'
 import {makeUlid, R, titleCase, z} from '@usevenice/util'
 
 import {_trpcReact} from './TRPCProvider'
+
+function isNangoAuthError(err: unknown): err is AuthError {
+  return typeof err === 'object' && err != null && 'type' in err
+}
 
 type ConnectEventType = 'open' | 'close' | 'error'
 
@@ -130,6 +135,11 @@ export function VeniceConnect(props: VeniceConnectProps) {
 type Catalog = RouterOutput['getIntegrationCatalog']
 type ProviderMeta = Catalog[string]
 
+// TODOD: Dedupe this with app-config/constants
+const __DEBUG__ = Boolean(
+  typeof window !== 'undefined' && window.location.hostname === 'localhost',
+)
+
 /** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
 export function _VeniceConnect({
   catalog,
@@ -147,7 +157,9 @@ export function _VeniceConnect({
     _trpcReact.getPublicEnv.useQuery().data?.NEXT_PUBLIC_NANGO_PUBLIC_KEY
 
   const nango = React.useMemo(
-    () => nangoPublicKey && new Nango({publicKey: nangoPublicKey}),
+    () =>
+      nangoPublicKey &&
+      new Nango({publicKey: nangoPublicKey, debug: __DEBUG__}),
     [nangoPublicKey],
   )
 
@@ -216,12 +228,14 @@ export function _VeniceConnect({
           if (!nango) {
             throw new Error('Missing nango public key')
           }
-          return await nango.auth(integrationId, resoId).then((r) => {
-            console.log('auth', r)
-            if ('message' in r) {
-              throw new Error(`${r.type}: ${r.message}`)
+          return await nango.auth(integrationId, resoId).catch((err) => {
+            if (isNangoAuthError(err)) {
+              if (err.type === 'user_cancelled') {
+                throw CANCELLATION_TOKEN
+              }
+              throw new Error(`${err.type}: ${err.message}`)
             }
-            return r
+            throw err
           })
         }
       }

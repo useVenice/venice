@@ -18,6 +18,9 @@ overrides:
   esbuild: 0.17.5
 
 patchedDependencies:
+  '@nangohq/frontend@0.33.8':
+    hash: cscdyzeu5adridjxg5g7kdqy6q
+    path: patches/@nangohq__frontend@0.33.8.patch
   cac@6.7.12:
     hash: nsfmzcycabp3f3q7kw2uyer77u
     path: patches/cac@6.7.12.patch
@@ -1318,7 +1321,7 @@ importers:
     dependencies:
       '@nangohq/frontend':
         specifier: 0.33.8
-        version: 0.33.8
+        version: 0.33.8(patch_hash=cscdyzeu5adridjxg5g7kdqy6q)
       '@tanstack/react-query':
         specifier: 4.28.0
         version: 4.28.0(react-dom@18.2.0)(react@18.2.0)
@@ -3883,9 +3886,10 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@nangohq/frontend@0.33.8:
+  /@nangohq/frontend@0.33.8(patch_hash=cscdyzeu5adridjxg5g7kdqy6q):
     resolution: {integrity: sha512-iKTo4BDEXaKG6FbZzT9iACr07lGDBhmaS90+tsd92XrFpO8Gk7JGMp13lUS66mfwTcCXqPBXFVSkBvE0QyJi8Q==}
     dev: false
+    patched: true
 
   /@next/env@13.4.3:
     resolution: {integrity: sha512-pa1ErjyFensznttAk3EIv77vFbfSYT6cLzVRK5jx4uiRuCQo+m2wCFAREaHKIy63dlgvOyMlzh6R8Inu8H3KrQ==}
