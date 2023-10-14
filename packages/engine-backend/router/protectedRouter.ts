@@ -1,10 +1,13 @@
 import {TRPCError} from '@trpc/server'
 
+import type {
+  ZRaw} from '@usevenice/cdk-core';
 import {
   extractId,
   sync,
   zCheckResourceOptions,
   zId,
+  zRaw,
   zStandard,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
@@ -32,22 +35,28 @@ export const protectedRouter = trpc.router({
     await inngest.send(input.name, {data: input.data, user: ctx.viewer})
   }),
   listResources: protectedProcedure
+    .meta({openapi: {method: 'GET', path: '/resources'}})
     .input(z.object({}).optional())
+    .output(z.array(zRaw.resource))
     .query(async ({ctx}) => {
       const resources = await ctx.helpers.metaService.tables.resource.list({})
-      return resources
+      return resources as Array<ZRaw['resource']>
     }),
   listPipelines: protectedProcedure
+    .meta({openapi: {method: 'GET', path: '/pipelines'}})
     .input(z.object({}).optional())
+    .output(z.array(zRaw.pipeline))
     .query(async ({ctx}) => {
       const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
-      return pipelines
+      return pipelines as Array<ZRaw['pipeline']>
     }),
   deletePipeline: protectedProcedure
+    .meta({openapi: {method: 'DELETE', path: '/pipelines/{id}'}})
     .input(z.object({id: zId('pipe')}))
+    .output(z.literal(true))
     .mutation(async ({ctx, input}) => {
       await ctx.helpers.metaService.tables.pipeline.delete(input.id)
-      return true
+      return true as const
     }),
   listConnections: protectedProcedure
     .input(z.object({}).optional())
@@ -185,8 +194,10 @@ export const protectedRouter = trpc.router({
   getResource: protectedProcedure
     .meta({
       description: 'Not automatically called, used for debugging for now',
+      openapi: {method: 'GET', path: '/resources/{id}'},
     })
     .input(z.object({id: zId('reso')}))
+    .output(zRaw.resource) // TODO: This is actually expanded...
     .query(async ({input, ctx}) => {
       const reso = await ctx.helpers.getResourceExpandedOrFail(input.id)
       return reso
