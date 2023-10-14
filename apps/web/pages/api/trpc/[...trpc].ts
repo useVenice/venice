@@ -9,16 +9,24 @@ import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {appRouter} from '@/lib-server/appRouter'
 import {respondToCORS, serverGetViewer} from '@/lib-server/server-helpers'
 
+export const createContext: Parameters<
+  typeof trpcNext.createNextApiHandler
+>[0]['createContext'] = async ({req, res}) => {
+  const viewer = await serverGetViewer({req, res})
+  console.log('[trpc.createContext]', {query: req.query, viewer})
+  return contextFactory.fromViewer(viewer)
+}
+
+export const onError: Parameters<
+  typeof trpcNext.createNextApiHandler
+>[0]['onError'] = ({error}) => {
+  console.warn('error', error)
+}
+
 const handler = trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: async ({req, res}) => {
-    const viewer = await serverGetViewer({req, res})
-    console.log('[trpc.createContext]', {query: req.query, viewer})
-    return contextFactory.fromViewer(viewer)
-  },
-  onError: ({error}) => {
-    console.warn('error', error)
-  },
+  createContext,
+  onError,
 })
 
 export default (function trpcHandler(req, res) {

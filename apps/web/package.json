@@ -47,7 +47,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.9.1",
-    "swagger2openapi": "7.0.8"
+    "swagger2openapi": "7.0.8",
+    "trpc-openapi": "1.2.0"
   },
   "devDependencies": {
     "@sentry/cli": "2.13.0",

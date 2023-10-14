@@ -54,9 +54,11 @@ export const adminRouterSchema = {
 } satisfies Record<string, {input?: z.ZodTypeAny; output?: z.ZodTypeAny}>
 
 export const adminRouter = trpc.router({
-  adminListIntegrations: adminProcedure.query(async ({ctx}) =>
-    ctx.helpers.list('integration', {}),
-  ),
+  adminListIntegrations: adminProcedure
+    .meta({openapi: {method: 'GET', path: '/integrations'}})
+    .input(z.void())
+    .output(z.array(zRaw.integration))
+    .query(async ({ctx}) => ctx.helpers.list('integration', {})),
   adminUpsertPipeline: adminProcedure
     .input(
       zRaw.pipeline

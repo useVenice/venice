@@ -1,15 +1,15 @@
 import {initTRPC, TRPCError} from '@trpc/server'
+import type {OpenApiMeta} from 'trpc-openapi'
 
 import {getExtEndUserId, hasRole} from '@usevenice/cdk-core'
 
 import type {RouterContext} from '../context'
 
-/** TODO: Use OpenApiMeta from https://github.com/jlalmes/trpc-openapi */
-interface OpenApiMeta {}
+interface RouterMeta extends OpenApiMeta {}
 
 export const trpc = initTRPC
   .context<RouterContext>()
-  .meta<OpenApiMeta>()
+  .meta<RouterMeta>()
   // For client side to be able to import runtime schema from server side also
   .create({allowOutsideOfServer: true})
 
