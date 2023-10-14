@@ -109,13 +109,12 @@ export const zRaw = {
     destinationId: zId('reso').optional(),
     destinationState: zJsonObject.optional(),
     linkOptions: z
-      .array(
-        z.union([
-          z.string(),
-          z.tuple([z.string()]),
-          z.tuple([z.string(), z.unknown()]),
-        ]),
-      )
+      .array(z.unknown())
+      // z.union([
+      //   z.string(),
+      //   z.tuple([z.string()]),
+      //   z.tuple([z.string(), z.unknown()]),
+      // ]),
       .nullish(),
     // TODO: Add two separate tables sync_jobs to keep track of this instead of these two
     // though questionnable whether it should be in a separate database completely

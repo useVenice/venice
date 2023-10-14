@@ -124,7 +124,7 @@ export interface operations {
                   [key: string]: unknown | undefined;
                 })) | undefined;
               };
-              linkOptions?: ((string | ([[object Object]])[] | ([[object Object], [object Object]])[])[]) | null;
+              linkOptions?: (Record<string, never>)[] | null;
               /** Format: date-time */
               lastSyncStartedAt?: string | null;
               /** Format: date-time */

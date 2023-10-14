@@ -5,7 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@trpc/server": "10.21.1",
+    "@trpc/server": "10.40.0",
     "@usevenice/util": "workspace:*",
     "jsonwebtoken": "9.0.0",
     "react-script-hook": "1.7.2"

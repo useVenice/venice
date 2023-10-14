@@ -7,7 +7,7 @@
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "5.0.0",
     "@blossomfinance/iso-4217-currencies": "0.2.5",
-    "@trpc/server": "10.21.1",
+    "@trpc/server": "10.40.0",
     "accounting": "0.4.1",
     "async-sema": "3.1.1",
     "awilix": "7.0.3",

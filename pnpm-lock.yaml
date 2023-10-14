@@ -304,8 +304,8 @@ importers:
   apps/cli:
     dependencies:
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/airbyte':
         specifier: workspace:*
         version: link:../../packages/airbyte
@@ -507,11 +507,11 @@ importers:
         specifier: 4.28.0
         version: 4.28.0(@tanstack/react-query@4.28.0)
       '@trpc/react-query':
-        specifier: 10.21.1
-        version: 10.21.1(@tanstack/react-query@4.28.0)(@trpc/client@10.21.1)(@trpc/server@10.21.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.40.0
+        version: 10.40.0(@tanstack/react-query@4.28.0)(@trpc/client@10.40.0)(@trpc/server@10.40.0)(react-dom@18.2.0)(react@18.2.0)
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/app-config':
         specifier: workspace:*
         version: link:../app-config
@@ -589,7 +589,7 @@ importers:
         version: 7.0.8
       trpc-openapi:
         specifier: 1.2.0
-        version: 1.2.0(@trpc/server@10.21.1)(zod@3.21.4)
+        version: 1.2.0(@trpc/server@10.40.0)(zod@3.21.4)
     devDependencies:
       '@sentry/cli':
         specifier: 2.13.0
@@ -1230,8 +1230,8 @@ importers:
   packages/airbyte:
     dependencies:
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
@@ -1258,8 +1258,8 @@ importers:
   packages/cdk-core:
     dependencies:
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -1308,8 +1308,8 @@ importers:
   packages/engine-backend:
     dependencies:
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
@@ -1325,7 +1325,7 @@ importers:
     devDependencies:
       trpc-openapi:
         specifier: 1.2.0
-        version: 1.2.0(@trpc/server@10.21.1)(zod@3.21.4)
+        version: 1.2.0(@trpc/server@10.40.0)(zod@3.21.4)
 
   packages/engine-frontend:
     dependencies:
@@ -1336,14 +1336,14 @@ importers:
         specifier: 4.28.0
         version: 4.28.0(react-dom@18.2.0)(react@18.2.0)
       '@trpc/client':
-        specifier: 10.21.1
-        version: 10.21.1(@trpc/server@10.21.1)
+        specifier: 10.40.0
+        version: 10.40.0(@trpc/server@10.40.0)
       '@trpc/react-query':
-        specifier: 10.21.1
-        version: 10.21.1(@tanstack/react-query@4.28.0)(@trpc/client@10.21.1)(@trpc/server@10.21.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: 10.40.0
+        version: 10.40.0(@tanstack/react-query@4.28.0)(@trpc/client@10.40.0)(@trpc/server@10.40.0)(react-dom@18.2.0)(react@18.2.0)
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
@@ -1494,8 +1494,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       '@trpc/server':
-        specifier: 10.21.1
-        version: 10.21.1
+        specifier: 10.40.0
+        version: 10.40.0
       accounting:
         specifier: 0.4.1
         version: 0.4.1
@@ -6144,32 +6144,32 @@ packages:
       - prop-types
     dev: false
 
-  /@trpc/client@10.21.1(@trpc/server@10.21.1):
-    resolution: {integrity: sha512-oZgPbghs9y2frTCA9mZPSAlVknV9stCTKYO5nsvRr0aX+oaA0URoXJTKZTSpLZxLfuwWgxBj4iTiCWWWmaVelw==}
+  /@trpc/client@10.40.0(@trpc/server@10.40.0):
+    resolution: {integrity: sha512-bT6BcdWjj0KzGQiimE6rB2tIaRYX0Ear4Gthb5szN/c01wrP0yC1Fbz2uCcm/QTVAwu4Lve5M+YjPoEaTHG6lg==}
     peerDependencies:
-      '@trpc/server': 10.21.1
+      '@trpc/server': 10.40.0
     dependencies:
-      '@trpc/server': 10.21.1
+      '@trpc/server': 10.40.0
     dev: false
 
-  /@trpc/react-query@10.21.1(@tanstack/react-query@4.28.0)(@trpc/client@10.21.1)(@trpc/server@10.21.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-sCLJW9v79sJhVj3L6Ck74mImvKBXrq2KOKtdguxaZZ5rgeqMyQuc8bGHRpf9yfeV08uMNl4Svz1QTee9PjdSqg==}
+  /@trpc/react-query@10.40.0(@tanstack/react-query@4.28.0)(@trpc/client@10.40.0)(@trpc/server@10.40.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-DpJrV3lmYNo9xtPtcg49lfh9CUFap3ZivjhlSmfe4QPf7H6xBjAE+ml4OdJ0RmKvSTFvbLSOiNdB1k5O8zIdzQ==}
     peerDependencies:
       '@tanstack/react-query': 4.28.0
-      '@trpc/client': 10.21.1
-      '@trpc/server': 10.21.1
+      '@trpc/client': 10.40.0
+      '@trpc/server': 10.40.0
       react: 18.2.0
       react-dom: 18.2.0
     dependencies:
       '@tanstack/react-query': 4.28.0(react-dom@18.2.0)(react@18.2.0)
-      '@trpc/client': 10.21.1(@trpc/server@10.21.1)
-      '@trpc/server': 10.21.1
+      '@trpc/client': 10.40.0(@trpc/server@10.40.0)
+      '@trpc/server': 10.40.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@trpc/server@10.21.1:
-    resolution: {integrity: sha512-4E4upTD2/Aq0Dm9HW4nbKSoIlqbV/ajRqNl1MCFBd9FjTv47qq2ncmAWMbb0AIVh2UV87PJlTjpPNNecRm6g9Q==}
+  /@trpc/server@10.40.0:
+    resolution: {integrity: sha512-49SUOMWzSZtu5+OdrADmJD+u+sjSE0qj1cWgYk2FY4jLkPJunLuNRuhzM7aOeBhiUjyfhg2YTfur8FN1WBmvEw==}
 
   /@tsconfig/strictest@1.0.2:
     resolution: {integrity: sha512-IRKlC8cnP7zMz1SDBjyIVyPapkEGWLZ6wkF6Z8T+xU80P9sO5uGXlIUvtzjx+7ehPJRWxkB6CeIDwUfyqNtYkQ==}
@@ -17137,13 +17137,13 @@ packages:
     resolution: {integrity: sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==}
     dev: false
 
-  /trpc-openapi@1.2.0(@trpc/server@10.21.1)(zod@3.21.4):
+  /trpc-openapi@1.2.0(@trpc/server@10.40.0)(zod@3.21.4):
     resolution: {integrity: sha512-pfYoCd/3KYXWXvUPZBKJw455OOwngKN/6SIcj7Yit19OMLJ+8yVZkEvGEeg5wUSwfsiTdRsKuvqkRPXVSwV7ew==}
     peerDependencies:
       '@trpc/server': ^10.0.0
       zod: ^3.14.4
     dependencies:
-      '@trpc/server': 10.21.1
+      '@trpc/server': 10.40.0
       co-body: 6.1.0
       h3: 1.8.2
       lodash.clonedeep: 4.5.0
