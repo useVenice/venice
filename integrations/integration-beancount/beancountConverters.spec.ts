@@ -23,27 +23,6 @@ const stringSnapshotSerializer: jest.SnapshotSerializerPlugin = {
 
 expect.addSnapshotSerializer(stringSnapshotSerializer)
 
-test('degenerate case: no transactions', async () => {
-  await expect(
-    convBeanToStdJson
-      .reverse({version: '1', variant: 'standard', entities: []})
-      .then((s) => s.trim()),
-  ).resolves.toMatchSnapshot()
-}, 60000)
-
-test('ledger with default unit', async () => {
-  await expect(
-    convBeanToStdJson
-      .reverse({
-        version: '1',
-        ledger: {defaultUnit: 'IDR' as Unit},
-        variant: 'standard',
-        entities: [],
-      })
-      .then((s) => s.trim()),
-  ).resolves.toMatchSnapshot()
-}, 60000)
-
 test.each([
   [
     'General & Administrative/Business Insurance_Policy',
@@ -61,7 +40,34 @@ test.each([['Assets:Wallet', {type: ACCOUNT_TYPES.asset, name: 'Wallet'}]])(
   },
 )
 
-test.each<Standard.Transaction>([
+// Disable because the json conversion api is down
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip('degenerate case: no transactions', async () => {
+  await expect(
+    convBeanToStdJson
+      .reverse({version: '1', variant: 'standard', entities: []})
+      .then((s) => s.trim()),
+  ).resolves.toMatchSnapshot()
+}, 60000)
+
+// Disable because the json conversion api is down
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip('ledger with default unit', async () => {
+  await expect(
+    convBeanToStdJson
+      .reverse({
+        version: '1',
+        ledger: {defaultUnit: 'IDR' as Unit},
+        variant: 'standard',
+        entities: [],
+      })
+      .then((s) => s.trim()),
+  ).resolves.toMatchSnapshot()
+}, 60000)
+
+// Disable because the json conversion api is down
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip.each<Standard.Transaction>([
   {
     date: '2020-01-01',
     description: 'Latte',
