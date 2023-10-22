@@ -46,6 +46,7 @@ export type Id<TName extends string = string> = {
 export const zUserId = zId('user')
 export type UserId = z.infer<typeof zUserId>
 
+/** trpc-openapi limits us from using .brand https://share.cleanshot.com/Mf4F9xwZ */
 export const zEndUserId = z.string().min(1).brand<'end_user'>()
 export type EndUserId = z.infer<typeof zEndUserId>
 

@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
-import type {
-  ZRaw} from '@usevenice/cdk-core';
+import type {ZRaw} from '@usevenice/cdk-core'
+import {zEndUserId} from '@usevenice/cdk-core'
 import {
   extractId,
   sync,
@@ -17,6 +17,7 @@ import {inngest, zEvent} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {zSyncOptions} from '../types'
 import {protectedProcedure, trpc} from './_base'
+import {zListParams} from './_schemas'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -36,18 +37,24 @@ export const protectedRouter = trpc.router({
   }),
   listResources: protectedProcedure
     .meta({openapi: {method: 'GET', path: '/resources'}})
-    .input(z.object({}).optional())
+    .input(zListParams.extend({endUserId: zEndUserId.optional()}).optional())
     .output(z.array(zRaw.resource))
-    .query(async ({ctx}) => {
-      const resources = await ctx.helpers.metaService.tables.resource.list({})
+    .query(async ({input = {}, ctx}) => {
+      const resources = await ctx.helpers.metaService.tables.resource.list(
+        input,
+      )
       return resources as Array<ZRaw['resource']>
     }),
   listPipelines: protectedProcedure
     .meta({openapi: {method: 'GET', path: '/pipelines'}})
-    .input(z.object({}).optional())
+    .input(
+      zListParams
+        .extend({resourceIds: z.array(zId('reso')).optional()})
+        .optional(),
+    )
     .output(z.array(zRaw.pipeline))
-    .query(async ({ctx}) => {
-      const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
+    .query(async ({input = {}, ctx}) => {
+      const pipelines = await ctx.helpers.metaService.findPipelines(input)
       return pipelines as Array<ZRaw['pipeline']>
     }),
   deletePipeline: protectedProcedure
@@ -59,11 +66,13 @@ export const protectedRouter = trpc.router({
       return true as const
     }),
   listConnections: protectedProcedure
-    .input(z.object({}).optional())
-    .query(async ({ctx}) => {
+    .input(zListParams.extend({endUserId: zEndUserId.optional()}).optional())
+    .query(async ({input = {}, ctx}) => {
       // Add info about what it takes to `reconnect` here for resources which
       // has disconnected
-      const resources = await ctx.helpers.metaService.tables.resource.list({})
+      const resources = await ctx.helpers.metaService.tables.resource.list(
+        input,
+      )
       const [institutions, _pipelines] = await Promise.all([
         ctx.helpers.metaService.tables.institution.list({
           ids: R.compact(resources.map((c) => c.institutionId)),

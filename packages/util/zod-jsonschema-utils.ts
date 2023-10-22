@@ -51,6 +51,10 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
   return jsonSchema
 }
 
+/**
+ * TODO: Consider switching to this repo to allow better actual customizations
+ * https://github.com/anatine/zod-plugins/tree/main/packages/zod-openapi
+ */
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
   // Defaulting title should occur last, this way we don't end up with extraneous one
   return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))

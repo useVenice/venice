@@ -51,10 +51,13 @@ export interface MetaService {
     limit?: number
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
+  /** TODO: Implement limit & offset */
   findPipelines: (options: {
     resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   /** Id is used to check RLS policy right now for end user */
-  listIntegrationIds: (opts?: {id?: Id['int']}) => Promise<ReadonlyArray<Id['int']>>
+  listIntegrationIds: (opts?: {
+    id?: Id['int']
+  }) => Promise<ReadonlyArray<Id['int']>>
 }

@@ -13,3 +13,22 @@ index d93e38e020d89bef3e615c44fe687b10c8874417..956b349a0dda132bcdd7c255e8ae9946
  import { OpenAPIV3 } from 'openapi-types';
  import { ZodIssue } from 'zod';
  export type OpenApiMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+diff --git a/dist/utils/zod.js b/dist/utils/zod.js
+index f9b479f56b52ceea1cab9b581c7dcd27d500d5d6..c848fa8030d6e275608863333fe9f61879692f16 100644
+--- a/dist/utils/zod.js
++++ b/dist/utils/zod.js
+@@ -27,6 +27,14 @@ const instanceofZodTypeLikeVoid = (type) => {
+ };
+ exports.instanceofZodTypeLikeVoid = instanceofZodTypeLikeVoid;
+ const unwrapZodType = (type, unwrapPreprocess) => {
++    // This will fail at runtime because we are not properly coercing to array type yet
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodArray)) {
++        return (0, exports.unwrapZodType)(type.element, unwrapPreprocess);
++    }
++    // Works fine
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodBrand)) {
++        return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
++    }
+     if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodOptional)) {
+         return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
+     }
