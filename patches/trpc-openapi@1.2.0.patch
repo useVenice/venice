@@ -1,0 +1,15 @@
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index d93e38e020d89bef3e615c44fe687b10c8874417..956b349a0dda132bcdd7c255e8ae9946f41ccffd 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -1,7 +1,8 @@
+ import { Procedure, ProcedureParams, Router } from '@trpc/server';
+ import type { RootConfig } from '@trpc/server/dist/core/internals/config';
+-import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
+-import type { RouterDef } from '@trpc/server/src/core/router';
++// PATCH: Courtesy of https://github.com/jlalmes/trpc-openapi/pull/411
++import type { RouterDef } from '@trpc/server/dist/core/router';
++import { TRPC_ERROR_CODE_KEY } from '@trpc/server/dist/rpc';
+ import { OpenAPIV3 } from 'openapi-types';
+ import { ZodIssue } from 'zod';
+ export type OpenApiMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';

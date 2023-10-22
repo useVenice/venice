@@ -33,6 +33,9 @@ patchedDependencies:
   micro-memoize@4.0.10:
     hash: hko3q5jvea7ey3trpjtkqgcale
     path: patches/micro-memoize@4.0.10.patch
+  trpc-openapi@1.2.0:
+    hash: zn3clwvt2tmhqbx7otjqaqekq4
+    path: patches/trpc-openapi@1.2.0.patch
   zod@3.21.4:
     hash: bzwjzhue3hmpww5lnv24u5k2ru
     path: patches/zod@3.21.4.patch
@@ -589,7 +592,7 @@ importers:
         version: 7.0.8
       trpc-openapi:
         specifier: 1.2.0
-        version: 1.2.0(@trpc/server@10.40.0)(zod@3.21.4)
+        version: 1.2.0(patch_hash=zn3clwvt2tmhqbx7otjqaqekq4)(@trpc/server@10.40.0)(zod@3.21.4)
     devDependencies:
       '@sentry/cli':
         specifier: 2.13.0
@@ -1325,7 +1328,7 @@ importers:
     devDependencies:
       trpc-openapi:
         specifier: 1.2.0
-        version: 1.2.0(@trpc/server@10.40.0)(zod@3.21.4)
+        version: 1.2.0(patch_hash=zn3clwvt2tmhqbx7otjqaqekq4)(@trpc/server@10.40.0)(zod@3.21.4)
 
   packages/engine-frontend:
     dependencies:
@@ -17137,7 +17140,7 @@ packages:
     resolution: {integrity: sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==}
     dev: false
 
-  /trpc-openapi@1.2.0(@trpc/server@10.40.0)(zod@3.21.4):
+  /trpc-openapi@1.2.0(patch_hash=zn3clwvt2tmhqbx7otjqaqekq4)(@trpc/server@10.40.0)(zod@3.21.4):
     resolution: {integrity: sha512-pfYoCd/3KYXWXvUPZBKJw455OOwngKN/6SIcj7Yit19OMLJ+8yVZkEvGEeg5wUSwfsiTdRsKuvqkRPXVSwV7ew==}
     peerDependencies:
       '@trpc/server': ^10.0.0
@@ -17151,6 +17154,7 @@ packages:
       openapi-types: 12.1.3
       zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
       zod-to-json-schema: 3.21.1(zod@3.21.4)
+    patched: true
 
   /ts-brand@0.0.2:
     resolution: {integrity: sha512-UhSzWY4On9ZHIj6DKkRYVN/8OaprbLAZ3b/Y2AJwdl6oozSABsQ0PvwDh4vOVdkvOtWQOkIrjctZ1kj8YfF3jA==}
