@@ -80,6 +80,7 @@ export const adminRouter = trpc.router({
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
+    .meta({openapi: {method: 'POST', path: '/integrations'}})
     .input(
       zRaw.integration
         .pick({
@@ -96,6 +97,7 @@ export const adminRouter = trpc.router({
         // this makes me wonder if UPSERT should always be the default....
         .required({orgId: true}),
     )
+    .output(zRaw.integration)
     .mutation(async ({input: {id: _id, providerName, ...input}, ctx}) => {
       const id = _id
         ? _id
@@ -130,8 +132,10 @@ export const adminRouter = trpc.router({
     }),
   // Need a tuple for some reason... otherwise seems to not work in practice.
   adminDeleteIntegration: adminProcedure
-    .input(z.tuple([zId('int')]))
-    .mutation(async ({input: [intId], ctx}) => {
+    .meta({openapi: {method: 'DELETE', path: '/integrations/{id}'}})
+    .input(z.object({id: zId('int')}))
+    .output(z.void())
+    .mutation(async ({input: {id: intId}, ctx}) => {
       const provider = ctx.providerMap[extractProviderName(intId)]
       if (provider?.metadata?.nangoProvider) {
         await ctx.nango.delete('/config/{provider_config_key}', {
@@ -141,7 +145,9 @@ export const adminRouter = trpc.router({
       return ctx.helpers.metaService.tables.integration.delete(intId)
     }),
   adminCreateConnectToken: adminProcedure
+    .meta({openapi: {method: 'POST', path: '/connect-token'}})
     .input(adminRouterSchema.adminCreateConnectToken.input)
+    .output(z.string())
     .mutation(({input: {endUserId, orgId, validityInSeconds}, ctx}) => {
       if (
         (ctx.viewer.role === 'user' || ctx.viewer.role === 'org') &&
@@ -167,14 +173,14 @@ export const adminRouter = trpc.router({
         .then((rows) => rows.filter((u) => !!u.id)),
     ),
   adminGetIntegration: adminProcedure
-    .input(zId('int'))
-    .query(async ({input: intId, ctx}) => {
-      const int = await ctx.helpers.getIntegrationOrFail(intId)
-      return {
-        config: int.config,
-        provider: int.provider.name,
-        id: int.id,
-      }
+    .meta({openapi: {method: 'GET', path: '/integrations/{id}'}})
+    .input(z.object({id: zId('int')}))
+    .output(zRaw.integration)
+    .query(async ({input: {id: intId}, ctx}) => {
+      const {provider: _, ...int} = await ctx.helpers.getIntegrationOrFail(
+        intId,
+      )
+      return int
     }),
   adminSyncMetadata: adminProcedure
     .input(zId('int').nullish())

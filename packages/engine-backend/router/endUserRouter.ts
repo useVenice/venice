@@ -145,11 +145,12 @@ export const endUserRouter = trpc.router({
       },
     ),
   createResource: protectedProcedure
+    .meta({openapi: {method: 'POST', path: '/resources'}})
     .input(zRaw.resource.pick({integrationId: true, settings: true}))
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
     // How do we verify that the userId here is the same as the userId from preConnectOption?
-
+    .output(z.string())
     .mutation(async ({input: {integrationId, settings}, ctx}) => {
       // Authorization
       await ctx.helpers.getIntegrationInfoOrFail(integrationId)
@@ -181,16 +182,36 @@ export const endUserRouter = trpc.router({
 
   // TODO: Run server-side validation
   updateResource: protectedProcedure
+    .meta({openapi: {method: 'PATCH', path: '/resources/{id}'}})
     .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
+    .output(zRaw.resource)
     .mutation(async ({input: {id, ...input}, ctx}) =>
       // TODO: Run mapStandardResource after editing
       // Also we probably do not want deeply nested patch
       // shallow is sufficient more most situations
       ctx.helpers.patchReturning('resource', id, input),
     ),
-  deleteResoruce: protectedProcedure
-    .input(zRaw.resource.pick({id: true}))
-    .mutation(async ({input: {id}, ctx}) =>
-      ctx.helpers.metaService.tables.resource.delete(id),
-    ),
+  deleteResource: protectedProcedure
+    .meta({openapi: {method: 'DELETE', path: '/resources/{id}'}})
+    .input(z.object({id: zId('reso'), skipRevoke: z.boolean().optional()}))
+    .output(z.void())
+    .mutation(async ({input: {id: resoId, ...opts}, ctx}) => {
+      if (ctx.viewer.role === 'end_user') {
+        await ctx.helpers.getResourceOrFail(resoId)
+      }
+      const {settings, integration, ...reso} =
+        await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
+      if (!opts?.skipRevoke) {
+        await integration.provider.revokeResource?.(
+          settings,
+          integration.config,
+        )
+      }
+      // if (opts?.todo_deleteAssociatedData) {
+      // TODO: Figure out how to delete... Destination is not part of meta service
+      // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
+      // We should probably introduce a reset / delete event...
+      // }
+      await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
+    }),
 })

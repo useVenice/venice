@@ -165,7 +165,7 @@ function EditResourceSheet({
       })
     },
   })
-  const deleteResource = _trpcReact.deleteResoruce.useMutation({
+  const deleteResource = _trpcReact.deleteResource.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Resource deleted', variant: 'success'})

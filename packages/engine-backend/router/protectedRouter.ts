@@ -258,39 +258,6 @@ export const protectedRouter = trpc.router({
       }
       return 'Ok'
     }),
-  // What about delete? Should this delete also? Or soft delete?
-  deleteResource: protectedProcedure
-    .input(
-      z.tuple([
-        zId('reso'),
-        z
-          .object({
-            skipRevoke: z.boolean().nullish(),
-            todo_deleteAssociatedData: z.boolean().nullish(),
-          })
-          .optional(),
-      ]),
-    )
-    .mutation(async ({input: [resoId, opts], ctx}) => {
-      if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getResourceOrFail(resoId)
-      }
-      const {settings, integration, ...reso} =
-        await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
-      if (!opts?.skipRevoke) {
-        await integration.provider.revokeResource?.(
-          settings,
-          integration.config,
-        )
-      }
-      if (opts?.todo_deleteAssociatedData) {
-        // TODO: Figure out how to delete... Destination is not part of meta service
-        // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
-        // We should probably introduce a reset / delete event...
-      }
-      await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
-    }),
-
   // MARK: - Sync
 
   syncResource: protectedProcedure
