@@ -53,6 +53,8 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   showExisting?: boolean
   clientIntegrations: Record<string, IntegrationClient>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
+  /** Only connect to this integration */
+  integrationId?: Id['int'] | null
 }
 
 type UseConnectScope = Parameters<UseConnectHook>[0]
@@ -111,7 +113,9 @@ export function VeniceConnectButton({
 // Also it would be nice if there was an easy way to automatically prefetch on the server side
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect(props: VeniceConnectProps) {
-  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({})
+  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({
+    id: props.integrationId,
+  })
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 
   if (!listIntegrationsRes.data || !catalogRes.data) {

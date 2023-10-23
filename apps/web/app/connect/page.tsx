@@ -64,7 +64,7 @@ export default async function ConnectPageContainer({
       </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
-          <ConnectPage />
+          <ConnectPage integrationId={params.integrationId} />
         </SuperHydrate>
       </ClientRoot>
     </div>
