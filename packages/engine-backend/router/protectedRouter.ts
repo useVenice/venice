@@ -147,15 +147,34 @@ export const protectedRouter = trpc.router({
         })
     }),
   listIntegrationInfos: protectedProcedure
+    .meta({openapi: {method: 'GET', path: '/integration_infos'}})
     .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
+    .output(
+      z.array(
+        zRaw.integration
+          .pick({
+            id: true,
+            envName: true,
+            displayName: true,
+            providerName: true,
+          })
+          .extend({
+            isSource: z.boolean(),
+            isDestination: z.boolean(),
+          }),
+      ),
+    )
     .query(async ({input: {type}, ctx}) => {
-      const intIds = await ctx.helpers.metaService.listIntegrationIds()
-      return intIds
-        .map((id) => {
+      const intInfos = await ctx.helpers.metaService.listIntegrationInfos()
+
+      return intInfos
+        .map(({id, envName, displayName}) => {
           const provider = ctx.providerMap[extractId(id)[1]]
           return provider
             ? {
                 id,
+                envName,
+                displayName,
                 providerName: provider.name,
                 isSource: !!provider.sourceSync,
                 isDestination: !!provider.destinationSync,

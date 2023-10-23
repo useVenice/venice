@@ -36,7 +36,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  ProviderCard,
+  IntegrationCard,
   ResourceCard,
   SchemaForm,
   useToast,
@@ -112,7 +112,6 @@ export function VeniceConnectButton({
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect(props: VeniceConnectProps) {
   const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({})
-  const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 
   if (!listIntegrationsRes.data || !catalogRes.data) {
@@ -120,13 +119,14 @@ export function VeniceConnect(props: VeniceConnectProps) {
   }
   return (
     <_VeniceConnect
-      integrationIds={integrationIds}
+      integrationInfos={listIntegrationsRes.data ?? []}
       catalog={catalogRes.data}
       {...props}
     />
   )
 }
 
+type IntegrationInfos = RouterOutput['listIntegrationInfos']
 type Catalog = RouterOutput['getIntegrationCatalog']
 type ProviderMeta = Catalog[string]
 
@@ -142,10 +142,10 @@ export function _VeniceConnect({
   onEvent,
   showExisting,
   className,
-  integrationIds,
+  integrationInfos,
   ...uiProps
 }: VeniceConnectProps & {
-  integrationIds: Array<Id['int']>
+  integrationInfos: IntegrationInfos
   catalog: Catalog
 }) {
   const nangoPublicKey =
@@ -168,13 +168,13 @@ export function _VeniceConnect({
     {enabled: showExisting},
   )
 
-  const integrations = integrationIds
-    .map((id) => {
+  const integrations = integrationInfos
+    .map(({id, ...info}) => {
       const provider = catalog[extractProviderName(id)]
       if (!provider) {
         console.warn('Missing provider for integration', id)
       }
-      return provider ? {id, provider} : null
+      return provider ? {...info, id, provider} : null
     })
     .filter((i): i is NonNullable<typeof i> => !!i)
   const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
@@ -208,8 +208,8 @@ export function _VeniceConnect({
 
   // Do we actually need this here or can this go inside a ConnectCard somehow?
   const connectFnMap = R.pipe(
-    integrationIds,
-    R.map(extractProviderName),
+    integrationInfos,
+    R.map((intInfo) => extractProviderName(intInfo.id)),
     R.uniq,
     R.mapToObj((providerName: string) => {
       let fn = clientIntegrations[providerName]?.useConnectHook?.({openDialog})
@@ -282,10 +282,11 @@ export function _VeniceConnect({
       ))}
       {/* Add new  */}
       {integrations.map((int) => (
-        // TODO: Make use of integrationCard rather than ProviderCard
-        // once we allow for mapStandardIntegration such that integration labels
-        // can show up properly (e.g. sandbox, production labels)
-        <ProviderCard {...uiProps} key={int.id} provider={int.provider}>
+        <IntegrationCard
+          {...uiProps}
+          key={int.id}
+          integration={int}
+          provider={int.provider}>
           <ProviderConnectButton
             integration={int}
             connectFn={connectFnMap[int.provider.name]}
@@ -293,7 +294,7 @@ export function _VeniceConnect({
               onEvent?.({type: e.type, intId: int.id})
             }}
           />
-        </ProviderCard>
+        </IntegrationCard>
       ))}
     </div>
   )

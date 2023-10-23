@@ -80,6 +80,8 @@ const zBase = z.object({
 export const zRaw = {
   integration: zBase.extend({
     id: zId('int'),
+    /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
+    envName: z.string().nullish(),
     providerName: z.string(),
     config: zJsonObject.nullish(),
     endUserAccess: z

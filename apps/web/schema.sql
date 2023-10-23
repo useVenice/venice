@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 15.1
--- Dumped by pg_dump version 15.2 (Homebrew)
+-- Dumped by pg_dump version 15.4 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -41,12 +41,27 @@ CREATE DOMAIN public.graphql_json AS jsonb
 
 
 --
--- Name: archive_completed_jobs(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: format_relative_date(timestamp with time zone); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.archive_completed_jobs() RETURNS trigger
+CREATE FUNCTION public.format_relative_date(date timestamp with time zone) RETURNS text
     LANGUAGE plpgsql
-    AS $$ BEGIN INSERT INTO graphile_worker.jobs_completed VALUES (OLD.*); RETURN OLD; END; $$;
+    AS $$
+DECLARE
+	time_difference INTERVAL;
+BEGIN
+	time_difference := now() - date;
+	IF time_difference < INTERVAL '1 minute' THEN
+		RETURN EXTRACT(SECOND FROM time_difference)::INTEGER || ' seconds ago';
+	ELSIF time_difference < INTERVAL '1 hour' THEN
+		RETURN EXTRACT(MINUTE FROM time_difference)::INTEGER || ' minutes ago';
+	ELSIF time_difference < INTERVAL '1 day' THEN
+		RETURN EXTRACT(HOUR FROM time_difference)::INTEGER || ' hours ago';
+	ELSE
+		RETURN EXTRACT(DAY FROM time_difference)::INTEGER || ' days ago';
+	END IF;
+END;
+$$;
 
 
 --
@@ -59,12 +74,26 @@ CREATE FUNCTION public.generate_ulid() RETURNS text
 
 
 --
+-- Name: jsonb_array_to_text_array(jsonb); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.jsonb_array_to_text_array(_js jsonb) RETURNS text[]
+    LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE
+    AS $$SELECT ARRAY(SELECT jsonb_array_elements_text(_js))$$;
+
+
+--
 -- Name: jwt_end_user_id(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.jwt_end_user_id() RETURNS character varying
     LANGUAGE sql STABLE
-    AS $$ select coalesce( nullif(current_setting('request.jwt.claim.end_user_id', true), ''), (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'end_user_id') ) $$;
+    AS $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.end_user_id', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'end_user_id')
+  )
+$$;
 
 
 --
@@ -73,7 +102,12 @@ CREATE FUNCTION public.jwt_end_user_id() RETURNS character varying
 
 CREATE FUNCTION public.jwt_org_id() RETURNS character varying
     LANGUAGE sql STABLE
-    AS $$ select coalesce( nullif(current_setting('request.jwt.claim.org_id', true), ''), (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'org_id') ) $$;
+    AS $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.org_id', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'org_id')
+  )
+$$;
 
 
 --
@@ -82,7 +116,12 @@ CREATE FUNCTION public.jwt_org_id() RETURNS character varying
 
 CREATE FUNCTION public.jwt_sub() RETURNS character varying
     LANGUAGE sql STABLE
-    AS $$ select coalesce( nullif(current_setting('request.jwt.claim.sub', true), ''), (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub') ) $$;
+    AS $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )
+$$;
 
 
 SET default_tablespace = '';
@@ -90,16 +129,65 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: _migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public._migrations (
+    name text NOT NULL,
+    hash text NOT NULL,
+    date timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: raw_account; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.raw_account (
+    id character varying DEFAULT concat('acct_', public.generate_ulid()) NOT NULL,
+    source_id character varying,
+    standard jsonb DEFAULT '{}'::jsonb NOT NULL,
+    external jsonb DEFAULT '{}'::jsonb NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
+    end_user_id character varying,
+    CONSTRAINT raw_account_id_prefix_check CHECK (starts_with((id)::text, 'acct_'::text))
+);
+
+
+--
+-- Name: account; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.account WITH (security_invoker='true') AS
+ SELECT raw_account.end_user_id,
+    raw_account.id,
+    (raw_account.standard ->> 'name'::text) AS name,
+    (raw_account.standard ->> 'type'::text) AS type,
+    (raw_account.standard ->> 'lastFour'::text) AS last_four,
+    (raw_account.standard ->> 'institutionName'::text) AS institution_name,
+    (raw_account.standard ->> 'defaultUnit'::text) AS default_unit,
+    ((raw_account.standard #> '{informationalBalances,current,quantity}'::text[]))::double precision AS current_balance,
+    ((raw_account.standard #> '{informationalBalances,available,quantity}'::text[]))::double precision AS available_balance,
+    (raw_account.external)::public.graphql_json AS external,
+    raw_account.provider_name,
+    raw_account.updated_at,
+    raw_account.created_at
+   FROM public.raw_account;
+
+
+--
 -- Name: institution; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.institution (
     id character varying DEFAULT concat('ins_', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     standard jsonb DEFAULT '{}'::jsonb NOT NULL,
     external jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     CONSTRAINT institution_id_prefix_check CHECK (starts_with((id)::text, 'ins_'::text))
 );
 
@@ -110,13 +198,14 @@ CREATE TABLE public.institution (
 
 CREATE TABLE public.integration (
     id character varying DEFAULT concat('int_', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     org_id character varying NOT NULL,
     display_name character varying,
     end_user_access boolean,
+    env_name character varying GENERATED ALWAYS AS ((config ->> 'envName'::text)) STORED,
     CONSTRAINT integration_id_prefix_check CHECK (starts_with((id)::text, 'int_'::text))
 );
 
@@ -143,28 +232,11 @@ CREATE TABLE public.pipeline (
     destination_id character varying,
     destination_state jsonb DEFAULT '{}'::jsonb NOT NULL,
     link_options jsonb DEFAULT '[]'::jsonb NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     last_sync_started_at timestamp with time zone,
     last_sync_completed_at timestamp with time zone,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT pipeline_id_prefix_check CHECK (starts_with((id)::text, 'pipe_'::text))
-);
-
-
---
--- Name: raw_account; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.raw_account (
-    id character varying DEFAULT concat('acct_', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
-    source_id character varying,
-    standard jsonb DEFAULT '{}'::jsonb NOT NULL,
-    external jsonb DEFAULT '{}'::jsonb NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    end_user_id character varying,
-    CONSTRAINT raw_account_id_prefix_check CHECK (starts_with((id)::text, 'acct_'::text))
 );
 
 
@@ -174,12 +246,12 @@ CREATE TABLE public.raw_account (
 
 CREATE TABLE public.raw_commodity (
     id character varying DEFAULT concat('comm_', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     source_id character varying,
     standard jsonb DEFAULT '{}'::jsonb NOT NULL,
     external jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     end_user_id character varying,
     CONSTRAINT raw_commodity_id_prefix_check CHECK (starts_with((id)::text, 'comm_'::text))
 );
@@ -191,12 +263,12 @@ CREATE TABLE public.raw_commodity (
 
 CREATE TABLE public.raw_transaction (
     id character varying DEFAULT concat('txn_', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     source_id character varying,
     standard jsonb DEFAULT '{}'::jsonb NOT NULL,
     external jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     end_user_id character varying,
     CONSTRAINT raw_transaction_id_prefix_check CHECK (starts_with((id)::text, 'txn_'::text))
 );
@@ -208,7 +280,6 @@ CREATE TABLE public.raw_transaction (
 
 CREATE TABLE public.resource (
     id character varying DEFAULT concat('reso', public.generate_ulid()) NOT NULL,
-    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     end_user_id character varying,
     integration_id character varying,
     institution_id character varying,
@@ -216,9 +287,59 @@ CREATE TABLE public.resource (
     settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
     display_name character varying,
     CONSTRAINT resource_id_prefix_check CHECK (starts_with((id)::text, 'reso'::text))
 );
+
+
+--
+-- Name: transaction; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.transaction WITH (security_invoker='true') AS
+ SELECT raw_transaction.end_user_id,
+    raw_transaction.id,
+    (raw_transaction.standard ->> 'date'::text) AS date,
+    (raw_transaction.standard ->> 'description'::text) AS description,
+    (raw_transaction.standard ->> 'payee'::text) AS payee,
+    ((raw_transaction.standard #> '{postingsMap,main,amount,quantity}'::text[]))::double precision AS amount_quantity,
+    (raw_transaction.standard #>> '{postingsMap,main,amount,unit}'::text[]) AS amount_unit,
+    (raw_transaction.standard #>> '{postingsMap,main,accountId}'::text[]) AS account_id,
+    (raw_transaction.standard ->> 'externalCategory'::text) AS external_category,
+    (raw_transaction.standard ->> 'notes'::text) AS notes,
+    ((raw_transaction.standard -> 'postingsMap'::text))::public.graphql_json AS splits,
+    (raw_transaction.external)::public.graphql_json AS external,
+    raw_transaction.provider_name,
+    raw_transaction.updated_at,
+    raw_transaction.created_at
+   FROM public.raw_transaction;
+
+
+--
+-- Name: transaction_split; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.transaction_split WITH (security_invoker='true') AS
+ SELECT raw_transaction.end_user_id,
+    raw_transaction.id AS transaction_id,
+    s.key,
+    ((s.value #> '{amount,quantity}'::text[]))::double precision AS amount_quantity,
+    (s.value #>> '{amount,unit}'::text[]) AS amount_unit,
+    (s.value ->> 'accountId'::text) AS account_id,
+    (s.value)::public.graphql_json AS data,
+    raw_transaction.updated_at,
+    raw_transaction.created_at
+   FROM public.raw_transaction,
+    LATERAL jsonb_each((raw_transaction.standard -> 'postingsMap'::text)) s(key, value);
+
+
+--
+-- Name: _migrations _migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public._migrations
+    ADD CONSTRAINT _migrations_pkey PRIMARY KEY (name);
 
 
 --
@@ -499,7 +620,7 @@ CREATE INDEX transaction_updated_at ON public.raw_transaction USING btree (updat
 -- Name: resource on-resource-write; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER "on-resource-write" AFTER INSERT OR DELETE OR UPDATE ON public.resource FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('https://app.venice.is/api/webhook/database', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
+CREATE TRIGGER "on-resource-write" AFTER INSERT OR DELETE OR UPDATE ON public.resource FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('https://alka.ngrok.io/api/webhook/database', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
 
 
 --
@@ -703,21 +824,22 @@ ALTER TABLE public.resource ENABLE ROW LEVEL SECURITY;
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
-GRANT USAGE ON SCHEMA public TO postgres;
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT USAGE ON SCHEMA public TO anon;
 GRANT USAGE ON SCHEMA public TO authenticated;
 GRANT USAGE ON SCHEMA public TO service_role;
+GRANT USAGE ON SCHEMA public TO tonyx;
 GRANT USAGE ON SCHEMA public TO end_user;
 GRANT USAGE ON SCHEMA public TO org;
 
 
 --
--- Name: FUNCTION archive_completed_jobs(); Type: ACL; Schema: public; Owner: -
+-- Name: FUNCTION format_relative_date(date timestamp with time zone); Type: ACL; Schema: public; Owner: -
 --
 
-GRANT ALL ON FUNCTION public.archive_completed_jobs() TO anon;
-GRANT ALL ON FUNCTION public.archive_completed_jobs() TO authenticated;
-GRANT ALL ON FUNCTION public.archive_completed_jobs() TO service_role;
+GRANT ALL ON FUNCTION public.format_relative_date(date timestamp with time zone) TO anon;
+GRANT ALL ON FUNCTION public.format_relative_date(date timestamp with time zone) TO authenticated;
+GRANT ALL ON FUNCTION public.format_relative_date(date timestamp with time zone) TO service_role;
 
 
 --
@@ -727,6 +849,15 @@ GRANT ALL ON FUNCTION public.archive_completed_jobs() TO service_role;
 GRANT ALL ON FUNCTION public.generate_ulid() TO anon;
 GRANT ALL ON FUNCTION public.generate_ulid() TO authenticated;
 GRANT ALL ON FUNCTION public.generate_ulid() TO service_role;
+
+
+--
+-- Name: FUNCTION jsonb_array_to_text_array(_js jsonb); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.jsonb_array_to_text_array(_js jsonb) TO anon;
+GRANT ALL ON FUNCTION public.jsonb_array_to_text_array(_js jsonb) TO authenticated;
+GRANT ALL ON FUNCTION public.jsonb_array_to_text_array(_js jsonb) TO service_role;
 
 
 --
@@ -757,15 +888,45 @@ GRANT ALL ON FUNCTION public.jwt_sub() TO service_role;
 
 
 --
+-- Name: TABLE _migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public._migrations TO anon;
+GRANT ALL ON TABLE public._migrations TO authenticated;
+GRANT ALL ON TABLE public._migrations TO service_role;
+
+
+--
+-- Name: TABLE raw_account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.raw_account TO anon;
+GRANT ALL ON TABLE public.raw_account TO authenticated;
+GRANT ALL ON TABLE public.raw_account TO service_role;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_account TO tonyx;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_account TO org;
+
+
+--
+-- Name: TABLE account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.account TO anon;
+GRANT ALL ON TABLE public.account TO authenticated;
+GRANT ALL ON TABLE public.account TO service_role;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.account TO org;
+
+
+--
 -- Name: TABLE institution; Type: ACL; Schema: public; Owner: -
 --
 
 GRANT ALL ON TABLE public.institution TO anon;
 GRANT ALL ON TABLE public.institution TO authenticated;
 GRANT ALL ON TABLE public.institution TO service_role;
-GRANT SELECT ON TABLE public.institution TO analytics;
-GRANT SELECT ON TABLE public.institution TO end_user;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.institution TO tonyx;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.institution TO org;
+GRANT SELECT ON TABLE public.institution TO end_user;
 
 
 --
@@ -775,7 +936,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.institution TO org;
 GRANT ALL ON TABLE public.integration TO anon;
 GRANT ALL ON TABLE public.integration TO authenticated;
 GRANT ALL ON TABLE public.integration TO service_role;
-GRANT SELECT ON TABLE public.integration TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.integration TO tonyx;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.integration TO org;
 
 
@@ -798,7 +959,7 @@ GRANT SELECT(org_id) ON TABLE public.integration TO end_user;
 --
 
 GRANT ALL ON TABLE public.migrations TO service_role;
-GRANT SELECT ON TABLE public.migrations TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.migrations TO tonyx;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.migrations TO org;
 
 
@@ -809,20 +970,9 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.migrations TO org;
 GRANT ALL ON TABLE public.pipeline TO anon;
 GRANT ALL ON TABLE public.pipeline TO authenticated;
 GRANT ALL ON TABLE public.pipeline TO service_role;
-GRANT SELECT ON TABLE public.pipeline TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.pipeline TO tonyx;
 GRANT SELECT ON TABLE public.pipeline TO end_user;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.pipeline TO org;
-
-
---
--- Name: TABLE raw_account; Type: ACL; Schema: public; Owner: -
---
-
-GRANT ALL ON TABLE public.raw_account TO anon;
-GRANT ALL ON TABLE public.raw_account TO authenticated;
-GRANT ALL ON TABLE public.raw_account TO service_role;
-GRANT SELECT ON TABLE public.raw_account TO analytics;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_account TO org;
 
 
 --
@@ -832,7 +982,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_account TO org;
 GRANT ALL ON TABLE public.raw_commodity TO anon;
 GRANT ALL ON TABLE public.raw_commodity TO authenticated;
 GRANT ALL ON TABLE public.raw_commodity TO service_role;
-GRANT SELECT ON TABLE public.raw_commodity TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_commodity TO tonyx;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_commodity TO org;
 
 
@@ -843,7 +993,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_commodity TO org;
 GRANT ALL ON TABLE public.raw_transaction TO anon;
 GRANT ALL ON TABLE public.raw_transaction TO authenticated;
 GRANT ALL ON TABLE public.raw_transaction TO service_role;
-GRANT SELECT ON TABLE public.raw_transaction TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_transaction TO tonyx;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_transaction TO org;
 
 
@@ -854,7 +1004,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raw_transaction TO org;
 GRANT ALL ON TABLE public.resource TO anon;
 GRANT ALL ON TABLE public.resource TO authenticated;
 GRANT ALL ON TABLE public.resource TO service_role;
-GRANT SELECT ON TABLE public.resource TO analytics;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.resource TO tonyx;
 GRANT SELECT,DELETE ON TABLE public.resource TO end_user;
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.resource TO org;
 
@@ -864,6 +1014,26 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.resource TO org;
 --
 
 GRANT UPDATE(display_name) ON TABLE public.resource TO end_user;
+
+
+--
+-- Name: TABLE transaction; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.transaction TO anon;
+GRANT ALL ON TABLE public.transaction TO authenticated;
+GRANT ALL ON TABLE public.transaction TO service_role;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.transaction TO org;
+
+
+--
+-- Name: TABLE transaction_split; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.transaction_split TO anon;
+GRANT ALL ON TABLE public.transaction_split TO authenticated;
+GRANT ALL ON TABLE public.transaction_split TO service_role;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.transaction_split TO org;
 
 
 --
@@ -914,7 +1084,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO anon;
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO authenticated;
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES  TO analytics;
 
 
 --

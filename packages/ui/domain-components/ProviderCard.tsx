@@ -101,19 +101,13 @@ export const IntegrationCard = ({
     id: Id['int']
     providerName: string
     config?: Record<string, unknown> | null
+    envName?: string | null
   }
 }) => (
   <ProviderCard
     {...props}
     showName={false}
-    // Temporary hack due to presence of labels for plaid. Need better design for ProviderCard and IntegrationCard
-    labels={
-      // TODO: Fix this hack soon. We should have some kind of mapStandardIntegration method
-      int.config?.['envName']
-        ? // eslint-disable-next-line @typescript-eslint/no-base-to-string
-          [`${int.config?.['envName']}`]
-        : []
-    }
+    labels={int.envName ? [int.envName] : []}
   />
 )
 

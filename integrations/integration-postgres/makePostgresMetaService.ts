@@ -3,7 +3,6 @@ import type {TransactionFunction} from 'slonik/dist/src/types'
 
 import type {
   EndUserResultRow,
-  Id,
   MetaService,
   MetaTable,
   Viewer,
@@ -144,11 +143,11 @@ export const makePostgresMetaService = zFunction(
           pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },
-      listIntegrationIds: ({id} = {}) => {
+      listIntegrationInfos: ({id} = {}) => {
         const {runQueries, sql} = _getDeps(opts)
         return runQueries((pool) =>
-          pool.anyFirst<Id['int']>(
-            sql`SELECT id FROM integration ${
+          pool.any(
+            sql`SELECT id, env_name, display_name FROM integration ${
               id ? sql`WHERE id = ${id}` : sql``
             }`,
           ),
