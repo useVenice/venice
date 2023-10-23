@@ -2,9 +2,10 @@ import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
 
 import {getViewerId} from '@usevenice/cdk-core'
+import {zConnectPageParams} from '@usevenice/engine-backend/router/adminRouter'
 
-import {SuperHydrate} from '@/components/SuperHydrate'
 import {ClientRoot} from '@/components/ClientRoot'
+import {SuperHydrate} from '@/components/SuperHydrate'
 import {createServerComponentHelpers} from '@/lib-server/server-component-helpers'
 
 import ConnectPage from './ConnectPage'
@@ -31,8 +32,9 @@ export default async function ConnectPageContainer({
   // @see https://github.com/vercel/next.js/issues/43704
   searchParams: Record<string, string | string[] | undefined>
 }) {
+  const params = zConnectPageParams.parse(searchParams)
   const {ssg, getDehydratedState, viewer} = await createServerComponentHelpers({
-    searchParams: {_token: searchParams['token']},
+    searchParams: {_token: params.token},
   })
   if (viewer.role !== 'end_user') {
     return (
@@ -57,7 +59,7 @@ export default async function ConnectPageContainer({
           className="mr-4 rounded-lg"
         />
         <h2 className="text-2xl font-semibold tracking-tight">
-          {org.name} - {viewer.endUserId}
+          {params.displayName ?? `${org.name} - ${viewer.endUserId}`}
         </h2>
       </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">

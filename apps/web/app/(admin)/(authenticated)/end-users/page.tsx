@@ -1,9 +1,7 @@
 'use client'
 
-import {useAuth} from '@clerk/nextjs'
 import {Copy, MoreHorizontal, RefreshCcw} from 'lucide-react'
 
-import {getServerUrl} from '@usevenice/app-config/constants'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import {
@@ -45,8 +43,7 @@ type EndUser = RouterOutput['adminSearchEndUsers'][number]
 
 function EndUserMenu({endUser}: {endUser: EndUser}) {
   const {toast} = useToast()
-  const createConnectToken = _trpcReact.adminCreateConnectToken.useMutation({})
-  const {orgId} = useAuth()
+  const createMagicLink = _trpcReact.adminCreateMagicLink.useMutation({})
 
   return (
     <DropdownMenu>
@@ -70,24 +67,19 @@ function EndUserMenu({endUser}: {endUser: EndUser}) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={() => {
-            if (orgId) {
-              createConnectToken
-                .mutateAsync({endUserId: endUser.id, orgId})
-                .then((token) => {
-                  // This is a problem because due to pop up blockers...
-                  const url = new URL('/connect', getServerUrl(null))
-                  url.searchParams.set('token', token)
-
-                  window.open(url)
-                })
-                .catch((err) =>
-                  toast({
-                    title: 'Failed to create connect token',
-                    description: `${err}`,
-                    variant: 'destructive',
-                  }),
-                )
-            }
+            createMagicLink
+              .mutateAsync({endUserId: endUser.id})
+              .then((res) => {
+                // This is a problem because due to pop up blockers not liking it async...
+                window.open(res.url)
+              })
+              .catch((err) =>
+                toast({
+                  title: 'Failed to create connect token',
+                  description: `${err}`,
+                  variant: 'destructive',
+                }),
+              )
           }}>
           <RefreshCcw className="mr-2 h-4 w-4" />
           View portal
