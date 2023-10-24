@@ -3,10 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
-  "module": "./index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json",
+    "build:tsup": "tsup",
+    "clean": "rm -rf ./dist"
+  },
   "dependencies": {},
   "devDependencies": {
-    "@types/react": "*"
+    "@types/react": "*",
+    "tsup": "7.2.0",
+    "typescript": "*"
   },
   "peerDependencies": {
     "react": "*"
