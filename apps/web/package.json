@@ -8,7 +8,7 @@
     "build:next": "next build",
     "codegen:sdk": "openapi-typescript http://localhost:3000/api/openapi --output ./sdk/venice.gen.ts",
     "codegen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "start": "next start"
   },
   "dependencies": {
