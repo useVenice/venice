@@ -2,9 +2,8 @@
 
 import React from 'react'
 
+import {zId} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
-
-import {zId} from '@/../../packages/cdk-core'
 
 export const zFrameMessage = z.discriminatedUnion('type', [
   z.object({

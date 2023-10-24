@@ -11,13 +11,8 @@ export const config = {
    * - favicon.ico (favicon file)
    * - public folder
    * - public folder
-   * - connect (Venice connect, which has separate auth logic)
+   * - connect (Venice connect, oauth, which has separate auth logic)
    * - debug page
-   * - oauth routes
    */
-  matcher: [
-    '/((?!.*\\..*|_next|connect|debug|oauth).*)',
-    '/',
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!.*\\..*|_next|connect|debug).*)', '/', '/(api|trpc)(.*)'],
 }

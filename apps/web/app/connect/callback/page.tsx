@@ -1,12 +1,12 @@
 import '@usevenice/app-config/register.node'
 
 import {env} from '@usevenice/app-config/env'
-import type {Id} from '@usevenice/cdk-core';
-import { makeNangoClient} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk-core'
+import {makeNangoClient} from '@usevenice/cdk-core'
 
 import {serverSideHelpersFromViewer} from '@/lib-server'
 
-import type { FrameMessage} from './CallbackPage';
+import type {FrameMessage} from './CallbackPage'
 import {CallbackPage} from './CallbackPage'
 
 export const metadata = {

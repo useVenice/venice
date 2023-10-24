@@ -2,7 +2,6 @@ import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
 import {redirect} from 'next/navigation'
 
-import {getServerUrl} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import type {IntegrationDef} from '@usevenice/cdk-core'
@@ -13,7 +12,7 @@ import {
   makeNangoClient,
 } from '@usevenice/cdk-core'
 import {zConnectPageParams} from '@usevenice/engine-backend/router/adminRouter'
-import {joinPath, makeUlid} from '@usevenice/util'
+import {makeUlid} from '@usevenice/util'
 
 import {ClientRoot} from '@/components/ClientRoot'
 import {SuperHydrate} from '@/components/SuperHydrate'
@@ -66,7 +65,8 @@ export default async function ConnectPageContainer({
         public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
         connection_id: makeId('reso', providerName, makeUlid()),
         provider_config_key: params.integrationId,
-        redirect_uri: joinPath(getServerUrl(null), '/oauth/callback'),
+        // Consider using hookdeck so we can work with any number of urls
+        // redirect_uri: joinPath(getServerUrl(null), '/connect/callback'),
       })
       return redirect(url)
     }
