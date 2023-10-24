@@ -1,10 +1,12 @@
 import '@usevenice/app-config/register.node'
 
 import {env} from '@usevenice/app-config/env'
-import {makeNangoClient} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk-core';
+import { makeNangoClient} from '@usevenice/cdk-core'
 
 import {serverSideHelpersFromViewer} from '@/lib-server'
 
+import type { FrameMessage} from './CallbackPage';
 import {CallbackPage} from './CallbackPage'
 
 export const metadata = {
@@ -26,23 +28,30 @@ export default async function OAuthCallback({
   searchParams: Record<string, string | string[] | undefined>
 }) {
   const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
-  const ret = await nango.doOauthCallback(searchParams)
+  const res = await nango.doOauthCallback(searchParams)
 
-  if (ret.eventType === 'AUTHORIZATION_SUCEEDED') {
-    const {caller} = serverSideHelpersFromViewer({role: 'system'})
-
-    try {
-      await caller.postConnect([ret.data, ret.data.providerConfigKey, {}])
-    } catch (err) {
-      // TODO: Better handle failure here.
-      return (
-        <CallbackPage
-          res={{errorCode: 'INTERNAL_SERVER_ERROR', message: `${err}`}}
-        />
-      )
+  const msg = await (async (): Promise<FrameMessage> => {
+    if (res.eventType !== 'AUTHORIZATION_SUCEEDED') {
+      return {
+        type: 'ERROR',
+        data: {code: res.data.authErrorType, message: res.data.authErrorDesc},
+      }
     }
-  }
+    try {
+      const {caller} = serverSideHelpersFromViewer({role: 'system'})
+      await caller.postConnect([res.data, res.data.providerConfigKey, {}])
+      return {
+        type: 'SUCCESS',
+        data: {resourceId: res.data.connectionId as Id['reso']},
+      }
+    } catch (err) {
+      return {
+        type: 'ERROR',
+        data: {code: 'INTERNAL_SERVER_ERROR', message: `${err}`},
+      }
+    }
+  })()
 
   // How do we do redirect here?
-  return <CallbackPage res={ret} />
+  return <CallbackPage msg={msg} />
 }
