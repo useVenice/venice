@@ -39,7 +39,9 @@ export const zConnectPageParams = z.object({
       'Where to send user to after connect / if they press back button',
     ),
   /** Launch the integration right away */
-  integrationId: z.string().nullish(),
+  integrationId: zId('int').nullish(),
+  /** Whether to show existing resources */
+  showExisting: z.coerce.boolean().optional().default(true),
 })
 
 /**
@@ -186,7 +188,7 @@ export const adminRouter = trpc.router({
       )
       const url = new URL('/connect', ctx.apiUrl) // `/` will start from the root hostname itself
       for (const [key, value] of Object.entries({...params, token})) {
-        url.searchParams.set(key, value ?? '')
+        url.searchParams.set(key, `${value ?? ''}`)
       }
       return {url: url.toString()}
     }),

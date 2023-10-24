@@ -15,7 +15,6 @@ export default function ConnectPage(
     <VeniceConnect
       // How to we only import the client integrations dynamically that are set up by the org?
       clientIntegrations={clientIntegrations}
-      showExisting
       {...props}
     />
   )

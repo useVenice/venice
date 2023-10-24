@@ -1,8 +1,19 @@
 import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
+import {redirect} from 'next/navigation'
 
-import {getViewerId} from '@usevenice/cdk-core'
+import {getServerUrl} from '@usevenice/app-config/constants'
+import {env} from '@usevenice/app-config/env'
+import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
+import type {IntegrationDef} from '@usevenice/cdk-core'
+import {
+  extractProviderName,
+  getViewerId,
+  makeId,
+  makeNangoClient,
+} from '@usevenice/cdk-core'
 import {zConnectPageParams} from '@usevenice/engine-backend/router/adminRouter'
+import {joinPath, makeUlid} from '@usevenice/util'
 
 import {ClientRoot} from '@/components/ClientRoot'
 import {SuperHydrate} from '@/components/SuperHydrate'
@@ -32,9 +43,9 @@ export default async function ConnectPageContainer({
   // @see https://github.com/vercel/next.js/issues/43704
   searchParams: Record<string, string | string[] | undefined>
 }) {
-  const params = zConnectPageParams.parse(searchParams)
+  const {token, ...params} = zConnectPageParams.parse(searchParams)
   const {ssg, getDehydratedState, viewer} = await createServerComponentHelpers({
-    searchParams: {_token: params.token},
+    searchParams: {_token: token},
   })
   if (viewer.role !== 'end_user') {
     return (
@@ -42,10 +53,29 @@ export default async function ConnectPageContainer({
     )
   }
 
+  // Special case when we are handling a single oauth integration
+  if (params.integrationId) {
+    const providerName = extractProviderName(params.integrationId)
+    const intDef = defIntegrations[
+      providerName as keyof typeof defIntegrations
+    ] as IntegrationDef
+
+    if (intDef.metadata?.nangoProvider) {
+      const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
+      const url = await nango.getOauthConnectUrl({
+        public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
+        connection_id: makeId('reso', providerName, makeUlid()),
+        provider_config_key: params.integrationId,
+        redirect_uri: joinPath(getServerUrl(null), '/oauth/callback'),
+      })
+      return redirect(url)
+    }
+  }
+
   const [org] = await Promise.all([
     clerkClient.organizations.getOrganization({organizationId: viewer.orgId}),
-    ssg.listIntegrationInfos.prefetch({}),
-    ssg.listConnections.prefetch({}),
+    ssg.listIntegrationInfos.prefetch({id: params.integrationId}),
+    params.showExisting ? ssg.listConnections.prefetch({}) : Promise.resolve(),
   ])
 
   return (
@@ -64,7 +94,7 @@ export default async function ConnectPageContainer({
       </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
-          <ConnectPage integrationId={params.integrationId} />
+          <ConnectPage {...params} />
         </SuperHydrate>
       </ClientRoot>
     </div>

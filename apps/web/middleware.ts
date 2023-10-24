@@ -12,6 +12,12 @@ export const config = {
    * - public folder
    * - public folder
    * - connect (Venice connect, which has separate auth logic)
+   * - debug page
+   * - oauth routes
    */
-  matcher: ['/((?!.*\\..*|_next|connect|hello).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!.*\\..*|_next|connect|debug|oauth).*)',
+    '/',
+    '/(api|trpc)(.*)',
+  ],
 }
