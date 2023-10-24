@@ -1303,6 +1303,9 @@ importers:
       react:
         specifier: 18.2.0
         version: 18.2.0
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
     devDependencies:
       '@types/react':
         specifier: 18.0.27

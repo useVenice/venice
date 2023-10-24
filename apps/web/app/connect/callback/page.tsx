@@ -5,11 +5,11 @@ import {Loader2} from 'lucide-react'
 import {env} from '@usevenice/app-config/env'
 import type {Id} from '@usevenice/cdk-core'
 import {makeNangoClient} from '@usevenice/cdk-core'
+import type {FrameMessage} from '@usevenice/connect'
 
 import {FullScreenCenter} from '@/components/FullScreenCenter'
 import {serverSideHelpersFromViewer} from '@/lib-server'
 
-import type {FrameMessage} from './CallbackEffect'
 import {CallbackEffect} from './CallbackEffect'
 
 export const metadata = {

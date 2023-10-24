@@ -1,4 +1,6 @@
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}
+export * from './api'
 export * from './common'
-export * from './react'
+export * from './embed-react'
+export * from './popup'
 // codegen:end

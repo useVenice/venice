@@ -1,7 +1,6 @@
 {
   "name": "@usevenice/connect",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -9,9 +8,13 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "build:tsup": "tsup",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "prepack": "pnpm run build",
+    "publish": "pnpm publish --no-git-checks --access public"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "3.21.4"
+  },
   "devDependencies": {
     "@types/react": "*",
     "tsup": "7.2.0",
