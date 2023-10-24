@@ -1,13 +1,16 @@
 import '@usevenice/app-config/register.node'
 
+import {Loader2} from 'lucide-react'
+
 import {env} from '@usevenice/app-config/env'
 import type {Id} from '@usevenice/cdk-core'
 import {makeNangoClient} from '@usevenice/cdk-core'
 
+import {FullScreenCenter} from '@/components/FullScreenCenter'
 import {serverSideHelpersFromViewer} from '@/lib-server'
 
-import type {FrameMessage} from './CallbackPage'
-import {CallbackPage} from './CallbackPage'
+import type {FrameMessage} from './CallbackEffect'
+import {CallbackEffect} from './CallbackEffect'
 
 export const metadata = {
   title: 'Venice Oauth Callback',
@@ -20,7 +23,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 
 /** https://beta.nextjs.org/docs/api-reference/file-conventions/page#searchparams-optional */
-export default async function OAuthCallback({
+export default async function ConnectCallback({
   searchParams,
 }: {
   // Only accessible in PageComponent rather than layout component
@@ -53,5 +56,10 @@ export default async function OAuthCallback({
   })()
 
   // How do we do redirect here?
-  return <CallbackPage msg={msg} />
+  return (
+    <FullScreenCenter>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      <CallbackEffect msg={msg} />
+    </FullScreenCenter>
+  )
 }
