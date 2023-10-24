@@ -37,7 +37,14 @@ export const protectedRouter = trpc.router({
   }),
   listResources: protectedProcedure
     .meta({openapi: {method: 'GET', path: '/resources'}})
-    .input(zListParams.extend({endUserId: zEndUserId.optional()}).optional())
+    .input(
+      zListParams
+        .extend({
+          endUserId: zEndUserId.nullish(),
+          integrationId: zId('int').nullish(),
+        })
+        .optional(),
+    )
     .output(z.array(zRaw.resource))
     .query(async ({input = {}, ctx}) => {
       const resources = await ctx.helpers.metaService.tables.resource.list(

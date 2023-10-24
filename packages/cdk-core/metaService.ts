@@ -12,6 +12,8 @@ export interface MetaTable<
     ids?: TID[]
     /** Maybe remove this? not applicable everywhere */
     endUserId?: EndUserId | null
+    /** Maybe remove this? not applicable everywhere */
+    integrationId?: Id['int'] | null
     /** Used for search */
     keywords?: string | null
     /** Pagination, not necessarily supported */
