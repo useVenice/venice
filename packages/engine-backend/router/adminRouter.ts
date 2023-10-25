@@ -7,7 +7,6 @@ import {
   makeOauthIntegrationServer,
   oauthBaseSchema,
   sync,
-  zEndUserId,
   zId,
   zRaw,
 } from '@usevenice/cdk-core'
@@ -16,52 +15,6 @@ import {makeUlid, rxjs, z} from '@usevenice/util'
 import {adminProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
-
-export const zConnectTokenPayload = z.object({
-  endUserId: zEndUserId.describe(
-    'Anything that uniquely identifies the end user that you will be sending the magic link to',
-  ),
-  validityInSeconds: z
-    .number()
-    .default(3600)
-    .describe(
-      'How long the magic link will be valid for (in seconds) before it expires',
-    ),
-})
-
-export const zConnectPageParams = z.object({
-  token: z.string(),
-  displayName: z.string().nullish().describe('What to call user by'),
-  redirectUrl: z
-    .string()
-    .nullish()
-    .describe(
-      'Where to send user to after connect / if they press back button',
-    ),
-  /** Launch the integration right away */
-  integrationId: zId('int').nullish(),
-  /** Whether to show existing resources */
-  showExisting: z.coerce.boolean().optional().default(true),
-})
-
-/**
- * Workaround to be able to re-use the schema on the frontend for now
- * @see https://github.com/trpc/trpc/issues/4295
- *
- * Though if we can FULLY automate the generate of forms perhaps this wouldn't actually be necessary?
- * We will have to make sure though that the router themselves do not have any side effect imports
- * and all server-specific logic would be part of context.
- * But then again client side bundle size would still be a concern
- * as we'd be sending server side code unnecessarily to client still
- * unless of course we transform zod -> jsonschema and send that to the client only
- * via a trpc schema endpoint (with server side rendering of course)
- */
-export const adminRouterSchema = {
-  adminCreateConnectToken: {input: zConnectTokenPayload},
-  adminCreateMagicLink: {
-    input: zConnectTokenPayload.merge(zConnectPageParams.omit({token: true})),
-  },
-} satisfies Record<string, {input?: z.ZodTypeAny; output?: z.ZodTypeAny}>
 
 export const adminRouter = trpc.router({
   adminListIntegrations: adminProcedure
@@ -154,44 +107,7 @@ export const adminRouter = trpc.router({
       }
       return ctx.helpers.metaService.tables.integration.delete(intId)
     }),
-  adminCreateConnectToken: adminProcedure
-    .meta({openapi: {method: 'POST', path: '/connect-token'}})
-    .input(adminRouterSchema.adminCreateConnectToken.input)
-    .output(z.string())
-    .mutation(({input: {endUserId, validityInSeconds}, ctx}) => {
-      // Figure out a better way to share code here...
-      if (!('orgId' in ctx.viewer) || !ctx.viewer.orgId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Current viewer missing orgId to create token',
-        })
-      }
-      return ctx.jwt.signViewer(
-        {role: 'end_user', endUserId, orgId: ctx.viewer.orgId},
-        {validityInSeconds},
-      )
-    }),
-  adminCreateMagicLink: adminProcedure
-    .meta({openapi: {method: 'POST', path: '/magic-link'}})
-    .input(adminRouterSchema.adminCreateMagicLink.input)
-    .output(z.object({url: z.string()}))
-    .mutation(({input: {endUserId, validityInSeconds, ...params}, ctx}) => {
-      if (!('orgId' in ctx.viewer) || !ctx.viewer.orgId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Current viewer missing orgId to create token',
-        })
-      }
-      const token = ctx.jwt.signViewer(
-        {role: 'end_user', endUserId, orgId: ctx.viewer.orgId},
-        {validityInSeconds},
-      )
-      const url = new URL('/connect', ctx.apiUrl) // `/` will start from the root hostname itself
-      for (const [key, value] of Object.entries({...params, token})) {
-        url.searchParams.set(key, `${value ?? ''}`)
-      }
-      return {url: url.toString()}
-    }),
+
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) =>

@@ -11,7 +11,7 @@ import {
   makeId,
   makeNangoClient,
 } from '@usevenice/cdk-core'
-import {zConnectPageParams} from '@usevenice/engine-backend/router/adminRouter'
+import {zConnectPageParams} from '@usevenice/engine-backend/router/endUserRouter'
 import {makeUlid} from '@usevenice/util'
 
 import {ClientRoot} from '@/components/ClientRoot'

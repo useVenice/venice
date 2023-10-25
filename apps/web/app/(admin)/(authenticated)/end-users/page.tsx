@@ -43,7 +43,7 @@ type EndUser = RouterOutput['adminSearchEndUsers'][number]
 
 function EndUserMenu({endUser}: {endUser: EndUser}) {
   const {toast} = useToast()
-  const createMagicLink = _trpcReact.adminCreateMagicLink.useMutation({})
+  const createMagicLink = _trpcReact.createMagicLink.useMutation({})
 
   return (
     <DropdownMenu>
