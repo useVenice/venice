@@ -31,6 +31,12 @@ export function TRPCProvider({
       // createTRPCProxyClient<FlatRouter>({
       _trpcReact.createClient({
         links: [
+          () =>
+            ({op, next}) => {
+              // TODO: Implement  impersonation here based on context
+              console.log('op.context', op.context)
+              return next(op)
+            },
           (debug ? httpLink : httpBatchLink)({
             url: apiUrl ?? '/api/trpc',
             headers: () => ({
