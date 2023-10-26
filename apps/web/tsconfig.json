@@ -18,6 +18,7 @@
     "paths": {
       "@/*": ["./*"],
       // Override because we don't want to use ./dist unnecessarily
+      "@usevenice/connect": ["../../packages/connect/src/index.ts"],
       "@usevenice/connect/*": ["../../packages/connect/src/*"]
     }
   },
