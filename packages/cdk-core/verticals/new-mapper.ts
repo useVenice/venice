@@ -50,19 +50,32 @@ const qboVendorMap = mapper(QBOVendor, Vendor, {
   url: (vendor) => `${vendor.qboID}`,
 }).mapping
 
+const mapper2 = (vendor: z.infer<typeof QBOVendor>) => ({
+  id: vendor.title,
+  name: 'qbooooo',
+  url: `${vendor.qboID}`,
+})
+
+function prettify(code: string) {
+  return prettier.format(code, {
+    arrowParens: 'avoid',
+    parser: 'typescript',
+    singleQuote: true,
+    semi: false,
+    printWidth: 30,
+  })
+}
+
 Object.entries(qboVendorMap).forEach(([k, v]) => {
   console.log(
     k,
     ':',
     typeof v === 'function'
-      ? prettier.format(v.toString(), {
-          arrowParens: 'avoid',
-          parser: 'typescript',
-          singleQuote: true,
-          semi: false,
-        })
+      ? prettify(v.toString())
       : typeof v === 'string'
       ? `.${v}`
       : `${v.value}`,
   )
 })
+
+console.log(prettify(mapper2.toString()))
