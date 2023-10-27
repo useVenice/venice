@@ -2,6 +2,7 @@ import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
 import {redirect} from 'next/navigation'
 
+import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import type {IntegrationDef} from '@usevenice/cdk-core'
@@ -44,7 +45,7 @@ export default async function ConnectPageContainer({
 }) {
   const {token, ...params} = zConnectPageParams.parse(searchParams)
   const {ssg, getDehydratedState, viewer} = await createServerComponentHelpers({
-    searchParams: {_token: token},
+    searchParams: {[kAccessToken]: token},
   })
   if (viewer.role !== 'end_user') {
     return (

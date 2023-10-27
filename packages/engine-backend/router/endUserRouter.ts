@@ -121,7 +121,7 @@ export const endUserRouter = trpc.router({
       const token = ctx.jwt.signViewer(asEndUser(ctx.viewer, {endUserId}), {
         validityInSeconds,
       })
-      const url = new URL('/connect', ctx.apiUrl) // `/` will start from the root hostname itself
+      const url = new URL('/connect/init', ctx.apiUrl) // `/` will start from the root hostname itself
       for (const [key, value] of Object.entries({...params, token})) {
         url.searchParams.set(key, `${value ?? ''}`)
       }
