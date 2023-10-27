@@ -13,14 +13,17 @@ const QBOVendor = z.object({
   qboID: z.number(),
 })
 
-type ExtractKeyOfValueType<T, V> = keyof {
-  [k in keyof T as T[k] extends V ? k : never]: T[k]
-}
+type ExtractKeyOfValueType<T, V> = Extract<
+  keyof {
+    [k in keyof T as T[k] extends V ? k : never]: T[k]
+  },
+  string
+>
 
-interface Constant<T> {
-  value: T
+interface Getter<T extends string> {
+  keypath: T
 }
-const constant = <T>(t: T): Constant<T> => ({value: t})
+const get = <T extends string>(keypath: T): Getter<T> => ({keypath})
 
 export function mapper<
   ZInputSchema extends z.ZodTypeAny,
@@ -32,8 +35,8 @@ export function mapper<
   zCom: ZOutputSchema,
   mapping: {
     [k in keyof TOut]:
-      | ExtractKeyOfValueType<TIn, TOut[k]>
-      | Constant<TOut[k]>
+      | TOut[k] // Constant
+      | Getter<ExtractKeyOfValueType<TIn, TOut[k]>>
       | ((ext: TIn) => TOut[k])
   },
 ) {
@@ -45,8 +48,8 @@ export function mapper<
 }
 
 const qboVendorMap = mapper(QBOVendor, Vendor, {
-  id: 'title',
-  name: constant('qbooooo'),
+  id: get('title'),
+  name: 'qboooo',
   url: (vendor) => `${vendor.qboID}`,
 }).mapping
 
@@ -72,9 +75,9 @@ Object.entries(qboVendorMap).forEach(([k, v]) => {
     ':',
     typeof v === 'function'
       ? prettify(v.toString())
-      : typeof v === 'string'
-      ? `.${v}`
-      : `${v.value}`,
+      : typeof v === 'object' && 'keypath' in v
+      ? `.${v.keypath}`
+      : JSON.stringify(v),
   )
 })
 
