@@ -1,6 +1,5 @@
 import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
-import {redirect} from 'next/navigation'
 
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
@@ -11,15 +10,25 @@ import {
   getViewerId,
   makeId,
   makeNangoClient,
+  zId,
 } from '@usevenice/cdk-core'
 import {zConnectPageParams} from '@usevenice/engine-backend/router/endUserRouter'
-import {makeUlid} from '@usevenice/util'
+import {makeUlid, z} from '@usevenice/util'
 
 import {ClientRoot} from '@/components/ClientRoot'
 import {SuperHydrate} from '@/components/SuperHydrate'
 import {createServerComponentHelpers} from '@/lib-server/server-component-helpers'
 
 import ConnectPage from './ConnectPage'
+import {SetCookieAndRedirect} from './SetCookieAndRedirect'
+
+export const kConnectSession = 'connect-session'
+
+type ConnectSession = z.infer<typeof zConnectSession>
+export const zConnectSession = z.object({
+  token: z.string(),
+  resourceId: zId('reso'),
+})
 
 export const metadata = {
   title: 'Venice Connect',
@@ -62,14 +71,31 @@ export default async function ConnectPageContainer({
 
     if (intDef.metadata?.nangoProvider) {
       const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
+      const resourceId = makeId('reso', providerName, makeUlid())
       const url = await nango.getOauthConnectUrl({
         public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
-        connection_id: makeId('reso', providerName, makeUlid()),
+        connection_id: resourceId,
         provider_config_key: params.integrationId,
         // Consider using hookdeck so we can work with any number of urls
         // redirect_uri: joinPath(getServerUrl(null), '/connect/callback'),
       })
-      return redirect(url)
+      return (
+        <SetCookieAndRedirect
+          cookies={[
+            {
+              key: kConnectSession,
+              value: JSON.stringify({
+                resourceId,
+                token,
+              } satisfies ConnectSession),
+              // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7%7Cthe
+              // Need sameSite to be lax in order for this to work
+              options: {maxAge: 3600, sameSite: 'lax'},
+            },
+          ]}
+          redirectUrl={url}
+        />
+      )
     }
   }
 

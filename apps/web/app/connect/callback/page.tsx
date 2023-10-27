@@ -12,7 +12,7 @@ import {FullScreenCenter} from '@/components/FullScreenCenter'
 import {serverSideHelpersFromViewer} from '@/lib-server'
 import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
 
-import {kConnectSession, zConnectSession} from '../init/route'
+import {kConnectSession, zConnectSession} from '../page'
 import {CallbackEffect} from './CallbackEffect'
 
 export const metadata = {
@@ -35,6 +35,7 @@ export default async function ConnectCallback({
 }) {
   const msg = await (async (): Promise<FrameMessage> => {
     try {
+      // TODO: Can we use cookies-next to read cookie in this environment?
       const cookie = cookies().get(kConnectSession)
       if (!cookie) {
         return {
