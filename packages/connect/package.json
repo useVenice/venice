@@ -1,6 +1,6 @@
 {
   "name": "@usevenice/connect",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -10,7 +10,7 @@
     "build:tsup": "tsup",
     "clean": "rm -rf ./dist",
     "prepack": "pnpm run build",
-    "publish": "pnpm publish --no-git-checks --access public"
+    "pub": "pnpm publish --no-git-checks --access public"
   },
   "dependencies": {
     "zod": "3.21.4"

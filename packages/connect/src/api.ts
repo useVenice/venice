@@ -4,9 +4,9 @@ import {defaultVeniceHost} from './common'
 
 export const zVeniceClientConfig = z.object({
   /** Service account auth */
-  apiKey: z.string().nullable(),
+  apiKey: z.string().nullish(),
   /** User auth, should pass in one or the other */
-  accessToken: z.string().nullable(),
+  accessToken: z.string().nullish(),
   apiHost: z.string().default(defaultVeniceHost),
 })
 export type VeniceClientConfig = z.infer<typeof zVeniceClientConfig>
@@ -45,7 +45,8 @@ export function makeVeniceClient({
     createMagicLink: async (opts: {
       integrationId?: string
       providerName?: string
-      endUserId: string
+      endUserId?: string
+      validityInSeconds?: number
     }) => {
       const url = new URL('magic-link', apiBase)
       const res = await fetch(url.toString(), {
@@ -58,9 +59,8 @@ export function makeVeniceClient({
       return data as {url: string}
     },
     createConnectToken: async (opts: {
-      integrationId?: string
-      providerName?: string
-      endUserId: string
+      endUserId?: string
+      validityInSeconds?: number
     }) => {
       const url = new URL('connect-token', apiBase)
       const res = await fetch(url.toString(), {
