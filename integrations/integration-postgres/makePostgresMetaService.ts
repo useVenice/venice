@@ -173,12 +173,13 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
   // TODO: Convert case from snake_case to camelCase
   return {
-    list: ({ids, endUserId, integrationId, keywords, ...rest}) =>
+    list: ({ids, endUserId, integrationId, providerName, keywords, ...rest}) =>
       runQueries((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
           endUserId && sql`end_user_id = ${endUserId}`,
           integrationId && sql`integration_id = ${integrationId}`,
+          providerName && sql`provider_name = ${providerName}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&
             tableName === 'institution' &&

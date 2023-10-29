@@ -42,6 +42,7 @@ export const protectedRouter = trpc.router({
         .extend({
           endUserId: zEndUserId.nullish(),
           integrationId: zId('int').nullish(),
+          providerName: z.string().nullish(),
         })
         .optional(),
     )

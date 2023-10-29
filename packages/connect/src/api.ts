@@ -24,9 +24,17 @@ export function makeVeniceClient({
   }
 
   return {
-    listResources: async (opts: {integrationId: string}) => {
+    listResources: async (opts: {
+      integrationId?: string
+      providerName?: string
+    }) => {
       const url = new URL('resources', apiBase)
-      url.searchParams.set('integrationId', opts.integrationId)
+      if (opts.integrationId) {
+        url.searchParams.set('integrationId', opts.integrationId)
+      }
+      if (opts.providerName) {
+        url.searchParams.set('providerName', opts.providerName)
+      }
       const res = await fetch(url.toString(), {method: 'GET', headers})
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const data = await res.json()
@@ -35,7 +43,8 @@ export function makeVeniceClient({
     // Maybe we should allow end user to create magic link for themselves too so that
     // this operation can be done client side instead of server side?
     createMagicLink: async (opts: {
-      integrationId: string
+      integrationId?: string
+      providerName?: string
       endUserId: string
     }) => {
       const url = new URL('magic-link', apiBase)
@@ -49,7 +58,8 @@ export function makeVeniceClient({
       return data as {url: string}
     },
     createConnectToken: async (opts: {
-      integrationId: string
+      integrationId?: string
+      providerName?: string
       endUserId: string
     }) => {
       const url = new URL('connect-token', apiBase)
