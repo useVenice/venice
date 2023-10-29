@@ -55,6 +55,7 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
   /** Only connect to this integration */
   integrationId?: Id['int'] | null
+  providerName?: string | null
 }
 
 type UseConnectScope = Parameters<UseConnectHook>[0]
@@ -115,6 +116,7 @@ export function VeniceConnectButton({
 export function VeniceConnect(props: VeniceConnectProps) {
   const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({
     id: props.integrationId,
+    providerName: props.providerName,
   })
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 

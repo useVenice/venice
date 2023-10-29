@@ -159,6 +159,7 @@ export const protectedRouter = trpc.router({
       z.object({
         type: z.enum(['source', 'destination']).nullish(),
         id: zId('int').nullish(),
+        providerName: z.string().nullish(),
       }),
     )
     .output(
@@ -176,8 +177,11 @@ export const protectedRouter = trpc.router({
           }),
       ),
     )
-    .query(async ({input: {type, id}, ctx}) => {
-      const intInfos = await ctx.helpers.metaService.listIntegrationInfos({id})
+    .query(async ({input: {type, id, providerName}, ctx}) => {
+      const intInfos = await ctx.helpers.metaService.listIntegrationInfos({
+        id,
+        providerName,
+      })
 
       return intInfos
         .map(({id, envName, displayName}) => {

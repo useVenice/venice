@@ -62,9 +62,26 @@ export default async function ConnectPageContainer({
     )
   }
 
+  // Implement shorthand for specifying only integrationId by providerName
+  let integrationId = params.integrationId
+  if (!integrationId && params.providerName) {
+    const ints = await ssg.listIntegrationInfos.fetch({
+      providerName: params.providerName,
+    })
+    if (ints.length === 1 && ints[0]?.id) {
+      integrationId = ints[0]?.id
+    } else if (ints.length < 1) {
+      return <div>No integration for {params.providerName} configured</div>
+    } else if (ints.length > 1) {
+      console.warn(
+        `${ints.length} integrations found for ${params.providerName}`,
+      )
+    }
+  }
+
   // Special case when we are handling a single oauth integration
-  if (params.integrationId) {
-    const providerName = extractProviderName(params.integrationId)
+  if (integrationId) {
+    const providerName = extractProviderName(integrationId)
     const intDef = defIntegrations[
       providerName as keyof typeof defIntegrations
     ] as IntegrationDef
@@ -75,7 +92,7 @@ export default async function ConnectPageContainer({
       const url = await nango.getOauthConnectUrl({
         public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
         connection_id: resourceId,
-        provider_config_key: params.integrationId,
+        provider_config_key: integrationId,
         // Consider using hookdeck so we can work with any number of urls
         // redirect_uri: joinPath(getServerUrl(null), '/connect/callback'),
       })
@@ -101,7 +118,11 @@ export default async function ConnectPageContainer({
 
   const [org] = await Promise.all([
     clerkClient.organizations.getOrganization({organizationId: viewer.orgId}),
-    ssg.listIntegrationInfos.prefetch({id: params.integrationId}),
+    // Switch to using react suspense / server fetch for this instead of prefetch
+    ssg.listIntegrationInfos.prefetch({
+      id: integrationId,
+      providerName: params.providerName,
+    }),
     params.showExisting ? ssg.listConnections.prefetch({}) : Promise.resolve(),
   ])
 

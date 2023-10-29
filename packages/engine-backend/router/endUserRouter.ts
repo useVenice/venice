@@ -46,6 +46,8 @@ export const zConnectPageParams = z.object({
     .describe(
       'Where to send user to after connect / if they press back button',
     ),
+  // TODO: How to make sure we actually have a typed api here and can use zProviderName
+  providerName: z.string().nullish().describe('Which provider to use'),
   /** Launch the integration right away */
   integrationId: zId('int').nullish(),
   /** Whether to show existing resources */

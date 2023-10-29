@@ -59,7 +59,10 @@ export interface MetaService {
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   /** Id is used to check RLS policy right now for end user */
-  listIntegrationInfos: (opts?: {id?: Id['int'] | null}) => Promise<
+  listIntegrationInfos: (opts?: {
+    id?: Id['int'] | null
+    providerName?: string | null
+  }) => Promise<
     ReadonlyArray<{
       id: Id['int']
       envName?: string | null

@@ -27,6 +27,8 @@ import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
 import {default as integrationWebhook} from '@usevenice/integration-webhook/def'
 import {default as integrationWise} from '@usevenice/integration-wise/def'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/def'
+import type {NonEmptyArray} from '@usevenice/util';
+import { z} from '@usevenice/util'
 
 export const defIntegrations = {
   airtable: integrationAirtable,
@@ -58,3 +60,10 @@ export const defIntegrations = {
   wise: integrationWise,
   yodlee: integrationYodlee,
 }
+
+// TODO: make sure to generate this
+export const zProviderName = z.enum(
+  Object.keys(defIntegrations) as NonEmptyArray<keyof typeof defIntegrations>,
+)
+
+export type ProviderName = z.infer<typeof zProviderName>
