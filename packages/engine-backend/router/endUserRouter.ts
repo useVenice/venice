@@ -109,10 +109,12 @@ export const endUserRouter = trpc.router({
   createConnectToken: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/connect-token'}})
     .input(endUserRouterSchema.createConnectToken.input)
-    .output(z.string())
-    .mutation(({input: {validityInSeconds, ...input}, ctx}) =>
-      ctx.jwt.signViewer(asEndUser(ctx.viewer, input), {validityInSeconds}),
-    ),
+    .output(z.object({token: z.string()}))
+    .mutation(({input: {validityInSeconds, ...input}, ctx}) => ({
+      token: ctx.jwt.signViewer(asEndUser(ctx.viewer, input), {
+        validityInSeconds,
+      }),
+    })),
   createMagicLink: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/magic-link'}})
     .input(endUserRouterSchema.createMagicLink.input)
