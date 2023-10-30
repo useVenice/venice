@@ -20,6 +20,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     INNGEST_EVENT_KEY: z.string(),
     INNGEST_SIGNING_KEY: z.string(),
     NANGO_SECRET_KEY: z.string(),
+    VERCEL_ENV: z.enum(['production', 'preview', 'development']),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -35,6 +36,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     NEXT_PUBLIC_COMMANDBAR_ORG_ID: z.string().optional(),
   },
   runtimeEnv: overrideFromLocalStorage({
+    VERCEL_ENV: process.env['VERCEL_ENV'],
     CLERK_SECRET_KEY: process.env['CLERK_SECRET_KEY'],
     INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
     INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
