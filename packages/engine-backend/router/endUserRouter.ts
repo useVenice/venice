@@ -86,7 +86,11 @@ function asEndUser(
       message: 'Current viewer missing orgId to create token',
     })
   }
-  if (viewer.role === 'end_user' && input.endUserId !== viewer.endUserId) {
+  if (
+    viewer.role === 'end_user' &&
+    input.endUserId &&
+    input.endUserId !== viewer.endUserId
+  ) {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: 'Current viewer cannot create token for other end user',
