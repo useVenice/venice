@@ -1,6 +1,6 @@
 {
   "name": "@usevenice/connect",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -9,8 +9,7 @@
     "build": "tsc -p ./tsconfig.json",
     "build:tsup": "tsup",
     "clean": "rm -rf ./dist",
-    "prepack": "pnpm run build",
-    "pub": "pnpm publish --no-git-checks --access public"
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "zod": "3.21.4"
@@ -22,5 +21,8 @@
   },
   "peerDependencies": {
     "react": "*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

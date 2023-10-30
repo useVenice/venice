@@ -14,8 +14,11 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "outDir": "./dist",
+    "sourceMap": true,
     "declaration": true,
-    "sourceMap": true
+    // This is what allows vscode etc. to automatically jump to /src files
+    // as user navigate into the library
+    "declarationMap": true
   },
   "include": ["env.d.ts", "src/index.ts", "src/common.ts"],
   "exclude": ["node_modules"]
