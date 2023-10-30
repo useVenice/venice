@@ -65,6 +65,7 @@ export default function ResourcesPage() {
             enableHiding: false,
             cell: ({row}) => <ResourceMenu resource={row.original} />,
           },
+          {accessorKey: 'displayName'},
           {accessorKey: 'endUserId'},
           {accessorKey: 'id'},
           {accessorKey: 'status'},
