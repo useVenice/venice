@@ -19,6 +19,8 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 
     INNGEST_EVENT_KEY: z.string(),
     INNGEST_SIGNING_KEY: z.string(),
+    NANGO_SECRET_KEY: z.string(),
+    VERCEL_ENV: z.enum(['production', 'preview', 'development']),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -30,12 +32,16 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
     NEXT_PUBLIC_CLERK_SUPABASE_JWT_TEMPLATE_NAME: z
       .string()
       .default('supabase'),
+    NEXT_PUBLIC_NANGO_PUBLIC_KEY: z.string(),
     NEXT_PUBLIC_COMMANDBAR_ORG_ID: z.string().optional(),
   },
   runtimeEnv: overrideFromLocalStorage({
+    VERCEL_ENV: process.env['VERCEL_ENV'],
     CLERK_SECRET_KEY: process.env['CLERK_SECRET_KEY'],
     INNGEST_EVENT_KEY: process.env['INNGEST_EVENT_KEY'],
     INNGEST_SIGNING_KEY: process.env['INNGEST_SIGNING_KEY'],
+    NANGO_SECRET_KEY: process.env['NANGO_SECRET_KEY'],
+    NEXT_PUBLIC_NANGO_PUBLIC_KEY: process.env['NEXT_PUBLIC_NANGO_PUBLIC_KEY'],
     JWT_SECRET_OR_PUBLIC_KEY: process.env['JWT_SECRET_OR_PUBLIC_KEY'],
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env['NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY'],
@@ -59,6 +65,7 @@ Pass a valid http(s):// url for stateless mode. Sync data and metadata be sent t
 } satisfies Parameters<typeof createEnv>[0]
 
 export const env = createEnv(envConfig)
+export type Env = typeof env
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 ;(globalThis as any).env = env

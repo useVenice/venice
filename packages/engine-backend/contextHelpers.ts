@@ -3,7 +3,7 @@ import {TRPCError} from '@trpc/server'
 
 import type {
   AnyEntityPayload,
-  AnySyncProvider,
+  AnyIntegrationImpl,
   Destination,
   Id,
   IDS,
@@ -27,7 +27,7 @@ export function getContextHelpers({
   getLinksForPipeline,
 }: {
   metaService: MetaService
-  providerMap: Record<string, AnySyncProvider>
+  providerMap: Record<string, AnyIntegrationImpl>
   // TODO: Fix any type
   getLinksForPipeline?: (pipeline: any) => Link[]
 }) {
@@ -145,7 +145,7 @@ export function getContextHelpers({
   }
 
   const getIntegrationInfoOrFail = (id: Id['int']) =>
-    metaService.listIntegrationIds({id}).then((ints) => {
+    metaService.listIntegrationInfos({id}).then((ints) => {
       if (!ints[0]) {
         throw new TRPCError({code: 'NOT_FOUND'})
       }
@@ -187,8 +187,8 @@ export function getContextHelpers({
 
   const getResourceExpandedOrFail = (id: Id['reso']) =>
     getResourceOrFail(id).then(async (reso) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const integration = await getIntegrationOrFail(reso.integrationId!)
+       
+      const integration = await getIntegrationOrFail(reso.integrationId)
       const settings: {} = integration.provider.def.resourceSettings?.parse(
         reso.settings,
       )

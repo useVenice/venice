@@ -4,9 +4,9 @@ import '@usevenice/app-config/register.node'
 
 import readline from 'node:readline'
 
-import {fsProvider} from '@usevenice/app-config/providers'
 import {sync} from '@usevenice/cdk-core'
 import {brexImpl} from '@usevenice/integration-brex'
+import {fsServer} from '@usevenice/integration-fs'
 import {heronImpl} from '@usevenice/integration-heron'
 import {mergeImpl} from '@usevenice/integration-merge'
 import {postgresProvider} from '@usevenice/integration-postgres'
@@ -80,6 +80,7 @@ switch (process.argv[2]) {
     sync({
       source: postgresProvider.sourceSync({
         state: undefined,
+        config: {},
         endUser: null,
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
@@ -196,8 +197,10 @@ switch (process.argv[2]) {
           obs.complete()
         })
       }),
-      destination: fsProvider.destinationSync({
+      destination: fsServer.destinationSync({
         endUser: null,
+        config: {},
+        state: {},
         settings: {basePath: destPath},
       }),
     }).catch(console.error)
@@ -207,14 +210,17 @@ switch (process.argv[2]) {
   case 'direct': {
     console.log('direct mode')
     sync({
-      source: fsProvider.sourceSync({
+      source: fsServer.sourceSync({
         endUser: null,
         settings: {basePath: srcPath},
+        config: {},
         state: {},
       }),
-      destination: fsProvider.destinationSync({
+      destination: fsServer.destinationSync({
         endUser: null,
         settings: {basePath: destPath},
+        config: {},
+        state: {},
       }),
     }).catch(console.error)
   }

@@ -28,6 +28,7 @@ function getSource(name: string) {
       })
     case 'postgres':
       return postgresProvider.sourceSync({
+        config: {},
         endUser: null,
         state: {},
         settings: {
@@ -72,6 +73,8 @@ function getDestination(name: string | undefined) {
       })
     case 'postgres':
       return postgresProvider.destinationSync({
+        config: {},
+        state: {},
         endUser: null,
         settings: {
           databaseUrl:

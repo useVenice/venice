@@ -5,7 +5,7 @@ import {
   initFirebase,
   zFirebaseUserConfig,
   zServiceAccount,
-} from '@usevenice/core-integration-firebase'
+} from '@usevenice/integration-firebase'
 import type {HTTPError} from '@usevenice/util'
 import {createHTTPClient, Rx, rxjs, z, zCast, zFunction} from '@usevenice/util'
 

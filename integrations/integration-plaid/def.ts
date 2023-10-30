@@ -8,11 +8,7 @@ import type {
 
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zWebhookInput} from '@usevenice/cdk-core'
-import {
-  baseIntegrationSchemas,
-  makePostingsMap,
-  makeStandardId,
-} from '@usevenice/cdk-ledger'
+import {makePostingsMap, makeStandardId, zStream} from '@usevenice/cdk-ledger'
 import {A, z, zCast} from '@usevenice/util'
 
 import {
@@ -26,7 +22,6 @@ import type {ErrorShape} from './plaid.types'
 import {zCountryCode, zLanguage, zPlaidEnvName, zProducts} from './PlaidClient'
 
 export const plaidSchemas = {
-  ...baseIntegrationSchemas,
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
   integrationConfig: z.object({
@@ -78,9 +73,13 @@ export const plaidSchemas = {
     meta: zCast<PlaidLinkOnSuccessMetadata>().optional(),
   }),
   /** "Manually" extending for now, this will get better / safer */
-  sourceState: baseIntegrationSchemas.sourceState
-    .removeDefault()
-    .extend({
+  sourceState: z
+    .object({
+      streams: z.array(zStream).nullish(),
+      /** Account ids to sync */
+      accountIds: z.array(z.string()).nullish(),
+      /** Date to sync since */
+      sinceDate: z.string().nullish() /** ISO8601 */,
       transactionSyncCursor: z.string().nullish(),
       /** ISO8601 */
       investmentTransactionEndDate: z.string().nullish(),

@@ -7,18 +7,20 @@ import {
   mapStandardEntityLink,
   renameAccountLink,
 } from '@usevenice/cdk-ledger'
-import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
+import {makePostgresMetaService} from '@usevenice/integration-postgres'
 import {joinPath, R, Rx} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
 import {env} from './env'
-import {PROVIDERS} from './providers'
+import {mergedIntegrations} from './integrations/integrations.merged'
 
-export {DatabaseError} from '@usevenice/core-integration-postgres/makePostgresClient'
+export {
+  DatabaseError,
+  makePostgresClient,
+} from '@usevenice/integration-postgres/makePostgresClient'
 export {Papa} from '@usevenice/integration-spreadsheet'
-export {makePostgresClient} from '@usevenice/integration-postgres'
 
 export const backendEnv = env
 
@@ -38,15 +40,17 @@ const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 //   VeniceRouter['_def']['mutations']['syncPipeline']
 // >[0]
 export type VeniceInput = PipelineInput<
-  (typeof PROVIDERS)[number],
-  (typeof PROVIDERS)[number]
+  (typeof mergedIntegrations)[keyof typeof mergedIntegrations],
+  (typeof mergedIntegrations)[keyof typeof mergedIntegrations]
 >
 
 export const contextFactory = getContextFactory({
-  providers: PROVIDERS,
+  providers: Object.values(mergedIntegrations),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
+  env,
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
+  nangoSecretKey: env.NANGO_SECRET_KEY,
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
   getMetaService: (viewer) =>
     makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL, viewer}),

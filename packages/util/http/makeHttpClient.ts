@@ -1,10 +1,11 @@
-import {getDefaultProxyAgent, HTTPError} from './http-utils'
-import z from 'zod'
 import * as R from 'remeda'
-import {safeJSONParse} from '../json-utils'
+import z from 'zod'
+
 import {defineProxyFn} from '../di-utils'
+import {safeJSONParse} from '../json-utils'
 import {joinPath} from '../url-utils'
 import {stringifyQueryParams} from '../url-utils'
+import {getDefaultProxyAgent, HTTPError} from './http-utils'
 
 const zHttpMethod = z.enum([
   'get',
@@ -60,6 +61,10 @@ export function makeHttpClient(options: HttpClientOptions) {
     ...defaults
   } = options
 
+  const _fetch: typeof fetch = (url, options) =>
+    // Node fetch specific option... Noop on other platforms.
+    fetch(url, {...({agent} as RequestInit), ...options})
+
   const agent = getDefaultProxyAgent()
 
   // TODO: Perform runtime validation on input... so we don't get body
@@ -101,9 +106,7 @@ export function makeHttpClient(options: HttpClientOptions) {
     // NOTE: Implement proxyAgent as a middleware
     // This way we can transparently use reverse proxies also in addition to forward proxy
     // as well as just simple in-app logging.
-    return fetch(url, {
-      // @ts-expect-error Node fetch specific option... Noop on other platforms.
-      agent,
+    return _fetch(url, {
       ...defaults,
       method,
       headers,
@@ -133,7 +136,7 @@ export function makeHttpClient(options: HttpClientOptions) {
       request(method.toUpperCase() as Uppercase<typeof method>, path, input),
   ])
 
-  return {...methods, request}
+  return {...methods, request, _fetch}
 }
 
 // TODO: build url from utils?

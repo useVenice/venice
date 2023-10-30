@@ -1,8 +1,16 @@
 import type {MaybePromise, z} from '@usevenice/util'
 import {R} from '@usevenice/util'
 
-import type {EndUserId} from './id.types'
+import type {EndUserId, Id} from './id.types'
 import {makeId} from './id.types'
+import type {ZStandard} from './meta.types'
+import type {
+  Destination,
+  ResoUpdateData,
+  Source,
+  StateUpdateData,
+  SyncOperation,
+} from './protocol'
 import type {
   CheckResourceContext,
   CheckResourceOptions,
@@ -12,15 +20,7 @@ import type {
   OpenDialogFn,
   ResourceUpdate,
   WebhookReturnType,
-} from './makeSyncProvider'
-import type {ZStandard} from './meta.types'
-import type {
-  Destination,
-  ResoUpdateData,
-  Source,
-  StateUpdateData,
-  SyncOperation,
-} from './protocol'
+} from './providers.types'
 
 /** Maybe this should be renamed to `schemas` */
 export interface IntegrationSchemas {
@@ -40,11 +40,14 @@ export interface IntegrationSchemas {
   destinationInputEntity?: z.ZodTypeAny
 }
 
+export type IntHelpers<TDef extends IntegrationSchemas = IntegrationSchemas> =
+  ReturnType<typeof intHelpers<TDef>>
 export interface IntegrationDef<
   TSchemas extends IntegrationSchemas = IntegrationSchemas,
   T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
 > {
   name: TSchemas['name']['_def']['value']
+  // TODO: Rename def to schemas...
   def: TSchemas
   metadata?: IntegrationMetadata
 
@@ -88,10 +91,6 @@ export interface IntegrationDef<
   }
 }
 
-export type IntHelpers<TDef extends IntegrationSchemas> = ReturnType<
-  typeof intHelpers<TDef>
->
-
 export interface IntegrationClient<
   TDef extends IntegrationSchemas = IntegrationSchemas,
   T extends IntHelpers<TDef> = IntHelpers<TDef>,
@@ -101,7 +100,10 @@ export interface IntegrationClient<
     openDialog: OpenDialogFn
   }) => (
     connectInput: T['_types']['connectInput'],
-    context: ConnectOptions,
+    context: ConnectOptions & {
+      // TODO: Does this belong here?
+      integrationId: Id['int']
+    },
   ) => Promise<T['_types']['connectOutput']>
 }
 

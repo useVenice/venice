@@ -192,7 +192,7 @@ export function CommandBar(props: CommandComponentProps) {
   const [open, setOpen] = React.useState(false)
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'p' && e.metaKey) {
+      if ((e.key === 'p' || e.key === 'k') && e.metaKey) {
         setOpen((open) => !open)
         e.preventDefault()
       }

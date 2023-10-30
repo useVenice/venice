@@ -12,6 +12,10 @@ export interface MetaTable<
     ids?: TID[]
     /** Maybe remove this? not applicable everywhere */
     endUserId?: EndUserId | null
+    /** Maybe remove this? not applicable everywhere */
+    integrationId?: Id['int'] | null
+    /** Maybe remove this? not applicable everywhere */
+    providerName?: string | null
     /** Used for search */
     keywords?: string | null
     /** Pagination, not necessarily supported */
@@ -51,10 +55,20 @@ export interface MetaService {
     limit?: number
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
+  /** TODO: Implement limit & offset */
   findPipelines: (options: {
     resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   /** Id is used to check RLS policy right now for end user */
-  listIntegrationIds: (opts?: {id?: Id['int']}) => Promise<ReadonlyArray<Id['int']>>
+  listIntegrationInfos: (opts?: {
+    id?: Id['int'] | null
+    providerName?: string | null
+  }) => Promise<
+    ReadonlyArray<{
+      id: Id['int']
+      envName?: string | null
+      displayName?: string | null
+    }>
+  >
 }

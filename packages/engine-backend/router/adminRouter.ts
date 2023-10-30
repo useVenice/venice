@@ -1,10 +1,12 @@
 import {TRPCError} from '@trpc/server'
 
 import {
+  extractProviderName,
   handlersLink,
   makeId,
+  makeOauthIntegrationServer,
+  oauthBaseSchema,
   sync,
-  zEndUserId,
   zId,
   zRaw,
 } from '@usevenice/cdk-core'
@@ -14,46 +16,12 @@ import {adminProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
-/**
- * Workaround to be able to re-use the schema on the frontend for now
- * @see https://github.com/trpc/trpc/issues/4295
- *
- * Though if we can FULLY automate the generate of forms perhaps this wouldn't actually be necessary?
- * We will have to make sure though that the router themselves do not have any side effect imports
- * and all server-specific logic would be part of context.
- * But then again client side bundle size would still be a concern
- * as we'd be sending server side code unnecessarily to client still
- * unless of course we transform zod -> jsonschema and send that to the client only
- * via a trpc schema endpoint (with server side rendering of course)
- */
-export const adminRouterSchema = {
-  adminCreateConnectToken: {
-    input: z.object({
-      orgId: zId('org'),
-      endUserId: zEndUserId.describe(
-        'Anything that uniquely identifies the end user that you will be sending the magic link to',
-      ),
-      displayName: z.string().nullish().describe('What to call user by'),
-      redirectUrl: z
-        .string()
-        .nullish()
-        .describe(
-          'Where to send user to after connect / if they press back button',
-        ),
-      validityInSeconds: z
-        .number()
-        .default(3600)
-        .describe(
-          'How long the magic link will be valid for (in seconds) before it expires',
-        ),
-    }),
-  },
-} satisfies Record<string, {input?: z.ZodTypeAny; output?: z.ZodTypeAny}>
-
 export const adminRouter = trpc.router({
-  adminListIntegrations: adminProcedure.query(async ({ctx}) =>
-    ctx.helpers.list('integration', {}),
-  ),
+  adminListIntegrations: adminProcedure
+    .meta({openapi: {method: 'GET', path: '/integrations'}})
+    .input(z.void())
+    .output(z.array(zRaw.integration))
+    .query(async ({ctx}) => ctx.helpers.list('integration', {})),
   adminUpsertPipeline: adminProcedure
     .input(
       zRaw.pipeline
@@ -75,6 +43,7 @@ export const adminRouter = trpc.router({
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
   adminUpsertIntegration: adminProcedure
+    .meta({openapi: {method: 'POST', path: '/integrations'}})
     .input(
       zRaw.integration
         .pick({
@@ -91,7 +60,8 @@ export const adminRouter = trpc.router({
         // this makes me wonder if UPSERT should always be the default....
         .required({orgId: true}),
     )
-    .mutation(({input: {id: _id, providerName, ...input}, ctx}) => {
+    .output(zRaw.integration)
+    .mutation(async ({input: {id: _id, providerName, ...input}, ctx}) => {
       const id = _id
         ? _id
         : providerName && input.orgId
@@ -103,31 +73,41 @@ export const adminRouter = trpc.router({
           message: 'Missing id or providerName/orgId',
         })
       }
+      const provider = ctx.providerMap[extractProviderName(id)]
+
+      if (!provider) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Missing provider for ${extractProviderName(id)}`,
+        })
+      }
+      if (provider.metadata?.nangoProvider) {
+        await makeOauthIntegrationServer({
+          intId: id,
+          nangoClient: ctx.nango,
+          nangoProvider: provider.metadata.nangoProvider,
+        }).upsertIntegration(
+          oauthBaseSchema.integrationConfig.parse(input.config),
+        )
+      }
+
       return ctx.helpers.patchReturning('integration', id, input)
     }),
   // Need a tuple for some reason... otherwise seems to not work in practice.
   adminDeleteIntegration: adminProcedure
-    .input(z.tuple([zId('int')]))
-    .mutation(({input: [intId], ctx}) =>
-      ctx.helpers.metaService.tables.integration.delete(intId),
-    ),
-  adminCreateConnectToken: adminProcedure
-    .input(adminRouterSchema.adminCreateConnectToken.input)
-    .mutation(({input: {endUserId, orgId, validityInSeconds}, ctx}) => {
-      if (
-        (ctx.viewer.role === 'user' || ctx.viewer.role === 'org') &&
-        ctx.viewer.orgId !== orgId
-      ) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: `${orgId} Not your org`,
+    .meta({openapi: {method: 'DELETE', path: '/integrations/{id}'}})
+    .input(z.object({id: zId('int')}))
+    .output(z.void())
+    .mutation(async ({input: {id: intId}, ctx}) => {
+      const provider = ctx.providerMap[extractProviderName(intId)]
+      if (provider?.metadata?.nangoProvider) {
+        await ctx.nango.delete('/config/{provider_config_key}', {
+          path: {provider_config_key: intId},
         })
       }
-      return ctx.jwt.signViewer(
-        {role: 'end_user', endUserId, orgId},
-        {validityInSeconds},
-      )
+      return ctx.helpers.metaService.tables.integration.delete(intId)
     }),
+
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) =>
@@ -138,14 +118,14 @@ export const adminRouter = trpc.router({
         .then((rows) => rows.filter((u) => !!u.id)),
     ),
   adminGetIntegration: adminProcedure
-    .input(zId('int'))
-    .query(async ({input: intId, ctx}) => {
-      const int = await ctx.helpers.getIntegrationOrFail(intId)
-      return {
-        config: int.config,
-        provider: int.provider.name,
-        id: int.id,
-      }
+    .meta({openapi: {method: 'GET', path: '/integrations/{id}'}})
+    .input(z.object({id: zId('int')}))
+    .output(zRaw.integration)
+    .query(async ({input: {id: intId}, ctx}) => {
+      const {provider: _, ...int} = await ctx.helpers.getIntegrationOrFail(
+        intId,
+      )
+      return int
     }),
   adminSyncMetadata: adminProcedure
     .input(zId('int').nullish())

@@ -3,18 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@trpc/server": "10.21.1",
+    "@trpc/server": "10.40.0",
     "@usevenice/airbyte": "workspace:*",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
-    "@usevenice/core-integration-firebase": "workspace:*",
-    "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",
     "@usevenice/integration-brex": "workspace:*",
     "@usevenice/integration-expensify": "workspace:*",
+    "@usevenice/integration-firebase": "workspace:*",
+    "@usevenice/integration-fs": "workspace:*",
     "@usevenice/integration-heron": "workspace:*",
     "@usevenice/integration-lunchmoney": "workspace:*",
     "@usevenice/integration-merge": "workspace:*",
@@ -36,6 +36,6 @@
     "cac": "6.7.12",
     "keytar": "7.9.0",
     "micro": "9.3.5-canary.3",
-    "ngrok": "4.3.3"
+    "ngrok": "5.0.0-beta.2"
   }
 }

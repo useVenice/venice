@@ -2,35 +2,13 @@
 
 module.exports = [
   {
-    dirName: 'core-integration-airtable',
-    varName: 'coreIntegrationAirtable',
-    imports: {},
-  },
-  {
-    dirName: 'core-integration-firebase',
-    varName: 'coreIntegrationFirebase',
-    imports: {},
-  },
-  {dirName: 'core-integration-fs', varName: 'coreIntegrationFs', imports: {}},
-  {
-    dirName: 'core-integration-mongodb',
-    varName: 'coreIntegrationMongodb',
-    imports: {},
-  },
-  {
-    dirName: 'core-integration-postgres',
-    varName: 'coreIntegrationPostgres',
-    imports: {},
-  },
-  {
-    dirName: 'core-integration-redis',
-    varName: 'coreIntegrationRedis',
-    imports: {},
-  },
-  {
-    dirName: 'core-integration-webhook',
-    varName: 'coreIntegrationWebhook',
-    imports: {},
+    name: 'airtable',
+    dirName: 'integration-airtable',
+    varName: 'integrationAirtable',
+    imports: {
+      def: '@usevenice/integration-airtable/def',
+      server: '@usevenice/integration-airtable/server',
+    },
   },
   {
     dirName: 'integration-alphavantage',
@@ -38,9 +16,13 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'beancount',
     dirName: 'integration-beancount',
     varName: 'integrationBeancount',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-beancount/def',
+      server: '@usevenice/integration-beancount/server',
+    },
   },
   {
     name: 'brex',
@@ -52,14 +34,45 @@ module.exports = [
     },
   },
   {
+    name: 'debug',
+    dirName: 'integration-debug',
+    varName: 'integrationDebug',
+    imports: {
+      def: '@usevenice/integration-debug/def',
+      server: '@usevenice/integration-debug/server',
+    },
+  },
+  {
     dirName: 'integration-expensify',
     varName: 'integrationExpensify',
     imports: {},
   },
   {
+    name: 'firebase',
+    dirName: 'integration-firebase',
+    varName: 'integrationFirebase',
+    imports: {
+      def: '@usevenice/integration-firebase/def',
+      server: '@usevenice/integration-firebase/server',
+    },
+  },
+  {
+    name: 'foreceipt',
     dirName: 'integration-foreceipt',
     varName: 'integrationForeceipt',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-foreceipt/def',
+      server: '@usevenice/integration-foreceipt/server',
+    },
+  },
+  {
+    name: 'fs',
+    dirName: 'integration-fs',
+    varName: 'integrationFs',
+    imports: {
+      def: '@usevenice/integration-fs/def',
+      server: '@usevenice/integration-fs/server',
+    },
   },
   {
     name: 'heron',
@@ -71,9 +84,13 @@ module.exports = [
     },
   },
   {
+    name: 'lunchmoney',
     dirName: 'integration-lunchmoney',
     varName: 'integrationLunchmoney',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-lunchmoney/def',
+      server: '@usevenice/integration-lunchmoney/server',
+    },
   },
   {
     name: 'mercury',
@@ -91,7 +108,24 @@ module.exports = [
       server: '@usevenice/integration-merge/server',
     },
   },
-  {dirName: 'integration-moota', varName: 'integrationMoota', imports: {}},
+  {
+    name: 'mongodb',
+    dirName: 'integration-mongodb',
+    varName: 'integrationMongodb',
+    imports: {
+      def: '@usevenice/integration-mongodb/def',
+      server: '@usevenice/integration-mongodb/server',
+    },
+  },
+  {
+    name: 'moota',
+    dirName: 'integration-moota',
+    varName: 'integrationMoota',
+    imports: {
+      def: '@usevenice/integration-moota/def',
+      server: '@usevenice/integration-moota/server',
+    },
+  },
   {
     name: 'onebrick',
     dirName: 'integration-onebrick',
@@ -113,26 +147,59 @@ module.exports = [
     },
   },
   {
+    name: 'postgres',
     dirName: 'integration-postgres',
     varName: 'integrationPostgres',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-postgres/def',
+      server: '@usevenice/integration-postgres/server',
+    },
   },
-  {dirName: 'integration-qbo', varName: 'integrationQbo', imports: {}},
-  {dirName: 'integration-ramp', varName: 'integrationRamp', imports: {}},
   {
+    name: 'qbo',
+    dirName: 'integration-qbo',
+    varName: 'integrationQbo',
+    imports: {
+      def: '@usevenice/integration-qbo/def',
+      server: '@usevenice/integration-qbo/server',
+    },
+  },
+  {
+    name: 'ramp',
+    dirName: 'integration-ramp',
+    varName: 'integrationRamp',
+    imports: {
+      def: '@usevenice/integration-ramp/def',
+      server: '@usevenice/integration-ramp/server',
+    },
+  },
+  {dirName: 'integration-redis', varName: 'integrationRedis', imports: {}},
+  {
+    name: 'saltedge',
     dirName: 'integration-saltedge',
     varName: 'integrationSaltedge',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-saltedge/def',
+      server: '@usevenice/integration-saltedge/server',
+    },
   },
   {
+    name: 'splitwise',
     dirName: 'integration-splitwise',
     varName: 'integrationSplitwise',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-splitwise/def',
+      server: '@usevenice/integration-splitwise/server',
+    },
   },
   {
+    name: 'spreadsheet',
     dirName: 'integration-spreadsheet',
     varName: 'integrationSpreadsheet',
-    imports: {},
+    imports: {
+      def: '@usevenice/integration-spreadsheet/def',
+      server: '@usevenice/integration-spreadsheet/server',
+    },
   },
   {
     name: 'stripe',
@@ -153,9 +220,39 @@ module.exports = [
       server: '@usevenice/integration-teller/server',
     },
   },
-  {dirName: 'integration-toggl', varName: 'integrationToggl', imports: {}},
-  {dirName: 'integration-venmo', varName: 'integrationVenmo', imports: {}},
-  {dirName: 'integration-wise', varName: 'integrationWise', imports: {}},
+  {
+    name: 'toggl',
+    dirName: 'integration-toggl',
+    varName: 'integrationToggl',
+    imports: {
+      def: '@usevenice/integration-toggl/def',
+      server: '@usevenice/integration-toggl/server',
+    },
+  },
+  {
+    name: 'venmo',
+    dirName: 'integration-venmo',
+    varName: 'integrationVenmo',
+    imports: {def: '@usevenice/integration-venmo/def'},
+  },
+  {
+    name: 'webhook',
+    dirName: 'integration-webhook',
+    varName: 'integrationWebhook',
+    imports: {
+      def: '@usevenice/integration-webhook/def',
+      server: '@usevenice/integration-webhook/server',
+    },
+  },
+  {
+    name: 'wise',
+    dirName: 'integration-wise',
+    varName: 'integrationWise',
+    imports: {
+      def: '@usevenice/integration-wise/def',
+      server: '@usevenice/integration-wise/server',
+    },
+  },
   {
     name: 'yodlee',
     dirName: 'integration-yodlee',

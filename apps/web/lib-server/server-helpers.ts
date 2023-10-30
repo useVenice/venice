@@ -44,14 +44,11 @@ type NextContext =
         | URLSearchParams
     }
 
-export async function createSSRHelpers(context: NextContext) {
-  // TODO: Remove this once we fully migrate off next.js 12 routing
-  await import('@usevenice/app-config/register.node')
-
-  const queryClient = new QueryClient()
-  const viewer = await serverGetViewer(context)
-
+export function serverSideHelpersFromViewer(viewer: Viewer) {
   const ctx = contextFactory.fromViewer(viewer)
+  const queryClient = new QueryClient()
+
+  const caller = flatRouter.createCaller(ctx)
 
   const ssg = createServerSideHelpers({
     queryClient,
@@ -59,10 +56,21 @@ export async function createSSRHelpers(context: NextContext) {
     ctx,
     // transformer: superjson,
   })
+  return {ssg, caller, ctx, queryClient}
+}
+
+export async function createSSRHelpers(context: NextContext) {
+  // TODO: Remove this once we fully migrate off next.js 12 routing
+  await import('@usevenice/app-config/register.node')
+
+  const viewer = await serverGetViewer(context)
+  const {ssg, ctx, queryClient, caller} = serverSideHelpersFromViewer(viewer)
+
   return {
     viewer,
     ssg,
     ctx,
+    caller,
     getDehydratedState: () => superjson.serialize(dehydrate(queryClient)),
     /** @deprecated */
     getPageProps: (): PageProps => ({

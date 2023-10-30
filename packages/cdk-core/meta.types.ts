@@ -80,6 +80,8 @@ const zBase = z.object({
 export const zRaw = {
   integration: zBase.extend({
     id: zId('int'),
+    /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
+    envName: z.string().nullish(),
     providerName: z.string(),
     config: zJsonObject.nullish(),
     endUserAccess: z
@@ -109,13 +111,12 @@ export const zRaw = {
     destinationId: zId('reso').optional(),
     destinationState: zJsonObject.optional(),
     linkOptions: z
-      .array(
-        z.union([
-          z.string(),
-          z.tuple([z.string()]),
-          z.tuple([z.string(), z.unknown()]),
-        ]),
-      )
+      .array(z.unknown())
+      // z.union([
+      //   z.string(),
+      //   z.tuple([z.string()]),
+      //   z.tuple([z.string(), z.unknown()]),
+      // ]),
       .nullish(),
     // TODO: Add two separate tables sync_jobs to keep track of this instead of these two
     // though questionnable whether it should be in a separate database completely

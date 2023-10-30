@@ -1,6 +1,8 @@
-import type {MetaService} from '@usevenice/cdk-core'
-import {makePostgresMetaService} from '@usevenice/core-integration-postgres'
 import {z} from 'zod'
+
+import type {MetaService} from '@usevenice/cdk-core'
+import {makePostgresMetaService} from '@usevenice/integration-postgres'
+
 import {createApiClient} from './api/airbyte-client.gen'
 
 const zAirbyteMetaConfig = z.object({

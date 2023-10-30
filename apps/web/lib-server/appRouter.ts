@@ -1,8 +1,15 @@
 import {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
+import {generateOpenApiDocument} from 'trpc-openapi'
 
+import {getServerUrl} from '@usevenice/app-config/constants'
 import {flatRouter} from '@usevenice/engine-backend'
-import {adminProcedure, trpc} from '@usevenice/engine-backend/router/_base'
+import {
+  adminProcedure,
+  publicProcedure,
+  trpc,
+} from '@usevenice/engine-backend/router/_base'
+import {z} from '@usevenice/util'
 
 import {zAuth} from '@/lib-common/schemas'
 
@@ -16,8 +23,20 @@ const customRouter = trpc.router({
       const org = await clerkClient.organizations.updateOrganization(id, update)
       return org
     }),
+
+  getOpenapiDocument: publicProcedure
+    .meta({openapi: {method: 'GET', path: '/'}})
+    .input(z.void())
+    .output(z.unknown())
+    .query(() => openApiDocument),
 })
 
 export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
+
+export const openApiDocument = generateOpenApiDocument(appRouter, {
+  title: 'Venice OpenAPI',
+  version: '0.0.0',
+  baseUrl: getServerUrl(null) + '/api/openapi',
+})
 
 export type AppRouter = typeof appRouter

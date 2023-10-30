@@ -16,9 +16,12 @@
     "strictNullChecks": true,
     "plugins": [{"name": "next"}],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      // Override because we don't want to use ./dist unnecessarily
+      "@usevenice/connect": ["../../packages/connect/src/index.ts"],
+      "@usevenice/connect/*": ["../../packages/connect/src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../packages/ui/command/command-fns.spec.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

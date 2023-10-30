@@ -7,7 +7,7 @@ import {buildUrl, R} from '@usevenice/util'
 
 import {env, envConfig} from './env'
 import {parseIntConfigsFromRawEnv} from './integration-envs'
-import {DOCUMENTED_PROVIDERS} from './providers'
+import {defIntegrations} from './integrations/integrations.def'
 
 const envList = R.pipe(
   {...envConfig.server, ...envConfig.client},
@@ -15,7 +15,9 @@ const envList = R.pipe(
   R.filter(
     ([key]) =>
       !key.startsWith('int') ||
-      DOCUMENTED_PROVIDERS.some((p) => key.startsWith(`int_${p.name}`)),
+      Object.values(defIntegrations).some((p) =>
+        key.startsWith(`int_${p.name}`),
+      ),
   ),
   R.map(([key, schema]) => {
     const cmtLines = R.pipe(

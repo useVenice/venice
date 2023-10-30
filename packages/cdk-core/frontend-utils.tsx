@@ -18,7 +18,8 @@ export function useScript(src: string) {
   return deferred.current.promise // TODO: return loaded / error also
 }
 
-export const CANCELLATION_TOKEN = 'CANCELLED'
+/** Casting to `Error` type to suppress warning */
+export const CANCELLATION_TOKEN = 'CANCELLED' as unknown as Error
 
 /** Used by yodlee container among others */
 export function DivContainer(props: {

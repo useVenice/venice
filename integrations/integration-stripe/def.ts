@@ -1,10 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
-import {
-  makePostingsMap,
-  veniceProviderBase,
-  zCommon,
-} from '@usevenice/cdk-ledger'
+import {makePostingsMap, zCommon} from '@usevenice/cdk-ledger'
 import {A, z, zCast} from '@usevenice/util'
 
 import type {components} from './stripe.gen'
@@ -25,9 +21,14 @@ export const stripeSchemas = {
       entity: zCast<components['schemas']['balance_transaction']>(),
     }),
   ]),
-  sourceState: veniceProviderBase.def.sourceState
-    .removeDefault()
-    .extend({transactionSyncCursor: z.string().nullish()})
+  sourceState: z
+    .object({
+      /** Account ids to sync */
+      accountIds: z.array(z.string()).nullish(),
+      /** Date to sync since */
+      sinceDate: z.string().nullish() /** ISO8601 */,
+      transactionSyncCursor: z.string().nullish(),
+    })
     .default({}),
   destinationInputEntity: zCommon.Entity,
 } satisfies IntegrationSchemas

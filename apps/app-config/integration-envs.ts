@@ -1,9 +1,9 @@
 /** @deprecated. We no longer initialize integration from ENVs, but maybe in clis still? */
+import type {IntegrationSchemas, IntHelpers} from '@usevenice/cdk-core'
 import {makeId} from '@usevenice/cdk-core'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
-import type {PROVIDERS} from './providers'
-import {DOCUMENTED_PROVIDERS} from './providers'
+import {defIntegrations} from './integrations/integrations.def'
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
 const separator = '__'
@@ -11,13 +11,15 @@ const getPrefix = (name: string) => makeId('int', name, '')
 
 // Should this be all providers or only dcoumented ones?
 
-export const zFlatConfigByProvider = R.mapToObj(DOCUMENTED_PROVIDERS, (p) => [
-  p.name,
-  zFlattenForEnv(p.def.integrationConfig ?? z.unknown(), {
-    prefix: getPrefix(p.name),
-    separator,
-  }),
-])
+export const zFlatConfigByProvider = R.mapValues(defIntegrations, (def, name) =>
+  zFlattenForEnv(
+    (def.def as IntegrationSchemas)?.integrationConfig ?? z.unknown(),
+    {
+      prefix: getPrefix(name),
+      separator,
+    },
+  ),
+)
 
 export const zIntegrationEnv = zEnvVars(
   R.pipe(
@@ -60,9 +62,13 @@ export function parseIntConfigsFromRawEnv(
     }),
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
-    [k in (typeof PROVIDERS)[number]['name']]?: Extract<
-      (typeof PROVIDERS)[number],
-      {name: k}
-    >['def']['_types']['integrationConfig']
+    [k in keyof typeof defIntegrations]?: GetIntConfig<
+      IntHelpers<(typeof defIntegrations)[k]['def']>['_types']
+    >
   }
 }
+
+/** Feels like bit of a hack... */
+type GetIntConfig<T> = T extends {integrationConfig: unknown}
+  ? T['integrationConfig']
+  : {}

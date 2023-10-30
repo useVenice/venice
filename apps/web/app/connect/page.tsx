@@ -1,13 +1,34 @@
 import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
 
-import {getViewerId} from '@usevenice/cdk-core'
+import {kAccessToken} from '@usevenice/app-config/constants'
+import {env} from '@usevenice/app-config/env'
+import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
+import type {IntegrationDef} from '@usevenice/cdk-core'
+import {
+  extractProviderName,
+  getViewerId,
+  makeId,
+  makeNangoClient,
+  zId,
+} from '@usevenice/cdk-core'
+import {zConnectPageParams} from '@usevenice/engine-backend/router/endUserRouter'
+import {makeUlid, z} from '@usevenice/util'
 
-import {SuperHydrate} from '@/components/SuperHydrate'
 import {ClientRoot} from '@/components/ClientRoot'
+import {SuperHydrate} from '@/components/SuperHydrate'
 import {createServerComponentHelpers} from '@/lib-server/server-component-helpers'
 
 import ConnectPage from './ConnectPage'
+import {SetCookieAndRedirect} from './SetCookieAndRedirect'
+
+export const kConnectSession = 'connect-session'
+
+type ConnectSession = z.infer<typeof zConnectSession>
+export const zConnectSession = z.object({
+  token: z.string(),
+  resourceId: zId('reso'),
+})
 
 export const metadata = {
   title: 'Venice Connect',
@@ -31,8 +52,9 @@ export default async function ConnectPageContainer({
   // @see https://github.com/vercel/next.js/issues/43704
   searchParams: Record<string, string | string[] | undefined>
 }) {
+  const {token, ...params} = zConnectPageParams.parse(searchParams)
   const {ssg, getDehydratedState, viewer} = await createServerComponentHelpers({
-    searchParams: {_token: searchParams['token']},
+    searchParams: {[kAccessToken]: token},
   })
   if (viewer.role !== 'end_user') {
     return (
@@ -40,10 +62,68 @@ export default async function ConnectPageContainer({
     )
   }
 
+  // Implement shorthand for specifying only integrationId by providerName
+  let integrationId = params.integrationId
+  if (!integrationId && params.providerName) {
+    const ints = await ssg.listIntegrationInfos.fetch({
+      providerName: params.providerName,
+    })
+    if (ints.length === 1 && ints[0]?.id) {
+      integrationId = ints[0]?.id
+    } else if (ints.length < 1) {
+      return <div>No integration for {params.providerName} configured</div>
+    } else if (ints.length > 1) {
+      console.warn(
+        `${ints.length} integrations found for ${params.providerName}`,
+      )
+    }
+  }
+
+  // Special case when we are handling a single oauth integration
+  if (integrationId) {
+    const providerName = extractProviderName(integrationId)
+    const intDef = defIntegrations[
+      providerName as keyof typeof defIntegrations
+    ] as IntegrationDef
+
+    if (intDef.metadata?.nangoProvider) {
+      const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
+      const resourceId = makeId('reso', providerName, makeUlid())
+      const url = await nango.getOauthConnectUrl({
+        public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
+        connection_id: resourceId,
+        provider_config_key: integrationId,
+        // Consider using hookdeck so we can work with any number of urls
+        // redirect_uri: joinPath(getServerUrl(null), '/connect/callback'),
+      })
+      return (
+        <SetCookieAndRedirect
+          cookies={[
+            {
+              key: kConnectSession,
+              value: JSON.stringify({
+                resourceId,
+                token,
+              } satisfies ConnectSession),
+              // https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7%7Cthe
+              // Need sameSite to be lax in order for this to work
+              options: {maxAge: 3600, sameSite: 'lax'},
+            },
+          ]}
+          redirectUrl={url}
+        />
+      )
+    }
+  }
+
   const [org] = await Promise.all([
     clerkClient.organizations.getOrganization({organizationId: viewer.orgId}),
-    ssg.listIntegrationInfos.prefetch({}),
-    ssg.listConnections.prefetch({}),
+    // Switch to using react suspense / server fetch for this instead of prefetch
+    ssg.listIntegrationInfos.prefetch({
+      id: integrationId,
+      providerName: params.providerName,
+    }),
+    params.showExisting ? ssg.listConnections.prefetch({}) : Promise.resolve(),
   ])
 
   return (
@@ -57,12 +137,12 @@ export default async function ConnectPageContainer({
           className="mr-4 rounded-lg"
         />
         <h2 className="text-2xl font-semibold tracking-tight">
-          {org.name} - {viewer.endUserId}
+          {params.displayName ?? `${org.name} - ${viewer.endUserId}`}
         </h2>
       </header>
       <ClientRoot accessToken={viewer.accessToken} authStatus="success">
         <SuperHydrate dehydratedState={getDehydratedState()}>
-          <ConnectPage />
+          <ConnectPage {...params} />
         </SuperHydrate>
       </ClientRoot>
     </div>

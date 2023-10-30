@@ -9,15 +9,17 @@ import {jsonSchemaWalkNodes} from './jsonschema-nodewalker'
 export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
   jsonSchemaWalkNodes(jsonSchema, (node, meta) => {
     // Skip if we already have one..
-    if (node.title) {
-      return
-    }
+
     // TODO: We can also handle json metadata here as desired
-    const title = [...(meta?.path ?? []), meta.name]
+    const jsonPath = [...(meta?.path ?? []), meta.name]
       .filter((n) => !!n) // Filter out nesting from things like anyOf
       .join('.')
-    if (title && !title.endsWith('.')) {
-      node.title = title
+
+    if (node.title && jsonPath) {
+      // @see https://share.cleanshot.com/16sDgL6D
+      node.title = `${jsonPath}: ${node.title}`
+    } else if (jsonPath && !jsonPath.endsWith('.')) {
+      node.title = jsonPath
     }
   })
   return jsonSchema
@@ -49,6 +51,10 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
   return jsonSchema
 }
 
+/**
+ * TODO: Consider switching to this repo to allow better actual customizations
+ * https://github.com/anatine/zod-plugins/tree/main/packages/zod-openapi
+ */
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
   // Defaulting title should occur last, this way we don't end up with extraneous one
   return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))

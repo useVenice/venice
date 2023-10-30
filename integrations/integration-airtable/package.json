@@ -1,0 +1,16 @@
+{
+  "name": "@usevenice/integration-airtable",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/standard": "workspace:*",
+    "@usevenice/util": "workspace:*",
+    "airtable": "0.11.4"
+  },
+  "devDependencies": {
+    "@usevenice/cdk-ledger": "workspace:*"
+  }
+}

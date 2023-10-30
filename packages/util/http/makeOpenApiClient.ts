@@ -1,5 +1,6 @@
 import type {Get} from 'type-fest'
 import type {z} from 'zod'
+
 import type {
   HttpClientOptions,
   HTTPMethod,
@@ -79,6 +80,7 @@ export function makeOpenApiClient<Info extends OpenApiInfo>(
       path: Path,
       input: Get<Info[M][Path], 'input'>,
     ) => Promise<Get<Info[M][Path], 'output'>>
+    _fetch: NonNullable<HttpClientOptions['fetch']>
   }
 }
 

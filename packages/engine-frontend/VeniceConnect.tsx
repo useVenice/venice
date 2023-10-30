@@ -1,11 +1,11 @@
 'use client'
 
+import NangoFrontend from '@nangohq/frontend'
 import {useMutation} from '@tanstack/react-query'
 import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
 
 import type {
-  AnyProviderDef,
   Id,
   IntegrationClient,
   OpenDialogFn,
@@ -15,6 +15,7 @@ import {
   CANCELLATION_TOKEN,
   extractId,
   extractProviderName,
+  oauthConnect,
   zIntegrationCategory,
 } from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
@@ -35,7 +36,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  ProviderCard,
+  IntegrationCard,
   ResourceCard,
   SchemaForm,
   useToast,
@@ -52,9 +53,12 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   showExisting?: boolean
   clientIntegrations: Record<string, IntegrationClient>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
+  /** Only connect to this integration */
+  integrationId?: Id['int'] | null
+  providerName?: string | null
 }
 
-type UseConnectScope = Parameters<UseConnectHook<AnyProviderDef>>[0]
+type UseConnectScope = Parameters<UseConnectHook>[0]
 interface DialogConfig {
   Component: Parameters<UseConnectScope['openDialog']>[0]
   options: Parameters<UseConnectScope['openDialog']>[1]
@@ -110,8 +114,10 @@ export function VeniceConnectButton({
 // Also it would be nice if there was an easy way to automatically prefetch on the server side
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect(props: VeniceConnectProps) {
-  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({})
-  const integrationIds = (listIntegrationsRes.data ?? []).map(({id}) => id)
+  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({
+    id: props.integrationId,
+    providerName: props.providerName,
+  })
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 
   if (!listIntegrationsRes.data || !catalogRes.data) {
@@ -119,15 +125,21 @@ export function VeniceConnect(props: VeniceConnectProps) {
   }
   return (
     <_VeniceConnect
-      integrationIds={integrationIds}
+      integrationInfos={listIntegrationsRes.data ?? []}
       catalog={catalogRes.data}
       {...props}
     />
   )
 }
 
+type IntegrationInfos = RouterOutput['listIntegrationInfos']
 type Catalog = RouterOutput['getIntegrationCatalog']
 type ProviderMeta = Catalog[string]
+
+// TODOD: Dedupe this with app-config/constants
+const __DEBUG__ = Boolean(
+  typeof window !== 'undefined' && window.location.hostname === 'localhost',
+)
 
 /** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
 export function _VeniceConnect({
@@ -136,12 +148,22 @@ export function _VeniceConnect({
   onEvent,
   showExisting,
   className,
-  integrationIds,
+  integrationInfos,
   ...uiProps
 }: VeniceConnectProps & {
-  integrationIds: Array<Id['int']>
+  integrationInfos: IntegrationInfos
   catalog: Catalog
 }) {
+  const nangoPublicKey =
+    _trpcReact.getPublicEnv.useQuery().data?.NEXT_PUBLIC_NANGO_PUBLIC_KEY
+
+  const nangoFrontend = React.useMemo(
+    () =>
+      nangoPublicKey &&
+      new NangoFrontend({publicKey: nangoPublicKey, debug: __DEBUG__}),
+    [nangoPublicKey],
+  )
+
   // VeniceConnect should be fetching its own integrationIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
@@ -152,13 +174,13 @@ export function _VeniceConnect({
     {enabled: showExisting},
   )
 
-  const integrations = integrationIds
-    .map((id) => {
+  const integrations = integrationInfos
+    .map(({id, ...info}) => {
       const provider = catalog[extractProviderName(id)]
       if (!provider) {
         console.warn('Missing provider for integration', id)
       }
-      return provider ? {id, provider} : null
+      return provider ? {...info, id, provider} : null
     })
     .filter((i): i is NonNullable<typeof i> => !!i)
   const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
@@ -192,13 +214,23 @@ export function _VeniceConnect({
 
   // Do we actually need this here or can this go inside a ConnectCard somehow?
   const connectFnMap = R.pipe(
-    integrationIds,
-    R.map(extractProviderName),
+    integrationInfos,
+    R.map((intInfo) => extractProviderName(intInfo.id)),
     R.uniq,
-    R.mapToObj((name: string) => [
-      name,
-      clientIntegrations[name]?.useConnectHook?.({openDialog}),
-    ]),
+    R.mapToObj((providerName: string) => {
+      let fn = clientIntegrations[providerName]?.useConnectHook?.({openDialog})
+      const nangoProvider = catalog[providerName]?.nangoProvider
+      if (!fn && nangoProvider) {
+        console.log('adding nnango provider for', nangoProvider)
+        fn = (_, {integrationId}) => {
+          if (!nangoFrontend) {
+            throw new Error('Missing nango public key')
+          }
+          return oauthConnect({integrationId, nangoFrontend, providerName})
+        }
+      }
+      return [providerName, fn]
+    }),
   )
 
   const categories = zIntegrationCategory.options
@@ -256,10 +288,11 @@ export function _VeniceConnect({
       ))}
       {/* Add new  */}
       {integrations.map((int) => (
-        // TODO: Make use of integrationCard rather than ProviderCard
-        // once we allow for mapStandardIntegration such that integration labels
-        // can show up properly (e.g. sandbox, production labels)
-        <ProviderCard {...uiProps} key={int.id} provider={int.provider}>
+        <IntegrationCard
+          {...uiProps}
+          key={int.id}
+          integration={int}
+          provider={int.provider}>
           <ProviderConnectButton
             integration={int}
             connectFn={connectFnMap[int.provider.name]}
@@ -267,7 +300,7 @@ export function _VeniceConnect({
               onEvent?.({type: e.type, intId: int.id})
             }}
           />
-        </ProviderCard>
+        </IntegrationCard>
       ))}
     </div>
   )
@@ -282,7 +315,7 @@ export const ProviderConnectButton = ({
 }: UIProps & {
   integration: {id: Id['int']; provider: ProviderMeta}
   resource?: Resource
-  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
 }) => (
   <WithProviderConnect {...props}>
@@ -318,7 +351,7 @@ export const WithProviderConnect = ({
 }: {
   integration: {id: Id['int']; provider: ProviderMeta}
   resource?: Resource
-  connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+  connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
   children: (props: {
     openConnect: () => void
@@ -360,7 +393,7 @@ export const WithProviderConnect = ({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const connOutput = connectFn
-        ? await connectFn?.(connInput, {})
+        ? await connectFn?.(connInput, {integrationId: int.id})
         : connInput
       console.log(`[VeniceConnect] ${int.id} connOutput`, connOutput)
 
@@ -464,7 +497,7 @@ export function ResourceDropdownMenu(
       provider: ProviderMeta
     }
     resource: Resource
-    connectFn?: ReturnType<UseConnectHook<AnyProviderDef>>
+    connectFn?: ReturnType<UseConnectHook>
     onEvent?: (event: {type: ConnectEventType}) => void
   },
 ) {
@@ -485,7 +518,7 @@ export function ResourceDropdownMenu(
   //     })
   //   },
   // })
-  const deleteResource = _trpcReact.deleteResoruce.useMutation({
+  const deleteResource = _trpcReact.deleteResource.useMutation({
     onSuccess: () => {
       setOpen(false)
       toast({title: 'Resource deleted', variant: 'success'})

@@ -300,7 +300,7 @@ export function IntegrationSheet({
                       // Specifying asChild and using this variant does not appear to be
                       // working for some reason...
                       variant="destructive"
-                      onClick={() => deleteIntegration.mutate([int.id])}>
+                      onClick={() => deleteIntegration.mutate({id: int.id})}>
                       {deleteIntegration.isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}

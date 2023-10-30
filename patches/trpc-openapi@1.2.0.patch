@@ -1,0 +1,41 @@
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index d93e38e020d89bef3e615c44fe687b10c8874417..956b349a0dda132bcdd7c255e8ae9946f41ccffd 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -1,7 +1,8 @@
+ import { Procedure, ProcedureParams, Router } from '@trpc/server';
+ import type { RootConfig } from '@trpc/server/dist/core/internals/config';
+-import { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
+-import type { RouterDef } from '@trpc/server/src/core/router';
++// PATCH: Courtesy of https://github.com/jlalmes/trpc-openapi/pull/411
++import type { RouterDef } from '@trpc/server/dist/core/router';
++import { TRPC_ERROR_CODE_KEY } from '@trpc/server/dist/rpc';
+ import { OpenAPIV3 } from 'openapi-types';
+ import { ZodIssue } from 'zod';
+ export type OpenApiMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+diff --git a/dist/utils/zod.js b/dist/utils/zod.js
+index f9b479f56b52ceea1cab9b581c7dcd27d500d5d6..89cc069f92ea530e94a8cb4016bbd54011aaabde 100644
+--- a/dist/utils/zod.js
++++ b/dist/utils/zod.js
+@@ -27,6 +27,21 @@ const instanceofZodTypeLikeVoid = (type) => {
+ };
+ exports.instanceofZodTypeLikeVoid = instanceofZodTypeLikeVoid;
+ const unwrapZodType = (type, unwrapPreprocess) => {
++    // This will fail at runtime because we are not properly coercing to array type yet
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodArray)) {
++        return (0, exports.unwrapZodType)(type.element, unwrapPreprocess);
++    }
++    // Works fine
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodEnum)) {
++        return (0, exports.unwrapZodType)(zod_1.z.string(), unwrapPreprocess);
++    }
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodNullable)) {
++        return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
++    }
++    if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodBranded)) {
++        return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
++    }
++    // --- end of patch ---
+     if ((0, exports.instanceofZodTypeKind)(type, zod_1.z.ZodFirstPartyTypeKind.ZodOptional)) {
+         return (0, exports.unwrapZodType)(type.unwrap(), unwrapPreprocess);
+     }

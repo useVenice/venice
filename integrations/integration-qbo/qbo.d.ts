@@ -228,7 +228,7 @@ declare namespace QBO {
     Description: string
     Amount: number
     DetailType: string
-    AccountBasedExpenseLineDetail: AccountBasedExpenseLineDetail
+    AccountBasedExpenseLineDetail?: AccountBasedExpenseLineDetail
   }
 
   export interface AccountBasedExpenseLineDetail {
@@ -242,7 +242,7 @@ declare namespace QBO {
   export interface Deposit extends _BaseEntity {
     CurrencyRef: CurrencyRef
     DepositToAccountRef: DepositToAccountRef
-    Line: Line[]
+    Line: DepositLine[]
     PrivateNote: string
     SyncToken: string
     TotalAmt: number
@@ -256,9 +256,9 @@ declare namespace QBO {
     value: string
   }
 
-  export interface Line {
+  export interface DepositLine {
     Amount: number
-    DepositLineDetail: DepositLineDetail
+    DepositLineDetail?: DepositLineDetail
     Description: string
     DetailType: string
     Id: string
@@ -266,7 +266,7 @@ declare namespace QBO {
   }
 
   export interface DepositLineDetail {
-    AccountRef: AccountRef
+    AccountRef?: AccountRef
     Entity?: Entity
   }
 
@@ -337,7 +337,7 @@ declare namespace QBO {
   export interface Payment extends _BaseEntity {
     CurrencyRef: CurrencyRef
     CustomerRef: CustomerRef
-    DepositToAccountRef: {value: string}
+    DepositToAccountRef?: {value: string}
     Line: PaymentLine[]
     PrivateNote: string
     ProcessPayment: boolean

@@ -1,10 +1,13 @@
 import {TRPCError} from '@trpc/server'
 
+import type {ZRaw} from '@usevenice/cdk-core'
+import {zEndUserId} from '@usevenice/cdk-core'
 import {
   extractId,
   sync,
   zCheckResourceOptions,
   zId,
+  zRaw,
   zStandard,
 } from '@usevenice/cdk-core'
 import type {VeniceSourceState} from '@usevenice/cdk-ledger'
@@ -14,6 +17,7 @@ import {inngest, zEvent} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {zSyncOptions} from '../types'
 import {protectedProcedure, trpc} from './_base'
+import {zListParams} from './_schemas'
 
 export {type inferProcedureInput} from '@trpc/server'
 
@@ -32,29 +36,51 @@ export const protectedRouter = trpc.router({
     await inngest.send(input.name, {data: input.data, user: ctx.viewer})
   }),
   listResources: protectedProcedure
-    .input(z.object({}).optional())
-    .query(async ({ctx}) => {
-      const resources = await ctx.helpers.metaService.tables.resource.list({})
-      return resources
+    .meta({openapi: {method: 'GET', path: '/resources'}})
+    .input(
+      zListParams
+        .extend({
+          endUserId: zEndUserId.nullish(),
+          integrationId: zId('int').nullish(),
+          providerName: z.string().nullish(),
+        })
+        .optional(),
+    )
+    .output(z.array(zRaw.resource))
+    .query(async ({input = {}, ctx}) => {
+      const resources = await ctx.helpers.metaService.tables.resource.list(
+        input,
+      )
+      return resources as Array<ZRaw['resource']>
     }),
   listPipelines: protectedProcedure
-    .input(z.object({}).optional())
-    .query(async ({ctx}) => {
-      const pipelines = await ctx.helpers.metaService.tables.pipeline.list({})
-      return pipelines
+    .meta({openapi: {method: 'GET', path: '/pipelines'}})
+    .input(
+      zListParams
+        .extend({resourceIds: z.array(zId('reso')).optional()})
+        .optional(),
+    )
+    .output(z.array(zRaw.pipeline))
+    .query(async ({input = {}, ctx}) => {
+      const pipelines = await ctx.helpers.metaService.findPipelines(input)
+      return pipelines as Array<ZRaw['pipeline']>
     }),
   deletePipeline: protectedProcedure
+    .meta({openapi: {method: 'DELETE', path: '/pipelines/{id}'}})
     .input(z.object({id: zId('pipe')}))
+    .output(z.literal(true))
     .mutation(async ({ctx, input}) => {
       await ctx.helpers.metaService.tables.pipeline.delete(input.id)
-      return true
+      return true as const
     }),
   listConnections: protectedProcedure
-    .input(z.object({}).optional())
-    .query(async ({ctx}) => {
+    .input(zListParams.extend({endUserId: zEndUserId.optional()}).optional())
+    .query(async ({input = {}, ctx}) => {
       // Add info about what it takes to `reconnect` here for resources which
       // has disconnected
-      const resources = await ctx.helpers.metaService.tables.resource.list({})
+      const resources = await ctx.helpers.metaService.tables.resource.list(
+        input,
+      )
       const [institutions, _pipelines] = await Promise.all([
         ctx.helpers.metaService.tables.institution.list({
           ids: R.compact(resources.map((c) => c.institutionId)),
@@ -129,15 +155,43 @@ export const protectedRouter = trpc.router({
         })
     }),
   listIntegrationInfos: protectedProcedure
-    .input(z.object({type: z.enum(['source', 'destination']).nullish()}))
-    .query(async ({input: {type}, ctx}) => {
-      const intIds = await ctx.helpers.metaService.listIntegrationIds()
-      return intIds
-        .map((id) => {
+    .meta({openapi: {method: 'GET', path: '/integration_infos'}})
+    .input(
+      z.object({
+        type: z.enum(['source', 'destination']).nullish(),
+        id: zId('int').nullish(),
+        providerName: z.string().nullish(),
+      }),
+    )
+    .output(
+      z.array(
+        zRaw.integration
+          .pick({
+            id: true,
+            envName: true,
+            displayName: true,
+            providerName: true,
+          })
+          .extend({
+            isSource: z.boolean(),
+            isDestination: z.boolean(),
+          }),
+      ),
+    )
+    .query(async ({input: {type, id, providerName}, ctx}) => {
+      const intInfos = await ctx.helpers.metaService.listIntegrationInfos({
+        id,
+        providerName,
+      })
+
+      return intInfos
+        .map(({id, envName, displayName}) => {
           const provider = ctx.providerMap[extractId(id)[1]]
           return provider
             ? {
                 id,
+                envName,
+                displayName,
                 providerName: provider.name,
                 isSource: !!provider.sourceSync,
                 isDestination: !!provider.destinationSync,
@@ -185,8 +239,10 @@ export const protectedRouter = trpc.router({
   getResource: protectedProcedure
     .meta({
       description: 'Not automatically called, used for debugging for now',
+      openapi: {method: 'GET', path: '/resources/{id}'},
     })
     .input(z.object({id: zId('reso')}))
+    .output(zRaw.resource) // TODO: This is actually expanded...
     .query(async ({input, ctx}) => {
       const reso = await ctx.helpers.getResourceExpandedOrFail(input.id)
       return reso
@@ -238,39 +294,6 @@ export const protectedRouter = trpc.router({
       }
       return 'Ok'
     }),
-  // What about delete? Should this delete also? Or soft delete?
-  deleteResource: protectedProcedure
-    .input(
-      z.tuple([
-        zId('reso'),
-        z
-          .object({
-            skipRevoke: z.boolean().nullish(),
-            todo_deleteAssociatedData: z.boolean().nullish(),
-          })
-          .optional(),
-      ]),
-    )
-    .mutation(async ({input: [resoId, opts], ctx}) => {
-      if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getResourceOrFail(resoId)
-      }
-      const {settings, integration, ...reso} =
-        await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
-      if (!opts?.skipRevoke) {
-        await integration.provider.revokeResource?.(
-          settings,
-          integration.config,
-        )
-      }
-      if (opts?.todo_deleteAssociatedData) {
-        // TODO: Figure out how to delete... Destination is not part of meta service
-        // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
-        // We should probably introduce a reset / delete event...
-      }
-      await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
-    }),
-
   // MARK: - Sync
 
   syncResource: protectedProcedure

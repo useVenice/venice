@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import {kApikeyHeader, kApikeyUrlParam} from '@usevenice/app-config/constants'
 import {Input, Label} from '@usevenice/ui/shadcn'
 
 import {cn} from '@/lib-client/ui-utils'
@@ -37,7 +38,9 @@ export default async function ApiKeyPage() {
         </Label>
         <Input className="font-mono" readOnly value={apikey} />
       </div>
-      <p className="mt-4">More docs coming soon</p>
+      <p className="mt-4">
+        Use `{kApikeyHeader}` header or `{kApikeyUrlParam}` url param{' '}
+      </p>
     </div>
   )
 }

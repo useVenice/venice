@@ -6,9 +6,9 @@
     "build": "run-s build:*",
     "build:migration": "if [ \"$VERCEL_ENV\" = production ] || [ \"$VERCEL_GIT_COMMIT_REF\" = staging ]; then pnpm --dir ../../ migration up; else echo 'Skip non prod/staging migration'; fi",
     "build:next": "next build",
-    "codegen:sdk": "openapi-typescript http://localhost:3000/api/rest --output ./sdk/venice.gen.ts",
+    "codegen:sdk": "openapi-typescript http://localhost:3000/api/openapi --output ./sdk/venice.gen.ts",
     "codegen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "start": "next start"
   },
   "dependencies": {
@@ -21,17 +21,18 @@
     "@tanstack/query-sync-storage-persister": "4.27.1",
     "@tanstack/react-query": "4.28.0",
     "@tanstack/react-query-persist-client": "4.28.0",
-    "@trpc/react-query": "10.21.1",
-    "@trpc/server": "10.21.1",
+    "@trpc/react-query": "10.40.0",
+    "@trpc/server": "10.40.0",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/connect": "workspace:*",
-    "@usevenice/core-integration-postgres": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",
+    "@usevenice/integration-postgres": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
     "commandbar": "1.7.3",
+    "cookies-next": "4.0.0",
     "graphiql": "^2.2.0",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.11.3",
@@ -47,7 +48,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.9.1",
-    "swagger2openapi": "7.0.8"
+    "swagger2openapi": "7.0.8",
+    "trpc-openapi": "1.2.0"
   },
   "devDependencies": {
     "@sentry/cli": "2.13.0",
