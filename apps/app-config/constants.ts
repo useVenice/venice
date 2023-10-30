@@ -7,6 +7,9 @@ export function getServerUrl(req: GetServerSidePropsContext['req'] | null) {
       `${window.location.protocol}//${window.location.host}`) ||
     (req &&
       `${req.headers['x-forwarded-proto'] || 'http'}://${req.headers.host}`) ||
+    (process.env['NEXT_PUBLIC_SERVER_URL']
+      ? process.env['NEXT_PUBLIC_SERVER_URL']
+      : null) ||
     (process.env['VERCEL_URL']
       ? 'https://' + process.env['VERCEL_URL']
       : null) ||
