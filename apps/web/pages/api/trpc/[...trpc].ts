@@ -4,17 +4,24 @@ import * as trpcNext from '@trpc/server/adapters/next'
 import type {NextApiHandler} from 'next'
 
 import {contextFactory} from '@usevenice/app-config/backendConfig'
+import type {Id} from '@usevenice/cdk-core'
+import type {RouterContext} from '@usevenice/engine-backend'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
+import {fromMaybeArray} from '@usevenice/util'
 
 import {appRouter} from '@/lib-server/appRouter'
 import {respondToCORS, serverGetViewer} from '@/lib-server/server-helpers'
 
 export const createContext: Parameters<
   typeof trpcNext.createNextApiHandler
->[0]['createContext'] = async ({req, res}) => {
+>[0]['createContext'] = async ({req, res}): Promise<RouterContext> => {
   const viewer = await serverGetViewer({req, res})
   console.log('[trpc.createContext]', {query: req.query, viewer})
-  return contextFactory.fromViewer(viewer)
+  return {
+    ...contextFactory.fromViewer(viewer),
+    remoteResourceId:
+      (fromMaybeArray(req.headers['x-resource-id'])[0] as Id['reso']) ?? null,
+  }
 }
 
 export const onError: Parameters<

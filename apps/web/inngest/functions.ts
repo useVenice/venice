@@ -60,7 +60,10 @@ export const syncPipeline = inngest.createFunction(
     // Otherwise connections could be overwritten with the wrong id...
     // This upsert stuff is dangerous...
     await flatRouter
-      .createCaller(contextFactory.fromViewer({role: 'system'}))
+      .createCaller({
+        ...contextFactory.fromViewer({role: 'system'}),
+        remoteResourceId: null,
+      })
       .syncPipeline([pipelineId, {}])
     console.log('did sync pipeline', pipelineId)
     return pipelineId
@@ -82,7 +85,10 @@ export const syncResource = inngest.createFunction(
       )
       console.log('endUserId', endUserId)
       await flatRouter
-        .createCaller(contextFactory.fromViewer({role: 'system'}))
+        .createCaller({
+          ...contextFactory.fromViewer({role: 'system'}),
+          remoteResourceId: null,
+        })
         .syncResource([resourceId, {}])
 
       console.log('did sync pipeline', resourceId)

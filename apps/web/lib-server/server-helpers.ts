@@ -45,7 +45,10 @@ type NextContext =
     }
 
 export function serverSideHelpersFromViewer(viewer: Viewer) {
-  const ctx = contextFactory.fromViewer(viewer)
+  const ctx = {
+    ...contextFactory.fromViewer(viewer),
+    remoteResourceId: null,
+  }
   const queryClient = new QueryClient()
 
   const caller = flatRouter.createCaller(ctx)

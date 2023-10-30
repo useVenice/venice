@@ -32,6 +32,35 @@ export const qboServer = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, qboHelpers._op('commit')])))
   },
+  verticals: {
+    accounting: {
+      listAccounts: async ({config, settings}) => {
+        const qbo = makeQBOClient(config, settings)
+        const res = await qbo.getAll('Account').next()
+        return {
+          hasNextPage: true,
+          items: (res.value?.entities ?? []).map((a) => ({
+            id: a.Id,
+            name: a.Name,
+            type: a.AccountType as 'asset',
+          })),
+        }
+      },
+      listExpenses: async ({config, settings}) => {
+        const qbo = makeQBOClient(config, settings)
+        const res = await qbo.getAll('Purchase').next()
+        return {
+          hasNextPage: true,
+          items: (res.value?.entities ?? []).map((a) => ({
+            id: a.Id,
+            amount: a.TotalAmt,
+            currency: a.CurrencyRef.value,
+            payment_account: a.AccountRef.value,
+          })),
+        }
+      },
+    },
+  },
 } satisfies IntegrationServer<typeof qboSchemas>
 
 export default qboServer

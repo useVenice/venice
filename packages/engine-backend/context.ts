@@ -4,6 +4,7 @@ import {makeNangoClient} from '@usevenice/cdk-core'
 import type {
   AnyIntegrationImpl,
   EndUserId,
+  Id,
   Link,
   LinkFactory,
   MetaService,
@@ -45,6 +46,9 @@ export interface RouterContext {
     integration: _Integration,
     ctx: {endUserId?: EndUserId | null},
   ) => string
+
+  /** For vertical API calls */
+  remoteResourceId: Id['reso'] | null
 }
 
 export interface ContextFactoryOptions<
@@ -98,7 +102,7 @@ export function getContextFactory<
       getLinksForPipeline,
     })
 
-  function fromViewer(viewer: Viewer): RouterContext {
+  function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {
       viewer,
       as: (role, data) => getHelpers({role, ...data} as Viewer),
@@ -114,7 +118,7 @@ export function getContextFactory<
   }
 
   /** not sure if this is needed as most codepath gets us viewer via multiple methods */
-  function fromJwtToken(token?: string): RouterContext {
+  function fromJwtToken(token?: string) {
     if (!token) {
       return fromViewer({role: 'anon'})
     }

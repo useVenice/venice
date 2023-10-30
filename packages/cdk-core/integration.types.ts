@@ -21,6 +21,7 @@ import type {
   ResourceUpdate,
   WebhookReturnType,
 } from './providers.types'
+import type {VerticalAccounting} from './verticals/accounting'
 
 /** Maybe this should be renamed to `schemas` */
 export interface IntegrationSchemas {
@@ -196,6 +197,13 @@ export interface IntegrationServer<
       T['_types']['resourceSettings']
     >
   >
+
+  verticals?: {
+    accounting?: VerticalAccounting<{
+      config: T['_types']['integrationConfig']
+      settings: T['_types']['resourceSettings']
+    }>
+  }
 }
 
 export interface IntegrationImpl<TSchemas extends IntegrationSchemas>

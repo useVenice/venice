@@ -12,9 +12,10 @@ export async function bootstrap() {
   // Would be nice to simplify loading of env vars from zod in a way that makes sense...
   const orgId = getEnvVar('ORG_ID', {required: true}) as Id['org']
 
-  const caller = flatRouter.createCaller(
-    contextFactory.fromViewer({role: 'org', orgId}),
-  )
+  const caller = flatRouter.createCaller({
+    ...contextFactory.fromViewer({role: 'org', orgId}),
+    remoteResourceId: null,
+  })
   const configs = parseIntConfigsFromRawEnv()
 
   for (const [providerName, config] of Object.entries(configs ?? {})) {

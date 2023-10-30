@@ -22,7 +22,7 @@ if (process.env['DEBUG_ZOD']) {
   zodInsecureDebug()
 }
 
-const {USER_ID, END_USER_ID, ORG_ID, SYSTEM} = process.env
+const {USER_ID, END_USER_ID, ORG_ID, SYSTEM, X_RESOURCE_ID} = process.env
 const endUserId = END_USER_ID as EndUserId | undefined
 const userId = USER_ID as UserId | undefined
 const orgId = ORG_ID as Id['org'] | undefined
@@ -31,17 +31,20 @@ export const cli = cliFromRouter(flatRouter, {
   cleanup: () => {}, // metaService.shutdown?
   // Bypass auth when running sync from CLI
   // We should improve this for usage on single machines
-  context: contextFactory.fromViewer(
-    endUserId && orgId
-      ? {role: 'end_user', endUserId, orgId}
-      : userId
-      ? {role: 'user', userId}
-      : orgId
-      ? {role: 'org', orgId}
-      : SYSTEM
-      ? {role: 'system'}
-      : {role: 'anon'},
-  ),
+  context: {
+    ...contextFactory.fromViewer(
+      endUserId && orgId
+        ? {role: 'end_user', endUserId, orgId}
+        : userId
+        ? {role: 'user', userId}
+        : orgId
+        ? {role: 'org', orgId}
+        : SYSTEM
+        ? {role: 'system'}
+        : {role: 'anon'},
+    ),
+    remoteResourceId: X_RESOURCE_ID as Id['reso'],
+  },
   // syncEngine.zContext.parse<'typed'>({
   //   accessToken: process.env['ACCESS_TOKEN'],
   // })
@@ -81,10 +84,12 @@ cli
             path: procedure,
             req,
             res,
-            createContext: ({req}) =>
-              contextFactory.fromJwtToken(
+            createContext: ({req}) => ({
+              ...contextFactory.fromJwtToken(
                 req.headers.authorization?.match(/^Bearer (.+)/)?.[1],
               ),
+              remoteResourceId: req.headers['x-resource-id'] as Id['reso'],
+            }),
             // onError: ({error}) => {
             //   // error.message = 'new message...'
             // },

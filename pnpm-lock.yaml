@@ -1303,6 +1303,12 @@ importers:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
+      trpc-openapi:
+        specifier: 1.2.0
+        version: 1.2.0(patch_hash=chm753bazxetxxpzf3uqs4fzzu)(@trpc/server@10.40.0)(zod@3.21.4)
 
   packages/cdk-ledger:
     dependencies:

@@ -1,17 +1,70 @@
-import prettier from 'prettier'
+import type {
+  AnyProcedure,
+  AnyRouter,
+  inferProcedureInput,
+  inferProcedureOutput,
+  MaybePromise,
+} from '@trpc/server'
+import {TRPCError} from '@trpc/server'
 
+import type {
+  remoteProcedure,
+  RemoteProcedureContext,
+  trpc,
+} from '@usevenice/engine-backend/router/_base'
 import {z} from '@usevenice/util'
 
-const Vendor = z.object({
-  name: z.string(),
-  url: z.string(),
-  id: z.string(),
-})
+export type RouterMap<TRouter extends AnyRouter, TOpts = {}> = {
+  [k in keyof TRouter as TRouter[k] extends AnyProcedure
+    ? k
+    : never]?: TRouter[k] extends AnyProcedure
+    ? (
+        opts: {input: inferProcedureInput<TRouter[k]>} & TOpts,
+      ) => MaybePromise<inferProcedureOutput<TRouter[k]>>
+    : never
+}
 
-const QBOVendor = z.object({
-  title: z.string(),
-  qboID: z.number(),
+export interface VerticalRouterOpts {
+  trpc: typeof trpc
+  remoteProcedure: typeof remoteProcedure
+}
+
+export function proxyCallRemote(opts: {
+  input: unknown
+  ctx: RemoteProcedureContext
+}) {
+  // console.log('opts', opts)
+  const {input, ctx} = opts
+  const implementation = (ctx.remote.provider.verticals?.accounting as any)?.[
+    (opts as any).path
+  ] as Function
+  if (typeof implementation !== 'function') {
+    throw new TRPCError({
+      code: 'NOT_IMPLEMENTED',
+      message: `${ctx.remote.providerName} does not implement ${ctx.path}`,
+    })
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return implementation({
+    input,
+    config: ctx.remote.config,
+    settings: ctx.remote.settings,
+  })
+}
+export const zPaginationParams = z.object({
+  limit: z.number().optional(),
+  offset: z.number().optional(),
 })
+export type Pagination = z.infer<typeof zPaginationParams>
+
+export function paginatedOutput<ItemType extends z.ZodTypeAny>(
+  itemSchema: ItemType,
+) {
+  return z.object({
+    hasNextPage: z.boolean(),
+    items: z.array(itemSchema),
+  })
+}
 
 type ExtractKeyOfValueType<T, V> = Extract<
   keyof {
@@ -23,7 +76,7 @@ type ExtractKeyOfValueType<T, V> = Extract<
 interface Getter<T extends string> {
   keypath: T
 }
-const get = <T extends string>(keypath: T): Getter<T> => ({keypath})
+export const get = <T extends string>(keypath: T): Getter<T> => ({keypath})
 
 export function mapper<
   ZInputSchema extends z.ZodTypeAny,
@@ -46,39 +99,3 @@ export function mapper<
     mapping,
   }
 }
-
-const qboVendorMap = mapper(QBOVendor, Vendor, {
-  id: get('title'),
-  name: 'qboooo',
-  url: (vendor) => `${vendor.qboID}`,
-}).mapping
-
-const mapper2 = (vendor: z.infer<typeof QBOVendor>) => ({
-  id: vendor.title,
-  name: 'qbooooo',
-  url: `${vendor.qboID}`,
-})
-
-function prettify(code: string) {
-  return prettier.format(code, {
-    arrowParens: 'avoid',
-    parser: 'typescript',
-    singleQuote: true,
-    semi: false,
-    printWidth: 30,
-  })
-}
-
-Object.entries(qboVendorMap).forEach(([k, v]) => {
-  console.log(
-    k,
-    ':',
-    typeof v === 'function'
-      ? prettify(v.toString())
-      : typeof v === 'object' && 'keypath' in v
-      ? `.${v.keypath}`
-      : JSON.stringify(v),
-  )
-})
-
-console.log(prettify(mapper2.toString()))
