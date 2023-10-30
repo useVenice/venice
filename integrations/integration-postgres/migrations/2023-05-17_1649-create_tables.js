@@ -5,8 +5,8 @@ exports.up = async ({context: {connection, sql}}) => {
 }
 
 const query = `
-CREATE TABLE IF NOT EXISTS "public"."transaction" (
-  id character varying DEFAULT concat('txn_', public.generate_ulid()) NOT NULL,
+CREATE TABLE IF NOT EXISTS "transaction" (
+  id character varying DEFAULT concat('txn_', generate_ulid()) NOT NULL,
   provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
   source_id character varying,
   standard jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -23,8 +23,8 @@ CREATE INDEX IF NOT EXISTS transaction_provider_name ON transaction (provider_na
 CREATE INDEX IF NOT EXISTS transaction_source_id ON transaction (source_id);
 CREATE INDEX IF NOT EXISTS transaction_end_user_id ON transaction (end_user_id);
 
-CREATE TABLE IF NOT EXISTS "public"."account" (
-  id character varying DEFAULT concat('acct_', public.generate_ulid()) NOT NULL,
+CREATE TABLE IF NOT EXISTS "account" (
+  id character varying DEFAULT concat('acct_', generate_ulid()) NOT NULL,
   provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
   source_id character varying,
   standard jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -41,8 +41,8 @@ CREATE INDEX IF NOT EXISTS account_provider_name ON account (provider_name);
 CREATE INDEX IF NOT EXISTS account_source_id ON account (source_id);
 CREATE INDEX IF NOT EXISTS account_end_user_id ON account (end_user_id);
 
-CREATE TABLE IF NOT EXISTS "public"."commodity" (
-  id character varying DEFAULT concat('comm_', public.generate_ulid()) NOT NULL,
+CREATE TABLE IF NOT EXISTS "commodity" (
+  id character varying DEFAULT concat('comm_', generate_ulid()) NOT NULL,
   provider_name character varying GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
   source_id character varying,
   standard jsonb DEFAULT '{}'::jsonb NOT NULL,

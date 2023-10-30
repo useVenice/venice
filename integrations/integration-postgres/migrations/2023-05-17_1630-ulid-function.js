@@ -23,7 +23,9 @@ const query = `
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- This line takes too much permission to run
+-- TODO: Require user' database to contain needed data instead...
+-- CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE OR REPLACE FUNCTION generate_ulid()
 RETURNS TEXT
