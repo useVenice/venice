@@ -1,0 +1,33 @@
+apis:
+  connections:
+    root: ./api/airbyte-api-connections.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-connections.gen.d.ts
+  destinations:
+    root: ./api/airbyte-api-destinations.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-destinations.gen.d.ts
+  health:
+    root: ./api/airbyte-api-health.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-health.gen.d.ts
+  jobs:
+    root: ./api/airbyte-api-jobs.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-jobs.gen.d.ts
+  sources:
+    root: ./api/airbyte-api-sources.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-sources.gen.d.ts
+  streams:
+    root: ./api/airbyte-api-streams.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-streams.gen.d.ts
+  workspaces:
+    root: ./api/airbyte-api-workspaces.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-api-workspaces.gen.d.ts
+  private:
+    root: ./api/airbyte-private-api.gen.yaml
+    openapi-ts:
+      output: ./api/airbyte-private-api.gen.d.ts

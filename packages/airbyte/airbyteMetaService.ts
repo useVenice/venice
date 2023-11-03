@@ -1,3 +1,4 @@
+import createClient from 'openapi-fetch'
 import {z} from 'zod'
 
 import type {MetaService} from '@usevenice/cdk-core'
@@ -8,6 +9,8 @@ import type {InfoFromPaths} from '@usevenice/util'
 import {makeOpenApiClient} from '@usevenice/util'
 
 import type {paths} from './api/airbyte-private-api.gen'
+
+const http = createClient<paths>({baseUrl: 'https://platform.brexapis.com'})
 
 const client = makeOpenApiClient<InfoFromPaths<paths>>({
   baseUrl: 'https://platform.brexapis.com', // TODO: get this from openAPI.json
@@ -33,8 +36,15 @@ export const makeAirbyteMetaService = z
     })
 
     // const client = createApiClient(cfg.apiUrl, {
-    //   // axiosConfig: {auth: cfg.auth}, // TODO: Fix me after zodios v11 is released
+    //   // axiosConfig: {auth: cfg.auth},
     // })
+
+    void http
+      .POST('/v1/connections/list', {
+        body: {workspaceId: ''},
+        // workspaceId: cfg._temp_workspaceId,
+      })
+      .then((res) => res as any)
 
     return {
       ...service,
@@ -48,9 +58,9 @@ export const makeAirbyteMetaService = z
                 bodyJson: {
                   workspaceId: '',
                 },
-                // workspaceId: cfg._temp_workspaceId,  // TODO: Fix me after zodios v11 is released
+                // workspaceId: cfg._temp_workspaceId,
               })
-              .then((res) => res as any),
+              .then((res) => res.connections as any),
         },
       },
     }

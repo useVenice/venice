@@ -30,6 +30,7 @@ export type InfoFromEndpoints<T extends Endpoints> = {
 }
 
 // Defnining endpoints from openapi-typescript
+// TODO: Go the other way, PathFromEndpoints and use openapi-fetch package
 export type InfoFromPaths<T extends {}> = {
   [m in HTTPMethod]: OmitNever<{
     [p in keyof T]: m extends keyof T[p]
