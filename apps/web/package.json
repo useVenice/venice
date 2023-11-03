@@ -6,7 +6,7 @@
     "build": "run-s build:*",
     "build:migration": "if [ \"$VERCEL_ENV\" = production ] || [ \"$VERCEL_GIT_COMMIT_REF\" = staging ]; then pnpm --dir ../../ migration up; else echo 'Skip non prod/staging migration'; fi",
     "build:next": "next build",
-    "codegen:sdk": "openapi-typescript http://localhost:3000/api/openapi --output ./sdk/venice.gen.ts",
+    "codegen:sdk": "openapi-typescript http://localhost:3000/api/v0 --output ./sdk/venice.gen.ts",
     "codegen:supabase": "supabase gen types typescript --linked --schema public > ./supabase/supabase.gen.ts",
     "dev": "next dev -p 4000",
     "start": "next start"

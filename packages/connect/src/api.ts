@@ -16,7 +16,7 @@ export function makeVeniceClient({
   accessToken,
   ...config
 }: VeniceClientConfig) {
-  const apiBase = new URL('/api/openapi/', config.apiHost).toString()
+  const apiBase = new URL('/api/v0/', config.apiHost).toString()
   const headers = {
     'Content-Type': 'application/json',
     ...(apiKey ? {'x-apikey': apiKey} : {}),

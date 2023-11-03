@@ -36,7 +36,7 @@ export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
 export const openApiDocument = generateOpenApiDocument(appRouter, {
   title: 'Venice OpenAPI',
   version: '0.0.0',
-  baseUrl: getServerUrl(null) + '/api/openapi',
+  baseUrl: getServerUrl(null) + '/api/v0',
 })
 
 export type AppRouter = typeof appRouter
