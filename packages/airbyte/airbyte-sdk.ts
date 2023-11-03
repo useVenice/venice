@@ -9,32 +9,39 @@ import type {paths as streams} from './api/airbyte-api-streams.gen'
 import type {paths as workspaces} from './api/airbyte-api-workspaces.gen'
 import type {paths as internal} from './api/airbyte-private-api.gen'
 
-interface paths {
+interface PublicPaths {
   connections: connections
   destinations: destinations
-  health: health
   jobs: jobs
   sources: sources
   streams: streams
   workspaces: workspaces
 }
 
+interface PrivatePaths {
+  health: health
+  internal: internal
+}
+
 export interface AirbyteSDKOptions {
   accessToken: string
 }
 
-export function AirbytePublicSDK<T extends keyof paths>(
+export function AirbytePublicSDK<T extends keyof PublicPaths>(
   opts: AirbyteSDKOptions,
 ) {
-  return createClient<paths[T]>({
-    baseUrl: 'https://api.airbyte.com',
+  return createClient<PublicPaths[T]>({
+    baseUrl: 'https://api.airbyte.com/v1',
     headers: {Authorization: `Bearer ${opts.accessToken}`},
   })
 }
 
-export function AirbytePrivateSDK() {
-  return createClient<internal>({
+export function AirbytePrivateSDK<T extends keyof PrivatePaths>(
+  opts: AirbyteSDKOptions,
+) {
+  return createClient<PrivatePaths[T]>({
     // TODO: Figure out the right path to the private api
     baseUrl: 'https://api.airbyte.com',
+    headers: {Authorization: `Bearer ${opts.accessToken}`},
   })
 }

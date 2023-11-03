@@ -52,7 +52,11 @@ export async function printResult(
     })
   } else {
     console.log(res)
-    const out = opts?.json ? JSON.stringify(await res) : await res
+    let out = opts?.json ? JSON.stringify(await res) : await res
+    if (out && typeof out === 'object' && 'data' in out) {
+      out = out.data
+    }
+
     if (opts?.minimal || process.env['SILENT']) {
       // console.log('[printResult]')
       process.stdout.write(`${out}\n`)
