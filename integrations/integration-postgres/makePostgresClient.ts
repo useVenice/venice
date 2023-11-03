@@ -25,6 +25,9 @@ export const makePostgresClient = zFunction(
   ({databaseUrl, migrationsPath, migrationTableName, ...opts}) => {
     const getPool = memoize(
       async () => {
+        const useSsl =
+          databaseUrl.includes('sslmode=') &&
+          !databaseUrl.includes('sslmode=disable')
         const pool = await createPool(databaseUrl, {
           interceptors: createInterceptors({
             logQueries: true, // TODO: Use roarr-cli to make things better
@@ -35,7 +38,7 @@ export const makePostgresClient = zFunction(
             transformFieldNames: opts.transformFieldNames ?? true,
             benchmarkQueries: false,
           }),
-          ssl: {rejectUnauthorized: false},
+          ssl: useSsl ? {rejectUnauthorized: false} : undefined,
           statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
           idleInTransactionSessionTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
           maximumPoolSize: 10,
