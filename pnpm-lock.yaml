@@ -1257,6 +1257,9 @@ importers:
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
+      fern-api:
+        specifier: 0.14.3
+        version: 0.14.3
       json2yaml:
         specifier: 1.1.0
         version: 1.1.0
@@ -10175,6 +10178,11 @@ packages:
     resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
     dependencies:
       pend: 1.2.0
+
+  /fern-api@0.14.3:
+    resolution: {integrity: sha512-2GJlqZDoAqL0Le/CFdtwq4vHkJ5kOiqxQ+FgHoyEE0CeHdEI2Y506r1+zE9jYaaQjykcHknItPsmDgjYuym8xQ==}
+    hasBin: true
+    dev: true
 
   /fflate@0.4.8:
     resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}

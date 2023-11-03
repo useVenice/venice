@@ -38,6 +38,7 @@
     "json2yaml": "1.1.0",
     "openapi-typescript": "6.7.0",
     "openapi-zod-client": "1.13.0",
-    "typed-openapi": "0.2.0"
+    "typed-openapi": "0.2.0",
+    "fern-api": "0.14.3"
   }
 }
