@@ -164,9 +164,16 @@ export function getContextHelpers({
     })
 
   const getInstitutionOrFail = (id: Id['ins']) =>
-    metaService.tables.institution.get(id).then((ins) => {
+    metaService.tables.institution.get(id).then(async (ins) => {
       if (!ins) {
         throw new TRPCError({code: 'NOT_FOUND'})
+      }
+      // TODO: Fix the root cause and ensure we always have institution.standard here
+      if (!ins.standard?.name) {
+        const providerName = extractId(ins.id)[1]
+        const provider = providerMap[providerName]
+        ins.standard = provider?.standardMappers?.institution?.(ins.external)
+        await metaLinks.patch('institution', ins.id, {standard: ins.standard})
       }
       return zRaw.institution.parse(ins)
     })
@@ -187,7 +194,6 @@ export function getContextHelpers({
 
   const getResourceExpandedOrFail = (id: Id['reso']) =>
     getResourceOrFail(id).then(async (reso) => {
-       
       const integration = await getIntegrationOrFail(reso.integrationId)
       const settings: {} = integration.provider.def.resourceSettings?.parse(
         reso.settings,

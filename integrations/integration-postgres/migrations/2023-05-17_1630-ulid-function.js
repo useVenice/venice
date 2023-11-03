@@ -33,7 +33,7 @@ AS $$
 DECLARE
   -- Crockford's Base32
   encoding   BYTEA = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-  timestamp  BYTEA = E'\\000\\000\\000\\000\\000\\000';
+  timestamp  BYTEA = E'\\\\000\\\\000\\\\000\\\\000\\\\000\\\\000';
   output     TEXT = '';
 
   unix_time  BIGINT;

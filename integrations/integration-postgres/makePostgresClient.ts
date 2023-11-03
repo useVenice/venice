@@ -35,6 +35,7 @@ export const makePostgresClient = zFunction(
             transformFieldNames: opts.transformFieldNames ?? true,
             benchmarkQueries: false,
           }),
+          ssl: {rejectUnauthorized: false},
           statementTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
           idleInTransactionSessionTimeout: 'DISABLE_TIMEOUT', // Not supported by pgBouncer
           maximumPoolSize: 10,
