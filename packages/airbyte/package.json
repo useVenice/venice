@@ -3,18 +3,41 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "codegen:airbyte-client": "openapi-zod-client https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-client.gen.ts"
+    "codegen": "concurrently npm:codegen:*",
+    "codegen:api:connections": "openapi-typescript ./api/airbyte-api-connections.gen.yaml -o ./api/airbyte-api-connections.gen.ts",
+    "codegen:api:destinations": "openapi-typescript ./api/airbyte-api-destinations.gen.yaml -o ./api/airbyte-api-destinations.gen.ts",
+    "codegen:api:health": "openapi-typescript ./api/airbyte-api-health.gen.yaml -o ./api/airbyte-api-health.gen.ts",
+    "codegen:api:jobs": "openapi-typescript ./api/airbyte-api-jobs.gen.yaml -o ./api/airbyte-api-jobs.gen.ts",
+    "codegen:api:sources": "openapi-typescript ./api/airbyte-api-sources.gen.yaml -o ./api/airbyte-api-sources.gen.ts",
+    "codegen:api:streams": "openapi-typescript ./api/airbyte-api-streams.gen.yaml -o ./api/airbyte-api-streams.gen.ts",
+    "codegen:api:workspaces": "openapi-typescript ./api/airbyte-api-workspaces.gen.yaml -o ./api/airbyte-api-workspaces.gen.ts",
+    "codegen:private-api": "openapi-typescript ./api/airbyte-private-api.gen.yaml -o ./api/airbyte-private-api.gen.ts",
+    "download": "concurrently npm:download:*",
+    "download:api:connections": "curl https://dash.readme.com/api/v1/api-registry/1fzx42nlmiamr92 | json2yaml > ./api/airbyte-api-connections.gen.yaml",
+    "download:api:destinations": "curl https://dash.readme.com/api/v1/api-registry/gfcyn0jlmiapjvj | json2yaml > ./api/airbyte-api-destinations.gen.yaml",
+    "download:api:health": "curl https://dash.readme.com/api/v1/api-registry/emmodlofvl1ak | json2yaml > ./api/airbyte-api-health.gen.yaml",
+    "download:api:jobs": "curl https://dash.readme.com/api/v1/api-registry/53bc34lmianc5u | json2yaml > ./api/airbyte-api-jobs.gen.yaml",
+    "download:api:sources": "curl https://dash.readme.com/api/v1/api-registry/fy7juyjlmianuz5 | json2yaml > ./api/airbyte-api-sources.gen.yaml",
+    "download:api:streams": "curl https://dash.readme.com/api/v1/api-registry/16vf9n2rlmiap00w | json2yaml > ./api/airbyte-api-streams.gen.yaml",
+    "download:api:workspaces": "curl https://dash.readme.com/api/v1/api-registry/8jsbe2vlplmiaoidp | json2yaml > ./api/airbyte-api-workspaces.gen.yaml",
+    "download:private-api": "curl https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-cdk/java/airbyte-cdk/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-private-api.gen.yaml",
+    "gen2:private-api": "openapi-typescript ./api/airbyte-private-api.gen.yaml -o ./api/airbyte-private-api.2.gen.ts",
+    "gen:private-api": "typed-openapi ./api/airbyte-private-api.gen.yaml -o ./api/airbyte-private-api.to.gen.ts"
   },
   "dependencies": {
     "@trpc/server": "10.40.0",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/integration-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",
-    "@zodios/core": "11.0.0-beta.18",
-    "@zodios/fetch": "11.0.0-beta.18",
+    "@zodios/core": "10.9.6",
+    "@zodios/fetch": "11.0.0-beta.19",
     "zod": "3.21.4"
   },
   "devDependencies": {
-    "openapi-zod-client": "1.6.1"
+    "concurrently": "8.2.2",
+    "json2yaml": "1.1.0",
+    "openapi-typescript": "6.7.0",
+    "openapi-zod-client": "1.13.0",
+    "typed-openapi": "0.2.0"
   }
 }

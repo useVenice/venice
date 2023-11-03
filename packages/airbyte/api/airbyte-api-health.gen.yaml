@@ -1,0 +1,22 @@
+---
+  openapi: "3.1.0"
+  info: 
+    title: "Health"
+    version: "1.0.0"
+    description: "Programatically control Airbyte Cloud, OSS & Enterprise."
+  servers: 
+    - 
+      url: "https://api.airbyte.com"
+      description: "Airbyte API"
+  paths: 
+    /health: 
+      get: 
+        summary: "Health Check"
+        tags: 
+          - "Health"
+        responses: 
+          200: 
+            description: "Successful operation"
+          404: 
+            description: "Not found"
+
