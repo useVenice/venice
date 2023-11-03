@@ -25,7 +25,7 @@ export {type inferProcedureInput} from '@trpc/server'
 
 export const zConnectTokenPayload = z.object({
   endUserId: zEndUserId
-    .nullish()
+    .optional()
     .describe(
       'Anything that uniquely identifies the end user that you will be sending the magic link to',
     ),
@@ -49,7 +49,7 @@ export const zConnectPageParams = z.object({
   // TODO: How to make sure we actually have a typed api here and can use zProviderName
   providerName: z.string().nullish().describe('Which provider to use'),
   /** Launch the integration right away */
-  integrationId: zId('int').nullish(),
+  integrationId: zId('int').optional(),
   /** Whether to show existing resources */
   showExisting: z.coerce.boolean().optional().default(true),
 })
