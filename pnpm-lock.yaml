@@ -396,6 +396,9 @@ importers:
       cac:
         specifier: 6.7.12
         version: 6.7.12(patch_hash=nsfmzcycabp3f3q7kw2uyer77u)
+      global-agent:
+        specifier: 3.0.0
+        version: 3.0.0
       keytar:
         specifier: 7.9.0
         version: 7.9.0
@@ -405,6 +408,9 @@ importers:
       ngrok:
         specifier: 5.0.0-beta.2
         version: 5.0.0-beta.2
+      undici:
+        specifier: 5.27.0
+        version: 5.27.0
 
   apps/gondola:
     dependencies:
@@ -2644,6 +2650,10 @@ packages:
   /@faker-js/faker@5.5.3:
     resolution: {integrity: sha512-R11tGE6yIFwqpaIqcfkcg7AICXzFg14+5h5v0TfF/9+RMDL6jhzCy/pxHVOfbALGdtVYdt6JdR21tuxEgl34dw==}
     dev: false
+
+  /@fastify/busboy@2.0.0:
+    resolution: {integrity: sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==}
+    engines: {node: '>=14'}
 
   /@firebase/analytics-compat@0.1.10(@firebase/app-compat@0.1.25)(@firebase/app@0.7.24):
     resolution: {integrity: sha512-7zfB+BBO5RbF7RSHOA4ZPyLvOEEvMOhRbfIjh5ZmizAQY2J6tZB8t+dwQ/q4hqZVGgw4ds4g0JYuRKZKYsWADg==}
@@ -7808,6 +7818,7 @@ packages:
     engines: {node: '>=10.16.0'}
     dependencies:
       streamsearch: 1.1.0
+    dev: false
 
   /bytes@3.1.0:
     resolution: {integrity: sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==}
@@ -10355,6 +10366,18 @@ packages:
       inherits: 2.0.4
       minimatch: 5.1.0
       once: 1.4.0
+    dev: false
+
+  /global-agent@3.0.0:
+    resolution: {integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q==}
+    engines: {node: '>=10.0'}
+    dependencies:
+      boolean: 3.2.0
+      es6-error: 4.1.1
+      matcher: 3.0.0
+      roarr: 2.15.4
+      semver: 7.5.4
+      serialize-error: 7.0.1
     dev: false
 
   /globals@11.12.0:
@@ -12948,6 +12971,13 @@ packages:
       remove-accents: 0.4.2
     dev: false
 
+  /matcher@3.0.0:
+    resolution: {integrity: sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==}
+    engines: {node: '>=10'}
+    dependencies:
+      escape-string-regexp: 4.0.0
+    dev: false
+
   /md5-hex@3.0.1:
     resolution: {integrity: sha512-BUiRtTtV39LIJwinWBjqVsU9xhdnz7/i889V859IBFpuqGAj6LuOvHv5XLbgZ2R7ptJoJaEcxkv88/h25T7Ciw==}
     engines: {node: '>=8'}
@@ -14009,7 +14039,7 @@ packages:
       fast-glob: 3.2.12
       js-yaml: 4.1.0
       supports-color: 9.3.1
-      undici: 5.16.0
+      undici: 5.27.0
       yargs-parser: 21.1.1
     dev: true
 
@@ -14021,7 +14051,7 @@ packages:
       fast-glob: 3.2.12
       js-yaml: 4.1.0
       supports-color: 9.3.1
-      undici: 5.21.0
+      undici: 5.27.0
       yargs-parser: 21.1.1
     dev: true
 
@@ -15839,6 +15869,18 @@ packages:
     dependencies:
       glob: 7.2.3
 
+  /roarr@2.15.4:
+    resolution: {integrity: sha512-CHhPh+UNHD2GTXNYhPWLnU8ONHdI+5DI+4EYIAOaiD63rHeYlZvyh8P+in5999TTSFgUYuKUAjzRI4mdh/p+2A==}
+    engines: {node: '>=8.0'}
+    dependencies:
+      boolean: 3.2.0
+      detect-node: 2.1.0
+      globalthis: 1.0.3
+      json-stringify-safe: 5.0.1
+      semver-compare: 1.0.0
+      sprintf-js: 1.1.3
+    dev: false
+
   /roarr@7.13.0:
     resolution: {integrity: sha512-NA7ikXPPxjGv/51R9pYd3G4f9nq0x6zLe9XPzbm3l+efBnckO2Lsac4KB6NRfoBzAKvLE5Lh8J5Fsm3IdHycuA==}
     engines: {node: '>=12.0'}
@@ -16022,6 +16064,13 @@ packages:
 
   /serialize-error-cjs@0.1.3:
     resolution: {integrity: sha512-GXwbHkufrNZ87O7DUEvWhR8eBnOqiXtHsOXakkJliG7eLDmjh6gDlbJbMZFFbUx0J5sXKgwq4NFCs41dF5MhiA==}
+    dev: false
+
+  /serialize-error@7.0.1:
+    resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
+    engines: {node: '>=10'}
+    dependencies:
+      type-fest: 0.13.1
     dev: false
 
   /serialize-error@8.1.0:
@@ -16556,6 +16605,10 @@ packages:
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
+  /sprintf-js@1.1.3:
+    resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
+    dev: false
+
   /sql-formatter@10.7.2:
     resolution: {integrity: sha512-YspJXMr2rKMGZY50zYRBs2nCtEO/AKDrmQOxmV2CrGEOFSXUhY3YbsOUe6lX0T/7xbBs4pAYv4UObmwf78vtKg==}
     hasBin: true
@@ -16677,6 +16730,7 @@ packages:
   /streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
+    dev: false
 
   /strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -17521,6 +17575,11 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /type-fest@0.13.1:
+    resolution: {integrity: sha512-34R7HTnG0XIJcBSn5XhDd7nNFPRcXYRZrBB2O2jdKqYODldSzBAqzsWoZYYvduky73toYS/ESqxPvkDf/F0XMg==}
+    engines: {node: '>=10'}
+    dev: false
+
   /type-fest@0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
@@ -17643,19 +17702,11 @@ packages:
   /uncrypto@0.1.3:
     resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
 
-  /undici@5.16.0:
-    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
-    engines: {node: '>=12.18'}
+  /undici@5.27.0:
+    resolution: {integrity: sha512-l3ydWhlhOJzMVOYkymLykcRRXqbUaQriERtR70B9LzNkZ4bX52Fc8wbTDneMiwo8T+AemZXvXaTx+9o5ROxrXg==}
+    engines: {node: '>=14.0'}
     dependencies:
-      busboy: 1.6.0
-    dev: true
-
-  /undici@5.21.0:
-    resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}
-    engines: {node: '>=12.18'}
-    dependencies:
-      busboy: 1.6.0
-    dev: true
+      '@fastify/busboy': 2.0.0
 
   /unenv@1.7.4:
     resolution: {integrity: sha512-fjYsXYi30It0YCQYqLOcT6fHfMXsBr2hw9XC7ycf8rTG7Xxpe3ZssiqUnD0khrjiZEmkBXWLwm42yCSCH46fMw==}

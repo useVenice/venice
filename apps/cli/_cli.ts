@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import 'global-agent/bootstrap'
 import '@usevenice/app-config/register.node'
 
+import {ProxyAgent, setGlobalDispatcher} from 'undici'
+
+import {AirbytePublicSDK} from '@usevenice/airbyte/airbyte-sdk'
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk-core'
@@ -32,6 +36,8 @@ import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
+
+setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']!))
 
 if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
@@ -105,6 +111,8 @@ if (require.main === module) {
     heron: () => makeHeronClient({apiKey: process.env['_HERON_API_KEY']!}),
     nango: () =>
       makeNangoClient({secretKey: process.env['_NANGO_SECRET_KEY']!}),
+    airbyte: () =>
+      AirbytePublicSDK({accessToken: process.env['_AIRBYTE_ACCESS_TOKEN']!}),
   }
 
   const clientFactory = z
