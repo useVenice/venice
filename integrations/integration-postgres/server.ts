@@ -2,6 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+import {sql} from 'slonik'
+import type {DatabasePool} from 'slonik'
+
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import {extractId, handlersLink} from '@usevenice/cdk-core'
 import {R, Rx, rxjs} from '@usevenice/util'
@@ -9,6 +12,48 @@ import {R, Rx, rxjs} from '@usevenice/util'
 import type {postgresSchemas} from './def'
 import {postgresHelpers} from './def'
 import {makePostgresClient, upsertByIdQuery} from './makePostgresClient'
+
+async function setupTable({
+  pool,
+  schema,
+  tableName,
+}: {
+  pool: DatabasePool
+  schema?: string
+  tableName: string
+}) {
+  const table = sql.identifier(schema ? [schema, tableName] : [tableName])
+
+  await pool.query(sql`
+    CREATE TABLE IF NOT EXISTS ${table} (
+      id VARCHAR NOT NULL,
+      provider_name VARCHAR GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
+      source_id VARCHAR,
+      standard jsonb,
+      external jsonb DEFAULT '{}'::jsonb NOT NULL,
+      created_at timestamp with time zone DEFAULT now() NOT NULL,
+      updated_at timestamp with time zone DEFAULT now() NOT NULL,
+      end_user_id VARCHAR,
+      CONSTRAINT ${sql.identifier([`pk_${tableName}`])} PRIMARY KEY ("id")
+    );
+  `)
+  // NOTE: Should we add org_id?
+  // NOTE: Rename `standard` to `unified` and `external` to `raw` or `remote` or `original`
+  // NOTE: add prefix check would be nice
+  for (const col of [
+    'created_at',
+    'updated_at',
+    'provider_name',
+    'source_id',
+    'end_user_id',
+  ]) {
+    await pool.query(sql`
+      CREATE INDEX IF NOT EXISTS ${sql.identifier([
+        `${tableName}_${col}`,
+      ])} ON ${table} (${sql.identifier([col])});
+    `)
+  }
+}
 
 export const postgresServer = {
   // TODO:
@@ -21,11 +66,7 @@ export const postgresServer = {
     settings: {databaseUrl, sourceQueries},
     state = {},
   }) => {
-    const {getPool, sql, getMigrator} = makePostgresClient({
-      databaseUrl,
-      migrationsPath: __dirname + '/migrations',
-      migrationTableName: '_migrations',
-    })
+    const {getPool} = makePostgresClient({databaseUrl})
     // TODO: Never let slonik transform the field names...
     const rawClient = makePostgresClient({
       databaseUrl,
@@ -36,13 +77,9 @@ export const postgresServer = {
       const handlebars = await import('handlebars')
 
       const pool = await getPool()
-
-      // Side effects to ensure files are packaged by webpack
-      // Make sure to update this list when we run migrations
-      import('./migrations/2023-05-17_1630-ulid-function')
-      import('./migrations/2023-05-17_1649-create_tables')
-      const migrator = await getMigrator()
-      await migrator.up()
+      // Where do we want to put data? Not always public...
+      await setupTable({pool, tableName: 'account'})
+      await setupTable({pool, tableName: 'transaction'})
 
       for (const entityName of ['account', 'transaction'] as const) {
         const res = await pool.query<{
@@ -129,12 +166,23 @@ export const postgresServer = {
     })
     // TODO: Probably need to require these sql files to work... turn them into js files
 
-    const {getPool, getMigrator} = makePostgresClient({
+    const {getPool} = makePostgresClient({
       databaseUrl,
       migrationsPath: __dirname + '/migrations',
       migrationTableName: '_migrations',
     })
     let batches: Record<string, Array<{id: string; [k: string]: unknown}>> = {}
+
+    let migrationRan = false
+    async function runMigration(pool: DatabasePool) {
+      if (migrationRan) {
+        return
+      }
+      migrationRan = true
+      // Where do we want to put data? Not always public...
+      await setupTable({pool, tableName: 'account'})
+      await setupTable({pool, tableName: 'transaction'})
+    }
 
     return handlersLink({
       data: (op) => {
@@ -161,10 +209,9 @@ export const postgresServer = {
           return op
         }
         const pool = await getPool()
-        const migrator = await getMigrator()
-        // TODO: Make it so that we don't need to run migrations on every commit
-        const migrations = await migrator.up()
-        console.log('[postgres] migrations ran', migrations)
+
+        await runMigration(pool)
+
         console.log(`[postgres] Will commit ${size} entities`)
         await pool.transaction((client) =>
           Promise.all(
