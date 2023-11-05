@@ -3,7 +3,7 @@ import {logLink} from '@usevenice/cdk-core'
 import {renameAccountLink} from '@usevenice/cdk-ledger'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
-import {makePostgresMetaService} from '@usevenice/integration-postgres'
+import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 import {joinPath} from '@usevenice/util'
 
 import {getServerUrl} from './constants'

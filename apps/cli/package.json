@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@trpc/server": "10.40.0",
-    "@usevenice/airbyte": "workspace:*",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
@@ -31,6 +30,8 @@
     "@usevenice/integration-venmo": "workspace:*",
     "@usevenice/integration-wise": "workspace:*",
     "@usevenice/integration-yodlee": "workspace:*",
+    "@usevenice/meta-service-airbyte": "workspace:*",
+    "@usevenice/meta-service-postgres": "workspace:*",
     "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
     "cac": "6.7.12",

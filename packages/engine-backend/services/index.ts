@@ -1,19 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {TRPCError} from '@trpc/server'
 
-import type {
-  AnyIntegrationImpl,
-  Id,
-  IDS,
-  MetaService,
-  MetaTable,
-  ZRaw,
-} from '@usevenice/cdk-core'
+import type {AnyIntegrationImpl, Id, IDS, ZRaw} from '@usevenice/cdk-core'
 import {extractId, zRaw} from '@usevenice/cdk-core'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, z} from '@usevenice/util'
 
 import {makeMetaLinks} from './makeMetaLinks'
+import type {MetaService, MetaTable} from './metaService'
 import {makeSyncService} from './sync-service'
 
 export function makeServices({

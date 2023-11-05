@@ -1,11 +1,12 @@
 {
-  "name": "@usevenice/integration-redis",
+  "name": "@usevenice/meta-service-redis",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [],
   "module": "./index.ts",
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/engine-backend": "workspace:*",
     "@usevenice/util": "workspace:*",
     "handy-redis": "2.3.1",
     "redis": "3.1.2"

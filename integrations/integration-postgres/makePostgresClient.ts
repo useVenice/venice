@@ -19,6 +19,8 @@ import {
 import {zPgConfig} from './def'
 
 export {DatabaseError} from 'pg'
+export type {DatabaseTransactionConnection, SqlTaggedTemplate} from 'slonik'
+export type {TransactionFunction} from 'slonik/dist/src/types'
 
 export const makePostgresClient = zFunction(
   zPgConfig,

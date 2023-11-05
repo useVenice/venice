@@ -5,7 +5,6 @@ import type {
   EndUserId,
   Id,
   LinkFactory,
-  MetaService,
   NangoClient,
 } from '@usevenice/cdk-core'
 import {makeNangoClient} from '@usevenice/cdk-core'
@@ -16,9 +15,10 @@ import {R} from '@usevenice/util'
 import type {Env} from '../../apps/app-config/env'
 // Should we actually do this hmm
 import type {_Integration} from './services'
-import {makeServices as _getServices} from './services'
+import {makeServices as _makeServices} from './services'
+import type {MetaService} from './services/metaService'
 
-type Services = ReturnType<typeof _getServices>
+type Services = ReturnType<typeof _makeServices>
 
 export interface RouterContext {
   // Viewer-dependent
@@ -82,7 +82,7 @@ export function getContextFactory<
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getServices = (viewer: Viewer) =>
-    _getServices({metaService: getMetaService(viewer), providerMap})
+    _makeServices({metaService: getMetaService(viewer), providerMap})
 
   function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {

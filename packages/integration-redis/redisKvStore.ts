@@ -1,6 +1,6 @@
 import {createNodeRedisClient} from 'handy-redis'
 
-import {zKVStore} from '@usevenice/cdk-core'
+import {zKVStore} from '@usevenice/engine-backend'
 import {memoize, safeJSONParse, z, zFunction} from '@usevenice/util'
 
 export const makeRedisKVStore = zFunction(

@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/airbyte",
+  "name": "@usevenice/meta-service-airbyte",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
   "dependencies": {
     "@trpc/server": "10.40.0",
     "@usevenice/cdk-core": "workspace:*",
-    "@usevenice/integration-postgres": "workspace:*",
+    "@usevenice/meta-service-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",
     "@zodios/core": "10.9.6",
     "@zodios/fetch": "11.0.0-beta.19",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@redocly/cli": "1.4.0",
+    "@usevenice/engine-backend": "workspace:*",
     "concurrently": "8.2.2",
     "json2yaml": "1.1.0",
     "openapi-fetch": "0.8.1",

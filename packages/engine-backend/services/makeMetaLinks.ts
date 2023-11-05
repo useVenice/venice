@@ -2,8 +2,6 @@ import type {
   AnyEntityPayload,
   Id,
   IDS,
-  MetaService,
-  MetaTable,
   OpHandlers,
   ZRaw,
 } from '@usevenice/cdk-core'
@@ -15,6 +13,8 @@ import {
 } from '@usevenice/cdk-core'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, infer, R} from '@usevenice/util'
+
+import type {MetaService, MetaTable} from './metaService'
 
 // TODO: Validate connection before saving...
 // metaStore and syncHelpers appear to be a bit circular relationship...

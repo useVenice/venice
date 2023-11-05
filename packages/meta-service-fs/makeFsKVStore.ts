@@ -1,4 +1,5 @@
-import {zKVStore} from '@usevenice/cdk-core'
+import {zKVStore} from '@usevenice/engine-backend'
+import {_pathFromId} from '@usevenice/integration-fs'
 import {
   $path,
   joinPath,
@@ -10,8 +11,6 @@ import {
   zFunction,
 } from '@usevenice/util'
 
-export const _pathFromId = (basePath: string, id: string) =>
-  joinPath(basePath, `${id}.json`)
 export const _idFromPath = (path: string) =>
   $path()
     .basename(path)

@@ -1,44 +1,51 @@
-import type {DatabaseTransactionConnection, SqlTaggedTemplate} from 'slonik'
-import type {TransactionFunction} from 'slonik/dist/src/types'
-
+import type {Viewer, ZRaw} from '@usevenice/cdk-core'
+import {zViewer} from '@usevenice/cdk-core'
 import type {
   EndUserResultRow,
   MetaService,
   MetaTable,
-  Viewer,
-  ZRaw,
-} from '@usevenice/cdk-core'
-import {zViewer} from '@usevenice/cdk-core'
+} from '@usevenice/engine-backend'
+import {zPgConfig} from '@usevenice/integration-postgres/def'
+import type {
+  DatabaseTransactionConnection,
+  SqlTaggedTemplate,
+  TransactionFunction,
+} from '@usevenice/integration-postgres/makePostgresClient'
+import {
+  applyLimitOffset,
+  makePostgresClient,
+} from '@usevenice/integration-postgres/makePostgresClient'
 import {memoize, R, zFunction} from '@usevenice/util'
-
-import {zPgConfig} from './def'
-import {applyLimitOffset, makePostgresClient} from './makePostgresClient'
 
 const getPostgreClient = memoize((databaseUrl: string) =>
   makePostgresClient({databaseUrl}),
 )
 
-/** This determines the identity that gets used for every request to db! So be very careful */
+/**
+ * This sets the postgres grand central config (GUC) and determines the identity
+ * that gets used for every request to db for the purpose of authorization
+ * in row-level-security! So be very careful
+ */
 function localGucForViewer(viewer: Viewer) {
   switch (viewer.role) {
     case 'anon':
       return {role: 'anon'}
-    case 'user':
-      return {
-        role: 'authenticated',
-        'request.jwt.claim.sub': viewer.userId,
-        'request.jwt.claim.org_id': viewer.orgId ?? null,
-      }
     case 'end_user':
       return {
         role: 'end_user',
         'request.jwt.claim.end_user_id': viewer.endUserId,
         'request.jwt.claim.org_id': viewer.orgId,
       }
+    case 'user':
+      return {
+        role: 'authenticated',
+        'request.jwt.claim.sub': viewer.userId,
+        'request.jwt.claim.org_id': viewer.orgId ?? null,
+      }
     case 'org':
       return {role: 'org', 'request.jwt.claim.org_id': viewer.orgId}
     case 'system':
-      return {role: null} // Should be the same as reset role
+      return {role: null} // Should be the same as reset role and therefore operates without RLS policy
     default:
       throw new Error(`Unknown viewer role: ${(viewer as Viewer).role}`)
   }

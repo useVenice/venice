@@ -3,7 +3,6 @@ import type {
   Destination,
   Id,
   Link,
-  MetaService,
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk-core'
@@ -17,9 +16,10 @@ import {
 import type {z} from '@usevenice/util'
 import {R, Rx, rxjs} from '@usevenice/util'
 
+import type {_Integration, _PipelineExpanded, makeDBService} from '.'
+import type {zSyncOptions} from '../types'
 import type {makeMetaLinks} from './makeMetaLinks'
-import type {_Integration, _PipelineExpanded, makeDBService} from './services'
-import type {zSyncOptions} from './types'
+import type {MetaService} from './metaService'
 
 export function makeSyncService({
   metaLinks,

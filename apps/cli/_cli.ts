@@ -4,7 +4,6 @@ import '@usevenice/app-config/register.node'
 
 import {ProxyAgent, setGlobalDispatcher} from 'undici'
 
-import {AirbytePublicSDK} from '@usevenice/airbyte/airbyte-sdk'
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk-core'
@@ -20,10 +19,7 @@ import {makeOneBrickClient} from '@usevenice/integration-onebrick'
 // Or perhaps we can make it into a register and/or loader for nodejs
 // much like tsx and others
 import {makePlaidClient} from '@usevenice/integration-plaid'
-import {
-  makePostgresClient,
-  makePostgresMetaService,
-} from '@usevenice/integration-postgres'
+import {makePostgresClient} from '@usevenice/integration-postgres'
 import {makeRampClient} from '@usevenice/integration-ramp'
 import {makeSaltedgeClient} from '@usevenice/integration-saltedge'
 import {makeStripeClient} from '@usevenice/integration-stripe'
@@ -31,6 +27,8 @@ import {makeTellerClient} from '@usevenice/integration-teller'
 import {makeTogglClient} from '@usevenice/integration-toggl'
 import {makeWiseClient} from '@usevenice/integration-wise'
 import {makeYodleeClient} from '@usevenice/integration-yodlee'
+import {AirbytePublicSDK} from '@usevenice/meta-service-airbyte/airbyte-sdk'
+import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 import type {ZFunctionMap} from '@usevenice/util'
 import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
 

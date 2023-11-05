@@ -1,0 +1,15 @@
+{
+  "name": "@usevenice/meta-service-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": false,
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/integration-postgres": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/engine-backend": "workspace:*"
+  }
+}

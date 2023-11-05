@@ -6,6 +6,7 @@ import {
   $path,
   $readFile,
   fromCompletion,
+  joinPath,
   mapAsync,
   R,
   Rx,
@@ -15,7 +16,9 @@ import {
 } from '@usevenice/util'
 
 import type {fsSchemas, zWatchPathsInput} from './def'
-import {_pathFromId} from './makeFsKVStore'
+
+export const _pathFromId = (basePath: string, id: string) =>
+  joinPath(basePath, `${id}.json`)
 
 export const fsServer = {
   sourceSync: ({settings, state}) =>

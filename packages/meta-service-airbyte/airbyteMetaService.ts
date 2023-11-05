@@ -1,8 +1,8 @@
 import createClient from 'openapi-fetch'
 import {z} from 'zod'
 
-import type {MetaService} from '@usevenice/cdk-core'
-import {makePostgresMetaService} from '@usevenice/integration-postgres'
+import type {MetaService} from '@usevenice/engine-backend'
+import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 // import {createApiClient} from './api/airbyte-private-api.gen'
 
 import type {InfoFromPaths} from '@usevenice/util'

@@ -227,9 +227,6 @@ importers:
       '@usevenice/integration-ramp':
         specifier: workspace:*
         version: link:../../integrations/integration-ramp
-      '@usevenice/integration-redis':
-        specifier: workspace:*
-        version: link:../../integrations/integration-redis
       '@usevenice/integration-saltedge':
         specifier: workspace:*
         version: link:../../integrations/integration-saltedge
@@ -260,6 +257,9 @@ importers:
       '@usevenice/integration-yodlee':
         specifier: workspace:*
         version: link:../../integrations/integration-yodlee
+      '@usevenice/meta-service-postgres':
+        specifier: workspace:*
+        version: link:../../packages/meta-service-postgres
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -306,9 +306,6 @@ importers:
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
-      '@usevenice/airbyte':
-        specifier: workspace:*
-        version: link:../../packages/airbyte
       '@usevenice/app-config':
         specifier: workspace:*
         version: link:../app-config
@@ -387,6 +384,12 @@ importers:
       '@usevenice/integration-yodlee':
         specifier: workspace:*
         version: link:../../integrations/integration-yodlee
+      '@usevenice/meta-service-airbyte':
+        specifier: workspace:*
+        version: link:../../packages/meta-service-airbyte
+      '@usevenice/meta-service-postgres':
+        specifier: workspace:*
+        version: link:../../packages/meta-service-postgres
       '@usevenice/standard':
         specifier: workspace:*
         version: link:../../packages/standard
@@ -1049,21 +1052,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-redis:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../../packages/cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-      handy-redis:
-        specifier: 2.3.1
-        version: 2.3.1
-      redis:
-        specifier: 3.1.2
-        version: 3.1.2
-
   integrations/integration-saltedge:
     dependencies:
       '@usevenice/cdk-core':
@@ -1236,46 +1224,6 @@ importers:
         specifier: 0.23.0
         version: 0.23.0
 
-  packages/airbyte:
-    dependencies:
-      '@trpc/server':
-        specifier: 10.40.0
-        version: 10.40.0
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../cdk-core
-      '@usevenice/integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/integration-postgres
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../util
-      '@zodios/core':
-        specifier: 10.9.6
-        version: 10.9.6(axios@0.21.1)(zod@3.21.4)
-      '@zodios/fetch':
-        specifier: 11.0.0-beta.19
-        version: 11.0.0-beta.19(@zodios/core@10.9.6)(fp-ts@2.12.3)(zod@3.21.4)
-      zod:
-        specifier: 3.21.4
-        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
-    devDependencies:
-      '@redocly/cli':
-        specifier: 1.4.0
-        version: 1.4.0
-      concurrently:
-        specifier: 8.2.2
-        version: 8.2.2
-      json2yaml:
-        specifier: 1.1.0
-        version: 1.1.0
-      openapi-fetch:
-        specifier: 0.8.1
-        version: 0.8.1
-      openapi-typescript:
-        specifier: 7.0.0-next.2
-        version: 7.0.0-next.2
-
   packages/cdk-core:
     dependencies:
       '@trpc/server':
@@ -1399,6 +1347,99 @@ importers:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
+
+  packages/integration-redis:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../cdk-core
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../util
+      handy-redis:
+        specifier: 2.3.1
+        version: 2.3.1
+      redis:
+        specifier: 3.1.2
+        version: 3.1.2
+
+  packages/meta-service-airbyte:
+    dependencies:
+      '@trpc/server':
+        specifier: 10.40.0
+        version: 10.40.0
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../cdk-core
+      '@usevenice/meta-service-postgres':
+        specifier: workspace:*
+        version: link:../meta-service-postgres
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../util
+      '@zodios/core':
+        specifier: 10.9.6
+        version: 10.9.6(axios@0.21.1)(zod@3.21.4)
+      '@zodios/fetch':
+        specifier: 11.0.0-beta.19
+        version: 11.0.0-beta.19(@zodios/core@10.9.6)(fp-ts@2.12.3)(zod@3.21.4)
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    devDependencies:
+      '@redocly/cli':
+        specifier: 1.4.0
+        version: 1.4.0
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
+      concurrently:
+        specifier: 8.2.2
+        version: 8.2.2
+      json2yaml:
+        specifier: 1.1.0
+        version: 1.1.0
+      openapi-fetch:
+        specifier: 0.8.1
+        version: 0.8.1
+      openapi-typescript:
+        specifier: 7.0.0-next.2
+        version: 7.0.0-next.2
+
+  packages/meta-service-fs:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../cdk-core
+      '@usevenice/integration-fs':
+        specifier: workspace:*
+        version: link:../../integrations/integration-fs
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../util
+    devDependencies:
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
+
+  packages/meta-service-postgres:
+    dependencies:
+      '@usevenice/cdk-core':
+        specifier: workspace:*
+        version: link:../cdk-core
+      '@usevenice/integration-postgres':
+        specifier: workspace:*
+        version: link:../../integrations/integration-postgres
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../util
+    devDependencies:
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
 
   packages/standard:
     dependencies:
@@ -2827,7 +2868,7 @@ packages:
     resolution: {integrity: sha512-hxhJtpD8Ppf/VU2Rlos6KFCEV77TGIGD5bJlkPK1+B/WUe0mC6dTjW7KhZtXTc+qRBp9nFHWcsIORnT8liHP9w==}
     dependencies:
       '@firebase/util': 1.5.2
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/component@0.5.14:
@@ -2848,7 +2889,7 @@ packages:
       '@firebase/database-types': 0.9.7
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.5.2
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app-types'
     dev: false
@@ -2898,7 +2939,7 @@ packages:
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.5.2
       faye-websocket: 0.11.4
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app-types'
     dev: false
@@ -3169,7 +3210,7 @@ packages:
   /@firebase/util@1.5.2:
     resolution: {integrity: sha512-YvBH2UxFcdWG2HdFnhxZptPl2eVFlpOyTH66iDo13JPEYraWzWToZ5AMTtkyRHVmu7sssUpQlU9igy1KET7TOw==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/util@1.6.0:
@@ -3181,7 +3222,7 @@ packages:
   /@firebase/util@1.7.0:
     resolution: {integrity: sha512-n5g1WWd+E5IYQwtKxmTJDlhfT762mk/d7yigeh8QaS46cnvngwguOhNwlS8fniEJ7pAgyZ9v05OQMKdfMnws6g==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/webchannel-wrapper@0.6.1:
@@ -15939,7 +15980,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: true
 
   /safe-buffer@5.1.2:
@@ -17492,7 +17533,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /tsup@7.2.0(typescript@5.0.4):
     resolution: {integrity: sha512-vDHlczXbgUvY3rWvqFEbSqmC1L7woozbzngMqTtL2PGBODTtWlRwGDDawhvWzr5c1QjKe4OAKqJGfE1xeXUvtQ==}
