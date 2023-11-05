@@ -7,12 +7,15 @@ import type {
 } from '@trpc/server'
 import {TRPCError} from '@trpc/server'
 
+import {z} from '@usevenice/util'
+
+// FIXME: This is explicitly bypassing the package system because we have a circular
+// dependency here which is not great but ....
 import type {
   remoteProcedure,
   RemoteProcedureContext,
   trpc,
-} from '@usevenice/engine-backend/router/_base'
-import {z} from '@usevenice/util'
+} from '../../engine-backend/router/_base'
 
 export type RouterMap<TRouter extends AnyRouter, TOpts = {}> = {
   [k in keyof TRouter as TRouter[k] extends AnyProcedure
