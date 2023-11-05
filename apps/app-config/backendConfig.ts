@@ -60,6 +60,11 @@ export const contextFactory = getContextFactory({
     renameAccount: renameAccountLink as LinkFactory,
     log: logLink,
   },
+  // Everything below is deprecated... they should be replaced by two things:
+  // 1) A db resource associated with every workspace
+  // 2) Integration metadata should be able to specify the set of transformations desired
+  // 3) Integration config should additionally be able to specify transformations!
+
   // Integrations shall include `config`.
   // In contrast, resource shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though

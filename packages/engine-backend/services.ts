@@ -2,26 +2,22 @@
 import {TRPCError} from '@trpc/server'
 
 import type {
-  AnyEntityPayload,
   AnyIntegrationImpl,
-  Destination,
   Id,
   IDS,
   Link,
   MetaService,
   MetaTable,
-  ResourceUpdate,
-  Source,
   ZRaw,
 } from '@usevenice/cdk-core'
-import {extractId, makeId, sync, zRaw} from '@usevenice/cdk-core'
+import {extractId, zRaw} from '@usevenice/cdk-core'
 import type {ObjectPartialDeep} from '@usevenice/util'
-import {deepMerge, rxjs, z} from '@usevenice/util'
+import {deepMerge, z} from '@usevenice/util'
 
 import {makeMetaLinks} from './makeMetaLinks'
-import type {zSyncOptions} from './types'
+import {makeSyncService} from './sync-service'
 
-export function getServices({
+export function makeServices({
   metaService,
   providerMap,
   getLinksForPipeline,
@@ -30,6 +26,35 @@ export function getServices({
   providerMap: Record<string, AnyIntegrationImpl>
   // TODO: Fix any type
   getLinksForPipeline?: (pipeline: any) => Link[]
+}) {
+  const dbService = makeDBService({
+    metaService,
+    providerMap,
+  })
+  const syncService = makeSyncService({
+    getPipelinesForResource: dbService.getPipelinesForResource,
+    metaLinks: dbService.metaLinks,
+    getLinksForPipeline,
+  })
+  return {...dbService, ...syncService}
+}
+
+export type _Integration = Awaited<
+  ReturnType<ReturnType<typeof makeDBService>['getIntegrationOrFail']>
+>
+export type _PipelineExpanded = Awaited<
+  ReturnType<ReturnType<typeof makeDBService>['getPipelineExpandedOrFail']>
+>
+export type _ResourceExpanded = Awaited<
+  ReturnType<ReturnType<typeof makeDBService>['getResourceExpandedOrFail']>
+>
+
+export function makeDBService({
+  metaService,
+  providerMap,
+}: {
+  metaService: MetaService
+  providerMap: Record<string, AnyIntegrationImpl>
 }) {
   // TODO: Escalate to workspace level permission so it works for end users
   // TODO: Consider giving end users no permission at all?
@@ -253,129 +278,6 @@ export function getServices({
 
   const metaLinks = makeMetaLinks(metaService)
 
-  const _syncResourceUpdate = async (
-    int: Awaited<ReturnType<typeof getIntegrationOrFail>>,
-    {
-      endUserId: userId,
-      settings,
-      institution,
-      ...resoUpdate
-    }: ResourceUpdate<AnyEntityPayload, {}>,
-  ) => {
-    console.log('[_syncResourceUpdate]', int.id, {
-      userId,
-      settings,
-      institution,
-      ...resoUpdate,
-    })
-    const id = makeId('reso', int.provider.name, resoUpdate.resourceExternalId)
-    await metaLinks
-      .handlers({resource: {id, integrationId: int.id, endUserId: userId}})
-      .resoUpdate({type: 'resoUpdate', id, settings, institution})
-
-    // TODO: This should be happening async
-    if (!resoUpdate.source$ && !resoUpdate.triggerDefaultSync) {
-      console.log(
-        '[_syncResourceUpdate] Returning early skip syncing pipelines',
-      )
-      return id
-    }
-
-    const pipelines = await getPipelinesForResource(id)
-
-    console.log('_syncResourceUpdate existingPipes.len', pipelines.length)
-    await Promise.all(
-      pipelines.map(async (pipe) => {
-        await _syncPipeline(pipe, {
-          source$: resoUpdate.source$,
-          source$ConcatDefault: resoUpdate.triggerDefaultSync,
-        })
-      }),
-    )
-    return id
-  }
-
-  const _syncPipeline = async (
-    pipeline: Awaited<ReturnType<typeof getPipelineExpandedOrFail>>,
-    opts: z.infer<typeof zSyncOptions> & {
-      source$?: Source<AnyEntityPayload>
-      /**
-       * Trigger the default sourceSync after source$ exhausts
-       * TODO: #inngestMe This is where we can fire off a request to syncPipeline so it happens async
-       */
-      source$ConcatDefault?: boolean
-      destination$$?: Destination
-    } = {},
-  ) => {
-    console.log('[syncPipeline]', pipeline)
-    const {source: src, links, destination: dest, watch, ...pipe} = pipeline
-    // TODO: Should we introduce endUserId onto the pipeline itself?
-    const endUserId = src.endUserId ?? dest.endUserId
-    const endUser = endUserId ? {id: endUserId} : null
-
-    const defaultSource$ = () =>
-      src.integration.provider.sourceSync?.({
-        endUser,
-        config: src.integration.config,
-        settings: src.settings,
-        // Maybe we should rename `options` to `state`?
-        // Should also make the distinction between `config`, `settings` and `state` much more clear.
-        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-        state: opts.fullResync ? {} : pipe.sourceState,
-      })
-
-    const source$ = opts.source$
-      ? opts.source$ConcatDefault
-        ? rxjs.concat(opts.source$, defaultSource$() ?? rxjs.EMPTY)
-        : opts.source$
-      : defaultSource$()
-
-    const destination$$ =
-      opts.destination$$ ??
-      dest.integration.provider.destinationSync?.({
-        endUser,
-        config: dest.integration.config,
-        settings: dest.settings,
-        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-        state: opts.fullResync ? {} : pipe.destinationState,
-      })
-
-    if (!source$) {
-      throw new Error(`${src.integration.provider.name} missing source`)
-    }
-    if (!destination$$) {
-      throw new Error(`${dest.integration.provider.name} missing destination`)
-    }
-    await metaLinks
-      .handlers({pipeline})
-      .stateUpdate({type: 'stateUpdate', subtype: 'init'})
-    await sync({
-      // Raw Source, may come from fs, firestore or postgres
-      source: source$.pipe(
-        // logLink({prefix: 'postSource', verbose: true}),
-        metaLinks.postSource({src}),
-      ),
-      links: getLinksForPipeline?.(pipeline), // ?? links,
-      // WARNING: It is insanely unclear to me why moving `metaLinks.link`
-      // to after provider.destinationSync makes all the difference.
-      // When syncing from firebase with a large number of docs,
-      // we always seem to stop after 1600 or so documents.
-      // I already checked this is because metaLinks.link runs a async comment
-      // even delay(100) introduces issues.
-      // It's worth trying to reproduce this with say a simple counter source and see if
-      // it happens...
-      destination: rxjs.pipe(
-        destination$$,
-        metaLinks.postDestination({pipeline, dest}),
-      ),
-      watch,
-    }).finally(() =>
-      metaLinks
-        .handlers({pipeline})
-        .stateUpdate({type: 'stateUpdate', subtype: 'complete'}),
-    )
-  }
-
   return {
     metaService,
     metaLinks,
@@ -388,8 +290,6 @@ export function getServices({
     getPipelineExpandedOrFail,
     listIntegrations,
     getPipelinesForResource,
-    _syncResourceUpdate,
-    _syncPipeline,
     // DB methods really should be moved to a separate file
     get,
     getOrFail,
@@ -398,13 +298,3 @@ export function getServices({
     patchReturning,
   }
 }
-
-export type _Integration = Awaited<
-  ReturnType<ReturnType<typeof getServices>['getIntegrationOrFail']>
->
-export type _Pipeline = Awaited<
-  ReturnType<ReturnType<typeof getServices>['getPipelineExpandedOrFail']>
->
-export type _Resource = Awaited<
-  ReturnType<ReturnType<typeof getServices>['getResourceExpandedOrFail']>
->

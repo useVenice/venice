@@ -16,8 +16,8 @@ import {R} from '@usevenice/util'
 
 import type {Env} from '../../apps/app-config/env'
 // Should we actually do this hmm
-import type {_Integration, _Pipeline} from './services'
-import {getServices as _getServices} from './services'
+import type {_Integration, _PipelineExpanded} from './services'
+import {makeServices as _getServices} from './services'
 import type {PipelineInput, ResourceInput} from './types'
 
 type Services = ReturnType<typeof _getServices>
@@ -66,7 +66,7 @@ export interface ContextFactoryOptions<
 
   /** Used to store metadata */
   getMetaService: (viewer: Viewer) => MetaService
-  getLinksForPipeline?: (pipeline: _Pipeline) => Link[]
+  getLinksForPipeline?: (pipeline: _PipelineExpanded) => Link[]
 
   getDefaultPipeline?: (
     connInput?: ResourceInput<TProviders[number]>,
