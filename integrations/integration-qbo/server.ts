@@ -6,6 +6,8 @@ import {qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 import {makeQBOClient} from './QBOClient'
 
 export const qboServer = {
+  newInstance: ({config, settings}) => makeQBOClient(config, settings),
+
   sourceSync: ({config, settings}) => {
     const qbo = makeQBOClient(config, settings)
     const realmId = settings.oauth.connection_config.realmId
@@ -32,7 +34,6 @@ export const qboServer = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, qboHelpers._op('commit')])))
   },
-  new: ({config, settings}) => makeQBOClient(config, settings),
 
   verticals: {
     accounting: {

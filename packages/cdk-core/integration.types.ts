@@ -217,7 +217,7 @@ export interface IntegrationServer<
    * We recommend against using classes (which might be more convenient) due to the lack
    * of contextual typing for interfaces. @see https://github.com/microsoft/TypeScript/issues/1373
    */
-  new?: (opts: {
+  newInstance?: (opts: {
     config: T['_types']['integrationConfig']
     settings: T['_types']['resourceSettings']
   }) => TInstance

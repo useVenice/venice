@@ -44,7 +44,7 @@ export async function proxyCallRemote(opts: {
   const meta = (opts as any).meta as RouterMeta
 
   const {input, ctx} = opts
-  const instance = ctx.remote.provider.new?.({
+  const instance = ctx.remote.provider.newInstance?.({
     config: ctx.remote.config,
     settings: ctx.remote.settings,
   })
