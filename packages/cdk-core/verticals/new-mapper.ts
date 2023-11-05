@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type {
   AnyProcedure,
   AnyRouter,
@@ -14,6 +18,7 @@ import {z} from '@usevenice/util'
 import type {
   remoteProcedure,
   RemoteProcedureContext,
+  RouterMeta,
   trpc,
 } from '../../engine-backend/router/_base'
 
@@ -32,27 +37,43 @@ export interface VerticalRouterOpts {
   remoteProcedure: typeof remoteProcedure
 }
 
-export function proxyCallRemote(opts: {
+export async function proxyCallRemote(opts: {
   input: unknown
   ctx: RemoteProcedureContext
 }) {
-  // console.log('opts', opts)
+  const meta = (opts as any).meta as RouterMeta
+
   const {input, ctx} = opts
   const instance = ctx.remote.provider.new?.({
     config: ctx.remote.config,
     settings: ctx.remote.settings,
   })
-  const implementation = (ctx.remote.provider.verticals?.accounting as any)?.[
-    (opts as any).path
-  ] as Function
+  const implementation = (
+    ctx.remote.provider.verticals?.[meta.response?.vertical!] as any
+  )?.[(opts as any).path] as Function
   if (typeof implementation !== 'function') {
     throw new TRPCError({
       code: 'NOT_IMPLEMENTED',
       message: `${ctx.remote.providerName} does not implement ${ctx.path}`,
     })
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return implementation({input, instance})
+
+  const res = await implementation({input, instance})
+
+  if (meta.response?.type === 'list') {
+    const mapper = (ctx.remote.provider.mappers?.accounting as any)[
+      meta.response?.entity
+    ] as (entity: unknown, settings: unknown) => any
+
+    return {
+      ...res,
+      items: (res as PaginatedOutput<any>).items.map((item) => ({
+        ...mapper(item, ctx.remote.settings),
+        _original: item,
+      })),
+    }
+  }
+  return res
 }
 export const zPaginationParams = z.object({
   limit: z.number().optional(),
@@ -60,12 +81,15 @@ export const zPaginationParams = z.object({
 })
 export type Pagination = z.infer<typeof zPaginationParams>
 
-export function paginatedOutput<ItemType extends z.ZodTypeAny>(
+export type PaginatedOutput<T extends {}> = z.infer<
+  ReturnType<typeof paginatedOutput<z.ZodObject<any, any, any, T>>>
+>
+export function paginatedOutput<ItemType extends z.AnyZodObject>(
   itemSchema: ItemType,
 ) {
   return z.object({
     hasNextPage: z.boolean(),
-    items: z.array(itemSchema),
+    items: z.array(itemSchema.extend({_original: z.unknown()})),
   })
 }
 

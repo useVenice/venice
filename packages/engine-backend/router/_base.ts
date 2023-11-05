@@ -5,7 +5,13 @@ import {getExtEndUserId, hasRole} from '@usevenice/cdk-core'
 
 import type {RouterContext} from '../context'
 
-interface RouterMeta extends OpenApiMeta {}
+export interface RouterMeta extends OpenApiMeta {
+  response?: {
+    vertical: 'accounting'
+    entity: 'account' | 'expense' | 'vendor'
+    type: 'list' // | 'get'
+  }
+}
 
 export const trpc = initTRPC
   .context<RouterContext>()

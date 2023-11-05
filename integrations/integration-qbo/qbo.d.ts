@@ -163,6 +163,10 @@ declare namespace QBO {
     sparse: boolean
   }
 
+  export interface Vendor extends _BaseEntity {
+    Name: string
+  }
+
   // Journal Entry
 
   export interface JournalEntry extends _BaseEntity {

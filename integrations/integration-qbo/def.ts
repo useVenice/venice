@@ -43,6 +43,13 @@ export const qboSchemas = {
       ]),
     }),
   ]),
+  verticals: {
+    accounting: {
+      account: zCast<QBO.Account>(),
+      expense: zCast<QBO.Purchase>(),
+      vendor: zCast<QBO.Vendor>(),
+    },
+  },
 } satisfies IntegrationSchemas
 
 export const qboHelpers = intHelpers(qboSchemas)
@@ -56,6 +63,22 @@ export const qboDef = {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-qbo.svg',
     nangoProvider: 'quickbooks',
+  },
+  mappers: {
+    accounting: {
+      account: (a) => ({
+        name: a.Name,
+        type: a.AccountType as 'asset',
+        id: a.Id,
+      }),
+      expense: (e) => ({
+        id: e.Id,
+        amount: e.TotalAmt,
+        currency: e.CurrencyRef.value,
+        payment_account: e.AccountRef.value,
+      }),
+      vendor: (v) => ({id: v.Id, name: v.Name, url: ''}),
+    },
   },
   extension: {
     sourceMapEntity: {

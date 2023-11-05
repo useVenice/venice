@@ -21,7 +21,7 @@ import type {
   ResourceUpdate,
   WebhookReturnType,
 } from './providers.types'
-import type {VerticalAccounting} from './verticals/accounting'
+import type {AccountingVertical, ZAccounting} from './verticals/accounting'
 
 /** Maybe this should be renamed to `schemas` */
 export interface IntegrationSchemas {
@@ -39,6 +39,10 @@ export interface IntegrationSchemas {
   sourceOutputEntity?: z.ZodTypeAny
   destinationState?: z.ZodTypeAny
   destinationInputEntity?: z.ZodTypeAny
+
+  verticals?: {
+    accounting?: {[k in keyof ZAccounting]?: z.ZodTypeAny}
+  }
 }
 
 export type IntHelpers<TDef extends IntegrationSchemas = IntegrationSchemas> =
@@ -73,6 +77,14 @@ export interface IntegrationDef<
     resource: (
       settings: T['_types']['resourceSettings'],
     ) => Omit<ZStandard['resource'], 'id'>
+  }
+  mappers?: {
+    accounting?: {
+      [k in keyof T['_verticals']['accounting']]: (
+        entity: T['_verticals']['accounting'][k],
+        settings: T['_types']['resourceSettings'],
+      ) => k extends keyof ZAccounting ? ZAccounting[k] : never
+    }
   }
   extension?: {
     // TODO: Should this be wrapped into the core? Does cdk-ledger even make sense?
@@ -211,7 +223,7 @@ export interface IntegrationServer<
   }) => TInstance
 
   verticals?: {
-    accounting?: VerticalAccounting<{instance: TInstance}>
+    accounting?: AccountingVertical<TDef, TInstance>
   }
 }
 
@@ -231,7 +243,22 @@ export type AnyIntegrationImpl = IntegrationImpl<IntegrationSchemas>
 export function intHelpers<TSchemas extends IntegrationSchemas>(
   schemas: TSchemas,
 ) {
-  type _types = {[k in keyof TSchemas]: _infer<TSchemas[k]>}
+  type _types = {
+    [k in keyof TSchemas as k extends 'verticals' ? never : k]: _infer<
+      TSchemas[k]
+    >
+  }
+
+  interface _verticals {
+    accounting: {
+      [k in keyof ZAccounting]: k extends keyof NonNullable<
+        TSchemas['verticals']
+      >['accounting']
+        ? _infer<NonNullable<TSchemas['verticals']>['accounting'][k]>
+        : never
+    }
+  }
+
   type InsOpData = Extract<
     SyncOperation<{
       id: string
@@ -271,6 +298,7 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
   return {
     ...schemas,
     _types: {} as _types,
+    _verticals: {} as _verticals,
     _resUpdateType: {} as resoUpdate,
     _stateUpdateType: {} as stateUpdate,
     _opType: {} as Op,

@@ -38,26 +38,11 @@ export const qboServer = {
     accounting: {
       listAccounts: async ({instance: qbo}) => {
         const res = await qbo.getAll('Account').next()
-        return {
-          hasNextPage: true,
-          items: (res.value?.entities ?? []).map((a) => ({
-            id: a.Id,
-            name: a.Name,
-            type: a.AccountType as 'asset',
-          })),
-        }
+        return {hasNextPage: true, items: res.value?.entities ?? []}
       },
       listExpenses: async ({instance: qbo}) => {
         const res = await qbo.getAll('Purchase').next()
-        return {
-          hasNextPage: true,
-          items: (res.value?.entities ?? []).map((a) => ({
-            id: a.Id,
-            amount: a.TotalAmt,
-            currency: a.CurrencyRef.value,
-            payment_account: a.AccountRef.value,
-          })),
-        }
+        return {hasNextPage: true, items: res.value?.entities ?? []}
       },
     },
   },
