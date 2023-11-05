@@ -9,6 +9,7 @@ import {adminRouter} from './adminRouter'
 import {endUserRouter} from './endUserRouter'
 import {protectedRouter} from './protectedRouter'
 import {publicRouter} from './publicRouter'
+import {resourceRouter} from './resourceRouter'
 import {systemRouter} from './systemRouter'
 
 const accountingRouter = createAccountingRouter({trpc, remoteProcedure})
@@ -22,6 +23,7 @@ export const flatRouter = trpc.mergeRouters(
   adminRouter,
   systemRouter,
   accountingRouter,
+  resourceRouter,
 )
 
 // Which one is best?
@@ -32,6 +34,7 @@ export const nestedRouter = trpc.router({
   admin: adminRouter,
   system: systemRouter,
   accounting: accountingRouter,
+  resource: resourceRouter,
 })
 
 export type FlatRouter = typeof flatRouter
