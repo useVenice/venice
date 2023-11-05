@@ -1,16 +1,10 @@
-import type {Link, LinkFactory} from '@usevenice/cdk-core'
-import {logLink, makeId, swapPrefix} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
-import {
-  addRemainderByDateLink,
-  mapAccountNameAndTypeLink,
-  mapStandardEntityLink,
-  renameAccountLink,
-} from '@usevenice/cdk-ledger'
+import type {LinkFactory} from '@usevenice/cdk-core'
+import {logLink} from '@usevenice/cdk-core'
+import {renameAccountLink} from '@usevenice/cdk-ledger'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
 import {makePostgresMetaService} from '@usevenice/integration-postgres'
-import {joinPath, R, Rx} from '@usevenice/util'
+import {joinPath} from '@usevenice/util'
 
 import {getServerUrl} from './constants'
 import {env} from './env'
@@ -23,8 +17,6 @@ export {
 export {Papa} from '@usevenice/integration-spreadsheet'
 
 export const backendEnv = env
-
-const usePg = env.POSTGRES_OR_WEBHOOK_URL.startsWith('postgres')
 
 /**
  * This requires the env vars to exist...
@@ -49,91 +41,21 @@ export const contextFactory = getContextFactory({
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   // TODO: Rename to just serverUrl as we will need it for redirects and everything else
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),
+  // TODO: Clean up the duplication .env and .env.NANGO_SECRET_KEY etc.
   env,
   jwtSecret: env.JWT_SECRET_OR_PUBLIC_KEY,
   nangoSecretKey: env.NANGO_SECRET_KEY,
+  // TODO: Remove this now that we use nango for redirects?
+  // Although updating nangoUrl right now happens by hand which is not ideal
   getRedirectUrl: (_, _ctx) => joinPath(getServerUrl(null), '/'),
+  // TODO: Do we realy need to support anything other than postgres?
   getMetaService: (viewer) =>
     makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL, viewer}),
-  // TODO: Support other config service such as fs later...
+  // TODO: This probably needs to be internal to the engine-backend or even cdk-core
+  // because of the need to support integration metadata specifying their desired links
+  // aka transfomrations
   linkMap: {
     renameAccount: renameAccountLink as LinkFactory,
     log: logLink,
   },
-  // Everything below is deprecated... they should be replaced by two things:
-  // 1) A db resource associated with every workspace
-  // 2) Integration metadata should be able to specify the set of transformations desired
-  // 3) Integration config should additionally be able to specify transformations!
-
-  // Integrations shall include `config`.
-  // In contrast, resource shall include `external`
-  // We do need to figure out which secrets to tokenize and which one not to though
-  // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
-
-  // TODO: Deprecate me. This does not make much sense to have getLinksForPipeline
-  getLinksForPipeline: ({source, links, destination}) => {
-    // console.log('getLinksForPipeline', {source, links, destination})
-    if (destination.integration.provider.name === 'beancount') {
-      return [
-        ...links,
-        mapStandardEntityLink(source),
-        addRemainderByDateLink as Link, // What about just the addRemainder plugin?
-        // renameAccountLink({
-        //   Ramp: 'Ramp/Posted',
-        //   'Apple Card': 'Apple Card/Posted',
-        // }),
-        mapAccountNameAndTypeLink() as Link,
-        logLink({prefix: 'preDest', verbose: true}),
-      ]
-    }
-    if (destination.integration.provider.name === 'alka') {
-      return [
-        ...links,
-        // logLink({prefix: 'preMap'}),
-        mapStandardEntityLink(source),
-        // prefixIdLink(src.provider.name),
-        logLink({prefix: 'preDest'}),
-      ]
-    }
-    if (source.integration.provider.name === 'postgres') {
-      return [...links, logLink({prefix: 'preDest'})]
-    }
-    return [
-      ...links,
-      // logLink({prefix: 'preMapStandard', verbose: true}),
-      mapStandardEntityLink(source),
-      Rx.map((op) =>
-        op.type === 'data' &&
-        destination.integration.provider.name !== 'postgres'
-          ? R.identity({
-              ...op,
-              data: {
-                ...op.data,
-                entity: {
-                  standard: op.data.entity,
-                  external: (op.data as EntityPayloadWithExternal).external,
-                },
-              },
-            })
-          : op,
-      ),
-      logLink({prefix: 'preDest'}),
-    ]
-  },
-  // When do we perform migration?
-  getDefaultPipeline: (conn) => ({
-    id: conn?.id ? swapPrefix(conn.id, 'pipe') : makeId('pipe', 'default'),
-    // TODO: Handle default soruce scenario
-    source: conn,
-    // TODO: Make me parsable from env vars
-    destination: usePg
-      ? {
-          id: 'reso_postgres',
-          settings: {databaseUrl: env.POSTGRES_OR_WEBHOOK_URL},
-        }
-      : {
-          id: 'reso_webhook',
-          settings: {destinationUrl: env.POSTGRES_OR_WEBHOOK_URL},
-        },
-  }),
 })

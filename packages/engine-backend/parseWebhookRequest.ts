@@ -5,7 +5,10 @@ import type {RouterInput} from './router'
 
 const kWebhook = 'webhook' as const
 
-/** Do we also need a parseWebhookResponse? To allow setting headers, redirects and others? */
+/**
+ * Do we also need a parseWebhookResponse? To allow setting headers, redirects and others?
+ * @deprecated because we should just use openAPI for this, no need for trpc
+ */
 export function parseWebhookRequest(
   req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
 ) {

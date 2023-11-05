@@ -1,24 +1,22 @@
 import {TRPCError} from '@trpc/server'
 
-import {makeNangoClient} from '@usevenice/cdk-core'
 import type {
   AnyIntegrationImpl,
   EndUserId,
   Id,
-  Link,
   LinkFactory,
   MetaService,
   NangoClient,
 } from '@usevenice/cdk-core'
+import {makeNangoClient} from '@usevenice/cdk-core'
 import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
 import {R} from '@usevenice/util'
 
 import type {Env} from '../../apps/app-config/env'
 // Should we actually do this hmm
-import type {_Integration, _PipelineExpanded} from './services'
+import type {_Integration} from './services'
 import {makeServices as _getServices} from './services'
-import type {PipelineInput, ResourceInput} from './types'
 
 type Services = ReturnType<typeof _getServices>
 
@@ -64,28 +62,16 @@ export interface ContextFactoryOptions<
   nangoSecretKey: string
   env: Env
 
-  /** Used to store metadata */
+  /** Used to store metadata & configurations */
   getMetaService: (viewer: Viewer) => MetaService
-  getLinksForPipeline?: (pipeline: _PipelineExpanded) => Link[]
-
-  getDefaultPipeline?: (
-    connInput?: ResourceInput<TProviders[number]>,
-  ) => PipelineInput<TProviders[number], TProviders[number], TLinks>
 }
 
 export function getContextFactory<
   TProviders extends readonly AnyIntegrationImpl[],
   TLinks extends Record<string, LinkFactory>,
 >(config: ContextFactoryOptions<TProviders, TLinks>) {
-  const {
-    getLinksForPipeline,
-    apiUrl,
-    getRedirectUrl,
-    getMetaService,
-    providers,
-    jwtSecret,
-    env,
-  } = config
+  const {apiUrl, getRedirectUrl, getMetaService, providers, jwtSecret, env} =
+    config
   for (const provider of providers) {
     if (typeof provider.name !== 'string') {
       console.error('Invalid provider', provider)
@@ -96,11 +82,7 @@ export function getContextFactory<
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getServices = (viewer: Viewer) =>
-    _getServices({
-      metaService: getMetaService(viewer),
-      providerMap,
-      getLinksForPipeline,
-    })
+    _getServices({metaService: getMetaService(viewer), providerMap})
 
   function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {

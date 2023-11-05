@@ -1,13 +1,21 @@
 import type {
   AnyEntityPayload,
   Destination,
+  Id,
   Link,
+  MetaService,
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk-core'
-import {makeId, sync} from '@usevenice/cdk-core'
+import {logLink, makeId, sync} from '@usevenice/cdk-core'
+import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import {
+  addRemainderByDateLink,
+  mapAccountNameAndTypeLink,
+  mapStandardEntityLink,
+} from '@usevenice/cdk-ledger'
 import type {z} from '@usevenice/util'
-import {rxjs} from '@usevenice/util'
+import {R, Rx, rxjs} from '@usevenice/util'
 
 import type {makeMetaLinks} from './makeMetaLinks'
 import type {_Integration, _PipelineExpanded, makeDBService} from './services'
@@ -15,16 +23,83 @@ import type {zSyncOptions} from './types'
 
 export function makeSyncService({
   metaLinks,
-  getLinksForPipeline,
-  getPipelinesForResource,
+  metaService,
+  getPipelineExpandedOrFail,
 }: {
+  metaService: MetaService
   metaLinks: ReturnType<typeof makeMetaLinks>
-  // TODO: Fix any type
-  getLinksForPipeline?: (pipeline: any) => Link[]
-  getPipelinesForResource: ReturnType<
+  getPipelineExpandedOrFail: ReturnType<
     typeof makeDBService
-  >['getPipelinesForResource']
+  >['getPipelineExpandedOrFail']
 }) {
+  // NOTE: 1) avoid roundtrip to db 2) Bring back getDefaultPipeline (https://share.cleanshot.com/ly1Xwts5) somehow
+  const getPipelinesForResource = (resoId: Id['reso']) =>
+    metaService
+      .findPipelines({resourceIds: [resoId]})
+      .then((pipes) =>
+        Promise.all(pipes.map((pipe) => getPipelineExpandedOrFail(pipe.id))),
+      )
+
+  // NOTE: Stop the hard-coding some point!
+  // - Integration metadata should be able to specify the set of transformations desired
+  // - Integration config should additionally be able to specify transformations!
+  // Integrations shall include `config`.
+  // In contrast, resource shall include `external`
+  // We do need to figure out which secrets to tokenize and which one not to though
+  // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
+  const getLinksForPipeline = ({
+    source,
+    links,
+    destination,
+  }: _PipelineExpanded): Link[] => {
+    // console.log('getLinksForPipeline', {source, links, destination})
+    if (destination.integration.provider.name === 'beancount') {
+      return [
+        ...links,
+        mapStandardEntityLink(source),
+        addRemainderByDateLink as Link, // What about just the addRemainder plugin?
+        // renameAccountLink({
+        //   Ramp: 'Ramp/Posted',
+        //   'Apple Card': 'Apple Card/Posted',
+        // }),
+        mapAccountNameAndTypeLink() as Link,
+        logLink({prefix: 'preDest', verbose: true}),
+      ]
+    }
+    if (destination.integration.provider.name === 'alka') {
+      return [
+        ...links,
+        // logLink({prefix: 'preMap'}),
+        mapStandardEntityLink(source),
+        // prefixIdLink(src.provider.name),
+        logLink({prefix: 'preDest'}),
+      ]
+    }
+    if (source.integration.provider.name === 'postgres') {
+      return [...links, logLink({prefix: 'preDest'})]
+    }
+    return [
+      ...links,
+      // logLink({prefix: 'preMapStandard', verbose: true}),
+      mapStandardEntityLink(source),
+      Rx.map((op) =>
+        op.type === 'data' &&
+        destination.integration.provider.name !== 'postgres'
+          ? R.identity({
+              ...op,
+              data: {
+                ...op.data,
+                entity: {
+                  standard: op.data.entity,
+                  external: (op.data as EntityPayloadWithExternal).external,
+                },
+              },
+            })
+          : op,
+      ),
+      logLink({prefix: 'preDest'}),
+    ]
+  }
   const _syncPipeline = async (
     pipeline: _PipelineExpanded,
     opts: z.infer<typeof zSyncOptions> & {

@@ -5,7 +5,6 @@ import type {
   AnyIntegrationImpl,
   Id,
   IDS,
-  Link,
   MetaService,
   MetaTable,
   ZRaw,
@@ -20,21 +19,19 @@ import {makeSyncService} from './sync-service'
 export function makeServices({
   metaService,
   providerMap,
-  getLinksForPipeline,
 }: {
   metaService: MetaService
   providerMap: Record<string, AnyIntegrationImpl>
   // TODO: Fix any type
-  getLinksForPipeline?: (pipeline: any) => Link[]
 }) {
   const dbService = makeDBService({
     metaService,
     providerMap,
   })
   const syncService = makeSyncService({
-    getPipelinesForResource: dbService.getPipelinesForResource,
+    metaService,
+    getPipelineExpandedOrFail: dbService.getPipelineExpandedOrFail,
     metaLinks: dbService.metaLinks,
-    getLinksForPipeline,
   })
   return {...dbService, ...syncService}
 }
@@ -268,14 +265,6 @@ export function makeDBService({
         Promise.all(ints.map((int) => getIntegrationOrFail(int.id))),
       )
 
-  // TODO: 1) avoid roundtrip to db 2) Bring back getDefaultPipeline somehow
-  const getPipelinesForResource = (resoId: Id['reso']) =>
-    metaService
-      .findPipelines({resourceIds: [resoId]})
-      .then((pipes) =>
-        Promise.all(pipes.map((pipe) => getPipelineExpandedOrFail(pipe.id))),
-      )
-
   const metaLinks = makeMetaLinks(metaService)
 
   return {
@@ -289,7 +278,6 @@ export function makeDBService({
     getResourceExpandedOrFail,
     getPipelineExpandedOrFail,
     listIntegrations,
-    getPipelinesForResource,
     // DB methods really should be moved to a separate file
     get,
     getOrFail,
