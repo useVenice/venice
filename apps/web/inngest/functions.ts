@@ -109,14 +109,14 @@ export const createDefaultPipeline = inngest.createFunction(
   {event: 'connect/resource-connected'},
   async ({event}) => {
     const ctx = contextFactory.fromViewer({role: 'system'})
-    const resource = await ctx.helpers.getResourceExpandedOrFail(
+    const resource = await ctx.services.getResourceExpandedOrFail(
       event.data.resourceId,
     )
     const [_org, pipelines] = await Promise.all([
       clerkClient.organizations.getOrganization({
         organizationId: resource.integration.orgId,
       }),
-      ctx.helpers.metaService.findPipelines({resourceIds: [resource.id]}),
+      ctx.services.metaService.findPipelines({resourceIds: [resource.id]}),
     ])
     if (pipelines.length > 0) {
       return `${pipelines.length} pipelines already exist, skipping`

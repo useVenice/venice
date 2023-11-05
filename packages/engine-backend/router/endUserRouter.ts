@@ -150,7 +150,7 @@ export const endUserRouter = trpc.router({
           return null
         }
         const reso = resourceExternalId
-          ? await ctx.helpers.getResourceOrFail(
+          ? await ctx.services.getResourceOrFail(
               makeId('reso', int.provider.name, resourceExternalId),
             )
           : undefined
@@ -213,7 +213,7 @@ export const endUserRouter = trpc.router({
           }
 
           const reso = resourceExternalId
-            ? await ctx.helpers.getResourceOrFail(
+            ? await ctx.services.getResourceOrFail(
                 makeId('reso', int.provider.name, resourceExternalId),
               )
             : undefined
@@ -272,7 +272,7 @@ export const endUserRouter = trpc.router({
     .output(z.string())
     .mutation(async ({input: {integrationId, settings}, ctx}) => {
       // Authorization
-      await ctx.helpers.getIntegrationInfoOrFail(integrationId)
+      await ctx.services.getIntegrationInfoOrFail(integrationId)
 
       // Escalate to now have enough pemission to sync
       const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(integrationId)
@@ -308,7 +308,7 @@ export const endUserRouter = trpc.router({
       // TODO: Run mapStandardResource after editing
       // Also we probably do not want deeply nested patch
       // shallow is sufficient more most situations
-      ctx.helpers.patchReturning('resource', id, input),
+      ctx.services.patchReturning('resource', id, input),
     ),
   deleteResource: protectedProcedure
     .meta({openapi: {method: 'DELETE', path: '/resources/{id}'}})
@@ -316,7 +316,7 @@ export const endUserRouter = trpc.router({
     .output(z.void())
     .mutation(async ({input: {id: resoId, ...opts}, ctx}) => {
       if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getResourceOrFail(resoId)
+        await ctx.services.getResourceOrFail(resoId)
       }
       const {settings, integration, ...reso} =
         await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)

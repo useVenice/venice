@@ -48,7 +48,7 @@ export const protectedRouter = trpc.router({
     )
     .output(z.array(zRaw.resource))
     .query(async ({input = {}, ctx}) => {
-      const resources = await ctx.helpers.metaService.tables.resource.list(
+      const resources = await ctx.services.metaService.tables.resource.list(
         input,
       )
       return resources as Array<ZRaw['resource']>
@@ -62,7 +62,7 @@ export const protectedRouter = trpc.router({
     )
     .output(z.array(zRaw.pipeline))
     .query(async ({input = {}, ctx}) => {
-      const pipelines = await ctx.helpers.metaService.findPipelines(input)
+      const pipelines = await ctx.services.metaService.findPipelines(input)
       return pipelines as Array<ZRaw['pipeline']>
     }),
   deletePipeline: protectedProcedure
@@ -70,7 +70,7 @@ export const protectedRouter = trpc.router({
     .input(z.object({id: zId('pipe')}))
     .output(z.literal(true))
     .mutation(async ({ctx, input}) => {
-      await ctx.helpers.metaService.tables.pipeline.delete(input.id)
+      await ctx.services.metaService.tables.pipeline.delete(input.id)
       return true as const
     }),
   listConnections: protectedProcedure
@@ -78,14 +78,14 @@ export const protectedRouter = trpc.router({
     .query(async ({input = {}, ctx}) => {
       // Add info about what it takes to `reconnect` here for resources which
       // has disconnected
-      const resources = await ctx.helpers.metaService.tables.resource.list(
+      const resources = await ctx.services.metaService.tables.resource.list(
         input,
       )
       const [institutions, _pipelines] = await Promise.all([
-        ctx.helpers.metaService.tables.institution.list({
+        ctx.services.metaService.tables.institution.list({
           ids: R.compact(resources.map((c) => c.institutionId)),
         }),
-        ctx.helpers.metaService.findPipelines({
+        ctx.services.metaService.findPipelines({
           resourceIds: resources.map((c) => c.id),
         }),
       ])
@@ -179,7 +179,7 @@ export const protectedRouter = trpc.router({
       ),
     )
     .query(async ({input: {type, id, providerName}, ctx}) => {
-      const intInfos = await ctx.helpers.metaService.listIntegrationInfos({
+      const intInfos = await ctx.services.metaService.listIntegrationInfos({
         id,
         providerName,
       })
@@ -210,8 +210,8 @@ export const protectedRouter = trpc.router({
   searchInstitutions: protectedProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) => {
-      const ints = await ctx.helpers.listIntegrations()
-      const institutions = await ctx.helpers.metaService.searchInstitutions({
+      const ints = await ctx.services.listIntegrations()
+      const institutions = await ctx.services.metaService.searchInstitutions({
         keywords,
         limit: 10,
         providerNames: R.uniq(ints.map((int) => int.provider.name)),
@@ -244,7 +244,7 @@ export const protectedRouter = trpc.router({
     .input(z.object({id: zId('reso')}))
     .output(zRaw.resource) // TODO: This is actually expanded...
     .query(async ({input, ctx}) => {
-      const reso = await ctx.helpers.getResourceExpandedOrFail(input.id)
+      const reso = await ctx.services.getResourceExpandedOrFail(input.id)
       return reso
     }),
   checkResource: protectedProcedure
@@ -254,7 +254,7 @@ export const protectedRouter = trpc.router({
     .input(z.tuple([zId('reso'), zCheckResourceOptions.optional()]))
     .mutation(async ({input: [resoId, opts], ctx}) => {
       if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getResourceOrFail(resoId)
+        await ctx.services.getResourceOrFail(resoId)
       }
       const {
         settings,
@@ -300,7 +300,7 @@ export const protectedRouter = trpc.router({
     .input(z.tuple([zId('reso'), zSyncOptions.optional()]))
     .mutation(async function syncResource({input: [resoId, opts], ctx}) {
       if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getResourceOrFail(resoId)
+        await ctx.services.getResourceOrFail(resoId)
       }
       const reso = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       console.log('[syncResource]', reso, opts)
@@ -346,10 +346,10 @@ export const protectedRouter = trpc.router({
     .input(z.tuple([zId('pipe'), zSyncOptions.optional()]))
     .mutation(async function syncPipeline({input: [pipeId, opts], ctx}) {
       if (ctx.viewer.role === 'end_user') {
-        await ctx.helpers.getPipelineOrFail(pipeId) // Authorization
+        await ctx.services.getPipelineOrFail(pipeId) // Authorization
       }
       const pipeline = await ctx.asOrgIfNeeded.getPipelineExpandedOrFail(pipeId)
       console.log('[syncPipeline]', pipeline)
-      return ctx.helpers._syncPipeline(pipeline, opts)
+      return ctx.services._syncPipeline(pipeline, opts)
     }),
 })

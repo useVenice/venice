@@ -1,12 +1,13 @@
 import {zId, zWebhookInput} from '@usevenice/cdk-core'
 import {z} from '@usevenice/util'
+
 import {systemProcedure, trpc} from './_base'
 
 export const systemRouter = trpc.router({
   handleWebhook: systemProcedure
     .input(z.tuple([zId('int'), zWebhookInput]))
     .mutation(async ({input: [intId, input], ctx}) => {
-      const int = await ctx.helpers.getIntegrationOrFail(intId)
+      const int = await ctx.services.getIntegrationOrFail(intId)
 
       if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
         console.warn(`${int.provider.name} does not handle webhooks`)
@@ -21,7 +22,7 @@ export const systemRouter = trpc.router({
           // Provider is responsible for providing envName / userId
           // This may be relevant for OneBrick resources for example
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          ctx.helpers._syncResourceUpdate(int, resoUpdate),
+          ctx.services._syncResourceUpdate(int, resoUpdate),
         ),
       )
 

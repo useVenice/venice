@@ -16,19 +16,19 @@ import {R} from '@usevenice/util'
 
 import type {Env} from '../../apps/app-config/env'
 // Should we actually do this hmm
-import type {_Integration, _Pipeline} from './contextHelpers'
-import {getContextHelpers} from './contextHelpers'
+import type {_Integration, _Pipeline} from './services'
+import {getServices as _getServices} from './services'
 import type {PipelineInput, ResourceInput} from './types'
 
-type Helpers = ReturnType<typeof getContextHelpers>
+type Services = ReturnType<typeof _getServices>
 
 export interface RouterContext {
   // Viewer-dependent
   viewer: Viewer
   /** Helpers with the designated permission level */
-  helpers: Helpers
+  services: Services
   /** Impersonate a different permission level explicitly */
-  as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Helpers
+  as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Services
 
   // Non-viewer dependent
   providerMap: Record<string, AnyIntegrationImpl>
@@ -95,8 +95,8 @@ export function getContextFactory<
   const providerMap = R.mapToObj(providers, (p) => [p.name, p])
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
-  const getHelpers = (viewer: Viewer) =>
-    getContextHelpers({
+  const getServices = (viewer: Viewer) =>
+    _getServices({
       metaService: getMetaService(viewer),
       providerMap,
       getLinksForPipeline,
@@ -105,8 +105,8 @@ export function getContextFactory<
   function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {
       viewer,
-      as: (role, data) => getHelpers({role, ...data} as Viewer),
-      helpers: getHelpers(viewer),
+      as: (role, data) => getServices({role, ...data} as Viewer),
+      services: getServices(viewer),
       // --- Non-viewer dependent
       providerMap,
       jwt,

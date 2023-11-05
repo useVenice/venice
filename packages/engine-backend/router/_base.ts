@@ -30,7 +30,7 @@ export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
   const asOrgIfNeeded =
     ctx.viewer.role === 'end_user'
       ? ctx.as('org', {orgId: ctx.viewer.orgId})
-      : ctx.helpers
+      : ctx.services
   const extEndUserId = getExtEndUserId(ctx.viewer)
   return next({ctx: {...ctx, viewer: ctx.viewer, asOrgIfNeeded, extEndUserId}})
 })
@@ -61,7 +61,7 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
       message: 'x-resource-id header is required',
     })
   }
-  const resource = await ctx.helpers.getResourceExpandedOrFail(
+  const resource = await ctx.services.getResourceExpandedOrFail(
     ctx.remoteResourceId,
   )
 

@@ -21,7 +21,7 @@ import {deepMerge, rxjs, z} from '@usevenice/util'
 import {makeMetaLinks} from './makeMetaLinks'
 import type {zSyncOptions} from './types'
 
-export function getContextHelpers({
+export function getServices({
   metaService,
   providerMap,
   getLinksForPipeline,
@@ -400,11 +400,11 @@ export function getContextHelpers({
 }
 
 export type _Integration = Awaited<
-  ReturnType<ReturnType<typeof getContextHelpers>['getIntegrationOrFail']>
+  ReturnType<ReturnType<typeof getServices>['getIntegrationOrFail']>
 >
 export type _Pipeline = Awaited<
-  ReturnType<ReturnType<typeof getContextHelpers>['getPipelineExpandedOrFail']>
+  ReturnType<ReturnType<typeof getServices>['getPipelineExpandedOrFail']>
 >
 export type _Resource = Awaited<
-  ReturnType<ReturnType<typeof getContextHelpers>['getResourceExpandedOrFail']>
+  ReturnType<ReturnType<typeof getServices>['getResourceExpandedOrFail']>
 >

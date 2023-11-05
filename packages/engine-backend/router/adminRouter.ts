@@ -21,7 +21,7 @@ export const adminRouter = trpc.router({
     .meta({openapi: {method: 'GET', path: '/integrations'}})
     .input(z.void())
     .output(z.array(zRaw.integration))
-    .query(async ({ctx}) => ctx.helpers.list('integration', {})),
+    .query(async ({ctx}) => ctx.services.list('integration', {})),
   adminUpsertPipeline: adminProcedure
     .input(
       zRaw.pipeline
@@ -38,7 +38,7 @@ export const adminRouter = trpc.router({
     )
     .mutation(({input: {id: _id, ...input}, ctx}) => {
       const id = _id ? _id : makeId('pipe', makeUlid())
-      return ctx.helpers.patchReturning('pipeline', id, input)
+      return ctx.services.patchReturning('pipeline', id, input)
     }),
   // TODO: Right now this means client has to be responsible for creating
   // integration IDs, we should support creating integration with providerName instead
@@ -91,7 +91,7 @@ export const adminRouter = trpc.router({
         )
       }
 
-      return ctx.helpers.patchReturning('integration', id, input)
+      return ctx.services.patchReturning('integration', id, input)
     }),
   // Need a tuple for some reason... otherwise seems to not work in practice.
   adminDeleteIntegration: adminProcedure
@@ -105,13 +105,13 @@ export const adminRouter = trpc.router({
           path: {provider_config_key: intId},
         })
       }
-      return ctx.helpers.metaService.tables.integration.delete(intId)
+      return ctx.services.metaService.tables.integration.delete(intId)
     }),
 
   adminSearchEndUsers: adminProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) =>
-      ctx.helpers.metaService
+      ctx.services.metaService
         .searchEndUsers({keywords})
         // EndUsers must have non empty IDs
         // This fitlers out data that belongs to the org rather than specific end users
@@ -122,7 +122,7 @@ export const adminRouter = trpc.router({
     .input(z.object({id: zId('int')}))
     .output(zRaw.integration)
     .query(async ({input: {id: intId}, ctx}) => {
-      const {provider: _, ...int} = await ctx.helpers.getIntegrationOrFail(
+      const {provider: _, ...int} = await ctx.services.getIntegrationOrFail(
         intId,
       )
       return int
@@ -131,8 +131,8 @@ export const adminRouter = trpc.router({
     .input(zId('int').nullish())
     .mutation(async ({input: intId, ctx}) => {
       const ints = intId
-        ? await ctx.helpers.getIntegrationOrFail(intId).then((int) => [int])
-        : await ctx.helpers.listIntegrations()
+        ? await ctx.services.getIntegrationOrFail(intId).then((int) => [int])
+        : await ctx.services.listIntegrations()
       const stats = await sync({
         source: rxjs.merge(
           ...ints.map(
@@ -158,7 +158,7 @@ export const adminRouter = trpc.router({
         ),
         // This single destination is a bottleneck to us removing
         // prefixed ids from protocol itself
-        destination: ctx.helpers.metaLinks.persistInstitution(),
+        destination: ctx.services.metaLinks.persistInstitution(),
       })
       return `Synced ${stats} institutions from ${ints.length} providers`
     }),
@@ -171,12 +171,12 @@ export const adminRouter = trpc.router({
         return
       }
       // TODO: support pagination
-      const inss = await ctx.helpers.metaService.tables.institution.list({})
+      const inss = await ctx.services.metaService.tables.institution.list({})
       for (const ins of inss) {
         console.log('Remap institution', ins.id)
         const provider = ctx.providerMap[ins.providerName]
         const standard = provider?.standardMappers?.institution?.(ins.external)
-        await ctx.helpers.patch('institution', ins.id, {standard})
+        await ctx.services.patch('institution', ins.id, {standard})
       }
     }),
 })

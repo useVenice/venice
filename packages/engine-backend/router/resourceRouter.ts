@@ -13,7 +13,7 @@ export const resourceRouter = trpc.router({
     .input(z.object({id: zId('reso'), state: z.record(z.unknown()).optional()}))
     .output(z.array(z.record(z.any())))
     .mutation(async ({input, ctx}) => {
-      const reso = await ctx.helpers.getResourceExpandedOrFail(input.id)
+      const reso = await ctx.services.getResourceExpandedOrFail(input.id)
       const provider = reso.integration.provider
       const instance = provider.newInstance?.({
         config: reso.integration.config,

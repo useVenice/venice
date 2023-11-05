@@ -41,8 +41,8 @@ export async function GET(
       })
     }
 
-    const {helpers} = contextFactory.fromViewer(viewer)
-    const reso = await helpers.getResourceOrFail(resourceId as Id['reso'])
+    const {services} = contextFactory.fromViewer(viewer)
+    const reso = await services.getResourceOrFail(resourceId as Id['reso'])
 
     if (reso.providerName !== 'postgres') {
       throw new TRPCError({
