@@ -32,10 +32,11 @@ export const qboServer = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, qboHelpers._op('commit')])))
   },
+  new: ({config, settings}) => makeQBOClient(config, settings),
+
   verticals: {
     accounting: {
-      listAccounts: async ({config, settings}) => {
-        const qbo = makeQBOClient(config, settings)
+      listAccounts: async ({instance: qbo}) => {
         const res = await qbo.getAll('Account').next()
         return {
           hasNextPage: true,
@@ -46,8 +47,7 @@ export const qboServer = {
           })),
         }
       },
-      listExpenses: async ({config, settings}) => {
-        const qbo = makeQBOClient(config, settings)
+      listExpenses: async ({instance: qbo}) => {
         const res = await qbo.getAll('Purchase').next()
         return {
           hasNextPage: true,
@@ -61,6 +61,9 @@ export const qboServer = {
       },
     },
   },
-} satisfies IntegrationServer<typeof qboSchemas>
+} satisfies IntegrationServer<
+  typeof qboSchemas,
+  ReturnType<typeof makeQBOClient>
+>
 
 export default qboServer

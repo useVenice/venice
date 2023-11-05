@@ -110,6 +110,8 @@ export interface IntegrationClient<
 
 export interface IntegrationServer<
   TDef extends IntegrationSchemas,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TInstance = any,
   T extends IntHelpers<TDef> = IntHelpers<TDef>,
 > {
   // MARK: - Connect
@@ -198,11 +200,18 @@ export interface IntegrationServer<
     >
   >
 
+  /**
+   * Work around typescript not having contextual typing support for classes that implement interfaces
+   * We recommend against using classes (which might be more convenient) due to the lack
+   * of contextual typing for interfaces. @see https://github.com/microsoft/TypeScript/issues/1373
+   */
+  new?: (opts: {
+    config: T['_types']['integrationConfig']
+    settings: T['_types']['resourceSettings']
+  }) => TInstance
+
   verticals?: {
-    accounting?: VerticalAccounting<{
-      config: T['_types']['integrationConfig']
-      settings: T['_types']['resourceSettings']
-    }>
+    accounting?: VerticalAccounting<{instance: TInstance}>
   }
 }
 

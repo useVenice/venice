@@ -9,7 +9,9 @@ export function CallbackEffect(props: {
   msg: FrameMessage
   autoClose?: boolean
 }) {
-  const opener = window.opener as Window | null
+  const opener = (
+    typeof window !== 'undefined' ? window.opener : null
+  ) as Window | null
 
   React.useEffect(() => {
     opener?.postMessage(props.msg, '*')

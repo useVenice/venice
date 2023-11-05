@@ -38,6 +38,10 @@ export function proxyCallRemote(opts: {
 }) {
   // console.log('opts', opts)
   const {input, ctx} = opts
+  const instance = ctx.remote.provider.new?.({
+    config: ctx.remote.config,
+    settings: ctx.remote.settings,
+  })
   const implementation = (ctx.remote.provider.verticals?.accounting as any)?.[
     (opts as any).path
   ] as Function
@@ -48,11 +52,7 @@ export function proxyCallRemote(opts: {
     })
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return implementation({
-    input,
-    config: ctx.remote.config,
-    settings: ctx.remote.settings,
-  })
+  return implementation({input, instance})
 }
 export const zPaginationParams = z.object({
   limit: z.number().optional(),
