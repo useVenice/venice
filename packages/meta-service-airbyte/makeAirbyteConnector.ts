@@ -12,9 +12,9 @@ import {
   zodToJsonSchema,
 } from '@usevenice/util'
 
-import type {ABMessage, ABMessageStream} from './protocol/airbyte-protocol'
-import {abMessage} from './protocol/airbyte-protocol'
-import type {AirbyteStream} from './protocol/airbyte-protocol.gen'
+import type {ABMessage, ABMessageStream} from './protocol/protocol'
+import {abMessage} from './protocol/protocol'
+import type {AirbyteStream} from './protocol/protocol.gen'
 import {readJson} from './utils'
 
 const trpcServer = initTRPC.create()

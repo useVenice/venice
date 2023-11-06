@@ -12,7 +12,9 @@
     "download:api:sources": "curl https://dash.readme.com/api/v1/api-registry/fy7juyjlmianuz5 | json2yaml > ./api/airbyte-api-sources.gen.yaml",
     "download:api:streams": "curl https://dash.readme.com/api/v1/api-registry/16vf9n2rlmiap00w | json2yaml > ./api/airbyte-api-streams.gen.yaml",
     "download:api:workspaces": "curl https://dash.readme.com/api/v1/api-registry/8jsbe2vlplmiaoidp | json2yaml > ./api/airbyte-api-workspaces.gen.yaml",
-    "download:private-api": "curl https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-cdk/java/airbyte-cdk/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-private-api.gen.yaml"
+    "download:low-code-connector": "curl https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-cdk/python/airbyte_cdk/sources/declarative/declarative_component_schema.yaml > ./protocol/low-code-connector.gen.yaml",
+    "download:private-api": "curl https://raw.githubusercontent.com/airbytehq/airbyte/master/airbyte-cdk/java/airbyte-cdk/airbyte-api/src/main/openapi/config.yaml -o ./api/airbyte-private-api.gen.yaml",
+    "download:protocol": "curl https://raw.githubusercontent.com/airbytehq/airbyte-protocol/main/protocol-models/src/main/resources/airbyte_protocol/airbyte_protocol.yaml > ./protocol/protocol.gen.yaml"
   },
   "dependencies": {
     "@trpc/server": "10.40.0",

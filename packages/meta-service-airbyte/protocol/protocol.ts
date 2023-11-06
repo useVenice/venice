@@ -11,7 +11,7 @@ import type {
   AirbyteTraceMessage,
   ConnectorSpecification,
   Type,
-} from './airbyte-protocol.gen'
+} from './protocol.gen'
 
 /** TODO: How do we make sure ABMessage satisfies AirbyteMessage? */
 export type ABMessage<T extends Type = Type> = Extract<
