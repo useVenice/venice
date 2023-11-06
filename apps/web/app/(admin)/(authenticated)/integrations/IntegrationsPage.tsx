@@ -5,8 +5,8 @@ import Image from 'next/image'
 import React from 'react'
 
 import {
-  zIntegrationCategory,
   zIntegrationStage,
+  zIntegrationVertical,
   zRaw,
 } from '@usevenice/cdk-core'
 import type {RouterOutput} from '@usevenice/engine-backend'
@@ -85,7 +85,7 @@ export default function IntegrationsPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Available integrations
       </h2>
-      {zIntegrationCategory.options.map((category) => {
+      {zIntegrationVertical.options.map((category) => {
         const stageByIndex = R.mapToObj.indexed(
           zIntegrationStage.options,
           (o, i) => [o, i],

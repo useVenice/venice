@@ -1,4 +1,4 @@
-import type {MaybePromise, z} from '@usevenice/util'
+import type {MaybePromise, PathsOf, z} from '@usevenice/util'
 import {R} from '@usevenice/util'
 
 import type {EndUserId, Id} from './id.types'
@@ -23,7 +23,11 @@ import type {
 } from './providers.types'
 import type {AccountingVertical, ZAccounting} from './verticals/accounting'
 
-/** Maybe this should be renamed to `schemas` */
+/**
+ * Equivalent to to airbyte's low code connector spec,
+ *  plus the SPEC message in airbyte protocol spec
+ */
+
 export interface IntegrationSchemas {
   name: z.ZodLiteral<string>
   integrationConfig?: z.ZodTypeAny
@@ -41,9 +45,12 @@ export interface IntegrationSchemas {
   destinationInputEntity?: z.ZodTypeAny
 
   verticals?: {
+    // Unfortunately we can't use AnyZodObject because it causes compile failure
+    // app-config/backendConfig.ts somehow
     accounting?: {[k in keyof ZAccounting]?: z.ZodTypeAny}
   }
 }
+export type AnyIntegrationHelpers = IntHelpers
 
 export type IntHelpers<TDef extends IntegrationSchemas = IntegrationSchemas> =
   ReturnType<typeof intHelpers<TDef>>
@@ -78,7 +85,14 @@ export interface IntegrationDef<
       settings: T['_types']['resourceSettings'],
     ) => Omit<ZStandard['resource'], 'id'>
   }
-  mappers?: {
+
+  streams?: {
+    $defaults: {
+      /** Only singular primary key supported for the moment */
+      primaryKey: PathsOf<T['_remoteEntity']>
+      /** Used for incremental sync. Should only be string entities */
+      cursorField?: PathsOf<T['_remoteEntity']>
+    }
     accounting?: {
       [k in keyof T['_verticals']['accounting']]: (
         entity: T['_verticals']['accounting'][k],
@@ -252,12 +266,16 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
   interface _verticals {
     accounting: {
       [k in keyof ZAccounting]: k extends keyof NonNullable<
-        TSchemas['verticals']
-      >['accounting']
-        ? _infer<NonNullable<TSchemas['verticals']>['accounting'][k]>
+        NonNullable<TSchemas['verticals']>['accounting']
+      >
+        ? _infer<
+            NonNullable<NonNullable<TSchemas['verticals']>['accounting']>[k]
+          >
         : never
     }
   }
+
+  type _remoteEntity = _verticals['accounting'][keyof _verticals['accounting']]
 
   type InsOpData = Extract<
     SyncOperation<{
@@ -307,6 +325,7 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
     _inputOpType: {} as InputOp,
     _resourceUpdateType: {} as _resourceUpdateType,
     _webhookReturnType: {} as _webhookReturnType,
+    _remoteEntity: {} as _remoteEntity,
 
     // Fns
     _type: <K extends keyof _types>(_k: K, v: _types[K]) => v,

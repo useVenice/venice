@@ -45,7 +45,7 @@ export function mapStandardEntityLink({
     // TODO: Extract this mapStandard into tis own function!
     const [vertical, entityName] = op.data.entityName.split('.')
     const mapper =
-      provider.mappers?.[vertical as 'accounting']?.[entityName as 'account']
+      provider.streams?.[vertical as 'accounting']?.[entityName as 'account']
 
     const id = makeStandardId(
       // TODO: leverage openAPI format field!

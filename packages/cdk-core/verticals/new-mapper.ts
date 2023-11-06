@@ -61,7 +61,7 @@ export async function proxyCallRemote(opts: {
   const res = await implementation({input, instance})
 
   if (meta.response?.type === 'list') {
-    const mapper = (ctx.remote.provider.mappers?.accounting as any)[
+    const mapper = (ctx.remote.provider.streams?.accounting as any)[
       meta.response?.entity
     ] as (entity: unknown, settings: unknown) => any
 

@@ -129,6 +129,17 @@ export function makeSyncService({
     const verticalSources$ = () => {
       const provider = src.integration.provider
       const helpers = intHelpers(provider.def)
+      const primaryKey = (
+        provider.streams?.$defaults.primaryKey as string | undefined
+      )?.split('.') as [string] | undefined
+      const getId = (e: any) => {
+        const id = primaryKey && R.pathOr(e, primaryKey, undefined)
+        console.error('object missing primary key', primaryKey, e)
+        if (!id) {
+          throw new Error(`Primary key missing: ${primaryKey}`)
+        }
+        return `${id}`
+      }
 
       async function* iterateEntities() {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -136,20 +147,25 @@ export function makeSyncService({
           config: src.integration.config,
           settings: src.settings,
         })
+        if (!primaryKey) {
+          return
+        }
+
         const accounts = await provider.verticals?.accounting?.listAccounts?.({
           instance,
         })
         if (accounts) {
           yield accounts.items.map((a) =>
-            helpers._opData('accounting.account', (a as any).Id, a),
+            helpers._opData('accounting.account', getId(a), a),
           )
         }
+
         const expenses = await provider.verticals?.accounting?.listExpenses?.({
           instance,
         })
         if (expenses) {
-          yield expenses.items.map((a) =>
-            helpers._opData('accounting.expense', (a as any).Id, a),
+          yield expenses.items.map((e) =>
+            helpers._opData('accounting.expense', getId(e), e),
           )
         }
       }

@@ -16,7 +16,7 @@ import {
   extractId,
   extractProviderName,
   oauthConnect,
-  zIntegrationCategory,
+  zIntegrationVertical,
 } from '@usevenice/cdk-core'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
 import type {SchemaFormElement, UIProps, UIPropsNoChildren} from '@usevenice/ui'
@@ -233,7 +233,7 @@ export function _VeniceConnect({
     }),
   )
 
-  const categories = zIntegrationCategory.options
+  const categories = zIntegrationVertical.options
     .map((category) => ({
       key: category,
       name: titleCase(category),

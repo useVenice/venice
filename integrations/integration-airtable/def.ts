@@ -15,7 +15,6 @@ export const helpers = intHelpers(airtableSchemas)
 
 export const airtableDef = {
   metadata: {
-    layer: 'core',
     categories: ['database'],
     logoUrl: '/_assets/logo-airtable.svg',
   },

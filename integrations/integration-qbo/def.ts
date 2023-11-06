@@ -64,7 +64,11 @@ export const qboDef = {
     logoUrl: '/_assets/logo-qbo.svg',
     nangoProvider: 'quickbooks',
   },
-  mappers: {
+  streams: {
+    $defaults: {
+      primaryKey: 'Id',
+      cursorField: 'Metadata.LastUpdatedTime',
+    },
     accounting: {
       account: (a) => ({
         name: a.Name,

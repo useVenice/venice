@@ -1,4 +1,6 @@
 import type {Brand} from 'ts-brand'
+// TODO: Consider moving fully to ts-toolbelt, which appears to more types
+// although less stars?
 import type {Primitive, UnionToIntersection} from 'type-fest'
 
 export type {Brand} from 'ts-brand'
@@ -179,12 +181,16 @@ export type KeyFromValue<V, T extends Record<PropertyKey, PropertyKey>> = {
   [K in keyof T]: V extends T[K] ? K : never
 }[keyof T]
 
+/** @see https://github.com/microsoft/TypeScript/issues/31751 */
+export type DefaultIfNever<T, U> = [T] extends [never] ? U : T
+
 /**
  * Generates a union of "dotted paths" for the given type.
  * Capped at 3 levels of depth by default
  */
-export type PathsOf<T, TMaxDepth extends number = 2> = NonNullable<
-  PathsOfObject<T, T, TMaxDepth>
+export type PathsOf<T, TMaxDepth extends number = 2> = DefaultIfNever<
+  NonNullable<PathsOfObject<T, T, TMaxDepth>>,
+  keyof T
 >
 
 export type PathsOfObject<

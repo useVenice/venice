@@ -46,7 +46,8 @@ export const metaForProvider = (provider: AnyIntegrationImpl) => ({
   ) as Record<keyof IntegrationSchemas, JSONSchema>,
 })
 
-export const zIntegrationCategory = z.enum([
+// aka verticals
+export const zIntegrationVertical = z.enum([
   'banking',
   'accounting',
   'commerce',
@@ -70,7 +71,8 @@ export interface IntegrationMetadata {
   platforms?: Array<'cloud' | 'local'>
   stage?: z.infer<typeof zIntegrationStage>
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
-  categories?: Array<z.infer<typeof zIntegrationCategory>>
+  categories?: Array<z.infer<typeof zIntegrationVertical>>
+
   /** Whether this is an oauth integration? */
   nangoProvider?: NangoProvider
 }
