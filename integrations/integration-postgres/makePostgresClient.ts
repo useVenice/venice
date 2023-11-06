@@ -91,6 +91,7 @@ export const makePostgresClient = zFunction(
   },
 )
 
+export const toSqlId = (str: string) => sql.identifier([snakeCase(str)])
 /**
  * First row is used for type inference. Will need to support explicit columns later
  * Expects an `id` and `updated_at` column to exist in db. Will also ignore updates to `created_at`
@@ -118,8 +119,6 @@ export function upsertByIdQuery(
   if (!firstVMap) {
     return null
   }
-
-  const toSqlId = (str: string) => sql.identifier([snakeCase(str)])
 
   const table = toSqlId(tableName)
   const kId = 'id'

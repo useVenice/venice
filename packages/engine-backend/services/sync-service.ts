@@ -1,11 +1,13 @@
 import type {
   AnyEntityPayload,
   Destination,
+  EndUserId,
   Id,
   Link,
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
 import {logLink, makeId, sync} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
@@ -17,6 +19,7 @@ import type {z} from '@usevenice/util'
 import {R, Rx, rxjs} from '@usevenice/util'
 
 import type {_Integration, _PipelineExpanded, makeDBService} from '.'
+import type {_ResourceExpanded} from '.'
 import type {zSyncOptions} from '../types'
 import type {makeMetaLinks} from './makeMetaLinks'
 import type {MetaService} from './metaService'
@@ -100,6 +103,64 @@ export function makeSyncService({
       logLink({prefix: 'preDest'}),
     ]
   }
+
+  const sourceSync = ({
+    src,
+    state,
+    endUser,
+    opts,
+  }: {
+    src: _ResourceExpanded
+    state: unknown
+    endUser?: {id: EndUserId} | null | undefined
+    opts: {fullResync?: boolean | null}
+  }) => {
+    const defaultSource$ = () =>
+      src.integration.provider.sourceSync?.({
+        endUser,
+        config: src.integration.config,
+        settings: src.settings,
+        // Maybe we should rename `options` to `state`?
+        // Should also make the distinction between `config`, `settings` and `state` much more clear.
+        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
+        state: opts.fullResync ? {} : state,
+      })
+
+    const verticalSources$ = () => {
+      const provider = src.integration.provider
+      const helpers = intHelpers(provider.def)
+
+      async function* iterateEntities() {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const instance = provider.newInstance?.({
+          config: src.integration.config,
+          settings: src.settings,
+        })
+        const accounts = await provider.verticals?.accounting?.listAccounts?.({
+          instance,
+        })
+        if (accounts) {
+          yield accounts.items.map((a) =>
+            helpers._opData('accounting.account', (a as any).Id, a),
+          )
+        }
+        const expenses = await provider.verticals?.accounting?.listExpenses?.({
+          instance,
+        })
+        if (expenses) {
+          yield expenses.items.map((a) =>
+            helpers._opData('accounting.expense', (a as any).Id, a),
+          )
+        }
+      }
+
+      return rxjs
+        .from(iterateEntities())
+        .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
+    }
+    return rxjs.concat(verticalSources$(), defaultSource$() ?? rxjs.EMPTY)
+  }
+
   const _syncPipeline = async (
     pipeline: _PipelineExpanded,
     opts: z.infer<typeof zSyncOptions> & {
@@ -118,22 +179,13 @@ export function makeSyncService({
     const endUserId = src.endUserId ?? dest.endUserId
     const endUser = endUserId ? {id: endUserId} : null
 
-    const defaultSource$ = () =>
-      src.integration.provider.sourceSync?.({
-        endUser,
-        config: src.integration.config,
-        settings: src.settings,
-        // Maybe we should rename `options` to `state`?
-        // Should also make the distinction between `config`, `settings` and `state` much more clear.
-        // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-        state: opts.fullResync ? {} : pipe.sourceState,
-      })
+    const _source$ = sourceSync({opts, src, state: pipe.sourceState, endUser})
 
     const source$ = opts.source$
       ? opts.source$ConcatDefault
-        ? rxjs.concat(opts.source$, defaultSource$() ?? rxjs.EMPTY)
+        ? rxjs.concat(opts.source$, _source$)
         : opts.source$
-      : defaultSource$()
+      : _source$
 
     const destination$$ =
       opts.destination$$ ??
@@ -223,5 +275,5 @@ export function makeSyncService({
     return id
   }
 
-  return {_syncPipeline, _syncResourceUpdate}
+  return {_syncPipeline, _syncResourceUpdate, sourceSync}
 }

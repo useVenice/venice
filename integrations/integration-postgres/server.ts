@@ -7,7 +7,7 @@ import type {DatabasePool} from 'slonik'
 
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import {extractId, handlersLink} from '@usevenice/cdk-core'
-import {R, Rx, rxjs} from '@usevenice/util'
+import {R, Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {postgresSchemas} from './def'
 import {postgresHelpers} from './def'
@@ -15,13 +15,15 @@ import {makePostgresClient, upsertByIdQuery} from './makePostgresClient'
 
 async function setupTable({
   pool,
-  schema,
-  tableName,
+  schema: _schema,
+  tableName: _tableName,
 }: {
   pool: DatabasePool
   schema?: string
   tableName: string
 }) {
+  const schema = snakeCase(_schema)
+  const tableName = snakeCase(_tableName)
   const table = sql.identifier(schema ? [schema, tableName] : [tableName])
 
   await pool.query(sql`
@@ -173,15 +175,15 @@ export const postgresServer = {
     })
     let batches: Record<string, Array<{id: string; [k: string]: unknown}>> = {}
 
-    let migrationRan = false
-    async function runMigration(pool: DatabasePool) {
-      if (migrationRan) {
+    const migrationRan: Record<string, boolean> = {}
+    async function runMigration(pool: DatabasePool, tableName: string) {
+      console.log('will run migration for', tableName)
+      if (migrationRan[tableName]) {
         return
       }
-      migrationRan = true
+      migrationRan[tableName] = true
       // Where do we want to put data? Not always public...
-      await setupTable({pool, tableName: 'account'})
-      await setupTable({pool, tableName: 'transaction'})
+      await setupTable({pool, tableName})
     }
 
     return handlersLink({
@@ -209,8 +211,9 @@ export const postgresServer = {
           return op
         }
         const pool = await getPool()
-
-        await runMigration(pool)
+        await Promise.all(
+          Object.keys(batches).map((eName) => runMigration(pool, eName)),
+        )
 
         console.log(`[postgres] Will commit ${size} entities`)
         await pool.transaction((client) =>

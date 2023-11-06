@@ -38,15 +38,44 @@ export function mapStandardEntityLink({
   settings: unknown
   id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithExternal> {
-  const sourceMapEntity = provider.extension?.sourceMapEntity
-  if (!sourceMapEntity) {
-    throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
-  }
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
     }
+    // TODO: Extract this mapStandard into tis own function!
+    const [vertical, entityName] = op.data.entityName.split('.')
+    const mapper =
+      provider.mappers?.[vertical as 'accounting']?.[entityName as 'account']
 
+    const id = makeStandardId(
+      // TODO: leverage openAPI format field!
+      entityName === 'expense'
+        ? ('exp' as never)
+        : zStandardEntityPrefixFromName.parse(entityName ?? vertical),
+      provider.name,
+      op.data.id,
+    )
+    if (mapper) {
+      const standard = mapper(op.data.entity as never, initialSettings)
+      return rxjs.of({
+        ...op,
+        data: {
+          entityName: op.data.entityName as 'account',
+          entity: standard as any,
+          id,
+          external: op.data.entity,
+          providerName: provider.name,
+          externalId: op.data.id,
+          sourceId,
+        } satisfies EntityPayloadWithExternal,
+      })
+    }
+
+    // @deprecated
+    const sourceMapEntity = provider.extension?.sourceMapEntity
+    if (!sourceMapEntity) {
+      throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
+    }
     // TODO: Update the initialReso as we receive resource updates
     const payload = R.pipe(sourceMapEntity, (map) =>
       typeof map === 'function'
@@ -59,11 +88,6 @@ export function mapStandardEntityLink({
       return rxjs.EMPTY
     }
 
-    const id = makeStandardId(
-      zStandardEntityPrefixFromName.parse(payload.entityName),
-      provider.name,
-      payload.id,
-    )
     return rxjs.of({
       ...op,
       data: {
