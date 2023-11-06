@@ -37,13 +37,23 @@ export const qboServer = {
 
   verticals: {
     accounting: {
-      listAccounts: async ({instance: qbo}) => {
-        const res = await qbo.getAll('Account').next()
-        return {hasNextPage: true, items: res.value?.entities ?? []}
-      },
-      listExpenses: async ({instance: qbo}) => {
-        const res = await qbo.getAll('Purchase').next()
-        return {hasNextPage: true, items: res.value?.entities ?? []}
+      list: async (qbo, type, _opts) => {
+        switch (type) {
+          case 'account': {
+            const res = await qbo.getAll('Account').next()
+            return {hasNextPage: true, items: res.value?.entities ?? []}
+          }
+          case 'expense': {
+            const res = await qbo.getAll('Purchase').next()
+            return {hasNextPage: true, items: res.value?.entities ?? []}
+          }
+          case 'vendor': {
+            const res = await qbo.getAll('Vendor').next()
+            return {hasNextPage: true, items: res.value?.entities ?? []}
+          }
+          default:
+            throw new Error(`Unknown type: ${type}`)
+        }
       },
     },
   },

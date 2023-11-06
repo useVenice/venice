@@ -37,7 +37,7 @@ export interface VerticalRouterOpts {
   remoteProcedure: typeof remoteProcedure
 }
 
-export async function proxyCallRemote(opts: {
+export async function proxyListRemote(opts: {
   input: unknown
   ctx: RemoteProcedureContext
 }) {
@@ -50,7 +50,7 @@ export async function proxyCallRemote(opts: {
   })
   const implementation = (
     ctx.remote.provider.verticals?.[meta.response?.vertical!] as any
-  )?.[(opts as any).path] as Function
+  )?.list as Function
   if (typeof implementation !== 'function') {
     throw new TRPCError({
       code: 'NOT_IMPLEMENTED',
@@ -58,12 +58,12 @@ export async function proxyCallRemote(opts: {
     })
   }
 
-  const res = await implementation({input, instance})
+  const res = await implementation(instance, meta.response?.entity, input)
 
   if (meta.response?.type === 'list') {
-    const mapper = (ctx.remote.provider.streams?.accounting as any)[
-      meta.response?.entity
-    ] as (entity: unknown, settings: unknown) => any
+    const mapper = (
+      ctx.remote.provider.streams?.[meta.response?.vertical] as any
+    )[meta.response?.entity] as (entity: unknown, settings: unknown) => any
 
     return {
       ...res,
@@ -75,6 +75,7 @@ export async function proxyCallRemote(opts: {
   }
   return res
 }
+
 export const zPaginationParams = z.object({
   limit: z.number().optional(),
   offset: z.number().optional(),

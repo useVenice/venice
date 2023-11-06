@@ -7,8 +7,7 @@ import type {
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
-import {logLink, makeId, sync} from '@usevenice/cdk-core'
+import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
   addRemainderByDateLink,
@@ -16,10 +15,14 @@ import {
   mapStandardEntityLink,
 } from '@usevenice/cdk-ledger'
 import type {z} from '@usevenice/util'
-import {R, Rx, rxjs} from '@usevenice/util'
+import {objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
 
-import type {_Integration, _PipelineExpanded, makeDBService} from '.'
-import type {_ResourceExpanded} from '.'
+import type {
+  _Integration,
+  _PipelineExpanded,
+  _ResourceExpanded,
+  makeDBService,
+} from '.'
 import type {zSyncOptions} from '../types'
 import type {makeMetaLinks} from './makeMetaLinks'
 import type {MetaService} from './metaService'
@@ -132,6 +135,7 @@ export function makeSyncService({
       const primaryKey = (
         provider.streams?.$defaults.primaryKey as string | undefined
       )?.split('.') as [string] | undefined
+
       const getId = (e: any) => {
         const id = primaryKey && R.pathOr(e, primaryKey, undefined)
         console.error('object missing primary key', primaryKey, e)
@@ -151,22 +155,23 @@ export function makeSyncService({
           return
         }
 
-        const accounts = await provider.verticals?.accounting?.listAccounts?.({
-          instance,
-        })
-        if (accounts) {
-          yield accounts.items.map((a) =>
-            helpers._opData('accounting.account', getId(a), a),
-          )
-        }
-
-        const expenses = await provider.verticals?.accounting?.listExpenses?.({
-          instance,
-        })
-        if (expenses) {
-          yield expenses.items.map((e) =>
-            helpers._opData('accounting.expense', getId(e), e),
-          )
+        // TODO: Implement incremental sync...
+        for (const [vertical, schemas] of objectEntries(
+          provider.def.verticals ?? {},
+        )) {
+          for (const name of objectKeys(schemas ?? {})) {
+            const res = await provider.verticals?.[vertical]?.list?.(
+              instance,
+              name,
+              {limit: 1000},
+            )
+            if (!res?.items.length) {
+              continue
+            }
+            yield res.items.map((e) =>
+              helpers._opData(`${vertical}.${name}`, getId(e), e),
+            )
+          }
         }
       }
 

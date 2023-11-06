@@ -81,7 +81,7 @@ export const qboDef = {
         currency: e.CurrencyRef.value,
         payment_account: e.AccountRef.value,
       }),
-      vendor: (v) => ({id: v.Id, name: v.Name, url: ''}),
+      vendor: (v) => ({id: v.Id, name: v.DisplayName, url: ''}),
     },
   },
   extension: {

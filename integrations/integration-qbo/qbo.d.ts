@@ -68,11 +68,12 @@ declare namespace QBO {
     Deposit?: Deposit[]
     Payment?: Payment[]
     Invoice?: Invoice[]
+    Vendor?: Vendor[]
+
     Bill?: unknown[]
     BillPayment?: unknown[]
     CreditMemo?: unknown[]
     Transfer?: unknown[]
-    Vendor?: unknown[]
     Customer?: unknown[]
     Item?: unknown[]
   }
@@ -164,7 +165,8 @@ declare namespace QBO {
   }
 
   export interface Vendor extends _BaseEntity {
-    Name: string
+    DisplayName: string
+    PrintOnCheckName?: string
   }
 
   // Journal Entry
