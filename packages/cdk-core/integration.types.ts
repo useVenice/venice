@@ -21,7 +21,22 @@ import type {
   ResourceUpdate,
   WebhookReturnType,
 } from './providers.types'
-import type {AccountingVertical, ZAccounting} from './verticals/accounting'
+import type {AccountingMethods, ZAccounting} from './verticals/accounting'
+import type {InvestmentMethods, ZInvestment} from './verticals/investment'
+
+export interface Verticals<
+  TDef extends IntegrationSchemas = IntegrationSchemas,
+  TInstance = unknown,
+> {
+  accounting: {
+    models: ZAccounting
+    methods: AccountingMethods<TDef, TInstance>
+  }
+  investment: {
+    models: ZInvestment
+    methods: InvestmentMethods<TDef, TInstance>
+  }
+}
 
 /**
  * Equivalent to to airbyte's low code connector spec,
@@ -44,13 +59,24 @@ export interface IntegrationSchemas {
   destinationState?: z.ZodTypeAny
   destinationInputEntity?: z.ZodTypeAny
 
+  // Unfortunately we can't use AnyZodObject because it causes compile failure
+  // app-config/backendConfig.ts somehow
   verticals?: {
-    // Unfortunately we can't use AnyZodObject because it causes compile failure
-    // app-config/backendConfig.ts somehow
-    accounting?: {[k in keyof ZAccounting]?: z.ZodTypeAny}
+    [v in keyof Verticals]?: {
+      [k in keyof Verticals[v]['models']]?: z.ZodTypeAny
+    }
   }
 }
+
 export type AnyIntegrationHelpers = IntHelpers
+
+export type EntityMapper<
+  T extends {remote: unknown; settings: unknown} = {
+    remote: unknown
+    settings: unknown
+  },
+  TUnified = unknown,
+> = (remote: T['remote'], settings: T['settings']) => TUnified
 
 export type IntHelpers<
   TSchemas extends IntegrationSchemas = IntegrationSchemas,
@@ -93,12 +119,20 @@ export interface IntegrationDef<
       /** Used for incremental sync. Should only be string entities */
       cursorField?: PathsOf<T['_remoteEntity']>
     }
-    accounting?: {
-      [k in keyof T['_verticals']['accounting']]: (
-        entity: T['_verticals']['accounting'][k],
-        settings: T['_types']['resourceSettings'],
-      ) => k extends keyof ZAccounting ? ZAccounting[k] : never
-    }
+  } & {
+    [v in keyof T['_verticals']]: v extends keyof Verticals
+      ? {
+          [k in keyof T['_verticals'][v]]: k extends keyof Verticals[v]['models']
+            ? EntityMapper<
+                {
+                  remote: T['_verticals'][v][k]
+                  settings: T['_types']['resourceSettings']
+                },
+                Verticals[v]['models'][k]
+              >
+            : never
+        }
+      : never
   }
   extension?: {
     // TODO: Should this be wrapped into the core? Does cdk-ledger even make sense?
@@ -237,7 +271,9 @@ export interface IntegrationServer<
   }) => TInstance
 
   verticals?: {
-    accounting?: AccountingVertical<TDef, TInstance>
+    [v in keyof T['_verticals']]: v extends keyof Verticals
+      ? Verticals<TDef, TInstance>[v]['methods']
+      : never
   }
 }
 
@@ -263,19 +299,16 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
     >
   }
 
-  interface _verticals {
-    accounting: {
-      [k in keyof ZAccounting]: k extends keyof NonNullable<
-        NonNullable<TSchemas['verticals']>['accounting']
-      >
-        ? _infer<
-            NonNullable<NonNullable<TSchemas['verticals']>['accounting']>[k]
-          >
-        : never
+  type TSVerticals = NonNullable<TSchemas['verticals']>
+  type _verticals = {
+    [v in keyof TSVerticals]: {
+      [k in keyof TSVerticals[v]]: _infer<TSVerticals[v][k]>
     }
   }
 
-  type _remoteEntity = _verticals['accounting'][keyof _verticals['accounting']]
+  type _remoteEntity = {
+    [v in keyof _verticals]: _verticals[v][keyof _verticals[v]]
+  }[keyof _verticals]
 
   type InsOpData = Extract<
     SyncOperation<{
@@ -317,6 +350,7 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
     ...schemas,
     _types: {} as _types,
     _verticals: {} as _verticals,
+    _remoteEntity: {} as _remoteEntity,
     _resUpdateType: {} as resoUpdate,
     _stateUpdateType: {} as stateUpdate,
     _opType: {} as Op,
@@ -325,7 +359,6 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
     _inputOpType: {} as InputOp,
     _resourceUpdateType: {} as _resourceUpdateType,
     _webhookReturnType: {} as _webhookReturnType,
-    _remoteEntity: {} as _remoteEntity,
 
     // Fns
     _type: <K extends keyof _types>(_k: K, v: _types[K]) => v,

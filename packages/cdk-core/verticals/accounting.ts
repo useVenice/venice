@@ -40,17 +40,17 @@ export type ZAccounting = {
   [k in keyof typeof zAccounting]: z.infer<(typeof zAccounting)[k]>
 }
 
-export interface AccountingVertical<
+export interface AccountingMethods<
   TDef extends IntegrationSchemas,
   TInstance,
   T extends IntHelpers<TDef> = IntHelpers<TDef>,
 > {
-  list?: <TType extends keyof ZAccounting>(
+  list?: <TType extends keyof T['_verticals']['accounting']>(
     instance: TInstance,
     stream: TType,
     opts: Pagination,
   ) => MaybePromise<PaginatedOutput<T['_verticals']['accounting'][TType]>>
-  get?: <TType extends keyof ZAccounting>(
+  get?: <TType extends keyof T['_verticals']['accounting']>(
     instance: TInstance,
     stream: TType,
     opts: Pagination,

@@ -190,7 +190,7 @@ export type DefaultIfNever<T, U> = [T] extends [never] ? U : T
  */
 export type PathsOf<T, TMaxDepth extends number = 2> = DefaultIfNever<
   NonNullable<PathsOfObject<T, T, TMaxDepth>>,
-  keyof T
+  string
 >
 
 export type PathsOfObject<

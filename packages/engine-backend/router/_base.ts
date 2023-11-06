@@ -7,8 +7,14 @@ import type {RouterContext} from '../context'
 
 export interface RouterMeta extends OpenApiMeta {
   response?: {
-    vertical: 'accounting'
-    entity: 'account' | 'expense' | 'vendor'
+    vertical: 'accounting' | 'investment'
+    entity:
+      | 'account'
+      | 'expense'
+      | 'vendor'
+      | 'security'
+      | 'holding'
+      | 'transaction'
     type: 'list' // | 'get'
   }
 }

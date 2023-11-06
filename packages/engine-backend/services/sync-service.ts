@@ -133,7 +133,7 @@ export function makeSyncService({
       const provider = src.integration.provider
       const helpers = intHelpers(provider.schemas)
       const primaryKey = (
-        provider.streams?.$defaults.primaryKey as string | undefined
+        provider.streams?.$defaults.primaryKey 
       )?.split('.') as [string] | undefined
 
       const getId = (e: any) => {
@@ -162,7 +162,7 @@ export function makeSyncService({
           for (const name of objectKeys(schemas ?? {})) {
             const res = await provider.verticals?.[vertical]?.list?.(
               instance,
-              name,
+              name as never,
               {limit: 1000},
             )
             if (!res?.items.length) {
