@@ -34,7 +34,7 @@ export const stripeSchemas = {
 } satisfies IntegrationSchemas
 
 export const stripeDef = {
-  def: stripeSchemas,
+  schemas: stripeSchemas,
   name: 'stripe',
   metadata: {
     categories: ['commerce'],

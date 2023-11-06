@@ -47,7 +47,7 @@ export const helpers = intHelpers(tellerSchemas)
 
 export const tellerDef = {
   name: 'teller',
-  def: tellerSchemas,
+  schemas: tellerSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-teller.svg'},
 
   standardMappers: {

@@ -19,7 +19,7 @@ export const airtableDef = {
     logoUrl: '/_assets/logo-airtable.svg',
   },
   name: 'airtable',
-  def: airtableSchemas,
+  schemas: airtableSchemas,
 } satisfies IntegrationDef<typeof airtableSchemas>
 
 export default airtableDef

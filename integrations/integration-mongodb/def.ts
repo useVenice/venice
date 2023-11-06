@@ -18,7 +18,7 @@ export const mongoSchemas = {
 
 export const mongoDef = {
   name: 'mongodb',
-  def: mongoSchemas,
+  schemas: mongoSchemas,
   metadata: {categories: ['database'], logoUrl: '/_assets/logo-mongodb.png'},
 } satisfies IntegrationDef<typeof mongoSchemas>
 

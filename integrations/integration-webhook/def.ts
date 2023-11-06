@@ -20,7 +20,7 @@ export const webhookDef = {
   name: 'webhook',
   metadata: {categories: ['streaming'], logoUrl: '/_assets/logo-webhook.png'},
 
-  def: webhookSchemas,
+  schemas: webhookSchemas,
 } satisfies IntegrationDef<typeof webhookSchemas>
 
 export default webhookDef

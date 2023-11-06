@@ -22,7 +22,7 @@ export const beancountHelpers = intHelpers(beancountSchemas)
 
 export const beancountDef = {
   name: 'beancount',
-  def: beancountSchemas,
+  schemas: beancountSchemas,
   metadata: {categories: ['personal-finance'], platforms: ['local']},
 } satisfies IntegrationDef<typeof beancountSchemas>
 

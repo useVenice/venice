@@ -29,7 +29,7 @@ export const saltedgeHelpers = intHelpers(saltedgeSchemas)
 
 export const saltedgeDef = {
   name: 'saltedge',
-  def: saltedgeSchemas,
+  schemas: saltedgeSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-saltedge.png'},
   extension: {
     sourceMapEntity: {

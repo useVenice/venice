@@ -1,6 +1,7 @@
-import {
+import type {
   IntegrationDef,
-  IntegrationSchemas,
+  IntegrationSchemas} from '@usevenice/cdk-core';
+import {
   intHelpers,
 } from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
@@ -43,7 +44,7 @@ export const togglHelpers = intHelpers(togglSchemas)
 
 export const togglDef = {
   name: 'toggl',
-  def: togglSchemas,
+  schemas: togglSchemas,
   extension: {
     sourceMapEntity: (data) => {
       if (data.entityName === 'account') {

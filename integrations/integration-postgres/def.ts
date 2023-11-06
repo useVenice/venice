@@ -54,7 +54,7 @@ export const postgresDef = {
     stage: 'ga',
   },
 
-  def: postgresSchemas,
+  schemas: postgresSchemas,
   standardMappers: {
     resource: (_settings) => ({
       displayName: 'Postgres',

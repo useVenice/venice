@@ -53,7 +53,7 @@ export const mergeSchemas = {
 export const helpers = intHelpers(mergeSchemas)
 
 export const mergeDef = {
-  def: mergeSchemas,
+  schemas: mergeSchemas,
   name: 'merge',
   metadata: {
     displayName: 'merge.dev',

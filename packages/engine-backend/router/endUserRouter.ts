@@ -208,7 +208,10 @@ export const endUserRouter = trpc.router({
             >
           }
 
-          if (!int.provider.postConnect || !int.provider.def.connectOutput) {
+          if (
+            !int.provider.postConnect ||
+            !int.provider.schemas.connectOutput
+          ) {
             return null
           }
 
@@ -218,7 +221,7 @@ export const endUserRouter = trpc.router({
               )
             : undefined
           return await int.provider.postConnect(
-            int.provider.def.connectOutput.parse(input),
+            int.provider.schemas.connectOutput.parse(input),
             int.config,
             {
               ...connCtxInput,

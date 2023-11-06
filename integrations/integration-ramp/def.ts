@@ -47,7 +47,7 @@ export const rampHelpers = intHelpers(rampSchemas)
 
 export const rampDef = {
   name: 'ramp',
-  def: rampSchemas,
+  schemas: rampSchemas,
   metadata: {
     categories: ['banking', 'expense-management'],
     logoUrl: '/_assets/logo-ramp.png',

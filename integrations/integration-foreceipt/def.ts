@@ -52,7 +52,7 @@ export const foreceiptHelpers = intHelpers(foreceiptSchemas)
 
 export const foreceiptDef = {
   name: 'foreceipt',
-  def: foreceiptSchemas,
+  schemas: foreceiptSchemas,
   metadata: {categories: ['expense-management']},
   extension: {
     sourceMapEntity: {

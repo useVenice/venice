@@ -16,7 +16,7 @@ export const helpers = intHelpers(debugSchemas)
 export const debugDef = {
   metadata: {stage: 'hidden'},
   name: 'debug',
-  def: debugSchemas,
+  schemas: debugSchemas,
   // Temporary hack to workaround assertion in mapStandardEntityLink when using debugProvider
   // as a source. However we should do something so this workaround is not needed in the first place
   extension: {sourceMapEntity: {}},

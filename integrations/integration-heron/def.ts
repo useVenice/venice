@@ -21,7 +21,7 @@ export const heronSchemas = {
 export const helpers = intHelpers(heronSchemas)
 
 export const heronDef = {
-  def: heronSchemas,
+  schemas: heronSchemas,
   name: 'heron',
   metadata: {
     displayName: 'Heron Data',

@@ -43,7 +43,7 @@ export const helpers = intHelpers(venmoSchemas)
 
 export const venmoDef = {
   name: 'venmo',
-  def: venmoSchemas,
+  schemas: venmoSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-venmo.png'},
   extension: {
     sourceMapEntity: {

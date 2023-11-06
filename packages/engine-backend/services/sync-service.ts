@@ -131,7 +131,7 @@ export function makeSyncService({
 
     const verticalSources$ = () => {
       const provider = src.integration.provider
-      const helpers = intHelpers(provider.def)
+      const helpers = intHelpers(provider.schemas)
       const primaryKey = (
         provider.streams?.$defaults.primaryKey as string | undefined
       )?.split('.') as [string] | undefined
@@ -157,7 +157,7 @@ export function makeSyncService({
 
         // TODO: Implement incremental sync...
         for (const [vertical, schemas] of objectEntries(
-          provider.def.verticals ?? {},
+          provider.schemas.verticals ?? {},
         )) {
           for (const name of objectKeys(schemas ?? {})) {
             const res = await provider.verticals?.[vertical]?.list?.(

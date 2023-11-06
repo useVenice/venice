@@ -34,7 +34,7 @@ export const lunchmoneyHelpers = intHelpers(lunchmoneySchemas)
 
 export const lunchmoneyDef = {
   name: 'lunchmoney',
-  def: lunchmoneySchemas,
+  schemas: lunchmoneySchemas,
   metadata: {categories: ['personal-finance']},
   extension: {
     sourceMapEntity: {

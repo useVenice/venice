@@ -15,7 +15,7 @@ function getSource(name: string) {
     case 'plaid':
       return plaidProvider.sourceSync({
         endUser: null,
-        config: plaidProvider.def.integrationConfig.parse({
+        config: plaidProvider.schemas.integrationConfig.parse({
           envName: 'sandbox',
           clientId: process.env['int_plaid__clientId'] ?? '',
           clientSecret:

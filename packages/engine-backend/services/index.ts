@@ -111,14 +111,14 @@ export function makeDBService({
       schema = (schema as (typeof zRaw)['integration']).extend({
         // This should be an override...
         config:
-          getProviderOrFail(id as Id['int']).def.integrationConfig ??
+          getProviderOrFail(id as Id['int']).schemas.integrationConfig ??
           z.object({}).nullish(),
       })
     } else if (tableName === 'resource') {
       schema = (schema as (typeof zRaw)['resource']).extend({
         // This should be an override...
         settings:
-          getProviderOrFail(id as Id['reso']).def.resourceSettings ??
+          getProviderOrFail(id as Id['reso']).schemas.resourceSettings ??
           z.object({}).nullish(),
       })
     } else if (tableName === 'pipeline') {
@@ -127,14 +127,14 @@ export function makeDBService({
         schema = (schema as (typeof zRaw)['pipeline']).extend({
           // This should be an override...
           sourceState:
-            getProviderOrFail(_patch.sourceId!).def.sourceState ??
+            getProviderOrFail(_patch.sourceId!).schemas.sourceState ??
             z.object({}).nullish(),
         })
       } else if ('destinationId' in _patch) {
         schema = (schema as (typeof zRaw)['pipeline']).extend({
           // This should be an override...
           destinationState:
-            getProviderOrFail(_patch.destinationId!).def.destinationState ??
+            getProviderOrFail(_patch.destinationId!).schemas.destinationState ??
             z.object({}).nullish(),
         })
       }
@@ -175,7 +175,7 @@ export function makeDBService({
       }
       const int = zRaw.integration.parse(_int)
       const provider = getProviderOrFail(int.id)
-      const config: {} = provider.def.integrationConfig?.parse(int.config)
+      const config: {} = provider.schemas.integrationConfig?.parse(int.config)
       return {...int, provider, config}
     })
 
@@ -211,7 +211,7 @@ export function makeDBService({
   const getResourceExpandedOrFail = (id: Id['reso']) =>
     getResourceOrFail(id).then(async (reso) => {
       const integration = await getIntegrationOrFail(reso.integrationId)
-      const settings: {} = integration.provider.def.resourceSettings?.parse(
+      const settings: {} = integration.provider.schemas.resourceSettings?.parse(
         reso.settings,
       )
       const institution = reso.institutionId
@@ -227,9 +227,9 @@ export function makeDBService({
         getResourceExpandedOrFail(pipe.destinationId!),
       ])
       const sourceState: {} =
-        source.integration.provider.def.sourceState?.parse(pipe.sourceState)
+        source.integration.provider.schemas.sourceState?.parse(pipe.sourceState)
       const destinationState: {} =
-        destination.integration.provider.def.destinationState?.parse(
+        destination.integration.provider.schemas.destinationState?.parse(
           pipe.destinationState,
         )
       // const links = R.pipe(

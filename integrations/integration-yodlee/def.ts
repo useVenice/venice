@@ -70,7 +70,7 @@ export const helpers = intHelpers(yodleeSchemas)
 
 export const yodleeDef = {
   name: 'yodlee',
-  def: yodleeSchemas,
+  schemas: yodleeSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-yodlee.png'},
   extension: {
     sourceMapEntity: {

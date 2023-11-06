@@ -81,7 +81,7 @@ export const spreadsheetHelpers = intHelpers(spreadsheetSchemas)
 
 export const spreadsheetDef = {
   name: 'spreadsheet',
-  def: spreadsheetSchemas,
+  schemas: spreadsheetSchemas,
   metadata: {
     displayName: 'Spreadsheet (CSV, Google Sheets, Excel)',
     categories: ['flat-files-and-spreadsheets'],

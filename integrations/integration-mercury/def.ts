@@ -12,7 +12,7 @@ export const mercurySchemas = {
 } satisfies IntegrationSchemas
 
 export const mercuryDef = {
-  def: mercurySchemas,
+  schemas: mercurySchemas,
   name: 'mercury',
   metadata: {
     categories: ['banking'],

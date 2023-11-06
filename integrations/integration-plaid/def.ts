@@ -109,7 +109,7 @@ export const helpers = intHelpers(plaidSchemas)
 
 export const plaidDef = {
   name: 'plaid',
-  def: plaidSchemas,
+  schemas: plaidSchemas,
   metadata: {
     categories: ['banking'],
     displayName: 'Plaid',

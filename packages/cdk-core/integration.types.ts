@@ -52,15 +52,15 @@ export interface IntegrationSchemas {
 }
 export type AnyIntegrationHelpers = IntHelpers
 
-export type IntHelpers<TDef extends IntegrationSchemas = IntegrationSchemas> =
-  ReturnType<typeof intHelpers<TDef>>
+export type IntHelpers<
+  TSchemas extends IntegrationSchemas = IntegrationSchemas,
+> = ReturnType<typeof intHelpers<TSchemas>>
 export interface IntegrationDef<
   TSchemas extends IntegrationSchemas = IntegrationSchemas,
   T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
 > {
   name: TSchemas['name']['_def']['value']
-  // TODO: Rename def to schemas...
-  def: TSchemas
+  schemas: TSchemas
   metadata?: IntegrationMetadata
 
   // standardMappers?: Partial<{

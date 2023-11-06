@@ -38,7 +38,7 @@ export const fsDef = {
     categories: ['flat-files-and-spreadsheets'],
   },
 
-  def: fsSchemas,
+  schemas: fsSchemas,
 } satisfies IntegrationDef<typeof fsSchemas>
 
 export default fsDef

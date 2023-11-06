@@ -41,7 +41,7 @@ export const helpers = intHelpers(onebrickSchemas)
 
 export const oneBrickDef = {
   name: 'onebrick',
-  def: onebrickSchemas,
+  schemas: onebrickSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-onebrick.png'},
   extension: {
     sourceMapEntity: (data) => {

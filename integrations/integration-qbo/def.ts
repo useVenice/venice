@@ -56,7 +56,7 @@ export const qboHelpers = intHelpers(qboSchemas)
 
 export const qboDef = {
   name: 'qbo',
-  def: qboSchemas,
+  schemas: qboSchemas,
   metadata: {
     displayName: 'Quickbooks Online',
     stage: 'beta',

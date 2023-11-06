@@ -87,7 +87,7 @@ export const firebaseHelpers = intHelpers(firebaseSchemas)
 export const firebaseDef = {
   name: 'firebase',
   metadata: {categories: ['database'], logoUrl: '/_assets/logo-firebase.png'},
-  def: firebaseSchemas,
+  schemas: firebaseSchemas,
 } satisfies IntegrationDef<typeof firebaseSchemas>
 
 export default firebaseDef

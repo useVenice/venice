@@ -12,7 +12,7 @@ export type IntegrationInput<
 > = T extends AnyIntegrationImpl
   ? {
       id: Id<T['name']>['int']
-      config?: Partial<_inferInput<T['def']['integrationConfig']>>
+      config?: Partial<_inferInput<T['schemas']['integrationConfig']>>
     }
   : never
 
@@ -23,7 +23,8 @@ export type ResourceInput<T extends AnyIntegrationImpl = AnyIntegrationImpl> =
         id: Id<T['name']>['reso']
         integrationId?: Id<T['name']>['int']
         integration?: IntegrationInput<T>
-        settings?: Partial<_inferInput<T['def']['resourceSettings']>> & object
+        settings?: Partial<_inferInput<T['schemas']['resourceSettings']>> &
+          object
       }
     : never
 
@@ -35,11 +36,11 @@ export interface PipelineInput<
   id: Id['pipe']
   source?: PSrc extends AnyIntegrationImpl ? ResourceInput<PSrc> : never
   sourceState?: PSrc extends AnyIntegrationImpl
-    ? Partial<_inferInput<PSrc['def']['sourceState']>>
+    ? Partial<_inferInput<PSrc['schemas']['sourceState']>>
     : never
   destination?: PDest extends AnyIntegrationImpl ? ResourceInput<PDest> : never
   destinationState?: PDest extends AnyIntegrationImpl
-    ? Partial<_inferInput<PDest['def']['destinationState']>>
+    ? Partial<_inferInput<PDest['schemas']['destinationState']>>
     : never
   /** Used to initialize links */
   linkOptions?: Array<

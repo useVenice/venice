@@ -43,7 +43,7 @@ export const wiseHelpers = intHelpers(wiseSchemas)
 
 export const wiseDef = {
   name: 'wise',
-  def: wiseSchemas,
+  schemas: wiseSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-wise.png'},
   extension: {
     sourceMapEntity: (data) => {

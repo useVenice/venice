@@ -22,13 +22,13 @@ const procedure = trpcServer.procedure
 
 export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
   const connSpec = z.object({
-    settings: provider.def.resourceSettings ?? z.object({}),
+    settings: provider.schemas.resourceSettings ?? z.object({}),
     // For now, unclear whether it should actually live in airbyte config
     // or perhaps it should just have a `veniceIntegrationId` field
     // so the data is not duplicated across dozens of integrations
     // but then we'd have to think about "auth", or at least the integrationId would have to be
     // made a secret field too
-    config: provider.def.integrationConfig ?? z.object({}),
+    config: provider.schemas.integrationConfig ?? z.object({}),
   })
 
   type ConnectionSpecification = z.infer<typeof connSpec>
@@ -77,7 +77,7 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
           throw new Error(`${provider.name} is not a source`)
         }
         const config = readJson<ConnectionSpecification>(args.config)
-        const union = provider.def.sourceOutputEntity as
+        const union = provider.schemas.sourceOutputEntity as
           | z.ZodDiscriminatedUnion<string, []>
           | undefined
         return rxjs.of(

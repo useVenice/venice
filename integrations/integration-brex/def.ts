@@ -32,7 +32,7 @@ export const brexSchemas = {
 } satisfies IntegrationSchemas
 
 export const brexDef = {
-  def: brexSchemas,
+  schemas: brexSchemas,
   name: 'brex',
   metadata: {
     categories: ['banking', 'expense-management'],

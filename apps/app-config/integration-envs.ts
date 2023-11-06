@@ -13,7 +13,7 @@ const getPrefix = (name: string) => makeId('int', name, '')
 
 export const zFlatConfigByProvider = R.mapValues(defIntegrations, (def, name) =>
   zFlattenForEnv(
-    (def.def as IntegrationSchemas)?.integrationConfig ?? z.unknown(),
+    (def.schemas as IntegrationSchemas)?.integrationConfig ?? z.unknown(),
     {
       prefix: getPrefix(name),
       separator,
@@ -63,7 +63,7 @@ export function parseIntConfigsFromRawEnv(
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
     [k in keyof typeof defIntegrations]?: GetIntConfig<
-      IntHelpers<(typeof defIntegrations)[k]['def']>['_types']
+      IntHelpers<(typeof defIntegrations)[k]['schemas']>['_types']
     >
   }
 }

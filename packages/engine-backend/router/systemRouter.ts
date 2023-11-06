@@ -9,12 +9,12 @@ export const systemRouter = trpc.router({
     .mutation(async ({input: [intId, input], ctx}) => {
       const int = await ctx.services.getIntegrationOrFail(intId)
 
-      if (!int.provider.def.webhookInput || !int.provider.handleWebhook) {
+      if (!int.provider.schemas.webhookInput || !int.provider.handleWebhook) {
         console.warn(`${int.provider.name} does not handle webhooks`)
         return
       }
       const res = await int.provider.handleWebhook(
-        int.provider.def.webhookInput.parse(input),
+        int.provider.schemas.webhookInput.parse(input),
         int.config,
       )
       await Promise.all(

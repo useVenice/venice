@@ -40,7 +40,7 @@ export const splitwiseHelpers = intHelpers(splitwiseSchemas)
 
 export const splitwiseDef = {
   name: 'splitwise',
-  def: splitwiseSchemas,
+  schemas: splitwiseSchemas,
   metadata: {categories: ['personal-finance']},
   extension: {
     sourceMapEntity: {
