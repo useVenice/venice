@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type {
   AnyProcedure,
@@ -18,7 +17,6 @@ import {z} from '@usevenice/util'
 import type {
   remoteProcedure,
   RemoteProcedureContext,
-  RouterMeta,
   trpc,
 } from '../../engine-backend/router/_base'
 
@@ -37,19 +35,21 @@ export interface VerticalRouterOpts {
   remoteProcedure: typeof remoteProcedure
 }
 
-export async function proxyListRemote(opts: {
+export async function proxyListRemoteRedux({
+  input,
+  ctx,
+  meta: {entityName, vertical},
+}: {
   input: unknown
   ctx: RemoteProcedureContext
+  meta: {vertical: string; entityName: string}
 }) {
-  const meta = (opts as any).meta as RouterMeta
-
-  const {input, ctx} = opts
   const instance = ctx.remote.provider.newInstance?.({
     config: ctx.remote.config,
     settings: ctx.remote.settings,
   })
   const implementation = (
-    ctx.remote.provider.verticals?.[meta.response?.vertical!] as any
+    ctx.remote.provider.verticals?.[vertical as never] as any
   )?.list as Function
   if (typeof implementation !== 'function') {
     throw new TRPCError({
@@ -58,22 +58,23 @@ export async function proxyListRemote(opts: {
     })
   }
 
-  const res = await implementation(instance, meta.response?.entity, input)
+  const res: PaginatedOutput<any> = await implementation(
+    instance,
+    entityName,
+    input,
+  )
 
-  if (meta.response?.type === 'list') {
-    const mapper = (
-      ctx.remote.provider.streams?.[meta.response?.vertical] as any
-    )[meta.response?.entity] as (entity: unknown, settings: unknown) => any
+  const mapper = (ctx.remote.provider.streams?.[vertical as never] as any)[
+    entityName
+  ] as (entity: unknown, settings: unknown) => any
 
-    return {
-      ...res,
-      items: (res as PaginatedOutput<any>).items.map((item) => ({
-        ...mapper(item, ctx.remote.settings),
-        _original: item,
-      })),
-    }
+  return {
+    ...res,
+    items: res.items.map((item) => ({
+      ...mapper(item, ctx.remote.settings),
+      _original: item,
+    })),
   }
-  return res
 }
 
 export const zPaginationParams = z.object({

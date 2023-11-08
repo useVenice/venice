@@ -1,5 +1,5 @@
 import type {MaybePromise} from '@usevenice/util'
-import {z} from '@usevenice/util'
+import {objectEntries, R, z} from '@usevenice/util'
 
 import type {IntegrationSchemas, IntHelpers} from '../integration.types'
 import type {
@@ -7,7 +7,11 @@ import type {
   Pagination,
   VerticalRouterOpts,
 } from './new-mapper'
-import {paginatedOutput, proxyListRemote, zPaginationParams} from './new-mapper'
+import {
+  paginatedOutput,
+  proxyListRemoteRedux,
+  zPaginationParams,
+} from './new-mapper'
 
 export const zAccounting = {
   account: z.object({
@@ -61,32 +65,20 @@ export interface AccountingMethods<
 // Guess it means accounting router also belongs in the engine backend...
 
 export function createAccountingRouter(opts: VerticalRouterOpts) {
+  const vertical = 'accounting'
   // We cannot use a single trpc procedure because neither openAPI nor trpc
   // supports switching output shape that depends on input
-  return opts.trpc.router({
-    listAccounts: opts.remoteProcedure
-      .meta({
-        openapi: {method: 'GET', path: '/accounting/accounts'},
-        response: {vertical: 'accounting', entity: 'account', type: 'list'},
-      })
-      .input(zPaginationParams.nullish())
-      .output(paginatedOutput(zAccounting.account))
-      .query(proxyListRemote),
-    listExpenses: opts.remoteProcedure
-      .meta({
-        openapi: {method: 'GET', path: '/accounting/expenses'},
-        response: {vertical: 'accounting', entity: 'expense', type: 'list'},
-      })
-      .input(zPaginationParams.nullish())
-      .output(paginatedOutput(zAccounting.expense))
-      .query(proxyListRemote),
-    listVendors: opts.remoteProcedure
-      .meta({
-        openapi: {method: 'GET', path: '/accounting/vendors'},
-        response: {vertical: 'accounting', entity: 'vendor', type: 'list'},
-      })
-      .input(zPaginationParams.nullish())
-      .output(paginatedOutput(zAccounting.vendor))
-      .query(proxyListRemote),
-  })
+
+  return opts.trpc.router(
+    R.mapToObj(objectEntries(zAccounting), ([entityName, v]) => [
+      `${vertical}_${entityName}_list`,
+      opts.remoteProcedure
+        .meta({openapi: {method: 'GET', path: `/${vertical}/${entityName}`}})
+        .input(zPaginationParams.nullish())
+        .output(paginatedOutput(v))
+        .query(async ({input, ctx}) =>
+          proxyListRemoteRedux({input, ctx, meta: {entityName, vertical}}),
+        ),
+    ]),
+  )
 }
