@@ -1,11 +1,7 @@
-import type {
-  IntegrationDef,
-  IntegrationSchemas} from '@usevenice/cdk-core';
-import {
-  intHelpers,
-} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
+import {intHelpers} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import {A, R, z} from '@usevenice/util'
 
 import {itemProjectResponseSchema, itemTimeEntriesSchema} from './TogglCient'
@@ -52,7 +48,7 @@ export const togglDef = {
         return {
           id: `${a.id}`,
           entityName: 'account',
-          entity: R.identity<Standard.Account>({
+          entity: R.identity<Pta.Account>({
             name: data.entity.name ?? '',
             type: 'expense',
           }),
@@ -62,7 +58,7 @@ export const togglDef = {
         return {
           id: `${t.id}`,
           entityName: 'transaction',
-          entity: R.identity<Standard.Transaction>({
+          entity: R.identity<Pta.Transaction>({
             date: data.entity.at ?? '',
             description: data.entity.description ?? '',
             postingsMap: makePostingsMap({

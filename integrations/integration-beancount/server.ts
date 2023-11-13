@@ -1,7 +1,7 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import type {StdCache} from '@usevenice/cdk-ledger'
 import {cachingLink} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import {
   $writeFile,
   fromCompletion,
@@ -33,7 +33,7 @@ export async function outputBeanFiles(
   const beanJson = convBeanJsonToStdJson.reverse({
     entities: objectEntries(cache).flatMap(([type, entityById]) =>
       objectEntries(entityById).map(
-        ([, entity]) => [type, entity] as Standard.TypeAndEntity,
+        ([, entity]) => [type, entity] as Pta.TypeAndEntity,
       ),
     ),
     variant: 'standard',

@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import {
   A,
   DateTime,
@@ -57,7 +57,7 @@ export const splitwiseDef = {
       transaction: ({entity: t}) => {
         const cost = A(parseMoney(t.cost), t.currency_code)
         const partialTxn: Pick<
-          Standard.Transaction,
+          Pta.Transaction,
           'date' | 'removed' | 'notes' | 'payee'
         > = {
           notes: t.details,
@@ -144,7 +144,7 @@ export const splitwiseDef = {
                     // This is  for "Liabilities" in beancount, cannot set it as remainder because we Omit "amount"
                     liabilities:
                       contribs.length === 1
-                        ? (contribs[0]?.remainder as Standard.Posting)
+                        ? (contribs[0]?.remainder as Pta.Posting)
                         : undefined,
                   },
             ),

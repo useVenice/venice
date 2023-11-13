@@ -1,6 +1,8 @@
 export * from './oauth/NangoClient'
 export * from './oauth/oauthIntegration'
 
+export * from './verticals/pta'
+
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture}.{ts,tsx}"}
 export * from './base-links'
 export * from './frontend-utils'

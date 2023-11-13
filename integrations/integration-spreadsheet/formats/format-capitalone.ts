@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 
-import {makePostingsMap} from '@usevenice/standard'
+import {makePostingsMap} from '@usevenice/cdk-core'
 import {A, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'

@@ -9,7 +9,6 @@
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/cdk-ledger": "workspace:*",
-    "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {}

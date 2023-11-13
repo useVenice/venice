@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import type {Brand} from '@usevenice/util'
 import {A, startCase, z, zCast} from '@usevenice/util'
 
@@ -46,7 +46,7 @@ export const saltedgeDef = {
             current: A(a.balance, a.currency_code),
           },
           defaultUnit: a.currency_code as Unit,
-          type: ((): Standard.AccountType => {
+          type: ((): Pta.AccountType => {
             switch (a.nature) {
               case 'account':
                 return 'asset'

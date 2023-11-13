@@ -32,7 +32,6 @@
     "@usevenice/integration-yodlee": "workspace:*",
     "@usevenice/meta-service-airbyte": "workspace:*",
     "@usevenice/meta-service-postgres": "workspace:*",
-    "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
     "cac": "6.7.12",
     "global-agent": "3.0.0",

@@ -1,4 +1,4 @@
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import {A, DateTime, R} from '@usevenice/util'
 
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'
@@ -20,9 +20,7 @@ export function getYodleeAccountName(account: YodleeAccount) {
     .join(' - ')}`
 }
 
-export function getYodleeAccountType(
-  acct: YodleeAccount,
-): Standard.AccountType {
+export function getYodleeAccountType(acct: YodleeAccount): Pta.AccountType {
   switch (acct.CONTAINER) {
     case 'bank':
       return 'asset/bank'

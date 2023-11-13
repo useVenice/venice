@@ -6,7 +6,6 @@
   "module": "./index.ts",
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
-    "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*",
     "airtable": "0.11.4"
   },

@@ -1,5 +1,5 @@
 /// <reference path="./beancount.d.ts"/>
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import {
   formatAccountType,
   makePostingsMap,
@@ -7,7 +7,7 @@ import {
   splitAccountType,
   stdTypeAndEntity,
   TRANSACTION_LABELS,
-} from '@usevenice/standard'
+} from '@usevenice/cdk-core'
 import type {Amount, NonEmptyArray} from '@usevenice/util'
 import {
   $execCommand,
@@ -51,8 +51,8 @@ const omitTrading = false
 function metaFromStandard(
   partial: {
     id?: string | null
-    attachmentsMap?: Standard.AttachmentsMap | null
-    labelsMap?: Standard.LabelsMap | null
+    attachmentsMap?: Pta.AttachmentsMap | null
+    labelsMap?: Pta.LabelsMap | null
     custom?: Record<string, unknown>
   },
   opts = {includeLabels: true},
@@ -95,9 +95,9 @@ function cleanKey(label: string, opts?: {allowSlash: boolean}) {
 
 // MARK: - Converters
 
-const convAccountType = conv<string, Standard.AccountType | null | undefined>({
+const convAccountType = conv<string, Pta.AccountType | null | undefined>({
   forward: (type) => {
-    const ACCOUNT_TYPE_MAP: Record<string, Standard.AccountType | undefined> = {
+    const ACCOUNT_TYPE_MAP: Record<string, Pta.AccountType | undefined> = {
       Assets: 'asset',
       Asset: 'asset',
       Liability: 'liability',
@@ -152,7 +152,7 @@ export function cleanBeancountAccountName(name: string) {
 
 export const convAccountFullName = conv<
   string,
-  Pick<Standard.Account, 'name' | 'type' | 'id'>
+  Pick<Pta.Account, 'name' | 'type' | 'id'>
 >({
   forward: (fullName) => {
     const [_type, ...segments] = fullName.split(':')
@@ -186,7 +186,7 @@ const convCurrency = conv<Beancount.Units['currency'], Amount['unit']>({
   reverse: (unit) => unit.slice(0, 'PLAID_7DD8KV8OWVUGK4ZQK1'.length),
 })
 
-const convCost = conv<Beancount.Posting['cost'], Standard.Posting['cost']>({
+const convCost = conv<Beancount.Posting['cost'], Pta.Posting['cost']>({
   forward: (cost) =>
     cost && {
       type: 'unit', // Think it's always turned into unit cost in the end
@@ -204,7 +204,7 @@ const convCost = conv<Beancount.Posting['cost'], Standard.Posting['cost']>({
 
 const convReviewStatus = conv<
   string | null | undefined,
-  Standard.ReviewStatus | undefined
+  Pta.ReviewStatus | undefined
 >({
   forward: (flag) => {
     switch (flag) {
@@ -233,7 +233,7 @@ const convReviewStatus = conv<
 // TODO: Do this for transactions also
 const convPostingLabelsMap = conv<
   Beancount.Posting['meta'],
-  Standard.Transaction['labelsMap']
+  Pta.Transaction['labelsMap']
 >({
   forward: (meta) =>
     objectFromObject(
@@ -251,7 +251,7 @@ const convPostingLabelsMap = conv<
 
 const convLabelsMap = conv<
   Beancount.Transaction['tags'],
-  Standard.Transaction['labelsMap']
+  Pta.Transaction['labelsMap']
 >({
   forward: (tags) =>
     objectFromArray(
@@ -270,9 +270,9 @@ const convLabelsMap = conv<
 
 const convPosting = conv<
   Beancount.Posting,
-  Standard.Posting,
+  Pta.Posting,
   never,
-  Standard.Posting & {account?: Standard.Account}
+  Pta.Posting & {account?: Pta.Account}
 >({
   forward: (post) => {
     const acct = convAccountFullName(post.account)
@@ -326,7 +326,7 @@ const convPosting = conv<
 
 const convPostingsMap = conv<
   Beancount.Posting[],
-  Standard.Transaction['postingsMap']
+  Pta.Transaction['postingsMap']
 >({
   forward: (posts) => {
     const [main, ...rest] = posts
@@ -369,7 +369,7 @@ const convPostingsMap = conv<
 
 export const convTransaction = conv<
   NonEmptyArray<Beancount.Transaction>,
-  Standard.Transaction
+  Pta.Transaction
 >({
   forward: ([beanTxn]) => ({
     // Rethink whether this should be ExternalId in the case of beancount as a source
@@ -456,7 +456,7 @@ function hasTime(isoDate: ISODate | ISODateTime) {
  */
 const convWrappedEntry = conv<
   Beancount.WrappedEntry[] | null,
-  Standard.TypeAndEntity | null
+  Pta.TypeAndEntity | null
 >({
   forward: (_w) => {
     const [w, ...rest] = _w ?? []
@@ -627,76 +627,75 @@ const convWrappedEntry = conv<
   },
 })
 
-export const convBeanJsonToStdJson = conv<
-  Beancount.JSONExport,
-  Standard.JSONExport
->({
-  forward: (input) => {
-    const nErrs = input.errors.length
-    if (process.env.NODE_ENV !== 'production' && nErrs > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const err = input.errors[0]!
-      throw new Error(
-        `${nErrs > 1 ? `[1 of ${nErrs}]` : ''}${err.message} at ${
-          err.source.filename
-        } line ${err.source.lineno}`,
-      )
-    }
+export const convBeanJsonToStdJson = conv<Beancount.JSONExport, Pta.JSONExport>(
+  {
+    forward: (input) => {
+      const nErrs = input.errors.length
+      if (process.env.NODE_ENV !== 'production' && nErrs > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const err = input.errors[0]!
+        throw new Error(
+          `${nErrs > 1 ? `[1 of ${nErrs}]` : ''}${err.message} at ${
+            err.source.filename
+          } line ${err.source.lineno}`,
+        )
+      }
 
-    const entityById: Record<string, Standard.TypeAndEntity> = {}
-    for (const entry of input.entries) {
-      const entity = convWrappedEntry([entry])
-      if (entity) {
-        switch (entity[0]) {
-          case 'account':
-            entityById[entity[1].name] = entity
-            break
-          case 'transaction':
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            entityById[entity[1].id!] = entity
-            break
-          case 'commodity': {
-            const existing = entityById[entity[1].unit]?.[1] as
-              | Standard.Commodity
-              | undefined
-            entityById[entity[1].unit] = [
-              'commodity',
-              {
-                ...existing,
-                ...entity[1],
-                pricesMap: {
-                  ...existing?.pricesMap,
-                  ...entity[1].pricesMap,
+      const entityById: Record<string, Pta.TypeAndEntity> = {}
+      for (const entry of input.entries) {
+        const entity = convWrappedEntry([entry])
+        if (entity) {
+          switch (entity[0]) {
+            case 'account':
+              entityById[entity[1].name] = entity
+              break
+            case 'transaction':
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              entityById[entity[1].id!] = entity
+              break
+            case 'commodity': {
+              const existing = entityById[entity[1].unit]?.[1] as
+                | Pta.Commodity
+                | undefined
+              entityById[entity[1].unit] = [
+                'commodity',
+                {
+                  ...existing,
+                  ...entity[1],
+                  pricesMap: {
+                    ...existing?.pricesMap,
+                    ...entity[1].pricesMap,
+                  },
                 },
-              },
-            ]
-            break
+              ]
+              break
+            }
           }
         }
       }
-    }
-    return {
-      variant: 'standard',
-      version: '1',
-      entities: Object.values(entityById),
-    }
-  },
-  reverse: (input) => ({
-    variant: 'beancount',
-    version: '1',
-    entries: sortBeanEntries(
-      input.entities
-        .flatMap(convWrappedEntry.reverse)
-        .filter((r): r is NonNullable<typeof r> => !!r),
-    ),
-    errors: [],
-    options: {
-      operating_currency: input.ledger?.defaultUnit
-        ? [input.ledger.defaultUnit]
-        : undefined,
+      return {
+        variant: 'standard',
+        version: '1',
+        entities: Object.values(entityById),
+      }
     },
-  }),
-})
+    reverse: (input) => ({
+      variant: 'beancount',
+      version: '1',
+      entries: sortBeanEntries(
+        input.entities
+          .flatMap(convWrappedEntry.reverse)
+          .filter((r): r is NonNullable<typeof r> => !!r),
+      ),
+      errors: [],
+      options: {
+        operating_currency: input.ledger?.defaultUnit
+          ? [input.ledger.defaultUnit]
+          : undefined,
+      },
+    }),
+  },
+)
 
 /**
  * Be ware that this is not 100% bidirectional lossless
@@ -766,7 +765,7 @@ export const convBeanFile = asyncConv<string, Beancount.JSONExport>(() => {
 
 export const convBeanToStdJson = asyncConv<
   string,
-  Standard.JSONExport,
+  Pta.JSONExport,
   Beancount.JSONExport
 >({
   forward: (content) =>

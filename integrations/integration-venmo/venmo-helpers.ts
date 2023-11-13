@@ -1,4 +1,4 @@
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import type {DateTime} from '@usevenice/util'
 import {A, parseDateTime} from '@usevenice/util'
 
@@ -88,12 +88,12 @@ export function payeeFromTransaction(
 export function postingsFromTransaction(
   txn: Venmo.Transaction,
   currentUserId: string,
-): Standard.PostingsMap {
+): Pta.PostingsMap {
   const sign = signFromTransaction(txn, currentUserId)
   const txnAmount = A(txn.amount * sign, 'USD')
 
   const accountExternalId = currentUserId as ExternalId
-  const postings: Standard.PostingsMap = {
+  const postings: Pta.PostingsMap = {
     main: {
       amount: txnAmount,
       accountExternalId,

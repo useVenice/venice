@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import type {Brand} from '@usevenice/util'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@usevenice/util'
 
@@ -90,13 +90,13 @@ export const yodleeDef = {
           defaultUnit: a.currentBalance?.currency as Unit,
           balancesMap: objectFromObject(
             a._balancesMap ?? {},
-            (_, val): Standard.Balance => {
+            (_, val): Pta.Balance => {
               if (val.holdings.length > 0) {
                 return {
                   autoShiftPaddingDate: true,
                   holdings: [
                     // Not all holdings come back with a symbol
-                    ...val.holdings.map((h): Standard.Holding | null =>
+                    ...val.holdings.map((h): Pta.Holding | null =>
                       h.symbol
                         ? {
                             unit: h.symbol as Unit,

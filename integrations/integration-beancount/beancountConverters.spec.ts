@@ -1,8 +1,4 @@
-import {
-  ACCOUNT_TYPES,
-  makePostingsMap,
-  type Standard,
-} from '@usevenice/standard'
+import {ACCOUNT_TYPES, makePostingsMap, type Pta} from '@usevenice/cdk-core'
 // Not sure why this is needed for ci but not locally, but cannot be bothered to find out for now
 import {A} from '@usevenice/util'
 
@@ -67,7 +63,7 @@ test.skip('ledger with default unit', async () => {
 
 // Disable because the json conversion api is down
 // eslint-disable-next-line jest/no-disabled-tests
-test.skip.each<Standard.Transaction>([
+test.skip.each<Pta.Transaction>([
   {
     date: '2020-01-01',
     description: 'Latte',

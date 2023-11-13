@@ -46,7 +46,6 @@ COPY ./package.json ./package.json
 COPY ./packages/engine-backend/package.json ./packages/engine-backend/package.json
 COPY ./packages/ui/package.json ./packages/ui/package.json
 COPY ./packages/util/package.json ./packages/util/package.json
-COPY ./packages/standard/package.json ./packages/standard/package.json
 COPY ./packages/engine-frontend/package.json ./packages/engine-frontend/package.json
 COPY ./packages/cdk-core/package.json ./packages/cdk-core/package.json
 COPY ./packages/cdk-ledger/package.json ./packages/cdk-ledger/package.json

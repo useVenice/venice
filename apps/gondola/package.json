@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@usevenice/connect": "workspace:*",
-    "@usevenice/standard": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
     "next": "13.4.3",

@@ -16,7 +16,6 @@ const nextConfig = {
     path.resolve(__dirname, '../../packages/cdk-ledger'),
     path.resolve(__dirname, '../../packages/engine-backend'),
     path.resolve(__dirname, '../../packages/engine-frontend'),
-    path.resolve(__dirname, '../../packages/standard'),
     path.resolve(__dirname, '../../packages/ui'),
     path.resolve(__dirname, '../../packages/util'),
     path.resolve(__dirname, '../../packages/connect'),

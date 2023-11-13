@@ -1,6 +1,6 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import {handlersLink} from '@usevenice/cdk-core'
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import {fromCompletion} from '@usevenice/util'
 
 import {makeAirtableClient} from './AirtableClient'
@@ -23,7 +23,7 @@ export const airtableServer = {
             ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
               (data.entity as any).standard
             : null
-        ) as Standard.Transaction
+        ) as Pta.Transaction
         const partialTxn =
           entityName === 'transaction'
             ? {

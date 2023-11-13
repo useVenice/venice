@@ -7,7 +7,6 @@
   "dependencies": {
     "@usevenice/cdk-core": "workspace:*",
     "@usevenice/integration-firebase": "workspace:*",
-    "@usevenice/standard": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

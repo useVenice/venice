@@ -14,6 +14,9 @@ import {
   zPaginationParams,
 } from '../new-mapper'
 
+export type {Pta}
+export * from './pta-utils'
+
 export const zPta = {
   account: zCast<Pta.Account>(),
   // .openapi({format: 'prefix:acct'}),

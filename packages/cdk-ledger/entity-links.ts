@@ -6,7 +6,7 @@ import type {
   Link,
 } from '@usevenice/cdk-core'
 import {handlersLink, transformLink} from '@usevenice/cdk-core'
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
@@ -110,9 +110,9 @@ export function mapStandardEntityLink({
 
 // TODO: Move into entityLink
 export interface StdCache {
-  account: Record<string, Standard.Account>
-  transaction: Record<string, Standard.Transaction>
-  commodity: Record<string, Standard.Commodity>
+  account: Record<string, Pta.Account>
+  transaction: Record<string, Pta.Transaction>
+  commodity: Record<string, Pta.Commodity>
   [k: string]: Record<string, unknown>
 }
 
@@ -188,7 +188,7 @@ export function cachingTransformLink(
  */
 
 export const renameAccountLink = zFunction(z.record(z.string()), (mapping) =>
-  transformLink<EntityPayload<Standard.Account>>((op) => {
+  transformLink<EntityPayload<Pta.Account>>((op) => {
     if (
       op.type === 'data' &&
       op.data.entityName === 'account' &&
@@ -216,9 +216,7 @@ export function mapAccountNameAndTypeLink() {
 }
 
 export function transformTransactionLink(
-  transform: (
-    txn: WritableDraft<Standard.Transaction>,
-  ) => Standard.Transaction | void,
+  transform: (txn: WritableDraft<Pta.Transaction>) => Pta.Transaction | void,
 ) {
   return transformLink<EntityPayload>((op) => {
     if (
@@ -263,9 +261,9 @@ export const addRemainderByDateLink = transformTransactionLink((txn) => {
 })
 
 // Very verbose...
-export function mergeTransferLink(): Link<EntityPayload<Standard.Transaction>> {
-  const txnsByTransferId: Record<string, Standard.Transaction[]> = {}
-  return handlersLink<EntityPayload<Standard.Transaction>>({
+export function mergeTransferLink(): Link<EntityPayload<Pta.Transaction>> {
+  const txnsByTransferId: Record<string, Pta.Transaction[]> = {}
+  return handlersLink<EntityPayload<Pta.Transaction>>({
     data: (op) => {
       if (op.data.entityName === 'transaction' && op.data.entity?.transferId) {
         const txns = txnsByTransferId[op.data.entity.transferId] ?? []
@@ -276,7 +274,7 @@ export function mergeTransferLink(): Link<EntityPayload<Standard.Transaction>> {
     commit: (op) =>
       rxjs.from([
         ..._makeMergedTransactions(txnsByTransferId).map(
-          (txn): StdSyncOperation<Standard.Transaction> => ({
+          (txn): StdSyncOperation<Pta.Transaction> => ({
             type: 'data',
             data: {id: txn.id, entityName: 'transaction', entity: txn},
           }),
@@ -287,11 +285,11 @@ export function mergeTransferLink(): Link<EntityPayload<Standard.Transaction>> {
 }
 
 export function _makeMergedTransactions(
-  txnsByTransferId: Record<string, Standard.Transaction[]>,
+  txnsByTransferId: Record<string, Pta.Transaction[]>,
 ) {
   return objectEntries(txnsByTransferId).map(
     // TODO: Make SetRequired type work
-    ([transferId, txns]): Standard.Transaction & {id: TransactionId} => {
+    ([transferId, txns]): Pta.Transaction & {id: TransactionId} => {
       const postings = txns.flatMap((t, i) =>
         R.toPairs(t.postingsMap ?? {}).map(([key, post]) => ({
           ...post,

@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, oauthBaseSchema} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap, zEntityPayload} from '@usevenice/cdk-ledger'
-import type {Standard} from '@usevenice/standard'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
 
@@ -93,7 +93,7 @@ export const qboDef = {
         switch (t.type) {
           case 'Purchase': {
             const sign = t.entity.Credit ? 1 : -1
-            const postings: Standard.PostingsMap = {
+            const postings: Pta.PostingsMap = {
               main: {
                 accountExternalId: globalId(
                   t.realmId,
@@ -135,7 +135,7 @@ export const qboDef = {
             }
           }
           case 'Deposit': {
-            const postings: Standard.PostingsMap = {
+            const postings: Pta.PostingsMap = {
               main: {
                 accountExternalId: globalId(
                   t.realmId,
@@ -169,7 +169,7 @@ export const qboDef = {
             }
           }
           case 'JournalEntry': {
-            const postings: Standard.PostingsMap = {}
+            const postings: Pta.PostingsMap = {}
             const filteredLines = t.entity.Line.filter(
               // https://c9.qbo.intuit.com/app/journal?txnId=842 For instance
               // has a line that looks like { "Id": "0", "DetailType": "DescriptionOnly" }
@@ -208,7 +208,7 @@ export const qboDef = {
             }
           }
           case 'Invoice': {
-            const postings: Standard.PostingsMap = {
+            const postings: Pta.PostingsMap = {
               main: {
                 amount: A(t.entity.TotalAmt, t.entity.CurrencyRef.value),
                 // https://quickbooks.intuit.com/learn-support/en-us/install/does-qbo-support-multiple-a-r-accounts-or-is-there-a-workaround/00/193034
@@ -321,7 +321,7 @@ export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
 
 const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
   QBO.Account['Classification'],
-  Standard.AccountType
+  Pta.AccountType
 > = {
   Asset: 'asset',
   Equity: 'equity',

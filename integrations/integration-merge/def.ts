@@ -2,7 +2,7 @@
 
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
-import type {Standard} from '@usevenice/standard'
+import type {Pta} from '@usevenice/cdk-core'
 import {z, zCast} from '@usevenice/util'
 
 import {mergeLogoSvg} from './merge-logo.svg'
@@ -93,7 +93,7 @@ export const mergeDef = {
         entity: {
           date: entity.entity.transaction_date ?? '',
           description: entity.entity.line_items?.[0]?.memo ?? '',
-        } satisfies Standard.Transaction,
+        } satisfies Pta.Transaction,
       }),
     },
   },

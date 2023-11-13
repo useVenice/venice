@@ -1,8 +1,8 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk-core'
 import {makePostingsMap} from '@usevenice/cdk-ledger'
 import type {SerializedTimestamp} from '@usevenice/integration-firebase'
-import type {Standard} from '@usevenice/standard'
 import type {Merge} from '@usevenice/util'
 import {A, objectFromArray, R, z, zCast} from '@usevenice/util'
 
@@ -59,9 +59,9 @@ export const foreceiptDef = {
       account: ({entity: a}) => ({
         id: `${a.id}`,
         entityName: 'account',
-        entity: R.identity<Standard.Account>({
+        entity: R.identity<Pta.Account>({
           name: `FR ${a.name ?? ''}`,
-          type: ((): Standard.AccountType => {
+          type: ((): Pta.AccountType => {
             switch (a.type) {
               case 'Cash':
                 return 'asset/cash'
@@ -88,7 +88,7 @@ export const foreceiptDef = {
         return {
           id,
           entityName: 'transaction',
-          entity: R.identity<Standard.Transaction>({
+          entity: R.identity<Pta.Transaction>({
             date: t.receipt_date,
             payee: t.merchant,
             description: t.notes ?? '',
@@ -110,7 +110,7 @@ export const foreceiptDef = {
                   t.type === makeForeceiptClient(_extConn).TRANSFER_TYPE
                     ? (`${c?._id}-${t.account1_id}` as ExternalId)
                     : undefined,
-                accountType: ((): Standard.AccountType => {
+                accountType: ((): Pta.AccountType => {
                   switch (t.type) {
                     case makeForeceiptClient(_extConn).EXPENSE_TYPE:
                       return 'expense'

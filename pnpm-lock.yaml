@@ -390,9 +390,6 @@ importers:
       '@usevenice/meta-service-postgres':
         specifier: workspace:*
         version: link:../../packages/meta-service-postgres
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -420,9 +417,6 @@ importers:
       '@usevenice/connect':
         specifier: workspace:*
         version: link:../../packages/connect
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -657,9 +651,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -679,9 +670,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -694,9 +682,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -709,9 +694,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -728,9 +710,6 @@ importers:
       '@usevenice/integration-firebase':
         specifier: workspace:*
         version: link:../integration-firebase
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -756,9 +735,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -801,9 +777,6 @@ importers:
       '@usevenice/integration-firebase':
         specifier: workspace:*
         version: link:../integration-firebase
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -828,9 +801,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -847,9 +817,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -862,9 +829,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -881,9 +845,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -924,9 +885,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -961,9 +919,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1029,9 +984,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1060,9 +1012,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1075,9 +1024,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1090,9 +1036,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1150,9 +1093,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1165,9 +1105,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1201,9 +1138,6 @@ importers:
       '@usevenice/cdk-ledger':
         specifier: workspace:*
         version: link:../../packages/cdk-ledger
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../../packages/standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1260,9 +1194,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
-      '@usevenice/standard':
-        specifier: workspace:*
-        version: link:../standard
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -1440,12 +1371,6 @@ importers:
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../engine-backend
-
-  packages/standard:
-    dependencies:
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../util
 
   packages/ui:
     dependencies:

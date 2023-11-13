@@ -4,7 +4,6 @@ import type {NextConfig} from 'next'
 
 const nextConfig: NextConfig = {
   transpilePackages: [
-    path.resolve(__dirname, '../../packages/standard'),
     path.resolve(__dirname, '../../packages/ui'),
     path.resolve(__dirname, '../../packages/util'),
     path.resolve(__dirname, '../../packages/connect'),
