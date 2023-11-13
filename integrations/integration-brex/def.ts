@@ -53,9 +53,7 @@ export const brexDef = {
         // labels: test vs. production
       }
     },
-  },
-  extension: {
-    sourceMapEntity: {
+    entity: {
       account: (entity) => ({
         id: entity.id,
         entityName: 'account',

@@ -45,8 +45,8 @@ export const venmoDef = {
   name: 'venmo',
   schemas: venmoSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-venmo.png'},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}, _extConn) => ({
         id: a.user.id,
         entityName: 'account',

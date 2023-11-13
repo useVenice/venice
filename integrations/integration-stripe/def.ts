@@ -40,8 +40,8 @@ export const stripeDef = {
     logoUrl: '/_assets/logo-stripe.png',
     stage: 'beta',
   },
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: a.id,
         entityName: 'account',

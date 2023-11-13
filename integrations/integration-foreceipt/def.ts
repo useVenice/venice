@@ -54,8 +54,8 @@ export const foreceiptDef = {
   name: 'foreceipt',
   schemas: foreceiptSchemas,
   metadata: {categories: ['expense-management']},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
         entityName: 'account',

@@ -43,8 +43,8 @@ export const oneBrickDef = {
   name: 'onebrick',
   schemas: onebrickSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-onebrick.png'},
-  extension: {
-    sourceMapEntity: (data) => {
+  standardMappers: {
+    entity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity
         return {

@@ -96,27 +96,27 @@ export interface IntegrationDef<
   schemas: TSchemas
   metadata?: IntegrationMetadata
 
-  // standardMappers?: Partial<{
-  //   [k in T['_types']['sourceOutputEntity']['entityName']]: (
-  //     entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
-  //     settings: T['_types']['resourceSettings'],
-  //   ) => EntityPayload | null
-  // }> & {
-  //   institution?: (
-  //     data: T['_types']['institutionData'],
-  //   ) => Omit<ZStandard['institution'], 'id'>
-  //   resource: (
-  //     settings: T['_types']['resourceSettings'],
-  //   ) => Omit<ZStandard['resource'], 'id'>
-  // }
-
   standardMappers?: {
     institution?: (
       data: T['_types']['institutionData'],
     ) => Omit<ZStandard['institution'], 'id'>
-    resource: (
+    resource?: (
       settings: T['_types']['resourceSettings'],
     ) => Omit<ZStandard['resource'], 'id'>
+    /** TODO: Currently unused. We shoud migrate this to the pta vertical probably */
+    entity?:
+      | Partial<{
+          // Simpler
+          [k in T['_types']['sourceOutputEntity']['entityName']]: (
+            entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
+            settings: T['_types']['resourceSettings'],
+          ) => EntityPayload | null
+        }>
+      // More powerful
+      | ((
+          entity: T['_types']['sourceOutputEntity'],
+          settings: T['_types']['resourceSettings'],
+        ) => EntityPayload | null)
   }
 
   streams?: {
@@ -140,21 +140,6 @@ export interface IntegrationDef<
             : never
         }
       : never
-  }
-  extension?: {
-    sourceMapEntity?:
-      | Partial<{
-          // Simpler
-          [k in T['_types']['sourceOutputEntity']['entityName']]: (
-            entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
-            settings: T['_types']['resourceSettings'],
-          ) => EntityPayload | null
-        }>
-      // More powerful
-      | ((
-          entity: T['_types']['sourceOutputEntity'],
-          settings: T['_types']['resourceSettings'],
-        ) => EntityPayload | null)
   }
 }
 

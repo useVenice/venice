@@ -42,8 +42,8 @@ export const splitwiseDef = {
   name: 'splitwise',
   schemas: splitwiseSchemas,
   metadata: {categories: ['personal-finance']},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
         entityName: 'account',

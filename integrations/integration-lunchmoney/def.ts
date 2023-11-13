@@ -36,8 +36,8 @@ export const lunchmoneyDef = {
   name: 'lunchmoney',
   schemas: lunchmoneySchemas,
   metadata: {categories: ['personal-finance']},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: `${a.id}`,
         entityName: 'account',

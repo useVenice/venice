@@ -17,9 +17,6 @@ export const debugDef = {
   metadata: {stage: 'hidden'},
   name: 'debug',
   schemas: debugSchemas,
-  // Temporary hack to workaround assertion in mapStandardEntityLink when using debugProvider
-  // as a source. However we should do something so this workaround is not needed in the first place
-  extension: {sourceMapEntity: {}},
 } satisfies IntegrationDef<typeof debugSchemas>
 
 export default debugDef

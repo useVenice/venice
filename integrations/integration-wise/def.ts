@@ -45,8 +45,8 @@ export const wiseDef = {
   name: 'wise',
   schemas: wiseSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-wise.png'},
-  extension: {
-    sourceMapEntity: (data) => {
+  standardMappers: {
+    entity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity
         return {

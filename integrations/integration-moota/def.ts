@@ -33,8 +33,8 @@ export const mootaDef = {
   name: 'moota',
   schemas: mootaSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-moota.png'},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: a.bank_id,
         entityName: 'account',

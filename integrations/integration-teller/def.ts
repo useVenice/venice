@@ -61,9 +61,7 @@ export const tellerDef = {
       envName: undefined,
       loginUrl: undefined,
     }),
-  },
-  extension: {
-    sourceMapEntity: (data) => {
+    entity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity
         return {

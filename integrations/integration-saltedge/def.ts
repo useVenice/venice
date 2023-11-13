@@ -31,8 +31,8 @@ export const saltedgeDef = {
   name: 'saltedge',
   schemas: saltedgeSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-saltedge.png'},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}, c) => ({
         id: a.id,
         entityName: 'account',

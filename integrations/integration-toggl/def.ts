@@ -41,8 +41,8 @@ export const togglHelpers = intHelpers(togglSchemas)
 export const togglDef = {
   name: 'toggl',
   schemas: togglSchemas,
-  extension: {
-    sourceMapEntity: (data) => {
+  standardMappers: {
+    entity: (data) => {
       if (data.entityName === 'account') {
         const a = data.entity
         return {

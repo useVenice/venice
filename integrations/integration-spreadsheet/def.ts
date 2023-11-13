@@ -87,9 +87,9 @@ export const spreadsheetDef = {
     categories: ['flat-files-and-spreadsheets'],
     logoUrl: '/_assets/logo-spreadsheet.png',
   },
-  extension: {
-    // what do we do with the fact that conn has preset and entity itself has preset?
-    sourceMapEntity: ({entity}, conn) =>
+  standardMappers: {
+    entity: ({entity}, conn) =>
+      // what do we do with the fact that conn has preset and entity itself has preset?
       spreadsheetFormats[entity.preset].mapEntity(
         // A bit of a type hack... but needed
         entity.row as UnionToIntersection<(typeof entity)['row']>,

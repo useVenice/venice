@@ -74,12 +74,12 @@ export function mapStandardEntityLink({
     })
 
     // @deprecated
-    // const sourceMapEntity = provider.extension?.sourceMapEntity
-    // if (!sourceMapEntity) {
+    // const entity = provider.standardMappers?.entity
+    // if (!entity) {
     //   throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
     // }
     // // TODO: Update the initialReso as we receive resource updates
-    // const payload = R.pipe(sourceMapEntity, (map) =>
+    // const payload = R.pipe(entity, (map) =>
     //   typeof map === 'function'
     //     ? map(op.data, initialSettings)
     //     : map?.[op.data.entityName]?.(op.data, initialSettings),

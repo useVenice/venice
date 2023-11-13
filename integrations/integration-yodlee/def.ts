@@ -72,8 +72,8 @@ export const yodleeDef = {
   name: 'yodlee',
   schemas: yodleeSchemas,
   metadata: {categories: ['banking'], logoUrl: '/_assets/logo-yodlee.png'},
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}, extConn) => ({
         id: `${a.id}`,
         entityName: 'account',
@@ -177,9 +177,7 @@ export const yodleeDef = {
         }
       },
     },
-  },
-  // is the `id` actually externalId?
-  standardMappers: {
+    // is the `id` actually externalId?
     institution: (ins) => ({
       logoUrl: ins.logo,
       loginUrl: ins.loginUrl,

@@ -41,9 +41,7 @@ export const heronDef = {
         // labels: test vs. production
       }
     },
-  },
-  extension: {
-    sourceMapEntity: {
+    entity: {
       transaction: (entity) => ({
         id: entity.id,
         entityName: 'transaction',

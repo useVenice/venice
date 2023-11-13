@@ -53,8 +53,8 @@ export const rampDef = {
     logoUrl: '/_assets/logo-ramp.png',
     stage: 'beta',
   },
-  extension: {
-    sourceMapEntity: {
+  standardMappers: {
+    entity: {
       account: ({entity: a}) => ({
         id: a.id,
         entityName: 'account',

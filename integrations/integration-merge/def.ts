@@ -78,10 +78,7 @@ export const mergeDef = {
         // labels: test vs. production
       }
     },
-  },
-  // Should be called accounting...
-  extension: {
-    sourceMapEntity: {
+    entity: {
       account: (entity) => ({
         id: entity.id,
         entityName: 'account',
