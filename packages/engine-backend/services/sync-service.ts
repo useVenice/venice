@@ -9,7 +9,7 @@ import type {
 } from '@usevenice/cdk-core'
 import {extractId} from '@usevenice/cdk-core'
 import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk-ledger'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
@@ -98,7 +98,7 @@ export function makeSyncService({
                 ...op.data,
                 entity: {
                   standard: op.data.entity,
-                  external: (op.data as EntityPayloadWithExternal).external,
+                  external: (op.data as EntityPayloadWithRaw).raw,
                 },
               },
             })
@@ -189,7 +189,7 @@ export function makeSyncService({
         .pipe(Rx.mergeWith(rxjs.from(iterateEntities())))
         .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
     }
-    return rxjs.concat(verticalSources$(), defaultSource$() ?? rxjs.EMPTY)
+    return rxjs.concat(defaultSource$() ?? rxjs.EMPTY, verticalSources$())
   }
 
   const _syncPipeline = async (

@@ -1,4 +1,3 @@
- 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
@@ -30,8 +29,8 @@ async function setupTable({
     CREATE TABLE IF NOT EXISTS ${table} (
       source_id VARCHAR NOT NULL,
       id VARCHAR NOT NULL,
-      standard jsonb,
-      external jsonb DEFAULT '{}'::jsonb NOT NULL,
+      unified jsonb,
+      raw jsonb DEFAULT '{}'::jsonb NOT NULL,
       end_user_id VARCHAR,
       created_at timestamp with time zone DEFAULT now() NOT NULL,
       updated_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -42,7 +41,7 @@ async function setupTable({
     );
   `)
   // NOTE: Should we add org_id?
-  // NOTE: Rename `standard` to `unified` and `external` to `raw` or `remote` or `original`
+  // NOTE: Rename `unified` to `unified` and `raw` to `raw` or `remote` or `original`
   // NOTE: add prefix check would be nice
   for (const col of [
     'id',
@@ -89,12 +88,12 @@ export const postgresServer = {
       for (const entityName of ['account', 'transaction'] as const) {
         const res = await pool.query<{
           created_at: string
-          external: any
+          raw: any
           id: string
           end_user_id: string | null
           provider_name: string
           source_id: string | null
-          standard: any
+          unified: any
           updated_at: string
         }>(
           sql`SELECT * FROM ${sql.identifier([
@@ -105,8 +104,8 @@ export const postgresServer = {
           postgresHelpers._op('data', {
             data: {
               entityName,
-              entity: row.standard,
-              external: row.external,
+              entity: row.unified,
+              raw: row.raw,
               id: row.id,
               providerName: 'postgres',
               sourceId: row.source_id ?? undefined,
@@ -204,8 +203,8 @@ export const postgresServer = {
         batch.push({
           id,
           end_user_id: endUser?.id ?? null,
-          standard: data.entity,
-          external: data.external,
+          unified: data.entity,
+          raw: data.raw,
           source_id: sourceId,
         })
         return rxjs.of(op)

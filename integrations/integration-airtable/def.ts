@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk-ledger'
 import {z, zCast} from '@usevenice/util'
 
 import {zAirtableResourceSettings} from './AirtableClient'
@@ -8,7 +8,7 @@ import {zAirtableResourceSettings} from './AirtableClient'
 export const airtableSchemas = {
   name: z.literal('airtable'),
   resourceSettings: zAirtableResourceSettings,
-  destinationInputEntity: zCast<EntityPayloadWithExternal>(),
+  destinationInputEntity: zCast<EntityPayloadWithRaw>(),
 } satisfies IntegrationSchemas
 
 export const helpers = intHelpers(airtableSchemas)

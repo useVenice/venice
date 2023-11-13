@@ -24,7 +24,7 @@ import {
 
 import type {
   EntityPayload,
-  EntityPayloadWithExternal,
+  EntityPayloadWithRaw,
   StdSyncOperation,
 } from './entity-link-types'
 
@@ -37,7 +37,7 @@ export function mapStandardEntityLink({
   integration: {provider: IntegrationDef}
   settings: unknown
   id: Id['reso'] | undefined
-}): Link<AnyEntityPayload, EntityPayloadWithExternal> {
+}): Link<AnyEntityPayload, EntityPayloadWithRaw> {
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
@@ -57,41 +57,54 @@ export function mapStandardEntityLink({
           entityName: op.data.entityName as 'account',
           entity: standard as any,
           id,
-          external: op.data.entity,
+          raw: op.data.entity,
           providerName: provider.name,
           sourceId,
-        } satisfies EntityPayloadWithExternal,
+        } satisfies EntityPayloadWithRaw,
       })
-    }
-
-    // @deprecated
-    const sourceMapEntity = provider.extension?.sourceMapEntity
-    if (!sourceMapEntity) {
-      throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
-    }
-    // TODO: Update the initialReso as we receive resource updates
-    const payload = R.pipe(sourceMapEntity, (map) =>
-      typeof map === 'function'
-        ? map(op.data, initialSettings)
-        : map?.[op.data.entityName]?.(op.data, initialSettings),
-    )
-
-    if (!payload) {
-      // console.error('[mapStandardEntityLink] Unable to map payload', op)
-      return rxjs.EMPTY
     }
 
     return rxjs.of({
       ...op,
       data: {
-        ...payload,
+        ...op.data,
         id,
-        external: op.data.entity,
+        entity: undefined as any,
+        entityName: `${provider.name}_${op.data.entityName}`,
+        raw: op.data.entity as any,
         providerName: provider.name,
-        externalId: op.data.id,
         sourceId,
-      },
+      } satisfies EntityPayloadWithRaw,
     })
+
+    // @deprecated
+    // const sourceMapEntity = provider.extension?.sourceMapEntity
+    // if (!sourceMapEntity) {
+    //   throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
+    // }
+    // // TODO: Update the initialReso as we receive resource updates
+    // const payload = R.pipe(sourceMapEntity, (map) =>
+    //   typeof map === 'function'
+    //     ? map(op.data, initialSettings)
+    //     : map?.[op.data.entityName]?.(op.data, initialSettings),
+    // )
+
+    // if (!payload) {
+    //   // console.error('[mapStandardEntityLink] Unable to map payload', op)
+    //   return rxjs.EMPTY
+    // }
+
+    // return rxjs.of({
+    //   ...op,
+    //   data: {
+    //     ...payload,
+    //     id,
+    //     external: op.data.entity,
+    //     providerName: provider.name,
+    //     externalId: op.data.id,
+    //     sourceId,
+    //   },
+    // })
   })
 }
 

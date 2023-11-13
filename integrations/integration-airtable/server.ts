@@ -39,7 +39,7 @@ export const airtableServer = {
             Id: id,
             'Provider Name': providerName,
             Standard: JSON.stringify(data.entity),
-            External: JSON.stringify(data.external),
+            External: JSON.stringify(data.raw),
             ...partialTxn,
           },
         }

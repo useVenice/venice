@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
-import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk-ledger'
 import {z, zCast} from '@usevenice/util'
 
 export const zPgConfig = z.object({
@@ -30,8 +30,8 @@ export const postgresSchemas = {
       // @see https://share.cleanshot.com/w0KVx1Y2
       .optional(),
   }),
-  destinationInputEntity: zCast<EntityPayloadWithExternal>(),
-  sourceOutputEntity: zCast<EntityPayloadWithExternal>(),
+  destinationInputEntity: zCast<EntityPayloadWithRaw>(),
+  sourceOutputEntity: zCast<EntityPayloadWithRaw>(),
   sourceState: z
     .object({
       invoice: z

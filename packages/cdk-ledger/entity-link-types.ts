@@ -13,11 +13,9 @@ export const zEntityPayload = z.object({
   entity: z.record(z.unknown()),
 })
 
-export type EntityPayloadWithExternal = z.infer<
-  typeof zEntityPayloadWithExternal
->
-export const zEntityPayloadWithExternal = zEntityPayload.extend({
-  external: z.unknown(),
+export type EntityPayloadWithRaw = z.infer<typeof zEntityPayloadWithRaw>
+export const zEntityPayloadWithRaw = zEntityPayload.extend({
+  raw: z.unknown(),
   providerName: z.string(),
   sourceId: z.string().optional(),
 })
