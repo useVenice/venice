@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, oauthBaseSchema} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {makePostingsMap, zEntityPayload} from '@usevenice/cdk-ledger'
 import type {Standard} from '@usevenice/standard'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
@@ -12,16 +12,16 @@ export const qboSchemas = {
   integrationConfig: zConfig,
   resourceSettings: zSettings,
   connectOutput: oauthBaseSchema.connectOutput,
-  sourceOutputEntity: z.discriminatedUnion('entityName', [
-    z.object({
-      id: z.string(),
-      entityName: z.literal('account'),
-      entity: zCast<QBO.Account>(),
-    }),
-    z.object({
-      id: z.string(),
-      entityName: z.literal('transaction'),
-      entity: z.discriminatedUnion('type', [
+  sourceOutputEntity: zEntityPayload,
+  verticals: {
+    accounting: {
+      account: zCast<QBO.Account>(),
+      expense: zCast<QBO.Purchase>(),
+      vendor: zCast<QBO.Vendor>(),
+    },
+    pta: {
+      account: zCast<QBO.Account>(),
+      transaction: z.discriminatedUnion('type', [
         z
           .object({type: z.literal('Deposit'), entity: zCast<QBO.Deposit>()})
           .extend({realmId: z.string()}),
@@ -41,13 +41,6 @@ export const qboSchemas = {
           .object({type: z.literal('Payment'), entity: zCast<QBO.Payment>()})
           .extend({realmId: z.string()}),
       ]),
-    }),
-  ]),
-  verticals: {
-    accounting: {
-      account: zCast<QBO.Account>(),
-      expense: zCast<QBO.Purchase>(),
-      vendor: zCast<QBO.Vendor>(),
     },
   },
 } satisfies IntegrationSchemas
@@ -83,25 +76,20 @@ export const qboDef = {
       }),
       vendor: (v) => ({id: v.Id, name: v.DisplayName, url: ''}),
     },
-  },
-  extension: {
-    sourceMapEntity: {
-      account: ({entity: a}) => ({
-        id: a.Id,
-        entityName: 'account',
-        entity: {
-          name: a.FullyQualifiedName.replaceAll(':', '/'),
-          // QBO account balance should always be computed because we are guaranteed
-          // the full data set and no need for balance syncing
-          type: mapQboAccountType(a),
-          removed: a.status === 'deleted',
-          defaultUnit: (a.CurrencyRef.value ?? undefined) as Unit | undefined,
-          informationalBalances: {
-            current: A(a.CurrentBalance, a.CurrencyRef.value),
-          },
+    pta: {
+      account: (a) => ({
+        name: a.FullyQualifiedName.replaceAll(':', '/'),
+        // QBO account balance should always be computed because we are guaranteed
+        // the full data set and no need for balance syncing
+        type: mapQboAccountType(a),
+        removed: a.status === 'deleted',
+        defaultUnit: (a.CurrencyRef.value ?? undefined) as Unit | undefined,
+        informationalBalances: {
+          current: A(a.CurrentBalance, a.CurrencyRef.value),
         },
       }),
-      transaction: ({entity: t}) => {
+
+      transaction: (t) => {
         switch (t.type) {
           case 'Purchase': {
             const sign = t.entity.Credit ? 1 : -1
@@ -128,26 +116,22 @@ export const qboDef = {
               }
             }
             return {
-              id: t.entity.Id,
-              entityName: 'transaction',
-              entity: {
-                date: DateTime.fromISO(t.entity.TxnDate, {
-                  zone: 'UTC',
-                }).toISODate(),
-                pending: false, // fix me?
-                postingsMap: postings,
-                payee:
-                  // TODO: Figure out if '-- Vendor name pending --' is a Pilot specific thing
-                  t.entity.EntityRef?.name !== '-- Vendor name pending --'
-                    ? t.entity.EntityRef?.name
-                    : undefined,
-                description:
-                  Object.values(postings).find((post) => post.memo)?.memo ??
-                  t.entity.PrivateNote ??
-                  '',
-                notes: t.entity.PrivateNote,
-                removed: t.entity.status === 'deleted',
-              },
+              date: DateTime.fromISO(t.entity.TxnDate, {
+                zone: 'UTC',
+              }).toISODate(),
+              pending: false, // fix me?
+              postingsMap: postings,
+              payee:
+                // TODO: Figure out if '-- Vendor name pending --' is a Pilot specific thing
+                t.entity.EntityRef?.name !== '-- Vendor name pending --'
+                  ? t.entity.EntityRef?.name
+                  : undefined,
+              description:
+                Object.values(postings).find((post) => post.memo)?.memo ??
+                t.entity.PrivateNote ??
+                '',
+              notes: t.entity.PrivateNote,
+              removed: t.entity.status === 'deleted',
             }
           }
           case 'Deposit': {
@@ -171,21 +155,17 @@ export const qboDef = {
               }
             }
             return {
-              id: t.entity.Id,
-              entityName: 'transaction',
-              entity: {
-                date: DateTime.fromISO(t.entity.TxnDate, {
-                  zone: 'UTC',
-                }).toISODate(),
-                pending: false, // fix me?
-                postingsMap: postings,
-                description:
-                  Object.values(postings).find((post) => post.memo)?.memo ??
-                  t.entity.PrivateNote ??
-                  '',
-                notes: t.entity.PrivateNote,
-                removed: t.entity.status === 'deleted',
-              },
+              date: DateTime.fromISO(t.entity.TxnDate, {
+                zone: 'UTC',
+              }).toISODate(),
+              pending: false, // fix me?
+              postingsMap: postings,
+              description:
+                Object.values(postings).find((post) => post.memo)?.memo ??
+                t.entity.PrivateNote ??
+                '',
+              notes: t.entity.PrivateNote,
+              removed: t.entity.status === 'deleted',
             }
           }
           case 'JournalEntry': {
@@ -211,24 +191,20 @@ export const qboDef = {
             }
 
             return {
-              id: t.entity.Id,
-              entityName: 'transaction',
-              entity: {
-                date: DateTime.fromISO(t.entity.TxnDate, {
-                  zone: 'UTC',
-                }).toISODate(),
-                pending: false, // fix me?
-                postingsMap: postings,
-                description:
-                  (t.entity.DocNumber
-                    ? `Journal Entry #${t.entity.DocNumber}`
-                    : null) ??
-                  Object.values(postings).find((post) => post.memo)?.memo ??
-                  t.entity.PrivateNote ??
-                  '',
-                notes: t.entity.PrivateNote,
-                removed: t.entity.status === 'deleted',
-              },
+              date: DateTime.fromISO(t.entity.TxnDate, {
+                zone: 'UTC',
+              }).toISODate(),
+              pending: false, // fix me?
+              postingsMap: postings,
+              description:
+                (t.entity.DocNumber
+                  ? `Journal Entry #${t.entity.DocNumber}`
+                  : null) ??
+                Object.values(postings).find((post) => post.memo)?.memo ??
+                t.entity.PrivateNote ??
+                '',
+              notes: t.entity.PrivateNote,
+              removed: t.entity.status === 'deleted',
             }
           }
           case 'Invoice': {
@@ -268,21 +244,17 @@ export const qboDef = {
             }
 
             return {
-              id: t.entity.Id,
-              entityName: 'transaction',
-              entity: {
-                date: DateTime.fromISO(t.entity.TxnDate, {
-                  zone: 'UTC',
-                }).toISODate(),
-                pending: false, // fix me?
-                postingsMap: postings,
-                description:
-                  Object.values(postings).find((post) => post.memo)?.memo ??
-                  t.entity.PrivateNote ??
-                  '',
-                notes: t.entity.PrivateNote,
-                removed: t.entity.status === 'deleted',
-              },
+              date: DateTime.fromISO(t.entity.TxnDate, {
+                zone: 'UTC',
+              }).toISODate(),
+              pending: false, // fix me?
+              postingsMap: postings,
+              description:
+                Object.values(postings).find((post) => post.memo)?.memo ??
+                t.entity.PrivateNote ??
+                '',
+              notes: t.entity.PrivateNote,
+              removed: t.entity.status === 'deleted',
             }
           }
           // TODO: Generate postings map rather than entire transaction to reduce duplication
@@ -305,21 +277,17 @@ export const qboDef = {
               },
             })
             return {
-              id: t.entity.Id,
-              entityName: 'transaction',
-              entity: {
-                date: DateTime.fromISO(t.entity.TxnDate, {
-                  zone: 'UTC',
-                }).toISODate(),
-                pending: false, // fix me?
-                postingsMap: postings,
-                description:
-                  Object.values(postings).find((post) => post.memo)?.memo ??
-                  t.entity.PrivateNote ??
-                  '',
-                notes: t.entity.PrivateNote,
-                removed: t.entity.status === 'deleted',
-              },
+              date: DateTime.fromISO(t.entity.TxnDate, {
+                zone: 'UTC',
+              }).toISODate(),
+              pending: false, // fix me?
+              postingsMap: postings,
+              description:
+                Object.values(postings).find((post) => post.memo)?.memo ??
+                t.entity.PrivateNote ??
+                '',
+              notes: t.entity.PrivateNote,
+              removed: t.entity.status === 'deleted',
             }
           }
           default:
@@ -337,6 +305,18 @@ export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
   JournalEntry: 'JournalEntry',
   Invoice: 'Invoice',
   Payment: 'Payment',
+}
+
+export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
+  ...TRANSACTION_TYPE_NAME,
+  Account: 'Account',
+  Bill: 'Bill',
+  BillPayment: 'BillPayment',
+  CreditMemo: 'CreditMemo',
+  Transfer: 'Transfer',
+  Vendor: 'Vendor',
+  Customer: 'Customer',
+  Item: 'Item',
 }
 
 const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<

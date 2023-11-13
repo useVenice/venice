@@ -384,6 +384,7 @@ declare namespace QBO {
     // https://developer.intuit.com/app/developer/qbo/docs/develop/explore-the-quickbooks-online-api/change-data-capture#using-change-data-capture
     status?: 'deleted'
     Metadata: MetaData
+    [k: string]: unknown
   }
 
   export interface Entity {

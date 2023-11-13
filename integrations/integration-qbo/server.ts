@@ -1,8 +1,8 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
-import {Rx, rxjs} from '@usevenice/util'
+import {Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {qboSchemas} from './def'
-import {qboHelpers, TRANSACTION_TYPE_NAME} from './def'
+import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 import {makeQBOClient} from './QBOClient'
 
 export const qboServer = {
@@ -10,22 +10,15 @@ export const qboServer = {
     makeQBOClient(config, settings, onSettingsChange),
 
   sourceSync: ({config, settings}) => {
+    // TODO: get the data from newInstance..
     const qbo = makeQBOClient(config, settings, () => {})
-    const realmId = settings.oauth.connection_config.realmId
     async function* iterateEntities() {
-      for await (const res of qbo.getAll('Account')) {
-        yield res.entities.map((a) => qboHelpers._opData('account', a.Id, a))
-      }
       const updatedSince = undefined
-      for (const type of Object.values(TRANSACTION_TYPE_NAME)) {
+      for (const type of Object.values(QBO_ENTITY_NAME)) {
         for await (const res of qbo.getAll(type, {updatedSince})) {
           const entities = res.entities as QBO.Transaction[]
           yield entities.map((t) =>
-            qboHelpers._opData('transaction', t.Id, {
-              type: type as 'Purchase',
-              entity: t as QBO.Purchase,
-              realmId,
-            }),
+            qboHelpers._opData(snakeCase(type), t.Id, t),
           )
         }
       }
@@ -51,6 +44,36 @@ export const qboServer = {
           case 'vendor': {
             const res = await qbo.getAll('Vendor').next()
             return {hasNextPage: true, items: res.value?.entities ?? []}
+          }
+          default:
+            throw new Error(`Unknown type: ${type}`)
+        }
+      },
+    },
+    pta: {
+      list: async (qbo, type, _opts) => {
+        switch (type) {
+          case 'account': {
+            const res = await qbo.getAll('Account').next()
+            return {hasNextPage: true, items: res.value?.entities ?? []}
+          }
+          case 'transaction': {
+            async function* iterateEntities() {
+              const updatedSince = undefined
+              for (const type of Object.values(TRANSACTION_TYPE_NAME)) {
+                for await (const res of qbo.getAll(type, {updatedSince})) {
+                  const entities = res.entities as QBO.Transaction[]
+                  yield entities.map((t) => ({
+                    Id: t.Id, // For primary key...
+                    type: type as 'Purchase',
+                    entity: t as QBO.Purchase,
+                    realmId: qbo.realmId,
+                  }))
+                }
+              }
+            }
+            const res = await iterateEntities().next()
+            return {hasNextPage: true, items: res.value ?? []}
           }
           default:
             throw new Error(`Unknown type: ${type}`)

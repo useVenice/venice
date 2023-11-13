@@ -169,6 +169,9 @@ export const makeQBOClient = (
   }
 
   return {
+    get realmId() {
+      return creds$.value.realmId
+    },
     creds$,
     globalId,
     query,

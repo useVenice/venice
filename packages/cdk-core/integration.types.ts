@@ -23,6 +23,7 @@ import type {
 } from './providers.types'
 import type {AccountingMethods, ZAccounting} from './verticals/accounting'
 import type {InvestmentMethods, ZInvestment} from './verticals/investment'
+import type {PtaMethods, ZPta} from './verticals/pta'
 
 export interface Verticals<
   TDef extends IntegrationSchemas = IntegrationSchemas,
@@ -35,6 +36,11 @@ export interface Verticals<
   investment: {
     models: ZInvestment
     methods: InvestmentMethods<TDef, TInstance>
+  }
+  /** plain text accounting */
+  pta: {
+    models: ZPta
+    methods: PtaMethods<TDef, TInstance>
   }
 }
 
@@ -390,13 +396,15 @@ export function intHelpers<TSchemas extends IntegrationSchemas>(
     _opData: <K extends OpData['data']['entityName']>(
       entityName: K,
       id: string,
-      entity: Extract<OpData['data'], {entityName: K}>['entity'] | null,
+      entity: string extends OpData['data']['entityName']
+        ? Record<string, unknown> | null
+        : Extract<OpData['data'], {entityName: K}>['entity'] | null,
     ) =>
-      R.identity<Op>({
+      ({
         // TODO: Figure out why we need an `unknown` cast here
         data: {entityName, id, entity} as unknown as OpData['data'],
         type: 'data',
-      }) as OpData,
+      } satisfies OpData),
     _insOpData: (
       id: ExternalId,
       insitutionData: _types['institutionData'],
