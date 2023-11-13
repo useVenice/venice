@@ -111,7 +111,7 @@ export function upsertByIdQuery(
   tableName: string,
   _valueMaps: MaybeArray<{id: string; [k: string]: unknown}>,
   // deep is not implemented yet
-  opts: {mergeJson?: 'shallow'} = {},
+  opts: {mergeJson?: 'shallow'; primaryKey?: string[]} = {},
 ) {
   // console.log('[upsertByIdQuery]', {tableName, valueMaps})
   const valueMaps = fromMaybeArray(_valueMaps)
@@ -120,8 +120,9 @@ export function upsertByIdQuery(
     return null
   }
 
+  const pkey = opts.primaryKey ?? ['id']
   const table = toSqlId(tableName)
-  const kId = 'id'
+
   const kUpdatedAt = 'updatedAt'
   const kCreatedAt = 'createdAt'
   // `undefined` is not supported by postgres and we make it mean `set to null` for now.
@@ -166,11 +167,14 @@ export function upsertByIdQuery(
       valLists.map((vals) => sql.join(vals, sql`, `)),
       sql`), (`,
     )})
-    ON CONFLICT (${toSqlId(kId)}) DO UPDATE SET
+    ON CONFLICT (${sql.join(
+      pkey.map((k) => sql.identifier([snakeCase(k)])),
+      sql`, `,
+    )}) DO UPDATE SET
       ${sql.join(
         [
           ...cols
-            .filter((c) => c.key !== kId)
+            .filter((c) => !pkey.includes(c.key))
             .map((c) => sql`${c.colId} = ${c.excluded}`),
           sql`${toSqlId(kUpdatedAt)} = now()`,
         ],
@@ -179,7 +183,7 @@ export function upsertByIdQuery(
     WHERE
       ${sql.join(
         cols
-          .filter((c) => c.key !== kId && c.key !== kUpdatedAt)
+          .filter((c) => !pkey.includes(c.key) && c.key !== kUpdatedAt)
           .map((c) => sql`${c.fullId} IS DISTINCT FROM ${c.excluded}`),
         sql` OR \n`,
       )};

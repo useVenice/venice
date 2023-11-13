@@ -28,25 +28,28 @@ async function setupTable({
 
   await pool.query(sql`
     CREATE TABLE IF NOT EXISTS ${table} (
+      source_id VARCHAR NOT NULL,
       id VARCHAR NOT NULL,
-      provider_name VARCHAR GENERATED ALWAYS AS (split_part((id)::text, '_'::text, 2)) STORED NOT NULL,
-      source_id VARCHAR,
       standard jsonb,
       external jsonb DEFAULT '{}'::jsonb NOT NULL,
+      end_user_id VARCHAR,
       created_at timestamp with time zone DEFAULT now() NOT NULL,
       updated_at timestamp with time zone DEFAULT now() NOT NULL,
-      end_user_id VARCHAR,
-      CONSTRAINT ${sql.identifier([`pk_${tableName}`])} PRIMARY KEY ("id")
+      provider_name VARCHAR GENERATED ALWAYS AS (split_part((source_id)::text, '_'::text, 2)) STORED NOT NULL,
+      CONSTRAINT ${sql.identifier([
+        `pk_${tableName}`,
+      ])} PRIMARY KEY ("source_id", "id")
     );
   `)
   // NOTE: Should we add org_id?
   // NOTE: Rename `standard` to `unified` and `external` to `raw` or `remote` or `original`
   // NOTE: add prefix check would be nice
   for (const col of [
+    'id',
+    'source_id',
+    'provider_name',
     'created_at',
     'updated_at',
-    'provider_name',
-    'source_id',
     'end_user_id',
   ]) {
     await pool.query(sql`
@@ -221,7 +224,11 @@ export const postgresServer = {
             R.pipe(
               batches,
               R.toPairs,
-              R.map(([eName, batch]) => upsertByIdQuery(eName, batch)),
+              R.map(([eName, batch]) =>
+                upsertByIdQuery(eName, batch, {
+                  primaryKey: ['id', 'source_id'],
+                }),
+              ),
               R.compact,
               R.map((query) => client.query(query)),
             ),

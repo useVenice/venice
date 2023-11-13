@@ -139,8 +139,8 @@ export function makeSyncService({
 
       const getId = (e: any) => {
         const id = primaryKey && R.pathOr(e, primaryKey, undefined)
-        console.error('object missing primary key', primaryKey, e)
         if (!id) {
+          console.error('object missing primary key', primaryKey, e)
           throw new Error(`Primary key missing: ${primaryKey}`)
         }
         return `${id}`

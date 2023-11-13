@@ -27,7 +27,6 @@ import type {
   EntityPayloadWithExternal,
   StdSyncOperation,
 } from './entity-link-types'
-import {makeStandardId, zStandardEntityPrefixFromName} from './utils'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({
@@ -49,14 +48,7 @@ export function mapStandardEntityLink({
       entityName as never
     ] as unknown as EntityMapper
 
-    const id = makeStandardId(
-      // TODO: leverage openAPI format field!
-      entityName === 'expense'
-        ? ('exp' as never)
-        : zStandardEntityPrefixFromName.parse(entityName ?? vertical),
-      provider.name,
-      op.data.id,
-    )
+    const id = op.data.id
     if (mapper) {
       const standard = mapper(op.data.entity as never, initialSettings)
       return rxjs.of({
