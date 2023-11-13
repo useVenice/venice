@@ -1,6 +1,6 @@
 import type {LinkFactory} from '@usevenice/cdk-core'
 import {logLink} from '@usevenice/cdk-core'
-import {renameAccountLink} from '@usevenice/cdk-ledger'
+import {renameAccountLink} from '@usevenice/cdk-core'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
 import {makePostgresMetaService} from '@usevenice/meta-service-postgres'

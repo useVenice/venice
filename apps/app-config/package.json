@@ -11,7 +11,6 @@
   "dependencies": {
     "@t3-oss/env-nextjs": "0.3.1",
     "@usevenice/cdk-core": "workspace:*",
-    "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/integration-airtable": "workspace:*",

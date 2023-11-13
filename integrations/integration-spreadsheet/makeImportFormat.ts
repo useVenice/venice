@@ -1,4 +1,4 @@
-import type {EntityPayload} from '@usevenice/cdk-ledger'
+import type {EntityPayload} from '@usevenice/cdk-core'
 import type {ValueOf} from '@usevenice/util'
 import {R, z} from '@usevenice/util'
 

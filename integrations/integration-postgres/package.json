@@ -15,7 +15,6 @@
     "zod": "3.21.4"
   },
   "devDependencies": {
-    "@types/pg": "8.6.5",
-    "@usevenice/cdk-ledger": "workspace:*"
+    "@types/pg": "8.6.5"
   }
 }

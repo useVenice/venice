@@ -10,7 +10,7 @@ import {
   zRaw,
   zStandard,
 } from '@usevenice/cdk-core'
-import type {VeniceSourceState} from '@usevenice/cdk-ledger'
+import type {VeniceSourceState} from '@usevenice/cdk-core'
 import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import {inngest, zEvent} from '../events'

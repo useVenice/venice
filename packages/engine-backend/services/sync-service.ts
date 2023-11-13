@@ -9,12 +9,12 @@ import type {
 } from '@usevenice/cdk-core'
 import {extractId} from '@usevenice/cdk-core'
 import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk-core'
-import type {EntityPayloadWithRaw} from '@usevenice/cdk-ledger'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk-core'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
-} from '@usevenice/cdk-ledger'
+} from '@usevenice/cdk-core'
 import type {z} from '@usevenice/util'
 import {objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
 

@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
 import type {Pta} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {makePostingsMap} from '@usevenice/cdk-core'
 import type {SerializedTimestamp} from '@usevenice/integration-firebase'
 import type {Merge} from '@usevenice/util'
 import {A, objectFromArray, R, z, zCast} from '@usevenice/util'

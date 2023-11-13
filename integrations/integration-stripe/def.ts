@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {makePostingsMap} from '@usevenice/cdk-core'
 import {A, z, zCast} from '@usevenice/util'
 
 import type {components} from './stripe.gen'

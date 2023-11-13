@@ -158,9 +158,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -312,9 +309,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -657,19 +651,12 @@ importers:
       airtable:
         specifier: 0.11.4
         version: 0.11.4
-    devDependencies:
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
 
   integrations/integration-alphavantage:
     dependencies:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -679,9 +666,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -691,9 +675,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -713,10 +694,6 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
-    devDependencies:
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
 
   integrations/integration-debug:
     dependencies:
@@ -732,9 +709,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -771,9 +745,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/integration-firebase':
         specifier: workspace:*
         version: link:../integration-firebase
@@ -798,9 +769,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -814,9 +782,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -826,9 +791,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -842,9 +804,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -882,9 +841,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -894,9 +850,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -916,9 +869,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -972,18 +922,12 @@ importers:
       '@types/pg':
         specifier: 8.6.5
         version: 8.6.5
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
 
   integrations/integration-qbo:
     dependencies:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -997,9 +941,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1009,9 +950,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1021,9 +959,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1033,9 +968,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1055,9 +987,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1071,9 +1000,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1090,9 +1016,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1102,9 +1025,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1123,9 +1043,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1135,9 +1052,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../../packages/cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../../packages/cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1189,15 +1103,6 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(patch_hash=chm753bazxetxxpzf3uqs4fzzu)(@trpc/server@10.40.0)(zod@3.21.4)
 
-  packages/cdk-ledger:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../cdk-core
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../util
-
   packages/connect:
     dependencies:
       react:
@@ -1225,9 +1130,6 @@ importers:
       '@usevenice/cdk-core':
         specifier: workspace:*
         version: link:../cdk-core
-      '@usevenice/cdk-ledger':
-        specifier: workspace:*
-        version: link:../cdk-ledger
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util

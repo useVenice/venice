@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
-import type {EntityPayload} from '@usevenice/cdk-ledger'
+import type {EntityPayload} from '@usevenice/cdk-core'
 import {z, zCast} from '@usevenice/util'
 
 import type {components} from './heron.gen'

@@ -6,6 +6,7 @@ import {makeId} from './id.types'
 import type {ZStandard} from './meta.types'
 import type {
   Destination,
+  EntityPayload,
   ResoUpdateData,
   Source,
   StateUpdateData,
@@ -148,13 +149,13 @@ export interface IntegrationDef<
           [k in T['_types']['sourceOutputEntity']['entityName']]: (
             entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
             settings: T['_types']['resourceSettings'],
-          ) => import('../cdk-ledger').EntityPayload | null
+          ) => EntityPayload | null
         }>
       // More powerful
       | ((
           entity: T['_types']['sourceOutputEntity'],
           settings: T['_types']['resourceSettings'],
-        ) => import('../cdk-ledger').EntityPayload | null)
+        ) => EntityPayload | null)
   }
 }
 

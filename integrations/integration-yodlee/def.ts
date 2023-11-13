@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
 import type {Pta} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-ledger'
+import {makePostingsMap} from '@usevenice/cdk-core'
 import type {Brand} from '@usevenice/util'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@usevenice/util'
 

@@ -1,7 +1,7 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, oauthBaseSchema} from '@usevenice/cdk-core'
+import {intHelpers, makePostingsMap, oauthBaseSchema} from '@usevenice/cdk-core'
 import type {Pta} from '@usevenice/cdk-core'
-import {makePostingsMap, zEntityPayload} from '@usevenice/cdk-ledger'
+import {zEntityPayload} from '@usevenice/cdk-core'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
 

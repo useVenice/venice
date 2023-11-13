@@ -1,7 +1,7 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
 import type {Pta} from '@usevenice/cdk-core'
-import type {StdCache} from '@usevenice/cdk-ledger'
-import {cachingLink} from '@usevenice/cdk-ledger'
+import type {StdCache} from '@usevenice/cdk-core'
+import {cachingLink} from '@usevenice/cdk-core'
 import {
   $writeFile,
   fromCompletion,

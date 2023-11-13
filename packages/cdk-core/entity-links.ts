@@ -1,12 +1,3 @@
-import type {
-  AnyEntityPayload,
-  EntityMapper,
-  Id,
-  IntegrationDef,
-  Link,
-} from '@usevenice/cdk-core'
-import {handlersLink, transformLink} from '@usevenice/cdk-core'
-import type {Pta} from '@usevenice/cdk-core'
 import type {AmountMap, WritableDraft} from '@usevenice/util'
 import {
   A,
@@ -22,11 +13,16 @@ import {
   zFunction,
 } from '@usevenice/util'
 
+import {handlersLink, transformLink} from './base-links'
+import type {Id} from './id.types'
+import type {EntityMapper, IntegrationDef} from './integration.types'
+import type {AnyEntityPayload, Link} from './protocol'
 import type {
   EntityPayload,
   EntityPayloadWithRaw,
   StdSyncOperation,
-} from './entity-link-types'
+} from './protocol'
+import type {Pta} from './verticals/pta'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({

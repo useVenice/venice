@@ -9,7 +9,5 @@
     "@usevenice/integration-firebase": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
-  "devDependencies": {
-    "@usevenice/cdk-ledger": "workspace:*"
-  }
+  "devDependencies": {}
 }

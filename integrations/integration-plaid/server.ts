@@ -3,7 +3,7 @@ import type {PlaidApi, PlaidError} from 'plaid'
 import {CountryCode, Products} from 'plaid'
 
 import type {IntegrationServer} from '@usevenice/cdk-core'
-import {shouldSync} from '@usevenice/cdk-ledger'
+import {shouldSync} from '@usevenice/cdk-core'
 import type {DurationObjectUnits, IAxiosError} from '@usevenice/util'
 import {DateTime, R, RateLimit, Rx, rxjs} from '@usevenice/util'
 

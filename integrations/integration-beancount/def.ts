@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers} from '@usevenice/cdk-core'
-import {zEntityPayload} from '@usevenice/cdk-ledger'
+import {zEntityPayload} from '@usevenice/cdk-core'
 import {isAmountUnit, z} from '@usevenice/util'
 
 export type BeancountDestOptions = z.infer<typeof zBeancountDestOptions>

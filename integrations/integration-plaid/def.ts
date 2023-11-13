@@ -8,7 +8,7 @@ import type {
 
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zWebhookInput} from '@usevenice/cdk-core'
-import {makePostingsMap, makeStandardId} from '@usevenice/cdk-ledger'
+import {makePostingsMap} from '@usevenice/cdk-core'
 import {A, z, zCast} from '@usevenice/util'
 
 import {
@@ -163,11 +163,6 @@ export const plaidDef = {
             payee: t.merchant_name ?? undefined,
             postingsMap: makePostingsMap({
               main: {
-                accountId: makeStandardId(
-                  'acct',
-                  plaidSchemas.name.value,
-                  accountExternalId,
-                ) as AccountId,
                 accountExternalId,
                 amount: currencyAmount,
               },

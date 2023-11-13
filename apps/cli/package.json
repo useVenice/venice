@@ -6,7 +6,6 @@
     "@trpc/server": "10.40.0",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk-core": "workspace:*",
-    "@usevenice/cdk-ledger": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/integration-alphavantage": "workspace:*",
     "@usevenice/integration-beancount": "workspace:*",

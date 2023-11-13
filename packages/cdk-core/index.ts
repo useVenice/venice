@@ -5,8 +5,10 @@ export * from './verticals/pta'
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture}.{ts,tsx}"}
 export * from './base-links'
+export * from './entity-links'
 export * from './frontend-utils'
 export * from './id.types'
+export * from './incremental-sync'
 export * from './integration-utils'
 export * from './integration.types'
 export * from './meta.types'
