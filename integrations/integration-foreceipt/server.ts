@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
 import {
   firebaseServer,
   serializeTimestamp,
@@ -52,7 +52,7 @@ export const foreceiptServer = {
             Rx.mergeMap((op) => {
               const r =
                 op.type === 'data' && op.data.entityName === 'Receipts'
-                  ? (op.data.entity  as Foreceipt.Receipt)
+                  ? (op.data.entity as Foreceipt.Receipt)
                   : null
               return rxjs.of(
                 op.type !== 'data'
@@ -77,8 +77,7 @@ export const foreceiptServer = {
                             }
                           : {
                               id: op.data.id,
-                              entity: op.data
-                                .entity  as Foreceipt.Account,
+                              entity: op.data.entity as Foreceipt.Account,
                               entityName: 'account',
                               info,
                             },

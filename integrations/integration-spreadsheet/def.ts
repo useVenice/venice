@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers} from '@usevenice/cdk'
 import type {UnionToIntersection} from '@usevenice/util'
 import {z} from '@usevenice/util'
 

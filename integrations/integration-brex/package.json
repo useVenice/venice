@@ -8,7 +8,7 @@
     "codegen:transactions": "openapi-typescript __generated__/transactions.openapi.json --make-paths-enum --output __generated__/transactions.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

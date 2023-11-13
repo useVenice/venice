@@ -2,7 +2,7 @@ import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
 
 // import {accountingRouter} from './verticals/accounting'
 
-import {createAccountingRouter} from '@usevenice/cdk-core/verticals/accounting'
+import {createAccountingRouter} from '@usevenice/cdk/verticals/accounting'
 
 import {remoteProcedure, trpc} from './_base'
 import {adminRouter} from './adminRouter'

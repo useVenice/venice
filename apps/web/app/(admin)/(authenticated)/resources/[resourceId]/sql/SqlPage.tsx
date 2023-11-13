@@ -9,7 +9,7 @@ import {
   kAcceptUrlParam,
   kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
-import type {Id} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
 import {
   Breadcrumb,
   BreadcrumbItem,

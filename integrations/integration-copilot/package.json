@@ -5,7 +5,7 @@
   "sideEffects": [],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/integration-firebase": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

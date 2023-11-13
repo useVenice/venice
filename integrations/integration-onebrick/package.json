@@ -11,7 +11,7 @@
     "codegen:next": "openapi-typescript https://dash.readme.com/api/v1/api-registry/rwkfe1gl7puob14 --output onebrick.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

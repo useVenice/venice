@@ -168,8 +168,6 @@ export function cachingTransformLink(
   )
 }
 
-// TODO: Move this entire file into @usevenice/cdk-ledger package
-
 /**
  * Used to workaround beancount limitation https://groups.google.com/g/beancount/c/PmkPVgLNKgg
  * Not ideal that we have to use Venice link to workaround

@@ -6,7 +6,7 @@ import {ThemeProvider} from 'next-themes'
 import React, {useEffect, useRef} from 'react'
 
 import {env} from '@usevenice/app-config/env'
-import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk-core'
+import {getViewerId, zViewerFromUnverifiedJwtToken} from '@usevenice/cdk'
 import {TRPCProvider} from '@usevenice/engine-frontend'
 import {Toaster} from '@usevenice/ui'
 

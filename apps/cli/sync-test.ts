@@ -2,8 +2,8 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
 
-import {logLink, sync} from '@usevenice/cdk-core'
-import {mapStandardEntityLink} from '@usevenice/cdk-core'
+import {logLink, sync} from '@usevenice/cdk'
+import {mapStandardEntityLink} from '@usevenice/cdk'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
 import type {rxjs} from '@usevenice/util'

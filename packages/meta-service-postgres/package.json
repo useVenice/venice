@@ -5,7 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/integration-postgres": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

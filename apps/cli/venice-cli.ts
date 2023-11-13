@@ -8,7 +8,7 @@ import {json} from 'micro'
 import ngrok from 'ngrok'
 
 import {contextFactory} from '@usevenice/app-config/backendConfig'
-import type {EndUserId, Id, UserId} from '@usevenice/cdk-core'
+import type {EndUserId, Id, UserId} from '@usevenice/cdk'
 import {flatRouter, parseWebhookRequest} from '@usevenice/engine-backend'
 import type {NonEmptyArray} from '@usevenice/util'
 import {parseUrl, R, z, zFunction, zodInsecureDebug} from '@usevenice/util'

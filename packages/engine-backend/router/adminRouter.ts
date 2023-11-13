@@ -9,7 +9,7 @@ import {
   sync,
   zId,
   zRaw,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {makeUlid, rxjs, z} from '@usevenice/util'
 
 import {adminProcedure, trpc} from './_base'

@@ -10,7 +10,7 @@ import {
   kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
-import {makeJwtClient} from '@usevenice/cdk-core'
+import {makeJwtClient} from '@usevenice/cdk'
 import {parseUrl, stringifyUrl} from '@usevenice/util'
 
 import {respondToCORS, serverGetViewer} from '.'

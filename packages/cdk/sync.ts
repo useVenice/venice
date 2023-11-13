@@ -2,9 +2,9 @@ import {R, Rx, toCompletion} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
-  ResoUpdateData,
   Destination,
   Link,
+  ResoUpdateData,
   Source,
   StateUpdateData,
   SyncOperation,

@@ -2,7 +2,7 @@
 
 import {initTRPC} from '@trpc/server'
 
-import type {AnyEntityPayload, AnyIntegrationImpl} from '@usevenice/cdk-core'
+import type {AnyEntityPayload, AnyIntegrationImpl} from '@usevenice/cdk'
 import {
   fromMaybePromise,
   R,

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
-import {extractProviderName, zRaw} from '@usevenice/cdk-core'
+import {extractProviderName, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'

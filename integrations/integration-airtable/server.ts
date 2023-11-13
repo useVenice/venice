@@ -1,6 +1,6 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
-import {handlersLink} from '@usevenice/cdk-core'
-import type {Pta} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
+import {handlersLink} from '@usevenice/cdk'
+import type {Pta} from '@usevenice/cdk'
 import {fromCompletion} from '@usevenice/util'
 
 import {makeAirtableClient} from './AirtableClient'

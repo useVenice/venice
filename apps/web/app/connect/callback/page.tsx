@@ -4,8 +4,8 @@ import {cookies} from 'next/headers'
 
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
-import type {Id} from '@usevenice/cdk-core'
-import {makeNangoClient} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
+import {makeNangoClient} from '@usevenice/cdk'
 import type {FrameMessage} from '@usevenice/connect'
 
 import {FullScreenCenter} from '@/components/FullScreenCenter'

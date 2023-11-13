@@ -1,4 +1,4 @@
-import type {Pta} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk'
 import type {DateTime} from '@usevenice/util'
 import {A, parseDateTime} from '@usevenice/util'
 

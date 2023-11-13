@@ -8,7 +8,7 @@ import {join as pathJoin} from 'node:path'
 
 import prettier from 'prettier'
 
-import type {IntegrationDef} from '@usevenice/cdk-core'
+import type {IntegrationDef} from '@usevenice/cdk'
 import {camelCase} from '@usevenice/util/string-utils'
 
 import prettierConfig from '../../prettier.config'

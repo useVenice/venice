@@ -5,7 +5,7 @@ import type {
   OauthBaseTypes,
   ResourceUpdate,
   Viewer,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {
   makeId,
   makeOauthIntegrationServer,
@@ -14,7 +14,7 @@ import {
   zId,
   zPostConnectOptions,
   zRaw,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {joinPath, makeUlid, z} from '@usevenice/util'
 
 import {inngest} from '../events'

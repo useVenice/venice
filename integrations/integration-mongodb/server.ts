@@ -1,8 +1,8 @@
 import type {Db} from 'mongodb'
 import {MongoClient} from 'mongodb'
 
-import type {AnyEntityPayload, IntegrationServer} from '@usevenice/cdk-core'
-import {handlersLink} from '@usevenice/cdk-core'
+import type {AnyEntityPayload, IntegrationServer} from '@usevenice/cdk'
+import {handlersLink} from '@usevenice/cdk'
 import {zCast, zFunction} from '@usevenice/util'
 
 import type {mongoSchemas} from './def'

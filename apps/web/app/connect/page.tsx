@@ -4,14 +4,14 @@ import Image from 'next/image'
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
-import type {IntegrationDef} from '@usevenice/cdk-core'
+import type {IntegrationDef} from '@usevenice/cdk'
 import {
   extractProviderName,
   getViewerId,
   makeId,
   makeNangoClient,
   zId,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {zConnectPageParams} from '@usevenice/engine-backend/router/endUserRouter'
 import {makeUlid, z} from '@usevenice/util'
 

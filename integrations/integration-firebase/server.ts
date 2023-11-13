@@ -1,7 +1,7 @@
 import firebase from 'firebase/compat/app'
 
-import type {IntegrationServer, Link, SyncOperation} from '@usevenice/cdk-core'
-import {handlersLink, mergeReady} from '@usevenice/cdk-core'
+import type {IntegrationServer, Link, SyncOperation} from '@usevenice/cdk'
+import {handlersLink, mergeReady} from '@usevenice/cdk'
 import {
   defineProxyFn,
   fromCompletion,

@@ -5,7 +5,7 @@
   "sideEffects": [],
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/util": "workspace:*",
     "handy-redis": "2.3.1",

@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, zWebhookInput} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers, zWebhookInput} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 export const debugSchemas = {

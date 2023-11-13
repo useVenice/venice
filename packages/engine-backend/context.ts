@@ -6,10 +6,10 @@ import type {
   Id,
   LinkFactory,
   NangoClient,
-} from '@usevenice/cdk-core'
-import {makeNangoClient} from '@usevenice/cdk-core'
-import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk-core/viewer'
-import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk-core/viewer'
+} from '@usevenice/cdk'
+import {makeNangoClient} from '@usevenice/cdk'
+import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk/viewer'
+import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk/viewer'
 import {R} from '@usevenice/util'
 
 import type {Env} from '../../apps/app-config/env'

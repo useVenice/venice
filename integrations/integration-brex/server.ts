@@ -1,5 +1,5 @@
 /** Used for the side effect of window.MergeLink */
-import type {IntegrationServer} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import {makeBrexClient} from './BrexClient'

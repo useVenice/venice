@@ -1,7 +1,7 @@
 import type {clerkClient} from '@clerk/nextjs'
 
 import {kApikeyMetadata} from '@usevenice/app-config/constants'
-import {zId} from '@usevenice/cdk-core'
+import {zId} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {z, zRecord} from '@usevenice/util'
 

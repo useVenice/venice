@@ -1,5 +1,5 @@
-import type {IntegrationServer, SyncOperation} from '@usevenice/cdk-core'
-import {handlersLink} from '@usevenice/cdk-core'
+import type {IntegrationServer, SyncOperation} from '@usevenice/cdk'
+import {handlersLink} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {
   $chokidar,

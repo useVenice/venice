@@ -1,4 +1,4 @@
-import {ACCOUNT_TYPES, makePostingsMap, type Pta} from '@usevenice/cdk-core'
+import {ACCOUNT_TYPES, makePostingsMap, type Pta} from '@usevenice/cdk'
 // Not sure why this is needed for ci but not locally, but cannot be bothered to find out for now
 import {A} from '@usevenice/util'
 

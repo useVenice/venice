@@ -4,11 +4,7 @@ import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-import {
-  zIntegrationStage,
-  zIntegrationVertical,
-  zRaw,
-} from '@usevenice/cdk-core'
+import {zIntegrationStage, zIntegrationVertical, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'

@@ -39,7 +39,7 @@
   "devDependencies": {
     "@tanstack/react-query": "*",
     "@types/react": "*",
-    "@usevenice/cdk-core": "*",
+    "@usevenice/cdk": "*",
     "@usevenice/engine-backend": "*"
   },
   "peerDependencies": {

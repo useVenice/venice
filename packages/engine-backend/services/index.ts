@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {TRPCError} from '@trpc/server'
 
-import type {AnyIntegrationImpl, Id, IDS, ZRaw} from '@usevenice/cdk-core'
-import {extractId, zRaw} from '@usevenice/cdk-core'
+import type {AnyIntegrationImpl, Id, IDS, ZRaw} from '@usevenice/cdk'
+import {extractId, zRaw} from '@usevenice/cdk'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, z} from '@usevenice/util'
 

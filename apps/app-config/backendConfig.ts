@@ -1,6 +1,6 @@
-import type {LinkFactory} from '@usevenice/cdk-core'
-import {logLink} from '@usevenice/cdk-core'
-import {renameAccountLink} from '@usevenice/cdk-core'
+import type {LinkFactory} from '@usevenice/cdk'
+import {logLink} from '@usevenice/cdk'
+import {renameAccountLink} from '@usevenice/cdk'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
 import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
@@ -51,7 +51,7 @@ export const contextFactory = getContextFactory({
   // TODO: Do we realy need to support anything other than postgres?
   getMetaService: (viewer) =>
     makePostgresMetaService({databaseUrl: env.POSTGRES_OR_WEBHOOK_URL, viewer}),
-  // TODO: This probably needs to be internal to the engine-backend or even cdk-core
+  // TODO: This probably needs to be internal to the engine-backend or even cdk
   // because of the need to support integration metadata specifying their desired links
   // aka transfomrations
   linkMap: {

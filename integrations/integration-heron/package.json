@@ -8,7 +8,7 @@
     "codegen": "openapi-typescript https://app.herondata.io/swagger --make-paths-enum --output heron.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

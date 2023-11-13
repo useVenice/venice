@@ -47,8 +47,7 @@ COPY ./packages/engine-backend/package.json ./packages/engine-backend/package.js
 COPY ./packages/ui/package.json ./packages/ui/package.json
 COPY ./packages/util/package.json ./packages/util/package.json
 COPY ./packages/engine-frontend/package.json ./packages/engine-frontend/package.json
-COPY ./packages/cdk-core/package.json ./packages/cdk-core/package.json
-COPY ./packages/cdk-ledger/package.json ./packages/cdk-ledger/package.json
+COPY ./packages/cdk/package.json ./packages/cdk/package.json
 COPY ./packages/airbyte/package.json ./packages/airbyte/package.json
 # Specifically excluded
 # COPY ./apps/web/.next/package.json ./apps/web/.next/package.json

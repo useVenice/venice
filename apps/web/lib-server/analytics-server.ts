@@ -1,7 +1,7 @@
 import {PostHog} from 'posthog-node'
 
 import {env} from '@usevenice/app-config/env'
-import {zUserId} from '@usevenice/cdk-core'
+import {zUserId} from '@usevenice/cdk'
 import {zEvent, zUserTraits} from '@usevenice/engine-backend/events'
 import {noopFunctionMap, z, zFunction} from '@usevenice/util'
 

@@ -10,14 +10,14 @@ import type {
   IntegrationClient,
   OpenDialogFn,
   UseConnectHook,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {
   CANCELLATION_TOKEN,
   extractId,
   extractProviderName,
   oauthConnect,
   zIntegrationVertical,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
 import type {SchemaFormElement, UIProps, UIPropsNoChildren} from '@usevenice/ui'
 import {

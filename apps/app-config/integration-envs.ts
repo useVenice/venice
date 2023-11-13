@@ -1,6 +1,6 @@
 /** @deprecated. We no longer initialize integration from ENVs, but maybe in clis still? */
-import type {IntegrationSchemas, IntHelpers} from '@usevenice/cdk-core'
-import {makeId} from '@usevenice/cdk-core'
+import type {IntegrationSchemas, IntHelpers} from '@usevenice/cdk'
+import {makeId} from '@usevenice/cdk'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
 import {defIntegrations} from './integrations/integrations.def'

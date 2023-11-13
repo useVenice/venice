@@ -1,4 +1,4 @@
-import type {Id, WebhookInput} from '@usevenice/cdk-core'
+import type {Id, WebhookInput} from '@usevenice/cdk'
 import type {NonEmptyArray} from '@usevenice/util'
 
 import type {RouterInput} from './router'

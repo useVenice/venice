@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {Rx, rxjs} from '@usevenice/util'
 

@@ -6,9 +6,9 @@ import type {
   PlaidLinkOnSuccessMetadata,
 } from 'react-plaid-link'
 
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, zWebhookInput} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers, zWebhookInput} from '@usevenice/cdk'
+import {makePostingsMap} from '@usevenice/cdk'
 import {A, z, zCast} from '@usevenice/util'
 
 import {

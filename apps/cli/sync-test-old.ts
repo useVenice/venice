@@ -4,7 +4,7 @@ import '@usevenice/app-config/register.node'
 
 import readline from 'node:readline'
 
-import {sync} from '@usevenice/cdk-core'
+import {sync} from '@usevenice/cdk'
 import {brexImpl} from '@usevenice/integration-brex'
 import {fsServer} from '@usevenice/integration-fs'
 import {heronImpl} from '@usevenice/integration-heron'

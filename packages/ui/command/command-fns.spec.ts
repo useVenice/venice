@@ -1,4 +1,4 @@
-import {zId} from '@usevenice/cdk-core'
+import {zId} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 import {executeCommand, filterCommands, prepareCommands} from './command-fns'

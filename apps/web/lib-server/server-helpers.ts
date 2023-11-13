@@ -22,8 +22,8 @@ import {
   kApikeyMetadata,
   kApikeyUrlParam,
 } from '@usevenice/app-config/constants'
-import type {Id, UserId, Viewer} from '@usevenice/cdk-core'
-import {makeJwtClient} from '@usevenice/cdk-core'
+import type {Id, UserId, Viewer} from '@usevenice/cdk'
+import {makeJwtClient} from '@usevenice/cdk'
 import {flatRouter} from '@usevenice/engine-backend'
 import {fromMaybeArray} from '@usevenice/util'
 

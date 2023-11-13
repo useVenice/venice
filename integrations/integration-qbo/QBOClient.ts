@@ -1,4 +1,4 @@
-import {oauthBaseSchema} from '@usevenice/cdk-core'
+import {oauthBaseSchema} from '@usevenice/cdk'
 import {
   createHTTPClient,
   DateTime,

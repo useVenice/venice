@@ -4,7 +4,7 @@ import * as trpcNext from '@trpc/server/adapters/next'
 import type {NextApiHandler} from 'next'
 
 import {contextFactory} from '@usevenice/app-config/backendConfig'
-import type {Id} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
 import type {RouterContext} from '@usevenice/engine-backend'
 import {parseWebhookRequest} from '@usevenice/engine-backend'
 import {fromMaybeArray} from '@usevenice/util'

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import {zId} from '@usevenice/cdk-core'
+import {zId} from '@usevenice/cdk'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaSheetRef} from '@usevenice/ui'
 import {SchemaSheet} from '@usevenice/ui'

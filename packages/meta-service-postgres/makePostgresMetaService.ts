@@ -1,5 +1,5 @@
-import type {Viewer, ZRaw} from '@usevenice/cdk-core'
-import {zViewer} from '@usevenice/cdk-core'
+import type {Viewer, ZRaw} from '@usevenice/cdk'
+import {zViewer} from '@usevenice/cdk'
 import type {
   EndUserResultRow,
   MetaService,

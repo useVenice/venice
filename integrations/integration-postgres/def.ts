@@ -1,6 +1,6 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
-import type {EntityPayloadWithRaw} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers} from '@usevenice/cdk'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 export const zPgConfig = z.object({

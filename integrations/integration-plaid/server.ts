@@ -2,8 +2,8 @@ import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
 import {CountryCode, Products} from 'plaid'
 
-import type {IntegrationServer} from '@usevenice/cdk-core'
-import {shouldSync} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
+import {shouldSync} from '@usevenice/cdk'
 import type {DurationObjectUnits, IAxiosError} from '@usevenice/util'
 import {DateTime, R, RateLimit, Rx, rxjs} from '@usevenice/util'
 

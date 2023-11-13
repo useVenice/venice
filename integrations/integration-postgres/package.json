@@ -5,7 +5,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@slonik/migrator": "0.11.3",
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*",
     "handlebars": "4.7.7",
     "pg": "8.8.0",

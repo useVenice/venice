@@ -1,8 +1,8 @@
 /** Used for the side effect of window.MergeLink */
 
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
-import type {Pta} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers} from '@usevenice/cdk'
+import type {Pta} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 import {mergeLogoSvg} from './merge-logo.svg'

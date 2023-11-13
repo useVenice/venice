@@ -5,7 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/integration-fs": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

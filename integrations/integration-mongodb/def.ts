@@ -2,7 +2,7 @@ import type {
   AnyEntityPayload,
   IntegrationDef,
   IntegrationSchemas,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 export const zMongoConnection = z.object({

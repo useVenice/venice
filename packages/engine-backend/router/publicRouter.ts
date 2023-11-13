@@ -1,4 +1,4 @@
-import {metaForProvider} from '@usevenice/cdk-core'
+import {metaForProvider} from '@usevenice/cdk'
 import {R, z} from '@usevenice/util'
 
 import {publicProcedure, trpc} from './_base'

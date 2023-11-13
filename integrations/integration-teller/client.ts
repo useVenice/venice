@@ -1,7 +1,7 @@
-import type {IntegrationClient} from '@usevenice/cdk-core'
-import {useScript} from '@usevenice/cdk-core'
+import type {IntegrationClient} from '@usevenice/cdk'
+import {useScript} from '@usevenice/cdk'
 
-import {tellerSchemas} from './def'
+import type {tellerSchemas} from './def'
 
 export const tellerClient = {
   useConnectHook: (_) => {

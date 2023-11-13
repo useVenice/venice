@@ -6,7 +6,7 @@ import {ProxyAgent, setGlobalDispatcher} from 'undici'
 
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
-import {makeJwtClient, makeNangoClient} from '@usevenice/cdk-core'
+import {makeJwtClient, makeNangoClient} from '@usevenice/cdk'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeHeronClient} from '@usevenice/integration-heron'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'

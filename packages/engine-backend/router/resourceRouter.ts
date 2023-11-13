@@ -1,4 +1,4 @@
-import {zId} from '@usevenice/cdk-core'
+import {zId} from '@usevenice/cdk'
 import {Rx, rxjs, z} from '@usevenice/util'
 
 import {protectedProcedure, trpc} from './_base'

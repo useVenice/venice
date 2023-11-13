@@ -1,16 +1,5 @@
-import type {
-  AnyEntityPayload,
-  Id,
-  IDS,
-  OpHandlers,
-  ZRaw,
-} from '@usevenice/cdk-core'
-import {
-  extractId,
-  handlersLink,
-  IDS_INVERTED,
-  makeId,
-} from '@usevenice/cdk-core'
+import type {AnyEntityPayload, Id, IDS, OpHandlers, ZRaw} from '@usevenice/cdk'
+import {extractId, handlersLink, IDS_INVERTED, makeId} from '@usevenice/cdk'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, R} from '@usevenice/util'
 

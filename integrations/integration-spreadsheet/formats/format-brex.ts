@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 
-import {makePostingsMap} from '@usevenice/cdk-core'
+import {makePostingsMap} from '@usevenice/cdk'
 import {A, DateTime, leftPad, zCast} from '@usevenice/util'
 
 import {makeImportFormat} from '../makeImportFormat'

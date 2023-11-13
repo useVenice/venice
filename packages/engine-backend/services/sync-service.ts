@@ -6,15 +6,15 @@ import type {
   Link,
   ResourceUpdate,
   Source,
-} from '@usevenice/cdk-core'
-import {extractId} from '@usevenice/cdk-core'
-import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk-core'
-import type {EntityPayloadWithRaw} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
+import {extractId} from '@usevenice/cdk'
+import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk'
+import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {
   addRemainderByDateLink,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
 

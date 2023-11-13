@@ -24,7 +24,7 @@
     "@trpc/react-query": "10.40.0",
     "@trpc/server": "10.40.0",
     "@usevenice/app-config": "workspace:*",
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/connect": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",

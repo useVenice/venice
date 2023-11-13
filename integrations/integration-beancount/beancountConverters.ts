@@ -1,5 +1,5 @@
 /// <reference path="./beancount.d.ts"/>
-import type {Pta} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk'
 import {
   formatAccountType,
   makePostingsMap,
@@ -7,7 +7,7 @@ import {
   splitAccountType,
   stdTypeAndEntity,
   TRANSACTION_LABELS,
-} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
 import type {Amount, NonEmptyArray} from '@usevenice/util'
 import {
   $execCommand,

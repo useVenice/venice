@@ -1,6 +1,6 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
-import {makePostingsMap} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers} from '@usevenice/cdk'
+import {makePostingsMap} from '@usevenice/cdk'
 import {A, z} from '@usevenice/util'
 
 import {

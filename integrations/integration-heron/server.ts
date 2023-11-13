@@ -1,5 +1,5 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
-import {cachingLink} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
+import {cachingLink} from '@usevenice/cdk'
 import {fromCompletion, Rx, rxjs} from '@usevenice/util'
 
 import type {heronSchemas} from './def'

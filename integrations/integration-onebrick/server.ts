@@ -1,5 +1,5 @@
-import type {IntegrationServer, SyncOperation} from '@usevenice/cdk-core'
-import {zEndUserId} from '@usevenice/cdk-core'
+import type {IntegrationServer, SyncOperation} from '@usevenice/cdk'
+import {zEndUserId} from '@usevenice/cdk'
 import {md5Hash, R, Rx, rxjs, z} from '@usevenice/util'
 
 import type {onebrickSchemas} from './def'

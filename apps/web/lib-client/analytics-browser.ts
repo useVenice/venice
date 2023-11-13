@@ -1,7 +1,9 @@
-import {zUserId} from '@usevenice/cdk-core'
+import posthog from 'posthog-js'
+
+import {zUserId} from '@usevenice/cdk'
 import {zEvent, zUserTraits} from '@usevenice/engine-backend/events'
 import {z, zFunction} from '@usevenice/util'
-import posthog from 'posthog-js'
+
 import {Sentry} from '../sentry.client.config'
 
 let initialized = false

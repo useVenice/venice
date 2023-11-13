@@ -8,8 +8,8 @@ import {
   Papa,
 } from '@usevenice/app-config/backendConfig'
 import {kAcceptUrlParam} from '@usevenice/app-config/constants'
-import type {Id} from '@usevenice/cdk-core'
-import {hasRole} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
+import {hasRole} from '@usevenice/cdk'
 import {makePostgresClient, zPgConfig} from '@usevenice/integration-postgres'
 import {R, z} from '@usevenice/util'
 

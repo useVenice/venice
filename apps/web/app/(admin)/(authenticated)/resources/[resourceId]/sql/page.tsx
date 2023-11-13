@@ -1,4 +1,4 @@
-import type {Id} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
 
 import {contextFactory} from '@/../app-config/backendConfig'
 import {getOrCreateApikey} from '@/lib-server'

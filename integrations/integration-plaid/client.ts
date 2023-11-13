@@ -2,8 +2,8 @@ import React from 'react'
 import type {PlaidLinkOptions} from 'react-plaid-link'
 import {usePlaidLink} from 'react-plaid-link'
 
-import type {IntegrationClient} from '@usevenice/cdk-core'
-import {CANCELLATION_TOKEN} from '@usevenice/cdk-core'
+import type {IntegrationClient} from '@usevenice/cdk'
+import {CANCELLATION_TOKEN} from '@usevenice/cdk'
 import type {RequiredOnly} from '@usevenice/util'
 import {Deferred} from '@usevenice/util'
 

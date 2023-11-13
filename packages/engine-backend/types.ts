@@ -1,4 +1,4 @@
-import type {AnyIntegrationImpl, Id, LinkFactory} from '@usevenice/cdk-core'
+import type {AnyIntegrationImpl, Id, LinkFactory} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 // MARK: - Input types

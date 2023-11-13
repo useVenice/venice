@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@trpc/server": "10.40.0",
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/meta-service-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",
     "@zodios/core": "10.9.6",

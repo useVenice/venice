@@ -1,6 +1,6 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers} from '@usevenice/cdk-core'
-import {zEntityPayload} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers} from '@usevenice/cdk'
+import {zEntityPayload} from '@usevenice/cdk'
 import type {Brand} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
 

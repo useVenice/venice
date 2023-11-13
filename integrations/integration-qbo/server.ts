@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {qboSchemas} from './def'

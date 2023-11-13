@@ -6,8 +6,8 @@ import {
   makePostgresClient,
 } from '@usevenice/app-config/backendConfig'
 import {kApikeyMetadata} from '@usevenice/app-config/constants'
-import type {Viewer} from '@usevenice/cdk-core'
-import {hasRole} from '@usevenice/cdk-core'
+import type {Viewer} from '@usevenice/cdk'
+import {hasRole} from '@usevenice/cdk'
 import {makeUlid} from '@usevenice/util'
 
 import {encodeApiKey} from '@/lib-server'

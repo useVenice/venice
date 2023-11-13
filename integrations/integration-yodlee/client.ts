@@ -1,5 +1,5 @@
-import type {IntegrationClient} from '@usevenice/cdk-core'
-import {CANCELLATION_TOKEN, DivContainer, useScript} from '@usevenice/cdk-core'
+import type {IntegrationClient} from '@usevenice/cdk'
+import {CANCELLATION_TOKEN, DivContainer, useScript} from '@usevenice/cdk'
 import type {NonDiscriminatedUnion} from '@usevenice/util'
 
 import type {yodleeSchemas} from './def'

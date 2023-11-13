@@ -10,7 +10,7 @@
     "@trpc/client": "10.40.0",
     "@trpc/react-query": "10.40.0",
     "@trpc/server": "10.40.0",
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*"

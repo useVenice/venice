@@ -4,8 +4,8 @@
 import type {DatabasePool} from 'slonik'
 import {sql} from 'slonik'
 
-import type {IntegrationServer} from '@usevenice/cdk-core'
-import {handlersLink} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
+import {handlersLink} from '@usevenice/cdk'
 import {R, Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {postgresSchemas} from './def'

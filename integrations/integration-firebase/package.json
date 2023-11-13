@@ -11,7 +11,7 @@
     "@firebase/app-compat": "0.x",
     "@firebase/app-types": "0.x",
     "@firebase/auth": "*",
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*",
     "firebase": "9.8.1",
     "firebase-admin": "10.2.0"

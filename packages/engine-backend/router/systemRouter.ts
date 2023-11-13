@@ -1,4 +1,4 @@
-import {zId, zWebhookInput} from '@usevenice/cdk-core'
+import {zId, zWebhookInput} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 import {systemProcedure, trpc} from './_base'

@@ -1,7 +1,7 @@
 import type {EventPayload} from 'inngest'
 import {Inngest} from 'inngest'
 
-import {zId} from '@usevenice/cdk-core'
+import {zId} from '@usevenice/cdk'
 import type {NonEmptyArray} from '@usevenice/util'
 import {z} from '@usevenice/util'
 

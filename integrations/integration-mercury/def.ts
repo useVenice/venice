@@ -2,8 +2,8 @@
  * For documentation, @see https://docs.mercury.com/reference/accounts
  * https://share.cleanshot.com/QjmQTFf9
  */
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
-import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
+import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
+import {intHelpers, zIntAuth} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 export const mercurySchemas = {

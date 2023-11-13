@@ -8,7 +8,7 @@
     "codegen": "openapi-typescript https://dash.readme.com/api/v1/api-registry/5pyq7alhaqulga --output ./lib/mercury.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

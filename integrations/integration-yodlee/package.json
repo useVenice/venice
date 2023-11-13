@@ -11,7 +11,7 @@
     "codegen:next": "openapi-typescript https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml --make-paths-enum --output yodlee.gen.ts"
   },
   "dependencies": {
-    "@usevenice/cdk-core": "workspace:*",
+    "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

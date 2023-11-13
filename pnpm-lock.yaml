@@ -155,9 +155,9 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: 0.3.1
         version: 0.3.1(typescript@5.0.4)(zod@3.21.4)
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -306,9 +306,9 @@ importers:
       '@usevenice/app-config':
         specifier: workspace:*
         version: link:../app-config
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
@@ -512,9 +512,9 @@ importers:
       '@usevenice/app-config':
         specifier: workspace:*
         version: link:../app-config
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/connect':
         specifier: workspace:*
         version: link:../../packages/connect
@@ -642,9 +642,9 @@ importers:
 
   integrations/integration-airtable:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -654,27 +654,27 @@ importers:
 
   integrations/integration-alphavantage:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-beancount:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-brex:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -685,9 +685,9 @@ importers:
 
   integrations/integration-copilot:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/integration-firebase':
         specifier: workspace:*
         version: link:../integration-firebase
@@ -697,18 +697,18 @@ importers:
 
   integrations/integration-debug:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-expensify:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -727,9 +727,9 @@ importers:
       '@firebase/auth':
         specifier: '*'
         version: 0.20.1(@firebase/app@0.7.24)
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -742,9 +742,9 @@ importers:
 
   integrations/integration-foreceipt:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/integration-firebase':
         specifier: workspace:*
         version: link:../integration-firebase
@@ -757,18 +757,18 @@ importers:
 
   integrations/integration-fs:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-heron:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -779,18 +779,18 @@ importers:
 
   integrations/integration-lunchmoney:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-mercury:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -801,9 +801,9 @@ importers:
 
   integrations/integration-merge:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -826,9 +826,9 @@ importers:
 
   integrations/integration-mongodb:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -838,18 +838,18 @@ importers:
 
   integrations/integration-moota:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-onebrick:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -866,9 +866,9 @@ importers:
 
   integrations/integration-plaid:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -894,9 +894,9 @@ importers:
       '@slonik/migrator':
         specifier: 0.11.3
         version: 0.11.3(slonik@30.3.1)
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -925,9 +925,9 @@ importers:
 
   integrations/integration-qbo:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -938,36 +938,36 @@ importers:
 
   integrations/integration-ramp:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-saltedge:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-splitwise:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-spreadsheet:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -984,9 +984,9 @@ importers:
 
   integrations/integration-stripe:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -997,9 +997,9 @@ importers:
 
   integrations/integration-teller:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1013,45 +1013,45 @@ importers:
 
   integrations/integration-toggl:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-venmo:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-webhook:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-wise:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
   integrations/integration-yodlee:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../../packages/cdk-core
+        version: link:../../packages/cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1072,7 +1072,7 @@ importers:
         specifier: 0.23.0
         version: 0.23.0
 
-  packages/cdk-core:
+  packages/cdk:
     dependencies:
       '@trpc/server':
         specifier: 10.40.0
@@ -1127,9 +1127,9 @@ importers:
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -1158,9 +1158,9 @@ importers:
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../engine-backend
@@ -1181,32 +1181,14 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
 
-  packages/integration-redis:
-    dependencies:
-      '@usevenice/cdk-core':
-        specifier: workspace:*
-        version: link:../cdk-core
-      '@usevenice/engine-backend':
-        specifier: workspace:*
-        version: link:../engine-backend
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../util
-      handy-redis:
-        specifier: 2.3.1
-        version: 2.3.1
-      redis:
-        specifier: 3.1.2
-        version: 3.1.2
-
   packages/meta-service-airbyte:
     dependencies:
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/meta-service-postgres':
         specifier: workspace:*
         version: link:../meta-service-postgres
@@ -1244,9 +1226,9 @@ importers:
 
   packages/meta-service-fs:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/integration-fs':
         specifier: workspace:*
         version: link:../../integrations/integration-fs
@@ -1260,9 +1242,9 @@ importers:
 
   packages/meta-service-postgres:
     dependencies:
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: workspace:*
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/integration-postgres':
         specifier: workspace:*
         version: link:../../integrations/integration-postgres
@@ -1273,6 +1255,24 @@ importers:
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../engine-backend
+
+  packages/meta-service-redis:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../cdk
+      '@usevenice/engine-backend':
+        specifier: workspace:*
+        version: link:../engine-backend
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../util
+      handy-redis:
+        specifier: 2.3.1
+        version: 2.3.1
+      redis:
+        specifier: 3.1.2
+        version: 3.1.2
 
   packages/ui:
     dependencies:
@@ -1379,9 +1379,9 @@ importers:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
-      '@usevenice/cdk-core':
+      '@usevenice/cdk':
         specifier: '*'
-        version: link:../cdk-core
+        version: link:../cdk
       '@usevenice/engine-backend':
         specifier: '*'
         version: link:../engine-backend
@@ -6460,7 +6460,7 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
-      csstype: 3.1.1
+      csstype: 3.1.2
 
   /@types/redis@2.8.32:
     resolution: {integrity: sha512-7jkMKxcGq9p242exlbsVzuJb57KqHRhNl4dHoQu2Y5v9bCAbtIXXH0R3HleSQW4CTOqpHIYUW3t6tpUj4BVQ+w==}
@@ -8432,10 +8432,10 @@ packages:
 
   /csstype@3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
+    dev: false
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
-    dev: true
 
   /d3-array@3.2.3:
     resolution: {integrity: sha512-JRHwbQQ84XuAESWhvIPaUV4/1UYTBOLiOPGWqgFDHZS1D5QN9c57FbH3QpEnQMYiOXNzKUQyGTZf+EVO7RT5TQ==}
@@ -8770,7 +8770,7 @@ packages:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
     dependencies:
       '@babel/runtime': 7.23.2
-      csstype: 3.1.1
+      csstype: 3.1.2
     dev: false
 
   /dompurify@2.4.7:
@@ -12294,7 +12294,7 @@ packages:
       jws: 3.2.2
       lodash: 4.17.21
       ms: 2.1.3
-      semver: 7.3.8
+      semver: 7.5.4
     dev: false
 
   /jsprim@1.4.2:
@@ -13321,7 +13321,7 @@ packages:
       react-dom: 18.2.0
     dependencies:
       css-tree: 1.1.3
-      csstype: 3.1.1
+      csstype: 3.1.2
       fastest-stable-stringify: 2.0.2
       inline-style-prefixer: 6.0.4
       react: 18.2.0

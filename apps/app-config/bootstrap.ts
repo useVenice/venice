@@ -1,5 +1,5 @@
-import type {Id} from '@usevenice/cdk-core'
-import {extractId, makeId} from '@usevenice/cdk-core'
+import type {Id} from '@usevenice/cdk'
+import {extractId, makeId} from '@usevenice/cdk'
 import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
 

@@ -1,4 +1,4 @@
-import type {Pta} from '@usevenice/cdk-core'
+import type {Pta} from '@usevenice/cdk'
 import {A, DateTime, R} from '@usevenice/util'
 
 import type {YodleeAccount, YodleeBalances} from './yodlee.types'

@@ -100,7 +100,7 @@ export interface IntegrationDef<
   //   [k in T['_types']['sourceOutputEntity']['entityName']]: (
   //     entity: Extract<T['_types']['sourceOutputEntity'], {entityName: k}>,
   //     settings: T['_types']['resourceSettings'],
-  //   ) => import('../cdk-ledger').EntityPayload | null
+  //   ) => EntityPayload | null
   // }> & {
   //   institution?: (
   //     data: T['_types']['institutionData'],
@@ -142,7 +142,6 @@ export interface IntegrationDef<
       : never
   }
   extension?: {
-    // TODO: Should this be wrapped into the core? Does cdk-ledger even make sense?
     sourceMapEntity?:
       | Partial<{
           // Simpler

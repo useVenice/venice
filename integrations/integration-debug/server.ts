@@ -1,5 +1,5 @@
-import type {IntegrationServer} from '@usevenice/cdk-core'
-import {logLink} from '@usevenice/cdk-core'
+import type {IntegrationServer} from '@usevenice/cdk'
+import {logLink} from '@usevenice/cdk'
 import {rxjs} from '@usevenice/util'
 
 import type {debugSchemas} from './def'

@@ -2,7 +2,7 @@ import {formatDistanceToNowStrict} from 'date-fns'
 import {Landmark} from 'lucide-react'
 import React from 'react'
 
-import type {Id, ZStandard} from '@usevenice/cdk-core'
+import type {Id, ZStandard} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 
 import {LoadingText} from '../components/LoadingText'

@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
-import type {ZRaw} from '@usevenice/cdk-core'
-import {zEndUserId} from '@usevenice/cdk-core'
+import type {ZRaw} from '@usevenice/cdk'
+import {zEndUserId} from '@usevenice/cdk'
 import {
   extractId,
   sync,
@@ -9,8 +9,8 @@ import {
   zId,
   zRaw,
   zStandard,
-} from '@usevenice/cdk-core'
-import type {VeniceSourceState} from '@usevenice/cdk-core'
+} from '@usevenice/cdk'
+import type {VeniceSourceState} from '@usevenice/cdk'
 import {joinPath, R, rxjs, z} from '@usevenice/util'
 
 import {inngest, zEvent} from '../events'

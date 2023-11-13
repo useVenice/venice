@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/cdk-core",
+  "name": "@usevenice/cdk",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
