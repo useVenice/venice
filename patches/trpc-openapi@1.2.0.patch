@@ -1,3 +1,15 @@
+diff --git a/dist/adapters/node-http/core.js b/dist/adapters/node-http/core.js
+index ad1b3e5d8fc9d5a9dcdcb5c719f2a3a66fc5f29a..d55f2fcff198112d7faca321d886f60eb1514fcc 100644
+--- a/dist/adapters/node-http/core.js
++++ b/dist/adapters/node-http/core.js
+@@ -122,6 +122,7 @@ const createOpenApiNodeHttpHandler = (opts) => {
+             const statusCode = (_h = (_g = meta === null || meta === void 0 ? void 0 : meta.status) !== null && _g !== void 0 ? _g : errors_1.TRPC_ERROR_CODE_HTTP_STATUS[error.code]) !== null && _h !== void 0 ? _h : 500;
+             const headers = (_j = meta === null || meta === void 0 ? void 0 : meta.headers) !== null && _j !== void 0 ? _j : {};
+             const body = {
++                ...errorShape, // Pass the formatting through...
+                 message: isInputValidationError
+                     ? 'Input validation failed'
+                     : (_l = (_k = errorShape === null || errorShape === void 0 ? void 0 : errorShape.message) !== null && _k !== void 0 ? _k : error.message) !== null && _l !== void 0 ? _l : 'An error occurred',
 diff --git a/dist/types.d.ts b/dist/types.d.ts
 index d93e38e020d89bef3e615c44fe687b10c8874417..956b349a0dda132bcdd7c255e8ae9946f41ccffd 100644
 --- a/dist/types.d.ts

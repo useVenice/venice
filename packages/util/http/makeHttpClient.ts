@@ -38,7 +38,7 @@ export type HttpClientOptions = RequestInit & {
     bearerToken?: string
     basic?: {username: string; password: string}
   }
-
+  middleware?: (...args: Parameters<typeof fetch>) => Parameters<typeof fetch>
   fetch?: typeof fetch
   URL?: typeof URL
 }
@@ -58,6 +58,7 @@ export function makeHttpClient(options: HttpClientOptions) {
     URL = globalThis.URL,
     baseUrl,
     auth,
+    middleware = (url, init) => [url, init],
     ...defaults
   } = options
 
@@ -106,12 +107,15 @@ export function makeHttpClient(options: HttpClientOptions) {
     // NOTE: Implement proxyAgent as a middleware
     // This way we can transparently use reverse proxies also in addition to forward proxy
     // as well as just simple in-app logging.
-    return _fetch(url, {
-      ...defaults,
-      method,
-      headers,
-      body,
-    }).then(async (res) => {
+
+    return _fetch(
+      ...middleware(url, {
+        ...defaults,
+        method,
+        headers,
+        body,
+      }),
+    ).then(async (res) => {
       const text = await res.text()
       const json = safeJSONParse(text)
       if (res.status < 200 || res.status >= 300) {
@@ -136,7 +140,7 @@ export function makeHttpClient(options: HttpClientOptions) {
       request(method.toUpperCase() as Uppercase<typeof method>, path, input),
   ])
 
-  return {...methods, request, _fetch}
+  return {...methods, request, _request: request, _fetch}
 }
 
 // TODO: build url from utils?

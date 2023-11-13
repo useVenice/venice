@@ -4,11 +4,24 @@ import {CountryCode, Products} from 'plaid'
 
 import type {IntegrationServer} from '@usevenice/cdk'
 import {shouldSync} from '@usevenice/cdk'
-import type {DurationObjectUnits, IAxiosError} from '@usevenice/util'
-import {DateTime, R, RateLimit, Rx, rxjs} from '@usevenice/util'
+import type {
+  DurationObjectUnits,
+  IAxiosError,
+  InfoFromPaths} from '@usevenice/util';
+import {
+  DateTime,
+  makeOpenApiClient,
+  R,
+  RateLimit,
+  Rx,
+  rxjs,
+  safeJSONParse,
+} from '@usevenice/util'
 
 import type {plaidSchemas} from './def'
 import {helpers as def} from './def'
+import {inferPlaidEnvFromToken} from './plaid-utils'
+import type {paths} from './plaid.gen'
 import {makePlaidClient, zWebhook} from './PlaidClient'
 
 export const plaidServerIntegration = {
@@ -463,7 +476,50 @@ export const plaidServerIntegration = {
     console.warn('[plaid] Unhandled webhook', webhook)
     return {resourceUpdates: []}
   },
-} satisfies IntegrationServer<typeof plaidSchemas>
+  newInstance: ({config, settings}) => {
+    const env = inferPlaidEnvFromToken(settings.accessToken)
+    // https://plaid.com/docs/api/#api-host
+    return makeOpenApiClient<InfoFromPaths<paths>>({
+      baseUrl: `https://${env}.plaid.com`,
+      headers: {
+        'PLAID-CLIENT-ID': config.clientId,
+        'PLAID-SECRET': config.clientSecret,
+      },
+      middleware: (url, init) => {
+        if (init?.method?.toLowerCase() === 'post') {
+          const body =
+            typeof init?.body === 'string' ? safeJSONParse(init.body) : {}
+          if (typeof body === 'object') {
+            return [
+              url,
+              {
+                ...init,
+                body: JSON.stringify({
+                  ...body,
+                  access_token: settings.accessToken,
+                }),
+                headers: {
+                  ...init.headers,
+                  'Content-Type': 'application/json',
+                },
+              },
+            ]
+          }
+        }
+        return [url, init]
+      },
+    })
+  },
+  passthrough: (instance, input) =>
+    instance._request(input.method, input.path, {
+      header: input.headers,
+      query: input.query,
+      bodyJson: input.body,
+    }),
+} satisfies IntegrationServer<
+  typeof plaidSchemas,
+  ReturnType<typeof makeOpenApiClient<InfoFromPaths<paths>>>
+>
 
 // Per client limit.
 // TODO: Account for different rate limits for sandbox vs development & prduction

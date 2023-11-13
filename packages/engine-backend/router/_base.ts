@@ -2,6 +2,7 @@ import {initTRPC, TRPCError} from '@trpc/server'
 import type {OpenApiMeta} from 'trpc-openapi'
 
 import {getExtEndUserId, hasRole} from '@usevenice/cdk'
+import {HTTPError} from '@usevenice/util'
 
 import type {RouterContext} from '../context'
 
@@ -23,7 +24,26 @@ export const trpc = initTRPC
   .context<RouterContext>()
   .meta<RouterMeta>()
   // For client side to be able to import runtime schema from server side also
-  .create({allowOutsideOfServer: true})
+  .create({
+    allowOutsideOfServer: true,
+    errorFormatter(opts) {
+      const {shape, error} = opts
+      if (!(error.cause instanceof HTTPError)) {
+        return shape
+      }
+      return {
+        ...shape,
+        data: error.cause.response
+          ? {
+              ...error.cause.response,
+              // Renaming body to be nicer. otherwise we end up with data.data
+              data: undefined,
+              body: error.cause.response.data,
+            }
+          : shape.data,
+      }
+    },
+  })
 
 export const publicProcedure = trpc.procedure
 

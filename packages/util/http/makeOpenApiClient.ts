@@ -82,6 +82,7 @@ export function makeOpenApiClient<Info extends OpenApiInfo>(
       input: Get<Info[M][Path], 'input'>,
     ) => Promise<Get<Info[M][Path], 'output'>>
     _fetch: NonNullable<HttpClientOptions['fetch']>
+    _request: ReturnType<typeof makeHttpClient>['_request']
   }
 }
 

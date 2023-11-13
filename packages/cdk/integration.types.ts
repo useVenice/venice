@@ -21,6 +21,7 @@ import type {
   OpenDialogFn,
   ResourceUpdate,
   WebhookReturnType,
+  zPassthroughInput,
 } from './providers.types'
 import type {AccountingMethods, ZAccounting} from './verticals/accounting'
 import type {InvestmentMethods, ZInvestment} from './verticals/investment'
@@ -263,6 +264,11 @@ export interface IntegrationServer<
       newSettings: T['_types']['resourceSettings'],
     ) => MaybePromise<void>
   }) => TInstance
+
+  passthrough?: (
+    instance: TInstance,
+    input: z.infer<typeof zPassthroughInput>,
+  ) => unknown
 
   verticals?: {
     [v in keyof T['_verticals']]: v extends keyof Verticals
