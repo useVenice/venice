@@ -1,34 +1,27 @@
 import type {SyncOperation} from '@usevenice/cdk-core'
-import type {Standard} from '@usevenice/standard'
-import {z, zCast} from '@usevenice/util'
+import {z} from '@usevenice/util'
 
-export type EntityPayload =
-  | {
-      entityName: 'account'
-      entity: Standard.Account | null
-      id: string
-    }
-  | {
-      entityName: 'transaction'
-      entity: Standard.Transaction | null
-      id: string
-    }
-  | {
-      entityName: 'commodity'
-      entity: Standard.Commodity | null
-      id: string
-    }
-export const zEntityPayload = zCast<EntityPayload>()
+export type EntityPayload<TEntity = Record<string, unknown>> = Omit<
+  z.infer<typeof zEntityPayload>,
+  'entity'
+> & {entity: TEntity}
 
-// How to reduce duplication?
-export const zEntityName = z.enum(['account', 'transaction', 'commodity'])
+export const zEntityPayload = z.object({
+  /** TODO: Rename this to `stream` */
+  entityName: z.string(),
+  id: z.string(),
+  entity: z.record(z.unknown()),
+})
 
-export type StdSyncOperation = SyncOperation<EntityPayload>
+export type EntityPayloadWithExternal = z.infer<
+  typeof zEntityPayloadWithExternal
+>
+export const zEntityPayloadWithExternal = zEntityPayload.extend({
+  external: z.unknown(),
+  providerName: z.string(),
+  sourceId: z.string().optional(),
+})
 
-export type EntityPayloadWithExternal = EntityPayload & {
-  external: unknown
-  externalId: string
-  providerName: string
-  sourceId: string | undefined
-}
-export const zEntityPayloadWithExternal = zCast<EntityPayloadWithExternal>()
+export type StdSyncOperation<
+  TEntity extends Record<string, unknown> = Record<string, unknown>,
+> = SyncOperation<EntityPayload<TEntity>>

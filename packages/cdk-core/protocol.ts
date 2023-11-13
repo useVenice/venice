@@ -1,5 +1,4 @@
 import type {
-  Json,
   NoInfer,
   NonDiscriminatedUnion,
   ObjectPartialDeep,
@@ -22,8 +21,9 @@ import type {ExternalId, Id} from './id.types'
  */
 export interface AnyEntityPayload {
   // typename: string
+  /** Rename to stream */
   entityName: string
-  entity: Json | object
+  entity: unknown
   id: string // ExternalId
 }
 

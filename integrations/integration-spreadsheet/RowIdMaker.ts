@@ -1,7 +1,5 @@
 import {makeUlid, md5Hash, stableStringify} from '@usevenice/util'
 
-import {extractExternalId} from './import-format-utils'
-
 export class RowIdMaker {
   readonly ids = new Set<string>()
 
@@ -35,15 +33,9 @@ export class RowIdMaker {
     accountExternalId: ExternalId,
     name: string | null,
   ) {
-    let id = extractExternalId(accountExternalId, 'csv')
-    if (id) {
-      console.warn('Unexpected accountExternalId', accountExternalId)
-    } else {
-      id = accountExternalId
-    }
     if (name == null) {
-      return id
+      return accountExternalId
     }
-    return md5Hash(`${id}_${name}`) as ExternalId
+    return md5Hash(`${accountExternalId}_${name}`) as ExternalId
   }
 }

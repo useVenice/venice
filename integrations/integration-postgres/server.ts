@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+ 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import {sql} from 'slonik'
 import type {DatabasePool} from 'slonik'
+import {sql} from 'slonik'
 
 import type {IntegrationServer} from '@usevenice/cdk-core'
-import {extractId, handlersLink} from '@usevenice/cdk-core'
+import {handlersLink} from '@usevenice/cdk-core'
 import {R, Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {postgresSchemas} from './def'
@@ -110,7 +110,6 @@ export const postgresServer = {
               id: row.id,
               providerName: 'postgres',
               sourceId: row.source_id ?? undefined,
-              externalId: extractId(row.id as any)[2],
             },
           }),
         )
@@ -140,7 +139,12 @@ export const postgresServer = {
         yield R.compact([
           ...res.rows.map((row) =>
             postgresHelpers._op('data', {
-              data: {entityName, id: `${row.id}`, entity: row},
+              data: {
+                entityName,
+                id: `${row.id}`,
+                entity: row,
+                providerName: 'postgres', // is this right?
+              },
             }),
           ),
           lastRow?.modifiedAt &&

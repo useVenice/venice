@@ -59,7 +59,6 @@ export function mapStandardEntityLink({
           id,
           external: op.data.entity,
           providerName: provider.name,
-          externalId: op.data.id,
           sourceId,
         } satisfies EntityPayloadWithExternal,
       })
@@ -101,6 +100,7 @@ export interface StdCache {
   account: Record<string, Standard.Account>
   transaction: Record<string, Standard.Transaction>
   commodity: Record<string, Standard.Commodity>
+  [k: string]: Record<string, unknown>
 }
 
 export function _opsFromCache(cache: StdCache) {
@@ -125,11 +125,15 @@ export function cachingLink(
   let numChanges = 0
   return handlersLink({
     data: (op) => {
+      const entityCache = cache[op.data.entityName] ?? {}
+      if (!cache[op.data.entityName]) {
+        cache[op.data.entityName] = entityCache
+      }
       if (op.data.entity) {
-        cache[op.data.entityName][op.data.id] = op.data.entity
+        entityCache[op.data.id] = op.data.entity
       } else {
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete cache[op.data.entityName][op.data.id]
+        delete entityCache[op.data.id]
       }
       numChanges++
     },
@@ -171,7 +175,7 @@ export function cachingTransformLink(
  */
 
 export const renameAccountLink = zFunction(z.record(z.string()), (mapping) =>
-  transformLink<EntityPayload>((op) => {
+  transformLink<EntityPayload<Standard.Account>>((op) => {
     if (
       op.type === 'data' &&
       op.data.entityName === 'account' &&
@@ -246,9 +250,9 @@ export const addRemainderByDateLink = transformTransactionLink((txn) => {
 })
 
 // Very verbose...
-export function mergeTransferLink(): Link<EntityPayload> {
+export function mergeTransferLink(): Link<EntityPayload<Standard.Transaction>> {
   const txnsByTransferId: Record<string, Standard.Transaction[]> = {}
-  return handlersLink<EntityPayload>({
+  return handlersLink<EntityPayload<Standard.Transaction>>({
     data: (op) => {
       if (op.data.entityName === 'transaction' && op.data.entity?.transferId) {
         const txns = txnsByTransferId[op.data.entity.transferId] ?? []
@@ -259,7 +263,7 @@ export function mergeTransferLink(): Link<EntityPayload> {
     commit: (op) =>
       rxjs.from([
         ..._makeMergedTransactions(txnsByTransferId).map(
-          (txn): StdSyncOperation => ({
+          (txn): StdSyncOperation<Standard.Transaction> => ({
             type: 'data',
             data: {id: txn.id, entityName: 'transaction', entity: txn},
           }),

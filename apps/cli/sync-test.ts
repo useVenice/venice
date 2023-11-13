@@ -6,7 +6,6 @@ import {logLink, sync} from '@usevenice/cdk-core'
 import {mapStandardEntityLink} from '@usevenice/cdk-ledger'
 import {plaidProvider} from '@usevenice/integration-plaid'
 import {postgresProvider} from '@usevenice/integration-postgres'
-import {stripeImpl} from '@usevenice/integration-stripe'
 import type {rxjs} from '@usevenice/util'
 import {R, Rx} from '@usevenice/util'
 
@@ -64,13 +63,13 @@ function getSource(name: string) {
 
 function getDestination(name: string | undefined) {
   switch (name) {
-    case 'stripe':
-      return stripeImpl.destinationSync({
-        config: {apikeyAuth: true},
-        endUser: null,
-        settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
-        state: {},
-      })
+    // case 'stripe':
+    //   return stripeImpl.destinationSync({
+    //     config: {apikeyAuth: true},
+    //     endUser: null,
+    //     settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
+    //     state: {},
+    //   })
     case 'postgres':
       return postgresProvider.destinationSync({
         config: {},

@@ -10,7 +10,6 @@ import {fsServer} from '@usevenice/integration-fs'
 import {heronImpl} from '@usevenice/integration-heron'
 import {mergeImpl} from '@usevenice/integration-merge'
 import {postgresProvider} from '@usevenice/integration-postgres'
-import {stripeImpl} from '@usevenice/integration-stripe'
 import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
 
 const srcPath = './apps/tests/__encrypted__/meta'
@@ -22,43 +21,6 @@ const destPath = './temp'
 // we are working with configurable via command line args
 
 switch (process.argv[2]) {
-  case 'destination-stripe': {
-    sync({
-      source: rxjs.of({
-        type: 'data',
-        data: {
-          entityName: 'invoice',
-          entity: {
-            id: 'in_1J9ZQo2eZvKYlo2CQ2Z2Z2Z2',
-            contact: 'cus_Luy9s4xRHw2OU4',
-            memo: 'Hello invoice',
-            line_items: [
-              {
-                description: 'Hello line item',
-                quantity: 12,
-                unit_price: 10,
-                total_amount: 120,
-              },
-              {
-                description: 'Line 2',
-                quantity: 1,
-                unit_price: 50,
-                total_amount: 50,
-              },
-            ],
-          },
-          id: 'ins_1234',
-        },
-      } satisfies (typeof stripeImpl)['helpers']['_inputOpType']),
-      destination: stripeImpl.destinationSync({
-        config: {},
-        endUser: null,
-        settings: {secretKey: process.env['STRIPE_TEST_SECRET_KEY']!},
-        state: {},
-      }),
-    }).catch(console.error)
-    break
-  }
   case 'source-brex': {
     sync({
       source: brexImpl.sourceSync({

@@ -5,39 +5,31 @@ export const zExternalId = z.union([z.string(), z.number()])
 // .brand<'externalId'>()
 
 /** Provider independent ids */
-export const BASE_META_IDS = {
+export const INDEPENDENT_IDS = {
   user: 'user',
   organization: 'org',
   pipeline: 'pipe',
 } as const
 
-export const META_IDS = {
+export const PROVIDER_IDS = {
   integration: 'int',
   resource: 'reso',
   institution: 'ins',
 } as const
 
-export const DATA_IDS = {
-  account: 'acct',
-  transaction: 'txn',
-  commodity: 'comm',
-  balance: 'bal',
-  price: 'prce',
-} as const
-
 export const IDS = {
-  ...BASE_META_IDS,
-  ...META_IDS,
-  ...DATA_IDS,
+  ...INDEPENDENT_IDS,
+  ...PROVIDER_IDS,
 }
 
 export const IDS_INVERTED = invert(IDS)
 
-type BASE_META_ID_PREFIX = (typeof BASE_META_IDS)[keyof typeof BASE_META_IDS]
+type INDEPENDENT_ID_PREFIX =
+  (typeof INDEPENDENT_IDS)[keyof typeof INDEPENDENT_IDS]
 
 export type IdPrefix = (typeof IDS)[keyof typeof IDS]
 export type Id<TName extends string = string> = {
-  [k in IdPrefix]: k extends BASE_META_ID_PREFIX
+  [k in IdPrefix]: k extends INDEPENDENT_ID_PREFIX
     ? `${k}_${string}`
     : `${k}_${TName}${string}` // 3rd segment is not guaranteed to exist
 }
@@ -62,7 +54,7 @@ export function zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
 }
 
 export function makeId<TPrefix extends IdPrefix, TPName extends string>(
-  ...args: TPrefix extends BASE_META_ID_PREFIX
+  ...args: TPrefix extends INDEPENDENT_ID_PREFIX
     ? [TPrefix, ExternalId]
     : [TPrefix, TPName, ExternalId]
 ) {

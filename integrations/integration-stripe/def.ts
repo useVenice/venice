@@ -1,6 +1,6 @@
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zIntAuth} from '@usevenice/cdk-core'
-import {makePostingsMap, zCommon} from '@usevenice/cdk-ledger'
+import {makePostingsMap} from '@usevenice/cdk-ledger'
 import {A, z, zCast} from '@usevenice/util'
 
 import type {components} from './stripe.gen'
@@ -30,7 +30,6 @@ export const stripeSchemas = {
       transactionSyncCursor: z.string().nullish(),
     })
     .default({}),
-  destinationInputEntity: zCommon.Entity,
 } satisfies IntegrationSchemas
 
 export const stripeDef = {

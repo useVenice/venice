@@ -80,6 +80,7 @@ export interface Account<TBalance extends Balance = Balance> {
 
   removed?: boolean
   custom?: Record<string, unknown>
+  [k: string]: unknown
 }
 
 // MARK: - Transaction
@@ -137,6 +138,8 @@ export interface Transaction<TPosting extends Posting = Posting> {
   // TODO: This is no longer needed as we have a better way of handling
   // pending transactions now...
   removed?: boolean
+
+  [k: string]: unknown
 }
 
 // MARK: - Commodity

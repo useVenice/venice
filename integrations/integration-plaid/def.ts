@@ -8,7 +8,7 @@ import type {
 
 import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk-core'
 import {intHelpers, zWebhookInput} from '@usevenice/cdk-core'
-import {makePostingsMap, makeStandardId, zStream} from '@usevenice/cdk-ledger'
+import {makePostingsMap, makeStandardId} from '@usevenice/cdk-ledger'
 import {A, z, zCast} from '@usevenice/util'
 
 import {
@@ -75,7 +75,7 @@ export const plaidSchemas = {
   /** "Manually" extending for now, this will get better / safer */
   sourceState: z
     .object({
-      streams: z.array(zStream).nullish(),
+      streams: z.array(z.string()).nullish(),
       /** Account ids to sync */
       accountIds: z.array(z.string()).nullish(),
       /** Date to sync since */

@@ -1,5 +1,4 @@
 import type {IntegrationServer} from '@usevenice/cdk-core'
-import {handlersLink} from '@usevenice/cdk-core'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {stripeSchemas} from './def'
@@ -39,74 +38,75 @@ export const stripeServer = {
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
   },
 
-  destinationSync: ({settings}) => {
-    const client = makeStripeClient({apiKey: settings.secretKey})
+  // TODO: Renable me again when we are ready
+  // destinationSync: ({settings}) => {
+  //   const client = makeStripeClient({apiKey: settings.secretKey})
 
-    return handlersLink({
-      data: async (op) => {
-        const {data} = op
+  //   return handlersLink({
+  //     data: async (op) => {
+  //       const {data} = op
 
-        if (data.entityName === 'invoice' && data.entity) {
-          const entity = data.entity
+  //       if (data.entityName === 'invoice' && data.entity) {
+  //         const entity = data.entity
 
-          let invoice = await client
-            .get('/v1/invoices/search', {
-              query: {query: `metadata['entityId']:'${entity.id}'`},
-            })
-            .then((r) => r.data[0])
-          if (invoice) {
-            console.log('Skipping already created invoice', invoice.id)
-            return op
-          }
+  //         let invoice = await client
+  //           .get('/v1/invoices/search', {
+  //             query: {query: `metadata['entityId']:'${entity.id}'`},
+  //           })
+  //           .then((r) => r.data[0])
+  //         if (invoice) {
+  //           console.log('Skipping already created invoice', invoice.id)
+  //           return op
+  //         }
 
-          const customer = await client
-            .get('/v1/customers/search', {
-              query: {query: `metadata['entityId']:'${entity.contact}'`},
-            })
-            .then(
-              (r) =>
-                r.data[0] ??
-                client.post('/v1/customers', {
-                  bodyForm: {metadata: {entityId: entity.contact!}},
-                }),
-            )
+  //         const customer = await client
+  //           .get('/v1/customers/search', {
+  //             query: {query: `metadata['entityId']:'${entity.contact}'`},
+  //           })
+  //           .then(
+  //             (r) =>
+  //               r.data[0] ??
+  //               client.post('/v1/customers', {
+  //                 bodyForm: {metadata: {entityId: entity.contact!}},
+  //               }),
+  //           )
 
-          // TODO: Handle update scenarios. Only dealing with soft deletes
-          // should make this simpler
-          // TODO: Gotta validate that the standard invoice before passing onto stripe
-          // Most likely via a validator link in the middle
-          invoice = await client.post('/v1/invoices', {
-            bodyForm: {
-              customer: customer.id,
-              currency: entity.currency ?? undefined,
-              // In stripe description is probably visible for users...
-              // so it's an issue.
-              description: entity.memo ?? undefined,
-              metadata: {entityId: data.id},
-            },
-          })
-          await Promise.all(
-            (entity.line_items ?? []).map((line) =>
-              client.post('/v1/invoiceitems', {
-                bodyForm: {
-                  metadata: {entityId: line.id},
-                  invoice: invoice?.id,
-                  customer: customer.id, // Technically redundant
-                  description: line.description ?? undefined,
-                  quantity: line.quantity ?? undefined,
-                  unit_amount: line.unit_price ?? undefined,
-                  // amount cannot be specified together with unit_amount
-                  // amount: line.total_amount ?? undefined,
-                },
-              }),
-            ),
-          )
-        }
+  //         // TODO: Handle update scenarios. Only dealing with soft deletes
+  //         // should make this simpler
+  //         // TODO: Gotta validate that the standard invoice before passing onto stripe
+  //         // Most likely via a validator link in the middle
+  //         invoice = await client.post('/v1/invoices', {
+  //           bodyForm: {
+  //             customer: customer.id,
+  //             currency: entity.currency ?? undefined,
+  //             // In stripe description is probably visible for users...
+  //             // so it's an issue.
+  //             description: entity.memo ?? undefined,
+  //             metadata: {entityId: data.id},
+  //           },
+  //         })
+  //         await Promise.all(
+  //           (entity.line_items ?? []).map((line) =>
+  //             client.post('/v1/invoiceitems', {
+  //               bodyForm: {
+  //                 metadata: {entityId: line.id},
+  //                 invoice: invoice?.id,
+  //                 customer: customer.id, // Technically redundant
+  //                 description: line.description ?? undefined,
+  //                 quantity: line.quantity ?? undefined,
+  //                 unit_amount: line.unit_price ?? undefined,
+  //                 // amount cannot be specified together with unit_amount
+  //                 // amount: line.total_amount ?? undefined,
+  //               },
+  //             }),
+  //           ),
+  //         )
+  //       }
 
-        return op
-      },
-    })
-  },
+  //       return op
+  //     },
+  //   })
+  // },
 } satisfies IntegrationServer<typeof stripeSchemas>
 
 export default stripeServer
