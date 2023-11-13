@@ -268,6 +268,9 @@ export interface IntegrationServer<
   newInstance?: (opts: {
     config: T['_types']['integrationConfig']
     settings: T['_types']['resourceSettings']
+    onSettingsChange: (
+      newSettings: T['_types']['resourceSettings'],
+    ) => MaybePromise<void>
   }) => TInstance
 
   verticals?: {

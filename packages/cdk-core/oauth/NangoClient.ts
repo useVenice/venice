@@ -169,6 +169,7 @@ export const zConnection = zConnectionShort.extend({
   credentials: z.object({
     type: zAuthMode,
     access_token: z.string(),
+    refresh_token: z.string().optional(),
     expires_at: z.string().datetime(),
     raw: z.object({
       access_token: z.string(),

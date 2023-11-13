@@ -3,8 +3,8 @@ import {produce, R, Rx, rxjs} from '@usevenice/util'
 
 import type {
   AnyEntityPayload,
-  ResoUpdateData,
   Link,
+  ResoUpdateData,
   StateUpdateData,
   SyncOperation,
 } from './protocol'
@@ -66,6 +66,7 @@ export function logLink<T extends Data>(
         opts.prefix && `${opts.prefix}:`,
         `type=${op.type}`,
         op.type === 'data' && `entityId=${op.data.id}`,
+        op.type === 'resoUpdate' && `op.id=${op.id}`,
       ]).join(' '),
     )
     if (opts.verbose !== undefined) {

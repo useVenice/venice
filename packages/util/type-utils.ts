@@ -278,7 +278,3 @@ export class UnreachableCaseError extends Error {
     Object.setPrototypeOf(this, UnreachableCaseError.prototype)
   }
 }
-
-export function infer<T>() {
-  return <U extends T>(input: U) => input
-}

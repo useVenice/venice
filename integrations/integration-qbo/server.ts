@@ -6,10 +6,11 @@ import {qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 import {makeQBOClient} from './QBOClient'
 
 export const qboServer = {
-  newInstance: ({config, settings}) => makeQBOClient(config, settings),
+  newInstance: ({config, settings, onSettingsChange}) =>
+    makeQBOClient(config, settings, onSettingsChange),
 
   sourceSync: ({config, settings}) => {
-    const qbo = makeQBOClient(config, settings)
+    const qbo = makeQBOClient(config, settings, () => {})
     const realmId = settings.oauth.connection_config.realmId
     async function* iterateEntities() {
       for await (const res of qbo.getAll('Account')) {

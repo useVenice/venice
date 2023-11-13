@@ -7,6 +7,7 @@ import type {
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk-core'
+import {extractId} from '@usevenice/cdk-core'
 import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk-core'
 import type {EntityPayloadWithExternal} from '@usevenice/cdk-ledger'
 import {
@@ -132,9 +133,9 @@ export function makeSyncService({
     const verticalSources$ = () => {
       const provider = src.integration.provider
       const helpers = intHelpers(provider.schemas)
-      const primaryKey = (
-        provider.streams?.$defaults.primaryKey 
-      )?.split('.') as [string] | undefined
+      const primaryKey = provider.streams?.$defaults.primaryKey?.split('.') as
+        | [string]
+        | undefined
 
       const getId = (e: any) => {
         const id = primaryKey && R.pathOr(e, primaryKey, undefined)
@@ -144,13 +145,22 @@ export function makeSyncService({
         }
         return `${id}`
       }
+      const settingsSub = new rxjs.Subject<Array<(typeof helpers)['_opType']>>()
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const instance = provider.newInstance?.({
+        config: src.integration.config,
+        settings: src.settings,
+        onSettingsChange: (newSettings) => {
+          // extId is technically redundant... but we have yet to define the primaryKey attribute for settings
+          src.settings = newSettings
+          settingsSub.next([
+            helpers._opRes(extractId(src.id)[2], {settings: newSettings}),
+          ])
+        },
+      })
 
       async function* iterateEntities() {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const instance = provider.newInstance?.({
-          config: src.integration.config,
-          settings: src.settings,
-        })
         if (!primaryKey) {
           return
         }
@@ -175,8 +185,8 @@ export function makeSyncService({
         }
       }
 
-      return rxjs
-        .from(iterateEntities())
+      return settingsSub
+        .pipe(Rx.mergeWith(rxjs.from(iterateEntities())))
         .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
     }
     return rxjs.concat(verticalSources$(), defaultSource$() ?? rxjs.EMPTY)

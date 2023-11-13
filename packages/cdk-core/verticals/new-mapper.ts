@@ -47,6 +47,8 @@ export async function proxyListRemoteRedux({
   const instance = ctx.remote.provider.newInstance?.({
     config: ctx.remote.config,
     settings: ctx.remote.settings,
+    onSettingsChange: (settings) =>
+      ctx.services.metaLinks.patch('resource', ctx.remote.id, {settings}),
   })
   const implementation = (
     ctx.remote.provider.verticals?.[vertical as never] as any

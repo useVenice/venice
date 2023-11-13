@@ -12,7 +12,7 @@ import {
   makeId,
 } from '@usevenice/cdk-core'
 import type {ObjectPartialDeep} from '@usevenice/util'
-import {deepMerge, infer, R} from '@usevenice/util'
+import {deepMerge, R} from '@usevenice/util'
 
 import type {MetaService, MetaTable} from './metaService'
 
@@ -61,10 +61,11 @@ export function makeMetaLinks(metaBase: MetaService) {
     pipeline?: Pipe
     resource?: Res
   }) =>
-    infer<OpHandlers<Promise<void>>>()({
+    ({
       // TODO: make standard insitution and connection here...
       resoUpdate: async (op) => {
         if (op.id !== resource?.id) {
+          console.warn(`Unexpected resource id ${op.id} != ${resource?.id}`)
           return
         }
         const {id, settings = {}, institution} = op
@@ -159,7 +160,7 @@ export function makeMetaLinks(metaBase: MetaService) {
         )
         // console.log(`[meta] Did update resource`, id, op.data)
       },
-    })
+    } satisfies OpHandlers<Promise<void>>)
 
   // TODO: Dedupe with contextHelpers
   const patch = async <TTable extends keyof ZRaw>(
