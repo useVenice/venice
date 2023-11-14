@@ -33,6 +33,7 @@ module.exports = [
       server: '@usevenice/integration-brex/server',
     },
   },
+  {dirName: 'integration-copilot', varName: 'integrationCopilot', imports: {}},
   {
     name: 'debug',
     dirName: 'integration-debug',
@@ -40,6 +41,15 @@ module.exports = [
     imports: {
       def: '@usevenice/integration-debug/def',
       server: '@usevenice/integration-debug/server',
+    },
+  },
+  {
+    name: 'discord',
+    dirName: 'integration-discord',
+    varName: 'integrationDiscord',
+    imports: {
+      def: '@usevenice/integration-discord/def',
+      server: '@usevenice/integration-discord/server',
     },
   },
   {
@@ -173,7 +183,6 @@ module.exports = [
       server: '@usevenice/integration-ramp/server',
     },
   },
-  {dirName: 'integration-redis', varName: 'integrationRedis', imports: {}},
   {
     name: 'saltedge',
     dirName: 'integration-saltedge',

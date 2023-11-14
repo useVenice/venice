@@ -1,5 +1,5 @@
 {
-  "name": "@usevenice/integration-qbo",
+  "name": "@usevenice/integration-discord",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",

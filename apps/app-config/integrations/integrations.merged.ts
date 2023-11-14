@@ -7,6 +7,8 @@ import {default as integrationBrex_def} from '@usevenice/integration-brex/def'
 import {default as integrationBrex_server} from '@usevenice/integration-brex/server'
 import {default as integrationDebug_def} from '@usevenice/integration-debug/def'
 import {default as integrationDebug_server} from '@usevenice/integration-debug/server'
+import {default as integrationDiscord_def} from '@usevenice/integration-discord/def'
+import {default as integrationDiscord_server} from '@usevenice/integration-discord/server'
 import {default as integrationFirebase_def} from '@usevenice/integration-firebase/def'
 import {default as integrationFirebase_server} from '@usevenice/integration-firebase/server'
 import {default as integrationForeceipt_def} from '@usevenice/integration-foreceipt/def'
@@ -72,6 +74,11 @@ const integrationBrex = {
 const integrationDebug = {
   ...integrationDebug_def,
   ...integrationDebug_server,
+}
+
+const integrationDiscord = {
+  ...integrationDiscord_def,
+  ...integrationDiscord_server,
 }
 
 const integrationFirebase = {
@@ -197,6 +204,7 @@ export const mergedIntegrations = {
   beancount: integrationBeancount,
   brex: integrationBrex,
   debug: integrationDebug,
+  discord: integrationDiscord,
   firebase: integrationFirebase,
   foreceipt: integrationForeceipt,
   fs: integrationFs,

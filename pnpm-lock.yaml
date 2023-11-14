@@ -179,6 +179,9 @@ importers:
       '@usevenice/integration-debug':
         specifier: workspace:*
         version: link:../../integrations/integration-debug
+      '@usevenice/integration-discord':
+        specifier: workspace:*
+        version: link:../../integrations/integration-discord
       '@usevenice/integration-expensify':
         specifier: workspace:*
         version: link:../../integrations/integration-expensify
@@ -704,6 +707,15 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
+  integrations/integration-discord:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../packages/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
   integrations/integration-expensify:
     dependencies:
       '@usevenice/cdk':
@@ -934,10 +946,6 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
-    devDependencies:
-      '@types/react':
-        specifier: 18.0.27
-        version: 18.0.27
 
   integrations/integration-ramp:
     dependencies:

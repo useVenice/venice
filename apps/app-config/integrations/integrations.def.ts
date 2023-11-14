@@ -3,6 +3,7 @@ import {default as integrationAirtable} from '@usevenice/integration-airtable/de
 import {default as integrationBeancount} from '@usevenice/integration-beancount/def'
 import {default as integrationBrex} from '@usevenice/integration-brex/def'
 import {default as integrationDebug} from '@usevenice/integration-debug/def'
+import {default as integrationDiscord} from '@usevenice/integration-discord/def'
 import {default as integrationFirebase} from '@usevenice/integration-firebase/def'
 import {default as integrationForeceipt} from '@usevenice/integration-foreceipt/def'
 import {default as integrationFs} from '@usevenice/integration-fs/def'
@@ -27,14 +28,15 @@ import {default as integrationVenmo} from '@usevenice/integration-venmo/def'
 import {default as integrationWebhook} from '@usevenice/integration-webhook/def'
 import {default as integrationWise} from '@usevenice/integration-wise/def'
 import {default as integrationYodlee} from '@usevenice/integration-yodlee/def'
-import type {NonEmptyArray} from '@usevenice/util';
-import { z} from '@usevenice/util'
+import type {NonEmptyArray} from '@usevenice/util'
+import {z} from '@usevenice/util'
 
 export const defIntegrations = {
   airtable: integrationAirtable,
   beancount: integrationBeancount,
   brex: integrationBrex,
   debug: integrationDebug,
+  discord: integrationDiscord,
   firebase: integrationFirebase,
   foreceipt: integrationForeceipt,
   fs: integrationFs,
