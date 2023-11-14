@@ -33,8 +33,16 @@ export default async function ConnectCallback({
   // @see https://github.com/vercel/next.js/issues/43704
   searchParams: Record<string, string | string[] | undefined>
 }) {
-  const msg = await (async (): Promise<FrameMessage> => {
+  const msg = await (async (): Promise<FrameMessage | null> => {
     try {
+      const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
+      const res = await nango.doOauthCallback(searchParams)
+
+      if (!res) {
+        // This means that we are using the @nango/frontend websocket client...
+        return null
+      }
+
       // TODO: Can we use cookies-next to read cookie in this environment?
       const cookie = cookies().get(kConnectSession)
       if (!cookie) {
@@ -43,13 +51,6 @@ export default async function ConnectCallback({
           data: {code: 'BAD_REQUEST', message: 'No session found'},
         }
       }
-      const session = zConnectSession.parse(JSON.parse(cookie.value))
-      const viewer = await serverComponentGetViewer({
-        searchParams: {[kAccessToken]: session.token},
-      })
-
-      const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
-      const res = await nango.doOauthCallback(searchParams)
 
       if (res.eventType !== 'AUTHORIZATION_SUCEEDED') {
         return {
@@ -57,6 +58,10 @@ export default async function ConnectCallback({
           data: {code: res.data.authErrorType, message: res.data.authErrorDesc},
         }
       }
+      const session = zConnectSession.parse(JSON.parse(cookie.value))
+      const viewer = await serverComponentGetViewer({
+        searchParams: {[kAccessToken]: session.token},
+      })
 
       const resourceId = res.data.connectionId as Id['reso']
       if (session.resourceId !== resourceId) {
@@ -69,7 +74,7 @@ export default async function ConnectCallback({
           type: 'ERROR',
           data: {
             code: 'FORBIDDEN',
-            message: `Session resourceId (${session.resourceId}) not matching connecte resourceId ${resourceId}`,
+            message: `Session resourceId (${session.resourceId}) not matching connected resourceId ${resourceId}`,
           },
         }
       }
@@ -93,13 +98,17 @@ export default async function ConnectCallback({
   // How do we do redirect here?
   return (
     <FullScreenCenter>
-      <span className="mb-2">{msg.type} </span>
-      <span className="mb-2">
-        {msg.type === 'ERROR'
-          ? `[${msg.data.code}] ${msg.data.message}`
-          : msg.data.resourceId}
-      </span>
-      <CallbackEffect msg={msg} />
+      {msg && (
+        <>
+          <span className="mb-2">{msg.type} </span>
+          <span className="mb-2">
+            {msg.type === 'ERROR'
+              ? `[${msg.data.code}] ${msg.data.message}`
+              : msg.data.resourceId}
+          </span>
+        </>
+      )}
+      <CallbackEffect msg={msg} autoClose={!msg} />
     </FullScreenCenter>
   )
 }

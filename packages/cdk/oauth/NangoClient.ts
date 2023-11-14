@@ -367,8 +367,8 @@ export function parseNangoOauthCallbackPage(html: string) {
   const providerConfigKey = parseStrVar('window.providerConfigKey')
   const connectionId = parseStrVar('window.connectionId')
 
-  return zNangoOauthCallbackMessage.parse({
+  return zNangoOauthCallbackMessage.safeParse({
     eventType,
     data: {providerConfigKey, connectionId, authErrorDesc, authErrorType},
-  })
+  }).data
 }

@@ -6,7 +6,7 @@ import React from 'react'
 import type {FrameMessage} from '@usevenice/connect/common'
 
 export function CallbackEffect(props: {
-  msg: FrameMessage
+  msg: FrameMessage | null
   autoClose?: boolean
 }) {
   const opener = (
@@ -14,7 +14,9 @@ export function CallbackEffect(props: {
   ) as Window | null
 
   React.useEffect(() => {
-    opener?.postMessage(props.msg, '*')
+    if (props.msg) {
+      opener?.postMessage(props.msg, '*')
+    }
 
     if (props.autoClose) {
       setTimeout(() => {
