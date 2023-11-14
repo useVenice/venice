@@ -32,6 +32,7 @@ export const scheduleSyncs = inngest.createFunction(
         // Every hour
         .findPipelines({secondsSinceLastSync: 1 * 60 * 60})
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
+
       if (pipelines.length > 0) {
         await inngest.send(
           'sync/pipeline-requested',

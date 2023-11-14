@@ -58,6 +58,7 @@ export interface MetaService {
   findPipelines: (options: {
     resourceIds?: Array<Id['reso']>
     secondsSinceLastSync?: number
+    includeDisabled?: boolean
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   /** Id is used to check RLS policy right now for end user */
   listIntegrationInfos: (opts?: {

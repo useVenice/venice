@@ -131,7 +131,7 @@ export const makePostgresMetaService = zFunction(
         )
       },
 
-      findPipelines: ({resourceIds, secondsSinceLastSync}) => {
+      findPipelines: ({resourceIds, secondsSinceLastSync, includeDisabled}) => {
         const {runQueries, sql} = _getDeps(opts)
         const ids = resourceIds && sql.array(resourceIds, 'varchar')
         const conditions = R.compact([
@@ -141,6 +141,7 @@ export const makePostgresMetaService = zFunction(
               (now() - COALESCE(last_sync_completed_at, to_timestamp(0)))
               >= (interval '1 second' * ${secondsSinceLastSync})
             `,
+          !includeDisabled && 'disabled IS NOT TRUE',
         ])
         const where =
           conditions.length > 0

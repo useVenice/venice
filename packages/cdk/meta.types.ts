@@ -92,6 +92,7 @@ export const zRaw = {
       ),
     orgId: zId('org'),
     displayName: z.string().nullish(),
+    disabled: z.boolean().optional(),
   }),
   resource: zBase.extend({
     id: zId('reso'),
@@ -102,6 +103,7 @@ export const zRaw = {
     institutionId: zId('ins').nullish(),
     settings: zJsonObject.nullish(),
     standard: zStandard.resource.omit({id: true}).nullish(),
+    disabled: z.boolean().optional(),
   }),
   pipeline: zBase.extend({
     id: zId('pipe'),
@@ -123,6 +125,7 @@ export const zRaw = {
     // just like Airbyte. Or perhaps using airbyte itself as the jobs database
     lastSyncStartedAt: z.date().nullish(),
     lastSyncCompletedAt: z.date().nullish(),
+    disabled: z.boolean().optional(),
   }),
   institution: zBase.extend({
     id: zId('ins'),
