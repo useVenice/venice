@@ -1,3 +1,4 @@
+import {createEnv} from '@t3-oss/env-core'
 import {
   Configuration,
   CountryCode,
@@ -84,9 +85,33 @@ export const makePlaidMultiClient = zFunction(
   },
 )
 
-export function makePlaidClient(config: z.infer<typeof zPlaidClientConfig>) {
+export function makePlaidClient(config: {
+  envName: EnvName
+  credentials?: {clientId: string; clientSecret: string} | null
+}) {
+  const creds = config.credentials ?? getPlatformConfig(config.envName)
   return makePlaidMultiClient({
-    clientId: config.clientId,
-    secrets: {[config.envName]: config.clientSecret},
+    clientId: creds.clientId,
+    secrets: {[config.envName]: creds.clientSecret},
   }).fromEnv(config.envName)
+}
+
+export function getPlatformConfig(envName: EnvName) {
+  const env = createEnv({
+    server: {
+      PLAID_CLIENT_ID: z.string(),
+      PLAID_CLIENT_SECRET_SANDBOX: z.string(),
+      PLAID_CLIENT_SECRET_DEVELOPMENT: z.string(),
+      PLAID_CLIENT_SECRET_PRODUCTION: z.string(),
+    },
+    runtimeEnv: process.env,
+  })
+  return {
+    clientId: env.PLAID_CLIENT_ID,
+    clientSecret: {
+      sandbox: env.PLAID_CLIENT_SECRET_SANDBOX,
+      development: env.PLAID_CLIENT_SECRET_DEVELOPMENT,
+      production: env.PLAID_CLIENT_SECRET_PRODUCTION,
+    }[envName],
+  }
 }

@@ -866,6 +866,9 @@ importers:
 
   integrations/integration-plaid:
     dependencies:
+      '@t3-oss/env-core':
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.0.4)(zod@3.21.4)
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
@@ -5981,6 +5984,19 @@ packages:
     peerDependencies:
       typescript: '>=4.7.2'
       zod: ^3.0.0
+    dependencies:
+      typescript: 5.0.4
+      zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    dev: false
+
+  /@t3-oss/env-core@0.7.1(typescript@5.0.4)(zod@3.21.4):
+    resolution: {integrity: sha512-3+SQt39OlmSaRLqYVFv8uRm1BpFepM5TIiMytRqO9cjH+wB77o6BIJdeyM5h5U4qLBMEzOJWCY4MBaU/rLwbYw==}
+    peerDependencies:
+      typescript: '>=4.7.2'
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       typescript: 5.0.4
       zod: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)

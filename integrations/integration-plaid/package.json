@@ -10,6 +10,7 @@
     "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
   },
   "dependencies": {
+    "@t3-oss/env-core": "0.7.1",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*",
     "plaid": "12.3.0",

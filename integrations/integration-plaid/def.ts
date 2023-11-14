@@ -26,8 +26,18 @@ export const plaidSchemas = {
   // There is a mixing of cases here... Unfortunately...
   integrationConfig: z.object({
     envName: zPlaidEnvName,
-    clientId: z.string(),
-    clientSecret: z.string(),
+    credentials: z
+      .union([
+        // TODO: This should be z.literal('default') but it does not render well in the UI :/
+        z.null().describe('Use Venice platform credentials'),
+        z
+          .object({
+            clientId: z.string(),
+            clientSecret: z.string(),
+          })
+          .describe('Use my own'),
+      ])
+      .optional(),
     clientName: z
       .string()
       .max(30)

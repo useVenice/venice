@@ -7,7 +7,8 @@ import {shouldSync} from '@usevenice/cdk'
 import type {
   DurationObjectUnits,
   IAxiosError,
-  InfoFromPaths} from '@usevenice/util';
+  InfoFromPaths,
+} from '@usevenice/util'
 import {
   DateTime,
   makeOpenApiClient,
@@ -22,7 +23,7 @@ import type {plaidSchemas} from './def'
 import {helpers as def} from './def'
 import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {paths} from './plaid.gen'
-import {makePlaidClient, zWebhook} from './PlaidClient'
+import {getPlatformConfig, makePlaidClient, zWebhook} from './PlaidClient'
 
 export const plaidServerIntegration = {
   // TODO: Do we actually need the preConnect and postConnect phase at all?
@@ -479,11 +480,12 @@ export const plaidServerIntegration = {
   newInstance: ({config, settings}) => {
     const env = inferPlaidEnvFromToken(settings.accessToken)
     // https://plaid.com/docs/api/#api-host
+    const creds = config.credentials ?? getPlatformConfig(env)
     return makeOpenApiClient<InfoFromPaths<paths>>({
       baseUrl: `https://${env}.plaid.com`,
       headers: {
-        'PLAID-CLIENT-ID': config.clientId,
-        'PLAID-SECRET': config.clientSecret,
+        'PLAID-CLIENT-ID': creds.clientId,
+        'PLAID-SECRET': creds.clientSecret,
       },
       middleware: (url, init) => {
         if (init?.method?.toLowerCase() === 'post') {
