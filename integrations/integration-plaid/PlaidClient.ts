@@ -99,19 +99,19 @@ export function makePlaidClient(config: {
 export function getPlatformConfig(envName: EnvName) {
   const env = createEnv({
     server: {
-      PLAID_CLIENT_ID: z.string(),
-      PLAID_CLIENT_SECRET_SANDBOX: z.string(),
-      PLAID_CLIENT_SECRET_DEVELOPMENT: z.string(),
-      PLAID_CLIENT_SECRET_PRODUCTION: z.string(),
+      int_plaid__CLIENT_ID: z.string(),
+      int_plaid__CLIENT_SECRET_SANDBOX: z.string(),
+      int_plaid__CLIENT_SECRET_DEVELOPMENT: z.string(),
+      int_plaid__CLIENT_SECRET_PRODUCTION: z.string(),
     },
     runtimeEnv: process.env,
   })
   return {
-    clientId: env.PLAID_CLIENT_ID,
+    clientId: env.int_plaid__CLIENT_ID,
     clientSecret: {
-      sandbox: env.PLAID_CLIENT_SECRET_SANDBOX,
-      development: env.PLAID_CLIENT_SECRET_DEVELOPMENT,
-      production: env.PLAID_CLIENT_SECRET_PRODUCTION,
+      sandbox: env.int_plaid__CLIENT_SECRET_SANDBOX,
+      development: env.int_plaid__CLIENT_SECRET_DEVELOPMENT,
+      production: env.int_plaid__CLIENT_SECRET_PRODUCTION,
     }[envName],
   }
 }
