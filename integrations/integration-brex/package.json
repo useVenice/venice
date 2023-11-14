@@ -12,6 +12,6 @@
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
-    "openapi-typescript": "6.2.1"
+    "openapi-typescript": "6.7.1"
   }
 }

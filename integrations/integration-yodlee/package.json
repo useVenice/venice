@@ -17,7 +17,7 @@
   "devDependencies": {
     "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
-    "openapi-typescript": "6.2.1",
+    "openapi-typescript": "6.7.1",
     "openapi-typescript-codegen": "0.23.0"
   },
   "peerDependencies": {
