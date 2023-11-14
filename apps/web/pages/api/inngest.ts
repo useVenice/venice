@@ -1,8 +1,13 @@
+import {serve} from 'inngest/next'
+
 import {inngest} from '@usevenice/engine-backend/events'
 import {withLog} from '@usevenice/util'
 
-import {serve} from 'inngest/next'
 import * as functions from '../../inngest/functions'
+
+export const config = {
+  maxDuration: 5 * 60, // 5 mins
+}
 
 export default serve(
   inngest.name,
