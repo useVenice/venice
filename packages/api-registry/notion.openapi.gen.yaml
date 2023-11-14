@@ -1,0 +1,21 @@
+---
+  openapi: "3.1.0"
+  info: 
+    title: "Notion API"
+    version: "unknown"
+  servers: 
+    - 
+      url: "https://api.notion.com"
+  components: 
+    securitySchemes: 
+      sec0: 
+        type: "oauth2"
+        flows: {}
+  security: 
+    - 
+      sec0: []
+  paths: {}
+  x-readme: 
+    headers: []
+  x-readme-fauxas: true
+

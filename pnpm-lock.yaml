@@ -1090,6 +1090,15 @@ importers:
         specifier: 0.23.0
         version: 0.23.0
 
+  packages/api-registry:
+    devDependencies:
+      json2yaml:
+        specifier: 1.1.0
+        version: 1.1.0
+      openapi-typescript:
+        specifier: 6.7.1
+        version: 6.7.1
+
   packages/cdk:
     dependencies:
       '@trpc/server':
@@ -10497,7 +10506,7 @@ packages:
       '@types/glob': 7.2.0
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       glob: 7.2.3
       ignore: 5.2.0
       merge2: 1.4.1
@@ -10510,7 +10519,7 @@ packages:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0
@@ -10521,7 +10530,7 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       dir-glob: 3.0.1
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 4.0.0
