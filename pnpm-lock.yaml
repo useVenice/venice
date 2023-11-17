@@ -212,6 +212,9 @@ importers:
       '@usevenice/integration-moota':
         specifier: workspace:*
         version: link:../../integrations/integration-moota
+      '@usevenice/integration-notion':
+        specifier: workspace:*
+        version: link:../../integrations/integration-notion
       '@usevenice/integration-onebrick':
         specifier: workspace:*
         version: link:../../integrations/integration-onebrick
@@ -864,6 +867,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
+  integrations/integration-notion:
+    devDependencies:
+      openapi-typescript:
+        specifier: 6.7.1
+        version: 6.7.1
+
   integrations/integration-onebrick:
     dependencies:
       '@usevenice/cdk':
@@ -1089,15 +1098,6 @@ importers:
       openapi-typescript-codegen:
         specifier: 0.23.0
         version: 0.23.0
-
-  packages/api-registry:
-    devDependencies:
-      json2yaml:
-        specifier: 1.1.0
-        version: 1.1.0
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
 
   packages/cdk:
     dependencies:

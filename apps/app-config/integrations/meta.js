@@ -136,6 +136,7 @@ module.exports = [
       server: '@usevenice/integration-moota/server',
     },
   },
+  {dirName: 'integration-notion', varName: 'integrationNotion', imports: {}},
   {
     name: 'onebrick',
     dirName: 'integration-onebrick',

@@ -29,6 +29,7 @@
     "@usevenice/integration-merge": "workspace:*",
     "@usevenice/integration-mongodb": "workspace:*",
     "@usevenice/integration-moota": "workspace:*",
+    "@usevenice/integration-notion": "workspace:*",
     "@usevenice/integration-onebrick": "workspace:*",
     "@usevenice/integration-plaid": "workspace:*",
     "@usevenice/integration-postgres": "workspace:*",
