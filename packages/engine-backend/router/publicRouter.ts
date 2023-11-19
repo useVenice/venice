@@ -6,7 +6,12 @@ import {publicProcedure, trpc} from './_base'
 export const publicRouter = trpc.router({
   health: publicProcedure
     .meta({
-      openapi: {method: 'GET', path: '/health', tags: ['public', 'debug']},
+      openapi: {
+        method: 'GET',
+        path: '/health',
+        tags: ['internal'],
+        summary: 'Health check',
+      },
     })
     .input(z.void())
     .output(z.string())

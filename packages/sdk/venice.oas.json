@@ -13,10 +13,8 @@
     "/health": {
       "get": {
         "operationId": "health",
-        "tags": [
-          "public",
-          "debug"
-        ],
+        "summary": "Health check",
+        "tags": ["internal"],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -153,9 +151,7 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": [
-                  "integrationId"
-                ]
+                "required": ["integrationId"]
               }
             }
           }
@@ -290,9 +286,7 @@
               "application/json": {
                 "schema": {
                   "type": "boolean",
-                  "enum": [
-                    true
-                  ]
+                  "enum": [true]
                 }
               }
             }
@@ -340,11 +334,7 @@
             "schema": {
               "type": "string",
               "nullable": true,
-              "enum": [
-                "source",
-                "destination",
-                null
-              ]
+              "enum": ["source", "destination", null]
             }
           },
           {
@@ -673,9 +663,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "token"
-                  ]
+                  "required": ["token"]
                 }
               }
             }
@@ -762,9 +750,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "url"
-                  ]
+                  "required": ["url"]
                 }
               }
             }
@@ -854,9 +840,7 @@
                     "description": "Allow end user to create resources using this connector's configuration"
                   }
                 },
-                "required": [
-                  "orgId"
-                ]
+                "required": ["orgId"]
               }
             }
           }
@@ -1008,9 +992,7 @@
     "/passthrough": {
       "post": {
         "operationId": "passthrough",
-        "tags": [
-          "resource"
-        ],
+        "tags": ["resource"],
         "requestBody": {
           "required": true,
           "content": {
@@ -1020,14 +1002,7 @@
                 "properties": {
                   "method": {
                     "type": "string",
-                    "enum": [
-                      "GET",
-                      "POST",
-                      "PUT",
-                      "PATCH",
-                      "DELETE",
-                      "OPTIONS"
-                    ]
+                    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
                   },
                   "path": {
                     "type": "string"
@@ -1045,10 +1020,7 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": [
-                  "method",
-                  "path"
-                ]
+                "required": ["method", "path"]
               }
             }
           }
@@ -1088,9 +1060,7 @@
     "/resources/{id}/source_sync": {
       "post": {
         "operationId": "sourceSync",
-        "tags": [
-          "resource"
-        ],
+        "tags": ["resource"],
         "parameters": [
           {
             "in": "path",
@@ -1158,9 +1128,7 @@
     "/accounting/account": {
       "get": {
         "operationId": "accounting_account_list",
-        "tags": [
-          "accounting"
-        ],
+        "tags": ["accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1208,18 +1176,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id",
-                          "name",
-                          "type"
-                        ]
+                        "required": ["id", "name", "type"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1260,9 +1221,7 @@
     "/accounting/expense": {
       "get": {
         "operationId": "accounting_expense_list",
-        "tags": [
-          "accounting"
-        ],
+        "tags": ["accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1318,10 +1277,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1362,9 +1318,7 @@
     "/accounting/vendor": {
       "get": {
         "operationId": "accounting_vendor_list",
-        "tags": [
-          "accounting"
-        ],
+        "tags": ["accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1408,18 +1362,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id",
-                          "name",
-                          "url"
-                        ]
+                        "required": ["id", "name", "url"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1460,9 +1407,7 @@
     "/pta/account": {
       "get": {
         "operationId": "pta_account_list",
-        "tags": [
-          "pta"
-        ],
+        "tags": ["pta"],
         "parameters": [
           {
             "in": "query",
@@ -1500,10 +1445,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1544,9 +1486,7 @@
     "/pta/transaction": {
       "get": {
         "operationId": "pta_transaction_list",
-        "tags": [
-          "pta"
-        ],
+        "tags": ["pta"],
         "parameters": [
           {
             "in": "query",
@@ -1584,10 +1524,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1628,9 +1565,7 @@
     "/pta/commodity": {
       "get": {
         "operationId": "pta_commodity_list",
-        "tags": [
-          "pta"
-        ],
+        "tags": ["pta"],
         "parameters": [
           {
             "in": "query",
@@ -1668,10 +1603,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1712,9 +1644,7 @@
     "/investment/account": {
       "get": {
         "operationId": "investment_account_list",
-        "tags": [
-          "investment"
-        ],
+        "tags": ["investment"],
         "parameters": [
           {
             "in": "query",
@@ -1755,17 +1685,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id",
-                          "name"
-                        ]
+                        "required": ["id", "name"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1806,9 +1730,7 @@
     "/investment/transaction": {
       "get": {
         "operationId": "investment_transaction_list",
-        "tags": [
-          "investment"
-        ],
+        "tags": ["investment"],
         "parameters": [
           {
             "in": "query",
@@ -1846,16 +1768,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id"
-                        ]
+                        "required": ["id"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1896,9 +1813,7 @@
     "/investment/holding": {
       "get": {
         "operationId": "investment_holding_list",
-        "tags": [
-          "investment"
-        ],
+        "tags": ["investment"],
         "parameters": [
           {
             "in": "query",
@@ -1936,16 +1851,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id"
-                        ]
+                        "required": ["id"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -1986,9 +1896,7 @@
     "/investment/security": {
       "get": {
         "operationId": "investment_security_list",
-        "tags": [
-          "investment"
-        ],
+        "tags": ["investment"],
         "parameters": [
           {
             "in": "query",
@@ -2026,16 +1934,11 @@
                           },
                           "_original": {}
                         },
-                        "required": [
-                          "id"
-                        ]
+                        "required": ["id"]
                       }
                     }
                   },
-                  "required": [
-                    "hasNextPage",
-                    "items"
-                  ]
+                  "required": ["hasNextPage", "items"]
                 }
               }
             }
@@ -2129,18 +2032,13 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "message"
-              ]
+              "required": ["message"]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": [
-          "message",
-          "code"
-        ],
+        "required": ["message", "code"],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2204,13 +2102,7 @@
               "status": {
                 "type": "string",
                 "nullable": true,
-                "enum": [
-                  "healthy",
-                  "disconnected",
-                  "error",
-                  "manual",
-                  null
-                ]
+                "enum": ["healthy", "disconnected", "error", "manual", null]
               },
               "statusMessage": {
                 "type": "string",
@@ -2223,9 +2115,7 @@
                 }
               }
             },
-            "required": [
-              "displayName"
-            ]
+            "required": ["displayName"]
           },
           "disabled": {
             "type": "boolean"
@@ -2269,18 +2159,13 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "message"
-              ]
+              "required": ["message"]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": [
-          "message",
-          "code"
-        ],
+        "required": ["message", "code"],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2311,18 +2196,13 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "message"
-              ]
+              "required": ["message"]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": [
-          "message",
-          "code"
-        ],
+        "required": ["message", "code"],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2374,11 +2254,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "createdAt",
-          "updatedAt",
-          "id"
-        ]
+        "required": ["createdAt", "updatedAt", "id"]
       },
       "id.pipe": {
         "type": "string",
@@ -2424,13 +2300,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "createdAt",
-          "updatedAt",
-          "id",
-          "providerName",
-          "orgId"
-        ]
+        "required": ["createdAt", "updatedAt", "id", "providerName", "orgId"]
       },
       "id.org": {
         "type": "string",
