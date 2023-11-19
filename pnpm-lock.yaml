@@ -1570,6 +1570,12 @@ importers:
         specifier: 1.3.1
         version: 1.3.1
 
+  utils/openapi-client:
+    dependencies:
+      openapi-fetch:
+        specifier: 0.8.1
+        version: 0.8.1
+
 packages:
 
   /@alloc/quick-lru@5.2.0:
@@ -14212,7 +14218,6 @@ packages:
     resolution: {integrity: sha512-xmzMaBCydPTMd0TKy4P2DYx/JOe9yjXtPIky1n1GV7nJJdZ3IZgSHvAWVbe06WsPD8EreR7E97IAiskPr6sa2g==}
     dependencies:
       openapi-typescript-helpers: 0.0.4
-    dev: true
 
   /openapi-sampler@1.3.1:
     resolution: {integrity: sha512-Ert9mvc2tLPmmInwSyGZS+v4Ogu9/YoZuq9oP3EdUklg2cad6+IGndP9yqJJwbgdXwZibiq5fpv6vYujchdJFg==}
@@ -14242,7 +14247,6 @@ packages:
 
   /openapi-typescript-helpers@0.0.4:
     resolution: {integrity: sha512-Q0MTapapFAG993+dx8lNw33X6P/6EbFr31yNymJHq56fNc6dODyRm8tWyRnGxuC74lyl1iCRMV6nQCGQsfVNKg==}
-    dev: true
 
   /openapi-typescript@6.1.0:
     resolution: {integrity: sha512-4G0hQu9zXHESZe4fZouucmA+6J5oKSBNYzG0gPbV9V4aKBNIwfUY86ur/cxyTMzuN9vQuAiMe//q4ZMXgMvGtQ==}
