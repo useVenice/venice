@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import 'global-agent/bootstrap'
 import '@usevenice/app-config/register.node'
+import 'global-agent/bootstrap'
 
 import {ProxyAgent, setGlobalDispatcher} from 'undici'
 
@@ -29,11 +29,13 @@ import {makeWiseClient} from '@usevenice/integration-wise'
 import {makeYodleeClient} from '@usevenice/integration-yodlee'
 import {AirbytePublicSDK} from '@usevenice/meta-service-airbyte/airbyte-sdk'
 import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
+import {createVeniceClient} from '@usevenice/sdk'
 import type {ZFunctionMap} from '@usevenice/util'
 import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
+import {getEnv} from './env'
 
 setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']!))
 
@@ -111,6 +113,11 @@ if (require.main === module) {
       makeNangoClient({secretKey: process.env['_NANGO_SECRET_KEY']!}),
     airbyte: () =>
       AirbytePublicSDK({accessToken: process.env['_AIRBYTE_ACCESS_TOKEN']!}),
+    sdk: () =>
+      createVeniceClient({
+        apiKey: getEnv('VENICE_API_KEY'),
+        resourceId: getEnv('VENICE_RESOURCE_ID'),
+      }),
   }
 
   const clientFactory = z

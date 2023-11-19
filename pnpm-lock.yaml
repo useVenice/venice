@@ -68,6 +68,9 @@ importers:
       '@usevenice/cli':
         specifier: workspace:*
         version: link:apps/cli
+      '@usevenice/sdk':
+        specifier: workspace:*
+        version: link:packages/sdk
       '@usevenice/util':
         specifier: workspace:*
         version: link:packages/util
@@ -306,6 +309,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@t3-oss/env-core':
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.0.4)(zod@3.21.4)
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
@@ -1257,8 +1263,8 @@ importers:
         specifier: 0.8.1
         version: 0.8.1
       openapi-typescript:
-        specifier: 7.0.0-next.2
-        version: 7.0.0-next.2
+        specifier: 7.0.0-next.3
+        version: 7.0.0-next.3
 
   packages/meta-service-fs:
     dependencies:
@@ -1311,10 +1317,14 @@ importers:
         version: 3.1.2
 
   packages/sdk:
+    dependencies:
+      '@usevenice/openapi-client':
+        specifier: workspace:*
+        version: link:../../utils/openapi-client
     devDependencies:
       openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
+        specifier: 7.0.0-next.3
+        version: 7.0.0-next.3
 
   packages/ui:
     dependencies:
@@ -1575,6 +1585,10 @@ importers:
       openapi-fetch:
         specifier: 0.8.1
         version: 0.8.1
+    optionalDependencies:
+      undici:
+        specifier: 5.27.0
+        version: 5.27.0
 
 packages:
 
@@ -14272,8 +14286,8 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /openapi-typescript@7.0.0-next.2:
-    resolution: {integrity: sha512-28z7waM6zQngdylvz0reHP/Ax40FzcdcIMqLoz9zaV7l3k/iDzr+wcjMH+KlQh7x7THXBMe2L1K2edfwvJmz8A==}
+  /openapi-typescript@7.0.0-next.3:
+    resolution: {integrity: sha512-MWbXwyagp00PcKBb/7pqwenCbYIuMhRsWo+fxT2Az4FJV/o39pizqxjHs+P4Nv/pJ0xMHS+uSeI/i6aGLmomNg==}
     hasBin: true
     dependencies:
       '@redocly/openapi-core': 1.4.0

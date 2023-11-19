@@ -7,5 +7,10 @@
   "dependencies": {
     "openapi-fetch": "0.8.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "undici": "5.27.0"
+  },
+  "optionalDependencies": {
+    "undici": "5.27.0"
+  }
 }

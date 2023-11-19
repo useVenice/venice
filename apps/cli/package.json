@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@t3-oss/env-core": "0.7.1",
     "@trpc/server": "10.40.0",
     "@usevenice/app-config": "workspace:*",
     "@usevenice/cdk": "workspace:*",

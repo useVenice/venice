@@ -23,12 +23,12 @@ export class HTTPError<T> extends Error {
   constructor({
     method,
     error,
-    response,
+    response: r,
   }: Extract<FetchResponse<T>, {error: unknown}> & {method: HTTPMethod}) {
-    super(`[HTTP ${response.status}]: ${method.toUpperCase()} ${response.url}`)
+    super(`[${r.status} ${r.statusText}] ${method.toUpperCase()} ${r.url}`)
     this.method = method
     this.error = error
-    this.response = response
+    this.response = r
     Object.setPrototypeOf(this, HTTPError.prototype)
   }
 }

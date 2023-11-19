@@ -8,8 +8,10 @@
     "generate:schema": "node --loader tsx ../../apps/web/lib-server/appRouter.ts > ./venice.oas.json",
     "generate:types": "openapi-typescript ./venice.oas.json --output ./venice.oas.d.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@usevenice/openapi-client": "workspace:*"
+  },
   "devDependencies": {
-    "openapi-typescript": "6.7.1"
+    "openapi-typescript": "7.0.0-next.3"
   }
 }
