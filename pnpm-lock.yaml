@@ -21,6 +21,9 @@ patchedDependencies:
   '@nangohq/frontend@0.33.8':
     hash: cscdyzeu5adridjxg5g7kdqy6q
     path: patches/@nangohq__frontend@0.33.8.patch
+  '@stoplight/elements-core@7.7.10':
+    hash: kk73kchb2jt7kc2zkcwx7lxwl4
+    path: patches/@stoplight__elements-core@7.7.10.patch
   cac@6.7.12:
     hash: nsfmzcycabp3f3q7kw2uyer77u
     path: patches/cac@6.7.12.patch
@@ -5484,17 +5487,17 @@ packages:
       '@redocly/openapi-core': 1.4.0
       chokidar: 3.5.3
       colorette: 1.4.0
-      core-js: 3.33.2
+      core-js: 3.33.3
       get-port-please: 3.1.1
       glob: 7.2.3
       handlebars: 4.7.7
-      mobx: 6.10.2
+      mobx: 6.11.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      redoc: 2.1.3(core-js@3.33.2)(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.0)
+      redoc: 2.1.3(core-js@3.33.3)(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.1)
       semver: 7.5.4
       simple-websocket: 9.1.0
-      styled-components: 6.1.0(react-dom@18.2.0)(react@18.2.0)
+      styled-components: 6.1.1(react-dom@18.2.0)(react@18.2.0)
       yargs: 17.0.1
     transitivePeerDependencies:
       - bufferutil
@@ -5913,7 +5916,7 @@ packages:
     resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
     dev: true
 
-  /@stoplight/elements-core@7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@1.0.4)(react-dom@18.2.0)(react@18.2.0):
+  /@stoplight/elements-core@7.7.10(patch_hash=kk73kchb2jt7kc2zkcwx7lxwl4)(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@1.0.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Z/cj6EtYxfT4bDC9DA9WyNUQdhahiPqJcNsWnC/+yPSAqAnqDfzlkVT0iyiRxOfF0OzVfw3rfzadbYlcx/PNAw==}
     engines: {node: '>=14.13'}
     peerDependencies:
@@ -5964,6 +5967,7 @@ packages:
       - wonka
       - xstate
     dev: false
+    patched: true
 
   /@stoplight/elements@7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@1.0.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-smyiiYmV7y5olasCY2JKFLqZJEKE3f6zAgF1nPuo0x5+kDR1laHvdNgMTuqyywXMwx8ezo51QZj9LwBfL9UApw==}
@@ -5972,7 +5976,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0
     dependencies:
-      '@stoplight/elements-core': 7.7.10(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@1.0.4)(react-dom@18.2.0)(react@18.2.0)
+      '@stoplight/elements-core': 7.7.10(patch_hash=kk73kchb2jt7kc2zkcwx7lxwl4)(@babel/core@7.21.0)(@tanstack/query-core@4.27.0)(mkdirp@1.0.4)(react-dom@18.2.0)(react@18.2.0)
       '@stoplight/http-spec': 5.5.6
       '@stoplight/json': 3.20.2
       '@stoplight/mosaic': 1.40.0(react-dom@18.2.0)(react@18.2.0)
@@ -8969,15 +8973,9 @@ packages:
       toggle-selection: 1.0.6
     dev: false
 
-  /core-js@3.25.5:
-    resolution: {integrity: sha512-nbm6eZSjm+ZuBQxCUPQKQCoUEfFOXjUZ8dTTyikyKaWrTYmAVbykQfwsKE5dBK88u3QCkCrzsx/PPlKfhsvgpw==}
+  /core-js@3.33.3:
+    resolution: {integrity: sha512-lo0kOocUlLKmm6kv/FswQL8zbkH7mVsLJ/FULClOhv8WRVmKLVcs6XPNQAzstfeJTCHMyButEwG+z1kHxHoDZw==}
     requiresBuild: true
-    dev: false
-
-  /core-js@3.33.2:
-    resolution: {integrity: sha512-XeBzWI6QL3nJQiHmdzbAOiMYqjrb7hwU7A39Qhvd/POSa/t9E1AeZyEZx3fNvp/vtM8zXwhoL0FsiS0hD0pruQ==}
-    requiresBuild: true
-    dev: true
 
   /core-js@3.6.5:
     resolution: {integrity: sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==}
@@ -15093,7 +15091,7 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  /mobx-react-lite@3.4.3(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0):
+  /mobx-react-lite@3.4.3(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-NkJREyFTSUXR772Qaai51BnE1voWx56LOL80xG7qkZr6vo8vEaLF3sz1JNUVh+rxmUzxYaqOhfuxTfqUh0FXUg==}
     peerDependencies:
       mobx: ^6.1.0
@@ -15106,12 +15104,12 @@ packages:
       react-native:
         optional: true
     dependencies:
-      mobx: 6.10.2
+      mobx: 6.11.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /mobx-react@7.6.0(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0):
+  /mobx-react@7.6.0(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-+HQUNuh7AoQ9ZnU6c4rvbiVVl+wEkb9WqYsVDzGLng+Dqj1XntHu79PvEWKtSMoMj67vFp/ZPXcElosuJO8ckA==}
     peerDependencies:
       mobx: ^6.1.0
@@ -15124,14 +15122,14 @@ packages:
       react-native:
         optional: true
     dependencies:
-      mobx: 6.10.2
-      mobx-react-lite: 3.4.3(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)
+      mobx: 6.11.0
+      mobx-react-lite: 3.4.3(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /mobx@6.10.2:
-    resolution: {integrity: sha512-B1UGC3ieK3boCjnMEcZSwxqRDMdzX65H/8zOHbuTY8ZhvrIjTUoLRR2TP2bPqIgYRfb3+dUigu8yMZufNjn0LQ==}
+  /mobx@6.11.0:
+    resolution: {integrity: sha512-qngYCmr0WJiFRSAtYe82DB7SbzvbhehkJjONs8ydynUwoazzUQHZdAlaJqUfks5j4HarhWsZrMRhV7HtSO9HOQ==}
     dev: true
 
   /monaco-editor@0.35.0:
@@ -15205,7 +15203,7 @@ packages:
       rtl-css-js: 1.16.1
       sourcemap-codec: 1.4.8
       stacktrace-js: 2.0.2
-      stylis: 4.1.3
+      stylis: 4.3.0
     dev: false
 
   /nano-memoize@1.3.1:
@@ -17429,7 +17427,7 @@ packages:
       redis-parser: 3.0.0
     dev: false
 
-  /redoc@2.1.3(core-js@3.33.2)(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.0):
+  /redoc@2.1.3(core-js@3.33.3)(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.1):
     resolution: {integrity: sha512-d7F9qLLxaiFW4GC03VkwlX9wuRIpx9aiIIf3o6mzMnqPfhxrn2IRKGndrkJeVdItgCfmg9jXZiFEowm60f1meQ==}
     engines: {node: '>=6.9', npm: '>=3.0.0'}
     peerDependencies:
@@ -17441,7 +17439,7 @@ packages:
     dependencies:
       '@redocly/openapi-core': 1.4.0
       classnames: 2.3.2
-      core-js: 3.33.2
+      core-js: 3.33.3
       decko: 1.2.0
       dompurify: 2.4.7
       eventemitter3: 4.0.7
@@ -17449,8 +17447,8 @@ packages:
       lunr: 2.3.9
       mark.js: 8.11.1
       marked: 4.2.4
-      mobx: 6.10.2
-      mobx-react: 7.6.0(mobx@6.10.2)(react-dom@18.2.0)(react@18.2.0)
+      mobx: 6.11.0
+      mobx-react: 7.6.0(mobx@6.11.0)(react-dom@18.2.0)(react@18.2.0)
       openapi-sampler: 1.3.1
       path-browserify: 1.0.1
       perfect-scrollbar: 1.5.5
@@ -17462,7 +17460,7 @@ packages:
       react-tabs: 4.3.0(react@18.2.0)
       slugify: 1.4.7
       stickyfill: 1.1.1
-      styled-components: 6.1.0(react-dom@18.2.0)(react@18.2.0)
+      styled-components: 6.1.1(react-dom@18.2.0)(react@18.2.0)
       swagger2openapi: 7.0.8
       url-template: 2.0.8
     transitivePeerDependencies:
@@ -18355,7 +18353,7 @@ packages:
       slonik: 30.3.1 || 30
     dependencies:
       camelcase: 6.3.0
-      core-js: 3.25.5
+      core-js: 3.33.3
       slonik: 30.3.1(pg-native@3.0.1)
     dev: false
 
@@ -18376,7 +18374,7 @@ packages:
     resolution: {integrity: sha512-f9jxhsu+8u0ssf2pdzLx1jSlGODkAitNbGrprJWGOjmnQzZKW4jWaq54DZGwyNv4HotOb9m4Lp0u9XQODKXyng==}
     engines: {node: '>=8.0'}
     dependencies:
-      core-js: 3.25.5
+      core-js: 3.33.3
       pg-formatter: 1.3.0
       pretty-ms: 6.0.1
       slonik: 30.3.1(pg-native@3.0.1)
@@ -18402,7 +18400,7 @@ packages:
     resolution: {integrity: sha512-TAuWVFBVnq7I5KcEY/x1JgVgIVZ0yyyeRlMTzKs+u4wRYhszQW2hMIYnDak/UUfWR1h6wp3+hODiC4gKyBOUcg==}
     engines: {node: '>=8.0'}
     dependencies:
-      core-js: 3.25.5
+      core-js: 3.33.3
       slonik: 30.3.1(pg-native@3.0.1)
     transitivePeerDependencies:
       - pg-native
@@ -19120,8 +19118,8 @@ packages:
       inline-style-parser: 0.1.1
     dev: false
 
-  /styled-components@6.1.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-VWNfYYBuXzuLS/QYEeoPgMErP26WL+dX9//rEh80B2mmlS1yRxRxuL5eax4m6ybYEUoHWlTy2XOU32767mlMkg==}
+  /styled-components@6.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-cpZZP5RrKRIClBW5Eby4JM1wElLVP4NQrJbJ0h10TidTyJf4SIIwa3zLXOoPb4gJi8MsJ8mjq5mu2IrEhZIAcQ==}
     engines: {node: '>= 16'}
     peerDependencies:
       react: 18.2.0
@@ -19158,13 +19156,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /stylis@4.1.3:
-    resolution: {integrity: sha512-GP6WDNWf+o403jrEp9c5jibKavrtLW+/qYGhFxFrG8maXhwTBI7gLLhiBb0o7uFccWN+EOS9aMO6cGHWAO07OA==}
-    dev: false
-
   /stylis@4.3.0:
     resolution: {integrity: sha512-E87pIogpwUsUwXw7dNyU4QDjdgVMy52m+XEOPEKUn161cCzWjjhPSQhByfd1CcNvrOLnXQ6OnnZDwnJrz/Z4YQ==}
-    dev: true
 
   /sucrase@3.32.0:
     resolution: {integrity: sha512-ydQOU34rpSyj2TGyz4D2p8rbktIOZ8QY9s+DGLvFU1i5pWJE8vkpruCjGCMHsdXwnD7JDcS+noSwM/a7zyNFDQ==}

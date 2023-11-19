@@ -483,10 +483,6 @@ export const plaidServerIntegration = {
     const creds = config.credentials ?? getPlatformConfig(env)
     return makeOpenApiClient<InfoFromPaths<paths>>({
       baseUrl: `https://${env}.plaid.com`,
-      headers: {
-        'PLAID-CLIENT-ID': creds.clientId,
-        'PLAID-SECRET': creds.clientSecret,
-      },
       middleware: (url, init) => {
         if (init?.method?.toLowerCase() === 'post') {
           const body =
@@ -503,6 +499,8 @@ export const plaidServerIntegration = {
                 headers: {
                   ...init.headers,
                   'Content-Type': 'application/json',
+                  'PLAID-CLIENT-ID': creds.clientId,
+                  'PLAID-SECRET': creds.clientSecret,
                 },
               },
             ]

@@ -211,3 +211,4 @@ export const zPassthroughInput = z.object({
   headers: z.record(z.unknown()).optional(),
   body: z.record(z.unknown()).optional(),
 })
+export type PassthroughInput = z.infer<typeof zPassthroughInput>
