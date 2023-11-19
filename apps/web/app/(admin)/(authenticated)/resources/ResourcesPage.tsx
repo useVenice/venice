@@ -112,6 +112,12 @@ function ResourceMenu({resource}: {resource: Resource}) {
             </Link>
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem asChild>
+          <Link href={`/resources/${resource.id}/playground`}>
+            <Database className="mr-2 h-4 w-4" />
+            Playground
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => setTimeout(() => setSheetOpen(true), 0)}>
           <Pencil className="mr-2 h-4 w-4" />
