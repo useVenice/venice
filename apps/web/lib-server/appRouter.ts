@@ -1,6 +1,7 @@
 import {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
 
+import {getServerUrl} from '@usevenice/app-config/constants'
 import {flatRouter} from '@usevenice/engine-backend'
 import {
   adminProcedure,
@@ -37,8 +38,7 @@ function generateOpenApi() {
     // openApiVersion: '3.1.0',
     title: 'Venice OpenAPI',
     version: '0.0.0',
-    // baseUrl: getServerUrl(null) + '/api/v0',
-    baseUrl: 'https://app.venice.is/api/v0',
+    baseUrl: getServerUrl(null) + '/api/v0',
   })
 }
 

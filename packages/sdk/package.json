@@ -6,7 +6,7 @@
   "module": "./index.ts",
   "scripts": {
     "generate": "pnpm generate:schema && pnpm generate:types",
-    "generate:schema": "node --loader tsx ../../apps/web/lib-server/appRouter.ts > ./venice.oas.json",
+    "generate:schema": "NEXT_PUBLIC_SERVER_URL=https://app.venice.is node --loader tsx ../../apps/web/lib-server/appRouter.ts > ./venice.oas.json",
     "generate:types": "openapi-typescript ./venice.oas.json --output ./venice.oas.d.ts"
   },
   "dependencies": {
