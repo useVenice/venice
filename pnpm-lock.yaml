@@ -922,6 +922,12 @@ importers:
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
+      prettier:
+        specifier: 2.8.8
+        version: 2.8.8
+      yamljs:
+        specifier: 0.3.0
+        version: 0.3.0
 
   integrations/integration-postgres:
     dependencies:
@@ -1138,6 +1144,9 @@ importers:
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)
+      openapi3-ts:
+        specifier: 4.1.2
+        version: 4.1.2
 
   packages/connect:
     dependencies:
@@ -20831,6 +20840,14 @@ packages:
   /yaml@2.3.0:
     resolution: {integrity: sha512-8/1wgzdKc7bc9E6my5wZjmdavHLvO/QOmLG1FBugblEvY4IXrLjlViIOmL24HthU042lWTDRO90Fz1Yp66UnMw==}
     engines: {node: '>= 14', npm: '>= 7'}
+
+  /yamljs@0.3.0:
+    resolution: {integrity: sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==}
+    hasBin: true
+    dependencies:
+      argparse: 1.0.10
+      glob: 7.2.3
+    dev: true
 
   /yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}

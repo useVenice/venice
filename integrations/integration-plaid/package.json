@@ -7,7 +7,10 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "codegen:next": "openapi-typescript https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml --make-paths-enum --output plaid.gen.ts"
+    "download:oas": "curl https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml > ./plaid.oas.yaml",
+    "generate": "pnpm generate:oas && pnpm generate:types",
+    "generate:oas": "pnpm download:oas && yaml2json ./plaid.oas.yaml | prettier --parser json > ./plaid.oas.json",
+    "generate:types": "openapi-typescript ./plaid.oas.json --output plaid.oas.d.ts"
   },
   "dependencies": {
     "@t3-oss/env-core": "0.7.1",
@@ -18,7 +21,9 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "openapi-typescript": "6.7.1"
+    "openapi-typescript": "6.7.1",
+    "prettier": "2.8.8",
+    "yamljs": "0.3.0"
   },
   "peerDependencies": {
     "react": "*"

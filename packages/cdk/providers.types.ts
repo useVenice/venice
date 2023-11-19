@@ -1,3 +1,5 @@
+import type {oas30, oas31} from 'openapi3-ts'
+
 import {
   castIs,
   R,
@@ -20,7 +22,10 @@ import type {AnyEntityPayload, ResoUpdateData, Source} from './protocol'
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type JSONSchema = {} // ReturnType<typeof zodToJsonSchema> | JSONSchema7Definition
 
-export const metaForProvider = (provider: AnyIntegrationImpl) => ({
+export const metaForProvider = (
+  provider: AnyIntegrationImpl,
+  opts: {includeOas?: boolean} = {},
+) => ({
   // ...provider,
   __typename: 'provider' as const,
   name: provider.name,
@@ -44,6 +49,7 @@ export const metaForProvider = (provider: AnyIntegrationImpl) => ({
   schemas: R.mapValues(provider.schemas ?? {}, (schema) =>
     schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
   ) as Record<keyof IntegrationSchemas, JSONSchema>,
+  openapiSpec: opts.includeOas ? provider.metadata?.openapiSpec : undefined,
 })
 
 // aka verticals
@@ -62,6 +68,8 @@ export const zIntegrationVertical = z.enum([
 
 export const zIntegrationStage = z.enum(['hidden', 'alpha', 'beta', 'ga'])
 
+export type OpenApiSpec = oas30.OpenAPIObject | oas31.OpenAPIObject
+
 export interface IntegrationMetadata {
   logoUrl?: string
   logoSvg?: string
@@ -72,6 +80,10 @@ export interface IntegrationMetadata {
   stage?: z.infer<typeof zIntegrationStage>
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
   categories?: Array<z.infer<typeof zIntegrationVertical>>
+
+  openapiSpec?: {
+    proxied?: OpenApiSpec
+  }
 
   /** Whether this is an oauth integration? */
   nangoProvider?: NangoProvider

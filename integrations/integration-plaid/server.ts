@@ -22,7 +22,7 @@ import {
 import type {plaidSchemas} from './def'
 import {helpers as def} from './def'
 import {inferPlaidEnvFromToken} from './plaid-utils'
-import type {paths} from './plaid.gen'
+import type {paths} from './plaid.oas'
 import {getPlatformConfig, makePlaidClient, zWebhook} from './PlaidClient'
 
 export const plaidServerIntegration = {

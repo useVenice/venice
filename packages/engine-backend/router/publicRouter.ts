@@ -16,9 +16,23 @@ export const publicRouter = trpc.router({
     .input(z.void())
     .output(z.string())
     .query(() => 'Ok ' + new Date().toISOString()),
-  getIntegrationCatalog: publicProcedure.query(({ctx}) =>
-    R.mapValues(ctx.providerMap, (provider) => metaForProvider(provider)),
-  ),
+  getIntegrationCatalog: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/connectors',
+        tags: ['connectors'],
+        summary: 'Get catalog of all available connectors',
+      },
+    })
+    .input(z.object({includeOas: z.boolean().optional()}).optional())
+    // TODO: Add deterministic type for the output here
+    .output(z.unknown())
+    .query(({ctx, input}) =>
+      R.mapValues(ctx.providerMap, (provider) =>
+        metaForProvider(provider, input),
+      ),
+    ),
   getPublicEnv: publicProcedure.query(({ctx}) =>
     R.pick(ctx.env, ['NEXT_PUBLIC_NANGO_PUBLIC_KEY']),
   ),
