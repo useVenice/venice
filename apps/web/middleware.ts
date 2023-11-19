@@ -14,5 +14,9 @@ export const config = {
    * - connect (Venice connect, oauth, which has separate auth logic)
    * - debug page
    */
-  matcher: ['/((?!.*\\..*|_next|connect|debug).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!.*\\..*|_next|connect|debug).*)',
+    '/',
+    '/(api|trpc|connector)(.*)',
+  ],
 }

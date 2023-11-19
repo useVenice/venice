@@ -12,8 +12,8 @@ const links: Array<{href: string; title: string}> = [
     href: '/end-users',
   },
   {
-    title: 'Integrations',
-    href: '/integrations',
+    title: 'Connector Configs',
+    href: '/connector-configs',
   },
   {
     title: 'Resources',
@@ -38,7 +38,7 @@ export function TopLav({
           key={link.href}
           href={link.href}
           className={cn(
-            'hover:text-primary text-sm font-medium transition-colors',
+            'text-sm font-medium transition-colors hover:text-primary',
             i === 0 && 'text-muted-foreground',
           )}>
           {link.title}

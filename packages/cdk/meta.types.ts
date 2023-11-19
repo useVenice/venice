@@ -89,7 +89,7 @@ export const zRaw = {
         .boolean()
         .nullish()
         .describe(
-          "Allow end user to create resources using this integration's configuration",
+          "Allow end user to create resources using this connector's configuration",
         ),
       orgId: zId('org'),
       displayName: z.string().nullish(),

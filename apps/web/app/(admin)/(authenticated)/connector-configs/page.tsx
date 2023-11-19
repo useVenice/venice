@@ -2,6 +2,7 @@
 // import {createServerComponentHelpers} from '@/server/server-component-helpers'
 
 import IntegrationsPage from './IntegrationsPage'
+
 export default IntegrationsPage
 // export default async function IntegrationsPageContainer() {
 //   const {ssg, getDehydratedState} = await createServerComponentHelpers()

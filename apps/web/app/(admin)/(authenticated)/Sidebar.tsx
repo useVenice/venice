@@ -58,8 +58,8 @@ const sectionedLinks: Array<{
         icon: 'Box',
       },
       {
-        title: 'Integrations',
-        href: '/integrations',
+        title: 'Connector Configs',
+        href: '/connector-configs',
         icon: 'Layers',
       },
     ],

@@ -51,7 +51,7 @@ export default function IntegrationsPage() {
   return (
     <div className="p-6">
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Configured integrations
+        Connector Configs
       </h2>
       {integrationsRes.isFetching && (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -79,7 +79,7 @@ export default function IntegrationsPage() {
       {/* Spacer */}
       <div className="mt-4" />
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Available integrations
+        Connector Catalog
       </h2>
       {zIntegrationVertical.options.map((category) => {
         const stageByIndex = R.mapToObj.indexed(
@@ -199,7 +199,7 @@ export function IntegrationSheet({
         className="flex flex-col bg-background">
         <SheetHeader className="shrink-0">
           <SheetTitle>
-            {verb} {provider.displayName} integration
+            {verb} {provider.displayName} connector config
           </SheetTitle>
 
           <div className="flex max-h-[100px] flex-row items-center justify-between">
