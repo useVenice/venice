@@ -73,7 +73,13 @@ export function createAccountingRouter(opts: VerticalRouterOpts) {
     R.mapToObj(objectEntries(zAccounting), ([entityName, v]) => [
       `${vertical}_${entityName}_list`,
       opts.remoteProcedure
-        .meta({openapi: {method: 'GET', path: `/${vertical}/${entityName}`}})
+        .meta({
+          openapi: {
+            method: 'GET',
+            path: `/${vertical}/${entityName}`,
+            tags: [vertical],
+          },
+        })
         .input(zPaginationParams.nullish())
         .output(paginatedOutput(v))
         .query(async ({input, ctx}) =>

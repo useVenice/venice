@@ -5,7 +5,9 @@ import {publicProcedure, trpc} from './_base'
 
 export const publicRouter = trpc.router({
   health: publicProcedure
-    .meta({openapi: {method: 'GET', path: '/health'}})
+    .meta({
+      openapi: {method: 'GET', path: '/health', tags: ['public', 'debug']},
+    })
     .input(z.void())
     .output(z.string())
     .query(() => 'Ok ' + new Date().toISOString()),

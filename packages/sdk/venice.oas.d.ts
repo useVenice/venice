@@ -516,7 +516,7 @@ export interface components {
             config?: {
                 [key: string]: unknown;
             } | null;
-            /** @description Allow end user to create resources using this integration's configuration */
+            /** @description Allow end user to create resources using this connector's configuration */
             endUserAccess?: boolean | null;
             orgId: components["schemas"]["id.org"];
             displayName?: string | null;
@@ -1137,7 +1137,7 @@ export interface operations {
                         [key: string]: unknown;
                     } | null;
                     displayName?: string | null;
-                    /** @description Allow end user to create resources using this integration's configuration */
+                    /** @description Allow end user to create resources using this connector's configuration */
                     endUserAccess?: boolean | null;
                 };
             };

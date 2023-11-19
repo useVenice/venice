@@ -10,7 +10,7 @@ export {type inferProcedureInput} from '@trpc/server'
 export const resourceRouter = trpc.router({
   // TODO: maybe we should allow resourceId to be part of the path rather than only in the headers
   passthrough: remoteProcedure
-    .meta({openapi: {method: 'POST', path: '/passthrough'}})
+    .meta({openapi: {method: 'POST', path: '/passthrough', tags: ['resource']}})
     .input(zPassthroughInput)
     .output(z.any())
     .mutation(async ({input, ctx}) => {
@@ -31,7 +31,13 @@ export const resourceRouter = trpc.router({
     }),
 
   sourceSync: protectedProcedure
-    .meta({openapi: {method: 'POST', path: '/resources/{id}/source_sync'}})
+    .meta({
+      openapi: {
+        method: 'POST',
+        path: '/resources/{id}/source_sync',
+        tags: ['resource'],
+      },
+    })
     .input(z.object({id: zId('reso'), state: z.record(z.unknown()).optional()}))
     .output(z.array(z.record(z.any())))
     .mutation(async ({input, ctx}) => {

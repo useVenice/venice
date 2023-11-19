@@ -9,8 +9,7 @@
   },
   "dependencies": {
     "@usevenice/cdk": "workspace:*",
-    "@usevenice/util": "workspace:*",
-    "openapi-typescript-fetch": "1.1.3"
+    "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
     "@mergeapi/react-merge-link": "2.0.6",

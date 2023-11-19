@@ -6,13 +6,17 @@
   },
   "servers": [
     {
-      "url": "https://tonyx.ngrok.dev/api/v0"
+      "url": "https://app.venice.is/api/v0"
     }
   ],
   "paths": {
     "/health": {
       "get": {
         "operationId": "health",
+        "tags": [
+          "public",
+          "debug"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -847,7 +851,7 @@
                   "endUserAccess": {
                     "type": "boolean",
                     "nullable": true,
-                    "description": "Allow end user to create resources using this integration's configuration"
+                    "description": "Allow end user to create resources using this connector's configuration"
                   }
                 },
                 "required": [
@@ -1004,6 +1008,9 @@
     "/passthrough": {
       "post": {
         "operationId": "passthrough",
+        "tags": [
+          "resource"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1081,6 +1088,9 @@
     "/resources/{id}/source_sync": {
       "post": {
         "operationId": "sourceSync",
+        "tags": [
+          "resource"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1148,6 +1158,9 @@
     "/accounting/account": {
       "get": {
         "operationId": "accounting_account_list",
+        "tags": [
+          "accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1247,6 +1260,9 @@
     "/accounting/expense": {
       "get": {
         "operationId": "accounting_expense_list",
+        "tags": [
+          "accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1346,6 +1362,9 @@
     "/accounting/vendor": {
       "get": {
         "operationId": "accounting_vendor_list",
+        "tags": [
+          "accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1441,6 +1460,9 @@
     "/pta/account": {
       "get": {
         "operationId": "pta_account_list",
+        "tags": [
+          "pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1522,6 +1544,9 @@
     "/pta/transaction": {
       "get": {
         "operationId": "pta_transaction_list",
+        "tags": [
+          "pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1603,6 +1628,9 @@
     "/pta/commodity": {
       "get": {
         "operationId": "pta_commodity_list",
+        "tags": [
+          "pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1684,6 +1712,9 @@
     "/investment/account": {
       "get": {
         "operationId": "investment_account_list",
+        "tags": [
+          "investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1775,6 +1806,9 @@
     "/investment/transaction": {
       "get": {
         "operationId": "investment_transaction_list",
+        "tags": [
+          "investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1862,6 +1896,9 @@
     "/investment/holding": {
       "get": {
         "operationId": "investment_holding_list",
+        "tags": [
+          "investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1949,6 +1986,9 @@
     "/investment/security": {
       "get": {
         "operationId": "investment_security_list",
+        "tags": [
+          "investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2371,7 +2411,7 @@
           "endUserAccess": {
             "type": "boolean",
             "nullable": true,
-            "description": "Allow end user to create resources using this integration's configuration"
+            "description": "Allow end user to create resources using this connector's configuration"
           },
           "orgId": {
             "$ref": "#/components/schemas/id.org"
