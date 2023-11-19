@@ -1,3 +1,5 @@
+import {TRPCError} from '@trpc/server'
+
 import {metaForProvider} from '@usevenice/cdk'
 import {R, z} from '@usevenice/util'
 
@@ -33,6 +35,27 @@ export const publicRouter = trpc.router({
         metaForProvider(provider, input),
       ),
     ),
+  getConnector: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/connectors/{name}',
+        tags: ['connectors'],
+      },
+    })
+    .input(z.object({includeOas: z.boolean().optional(), name: z.string()}))
+    // TODO: Add deterministic type for the output here
+    .output(z.unknown())
+    .query(({ctx, input: {name, ...input}}) => {
+      const provider = ctx.providerMap[name]
+      if (!provider) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `Connector ${name} not found`,
+        })
+      }
+      return metaForProvider(provider, input)
+    }),
   getPublicEnv: publicProcedure.query(({ctx}) =>
     R.pick(ctx.env, ['NEXT_PUBLIC_NANGO_PUBLIC_KEY']),
   ),
