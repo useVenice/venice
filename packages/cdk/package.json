@@ -14,7 +14,7 @@
     "@nangohq/frontend": "0.33.8",
     "@types/jsonwebtoken": "9.0.2",
     "@types/react": "*",
-    "trpc-openapi": "1.2.0"
+    "@usevenice/trpc-openapi": "1.3.6"
   },
   "peerDependencies": {
     "react": "*"

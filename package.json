@@ -98,8 +98,7 @@
       "firebase@9.8.1": "patches/firebase@9.8.1.patch",
       "micro-memoize@4.0.10": "patches/micro-memoize@4.0.10.patch",
       "zod@3.21.4": "patches/zod@3.21.4.patch",
-      "@nangohq/frontend@0.33.8": "patches/@nangohq__frontend@0.33.8.patch",
-      "trpc-openapi@1.2.0": "patches/trpc-openapi@1.2.0.patch"
+      "@nangohq/frontend@0.33.8": "patches/@nangohq__frontend@0.33.8.patch"
     },
     "peerDependencyRules": {
       "allowedVersions": {

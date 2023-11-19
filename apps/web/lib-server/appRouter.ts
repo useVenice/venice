@@ -1,6 +1,5 @@
 import {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
-import {generateOpenApiDocument} from 'trpc-openapi'
 
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {flatRouter} from '@usevenice/engine-backend'
@@ -9,6 +8,7 @@ import {
   publicProcedure,
   trpc,
 } from '@usevenice/engine-backend/router/_base'
+import {generateOpenApiDocument} from '@usevenice/trpc-openapi'
 import {z} from '@usevenice/util'
 
 import {zAuth} from '@/lib-common/schemas'

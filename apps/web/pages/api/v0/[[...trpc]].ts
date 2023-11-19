@@ -1,7 +1,8 @@
 import '@usevenice/app-config/register.node'
 
 import type {NextApiHandler} from 'next'
-import {createOpenApiNextHandler} from 'trpc-openapi'
+
+import {createOpenApiNextHandler} from '@usevenice/trpc-openapi'
 
 import {respondToCORS} from '@/lib-server'
 import {appRouter} from '@/lib-server/appRouter'

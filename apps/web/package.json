@@ -29,6 +29,7 @@
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",
     "@usevenice/integration-postgres": "workspace:*",
+    "@usevenice/trpc-openapi": "1.3.6",
     "@usevenice/ui": "workspace:*",
     "@usevenice/util": "workspace:*",
     "commandbar": "1.7.3",
@@ -48,8 +49,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "superjson": "1.9.1",
-    "swagger2openapi": "7.0.8",
-    "trpc-openapi": "1.2.0"
+    "swagger2openapi": "7.0.8"
   },
   "devDependencies": {
     "@sentry/cli": "2.13.0",

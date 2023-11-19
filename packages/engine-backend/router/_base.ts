@@ -1,7 +1,7 @@
 import {initTRPC, TRPCError} from '@trpc/server'
-import type {OpenApiMeta} from 'trpc-openapi'
 
 import {getExtEndUserId, hasRole} from '@usevenice/cdk'
+import type {OpenApiMeta} from '@usevenice/trpc-openapi'
 import {HTTPError} from '@usevenice/util'
 
 import type {RouterContext} from '../context'
