@@ -1,0 +1,12 @@
+{
+  "name": "@usevenice/zod",
+  "version": "0.0.0",
+  "private": false,
+  "sideEffects": false,
+  "module": "./index.ts",
+  "dependencies": {
+    "zod": "3.21.4",
+    "zod-openapi": "2.11.0"
+  },
+  "devDependencies": {}
+}

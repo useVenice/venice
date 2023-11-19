@@ -7,6 +7,7 @@ import {ProxyAgent, setGlobalDispatcher} from 'undici'
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk'
+import {getEnv} from '@usevenice/env'
 import {makeAlphavantageClient} from '@usevenice/integration-alphavantage'
 import {makeHeronClient} from '@usevenice/integration-heron'
 import {makeLunchmoneyClient} from '@usevenice/integration-lunchmoney'
@@ -35,7 +36,6 @@ import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
 
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
-import {getEnv} from './env'
 
 setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']!))
 

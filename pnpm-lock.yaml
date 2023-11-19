@@ -309,9 +309,6 @@ importers:
 
   apps/cli:
     dependencies:
-      '@t3-oss/env-core':
-        specifier: 0.7.1
-        version: 0.7.1(typescript@5.0.4)(zod@3.21.4)
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
@@ -324,6 +321,9 @@ importers:
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
+      '@usevenice/env':
+        specifier: workspace:*
+        version: link:../../utils/env
       '@usevenice/integration-alphavantage':
         specifier: workspace:*
         version: link:../../integrations/integration-alphavantage
@@ -1580,6 +1580,15 @@ importers:
         specifier: 1.3.1
         version: 1.3.1
 
+  utils/env:
+    dependencies:
+      '@t3-oss/env-core':
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.0.4)(zod@3.21.4)
+      '@usevenice/zod':
+        specifier: workspace:*
+        version: link:../zod
+
   utils/openapi-client:
     dependencies:
       openapi-fetch:
@@ -1589,6 +1598,15 @@ importers:
       undici:
         specifier: 5.27.0
         version: 5.27.0
+
+  utils/zod:
+    dependencies:
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+      zod-openapi:
+        specifier: 2.11.0
+        version: 2.11.0(zod@3.21.4)
 
 packages:
 

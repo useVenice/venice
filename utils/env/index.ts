@@ -1,6 +1,6 @@
 import {createEnv} from '@t3-oss/env-core'
 
-import {z} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 export function getEnv<T extends z.ZodTypeAny = z.ZodString>(
   name: string,
@@ -13,3 +13,5 @@ export function getEnv<T extends z.ZodTypeAny = z.ZodString>(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return env[name]
 }
+
+export {z}
