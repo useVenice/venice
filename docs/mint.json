@@ -44,9 +44,9 @@
     {
       "group": "Technical",
       "pages": [
-        "technical/nomenclature",
-        "technical/architecture",
         "technical/data-models",
+        "technical/architecture",
+        "technical/apis",
         "technical/open-source",
         "technical/deploy-locally"
       ]
