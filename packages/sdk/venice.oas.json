@@ -1438,6 +1438,601 @@
         }
       }
     },
+    "/pta/account": {
+      "get": {
+        "operationId": "pta_account_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_original": {}
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pta/transaction": {
+      "get": {
+        "operationId": "pta_transaction_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_original": {}
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pta/commodity": {
+      "get": {
+        "operationId": "pta_commodity_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_original": {}
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investment/account": {
+      "get": {
+        "operationId": "investment_account_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "_original": {}
+                        },
+                        "required": [
+                          "id",
+                          "name"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investment/transaction": {
+      "get": {
+        "operationId": "investment_transaction_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "_original": {}
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investment/holding": {
+      "get": {
+        "operationId": "investment_holding_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "_original": {}
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/investment/security": {
+      "get": {
+        "operationId": "investment_security_list",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "_original": {}
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "operationId": "getOpenapiDocument",

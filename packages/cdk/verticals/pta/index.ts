@@ -1,5 +1,5 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R, z, zCast} from '@usevenice/util'
+import {objectEntries, R, z, zObject} from '@usevenice/util'
 
 import type * as Pta from './pta-types'
 import type {IntegrationSchemas, IntHelpers} from '../../integration.types'
@@ -14,15 +14,15 @@ import {
   zPaginationParams,
 } from '../new-mapper'
 
-export type {Pta}
 export * from './pta-utils'
+export type {Pta}
 
 export const zPta = {
-  account: zCast<Pta.Account>(),
+  account: zObject<Pta.Account>(),
   // .openapi({format: 'prefix:acct'}),
-  transaction: zCast<Pta.Transaction>(),
+  transaction: zObject<Pta.Transaction>(),
   // .openapi({format: 'prefix:exp'}),
-  commodity: zCast<Pta.Commodity>(),
+  commodity: zObject<Pta.Commodity>(),
   // .openapi({format: 'prefix:ven'}),
 }
 

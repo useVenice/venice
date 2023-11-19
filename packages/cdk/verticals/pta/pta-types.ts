@@ -170,6 +170,8 @@ export interface Commodity<TPrice = Price> {
 
   labelsMap?: LabelsMap | null
   attachmentsMap?: AttachmentsMap | null
+
+  [k: string]: unknown
 }
 
 // MARK: - Embedded entities

@@ -86,6 +86,9 @@ export const zCast = <T>(...args: Parameters<(typeof z)['unknown']>) =>
 export const zRecord = <T extends Record<string, unknown>>() =>
   z.record(z.unknown()) as z.ZodType<T, z.ZodTypeDef, Record<string, unknown>>
 
+export const zObject = <T extends Record<string, unknown>>() =>
+  z.object({}) as unknown as z.ZodType<T, z.ZodTypeDef, Record<string, unknown>>
+
 /** `castInput(schema)<TInput>()` */
 export const castInput =
   <T extends z.ZodTypeAny>(schema: T) =>
