@@ -9,35 +9,43 @@ used throughout the documentation and code base.
 To that end, here's a list of what our primitives are and examples of how you
 can think of them in use.
 
-### Need clarity?
-
-<Card title="Join our community" icon="discord" href="https://discord.gg/gTMch6Gn2u">
-Join our community of founders & developers building the future of finance together
-</Card>
-
-<Card title="Improve the documentation" icon="github" href="https://github.com/usevenice/venice">
-Help us keep the documentation as clear as possible. We welcome pull requests!
-</Card>
-
-## Nomenclature
+## Lexicon
 
 Used in a sentence:
 A <strong>Pipeline</strong> simply connects a data <strong>Resource</strong> to/from Venice which transmits data across the <strong>Pipeline</strong> protocol, storing any data in Venice's unified <strong>Database</strong> and making it available via an <strong>API</strong>.
 
+| Term                              | Description                                                                                                                                                                                                                                                                                                                                                                                      | Created by               |
+| :-------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| <strong>Provider</strong>         | A product or service that your customers use (e.g. **Chase**, **Quickbooks**). This is a concept we may reference in docs / user interface but does not yet exist as an actual entity in the Venice API / Database.                                                                                                                                                                              | N/A                      |
+| <strong>Connector</strong>        | Source code adhering to the <string>Venice Protocol</string>, can be a direct connector (e.g. **Quickbooks**) which provides a single `Integration` or an aggregator connector (e.g. **Plaid**) that provides many `Integration`'s                                                                                                                                                               | Venice Repo              |
+| <strong>Integration</strong>      | An integration represents a `Provider` supported by a `Connector`. There can be multiple integrations for a single provider if multiple connectors support the same provider (e.g. Merge and Railz both gives you the ability to connect to Quickbooks, in addition we have a direct Quickbooks connector for a total of 3 Quickbooks Integrations).                                             | Venice Connector         |
+| <strong>Connector Config</strong> | A specific configuration of a <strong>Connector</strong>. Contains developer account credentials (e.g. `client_id`, `client_secret`), and misc configs (`sandbox` vs. `production`). Some connectors does not require configuration (e.g. **Postgres**). In the future can also contain sync settings (e.g. Automatically sync all Plaid items using this config to our main postgres Resource). | Developer (You)          |
+| <strong>Resource</strong>         | Associated with a specific `Connector Config`. Contains customer credentials (e.g. `access_token`) and gives you the ability to call `Provider` APIs. Resource can also be used as either a <strong>Source</strong> or <strong>Destination</strong> within a <strong>Pipeline</strong>                                                                                                           | End User (Your customer) |
+| <strong>Pipeline</strong>         | Pipeline moves data from a <strong>Source</strong> to a <strong>Destination</strong> and contains persistent state used for incremental syncs.                                                                                                                                                                                                                                                                                                             | Developer (You)          |
 
-| Term                              | Description                                       | Example                     |
-| :-------------------------------- | :------------------------------------------------ | :-------------------------- |
-| <strong>Resource</strong> | A generic resource which can be used as a <strong>Source</strong> within a <strong>Pipeline</strong> (e.g. kept agnostic of how it is connected within Venice) | <ul><li>You authenticate your bank with Venice, and eventually can choose whether to read data from that resource</li></ul> |
-| <strong>Pipeline</strong> | Pipeline moves data from a <strong>Source</strong> to a <strong>Destination</strong>, with Venice ultimately being the first destination we support | <ul><li>A bank account associated with a <strong>Resource</strong> is selected as a <strong>Source</strong> of data for Venice to pull from</li></ul> |
-| <strong>Integration</strong> | A specific configuration of a <strong>Provider</strong>. | <ul><li>A Plaid integration configuring access keys, language, etc.</li></ul>
-| <strong>Provider</strong> | Source code adhering to our protocol for reading or writing data into or out of Venice, including the schema for how data is transformed to be compatible with an external <strong>Resource</strong> | <ul><li>Plaid <strong>Pipeline</strong> enables Venice to read data from Plaid's API</li><li>Quickbooks <strong>Pipeline</strong> enables Venice to read data from Quickbooks</li></ul> |
-| <strong>Database</strong> | The primary data store connected to Venice where all of your unified data is stored | A PostgreSQL <strong>Database</strong> configured to act as Venice's primary data store. <strong>Database</strong> can also be a <strong>Resource</strong> and act as a <strong>Source</strong> of data. |
-| <strong>API</strong> | A developer interface into Venice's unified <strong>Database</strong> that can be called to read or write data from or to Venice | <ul><li>A REST endpoint which can return data from Venice in JSON format</li><li>A GraphQL endpoint which can return data from Venice in JSON format</li></ul> |
+When we say "connect" in the user interface, we mean invoking a connector to create a resource.
 
-When we say "connect" in the user interface, we typically mean to create a new resource and setup a pipeline either to or from the Venice <strong>Database</strong>
+![Visualized using Prisma model](../images/models.svg)
 
 {/* Maybe we should support wikilinks if we want to really define nomenclature well */}
 
 ## Data models
 
 For terminology used within our unified database schema, please refer to the [Data Models](/technical/data-models) documentation.
+
+### Need clarity?
+
+<Card
+  title="Join our community"
+  icon="discord"
+  href="https://discord.gg/gTMch6Gn2u">
+  Join our community of founders & developers building the future of finance
+  together
+</Card>
+
+<Card
+  title="Improve the documentation"
+  icon="github"
+  href="https://github.com/usevenice/venice">
+  Help us keep the documentation as clear as possible. We welcome pull requests!
+</Card>
