@@ -1,6 +1,6 @@
 import * as R from 'remeda'
 import * as z from 'zod'
-import {extendZodWithOpenApi} from '@asteasolutions/zod-to-openapi'
+import {extendZodWithOpenApi} from 'zod-openapi'
 
 extendZodWithOpenApi(z)
 

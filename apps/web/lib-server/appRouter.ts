@@ -28,15 +28,22 @@ const customRouter = trpc.router({
     .meta({openapi: {method: 'GET', path: '/'}})
     .input(z.void())
     .output(z.unknown())
-    .query(() => openApiDocument),
+    .query((): unknown => generateOpenApi()),
 })
 
 export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
 
-export const openApiDocument = generateOpenApiDocument(appRouter, {
-  title: 'Venice OpenAPI',
-  version: '0.0.0',
-  baseUrl: getServerUrl(null) + '/api/v0',
-})
+function generateOpenApi() {
+  return generateOpenApiDocument(appRouter, {
+    // openApiVersion: '3.1.0',
+    title: 'Venice OpenAPI',
+    version: '0.0.0',
+    baseUrl: getServerUrl(null) + '/api/v0',
+  })
+}
 
 export type AppRouter = typeof appRouter
+
+if (require.main === module) {
+  console.log(JSON.stringify(generateOpenApi(), null, 2))
+}

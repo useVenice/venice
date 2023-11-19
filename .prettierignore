@@ -8,6 +8,7 @@
 **/__generated__/
 *.generated.*
 *.gen.*
+*.oas.*
 
 # jest
 *.snap

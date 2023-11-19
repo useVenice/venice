@@ -1,4 +1,4 @@
-import {z, zJsonObject} from '@usevenice/util'
+import {z} from '@usevenice/util'
 
 import {zEndUserId, zId} from './id.types'
 
@@ -78,60 +78,68 @@ const zBase = z.object({
   updatedAt: z.date(), // should be string but slonik returns date
 })
 export const zRaw = {
-  integration: zBase.extend({
-    id: zId('int'),
-    /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
-    envName: z.string().nullish(),
-    providerName: z.string(),
-    config: zJsonObject.nullish(),
-    endUserAccess: z
-      .boolean()
-      .nullish()
-      .describe(
-        "Allow end user to create resources using this integration's configuration",
-      ),
-    orgId: zId('org'),
-    displayName: z.string().nullish(),
-    disabled: z.boolean().optional(),
-  }),
-  resource: zBase.extend({
-    id: zId('reso'),
-    providerName: z.string(),
-    displayName: z.string().nullish(),
-    endUserId: zEndUserId.nullish(),
-    integrationId: zId('int'),
-    institutionId: zId('ins').nullish(),
-    settings: zJsonObject.nullish(),
-    standard: zStandard.resource.omit({id: true}).nullish(),
-    disabled: z.boolean().optional(),
-  }),
-  pipeline: zBase.extend({
-    id: zId('pipe'),
-    // TODO: Remove nullish now that pipelines are more fixed
-    sourceId: zId('reso').optional(),
-    sourceState: zJsonObject.optional(),
-    destinationId: zId('reso').optional(),
-    destinationState: zJsonObject.optional(),
-    linkOptions: z
-      .array(z.unknown())
-      // z.union([
-      //   z.string(),
-      //   z.tuple([z.string()]),
-      //   z.tuple([z.string(), z.unknown()]),
-      // ]),
-      .nullish(),
-    // TODO: Add two separate tables sync_jobs to keep track of this instead of these two
-    // though questionnable whether it should be in a separate database completely
-    // just like Airbyte. Or perhaps using airbyte itself as the jobs database
-    lastSyncStartedAt: z.date().nullish(),
-    lastSyncCompletedAt: z.date().nullish(),
-    disabled: z.boolean().optional(),
-  }),
-  institution: zBase.extend({
-    id: zId('ins'),
-    providerName: z.string(),
-    standard: zStandard.institution.omit({id: true}).nullish(),
-    external: zJsonObject.nullish(),
-  }),
+  integration: zBase
+    .extend({
+      id: zId('int'),
+      /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
+      envName: z.string().nullish(),
+      providerName: z.string(),
+      config: z.record(z.unknown()).nullish(),
+      endUserAccess: z
+        .boolean()
+        .nullish()
+        .describe(
+          "Allow end user to create resources using this integration's configuration",
+        ),
+      orgId: zId('org'),
+      displayName: z.string().nullish(),
+      disabled: z.boolean().optional(),
+    })
+    .openapi({ref: 'integration'}),
+  resource: zBase
+    .extend({
+      id: zId('reso'),
+      providerName: z.string().describe('Unique name of the connector'),
+      displayName: z.string().nullish(),
+      endUserId: zEndUserId.nullish(),
+      integrationId: zId('int'),
+      institutionId: zId('ins').nullish(),
+      settings: z.record(z.unknown()).nullish(),
+      standard: zStandard.resource.omit({id: true}).nullish(),
+      disabled: z.boolean().optional(),
+    })
+    .openapi({ref: 'resource'}),
+  pipeline: zBase
+    .extend({
+      id: zId('pipe'),
+      // TODO: Remove nullish now that pipelines are more fixed
+      sourceId: zId('reso').optional(),
+      sourceState: z.record(z.unknown()).optional(),
+      destinationId: zId('reso').optional(),
+      destinationState: z.record(z.unknown()).optional(),
+      linkOptions: z
+        .array(z.unknown())
+        // z.union([
+        //   z.string(),
+        //   z.tuple([z.string()]),
+        //   z.tuple([z.string(), z.unknown()]),
+        // ]),
+        .nullish(),
+      // TODO: Add two separate tables sync_jobs to keep track of this instead of these two
+      // though questionnable whether it should be in a separate database completely
+      // just like Airbyte. Or perhaps using airbyte itself as the jobs database
+      lastSyncStartedAt: z.date().nullish(),
+      lastSyncCompletedAt: z.date().nullish(),
+      disabled: z.boolean().optional(),
+    })
+    .openapi({ref: 'pipeline'}),
+  institution: zBase
+    .extend({
+      id: zId('ins'),
+      providerName: z.string(),
+      standard: zStandard.institution.omit({id: true}).nullish(),
+      external: z.record(z.unknown()).nullish(),
+    })
+    .openapi({ref: 'institution'}),
   // TODO: Add connection_attempts
 }

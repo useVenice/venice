@@ -1,4 +1,3 @@
-import {OpenApiGeneratorV31} from '@asteasolutions/zod-to-openapi'
 import type {z} from 'zod'
 import _zodToJsonSchema from 'zod-to-json-schema'
 
@@ -58,8 +57,4 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
   // Defaulting title should occur last, this way we don't end up with extraneous one
   return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))
-}
-
-export function zodToOpenApi(schema: z.ZodTypeAny) {
-  return new OpenApiGeneratorV31([schema]).generateComponents().components
 }

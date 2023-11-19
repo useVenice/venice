@@ -1,0 +1,15 @@
+{
+  "name": "@usevenice/sdk",
+  "version": "0.0.0",
+  "private": false,
+  "sideEffects": false,
+  "module": "./index.ts",
+  "scripts": {
+    "generate:schema": "node --loader tsx ../../apps/web/lib-server/appRouter.ts > ./venice.oas.json",
+    "generate:types": "openapi-typescript ./venice.oas.json --output ./venice.oas.d.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "openapi-typescript": "6.7.1"
+  }
+}
