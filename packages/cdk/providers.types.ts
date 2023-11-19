@@ -83,6 +83,7 @@ export interface IntegrationMetadata {
 
   openapiSpec?: {
     proxied?: OpenApiSpec
+    original?: OpenApiSpec
   }
 
   /** Whether this is an oauth integration? */

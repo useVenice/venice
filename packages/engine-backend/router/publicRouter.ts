@@ -56,6 +56,28 @@ export const publicRouter = trpc.router({
       }
       return metaForProvider(provider, input)
     }),
+  getConnectorOpenApiSpec: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/connectors/{name}/oas',
+        tags: ['connectors'],
+      },
+    })
+    .input(z.object({name: z.string(), original: z.boolean().optional()}))
+    // TODO: Add deterministic type for the output here
+    .output(z.unknown())
+    .query(({ctx, input: {name, ...input}}) => {
+      const provider = ctx.providerMap[name]
+      if (!provider) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `Connector ${name} not found`,
+        })
+      }
+      const specs = metaForProvider(provider, {includeOas: true}).openapiSpec
+      return input.original ? specs?.original : specs?.proxied
+    }),
   getPublicEnv: publicProcedure.query(({ctx}) =>
     R.pick(ctx.env, ['NEXT_PUBLIC_NANGO_PUBLIC_KEY']),
   ),
