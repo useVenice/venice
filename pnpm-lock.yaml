@@ -1125,6 +1125,9 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
+      '@usevenice/zod':
+        specifier: workspace:*
+        version: link:../../utils/zod
       jsonwebtoken:
         specifier: 9.0.0
         version: 9.0.0

@@ -1,7 +1,8 @@
 import * as jwt from 'jsonwebtoken'
 import {TRPCError} from '@trpc/server'
 
-import {R, z, zFunction} from '@usevenice/util'
+import {R, zFunction} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import type {EndUserId, ExtEndUserId, Id, UserId} from './id.types'
 import {zEndUserId, zId, zUserId} from './id.types'

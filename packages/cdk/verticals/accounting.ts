@@ -1,5 +1,6 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R, z} from '@usevenice/util'
+import {objectEntries, R} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import type {IntegrationSchemas, IntHelpers} from '../integration.types'
 import type {

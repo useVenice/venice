@@ -1,6 +1,6 @@
 import prettier from 'prettier'
 
-import {z} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import {get, mapper} from './new-mapper'
 

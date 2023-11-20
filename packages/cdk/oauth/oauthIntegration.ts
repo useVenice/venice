@@ -1,7 +1,8 @@
 import type NangoFrontend from '@nangohq/frontend'
 import type {AuthError} from '@nangohq/frontend'
 
-import {HTTPError, makeUlid, z} from '@usevenice/util'
+import {HTTPError, makeUlid} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import {CANCELLATION_TOKEN} from '../frontend-utils'
 import type {Id} from '../id.types'

@@ -1,5 +1,6 @@
 // TODO: Maybe this belongs in engine backend?
-import {invert, memoize, R, z} from '@usevenice/util'
+import {invert, memoize, R} from '@usevenice/util'
+import {extendZodWithOpenApi, z} from '@usevenice/zod'
 
 export type ExternalId = z.infer<typeof zExternalId>
 export const zExternalId = z.union([z.string(), z.number()])
@@ -40,6 +41,9 @@ export type Id<TName extends string = string> = {
  * the same ref is an error
  */
 function _zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
+  // Not sure why this is needed...
+  // but if not including it we get a crash...
+  extendZodWithOpenApi(z)
   return z
     .string()
     .refine(

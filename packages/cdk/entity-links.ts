@@ -9,9 +9,9 @@ import {
   Rx,
   rxjs,
   setDefault,
-  z,
   zFunction,
 } from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import {handlersLink, transformLink} from './base-links'
 import type {Id} from './id.types'

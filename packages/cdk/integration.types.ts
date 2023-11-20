@@ -1,5 +1,6 @@
-import type {MaybePromise, PathsOf, z} from '@usevenice/util'
+import type {MaybePromise, PathsOf} from '@usevenice/util'
 import {R} from '@usevenice/util'
+import type {z} from '@usevenice/zod'
 
 import type {EndUserId, Id} from './id.types'
 import {makeId} from './id.types'

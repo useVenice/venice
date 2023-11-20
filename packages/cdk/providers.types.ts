@@ -5,9 +5,9 @@ import {
   R,
   titleCase,
   urlFromImage,
-  z,
   zodToJsonSchema,
 } from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import type {EndUserId, ExtEndUserId, ExternalId, Id} from './id.types'
 import {zExternalId} from './id.types'

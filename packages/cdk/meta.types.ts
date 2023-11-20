@@ -1,4 +1,4 @@
-import {z} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import {zEndUserId, zId} from './id.types'
 

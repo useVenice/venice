@@ -1,8 +1,9 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, z} from '@usevenice/util'
+import {objectEntries} from '@usevenice/util'
 // This is unfortunately quite duplicated...
 // Guess it means accounting router also belongs in the engine backend...
 import {R} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import type {IntegrationSchemas, IntHelpers} from '../integration.types'
 import type {

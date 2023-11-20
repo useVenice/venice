@@ -1,5 +1,6 @@
 import type {Endpoints, InfoFromEndpoints} from '@usevenice/util'
-import {makeOpenApiClient, z} from '@usevenice/util'
+import {makeOpenApiClient} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 const zNangoProvider = z.enum([
   'accelo',

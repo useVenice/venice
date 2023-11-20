@@ -1,4 +1,5 @@
-import type {Amount, AmountMap, Brand, Split, z} from '@usevenice/util'
+import type {Amount, AmountMap, Brand, Split} from '@usevenice/util'
+import type {z} from '@usevenice/zod'
 
 import type {zAccountType, zResourceStatus, zReviewStatus} from './pta-utils'
 

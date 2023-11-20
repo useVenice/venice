@@ -10,7 +10,7 @@ import type {
 } from '@trpc/server'
 import {TRPCError} from '@trpc/server'
 
-import {z} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 // FIXME: This is explicitly bypassing the package system because we have a circular
 // dependency here which is not great but ....

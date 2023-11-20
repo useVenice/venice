@@ -1,4 +1,4 @@
-import {z} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 export const _zOauthConfig = z.object({
   clientId: z.string(),

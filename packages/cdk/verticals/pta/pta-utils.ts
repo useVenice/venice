@@ -5,7 +5,8 @@ import type {
   DistributiveOmit,
   EnumOf,
 } from '@usevenice/util'
-import {objectFromArray, startCase, temp_makeId, z} from '@usevenice/util'
+import {objectFromArray, startCase, temp_makeId} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 
 import type * as Pta from './pta-types'
 
