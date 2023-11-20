@@ -2,7 +2,7 @@ const path = require('node:path')
 const webpack = require('webpack')
 const {withSentryConfig} = require('@sentry/nextjs')
 
-const integrationInfos = require('../app-config/integrations/meta')
+const integrationInfos = require('../app-config/connectors/meta')
 
 /**
  * Meta: change from `@type` to @satisfies once ts 5.0 is out
@@ -19,7 +19,7 @@ const nextConfig = {
     path.resolve(__dirname, '../../packages/util'),
     path.resolve(__dirname, '../../packages/connect'),
     ...integrationInfos.map(({dirName}) =>
-      path.resolve(__dirname, `../../integrations/${dirName}`),
+      path.resolve(__dirname, `../../connectors/${dirName}`),
     ),
   ],
   env: {
