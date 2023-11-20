@@ -10,7 +10,7 @@ import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
 import {
   IntegrationCard as _IntegrationCard,
-  ProviderCard as _ProviderCard,
+  ConnectorCard as _ProviderCard,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -59,15 +59,15 @@ export default function IntegrationsPage() {
       {integrationsRes.data ? (
         <div className="flex flex-wrap">
           {integrationsRes.data.map((int) => {
-            const provider = catalog.data[int.providerName]!
+            const connector = catalog.data[int.connectorName]!
             return (
               <IntegrationCard
                 key={int.id}
-                provider={provider}
+                connector={connector}
                 integration={int}>
                 <IntegrationSheet
                   integration={int}
-                  providerName={provider.name}
+                  connectorName={connector.name}
                 />
               </IntegrationCard>
             )
@@ -86,12 +86,12 @@ export default function IntegrationsPage() {
           zIntegrationStage.options,
           (o, i) => [o, i],
         )
-        const providers = inPlaceSort(
+        const connectors = inPlaceSort(
           Object.values(catalog.data).filter(
             (p) => p.categories.includes(category) && p.stage !== 'hidden',
           ),
         ).desc((p) => stageByIndex[p.stage])
-        if (!providers.length) {
+        if (!connectors.length) {
           return null
         }
         return (
@@ -100,23 +100,23 @@ export default function IntegrationsPage() {
               {titleCase(category)}
             </h3>
             <div className="flex flex-wrap">
-              {providers.map((provider) => (
+              {connectors.map((connector) => (
                 <ProviderCard
-                  key={`${category}-${provider.name}`}
-                  provider={provider}>
-                  {provider.stage === 'alpha' ? (
+                  key={`${category}-${connector.name}`}
+                  connector={connector}>
+                  {connector.stage === 'alpha' ? (
                     <Button
                       className="mt-2"
                       variant="ghost"
                       onClick={() =>
                         window.open(
-                          `mailto:hi@venice.is?subject=Request%20access%20to%20${provider.displayName}%20integration&body=My%20use%20case%20is...`,
+                          `mailto:hi@venice.is?subject=Request%20access%20to%20${connector.displayName}%20integration&body=My%20use%20case%20is...`,
                         )
                       }>
                       Request access
                     </Button>
                   ) : (
-                    <IntegrationSheet providerName={provider.name} />
+                    <IntegrationSheet connectorName={connector.name} />
                   )}
                 </ProviderCard>
               ))}
@@ -132,13 +132,13 @@ export default function IntegrationsPage() {
 
 export function IntegrationSheet({
   integration: int,
-  providerName,
+  connectorName,
 }: {
-  integration?: Omit<Integration, 'providerName'>
-  providerName: string
+  integration?: Omit<Integration, 'connectorName'>
+  connectorName: string
 }) {
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
-  const provider = catalogRes.data?.[providerName]
+  const connector = catalogRes.data?.[connectorName]
 
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself integration
@@ -182,7 +182,7 @@ export function IntegrationSheet({
 
   const formRef = React.useRef<SchemaFormElement>(null)
 
-  if (!provider) {
+  if (!connector) {
     return <LoadingText className="block p-4" />
   }
 
@@ -199,29 +199,29 @@ export function IntegrationSheet({
         className="flex flex-col bg-background">
         <SheetHeader className="shrink-0">
           <SheetTitle>
-            {verb} {provider.displayName} connector config
+            {verb} {connector.displayName} connector config
           </SheetTitle>
 
           <div className="flex max-h-[100px] flex-row items-center justify-between">
-            {provider.logoUrl ? (
+            {connector.logoUrl ? (
               <Image
                 width={100}
                 height={100}
-                src={provider.logoUrl}
-                alt={provider.displayName}
+                src={connector.logoUrl}
+                alt={connector.displayName}
               />
             ) : (
-              <span>{provider.displayName}</span>
+              <span>{connector.displayName}</span>
             )}
             <Badge
               variant="secondary"
               className={cn(
                 'ml-auto',
-                provider.stage === 'ga' && 'bg-green-200',
-                provider.stage === 'beta' && 'bg-blue-200',
-                provider.stage === 'alpha' && 'bg-pink-50',
+                connector.stage === 'ga' && 'bg-green-200',
+                connector.stage === 'beta' && 'bg-blue-200',
+                connector.stage === 'alpha' && 'bg-pink-50',
               )}>
-              {provider.stage}
+              {connector.stage}
             </Badge>
             {/* Add help text here */}
           </div>
@@ -229,7 +229,7 @@ export function IntegrationSheet({
           <SheetDescription>
             {int && `ID: ${int.id}`}
             <br />
-            Supported mode(s): {provider.supportedModes.join(', ')}
+            Supported mode(s): {connector.supportedModes.join(', ')}
           </SheetDescription>
         </SheetHeader>
         <Separator orientation="horizontal" />
@@ -241,8 +241,8 @@ export function IntegrationSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                ...(provider.schemas.integrationConfig && {
-                  config: provider.schemas.integrationConfig,
+                ...(connector.schemas.integrationConfig && {
+                  config: connector.schemas.integrationConfig,
                 }),
               },
             })}
@@ -257,13 +257,13 @@ export function IntegrationSheet({
               console.log('formData submitted', formData)
               upsertIntegration.mutate({
                 ...formData,
-                ...(int ? {id: int.id} : {providerName}),
+                ...(int ? {id: int.id} : {connectorName}),
                 orgId,
               })
             }}
             hideSubmitButton
           />
-          {!provider.schemas.integrationConfig && (
+          {!connector.schemas.integrationConfig && (
             <p>No configuration needed</p>
           )}
         </div>
@@ -277,7 +277,7 @@ export function IntegrationSheet({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Confirm delete {provider.displayName} integration?
+                    Confirm delete {connector.displayName} integration?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     ID: {int.id}

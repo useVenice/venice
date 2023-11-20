@@ -84,7 +84,7 @@ export type ZAuth = {
 type Pipeline = RouterOutput['listPipelines'][number]
 type Resource = RouterOutput['listConnections'][number]
 type Integration = RouterOutput['adminListIntegrations'][number]
-type Provider = RouterOutput['getIntegrationCatalog'][string]
+type ConnectorMeta = RouterOutput['getIntegrationCatalog'][string]
 
 export const zClient = {
   pipeline: zRecord<Pipeline>().refine(
@@ -99,9 +99,12 @@ export const zClient = {
     (i) => zId('int').safeParse(i.id).success,
     {message: 'Invalid integration'},
   ),
-  provider: zRecord<Provider>().refine((p) => p.__typename === 'provider', {
-    message: 'Invalid pipeline',
-  }),
+  connector: zRecord<ConnectorMeta>().refine(
+    (p) => p.__typename === 'connector',
+    {
+      message: 'Invalid pipeline',
+    },
+  ),
 }
 export type ZClient = {
   [k in keyof typeof zClient]: z.infer<(typeof zClient)[k]>

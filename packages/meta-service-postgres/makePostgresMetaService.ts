@@ -113,11 +113,11 @@ export const makePostgresMetaService = zFunction(
         )
         return runQueries((pool) => pool.any<EndUserResultRow>(query))
       },
-      searchInstitutions: ({keywords, providerNames, ...rest}) => {
+      searchInstitutions: ({keywords, connectorNames, ...rest}) => {
         const {runQueries, sql} = _getDeps(opts)
         const conditions = R.compact([
-          providerNames &&
-            sql`provider_name = ANY(${sql.array(providerNames, 'varchar')})`,
+          connectorNames &&
+            sql`connector_name = ANY(${sql.array(connectorNames, 'varchar')})`,
           keywords && sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
         ])
         const where =
@@ -151,17 +151,17 @@ export const makePostgresMetaService = zFunction(
           pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },
-      listIntegrationInfos: ({id, providerName} = {}) => {
+      listIntegrationInfos: ({id, connectorName} = {}) => {
         const {runQueries, sql} = _getDeps(opts)
         return runQueries((pool) =>
           pool.any(
             sql`SELECT id, env_name, display_name FROM integration ${
-              id && providerName
-                ? sql`WHERE id = ${id} AND provider_name = ${providerName}`
+              id && connectorName
+                ? sql`WHERE id = ${id} AND connector_name = ${connectorName}`
                 : id
                 ? sql`WHERE id = ${id}`
-                : providerName
-                ? sql`WHERE provider_name = ${providerName}`
+                : connectorName
+                ? sql`WHERE connector_name = ${connectorName}`
                 : sql``
             }`,
           ),
@@ -181,13 +181,13 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
   // TODO: Convert case from snake_case to camelCase
   return {
-    list: ({ids, endUserId, integrationId, providerName, keywords, ...rest}) =>
+    list: ({ids, endUserId, integrationId, connectorName, keywords, ...rest}) =>
       runQueries((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
           endUserId && sql`end_user_id = ${endUserId}`,
           integrationId && sql`integration_id = ${integrationId}`,
-          providerName && sql`provider_name = ${providerName}`,
+          connectorName && sql`connector_name = ${connectorName}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&
             tableName === 'institution' &&

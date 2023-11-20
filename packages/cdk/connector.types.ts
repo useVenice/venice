@@ -2,17 +2,6 @@ import type {MaybePromise, PathsOf} from '@usevenice/util'
 import {R} from '@usevenice/util'
 import type {z} from '@usevenice/zod'
 
-import type {EndUserId, Id} from './id.types'
-import {makeId} from './id.types'
-import type {ZStandard} from './meta.types'
-import type {
-  Destination,
-  EntityPayload,
-  ResoUpdateData,
-  Source,
-  StateUpdateData,
-  SyncOperation,
-} from './protocol'
 import type {
   CheckResourceContext,
   CheckResourceOptions,
@@ -23,7 +12,18 @@ import type {
   ResourceUpdate,
   WebhookReturnType,
   zPassthroughInput,
-} from './providers.types'
+} from './connector-meta.types'
+import type {EndUserId, Id} from './id.types'
+import {makeId} from './id.types'
+import type {ZStandard} from './models'
+import type {
+  Destination,
+  EntityPayload,
+  ResoUpdateData,
+  Source,
+  StateUpdateData,
+  SyncOperation,
+} from './protocol'
 import type {AccountingMethods, ZAccounting} from './verticals/accounting'
 import type {InvestmentMethods, ZInvestment} from './verticals/investment'
 import type {PtaMethods, ZPta} from './verticals/pta'
@@ -278,14 +278,14 @@ export interface ConnectorServer<
   }
 }
 
-export interface IntegrationImpl<TSchemas extends ConnectorSchemas>
+export interface ConnectorImpl<TSchemas extends ConnectorSchemas>
   extends ConnectorDef<TSchemas>,
     ConnectorServer<TSchemas>,
     ConnectorClient<TSchemas> {
   // helpers: IntHelpers<TSchemas>
 }
 
-export type AnyIntegrationImpl = IntegrationImpl<ConnectorSchemas>
+export type AnyConnectorImpl = ConnectorImpl<ConnectorSchemas>
 
 // MARK: - Runtime helpers
 

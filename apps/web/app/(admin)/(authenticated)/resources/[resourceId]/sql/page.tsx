@@ -16,7 +16,7 @@ export default async function SqlPageServer({
   const ctx = contextFactory.fromViewer(viewer)
 
   const resource = await ctx.services.getResourceOrFail(resourceId)
-  if (resource.providerName !== 'postgres') {
+  if (resource.connectorName !== 'postgres') {
     return (
       <div className="p-6">Only postgres resources are supported for sql</div>
     )

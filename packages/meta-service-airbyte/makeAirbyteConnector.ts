@@ -2,7 +2,7 @@
 
 import {initTRPC} from '@trpc/server'
 
-import type {AnyEntityPayload, AnyIntegrationImpl} from '@usevenice/cdk'
+import type {AnyConnectorImpl, AnyEntityPayload} from '@usevenice/cdk'
 import {
   fromMaybePromise,
   R,
@@ -20,15 +20,15 @@ import {readJson} from './utils'
 const trpcServer = initTRPC.create()
 const procedure = trpcServer.procedure
 
-export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
+export function makeAirbyteConnector(connector: AnyConnectorImpl) {
   const connSpec = z.object({
-    settings: provider.schemas.resourceSettings ?? z.object({}),
+    settings: connector.schemas.resourceSettings ?? z.object({}),
     // For now, unclear whether it should actually live in airbyte config
     // or perhaps it should just have a `veniceIntegrationId` field
     // so the data is not duplicated across dozens of integrations
     // but then we'd have to think about "auth", or at least the integrationId would have to be
     // made a secret field too
-    config: provider.schemas.integrationConfig ?? z.object({}),
+    config: connector.schemas.integrationConfig ?? z.object({}),
   })
 
   type ConnectionSpecification = z.infer<typeof connSpec>
@@ -41,7 +41,7 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
           abMessage('SPEC', {
             // Default version is 0.2.0
             protocol_version: '0.2.0',
-            documentationUrl: `https://github.com/useVenice/venice/tree/main/integrations/integration-${provider.name}`,
+            documentationUrl: `https://github.com/useVenice/venice/tree/main/integrations/integration-${connector.name}`,
             // Add all the other stuff we support
             connectionSpecification: zodToJsonSchema(connSpec),
           }),
@@ -53,7 +53,7 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
         const config = readJson<ConnectionSpecification>(args.config)
         return rxjs.from(
           fromMaybePromise(
-            provider.checkResource?.({
+            connector.checkResource?.({
               settings: config.settings,
               config: config.config,
               options: {skipCache: true},
@@ -73,11 +73,11 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
     discover: procedure
       .input(z.object({config: z.string()}))
       .subscription(({input: args}): ABMessageStream<'CATALOG'> => {
-        if (!provider.sourceSync) {
-          throw new Error(`${provider.name} is not a source`)
+        if (!connector.sourceSync) {
+          throw new Error(`${connector.name} is not a source`)
         }
         const config = readJson<ConnectionSpecification>(args.config)
-        const union = provider.schemas.sourceOutputEntity as
+        const union = connector.schemas.sourceOutputEntity as
           | z.ZodDiscriminatedUnion<string, []>
           | undefined
         return rxjs.of(
@@ -107,8 +107,8 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
         }),
       )
       .subscription(({input: args}): ABMessageStream<'RECORD' | 'STATE'> => {
-        if (!provider.sourceSync) {
-          throw new Error(`${provider.name} is not a source`)
+        if (!connector.sourceSync) {
+          throw new Error(`${connector.name} is not a source`)
         }
 
         const config = readJson<ConnectionSpecification>(args.config)
@@ -116,7 +116,7 @@ export function makeAirbyteConnector(provider: AnyIntegrationImpl) {
         // const catalog = readJson<ConfiguredAirbyteCatalog>(args.catalog)
         // TODO: Add configuredCatalog into provider sourceSync
 
-        return provider
+        return connector
           .sourceSync({
             endUser: null,
             config: config.config,

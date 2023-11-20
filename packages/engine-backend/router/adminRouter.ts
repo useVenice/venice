@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
 import {
-  extractProviderName,
+  extractConnectorName,
   handlersLink,
   makeId,
   makeOauthIntegrationServer,
@@ -41,14 +41,14 @@ export const adminRouter = trpc.router({
       return ctx.services.patchReturning('pipeline', id, input)
     }),
   // TODO: Right now this means client has to be responsible for creating
-  // integration IDs, we should support creating integration with providerName instead
+  // integration IDs, we should support creating integration with connectorName instead
   adminUpsertIntegration: adminProcedure
     .meta({openapi: {method: 'POST', path: '/integrations'}})
     .input(
       zRaw.integration
         .pick({
           id: true,
-          providerName: true,
+          connectorName: true,
           orgId: true,
           config: true,
           displayName: true,
@@ -61,31 +61,31 @@ export const adminRouter = trpc.router({
         .required({orgId: true}),
     )
     .output(zRaw.integration)
-    .mutation(async ({input: {id: _id, providerName, ...input}, ctx}) => {
+    .mutation(async ({input: {id: _id, connectorName, ...input}, ctx}) => {
       const id = _id
         ? _id
-        : providerName && input.orgId
-        ? makeId('int', providerName, makeUlid())
+        : connectorName && input.orgId
+        ? makeId('int', connectorName, makeUlid())
         : null
       if (!id) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Missing id or providerName/orgId',
+          message: 'Missing id or connectorName/orgId',
         })
       }
-      const provider = ctx.providerMap[extractProviderName(id)]
+      const connector = ctx.connectorMap[extractConnectorName(id)]
 
-      if (!provider) {
+      if (!connector) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: `Missing provider for ${extractProviderName(id)}`,
+          message: `Missing provider for ${extractConnectorName(id)}`,
         })
       }
-      if (provider.metadata?.nangoProvider) {
+      if (connector.metadata?.nangoProvider) {
         await makeOauthIntegrationServer({
           intId: id,
           nangoClient: ctx.nango,
-          nangoProvider: provider.metadata.nangoProvider,
+          nangoProvider: connector.metadata.nangoProvider,
         }).upsertIntegration(
           oauthBaseSchema.integrationConfig.parse(input.config),
         )
@@ -99,7 +99,7 @@ export const adminRouter = trpc.router({
     .input(z.object({id: zId('int')}))
     .output(z.void())
     .mutation(async ({input: {id: intId}, ctx}) => {
-      const provider = ctx.providerMap[extractProviderName(intId)]
+      const provider = ctx.connectorMap[extractConnectorName(intId)]
       if (provider?.metadata?.nangoProvider) {
         await ctx.nango.delete('/config/{provider_config_key}', {
           path: {provider_config_key: intId},
@@ -122,7 +122,7 @@ export const adminRouter = trpc.router({
     .input(z.object({id: zId('int')}))
     .output(zRaw.integration)
     .query(async ({input: {id: intId}, ctx}) => {
-      const {provider: _, ...int} = await ctx.services.getIntegrationOrFail(
+      const {connector: _, ...int} = await ctx.services.getIntegrationOrFail(
         intId,
       )
       return int
@@ -137,7 +137,7 @@ export const adminRouter = trpc.router({
         source: rxjs.merge(
           ...ints.map(
             (int) =>
-              int.provider.metaSync?.({config: int.config}).pipe(
+              int.connector.metaSync?.({config: int.config}).pipe(
                 handlersLink({
                   data: (op) =>
                     rxjs.of({
@@ -146,9 +146,10 @@ export const adminRouter = trpc.router({
                         ...op.data,
                         entity: {
                           external: op.data.entity as unknown,
-                          standard: int.provider.standardMappers?.institution?.(
-                            op.data.entity,
-                          ),
+                          standard:
+                            int.connector.standardMappers?.institution?.(
+                              op.data.entity,
+                            ),
                         },
                       },
                     }),
@@ -174,7 +175,7 @@ export const adminRouter = trpc.router({
       const inss = await ctx.services.metaService.tables.institution.list({})
       for (const ins of inss) {
         console.log('Remap institution', ins.id)
-        const provider = ctx.providerMap[ins.providerName]
+        const provider = ctx.connectorMap[ins.connectorName]
         const standard = provider?.standardMappers?.institution?.(ins.external)
         await ctx.services.patch('institution', ins.id, {standard})
       }

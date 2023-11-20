@@ -60,7 +60,7 @@ export function makeSyncService({
     destination,
   }: _PipelineExpanded): Link[] => {
     // console.log('getLinksForPipeline', {source, links, destination})
-    if (destination.integration.provider.name === 'beancount') {
+    if (destination.integration.connector.name === 'beancount') {
       return [
         ...links,
         mapStandardEntityLink(source),
@@ -73,16 +73,16 @@ export function makeSyncService({
         logLink({prefix: 'preDest', verbose: true}),
       ]
     }
-    if (destination.integration.provider.name === 'alka') {
+    if (destination.integration.connector.name === 'alka') {
       return [
         ...links,
         // logLink({prefix: 'preMap'}),
         mapStandardEntityLink(source),
-        // prefixIdLink(src.provider.name),
+        // prefixIdLink(src.connector.name),
         logLink({prefix: 'preDest'}),
       ]
     }
-    if (source.integration.provider.name === 'postgres') {
+    if (source.integration.connector.name === 'postgres') {
       return [...links, logLink({prefix: 'preDest'})]
     }
     return [
@@ -91,7 +91,7 @@ export function makeSyncService({
       mapStandardEntityLink(source),
       Rx.map((op) =>
         op.type === 'data' &&
-        destination.integration.provider.name !== 'postgres'
+        destination.integration.connector.name !== 'postgres'
           ? R.identity({
               ...op,
               data: {
@@ -120,7 +120,7 @@ export function makeSyncService({
     opts: {fullResync?: boolean | null}
   }) => {
     const defaultSource$ = () =>
-      src.integration.provider.sourceSync?.({
+      src.integration.connector.sourceSync?.({
         endUser,
         config: src.integration.config,
         settings: src.settings,
@@ -131,9 +131,9 @@ export function makeSyncService({
       })
 
     const verticalSources$ = () => {
-      const provider = src.integration.provider
-      const helpers = connHelpers(provider.schemas)
-      const primaryKey = provider.streams?.$defaults.primaryKey?.split('.') as
+      const connector = src.integration.connector
+      const helpers = connHelpers(connector.schemas)
+      const primaryKey = connector.streams?.$defaults.primaryKey?.split('.') as
         | [string]
         | undefined
 
@@ -148,7 +148,7 @@ export function makeSyncService({
       const settingsSub = new rxjs.Subject<Array<(typeof helpers)['_opType']>>()
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const instance = provider.newInstance?.({
+      const instance = connector.newInstance?.({
         config: src.integration.config,
         settings: src.settings,
         onSettingsChange: (newSettings) => {
@@ -167,10 +167,10 @@ export function makeSyncService({
 
         // TODO: Implement incremental sync...
         for (const [vertical, schemas] of objectEntries(
-          provider.schemas.verticals ?? {},
+          connector.schemas.verticals ?? {},
         )) {
           for (const name of objectKeys(schemas ?? {})) {
-            const res = await provider.verticals?.[vertical]?.list?.(
+            const res = await connector.verticals?.[vertical]?.list?.(
               instance,
               name as never,
               {limit: 1000},
@@ -220,7 +220,7 @@ export function makeSyncService({
 
     const destination$$ =
       opts.destination$$ ??
-      dest.integration.provider.destinationSync?.({
+      dest.integration.connector.destinationSync?.({
         endUser,
         config: dest.integration.config,
         settings: dest.settings,
@@ -229,10 +229,10 @@ export function makeSyncService({
       })
 
     if (!source$) {
-      throw new Error(`${src.integration.provider.name} missing source`)
+      throw new Error(`${src.integration.connector.name} missing source`)
     }
     if (!destination$$) {
-      throw new Error(`${dest.integration.provider.name} missing destination`)
+      throw new Error(`${dest.integration.connector.name} missing destination`)
     }
     await metaLinks
       .handlers({pipeline})
@@ -245,7 +245,7 @@ export function makeSyncService({
       ),
       links: getLinksForPipeline?.(pipeline), // ?? links,
       // WARNING: It is insanely unclear to me why moving `metaLinks.link`
-      // to after provider.destinationSync makes all the difference.
+      // to after connector.destinationSync makes all the difference.
       // When syncing from firebase with a large number of docs,
       // we always seem to stop after 1600 or so documents.
       // I already checked this is because metaLinks.link runs a async comment
@@ -279,7 +279,7 @@ export function makeSyncService({
       institution,
       ...resoUpdate,
     })
-    const id = makeId('reso', int.provider.name, resoUpdate.resourceExternalId)
+    const id = makeId('reso', int.connector.name, resoUpdate.resourceExternalId)
     await metaLinks
       .handlers({resource: {id, integrationId: int.id, endUserId: userId}})
       .resoUpdate({type: 'resoUpdate', id, settings, institution})

@@ -44,19 +44,19 @@ export async function proxyListRemoteRedux({
   ctx: RemoteProcedureContext
   meta: {vertical: string; entityName: string}
 }) {
-  const instance = ctx.remote.provider.newInstance?.({
+  const instance = ctx.remote.connector.newInstance?.({
     config: ctx.remote.config,
     settings: ctx.remote.settings,
     onSettingsChange: (settings) =>
       ctx.services.metaLinks.patch('resource', ctx.remote.id, {settings}),
   })
   const implementation = (
-    ctx.remote.provider.verticals?.[vertical as never] as any
+    ctx.remote.connector.verticals?.[vertical as never] as any
   )?.list as Function
   if (typeof implementation !== 'function') {
     throw new TRPCError({
       code: 'NOT_IMPLEMENTED',
-      message: `${ctx.remote.providerName} does not implement ${ctx.path}`,
+      message: `${ctx.remote.connectorName} does not implement ${ctx.path}`,
     })
   }
 
@@ -66,7 +66,7 @@ export async function proxyListRemoteRedux({
     input,
   )
 
-  const mapper = (ctx.remote.provider.streams?.[vertical as never] as any)[
+  const mapper = (ctx.remote.connector.streams?.[vertical as never] as any)[
     entityName
   ] as (entity: unknown, settings: unknown) => any
 

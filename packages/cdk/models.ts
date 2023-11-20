@@ -83,7 +83,7 @@ export const zRaw = {
       id: zId('int'),
       /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
       envName: z.string().nullish(),
-      providerName: z.string(),
+      connectorName: z.string(),
       config: z.record(z.unknown()).nullish(),
       endUserAccess: z
         .boolean()
@@ -99,7 +99,7 @@ export const zRaw = {
   resource: zBase
     .extend({
       id: zId('reso'),
-      providerName: z.string().describe('Unique name of the connector'),
+      connectorName: z.string().describe('Unique name of the connector'),
       displayName: z.string().nullish(),
       endUserId: zEndUserId.nullish(),
       integrationId: zId('int'),
@@ -136,7 +136,7 @@ export const zRaw = {
   institution: zBase
     .extend({
       id: zId('ins'),
-      providerName: z.string(),
+      connectorName: z.string(),
       standard: zStandard.institution.omit({id: true}).nullish(),
       external: z.record(z.unknown()).nullish(),
     })

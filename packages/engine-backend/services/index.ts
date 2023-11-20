@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {TRPCError} from '@trpc/server'
 
-import type {AnyIntegrationImpl, Id, IDS, ZRaw} from '@usevenice/cdk'
+import type {AnyConnectorImpl, Id, IDS, ZRaw} from '@usevenice/cdk'
 import {extractId, zRaw} from '@usevenice/cdk'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, z} from '@usevenice/util'
@@ -12,15 +12,15 @@ import {makeSyncService} from './sync-service'
 
 export function makeServices({
   metaService,
-  providerMap,
+  connectorMap,
 }: {
   metaService: MetaService
-  providerMap: Record<string, AnyIntegrationImpl>
+  connectorMap: Record<string, AnyConnectorImpl>
   // TODO: Fix any type
 }) {
   const dbService = makeDBService({
     metaService,
-    providerMap,
+    connectorMap,
   })
   const syncService = makeSyncService({
     metaService,
@@ -42,25 +42,25 @@ export type _ResourceExpanded = Awaited<
 
 export function makeDBService({
   metaService,
-  providerMap,
+  connectorMap,
 }: {
   metaService: MetaService
-  providerMap: Record<string, AnyIntegrationImpl>
+  connectorMap: Record<string, AnyConnectorImpl>
 }) {
   // TODO: Escalate to workspace level permission so it works for end users
   // TODO: Consider giving end users no permission at all?
   // It really does feel like we need some internal GraphQL for this...
   // Except different entities may still need to be access with different permissions...
-  const getProviderOrFail = (id: Id['int'] | Id['reso']) => {
-    const providerName = extractId(id)[1]
-    const provider = providerMap[providerName]
-    if (!provider) {
+  const getConnectorOrFail = (id: Id['int'] | Id['reso']) => {
+    const connectorName = extractId(id)[1]
+    const connector = connectorMap[connectorName]
+    if (!connector) {
       throw new TRPCError({
         code: 'NOT_FOUND',
-        message: `Cannot find provider for ${id}`,
+        message: `Cannot find connector for ${id}`,
       })
     }
-    return provider
+    return connector
   }
 
   // TODO: Replace other getOrFail with this
@@ -111,14 +111,14 @@ export function makeDBService({
       schema = (schema as (typeof zRaw)['integration']).extend({
         // This should be an override...
         config:
-          getProviderOrFail(id as Id['int']).schemas.integrationConfig ??
+          getConnectorOrFail(id as Id['int']).schemas.integrationConfig ??
           z.object({}).nullish(),
       })
     } else if (tableName === 'resource') {
       schema = (schema as (typeof zRaw)['resource']).extend({
         // This should be an override...
         settings:
-          getProviderOrFail(id as Id['reso']).schemas.resourceSettings ??
+          getConnectorOrFail(id as Id['reso']).schemas.resourceSettings ??
           z.object({}).nullish(),
       })
     } else if (tableName === 'pipeline') {
@@ -127,15 +127,15 @@ export function makeDBService({
         schema = (schema as (typeof zRaw)['pipeline']).extend({
           // This should be an override...
           sourceState:
-            getProviderOrFail(_patch.sourceId!).schemas.sourceState ??
+            getConnectorOrFail(_patch.sourceId!).schemas.sourceState ??
             z.object({}).nullish(),
         })
       } else if ('destinationId' in _patch) {
         schema = (schema as (typeof zRaw)['pipeline']).extend({
           // This should be an override...
           destinationState:
-            getProviderOrFail(_patch.destinationId!).schemas.destinationState ??
-            z.object({}).nullish(),
+            getConnectorOrFail(_patch.destinationId!).schemas
+              .destinationState ?? z.object({}).nullish(),
         })
       }
     }
@@ -174,9 +174,9 @@ export function makeDBService({
         throw new TRPCError({code: 'NOT_FOUND'})
       }
       const int = zRaw.integration.parse(_int)
-      const provider = getProviderOrFail(int.id)
-      const config: {} = provider.schemas.integrationConfig?.parse(int.config)
-      return {...int, provider, config}
+      const connector = getConnectorOrFail(int.id)
+      const config: {} = connector.schemas.integrationConfig?.parse(int.config)
+      return {...int, connector, config}
     })
 
   const getInstitutionOrFail = (id: Id['ins']) =>
@@ -186,8 +186,8 @@ export function makeDBService({
       }
       // TODO: Fix the root cause and ensure we always have institution.standard here
       if (!ins.standard?.name) {
-        const providerName = extractId(ins.id)[1]
-        const provider = providerMap[providerName]
+        const connectorName = extractId(ins.id)[1]
+        const provider = connectorMap[connectorName]
         ins.standard = provider?.standardMappers?.institution?.(ins.external)
         await metaLinks.patch('institution', ins.id, {standard: ins.standard})
       }
@@ -211,9 +211,8 @@ export function makeDBService({
   const getResourceExpandedOrFail = (id: Id['reso']) =>
     getResourceOrFail(id).then(async (reso) => {
       const integration = await getIntegrationOrFail(reso.integrationId)
-      const settings: {} = integration.provider.schemas.resourceSettings?.parse(
-        reso.settings,
-      )
+      const settings: {} =
+        integration.connector.schemas.resourceSettings?.parse(reso.settings)
       const institution = reso.institutionId
         ? await getInstitutionOrFail(reso.institutionId)
         : undefined
@@ -227,9 +226,11 @@ export function makeDBService({
         getResourceExpandedOrFail(pipe.destinationId!),
       ])
       const sourceState: {} =
-        source.integration.provider.schemas.sourceState?.parse(pipe.sourceState)
+        source.integration.connector.schemas.sourceState?.parse(
+          pipe.sourceState,
+        )
       const destinationState: {} =
-        destination.integration.provider.schemas.destinationState?.parse(
+        destination.integration.connector.schemas.destinationState?.parse(
           pipe.destinationState,
         )
       // const links = R.pipe(
@@ -264,7 +265,7 @@ export function makeDBService({
   return {
     metaService,
     metaLinks,
-    getProviderOrFail,
+    getProviderOrFail: getConnectorOrFail,
     getIntegrationInfoOrFail,
     getIntegrationOrFail,
     getResourceOrFail,

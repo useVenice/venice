@@ -158,7 +158,7 @@ export interface paths {
   "/v1/integrations/git-namespaces": {
     /**
      * List git namespaces by provider
-     * @description Lists git namespaces for a supported provider. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider is not provided, it will try to obtain it from the user that authenticated the request.
+     * @description Lists git namespaces for a supported connector. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider is not provided, it will try to obtain it from the user that authenticated the request.
      */
     get: operations["gitNamespaces"];
   };
@@ -172,7 +172,7 @@ export interface paths {
   "/v1/integrations/search-repo": {
     /**
      * List git repositories linked to namespace by provider
-     * @description Lists git repositories linked to a namespace `id` for a supported provider. A specific namespace `id` can be obtained via the `git-namespaces`  endpoint. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider or namespace is not provided, it will try to obtain it from the user that authenticated the request.
+     * @description Lists git repositories linked to a namespace `id` for a supported connector. A specific namespace `id` can be obtained via the `git-namespaces`  endpoint. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider or namespace is not provided, it will try to obtain it from the user that authenticated the request.
      */
     get: {
       parameters: {
@@ -192,7 +192,7 @@ export interface paths {
               gitAccount: {
                 namespaceId: string | number;
                 /** @enum {string} */
-                provider: "github" | "gitlab" | "bitbucket";
+                connector: "github" | "gitlab" | "bitbucket";
               };
               repos: ({
                   defaultBranch: string;
@@ -1400,7 +1400,7 @@ export interface components {
           type: "record" | "record-sys";
           value: string;
         };
-        /** @description When `true`, interactions with the Team **must** be done with an authentication token that has been authenticated with the Team's SAML Single Sign-On provider. */
+        /** @description When `true`, interactions with the Team **must** be done with an authentication token that has been authenticated with the Team's SAML Single Sign-On connector. */
         enforced: boolean;
       };
       /** @description The Team's slug, which is unique across the Vercel platform. */
@@ -3010,7 +3010,7 @@ export interface operations {
   };
   /**
    * List git namespaces by provider
-   * @description Lists git namespaces for a supported provider. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider is not provided, it will try to obtain it from the user that authenticated the request.
+   * @description Lists git namespaces for a supported connector. Supported providers are `github`, `gitlab` and `bitbucket`. If the provider is not provided, it will try to obtain it from the user that authenticated the request.
    */
   gitNamespaces: {
     parameters: {
@@ -3027,7 +3027,7 @@ export interface operations {
               id: string | number;
               name?: string;
               ownerType: string;
-              provider: string;
+              connector: string;
               slug: string;
             })[];
         };
@@ -3792,7 +3792,7 @@ export interface operations {
       content: {
         "application/json": {
           joinedFrom: {
-            /** @description The commit sha if the origin is a git provider. */
+            /** @description The commit sha if the origin is a git connector. */
             commitId?: string;
             /** @description The ID of the Git account of the user who requests access. */
             gitUserId?: string | number;
@@ -3803,9 +3803,9 @@ export interface operations {
              * @enum {string}
              */
             origin: "import" | "teams" | "github" | "gitlab" | "bitbucket" | "feedback";
-            /** @description The ID of the repository for the given Git provider. */
+            /** @description The ID of the repository for the given Git connector. */
             repoId?: string;
-            /** @description The path to the repository for the given Git provider. */
+            /** @description The path to the repository for the given Git connector. */
             repoPath?: string;
           };
         };

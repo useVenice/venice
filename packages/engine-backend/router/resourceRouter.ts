@@ -14,20 +14,20 @@ export const resourceRouter = trpc.router({
     .input(zPassthroughInput)
     .output(z.any())
     .mutation(async ({input, ctx}) => {
-      if (!ctx.remote.provider.passthrough) {
+      if (!ctx.remote.connector.passthrough) {
         throw new TRPCError({
           code: 'NOT_IMPLEMENTED',
-          message: `${ctx.remote.providerName} does not implement passthrough`,
+          message: `${ctx.remote.connectorName} does not implement passthrough`,
         })
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const instance = ctx.remote.provider.newInstance?.({
+      const instance = ctx.remote.connector.newInstance?.({
         config: ctx.remote.config,
         settings: ctx.remote.settings,
         onSettingsChange: () => {}, // not implemented
       })
-      return await ctx.remote.provider.passthrough(instance, input)
+      return await ctx.remote.connector.passthrough(instance, input)
     }),
 
   sourceSync: protectedProcedure

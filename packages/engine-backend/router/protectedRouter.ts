@@ -42,7 +42,7 @@ export const protectedRouter = trpc.router({
         .extend({
           endUserId: zEndUserId.nullish(),
           integrationId: zId('int').nullish(),
-          providerName: z.string().nullish(),
+          connectorName: z.string().nullish(),
         })
         .optional(),
     )
@@ -97,9 +97,9 @@ export const protectedRouter = trpc.router({
         if (!reso) {
           return reso
         }
-        const providerName = extractId(reso.id)[1]
+        const connectorName = extractId(reso.id)[1]
         const institution = insById[reso.institutionId!]
-        const mappers = ctx.providerMap[providerName]?.standardMappers
+        const mappers = ctx.connectorMap[connectorName]?.standardMappers
         const standardReso = zStandard.resource
           .omit({id: true})
           .nullish()
@@ -160,7 +160,7 @@ export const protectedRouter = trpc.router({
       z.object({
         type: z.enum(['source', 'destination']).nullish(),
         id: zId('int').nullish(),
-        providerName: z.string().nullish(),
+        connectorName: z.string().nullish(),
       }),
     )
     .output(
@@ -170,7 +170,7 @@ export const protectedRouter = trpc.router({
             id: true,
             envName: true,
             displayName: true,
-            providerName: true,
+            connectorName: true,
           })
           .extend({
             isSource: z.boolean(),
@@ -178,23 +178,23 @@ export const protectedRouter = trpc.router({
           }),
       ),
     )
-    .query(async ({input: {type, id, providerName}, ctx}) => {
+    .query(async ({input: {type, id, connectorName}, ctx}) => {
       const intInfos = await ctx.services.metaService.listIntegrationInfos({
         id,
-        providerName,
+        connectorName,
       })
 
       return intInfos
         .map(({id, envName, displayName}) => {
-          const provider = ctx.providerMap[extractId(id)[1]]
-          return provider
+          const connector = ctx.connectorMap[extractId(id)[1]]
+          return connector
             ? {
                 id,
                 envName,
                 displayName,
-                providerName: provider.name,
-                isSource: !!provider.sourceSync,
-                isDestination: !!provider.destinationSync,
+                connectorName: connector.name,
+                isSource: !!connector.sourceSync,
+                isDestination: !!connector.destinationSync,
               }
             : null
         })
@@ -214,13 +214,13 @@ export const protectedRouter = trpc.router({
       const institutions = await ctx.services.metaService.searchInstitutions({
         keywords,
         limit: 10,
-        providerNames: R.uniq(ints.map((int) => int.provider.name)),
+        connectorNames: R.uniq(ints.map((int) => int.connector.name)),
       })
-      const intsByProviderName = R.groupBy(ints, (int) => int.provider.name)
+      const intsByConnectorName = R.groupBy(ints, (int) => int.connector.name)
       return institutions.flatMap((ins) => {
-        const [, providerName, externalId] = extractId(ins.id)
-        const standard = ctx.providerMap[
-          providerName
+        const [, connectorName, externalId] = extractId(ins.id)
+        const standard = ctx.connectorMap[
+          connectorName
         ]?.standardMappers?.institution?.(ins.external)
         const res = zStandard.institution.omit({id: true}).safeParse(standard)
 
@@ -228,7 +228,7 @@ export const protectedRouter = trpc.router({
           console.error('Invalid institution found', ins, res.error)
           return []
         }
-        return (intsByProviderName[providerName] ?? []).map((int) => ({
+        return (intsByConnectorName[connectorName] ?? []).map((int) => ({
           ins: {...res.data, id: ins.id, externalId},
           int: {id: int.id},
         }))
@@ -262,7 +262,7 @@ export const protectedRouter = trpc.router({
         ...reso
       } = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       // console.log('checkResource', {settings, integration, ...conn}, opts)
-      const resoUpdate = await int.provider.checkResource?.({
+      const resoUpdate = await int.connector.checkResource?.({
         settings,
         config: int.config,
         options: opts ?? {},
@@ -289,8 +289,8 @@ export const protectedRouter = trpc.router({
             resoUpdate?.resourceExternalId ?? extractId(reso.id)[2],
         })
       }
-      if (!int.provider.checkResource) {
-        return `Not implemented in ${int.provider.name}`
+      if (!int.connector.checkResource) {
+        return `Not implemented in ${int.connector.name}`
       }
       return 'Ok'
     }),
@@ -309,7 +309,7 @@ export const protectedRouter = trpc.router({
       if (opts?.metaOnly) {
         await sync({
           source:
-            reso.integration.provider.sourceSync?.({
+            reso.integration.connector.sourceSync?.({
               config: reso.integration.config,
               settings: reso.settings,
               endUser: reso.endUserId && {id: reso.endUserId},

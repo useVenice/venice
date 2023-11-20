@@ -412,7 +412,7 @@ export interface components {
       updatedAt: string
       id: components['schemas']['id.reso']
       /** @description Unique name of the connector */
-      providerName: string
+      connectorName: string
       displayName?: string | null
       endUserId?: string | null
       integrationId: components['schemas']['id.int']
@@ -513,7 +513,7 @@ export interface components {
       updatedAt: string
       id: components['schemas']['id.int']
       envName?: string | null
-      providerName: string
+      connectorName: string
       config?: {
         [key: string]: unknown
       } | null
@@ -570,7 +570,7 @@ export interface operations {
         offset?: number
         endUserId?: string | null
         integrationId?: components['schemas']['id.int'] | null
-        providerName?: string | null
+        connectorName?: string | null
       }
       header?: never
       path?: never
@@ -768,7 +768,7 @@ export interface operations {
       query?: {
         type?: 'source' | 'destination' | null
         id?: components['schemas']['id.int'] | null
-        providerName?: string | null
+        connectorName?: string | null
       }
       header?: never
       path?: never
@@ -786,7 +786,7 @@ export interface operations {
             id: components['schemas']['id.int']
             envName?: string | null
             displayName?: string | null
-            providerName: string
+            connectorName: string
             isSource: boolean
             isDestination: boolean
           }[]
@@ -1053,7 +1053,7 @@ export interface operations {
           /** @description Where to send user to after connect / if they press back button */
           redirectUrl?: string | null
           /** @description Which provider to use */
-          providerName?: string | null
+          connectorName?: string | null
           integrationId?: components['schemas']['id.int']
           /** @default true */
           showExisting: boolean
@@ -1132,7 +1132,7 @@ export interface operations {
       content: {
         'application/json': {
           id?: components['schemas']['id.int']
-          providerName?: string
+          connectorName?: string
           orgId: components['schemas']['id.org']
           config?: {
             [key: string]: unknown

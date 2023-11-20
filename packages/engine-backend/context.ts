@@ -1,7 +1,7 @@
 import {TRPCError} from '@trpc/server'
 
 import type {
-  AnyIntegrationImpl,
+  AnyConnectorImpl,
   EndUserId,
   Id,
   LinkFactory,
@@ -29,7 +29,7 @@ export interface RouterContext {
   as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Services
 
   // Non-viewer dependent
-  providerMap: Record<string, AnyIntegrationImpl>
+  connectorMap: Record<string, AnyConnectorImpl>
   jwt: JWTClient
   nango: NangoClient
   env: Env
@@ -50,10 +50,10 @@ export interface RouterContext {
 }
 
 export interface ContextFactoryOptions<
-  TProviders extends readonly AnyIntegrationImpl[],
+  TConnectors extends readonly AnyConnectorImpl[],
   TLinks extends Record<string, LinkFactory>,
 > extends Pick<RouterContext, 'apiUrl' | 'getRedirectUrl'> {
-  providers: TProviders
+  connectors: TConnectors
   // Backend only
   linkMap?: TLinks
 
@@ -67,22 +67,22 @@ export interface ContextFactoryOptions<
 }
 
 export function getContextFactory<
-  TProviders extends readonly AnyIntegrationImpl[],
+  TConnectors extends readonly AnyConnectorImpl[],
   TLinks extends Record<string, LinkFactory>,
->(config: ContextFactoryOptions<TProviders, TLinks>) {
-  const {apiUrl, getRedirectUrl, getMetaService, providers, jwtSecret, env} =
+>(config: ContextFactoryOptions<TConnectors, TLinks>) {
+  const {apiUrl, getRedirectUrl, getMetaService, connectors, jwtSecret, env} =
     config
-  for (const provider of providers) {
-    if (typeof provider.name !== 'string') {
-      console.error('Invalid provider', provider)
-      throw new Error(`Invalid provider: name=${provider.name}`)
+  for (const connector of connectors) {
+    if (typeof connector.name !== 'string') {
+      console.error('Invalid connector', connector)
+      throw new Error(`Invalid connector: name=${connector.name}`)
     }
   }
-  const providerMap = R.mapToObj(providers, (p) => [p.name, p])
+  const connectorMap = R.mapToObj(connectors, (p) => [p.name, p])
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getServices = (viewer: Viewer) =>
-    _makeServices({metaService: getMetaService(viewer), providerMap})
+    _makeServices({metaService: getMetaService(viewer), connectorMap})
 
   function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {
@@ -90,7 +90,7 @@ export function getContextFactory<
       as: (role, data) => getServices({role, ...data} as Viewer),
       services: getServices(viewer),
       // --- Non-viewer dependent
-      providerMap,
+      connectorMap,
       jwt,
       env,
       nango: makeNangoClient({secretKey: config.nangoSecretKey}),

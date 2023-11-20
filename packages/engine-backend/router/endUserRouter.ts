@@ -47,7 +47,7 @@ export const zConnectPageParams = z.object({
       'Where to send user to after connect / if they press back button',
     ),
   // TODO: How to make sure we actually have a typed api here and can use zProviderName
-  providerName: z.string().nullish().describe('Which provider to use'),
+  connectorName: z.string().nullish().describe('Which provider to use'),
   /** Launch the integration right away */
   integrationId: zId('int').optional(),
   /** Whether to show existing resources */
@@ -146,15 +146,15 @@ export const endUserRouter = trpc.router({
         ctx,
       }) => {
         const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
-        if (!int.provider.preConnect) {
+        if (!int.connector.preConnect) {
           return null
         }
         const reso = resourceExternalId
           ? await ctx.services.getResourceOrFail(
-              makeId('reso', int.provider.name, resourceExternalId),
+              makeId('reso', int.connector.name, resourceExternalId),
             )
           : undefined
-        return int.provider.preConnect?.(
+        return int.connector.preConnect?.(
           int.config,
           {
             ...connCtxInput,
@@ -191,17 +191,17 @@ export const endUserRouter = trpc.router({
         ctx,
       }) => {
         const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
-        console.log('didConnect start', int.provider.name, input, connCtxInput)
+        console.log('didConnect start', int.connector.name, input, connCtxInput)
 
         const resoUpdate = await (async () => {
           if (
-            !int.provider.postConnect &&
-            int.provider.metadata?.nangoProvider
+            !int.connector.postConnect &&
+            int.connector.metadata?.nangoProvider
           ) {
             return (await makeOauthIntegrationServer({
               nangoClient: ctx.nango,
               intId,
-              nangoProvider: int.provider.metadata.nangoProvider,
+              nangoProvider: int.connector.metadata.nangoProvider,
             }).postConnect(input as OauthBaseTypes['connectOutput'])) as Omit<
               ResourceUpdate<any, any>,
               'endUserId'
@@ -209,19 +209,19 @@ export const endUserRouter = trpc.router({
           }
 
           if (
-            !int.provider.postConnect ||
-            !int.provider.schemas.connectOutput
+            !int.connector.postConnect ||
+            !int.connector.schemas.connectOutput
           ) {
             return null
           }
 
           const reso = resourceExternalId
             ? await ctx.services.getResourceOrFail(
-                makeId('reso', int.provider.name, resourceExternalId),
+                makeId('reso', int.connector.name, resourceExternalId),
               )
             : undefined
-          return await int.provider.postConnect(
-            int.provider.schemas.connectOutput.parse(input),
+          return await int.connector.postConnect(
+            int.connector.schemas.connectOutput.parse(input),
             int.config,
             {
               ...connCtxInput,
@@ -262,7 +262,7 @@ export const endUserRouter = trpc.router({
         if (syncInBackground) {
           await inngest.send('sync/resource-requested', {data: {resourceId}})
         }
-        console.log('didConnect finish', int.provider.name, input)
+        console.log('didConnect finish', int.connector.name, input)
         return 'Resource successfully connected'
       },
     ),
@@ -281,7 +281,7 @@ export const endUserRouter = trpc.router({
       const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(integrationId)
 
       const _extId = makeUlid()
-      const resoId = makeId('reso', int.provider.name, _extId)
+      const resoId = makeId('reso', int.connector.name, _extId)
 
       // Should throw if not working..
       const resoUpdate = {
@@ -289,7 +289,7 @@ export const endUserRouter = trpc.router({
         // TODO: Should no longer depend on external ID
         resourceExternalId: _extId,
         settings,
-        ...(await int.provider.checkResource?.({
+        ...(await int.connector.checkResource?.({
           config: int.config,
           settings,
           context: {webhookBaseUrl: ''},
@@ -324,7 +324,7 @@ export const endUserRouter = trpc.router({
       const {settings, integration, ...reso} =
         await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       if (!opts?.skipRevoke) {
-        await integration.provider.revokeResource?.(
+        await integration.connector.revokeResource?.(
           settings,
           integration.config,
         )

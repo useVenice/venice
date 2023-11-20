@@ -10,7 +10,7 @@ import {
 import {z} from '@usevenice/zod'
 
 import type {
-  AnyIntegrationImpl,
+  AnyConnectorImpl,
   ConnectorSchemas,
   ConnHelpers,
 } from './connector.types'
@@ -22,34 +22,34 @@ import type {AnyEntityPayload, ResoUpdateData, Source} from './protocol'
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type JSONSchema = {} // ReturnType<typeof zodToJsonSchema> | JSONSchema7Definition
 
-export const metaForProvider = (
-  provider: AnyIntegrationImpl,
+export const metaForConnector = (
+  connector: AnyConnectorImpl,
   opts: {includeOas?: boolean} = {},
 ) => ({
-  // ...provider,
-  __typename: 'provider' as const,
-  name: provider.name,
-  displayName: provider.metadata?.displayName ?? titleCase(provider.name),
-  logoUrl: provider.metadata?.logoSvg
-    ? urlFromImage({type: 'svg', data: provider.metadata?.logoSvg})
-    : provider.metadata?.logoUrl,
-  stage: provider.metadata?.stage ?? 'alpha',
-  platforms: provider.metadata?.platforms ?? ['cloud', 'local'],
-  categories: provider.metadata?.categories ?? ['other'],
+  // ...connector,
+  __typename: 'connector' as const,
+  name: connector.name,
+  displayName: connector.metadata?.displayName ?? titleCase(connector.name),
+  logoUrl: connector.metadata?.logoSvg
+    ? urlFromImage({type: 'svg', data: connector.metadata?.logoSvg})
+    : connector.metadata?.logoUrl,
+  stage: connector.metadata?.stage ?? 'alpha',
+  platforms: connector.metadata?.platforms ?? ['cloud', 'local'],
+  categories: connector.metadata?.categories ?? ['other'],
   supportedModes: R.compact([
-    provider.sourceSync ? ('source' as const) : null,
-    provider.destinationSync ? ('destination' as const) : null,
+    connector.sourceSync ? ('source' as const) : null,
+    connector.destinationSync ? ('destination' as const) : null,
   ]),
-  hasPreConnect: provider.preConnect != null,
-  hasUseConnectHook: provider.useConnectHook != null,
+  hasPreConnect: connector.preConnect != null,
+  hasUseConnectHook: connector.useConnectHook != null,
   // TODO: Maybe nangoProvider be more explicit as a base provider?
   hasPostConnect:
-    provider.postConnect != null || provider.metadata?.nangoProvider,
-  nangoProvider: provider.metadata?.nangoProvider,
-  schemas: R.mapValues(provider.schemas ?? {}, (schema) =>
+    connector.postConnect != null || connector.metadata?.nangoProvider,
+  nangoProvider: connector.metadata?.nangoProvider,
+  schemas: R.mapValues(connector.schemas ?? {}, (schema) =>
     schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
   ) as Record<keyof ConnectorSchemas, JSONSchema>,
-  openapiSpec: opts.includeOas ? provider.metadata?.openapiSpec : undefined,
+  openapiSpec: opts.includeOas ? connector.metadata?.openapiSpec : undefined,
 })
 
 // aka verticals
@@ -151,7 +151,7 @@ export interface ConnectContext<TSettings>
 export type CheckResourceOptions = z.infer<typeof zCheckResourceOptions>
 export const zCheckResourceOptions = z.object({
   /**
-   * Always make a request to the provider. Perhaps should be the default?
+   * Always make a request to the connector. Perhaps should be the default?
    * Will have to refactor `checkResource` to be a bit different
    */
   skipCache: z.boolean().nullish(),

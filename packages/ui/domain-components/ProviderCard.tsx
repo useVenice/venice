@@ -30,17 +30,17 @@ export interface UIProps extends UIPropsNoChildren {
 }
 
 type Resource = RouterOutput['listConnections'][number]
-type ProviderMeta = RouterOutput['getIntegrationCatalog'][string]
+type ConnectorMeta = RouterOutput['getIntegrationCatalog'][string]
 
 export const ResourceCard = ({
   resource,
-  provider,
+  connector,
   children,
   className,
   ...uiProps
 }: UIProps & {
   resource: Resource
-  provider: ProviderMeta
+  connector: ConnectorMeta
 }) => (
   <Card
     className={cn(
@@ -79,7 +79,7 @@ export const ResourceCard = ({
         className="grow"
       />
     ) : (
-      <ProviderLogo {...uiProps} provider={provider} className="grow" />
+      <ProviderLogo {...uiProps} connector={connector} className="grow" />
     )}
 
     {/* Integration id / provider name */}
@@ -96,23 +96,23 @@ export const ResourceCard = ({
 export const IntegrationCard = ({
   integration: int,
   ...props
-}: React.ComponentProps<typeof ProviderCard> & {
+}: React.ComponentProps<typeof ConnectorCard> & {
   integration: {
     id: Id['int']
-    providerName: string
+    connectorName: string
     config?: Record<string, unknown> | null
     envName?: string | null
   }
 }) => (
-  <ProviderCard
+  <ConnectorCard
     {...props}
     showName={false}
     labels={int.envName ? [int.envName] : []}
   />
 )
 
-export const ProviderCard = ({
-  provider,
+export const ConnectorCard = ({
+  connector,
   showStageBadge = false,
   showName = true,
   labels = [],
@@ -120,7 +120,7 @@ export const ProviderCard = ({
   children,
   ...uiProps
 }: UIProps & {
-  provider: ProviderMeta
+  connector: ConnectorMeta
   showStageBadge?: boolean
   labels?: string[]
   showName?: boolean
@@ -132,7 +132,7 @@ export const ProviderCard = ({
     )}>
     <div className="flex h-6 self-stretch">
       {showName && (
-        <span className="text-sm text-muted-foreground">{provider.name}</span>
+        <span className="text-sm text-muted-foreground">{connector.name}</span>
       )}
       {labels.map((label) => (
         <Badge key={label} variant="secondary">
@@ -144,17 +144,17 @@ export const ProviderCard = ({
           variant="secondary"
           className={cn(
             'ml-auto',
-            provider.stage === 'ga' && 'bg-green-200',
-            provider.stage === 'beta' && 'bg-blue-200',
-            provider.stage === 'alpha' && 'bg-pink-50',
+            connector.stage === 'ga' && 'bg-green-200',
+            connector.stage === 'beta' && 'bg-blue-200',
+            connector.stage === 'alpha' && 'bg-pink-50',
           )}>
-          {provider.stage}
+          {connector.stage}
         </Badge>
       )}
     </div>
     <ProviderLogo
       {...uiProps}
-      provider={provider}
+      connector={connector}
       // min-h-0 is a hack where some images do not shrink in height @see https://share.cleanshot.com/jMX1bzLP
       className="min-h-0 grow"
     />
@@ -163,24 +163,24 @@ export const ProviderCard = ({
 )
 
 export const ProviderLogo = ({
-  provider,
+  connector,
   className,
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
   Image = (props) => <img {...props} />,
 }: UIPropsNoChildren & {
-  provider: ProviderMeta
+  connector: ConnectorMeta
 }) =>
-  provider.logoUrl ? (
+  connector.logoUrl ? (
     <Image
       width={100}
       height={100}
-      src={provider.logoUrl}
-      alt={`"${provider.displayName}" logo`}
+      src={connector.logoUrl}
+      alt={`"${connector.displayName}" logo`}
       className={cn('object-contain', className)}
     />
   ) : (
     <div className={cn('flex flex-col items-center justify-center', className)}>
-      <span>{provider.displayName}</span>
+      <span>{connector.displayName}</span>
     </div>
   )
 

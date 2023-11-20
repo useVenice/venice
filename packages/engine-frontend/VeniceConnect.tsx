@@ -13,8 +13,8 @@ import type {
 } from '@usevenice/cdk'
 import {
   CANCELLATION_TOKEN,
+  extractConnectorName,
   extractId,
-  extractProviderName,
   oauthConnect,
   zIntegrationVertical,
 } from '@usevenice/cdk'
@@ -55,7 +55,7 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
   /** Only connect to this integration */
   integrationId?: Id['int'] | null
-  providerName?: string | null
+  connectorName?: string | null
 }
 
 type UseConnectScope = Parameters<UseConnectHook>[0]
@@ -116,7 +116,7 @@ export function VeniceConnectButton({
 export function VeniceConnect(props: VeniceConnectProps) {
   const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({
     id: props.integrationId,
-    providerName: props.providerName,
+    connectorName: props.connectorName,
   })
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
 
@@ -134,7 +134,7 @@ export function VeniceConnect(props: VeniceConnectProps) {
 
 type IntegrationInfos = RouterOutput['listIntegrationInfos']
 type Catalog = RouterOutput['getIntegrationCatalog']
-type ProviderMeta = Catalog[string]
+type ConnectorMeta = Catalog[string]
 
 // TODOD: Dedupe this with app-config/constants
 const __DEBUG__ = Boolean(
@@ -176,11 +176,11 @@ export function _VeniceConnect({
 
   const integrations = integrationInfos
     .map(({id, ...info}) => {
-      const provider = catalog[extractProviderName(id)]
-      if (!provider) {
-        console.warn('Missing provider for integration', id)
+      const connector = catalog[extractConnectorName(id)]
+      if (!connector) {
+        console.warn('Missing connector for integration', id)
       }
-      return provider ? {...info, id, provider} : null
+      return connector ? {...info, id, connector} : null
     })
     .filter((i): i is NonNullable<typeof i> => !!i)
   const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
@@ -215,21 +215,21 @@ export function _VeniceConnect({
   // Do we actually need this here or can this go inside a ConnectCard somehow?
   const connectFnMap = R.pipe(
     integrationInfos,
-    R.map((intInfo) => extractProviderName(intInfo.id)),
+    R.map((intInfo) => extractConnectorName(intInfo.id)),
     R.uniq,
-    R.mapToObj((providerName: string) => {
-      let fn = clientConnectors[providerName]?.useConnectHook?.({openDialog})
-      const nangoProvider = catalog[providerName]?.nangoProvider
+    R.mapToObj((connectorName: string) => {
+      let fn = clientConnectors[connectorName]?.useConnectHook?.({openDialog})
+      const nangoProvider = catalog[connectorName]?.nangoProvider
       if (!fn && nangoProvider) {
         console.log('adding nnango provider for', nangoProvider)
         fn = (_, {integrationId}) => {
           if (!nangoFrontend) {
             throw new Error('Missing nango public key')
           }
-          return oauthConnect({integrationId, nangoFrontend, providerName})
+          return oauthConnect({integrationId, nangoFrontend, connectorName})
         }
       }
-      return [providerName, fn]
+      return [connectorName, fn]
     }),
   )
 
@@ -238,7 +238,7 @@ export function _VeniceConnect({
       key: category,
       name: titleCase(category),
       integrations: integrations.filter((integration) =>
-        integration.provider?.categories.includes(category),
+        integration.connector?.categories.includes(category),
       ),
     }))
     .filter((item) => item.integrations.length > 0)
@@ -267,11 +267,11 @@ export function _VeniceConnect({
           {...uiProps}
           key={conn.id}
           resource={conn}
-          provider={conn.integration.provider}>
+          connector={conn.integration.connector}>
           <ResourceDropdownMenu
             integration={conn.integration}
             resource={conn}
-            connectFn={connectFnMap[conn.integration.provider.name]}
+            connectFn={connectFnMap[conn.integration.connector.name]}
             onEvent={(e) => {
               onEvent?.({type: e.type, intId: conn.integration.id})
             }}
@@ -279,7 +279,7 @@ export function _VeniceConnect({
           {/* <ProviderConnectButton
             integration={conn.integration}
             resource={conn}
-            connectFn={connectFnMap[conn.integration.provider.name]}
+            connectFn={connectFnMap[conn.integration.connector.name]}
             onEvent={(e) => {
               onEvent?.({type: e.type, intId: conn.integration.id})
             }}
@@ -292,10 +292,10 @@ export function _VeniceConnect({
           {...uiProps}
           key={int.id}
           integration={int}
-          provider={int.provider}>
+          connector={int.connector}>
           <ProviderConnectButton
             integration={int}
-            connectFn={connectFnMap[int.provider.name]}
+            connectFn={connectFnMap[int.connector.name]}
             onEvent={(e) => {
               onEvent?.({type: e.type, intId: int.id})
             }}
@@ -313,7 +313,7 @@ export const ProviderConnectButton = ({
   className,
   ...props
 }: UIProps & {
-  integration: {id: Id['int']; provider: ProviderMeta}
+  integration: {id: Id['int']; connector: ConnectorMeta}
   resource?: Resource
   connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
@@ -349,7 +349,7 @@ export const WithProviderConnect = ({
   connectFn,
   children,
 }: {
-  integration: {id: Id['int']; provider: ProviderMeta}
+  integration: {id: Id['int']; connector: ConnectorMeta}
   resource?: Resource
   connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
@@ -360,14 +360,14 @@ export const WithProviderConnect = ({
     loading: boolean
   }) => React.ReactNode
 }) => {
-  // console.log('ConnectCard', int.id, int.provider)
+  // console.log('ConnectCard', int.id, int.connector)
 
   const resourceExternalId = resource ? extractId(resource.id)[2] : undefined
 
   // TODO: Handle preConnectInput schema and such... for example for Plaid
   const preConnect = _trpcReact.preConnect.useQuery(
     [int.id, {resourceExternalId}, {}],
-    {enabled: int.provider.hasPreConnect},
+    {enabled: int.connector.hasPreConnect},
   )
   const postConnect = _trpcReact.postConnect.useMutation()
   const createResource = _trpcReact.createResource.useMutation()
@@ -386,7 +386,7 @@ export const WithProviderConnect = ({
       // TODO: Test this...
       // How to make sure does not actually refetch we if we already have data?
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const connInput = int.provider.hasPreConnect
+      const connInput = int.connector.hasPreConnect
         ? (await preConnect.refetch()).data
         : {}
       console.log(`[VeniceConnect] ${int.id} connInput`, connInput)
@@ -398,7 +398,7 @@ export const WithProviderConnect = ({
       console.log(`[VeniceConnect] ${int.id} connOutput`, connOutput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const postConnOutput = int.provider.hasPostConnect
+      const postConnOutput = int.connector.hasPostConnect
         ? await postConnect.mutateAsync([connOutput, int.id, {}])
         : connOutput
       console.log(`[VeniceConnect] ${int.id} postConnOutput`, postConnOutput)
@@ -410,7 +410,7 @@ export const WithProviderConnect = ({
       onSuccess(msg) {
         if (msg) {
           toast({
-            title: `Success (${int.provider.displayName})`,
+            title: `Success (${int.connector.displayName})`,
             description: `${msg}`,
             variant: 'success',
           })
@@ -422,7 +422,7 @@ export const WithProviderConnect = ({
           return
         }
         toast({
-          title: `Failed to connect to ${int.provider.displayName}`,
+          title: `Failed to connect to ${int.connector.displayName}`,
           description: `${err}`,
           variant: 'destructive',
         })
@@ -451,14 +451,14 @@ export const WithProviderConnect = ({
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Connect to {int.provider.name}</DialogTitle>
+          <DialogTitle>Connect to {int.connector.name}</DialogTitle>
           <DialogDescription>Using integration ID: {int.id}</DialogDescription>
         </DialogHeader>
         <SchemaForm
           ref={formRef}
           schema={z.object({})}
           jsonSchemaTransform={(schema) =>
-            int.provider.schemas.resourceSettings ?? schema
+            int.connector.schemas.resourceSettings ?? schema
           }
           formData={{}}
           // formData should be non-null at this point, we should fix the typing
@@ -494,7 +494,7 @@ export function ResourceDropdownMenu(
   props: UIProps & {
     integration: {
       id: Id['int']
-      provider: ProviderMeta
+      connector: ConnectorMeta
     }
     resource: Resource
     connectFn?: ReturnType<UseConnectHook>

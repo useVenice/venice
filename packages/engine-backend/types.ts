@@ -1,4 +1,4 @@
-import type {AnyIntegrationImpl, Id, LinkFactory} from '@usevenice/cdk'
+import type {AnyConnectorImpl, Id, LinkFactory} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 // MARK: - Input types
@@ -7,18 +7,17 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
 // Would be nice to improve the typing of this... Make stuff non-optional
 /** https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types */
-export type IntegrationInput<
-  T extends AnyIntegrationImpl = AnyIntegrationImpl,
-> = T extends AnyIntegrationImpl
-  ? {
-      id: Id<T['name']>['int']
-      config?: Partial<_inferInput<T['schemas']['integrationConfig']>>
-    }
-  : never
+export type IntegrationInput<T extends AnyConnectorImpl = AnyConnectorImpl> =
+  T extends AnyConnectorImpl
+    ? {
+        id: Id<T['name']>['int']
+        config?: Partial<_inferInput<T['schemas']['integrationConfig']>>
+      }
+    : never
 
 // Is there a way to infer this? Or would that be too much?
-export type ResourceInput<T extends AnyIntegrationImpl = AnyIntegrationImpl> =
-  T extends AnyIntegrationImpl
+export type ResourceInput<T extends AnyConnectorImpl = AnyConnectorImpl> =
+  T extends AnyConnectorImpl
     ? {
         id: Id<T['name']>['reso']
         integrationId?: Id<T['name']>['int']
@@ -29,17 +28,17 @@ export type ResourceInput<T extends AnyIntegrationImpl = AnyIntegrationImpl> =
     : never
 
 export interface PipelineInput<
-  PSrc extends AnyIntegrationImpl = AnyIntegrationImpl,
-  PDest extends AnyIntegrationImpl = AnyIntegrationImpl,
+  PSrc extends AnyConnectorImpl = AnyConnectorImpl,
+  PDest extends AnyConnectorImpl = AnyConnectorImpl,
   TLinks extends Record<string, LinkFactory> = {},
 > {
   id: Id['pipe']
-  source?: PSrc extends AnyIntegrationImpl ? ResourceInput<PSrc> : never
-  sourceState?: PSrc extends AnyIntegrationImpl
+  source?: PSrc extends AnyConnectorImpl ? ResourceInput<PSrc> : never
+  sourceState?: PSrc extends AnyConnectorImpl
     ? Partial<_inferInput<PSrc['schemas']['sourceState']>>
     : never
-  destination?: PDest extends AnyIntegrationImpl ? ResourceInput<PDest> : never
-  destinationState?: PDest extends AnyIntegrationImpl
+  destination?: PDest extends AnyConnectorImpl ? ResourceInput<PDest> : never
+  destinationState?: PDest extends AnyConnectorImpl
     ? Partial<_inferInput<PDest['schemas']['destinationState']>>
     : never
   /** Used to initialize links */

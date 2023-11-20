@@ -6,7 +6,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import {clientConnectors} from '@usevenice/app-config/connectors/connectors.client'
-import {extractProviderName, zRaw} from '@usevenice/cdk'
+import {extractConnectorName, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
@@ -104,7 +104,7 @@ function ResourceMenu({resource}: {resource: Resource}) {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {resource.providerName === 'postgres' && (
+        {resource.connectorName === 'postgres' && (
           <DropdownMenuItem asChild>
             <Link href={`/resources/${resource.id}/sql`}>
               <Database className="mr-2 h-4 w-4" />
@@ -146,9 +146,9 @@ function EditResourceSheet({
   setOpen: (open: boolean) => void
 }) {
   const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
-  const provider = catalogRes.data?.[extractProviderName(reso.id)]
+  const connector = catalogRes.data?.[extractConnectorName(reso.id)]
 
-  // Consider calling this provider, actually seem to make more sense...
+  // Consider calling this connector, actually seem to make more sense...
   // given that we call the code itself integration
   const formSchema = zRaw.resource
     .pick({displayName: true})
@@ -189,7 +189,7 @@ function EditResourceSheet({
 
   const formRef = React.useRef<SchemaFormElement>(null)
 
-  if (!provider) {
+  if (!connector) {
     return null
   }
 
@@ -200,28 +200,28 @@ function EditResourceSheet({
         size="lg"
         className="flex flex-col bg-background">
         <SheetHeader className="shrink-0">
-          <SheetTitle>Edit {provider.displayName} resource</SheetTitle>
+          <SheetTitle>Edit {connector.displayName} resource</SheetTitle>
 
           <div className="flex max-h-[100px] flex-row items-center justify-between">
-            {provider.logoUrl ? (
+            {connector.logoUrl ? (
               <Image
                 width={100}
                 height={100}
-                src={provider.logoUrl}
-                alt={provider.displayName}
+                src={connector.logoUrl}
+                alt={connector.displayName}
               />
             ) : (
-              <span>{provider.displayName}</span>
+              <span>{connector.displayName}</span>
             )}
             <Badge
               variant="secondary"
               className={cn(
                 'ml-auto',
-                provider.stage === 'ga' && 'bg-green-200',
-                provider.stage === 'beta' && 'bg-blue-200',
-                provider.stage === 'alpha' && 'bg-pink-50',
+                connector.stage === 'ga' && 'bg-green-200',
+                connector.stage === 'beta' && 'bg-blue-200',
+                connector.stage === 'alpha' && 'bg-pink-50',
               )}>
-              {provider.stage}
+              {connector.stage}
             </Badge>
             {/* Add help text here */}
           </div>
@@ -229,7 +229,7 @@ function EditResourceSheet({
           <SheetDescription>
             {reso && `ID: ${reso.id}`}
             <br />
-            Supported mode(s): {provider.supportedModes.join(', ')}
+            Supported mode(s): {connector.supportedModes.join(', ')}
           </SheetDescription>
         </SheetHeader>
         <Separator orientation="horizontal" />
@@ -241,8 +241,8 @@ function EditResourceSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                ...(provider.schemas.resourceSettings && {
-                  settings: provider.schemas.resourceSettings,
+                ...(connector.schemas.resourceSettings && {
+                  settings: connector.schemas.resourceSettings,
                 }),
               },
             })}
@@ -265,7 +265,7 @@ function EditResourceSheet({
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Confirm delete {provider.displayName} resource?
+                  Confirm delete {connector.displayName} resource?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   ID: {reso.id}

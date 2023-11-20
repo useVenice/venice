@@ -1,5 +1,5 @@
 import type {EndUserId, Id, IDS} from '@usevenice/cdk/id.types'
-import type {ZRaw} from '@usevenice/cdk/meta.types'
+import type {ZRaw} from '@usevenice/cdk/models'
 import type {NoInfer, ObjectPartialDeep} from '@usevenice/util'
 
 export interface MetaTable<
@@ -14,7 +14,7 @@ export interface MetaTable<
     /** Maybe remove this? not applicable everywhere */
     integrationId?: Id['int'] | null
     /** Maybe remove this? not applicable everywhere */
-    providerName?: string | null
+    connectorName?: string | null
     /** Used for search */
     keywords?: string | null
     /** Pagination, not necessarily supported */
@@ -50,7 +50,7 @@ export interface MetaService {
     /** Leave empty to list the top institutions */
     keywords?: string | null
     /** is there a stronger type here than string? */
-    providerNames?: string[]
+    connectorNames?: string[]
     limit?: number
     offset?: number
   }) => Promise<ReadonlyArray<ZRaw['institution']>>
@@ -63,7 +63,7 @@ export interface MetaService {
   /** Id is used to check RLS policy right now for end user */
   listIntegrationInfos: (opts?: {
     id?: Id['int'] | null
-    providerName?: string | null
+    connectorName?: string | null
   }) => Promise<
     ReadonlyArray<{
       id: Id['int']

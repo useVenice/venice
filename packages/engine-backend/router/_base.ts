@@ -97,8 +97,8 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
       path: (ctx as any).path as string,
       remote: {
         id: resource.id,
-        provider: resource.integration.provider,
-        providerName: resource.providerName,
+        connector: resource.integration.connector,
+        connectorName: resource.connectorName,
         settings: resource.settings,
         config: resource.integration.config,
       },

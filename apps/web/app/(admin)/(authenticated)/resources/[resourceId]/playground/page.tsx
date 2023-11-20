@@ -17,12 +17,12 @@ export default async function PlaygroundPageServer({
 
   const resource = await ctx.services.getResourceExpandedOrFail(resourceId)
 
-  const oas = resource.integration.provider.metadata?.openapiSpec?.proxied
+  const oas = resource.integration.connector.metadata?.openapiSpec?.proxied
 
   if (!oas) {
     return (
       <div className="p-6">
-        {resource.providerName} does not have OpenAPI spec
+        {resource.connectorName} does not have OpenAPI spec
       </div>
     )
   }

@@ -107,7 +107,7 @@ export const postgresServer = {
               entity: row.unified,
               raw: row.raw,
               id: row.id,
-              providerName: 'postgres',
+              connectorName: 'postgres',
               sourceId: row.source_id ?? undefined,
             },
           }),
@@ -142,7 +142,7 @@ export const postgresServer = {
                 entityName,
                 id: `${row.id}`,
                 entity: row,
-                providerName: 'postgres', // is this right?
+                connectorName: 'postgres', // is this right?
               },
             }),
           ),
@@ -195,7 +195,7 @@ export const postgresServer = {
     return handlersLink({
       data: (op) => {
         const {
-          data: {id, entityName, providerName, sourceId = null, ...data},
+          data: {id, entityName, connectorName, sourceId = null, ...data},
         } = op
         const tableName = entityName
         const batch = batches[tableName] ?? []

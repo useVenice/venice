@@ -15,7 +15,7 @@ export const airtableServer = {
       // eslint-disable-next-line @typescript-eslint/require-await
       data: async (op) => {
         const {
-          data: {id, entityName, providerName, sourceId = null, ...data},
+          data: {id, entityName, connectorName, sourceId = null, ...data},
         } = op
 
         const transactionData = (
@@ -37,7 +37,7 @@ export const airtableServer = {
         const record = {
           fields: {
             Id: id,
-            'Provider Name': providerName,
+            'Provider Name': connectorName,
             Standard: JSON.stringify(data.entity),
             External: JSON.stringify(data.raw),
             ...partialTxn,

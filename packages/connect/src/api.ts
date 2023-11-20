@@ -26,14 +26,14 @@ export function makeVeniceClient({
   return {
     listResources: async (opts: {
       integrationId?: string
-      providerName?: string
+      connectorName?: string
     }) => {
       const url = new URL('resources', apiBase)
       if (opts.integrationId) {
         url.searchParams.set('integrationId', opts.integrationId)
       }
-      if (opts.providerName) {
-        url.searchParams.set('providerName', opts.providerName)
+      if (opts.connectorName) {
+        url.searchParams.set('connectorName', opts.connectorName)
       }
       const res = await fetch(url.toString(), {method: 'GET', headers})
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -44,7 +44,7 @@ export function makeVeniceClient({
     // this operation can be done client side instead of server side?
     createMagicLink: async (opts: {
       integrationId?: string
-      providerName?: string
+      connectorName?: string
       endUserId?: string
       validityInSeconds?: number
     }) => {

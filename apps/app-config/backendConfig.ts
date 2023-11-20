@@ -37,7 +37,7 @@ export type VeniceInput = PipelineInput<
 >
 
 export const contextFactory = getContextFactory({
-  providers: Object.values(mergedConnectors),
+  connectors: Object.values(mergedConnectors),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   // TODO: Rename to just serverUrl as we will need it for redirects and everything else
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),

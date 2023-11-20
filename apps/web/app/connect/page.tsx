@@ -6,7 +6,7 @@ import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import type {ConnectorDef} from '@usevenice/cdk'
 import {
-  extractProviderName,
+  extractConnectorName,
   getViewerId,
   makeId,
   makeNangoClient,
@@ -62,33 +62,33 @@ export default async function ConnectPageContainer({
     )
   }
 
-  // Implement shorthand for specifying only integrationId by providerName
+  // Implement shorthand for specifying only integrationId by connectorName
   let integrationId = params.integrationId
-  if (!integrationId && params.providerName) {
+  if (!integrationId && params.connectorName) {
     const ints = await ssg.listIntegrationInfos.fetch({
-      providerName: params.providerName,
+      connectorName: params.connectorName,
     })
     if (ints.length === 1 && ints[0]?.id) {
       integrationId = ints[0]?.id
     } else if (ints.length < 1) {
-      return <div>No integration for {params.providerName} configured</div>
+      return <div>No integration for {params.connectorName} configured</div>
     } else if (ints.length > 1) {
       console.warn(
-        `${ints.length} integrations found for ${params.providerName}`,
+        `${ints.length} integrations found for ${params.connectorName}`,
       )
     }
   }
 
   // Special case when we are handling a single oauth integration
   if (integrationId) {
-    const providerName = extractProviderName(integrationId)
+    const connectorName = extractConnectorName(integrationId)
     const intDef = defConnectors[
-      providerName as keyof typeof defConnectors
+      connectorName as keyof typeof defConnectors
     ] as ConnectorDef
 
     if (intDef.metadata?.nangoProvider) {
       const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})
-      const resourceId = makeId('reso', providerName, makeUlid())
+      const resourceId = makeId('reso', connectorName, makeUlid())
       const url = await nango.getOauthConnectUrl({
         public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
         connection_id: resourceId,
@@ -121,7 +121,7 @@ export default async function ConnectPageContainer({
     // Switch to using react suspense / server fetch for this instead of prefetch
     ssg.listIntegrationInfos.prefetch({
       id: integrationId,
-      providerName: params.providerName,
+      connectorName: params.connectorName,
     }),
     params.showExisting ? ssg.listConnections.prefetch({}) : Promise.resolve(),
   ])

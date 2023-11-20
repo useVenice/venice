@@ -123,7 +123,7 @@ export const zEntityPayload = z.object({
 export type EntityPayloadWithRaw = z.infer<typeof zEntityPayloadWithRaw>
 export const zEntityPayloadWithRaw = zEntityPayload.extend({
   raw: z.unknown(),
-  providerName: z.string(),
+  connectorName: z.string(),
   sourceId: z.string().optional(),
 })
 

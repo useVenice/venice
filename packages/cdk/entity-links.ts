@@ -26,11 +26,11 @@ import type {Pta} from './verticals/pta'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({
-  integration: {provider},
+  integration: {connector},
   settings: initialSettings,
   id: sourceId,
 }: {
-  integration: {provider: ConnectorDef}
+  integration: {connector: ConnectorDef}
   settings: unknown
   id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithRaw> {
@@ -40,7 +40,7 @@ export function mapStandardEntityLink({
     }
     // TODO: Extract this mapStandard into tis own function!
     const [vertical, entityName] = op.data.entityName.split('.')
-    const mapper = provider.streams?.[vertical as 'accounting']?.[
+    const mapper = connector.streams?.[vertical as 'accounting']?.[
       entityName as never
     ] as unknown as EntityMapper
 
@@ -54,7 +54,7 @@ export function mapStandardEntityLink({
           entity: standard as any,
           id,
           raw: op.data.entity,
-          providerName: provider.name,
+          connectorName: connector.name,
           sourceId,
         } satisfies EntityPayloadWithRaw,
       })
@@ -66,15 +66,15 @@ export function mapStandardEntityLink({
         ...op.data,
         id,
         entity: undefined as any,
-        entityName: `${provider.name}_${op.data.entityName}`,
+        entityName: `${connector.name}_${op.data.entityName}`,
         raw: op.data.entity as any,
-        providerName: provider.name,
+        connectorName: connector.name,
         sourceId,
       } satisfies EntityPayloadWithRaw,
     })
 
     // @deprecated
-    // const entity = provider.standardMappers?.entity
+    // const entity = connector.standardMappers?.entity
     // if (!entity) {
     //   throw new Error('Expecting VeniceProvider in mapStandardEntityLink')
     // }
@@ -96,7 +96,7 @@ export function mapStandardEntityLink({
     //     ...payload,
     //     id,
     //     external: op.data.entity,
-    //     providerName: provider.name,
+    //     connectorName: connector.name,
     //     externalId: op.data.id,
     //     sourceId,
     //   },

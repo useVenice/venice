@@ -32,7 +32,7 @@ export default function SettingsPage() {
     (integrationsRes.data ?? []).map((i) =>
       z
         .literal(i.id)
-        .describe(i.providerName ? `${i.providerName} <${i.id}>` : i.id),
+        .describe(i.connectorName ? `${i.connectorName} <${i.id}>` : i.id),
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
 

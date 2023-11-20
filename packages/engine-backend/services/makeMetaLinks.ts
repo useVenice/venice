@@ -58,7 +58,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           return
         }
         const {id, settings = {}, institution} = op
-        const providerName = extractId(resource.id)[1]
+        const connectorName = extractId(resource.id)[1]
         console.log('[metaLink] resoUpdate', {
           id,
           settings: R.keys(settings),
@@ -67,7 +67,7 @@ export function makeMetaLinks(metaBase: MetaService) {
         })
 
         const institutionId = institution
-          ? makeId('ins', providerName, institution.externalId)
+          ? makeId('ins', connectorName, institution.externalId)
           : undefined
 
         // Can we run this in one transaction?

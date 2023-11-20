@@ -1,6 +1,6 @@
 import {TRPCError} from '@trpc/server'
 
-import {metaForProvider} from '@usevenice/cdk'
+import {metaForConnector} from '@usevenice/cdk'
 import {R, z} from '@usevenice/util'
 
 import {publicProcedure, trpc} from './_base'
@@ -31,8 +31,8 @@ export const publicRouter = trpc.router({
     // TODO: Add deterministic type for the output here
     .output(z.unknown())
     .query(({ctx, input}) =>
-      R.mapValues(ctx.providerMap, (provider) =>
-        metaForProvider(provider, input),
+      R.mapValues(ctx.connectorMap, (connector) =>
+        metaForConnector(connector, input),
       ),
     ),
   getConnector: publicProcedure
@@ -47,14 +47,14 @@ export const publicRouter = trpc.router({
     // TODO: Add deterministic type for the output here
     .output(z.unknown())
     .query(({ctx, input: {name, ...input}}) => {
-      const provider = ctx.providerMap[name]
-      if (!provider) {
+      const connector = ctx.connectorMap[name]
+      if (!connector) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: `Connector ${name} not found`,
         })
       }
-      return metaForProvider(provider, input)
+      return metaForConnector(connector, input)
     }),
   getConnectorOpenApiSpec: publicProcedure
     .meta({
@@ -68,14 +68,14 @@ export const publicRouter = trpc.router({
     // TODO: Add deterministic type for the output here
     .output(z.unknown())
     .query(({ctx, input: {name, ...input}}) => {
-      const provider = ctx.providerMap[name]
-      if (!provider) {
+      const connector = ctx.connectorMap[name]
+      if (!connector) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: `Connector ${name} not found`,
         })
       }
-      const specs = metaForProvider(provider, {includeOas: true}).openapiSpec
+      const specs = metaForConnector(connector, {includeOas: true}).openapiSpec
       return input.original ? specs?.original : specs?.proxied
     }),
   getPublicEnv: publicProcedure.query(({ctx}) =>

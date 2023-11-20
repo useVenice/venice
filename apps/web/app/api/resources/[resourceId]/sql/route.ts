@@ -44,7 +44,7 @@ export async function GET(
     const {services} = contextFactory.fromViewer(viewer)
     const reso = await services.getResourceOrFail(resourceId as Id['reso'])
 
-    if (reso.providerName !== 'postgres') {
+    if (reso.connectorName !== 'postgres') {
       throw new TRPCError({
         code: 'PRECONDITION_FAILED',
         message: 'Only postgres resources are supported',

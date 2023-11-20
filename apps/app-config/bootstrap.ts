@@ -18,11 +18,11 @@ export async function bootstrap() {
   })
   const configs = parseIntConfigsFromRawEnv()
 
-  for (const [providerName, config] of Object.entries(configs ?? {})) {
+  for (const [connectorName, config] of Object.entries(configs ?? {})) {
     if (!config) {
       continue
     }
-    const id = makeId('int', providerName, extractId(orgId)[1])
+    const id = makeId('int', connectorName, extractId(orgId)[1])
     await caller.adminUpsertIntegration({id, config: config as {}, orgId})
     console.log('Upsert integration', id)
   }

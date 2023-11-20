@@ -79,15 +79,15 @@ export function makeId<TPrefix extends IdPrefix, TPName extends string>(
 }
 
 export function extractId(id: Id[keyof Id]) {
-  const [prefix, providerName, ...rest] = id.split('_')
-  // TODO: Check prefix match predefined prefixes and that providerName is truthy
+  const [prefix, connectorName, ...rest] = id.split('_')
+  // TODO: Check prefix match predefined prefixes and that connectorName is truthy
   // rest.join shall have a type of string which is actually totally the correct type
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return [prefix as IdPrefix, providerName!, rest.join('_')] as const
+  return [prefix as IdPrefix, connectorName!, rest.join('_')] as const
 }
 
-// TODO: Should we have a branded type for providerName?
-export function extractProviderName(id: Id['int'] | Id['reso']) {
+// TODO: Should we have a branded type for connectorName?
+export function extractConnectorName(id: Id['int'] | Id['reso']) {
   return extractId(id)[1]
 }
 
@@ -95,7 +95,7 @@ export function swapPrefix<TPrefix extends IdPrefix>(
   id: Id[keyof Id],
   newPrefix: TPrefix,
 ) {
-  const [, providerName, rest] = extractId(id)
+  const [, connectorName, rest] = extractId(id)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-  return makeId<TPrefix, string>(...([newPrefix, providerName, rest] as any))
+  return makeId<TPrefix, string>(...([newPrefix, connectorName, rest] as any))
 }
