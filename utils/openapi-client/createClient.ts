@@ -1,5 +1,6 @@
 import type {FetchOptions, FetchResponse} from 'openapi-fetch'
 import _createClient from 'openapi-fetch'
+import type {PathsWithMethod} from 'openapi-typescript-helpers'
 
 import type {HTTPMethod} from './HTTPError'
 import {HTTPError} from './HTTPError'
@@ -43,22 +44,30 @@ export function createClient<Paths extends {}>({
         data: T
         response: FetchResponse<unknown>['response']
       }>,
-    GET: (...args: Parameters<typeof client.GET>) =>
-      client.GET(...args).then(throwIfNotOk('GET')),
-    PUT: (...args: Parameters<typeof client.PUT>) =>
-      client.PUT(...args).then(throwIfNotOk('PUT')),
-    POST: (...args: Parameters<typeof client.POST>) =>
-      client.POST(...args).then(throwIfNotOk('POST')),
-    DELETE: (...args: Parameters<typeof client.DELETE>) =>
-      client.DELETE(...args).then(throwIfNotOk('DELETE')),
-    OPTIONS: (...args: Parameters<typeof client.OPTIONS>) =>
-      client.OPTIONS(...args).then(throwIfNotOk('OPTIONS')),
-    HEAD: (...args: Parameters<typeof client.HEAD>) =>
-      client.HEAD(...args).then(throwIfNotOk('HEAD')),
-    PATCH: (...args: Parameters<typeof client.PATCH>) =>
-      client.PATCH(...args).then(throwIfNotOk('PATCH')),
-    TRACE: (...args: Parameters<typeof client.TRACE>) =>
-      client.TRACE(...args).then(throwIfNotOk('TRACE')),
+    GET: <P extends PathsWithMethod<Paths, 'get'>>(
+      ...args: Parameters<typeof client.GET<P>>
+    ) => client.GET<P>(...args).then(throwIfNotOk('GET')),
+    PUT: <P extends PathsWithMethod<Paths, 'put'>>(
+      ...args: Parameters<typeof client.PUT<P>>
+    ) => client.PUT(...args).then(throwIfNotOk('PUT')),
+    POST: <P extends PathsWithMethod<Paths, 'post'>>(
+      ...args: Parameters<typeof client.POST<P>>
+    ) => client.POST(...args).then(throwIfNotOk('POST')),
+    DELETE: <P extends PathsWithMethod<Paths, 'delete'>>(
+      ...args: Parameters<typeof client.DELETE<P>>
+    ) => client.DELETE(...args).then(throwIfNotOk('DELETE')),
+    OPTIONS: <P extends PathsWithMethod<Paths, 'options'>>(
+      ...args: Parameters<typeof client.OPTIONS<P>>
+    ) => client.OPTIONS(...args).then(throwIfNotOk('OPTIONS')),
+    HEAD: <P extends PathsWithMethod<Paths, 'head'>>(
+      ...args: Parameters<typeof client.HEAD<P>>
+    ) => client.HEAD(...args).then(throwIfNotOk('HEAD')),
+    PATCH: <P extends PathsWithMethod<Paths, 'patch'>>(
+      ...args: Parameters<typeof client.PATCH<P>>
+    ) => client.PATCH(...args).then(throwIfNotOk('PATCH')),
+    TRACE: <P extends PathsWithMethod<Paths, 'trace'>>(
+      ...args: Parameters<typeof client.TRACE<P>>
+    ) => client.TRACE(...args).then(throwIfNotOk('TRACE')),
   }
 }
 

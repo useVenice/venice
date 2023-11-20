@@ -5,7 +5,8 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "openapi-fetch": "0.8.1"
+    "openapi-fetch": "0.8.1",
+    "openapi-typescript-helpers": "0.0.4"
   },
   "devDependencies": {
     "undici": "5.27.0"
