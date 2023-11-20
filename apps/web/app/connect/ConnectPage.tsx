@@ -1,20 +1,20 @@
 'use client'
 
-import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
+import {clientConnectors} from '@usevenice/app-config/connectors/connectors.client'
 import type {VeniceConnectProps} from '@usevenice/engine-frontend'
 import {VeniceConnect} from '@usevenice/engine-frontend'
 
 /**
- * Only reason this file exists is because we cannot pass clientIntegrations directly
+ * Only reason this file exists is because we cannot pass clientConnectors directly
  * from a server component because it contains function references (i.e. useConnectHook)
  */
 export default function ConnectPage(
-  props: Omit<VeniceConnectProps, 'clientIntegrations'>,
+  props: Omit<VeniceConnectProps, 'clientConnectors'>,
 ) {
   return (
     <VeniceConnect
       // How to we only import the client integrations dynamically that are set up by the org?
-      clientIntegrations={clientIntegrations}
+      clientConnectors={clientConnectors}
       {...props}
     />
   )

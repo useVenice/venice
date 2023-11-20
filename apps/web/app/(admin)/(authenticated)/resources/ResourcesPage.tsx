@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-import {clientIntegrations} from '@usevenice/app-config/integrations/integrations.client'
+import {clientConnectors} from '@usevenice/app-config/connectors/connectors.client'
 import {extractProviderName, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact, VeniceConnectButton} from '@usevenice/engine-frontend'
@@ -54,7 +54,7 @@ export default function ResourcesPage() {
         <h2 className="mb-4 mr-auto text-2xl font-semibold tracking-tight">
           Resources
         </h2>
-        <VeniceConnectButton clientIntegrations={clientIntegrations} />
+        <VeniceConnectButton clientConnectors={clientConnectors} />
       </header>
       <p>Resources are created based on integration configurations</p>
       <DataTable

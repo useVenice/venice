@@ -5,7 +5,7 @@ import 'global-agent/bootstrap'
 import {ProxyAgent, setGlobalDispatcher} from 'undici'
 
 import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/connector-envs'
-import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
+import type {defConnectors} from '@usevenice/app-config/connectors/connectors.def'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk'
 import {makeAlphavantageClient} from '@usevenice/connector-alphavantage'
 import {makeHeronClient} from '@usevenice/connector-heron'
@@ -50,7 +50,7 @@ function env() {
     .env as typeof import('@usevenice/app-config/env')['env']
 }
 
-function intConfig<T extends keyof typeof defIntegrations>(name: T) {
+function intConfig<T extends keyof typeof defConnectors>(name: T) {
   const config = parseIntConfigsFromRawEnv()[name]
   if (!config) {
     throw new Error(`${name} provider is not configured`)

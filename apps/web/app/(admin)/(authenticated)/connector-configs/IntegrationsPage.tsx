@@ -128,7 +128,7 @@ export default function IntegrationsPage() {
   )
 }
 
-// import {defIntegrations } from '@usevenice/app-config/integrations/integrations.def'
+// import {defConnectors } from '@usevenice/app-config/integrations/integrations.def'
 
 export function IntegrationSheet({
   integration: int,

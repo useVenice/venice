@@ -3,7 +3,7 @@ import type {ConnectorSchemas, ConnHelpers} from '@usevenice/cdk'
 import {makeId} from '@usevenice/cdk'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
-import {defIntegrations} from './integrations/integrations.def'
+import {defConnectors} from './connectors/connectors.def'
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
 const separator = '__'
@@ -11,7 +11,7 @@ const getPrefix = (name: string) => makeId('int', name, '')
 
 // Should this be all providers or only dcoumented ones?
 
-export const zFlatConfigByProvider = R.mapValues(defIntegrations, (def, name) =>
+export const zFlatConfigByProvider = R.mapValues(defConnectors, (def, name) =>
   zFlattenForEnv(
     (def.schemas as ConnectorSchemas)?.integrationConfig ?? z.unknown(),
     {
@@ -62,8 +62,8 @@ export function parseIntConfigsFromRawEnv(
     }),
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
-    [k in keyof typeof defIntegrations]?: GetIntConfig<
-      ConnHelpers<(typeof defIntegrations)[k]['schemas']>['_types']
+    [k in keyof typeof defConnectors]?: GetIntConfig<
+      ConnHelpers<(typeof defConnectors)[k]['schemas']>['_types']
     >
   }
 }

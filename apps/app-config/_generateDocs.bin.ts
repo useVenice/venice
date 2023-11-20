@@ -6,8 +6,8 @@ import tablemark from 'tablemark'
 import {buildUrl, R} from '@usevenice/util'
 
 import {parseIntConfigsFromRawEnv} from './connector-envs'
+import {defConnectors} from './connectors/connectors.def'
 import {env, envConfig} from './env'
-import {defIntegrations} from './integrations/integrations.def'
 
 const envList = R.pipe(
   {...envConfig.server, ...envConfig.client},
@@ -15,9 +15,7 @@ const envList = R.pipe(
   R.filter(
     ([key]) =>
       !key.startsWith('int') ||
-      Object.values(defIntegrations).some((p) =>
-        key.startsWith(`int_${p.name}`),
-      ),
+      Object.values(defConnectors).some((p) => key.startsWith(`int_${p.name}`)),
   ),
   R.map(([key, schema]) => {
     const cmtLines = R.pipe(

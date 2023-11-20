@@ -1,5 +1,5 @@
 /**
- * We have to generate the integration list into actual files because webpack / next.js is extremely not performant
+ * We have to generate the connector list into actual files because webpack / next.js is extremely not performant
  * when importing modules with dynamic paths at runtime
  */
 
@@ -14,9 +14,9 @@ import {camelCase} from '@usevenice/util/string-utils'
 import prettierConfig from '../../prettier.config'
 
 function writePretty(filename: string, content: string, pretty = true) {
-  fs.mkdirSync(pathJoin(__dirname, 'integrations'), {recursive: true})
+  fs.mkdirSync(pathJoin(__dirname, 'connectors'), {recursive: true})
   fs.writeFileSync(
-    pathJoin(__dirname, 'integrations', filename),
+    pathJoin(__dirname, 'connectors', filename),
     !pretty
       ? content
       : prettier.format(
@@ -29,12 +29,12 @@ function writePretty(filename: string, content: string, pretty = true) {
 }
 
 const connectorList = fs
-  .readdirSync(pathJoin(__dirname, '../../integrations'), {
+  .readdirSync(pathJoin(__dirname, '../../connectors'), {
     withFileTypes: true,
   })
   .filter((r) => r.isDirectory())
   .map((d) => {
-    const path = pathJoin(__dirname, '../../integrations', d.name)
+    const path = pathJoin(__dirname, '../../connectors', d.name)
     const def = fs.existsSync(pathJoin(path, 'def.ts'))
       ? // TODO: Automate generation of package.json is still needed, otherwise does not work for new packages
         // @see https://share.cleanshot.com/wDmqwsHS
@@ -43,8 +43,8 @@ const connectorList = fs
       : undefined
     // we do some validation also
 
-    if (def && `integration-${def.name}` !== d.name) {
-      throw new Error(`Mismatched integration: ${def.name} dir: ${d.name}`)
+    if (def && `connector-${def.name}` !== d.name) {
+      throw new Error(`Mismatched connector: ${def.name} dir: ${d.name}`)
     }
     return {
       name: def?.name,
@@ -76,14 +76,14 @@ const entries = ['def', 'client', 'server'] as const
 for (const entry of entries) {
   const list = connectorList.filter((int) => !!int.imports[entry])
   writePretty(
-    `integrations.${entry}.ts`,
+    `connectors.${entry}.ts`,
     `${list
       .map(
         (int) =>
           `import {default as ${int.varName}} from '${int.imports[entry]}'`,
       )
       .join('\n')}
-    export const ${entry}Integrations = {${list
+    export const ${entry}Connectors = {${list
       .map(({name, varName}) => `${name}: ${varName},`)
       .join('\n')}}
   `,
@@ -94,13 +94,13 @@ const mergedlist = connectorList.filter((int) =>
 )
 
 writePretty(
-  'integrations.merged.ts',
+  'connectors.merged.ts',
   `${mergedlist
     .flatMap((int) => {
       const validImports = Object.fromEntries(
         Object.entries(int.imports)
           .filter(([, v]) => !!v)
-          // Temp hack because mergedIntegrations are only ever used server side
+          // Temp hack because mergedConnectors are only ever used server side
           // This avoids server needing to import client side code unnecessarily
           .filter(([k]) => k !== 'client'),
       )
@@ -120,7 +120,7 @@ writePretty(
     .join('\n')}
 
 
-  export const mergedIntegrations = {${mergedlist
+  export const mergedConnectors = {${mergedlist
     .map(({name, varName}) => `${name}: ${varName},`)
     .join('\n')}}
 `,

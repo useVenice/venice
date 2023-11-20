@@ -6,9 +6,9 @@ import {getContextFactory} from '@usevenice/engine-backend'
 import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 import {joinPath} from '@usevenice/util'
 
+import {mergedConnectors} from './connectors/connectors.merged'
 import {getServerUrl} from './constants'
 import {env} from './env'
-import {mergedIntegrations} from './integrations/integrations.merged'
 
 export {
   DatabaseError,
@@ -32,12 +32,12 @@ export const backendEnv = env
 //   VeniceRouter['_def']['mutations']['syncPipeline']
 // >[0]
 export type VeniceInput = PipelineInput<
-  (typeof mergedIntegrations)[keyof typeof mergedIntegrations],
-  (typeof mergedIntegrations)[keyof typeof mergedIntegrations]
+  (typeof mergedConnectors)[keyof typeof mergedConnectors],
+  (typeof mergedConnectors)[keyof typeof mergedConnectors]
 >
 
 export const contextFactory = getContextFactory({
-  providers: Object.values(mergedIntegrations),
+  providers: Object.values(mergedConnectors),
   // routerUrl: 'http://localhost:3010/api', // apiUrl?
   // TODO: Rename to just serverUrl as we will need it for redirects and everything else
   apiUrl: joinPath(getServerUrl(null), '/api/trpc'),

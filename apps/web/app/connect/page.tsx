@@ -1,9 +1,9 @@
 import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
 
+import {defConnectors} from '@usevenice/app-config/connectors/connectors.def'
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
-import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import type {ConnectorDef} from '@usevenice/cdk'
 import {
   extractProviderName,
@@ -82,8 +82,8 @@ export default async function ConnectPageContainer({
   // Special case when we are handling a single oauth integration
   if (integrationId) {
     const providerName = extractProviderName(integrationId)
-    const intDef = defIntegrations[
-      providerName as keyof typeof defIntegrations
+    const intDef = defConnectors[
+      providerName as keyof typeof defConnectors
     ] as ConnectorDef
 
     if (intDef.metadata?.nangoProvider) {

@@ -6,7 +6,8 @@
     "register.node.ts"
   ],
   "scripts": {
-    "dev": "pnpm tsx watch ./_generateDocs.bin.ts"
+    "generate:docs": "pnpm tsx watch ./_generateDocs.bin.ts",
+    "generate:lists": "node --loader tsx ./_generateConnectorLists.ts"
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "0.3.1",

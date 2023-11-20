@@ -51,7 +51,7 @@ type ConnectEventType = 'open' | 'close' | 'error'
 export interface VeniceConnectProps extends UIPropsNoChildren {
   /** Whether to display the existing connections */
   showExisting?: boolean
-  clientIntegrations: Record<string, ConnectorClient>
+  clientConnectors: Record<string, ConnectorClient>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
   /** Only connect to this integration */
   integrationId?: Id['int'] | null
@@ -144,7 +144,7 @@ const __DEBUG__ = Boolean(
 /** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
 export function _VeniceConnect({
   catalog,
-  clientIntegrations,
+  clientConnectors,
   onEvent,
   showExisting,
   className,
@@ -218,7 +218,7 @@ export function _VeniceConnect({
     R.map((intInfo) => extractProviderName(intInfo.id)),
     R.uniq,
     R.mapToObj((providerName: string) => {
-      let fn = clientIntegrations[providerName]?.useConnectHook?.({openDialog})
+      let fn = clientConnectors[providerName]?.useConnectHook?.({openDialog})
       const nangoProvider = catalog[providerName]?.nangoProvider
       if (!fn && nangoProvider) {
         console.log('adding nnango provider for', nangoProvider)
