@@ -4,14 +4,14 @@ import type {AuthError} from '@nangohq/frontend'
 import {HTTPError, makeUlid} from '@usevenice/util'
 import {z} from '@usevenice/zod'
 
+import type {
+  ConnectorSchemas,
+  ConnectorServer,
+  ConnHelpers,
+} from '../connector.types'
 import {CANCELLATION_TOKEN} from '../frontend-utils'
 import type {Id} from '../id.types'
 import {extractId, makeId, zId} from '../id.types'
-import type {
-  IntegrationSchemas,
-  IntegrationServer,
-  IntHelpers,
-} from '../integration.types'
 import type {NangoClient, NangoProvider, UpsertIntegration} from './NangoClient'
 import {zConnection, zIntegration} from './NangoClient'
 
@@ -35,9 +35,9 @@ export const oauthBaseSchema = {
     providerConfigKey: zId('int'),
     connectionId: zId('reso'),
   }),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export type OauthBaseTypes = IntHelpers<typeof oauthBaseSchema>['_types']
+export type OauthBaseTypes = ConnHelpers<typeof oauthBaseSchema>['_types']
 
 function isNangoAuthError(err: unknown): err is AuthError {
   return typeof err === 'object' && err != null && 'type' in err
@@ -87,7 +87,7 @@ export function makeOauthIntegrationServer({
       })
       return {resourceExternalId: extractId(resoId)[2], settings: {oauth: res}}
     },
-  } satisfies IntegrationServer<typeof oauthBaseSchema>
+  } satisfies ConnectorServer<typeof oauthBaseSchema>
   return {
     ...intServer,
     upsertIntegration: async (config: OauthBaseTypes['integrationConfig']) => {

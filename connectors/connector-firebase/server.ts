@@ -1,6 +1,6 @@
 import firebase from 'firebase/compat/app'
 
-import type {IntegrationServer, Link, SyncOperation} from '@usevenice/cdk'
+import type {ConnectorServer, Link, SyncOperation} from '@usevenice/cdk'
 import {handlersLink, mergeReady} from '@usevenice/cdk'
 import {
   defineProxyFn,
@@ -124,7 +124,7 @@ export const firebaseServer = {
       tapTeartown(cleanup),
     )
   },
-} satisfies IntegrationServer<typeof firebaseSchemas>
+} satisfies ConnectorServer<typeof firebaseSchemas>
 
 export type WrappedFirebase = ReturnType<typeof initFirebase>
 

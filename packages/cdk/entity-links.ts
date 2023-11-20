@@ -14,8 +14,8 @@ import {
 import {z} from '@usevenice/zod'
 
 import {handlersLink, transformLink} from './base-links'
+import type {ConnectorDef, EntityMapper} from './connector.types'
 import type {Id} from './id.types'
-import type {EntityMapper, IntegrationDef} from './integration.types'
 import type {AnyEntityPayload, Link} from './protocol'
 import type {
   EntityPayload,
@@ -30,7 +30,7 @@ export function mapStandardEntityLink({
   settings: initialSettings,
   id: sourceId,
 }: {
-  integration: {provider: IntegrationDef}
+  integration: {provider: ConnectorDef}
   settings: unknown
   id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithRaw> {

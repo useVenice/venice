@@ -1,9 +1,9 @@
 import type {
   AnyEntityPayload,
-  IntegrationDef,
-  IntegrationSchemas,
+  ConnectorDef,
+  ConnectorSchemas,
 } from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 import type {AnyQuery} from './firebase-types'
@@ -80,14 +80,14 @@ export const firebaseSchemas = {
   }),
   sourceOutputEntity: zCast<AnyEntityPayload>(),
   destinationInputEntity: zCast<AnyEntityPayload>(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const firebaseHelpers = intHelpers(firebaseSchemas)
+export const firebaseHelpers = connHelpers(firebaseSchemas)
 
 export const firebaseDef = {
   name: 'firebase',
   metadata: {categories: ['database'], logoUrl: '/_assets/logo-firebase.png'},
   schemas: firebaseSchemas,
-} satisfies IntegrationDef<typeof firebaseSchemas>
+} satisfies ConnectorDef<typeof firebaseSchemas>
 
 export default firebaseDef

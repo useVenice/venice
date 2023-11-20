@@ -2,7 +2,7 @@ import type {MaybePromise} from '@usevenice/util'
 import {objectEntries, R, z, zObject} from '@usevenice/util'
 
 import type * as Pta from './pta-types'
-import type {IntegrationSchemas, IntHelpers} from '../../integration.types'
+import type {ConnectorSchemas, ConnHelpers} from '../../connector.types'
 import type {
   PaginatedOutput,
   Pagination,
@@ -33,9 +33,9 @@ export type ZPta = {
 }
 
 export interface PtaMethods<
-  TDef extends IntegrationSchemas,
+  TDef extends ConnectorSchemas,
   TInstance,
-  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
 > {
   list?: <TType extends keyof T['_verticals']['pta']>(
     instance: TInstance,

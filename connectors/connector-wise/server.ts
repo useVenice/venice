@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {Rx, rxjs} from '@usevenice/util'
 
@@ -53,6 +53,6 @@ export const wiseServer = {
         Rx.mergeMap((ops) => rxjs.from([...ops, wiseHelpers._op('commit')])),
       )
   },
-} satisfies IntegrationServer<typeof wiseSchemas>
+} satisfies ConnectorServer<typeof wiseSchemas>
 
 export default wiseServer

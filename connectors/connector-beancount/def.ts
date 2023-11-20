@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {zEntityPayload} from '@usevenice/cdk'
 import {isAmountUnit, z} from '@usevenice/util'
 
@@ -16,14 +16,14 @@ export const beancountSchemas = {
   name: z.literal('beancount'),
   destinationState: zBeancountDestOptions,
   destinationInputEntity: zEntityPayload,
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const beancountHelpers = intHelpers(beancountSchemas)
+export const beancountHelpers = connHelpers(beancountSchemas)
 
 export const beancountDef = {
   name: 'beancount',
   schemas: beancountSchemas,
   metadata: {categories: ['personal-finance'], platforms: ['local']},
-} satisfies IntegrationDef<typeof beancountSchemas>
+} satisfies ConnectorDef<typeof beancountSchemas>
 
 export default beancountDef

@@ -1,9 +1,9 @@
 import type {
   AnyEntityPayload,
-  IntegrationDef,
-  IntegrationSchemas,
+  ConnectorDef,
+  ConnectorSchemas,
 } from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 // MARK: - Source Sync
@@ -26,9 +26,9 @@ export const fsSchemas = {
   sourceState: zWatchPathsInput.pick({paths: true}),
   sourceOutputEntity: zCast<AnyEntityPayload>(),
   destinationInputEntity: zCast<AnyEntityPayload>(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const fsHelpers = intHelpers(fsSchemas)
+export const fsHelpers = connHelpers(fsSchemas)
 
 export const fsDef = {
   name: 'fs',
@@ -39,6 +39,6 @@ export const fsDef = {
   },
 
   schemas: fsSchemas,
-} satisfies IntegrationDef<typeof fsSchemas>
+} satisfies ConnectorDef<typeof fsSchemas>
 
 export default fsDef

@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, oauthBaseSchema} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, oauthBaseSchema} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 export const discordSchemas = {
@@ -7,9 +7,9 @@ export const discordSchemas = {
   integrationConfig: oauthBaseSchema.integrationConfig,
   resourceSettings: oauthBaseSchema.resourceSettings,
   connectOutput: oauthBaseSchema.connectOutput,
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const discordHelpers = intHelpers(discordSchemas)
+export const discordHelpers = connHelpers(discordSchemas)
 
 export const discordDef = {
   name: 'discord',
@@ -20,6 +20,6 @@ export const discordDef = {
     logoUrl: '/_assets/logo-discord.svg',
     nangoProvider: 'discord',
   },
-} satisfies IntegrationDef<typeof discordSchemas>
+} satisfies ConnectorDef<typeof discordSchemas>
 
 export default discordDef

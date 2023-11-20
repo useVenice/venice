@@ -4,7 +4,7 @@ import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
 
 import {contextFactory} from './backendConfig'
-import {parseIntConfigsFromRawEnv} from './integration-envs'
+import {parseIntConfigsFromRawEnv} from './connector-envs'
 
 // TODO: Is this file needed? We can most likely just
 // embed the functionality into venice cli directly...

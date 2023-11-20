@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import {createHTTPClient, rxjs} from '@usevenice/util'
 
@@ -38,6 +38,6 @@ export const webhookServer = {
       },
     })
   },
-} satisfies IntegrationServer<typeof webhookSchemas>
+} satisfies ConnectorServer<typeof webhookSchemas>
 
 export default webhookServer

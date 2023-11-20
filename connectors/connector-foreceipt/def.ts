@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import type {SerializedTimestamp} from '@usevenice/connector-firebase'
@@ -46,9 +46,9 @@ export const foreceiptSchemas = {
       >(),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const foreceiptHelpers = intHelpers(foreceiptSchemas)
+export const foreceiptHelpers = connHelpers(foreceiptSchemas)
 
 export const foreceiptDef = {
   name: 'foreceipt',
@@ -155,6 +155,6 @@ export const foreceiptDef = {
       },
     },
   },
-} satisfies IntegrationDef<typeof foreceiptSchemas>
+} satisfies ConnectorDef<typeof foreceiptSchemas>
 
 export default foreceiptDef

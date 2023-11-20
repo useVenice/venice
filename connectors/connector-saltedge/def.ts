@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import type {Brand} from '@usevenice/util'
@@ -23,9 +23,9 @@ export const saltedgeSchemas = {
       entity: zCast<SaltEdge.Transaction>(),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const saltedgeHelpers = intHelpers(saltedgeSchemas)
+export const saltedgeHelpers = connHelpers(saltedgeSchemas)
 
 export const saltedgeDef = {
   name: 'saltedge',
@@ -98,6 +98,6 @@ export const saltedgeDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof saltedgeSchemas>
+} satisfies ConnectorDef<typeof saltedgeSchemas>
 
 export default saltedgeDef

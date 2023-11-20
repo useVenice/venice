@@ -5,7 +5,7 @@ import {objectEntries} from '@usevenice/util'
 import {R} from '@usevenice/util'
 import {z} from '@usevenice/zod'
 
-import type {IntegrationSchemas, IntHelpers} from '../integration.types'
+import type {ConnectorSchemas, ConnHelpers} from '../connector.types'
 import type {
   PaginatedOutput,
   Pagination,
@@ -42,9 +42,9 @@ export type ZInvestment = {
 }
 
 export interface InvestmentMethods<
-  TDef extends IntegrationSchemas,
+  TDef extends ConnectorSchemas,
   TInstance,
-  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
 > {
   list?: <TType extends keyof T['_verticals']['investment']>(
     instance: TInstance,

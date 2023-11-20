@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
@@ -9,9 +9,9 @@ export const airtableSchemas = {
   name: z.literal('airtable'),
   resourceSettings: zAirtableResourceSettings,
   destinationInputEntity: zCast<EntityPayloadWithRaw>(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(airtableSchemas)
+export const helpers = connHelpers(airtableSchemas)
 
 export const airtableDef = {
   metadata: {
@@ -20,6 +20,6 @@ export const airtableDef = {
   },
   name: 'airtable',
   schemas: airtableSchemas,
-} satisfies IntegrationDef<typeof airtableSchemas>
+} satisfies ConnectorDef<typeof airtableSchemas>
 
 export default airtableDef

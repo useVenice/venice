@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, zIntAuth} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, zIntAuth} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, z, zCast} from '@usevenice/util'
 
@@ -30,7 +30,7 @@ export const stripeSchemas = {
       transactionSyncCursor: z.string().nullish(),
     })
     .default({}),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
 export const stripeDef = {
   schemas: stripeSchemas,
@@ -74,8 +74,8 @@ export const stripeDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof stripeSchemas>
+} satisfies ConnectorDef<typeof stripeSchemas>
 
-export const helpers = intHelpers(stripeSchemas)
+export const helpers = connHelpers(stripeSchemas)
 
 export default stripeDef

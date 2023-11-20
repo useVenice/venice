@@ -4,7 +4,7 @@ import Image from 'next/image'
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
-import type {IntegrationDef} from '@usevenice/cdk'
+import type {ConnectorDef} from '@usevenice/cdk'
 import {
   extractProviderName,
   getViewerId,
@@ -84,7 +84,7 @@ export default async function ConnectPageContainer({
     const providerName = extractProviderName(integrationId)
     const intDef = defIntegrations[
       providerName as keyof typeof defIntegrations
-    ] as IntegrationDef
+    ] as ConnectorDef
 
     if (intDef.metadata?.nangoProvider) {
       const nango = makeNangoClient({secretKey: env.NANGO_SECRET_KEY})

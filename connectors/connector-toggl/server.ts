@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {togglSchemas} from './def'
@@ -34,6 +34,6 @@ export const togglServer = {
         Rx.mergeMap((ops) => rxjs.from([...ops, togglHelpers._op('commit')])),
       )
   },
-} satisfies IntegrationServer<typeof togglSchemas>
+} satisfies ConnectorServer<typeof togglSchemas>
 
 export default togglServer

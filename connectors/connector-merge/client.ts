@@ -1,7 +1,7 @@
 /** Used for the side effect of window.MergeLink */
 import type {UseMergeLinkProps} from '@mergeapi/react-merge-link/dist/types'
 
-import type {IntegrationClient} from '@usevenice/cdk'
+import type {ConnectorClient} from '@usevenice/cdk'
 import {CANCELLATION_TOKEN, useScript} from '@usevenice/cdk'
 
 import type {mergeSchemas} from './def'
@@ -46,6 +46,6 @@ export const mergeClient = {
         window.MergeLink.openLink(options)
       })
   },
-} satisfies IntegrationClient<typeof mergeSchemas>
+} satisfies ConnectorClient<typeof mergeSchemas>
 
 export default mergeClient

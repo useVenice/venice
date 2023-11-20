@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, R, z} from '@usevenice/util'
@@ -34,9 +34,9 @@ export const togglSchemas = {
       entity: itemTimeEntriesSchema,
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const togglHelpers = intHelpers(togglSchemas)
+export const togglHelpers = connHelpers(togglSchemas)
 
 export const togglDef = {
   name: 'toggl',
@@ -73,6 +73,6 @@ export const togglDef = {
       return null
     },
   },
-} satisfies IntegrationDef<typeof togglSchemas>
+} satisfies ConnectorDef<typeof togglSchemas>
 
 export default togglDef

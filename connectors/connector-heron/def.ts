@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {EntityPayload} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
@@ -16,9 +16,9 @@ export const heronSchemas = {
     entityName: z.literal('transaction'),
     entity: zCast<components['schemas']['TransactionEnriched']>(),
   }),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(heronSchemas)
+export const helpers = connHelpers(heronSchemas)
 
 export const heronDef = {
   schemas: heronSchemas,
@@ -52,6 +52,6 @@ export const heronDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof heronSchemas>
+} satisfies ConnectorDef<typeof heronSchemas>
 
 export default heronDef

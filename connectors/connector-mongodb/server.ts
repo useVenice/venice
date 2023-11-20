@@ -1,7 +1,7 @@
 import type {Db} from 'mongodb'
 import {MongoClient} from 'mongodb'
 
-import type {AnyEntityPayload, IntegrationServer} from '@usevenice/cdk'
+import type {AnyEntityPayload, ConnectorServer} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import {zCast, zFunction} from '@usevenice/util'
 
@@ -18,7 +18,7 @@ export const mongodbProvider = {
       },
     })
   },
-} satisfies IntegrationServer<typeof mongoSchemas>
+} satisfies ConnectorServer<typeof mongoSchemas>
 
 const zData = zCast<AnyEntityPayload>()
 

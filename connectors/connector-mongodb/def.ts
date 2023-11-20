@@ -1,7 +1,7 @@
 import type {
   AnyEntityPayload,
-  IntegrationDef,
-  IntegrationSchemas,
+  ConnectorDef,
+  ConnectorSchemas,
 } from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
@@ -14,12 +14,12 @@ export const mongoSchemas = {
   name: z.literal('mongodb'),
   resourceSettings: zMongoConnection,
   destinationInputEntity: zCast<AnyEntityPayload>(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
 export const mongoDef = {
   name: 'mongodb',
   schemas: mongoSchemas,
   metadata: {categories: ['database'], logoUrl: '/_assets/logo-mongodb.png'},
-} satisfies IntegrationDef<typeof mongoSchemas>
+} satisfies ConnectorDef<typeof mongoSchemas>
 
 export default mongoDef

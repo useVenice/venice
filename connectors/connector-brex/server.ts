@@ -1,5 +1,5 @@
 /** Used for the side effect of window.MergeLink */
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import {makeBrexClient} from './BrexClient'
@@ -25,6 +25,6 @@ export const brexServer = {
       )
       .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
   },
-} satisfies IntegrationServer<typeof brexSchemas>
+} satisfies ConnectorServer<typeof brexSchemas>
 
 export default brexServer

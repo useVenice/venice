@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import type {Brand} from '@usevenice/util'
@@ -65,8 +65,8 @@ export const yodleeSchemas = {
   ]),
 
   // Should the mappers be in here instead? Or a separate function?
-} satisfies IntegrationSchemas
-export const helpers = intHelpers(yodleeSchemas)
+} satisfies ConnectorSchemas
+export const helpers = connHelpers(yodleeSchemas)
 
 export const yodleeDef = {
   name: 'yodlee',
@@ -214,6 +214,6 @@ export const yodleeDef = {
       })(),
     }),
   },
-} satisfies IntegrationDef<typeof yodleeSchemas>
+} satisfies ConnectorDef<typeof yodleeSchemas>
 
 export default yodleeDef

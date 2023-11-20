@@ -6,12 +6,8 @@ import type {
   PlaidLinkOnSuccessMetadata,
 } from 'react-plaid-link'
 
-import type {
-  IntegrationDef,
-  IntegrationSchemas,
-  OpenApiSpec,
-} from '@usevenice/cdk'
-import {intHelpers, zWebhookInput} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas, OpenApiSpec} from '@usevenice/cdk'
+import {connHelpers, zWebhookInput} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, z, zCast} from '@usevenice/util'
 
@@ -118,9 +114,9 @@ export const plaidSchemas = {
   webhookInput: zWebhookInput,
 
   destinationState: z.undefined(), // Temp hack... As unkonwn causes type error during sourceSync
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(plaidSchemas)
+export const helpers = connHelpers(plaidSchemas)
 
 export const plaidDef = {
   name: 'plaid',
@@ -220,7 +216,7 @@ export const plaidDef = {
       }
     },
   },
-} satisfies IntegrationDef<typeof plaidSchemas>
+} satisfies ConnectorDef<typeof plaidSchemas>
 
 function isInvestmentTransaction(
   txn: plaid.Transaction | plaid.InvestmentTransaction,

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {Rx, rxjs} from '@usevenice/util'
 
@@ -58,6 +58,6 @@ export const tellerServer = {
       .from(makeTellerClient(config).getInstitutions())
       .pipe(Rx.map((ins) => helpers._insOpData(ins.id as ExternalId, ins)))
   },
-} satisfies IntegrationServer<typeof tellerSchemas>
+} satisfies ConnectorServer<typeof tellerSchemas>
 
 export default tellerServer

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {cachingLink} from '@usevenice/cdk'
 import {fromCompletion, Rx, rxjs} from '@usevenice/util'
 
@@ -80,6 +80,6 @@ export const heronServer = {
       }),
     )
   },
-} satisfies IntegrationServer<typeof heronSchemas>
+} satisfies ConnectorServer<typeof heronSchemas>
 
 export default heronServer

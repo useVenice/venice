@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, zWebhookInput} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, zWebhookInput} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, parseMoney, z} from '@usevenice/util'
 
@@ -35,9 +35,9 @@ export const onebrickSchemas = {
     }),
   ]),
   webhookInput: zWebhookInput,
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(onebrickSchemas)
+export const helpers = connHelpers(onebrickSchemas)
 
 export const oneBrickDef = {
   name: 'onebrick',
@@ -89,6 +89,6 @@ export const oneBrickDef = {
       return null
     },
   },
-} satisfies IntegrationDef<typeof onebrickSchemas>
+} satisfies ConnectorDef<typeof onebrickSchemas>
 
 export default oneBrickDef

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {venmoSchemas} from './def'
@@ -28,6 +28,6 @@ export const venmoServer = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
   },
-} satisfies IntegrationServer<typeof venmoSchemas>
+} satisfies ConnectorServer<typeof venmoSchemas>
 
 export default venmoServer

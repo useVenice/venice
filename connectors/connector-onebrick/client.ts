@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type {IntegrationClient} from '@usevenice/cdk'
+import type {ConnectorClient} from '@usevenice/cdk'
 import {Deferred} from '@usevenice/util'
 
 import type {helpers, onebrickSchemas} from './def'
@@ -29,6 +29,6 @@ export const onebrickClientIntegration = {
       return deferred.promise
     }
   },
-} satisfies IntegrationClient<typeof onebrickSchemas>
+} satisfies ConnectorClient<typeof onebrickSchemas>
 
 export default onebrickClientIntegration

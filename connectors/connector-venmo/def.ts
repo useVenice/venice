@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {zEntityPayload} from '@usevenice/cdk'
 import type {Brand} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
@@ -37,9 +37,9 @@ export const venmoSchemas = {
     }),
   ]),
   destinationInputEntity: zEntityPayload,
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(venmoSchemas)
+export const helpers = connHelpers(venmoSchemas)
 
 export const venmoDef = {
   name: 'venmo',
@@ -78,6 +78,6 @@ export const venmoDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof venmoSchemas>
+} satisfies ConnectorDef<typeof venmoSchemas>
 
 export default venmoDef

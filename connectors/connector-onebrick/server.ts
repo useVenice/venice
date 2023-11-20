@@ -1,4 +1,4 @@
-import type {IntegrationServer, SyncOperation} from '@usevenice/cdk'
+import type {ConnectorServer, SyncOperation} from '@usevenice/cdk'
 import {zEndUserId} from '@usevenice/cdk'
 import {md5Hash, R, Rx, rxjs, z} from '@usevenice/util'
 
@@ -65,7 +65,7 @@ export const onebrickServerIntegration = {
       triggerDefaultSync: true,
     })
   },
-} satisfies IntegrationServer<typeof onebrickSchemas>
+} satisfies ConnectorServer<typeof onebrickSchemas>
 
 const _op: typeof R.identity<OnebrickSyncOperation> = R.identity
 

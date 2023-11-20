@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {
@@ -34,9 +34,9 @@ export const splitwiseSchemas = {
       entity: zExpense.extend({group_name: z.string()}),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const splitwiseHelpers = intHelpers(splitwiseSchemas)
+export const splitwiseHelpers = connHelpers(splitwiseSchemas)
 
 export const splitwiseDef = {
   name: 'splitwise',
@@ -153,7 +153,7 @@ export const splitwiseDef = {
       },
     },
   },
-} satisfies IntegrationDef<typeof splitwiseSchemas>
+} satisfies ConnectorDef<typeof splitwiseSchemas>
 
 // Helpers
 export function formatUser(user?: z.infer<typeof zUser>) {

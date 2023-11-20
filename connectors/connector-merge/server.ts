@@ -1,6 +1,6 @@
 /** Used for the side effect of window.MergeLink */
 
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {mergeSchemas} from './def'
@@ -113,6 +113,6 @@ export const mergeServer = {
       .from(iterateEntities())
       .pipe(Rx.mergeMap((ops) => rxjs.from(ops)))
   },
-} satisfies IntegrationServer<typeof mergeSchemas>
+} satisfies ConnectorServer<typeof mergeSchemas>
 
 export default mergeServer

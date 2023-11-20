@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {yodleeSchemas} from './def'
@@ -100,7 +100,7 @@ export const yodleeServerIntegration = {
       ),
     )
   },
-} satisfies IntegrationServer<typeof yodleeSchemas>
+} satisfies ConnectorServer<typeof yodleeSchemas>
 
 const SHOULD_SYNC_HOLDINGS = false
 const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = true

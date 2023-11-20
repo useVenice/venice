@@ -2,7 +2,7 @@ import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
 import {CountryCode, Products} from 'plaid'
 
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {shouldSync} from '@usevenice/cdk'
 import type {
   DurationObjectUnits,
@@ -516,7 +516,7 @@ export const plaidServerIntegration = {
       query: input.query,
       bodyJson: input.body,
     }),
-} satisfies IntegrationServer<
+} satisfies ConnectorServer<
   typeof plaidSchemas,
   ReturnType<typeof makeOpenApiClient<InfoFromPaths<paths>>>
 >

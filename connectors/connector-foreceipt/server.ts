@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {firebaseServer, serializeTimestamp} from '@usevenice/connector-firebase'
 import {Rx, rxjs} from '@usevenice/util'
 
@@ -87,6 +87,6 @@ export const foreceiptServer = {
 
     return raw$.pipe(Rx.mergeMap((op) => rxjs.of(op)))
   },
-} satisfies IntegrationServer<typeof foreceiptSchemas>
+} satisfies ConnectorServer<typeof foreceiptSchemas>
 
 export default foreceiptServer

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
 
 import type {qboSchemas} from './def'
@@ -81,9 +81,6 @@ export const qboServer = {
       },
     },
   },
-} satisfies IntegrationServer<
-  typeof qboSchemas,
-  ReturnType<typeof makeQBOClient>
->
+} satisfies ConnectorServer<typeof qboSchemas, ReturnType<typeof makeQBOClient>>
 
 export default qboServer

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {logLink} from '@usevenice/cdk'
 import {rxjs} from '@usevenice/util'
 
@@ -12,6 +12,6 @@ export const debugServer = {
     resourceUpdates: [],
     response: {body: {echo: input}},
   }),
-} satisfies IntegrationServer<typeof debugSchemas>
+} satisfies ConnectorServer<typeof debugSchemas>
 
 export default debugServer

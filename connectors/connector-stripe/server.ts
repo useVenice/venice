@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {stripeSchemas} from './def'
@@ -107,6 +107,6 @@ export const stripeServer = {
   //     },
   //   })
   // },
-} satisfies IntegrationServer<typeof stripeSchemas>
+} satisfies ConnectorServer<typeof stripeSchemas>
 
 export default stripeServer

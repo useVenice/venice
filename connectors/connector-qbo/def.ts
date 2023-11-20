@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, makePostingsMap, oauthBaseSchema} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, makePostingsMap, oauthBaseSchema} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {zEntityPayload} from '@usevenice/cdk'
 import type {EnumOf} from '@usevenice/util'
@@ -43,9 +43,9 @@ export const qboSchemas = {
       ]),
     },
   },
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const qboHelpers = intHelpers(qboSchemas)
+export const qboHelpers = connHelpers(qboSchemas)
 
 export const qboDef = {
   name: 'qbo',
@@ -297,7 +297,7 @@ export const qboDef = {
       },
     },
   },
-} satisfies IntegrationDef<typeof qboSchemas>
+} satisfies ConnectorDef<typeof qboSchemas>
 
 export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
   Purchase: 'Purchase',

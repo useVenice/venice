@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
@@ -42,9 +42,9 @@ export const postgresSchemas = {
         .optional(),
     })
     .optional(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const postgresHelpers = intHelpers(postgresSchemas)
+export const postgresHelpers = connHelpers(postgresSchemas)
 
 export const postgresDef = {
   name: 'postgres',
@@ -61,6 +61,6 @@ export const postgresDef = {
       status: 'healthy',
     }),
   },
-} satisfies IntegrationDef<typeof postgresSchemas>
+} satisfies ConnectorDef<typeof postgresSchemas>
 
 export default postgresDef

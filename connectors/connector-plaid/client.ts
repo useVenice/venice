@@ -2,7 +2,7 @@ import React from 'react'
 import type {PlaidLinkOptions} from 'react-plaid-link'
 import {usePlaidLink} from 'react-plaid-link'
 
-import type {IntegrationClient} from '@usevenice/cdk'
+import type {ConnectorClient} from '@usevenice/cdk'
 import {CANCELLATION_TOKEN} from '@usevenice/cdk'
 import type {RequiredOnly} from '@usevenice/util'
 import {Deferred} from '@usevenice/util'
@@ -78,6 +78,6 @@ export const plaidClientIntegration = {
       return res$.promise
     }
   },
-} satisfies IntegrationClient<typeof plaidSchemas>
+} satisfies ConnectorClient<typeof plaidSchemas>
 
 export default plaidClientIntegration

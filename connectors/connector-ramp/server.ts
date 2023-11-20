@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {rampSchemas} from './def'
@@ -65,6 +65,6 @@ export const rampServer = {
         Rx.mergeMap((ops) => rxjs.from([...ops, rampHelpers._op('commit')])),
       )
   },
-} satisfies IntegrationServer<typeof rampSchemas>
+} satisfies ConnectorServer<typeof rampSchemas>
 
 export default rampServer

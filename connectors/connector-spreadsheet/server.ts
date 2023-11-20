@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {spreadsheetSchemas} from './def'
@@ -28,6 +28,6 @@ export const spreadsheetServer = {
           ]),
         ),
       ),
-} satisfies IntegrationServer<typeof spreadsheetSchemas>
+} satisfies ConnectorServer<typeof spreadsheetSchemas>
 
 export default spreadsheetServer

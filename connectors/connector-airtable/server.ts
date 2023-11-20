@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {fromCompletion} from '@usevenice/util'
@@ -49,6 +49,6 @@ export const airtableServer = {
       },
     })
   },
-} satisfies IntegrationServer<typeof airtableSchemas>
+} satisfies ConnectorServer<typeof airtableSchemas>
 
 export default airtableServer

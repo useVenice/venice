@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, zIntAuth} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, zIntAuth} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, R, z} from '@usevenice/util'
 
@@ -41,9 +41,9 @@ export const rampSchemas = {
     clientId: z.string().nullish(),
     clientSecret: z.string().nullish(),
   }),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const rampHelpers = intHelpers(rampSchemas)
+export const rampHelpers = connHelpers(rampSchemas)
 
 export const rampDef = {
   name: 'ramp',
@@ -91,6 +91,6 @@ export const rampDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof rampSchemas>
+} satisfies ConnectorDef<typeof rampSchemas>
 
 export default rampDef

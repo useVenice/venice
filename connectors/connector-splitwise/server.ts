@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {splitwiseSchemas} from './def'
@@ -51,6 +51,6 @@ export const splitwiseServer = {
         ),
       )
   },
-} satisfies IntegrationServer<typeof splitwiseSchemas>
+} satisfies ConnectorServer<typeof splitwiseSchemas>
 
 export default splitwiseServer

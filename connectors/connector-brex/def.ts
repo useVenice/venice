@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, zIntAuth} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, zIntAuth} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 import type {components} from './__generated__/transactions.gen'
@@ -29,7 +29,7 @@ export const brexSchemas = {
       >(),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
 export const brexDef = {
   schemas: brexSchemas,
@@ -68,8 +68,8 @@ export const brexDef = {
       // }),
     },
   },
-} satisfies IntegrationDef<typeof brexSchemas>
+} satisfies ConnectorDef<typeof brexSchemas>
 
-export const helpers = intHelpers(brexSchemas)
+export const helpers = connHelpers(brexSchemas)
 
 export default brexDef

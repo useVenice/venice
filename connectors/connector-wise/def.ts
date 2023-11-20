@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, z} from '@usevenice/util'
 
@@ -37,9 +37,9 @@ export const wiseSchemas = {
       entity: transferResponseItemSchema,
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const wiseHelpers = intHelpers(wiseSchemas)
+export const wiseHelpers = connHelpers(wiseSchemas)
 
 export const wiseDef = {
   name: 'wise',
@@ -81,6 +81,6 @@ export const wiseDef = {
       return null
     },
   },
-} satisfies IntegrationDef<typeof wiseSchemas>
+} satisfies ConnectorDef<typeof wiseSchemas>
 
 export default wiseDef

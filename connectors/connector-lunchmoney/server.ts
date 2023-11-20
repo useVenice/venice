@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {lunchmoneySchemas} from './def'
@@ -41,6 +41,6 @@ export const lunchmoneyServer = {
         ),
       )
   },
-} satisfies IntegrationServer<typeof lunchmoneySchemas>
+} satisfies ConnectorServer<typeof lunchmoneySchemas>
 
 export default lunchmoneyServer

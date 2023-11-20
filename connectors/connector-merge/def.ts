@@ -1,7 +1,7 @@
 /** Used for the side effect of window.MergeLink */
 
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
@@ -48,9 +48,9 @@ export const mergeSchemas = {
       entity: zCast<components['schemas']['Transaction']>(),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(mergeSchemas)
+export const helpers = connHelpers(mergeSchemas)
 
 export const mergeDef = {
   schemas: mergeSchemas,
@@ -94,6 +94,6 @@ export const mergeDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof mergeSchemas>
+} satisfies ConnectorDef<typeof mergeSchemas>
 
 export default mergeDef

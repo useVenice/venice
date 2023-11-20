@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {saltedgeSchemas} from './def'
@@ -38,6 +38,6 @@ export const saltedgeServer = {
 
     // TODO: Move handlePushData
   },
-} satisfies IntegrationServer<typeof saltedgeSchemas>
+} satisfies ConnectorServer<typeof saltedgeSchemas>
 
 export default saltedgeServer

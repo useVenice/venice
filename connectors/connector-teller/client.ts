@@ -1,4 +1,4 @@
-import type {IntegrationClient} from '@usevenice/cdk'
+import type {ConnectorClient} from '@usevenice/cdk'
 import {useScript} from '@usevenice/cdk'
 
 import type {tellerSchemas} from './def'
@@ -35,6 +35,6 @@ export const tellerClient = {
       })
     }
   },
-} satisfies IntegrationClient<typeof tellerSchemas>
+} satisfies ConnectorClient<typeof tellerSchemas>
 
 export default tellerClient

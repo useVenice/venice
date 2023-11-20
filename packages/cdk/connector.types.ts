@@ -29,7 +29,7 @@ import type {InvestmentMethods, ZInvestment} from './verticals/investment'
 import type {PtaMethods, ZPta} from './verticals/pta'
 
 export interface Verticals<
-  TDef extends IntegrationSchemas = IntegrationSchemas,
+  TDef extends ConnectorSchemas = ConnectorSchemas,
   TInstance = unknown,
 > {
   accounting: {
@@ -52,7 +52,7 @@ export interface Verticals<
  *  plus the SPEC message in airbyte protocol spec
  */
 
-export interface IntegrationSchemas {
+export interface ConnectorSchemas {
   name: z.ZodLiteral<string>
   integrationConfig?: z.ZodTypeAny
   resourceSettings?: z.ZodTypeAny
@@ -77,7 +77,7 @@ export interface IntegrationSchemas {
   }
 }
 
-export type AnyIntegrationHelpers = IntHelpers
+export type AnyIntegrationHelpers = ConnHelpers
 
 export type EntityMapper<
   T extends {remote: unknown; settings: unknown} = {
@@ -87,12 +87,12 @@ export type EntityMapper<
   TUnified = unknown,
 > = (remote: T['remote'], settings: T['settings']) => TUnified
 
-export type IntHelpers<
-  TSchemas extends IntegrationSchemas = IntegrationSchemas,
-> = ReturnType<typeof intHelpers<TSchemas>>
-export interface IntegrationDef<
-  TSchemas extends IntegrationSchemas = IntegrationSchemas,
-  T extends IntHelpers<TSchemas> = IntHelpers<TSchemas>,
+export type ConnHelpers<TSchemas extends ConnectorSchemas = ConnectorSchemas> =
+  ReturnType<typeof connHelpers<TSchemas>>
+
+export interface ConnectorDef<
+  TSchemas extends ConnectorSchemas = ConnectorSchemas,
+  T extends ConnHelpers<TSchemas> = ConnHelpers<TSchemas>,
 > {
   name: TSchemas['name']['_def']['value']
   schemas: TSchemas
@@ -145,9 +145,9 @@ export interface IntegrationDef<
   }
 }
 
-export interface IntegrationClient<
-  TDef extends IntegrationSchemas = IntegrationSchemas,
-  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+export interface ConnectorClient<
+  TDef extends ConnectorSchemas = ConnectorSchemas,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
 > {
   useConnectHook?: (scope: {
     // userId: DeprecatedUserId | undefined
@@ -161,11 +161,11 @@ export interface IntegrationClient<
   ) => Promise<T['_types']['connectOutput']>
 }
 
-export interface IntegrationServer<
-  TDef extends IntegrationSchemas,
+export interface ConnectorServer<
+  TDef extends ConnectorSchemas,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TInstance = any,
-  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
 > {
   // MARK: - Connect
 
@@ -278,20 +278,20 @@ export interface IntegrationServer<
   }
 }
 
-export interface IntegrationImpl<TSchemas extends IntegrationSchemas>
-  extends IntegrationDef<TSchemas>,
-    IntegrationServer<TSchemas>,
-    IntegrationClient<TSchemas> {
+export interface IntegrationImpl<TSchemas extends ConnectorSchemas>
+  extends ConnectorDef<TSchemas>,
+    ConnectorServer<TSchemas>,
+    ConnectorClient<TSchemas> {
   // helpers: IntHelpers<TSchemas>
 }
 
-export type AnyIntegrationImpl = IntegrationImpl<IntegrationSchemas>
+export type AnyIntegrationImpl = IntegrationImpl<ConnectorSchemas>
 
 // MARK: - Runtime helpers
 
 /** TODO: Helpers should receive the whole Def as input so we can do the re-mapping at the source layer */
 
-export function intHelpers<TSchemas extends IntegrationSchemas>(
+export function connHelpers<TSchemas extends ConnectorSchemas>(
   schemas: TSchemas,
 ) {
   type _types = {

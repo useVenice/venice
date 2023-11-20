@@ -6,8 +6,8 @@ import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
 
 import type {
+  ConnectorClient,
   Id,
-  IntegrationClient,
   OpenDialogFn,
   UseConnectHook,
 } from '@usevenice/cdk'
@@ -51,7 +51,7 @@ type ConnectEventType = 'open' | 'close' | 'error'
 export interface VeniceConnectProps extends UIPropsNoChildren {
   /** Whether to display the existing connections */
   showExisting?: boolean
-  clientIntegrations: Record<string, IntegrationClient>
+  clientIntegrations: Record<string, ConnectorClient>
   onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
   /** Only connect to this integration */
   integrationId?: Id['int'] | null

@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 
 import type {mootaSchemas} from './def'
@@ -32,6 +32,6 @@ export const mootaServer = {
         Rx.mergeMap((ops) => rxjs.from([...ops, mootaHelpers._op('commit')])),
       )
   },
-} satisfies IntegrationServer<typeof mootaSchemas>
+} satisfies ConnectorServer<typeof mootaSchemas>
 
 export default mootaServer

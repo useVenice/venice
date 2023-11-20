@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, parseMoney, z} from '@usevenice/util'
 
@@ -41,9 +41,9 @@ export const tellerSchemas = {
       entity: zInstitution,
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(tellerSchemas)
+export const helpers = connHelpers(tellerSchemas)
 
 export const tellerDef = {
   name: 'teller',
@@ -114,6 +114,6 @@ export const tellerDef = {
       return null
     },
   },
-} satisfies IntegrationDef<typeof tellerSchemas>
+} satisfies ConnectorDef<typeof tellerSchemas>
 
 export default tellerDef

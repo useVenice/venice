@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers, zWebhookInput} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers, zWebhookInput} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 export const debugSchemas = {
@@ -9,14 +9,14 @@ export const debugSchemas = {
   integrationConfig: z.unknown(),
   sourceOutputEntity: z.unknown(),
   institutionData: z.unknown(),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const helpers = intHelpers(debugSchemas)
+export const helpers = connHelpers(debugSchemas)
 
 export const debugDef = {
   metadata: {stage: 'hidden'},
   name: 'debug',
   schemas: debugSchemas,
-} satisfies IntegrationDef<typeof debugSchemas>
+} satisfies ConnectorDef<typeof debugSchemas>
 
 export default debugDef

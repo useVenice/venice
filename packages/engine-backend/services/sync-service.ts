@@ -8,7 +8,7 @@ import type {
   Source,
 } from '@usevenice/cdk'
 import {extractId} from '@usevenice/cdk'
-import {intHelpers, logLink, makeId, sync} from '@usevenice/cdk'
+import {connHelpers, logLink, makeId, sync} from '@usevenice/cdk'
 import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {
   addRemainderByDateLink,
@@ -132,7 +132,7 @@ export function makeSyncService({
 
     const verticalSources$ = () => {
       const provider = src.integration.provider
-      const helpers = intHelpers(provider.schemas)
+      const helpers = connHelpers(provider.schemas)
       const primaryKey = provider.streams?.$defaults.primaryKey?.split('.') as
         | [string]
         | undefined

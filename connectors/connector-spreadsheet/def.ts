@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import type {UnionToIntersection} from '@usevenice/util'
 import {z} from '@usevenice/util'
 
@@ -75,9 +75,9 @@ export const spreadsheetSchemas = {
   // csvString belongs in syncState because among other things we can actually naturally
   // persist the csvString used for every single sync as part of the pipeline_jobs table!
   sourceState: z.object({csvString: z.string()}),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const spreadsheetHelpers = intHelpers(spreadsheetSchemas)
+export const spreadsheetHelpers = connHelpers(spreadsheetSchemas)
 
 export const spreadsheetDef = {
   name: 'spreadsheet',
@@ -96,6 +96,6 @@ export const spreadsheetDef = {
         conn.accountExternalId as ExternalId,
       ),
   },
-} satisfies IntegrationDef<typeof spreadsheetSchemas>
+} satisfies ConnectorDef<typeof spreadsheetSchemas>
 
 export default spreadsheetDef

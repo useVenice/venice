@@ -4,7 +4,7 @@
 import type {DatabasePool} from 'slonik'
 import {sql} from 'slonik'
 
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import {R, Rx, rxjs, snakeCase} from '@usevenice/util'
 
@@ -243,6 +243,6 @@ export const postgresServer = {
       },
     })
   },
-} satisfies IntegrationServer<typeof postgresSchemas>
+} satisfies ConnectorServer<typeof postgresSchemas>
 
 export default postgresServer

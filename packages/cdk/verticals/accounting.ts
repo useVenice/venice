@@ -2,7 +2,7 @@ import type {MaybePromise} from '@usevenice/util'
 import {objectEntries, R} from '@usevenice/util'
 import {z} from '@usevenice/zod'
 
-import type {IntegrationSchemas, IntHelpers} from '../integration.types'
+import type {ConnectorSchemas, ConnHelpers} from '../connector.types'
 import type {
   PaginatedOutput,
   Pagination,
@@ -46,9 +46,9 @@ export type ZAccounting = {
 }
 
 export interface AccountingMethods<
-  TDef extends IntegrationSchemas,
+  TDef extends ConnectorSchemas,
   TInstance,
-  T extends IntHelpers<TDef> = IntHelpers<TDef>,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
 > {
   list?: <TType extends keyof T['_verticals']['accounting']>(
     instance: TInstance,

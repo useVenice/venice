@@ -1,5 +1,5 @@
 /** @deprecated. We no longer initialize integration from ENVs, but maybe in clis still? */
-import type {IntegrationSchemas, IntHelpers} from '@usevenice/cdk'
+import type {ConnectorSchemas, ConnHelpers} from '@usevenice/cdk'
 import {makeId} from '@usevenice/cdk'
 import {R, z, zEnvVars, zFlattenForEnv} from '@usevenice/util'
 
@@ -13,7 +13,7 @@ const getPrefix = (name: string) => makeId('int', name, '')
 
 export const zFlatConfigByProvider = R.mapValues(defIntegrations, (def, name) =>
   zFlattenForEnv(
-    (def.schemas as IntegrationSchemas)?.integrationConfig ?? z.unknown(),
+    (def.schemas as ConnectorSchemas)?.integrationConfig ?? z.unknown(),
     {
       prefix: getPrefix(name),
       separator,
@@ -63,7 +63,7 @@ export function parseIntConfigsFromRawEnv(
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
     [k in keyof typeof defIntegrations]?: GetIntConfig<
-      IntHelpers<(typeof defIntegrations)[k]['schemas']>['_types']
+      ConnHelpers<(typeof defIntegrations)[k]['schemas']>['_types']
     >
   }
 }

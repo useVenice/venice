@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, objectFromArray, z, zCast} from '@usevenice/util'
 
@@ -20,9 +20,9 @@ export const mootaSchemas = {
       entity: zCast<Moota.Transaction>(),
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const mootaHelpers = intHelpers(mootaSchemas)
+export const mootaHelpers = connHelpers(mootaSchemas)
 
 function toISO(mootaDate: string) {
   // Local timezone
@@ -75,6 +75,6 @@ export const mootaDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof mootaSchemas>
+} satisfies ConnectorDef<typeof mootaSchemas>
 
 export default mootaDef

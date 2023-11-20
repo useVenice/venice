@@ -1,5 +1,5 @@
-import type {IntegrationDef, IntegrationSchemas} from '@usevenice/cdk'
-import {intHelpers} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import {connHelpers} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, parseMoney, R, z} from '@usevenice/util'
 
@@ -28,9 +28,9 @@ export const lunchmoneySchemas = {
       entity: transactionSchema,
     }),
   ]),
-} satisfies IntegrationSchemas
+} satisfies ConnectorSchemas
 
-export const lunchmoneyHelpers = intHelpers(lunchmoneySchemas)
+export const lunchmoneyHelpers = connHelpers(lunchmoneySchemas)
 
 export const lunchmoneyDef = {
   name: 'lunchmoney',
@@ -92,6 +92,6 @@ export const lunchmoneyDef = {
       }),
     },
   },
-} satisfies IntegrationDef<typeof lunchmoneySchemas>
+} satisfies ConnectorDef<typeof lunchmoneySchemas>
 
 export default lunchmoneyDef

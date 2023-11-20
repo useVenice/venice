@@ -1,4 +1,4 @@
-import type {IntegrationServer} from '@usevenice/cdk'
+import type {ConnectorServer} from '@usevenice/cdk'
 import type {Pta} from '@usevenice/cdk'
 import type {StdCache} from '@usevenice/cdk'
 import {cachingLink} from '@usevenice/cdk'
@@ -16,7 +16,7 @@ import type {BeancountDestOptions, beancountSchemas} from './def'
 export const beancountServer = {
   destinationSync: ({state: options}) =>
     cachingLink((cache) => fromCompletion(outputBeanFiles(cache, options))),
-} satisfies IntegrationServer<typeof beancountSchemas>
+} satisfies ConnectorServer<typeof beancountSchemas>
 
 export default beancountServer
 

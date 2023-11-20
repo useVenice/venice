@@ -9,13 +9,13 @@ import {
 } from '@usevenice/util'
 import {z} from '@usevenice/zod'
 
-import type {EndUserId, ExtEndUserId, ExternalId, Id} from './id.types'
-import {zExternalId} from './id.types'
 import type {
   AnyIntegrationImpl,
-  IntegrationSchemas,
-  IntHelpers,
-} from './integration.types'
+  ConnectorSchemas,
+  ConnHelpers,
+} from './connector.types'
+import type {EndUserId, ExtEndUserId, ExternalId, Id} from './id.types'
+import {zExternalId} from './id.types'
 import type {NangoProvider} from './oauth/NangoClient'
 import type {AnyEntityPayload, ResoUpdateData, Source} from './protocol'
 
@@ -48,7 +48,7 @@ export const metaForProvider = (
   nangoProvider: provider.metadata?.nangoProvider,
   schemas: R.mapValues(provider.schemas ?? {}, (schema) =>
     schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
-  ) as Record<keyof IntegrationSchemas, JSONSchema>,
+  ) as Record<keyof ConnectorSchemas, JSONSchema>,
   openapiSpec: opts.includeOas ? provider.metadata?.openapiSpec : undefined,
 })
 
@@ -116,7 +116,7 @@ export type OpenDialogFn = (
   },
 ) => void
 
-export type UseConnectHook<T extends IntHelpers = IntHelpers> = (scope: {
+export type UseConnectHook<T extends ConnHelpers = ConnHelpers> = (scope: {
   openDialog: OpenDialogFn
 }) => (
   connectInput: T['_types']['connectInput'],

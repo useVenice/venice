@@ -4,7 +4,7 @@ import 'global-agent/bootstrap'
 
 import {ProxyAgent, setGlobalDispatcher} from 'undici'
 
-import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/integration-envs'
+import {parseIntConfigsFromRawEnv} from '@usevenice/app-config/connector-envs'
 import type {defIntegrations} from '@usevenice/app-config/integrations/integrations.def'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk'
 import {makeAlphavantageClient} from '@usevenice/connector-alphavantage'

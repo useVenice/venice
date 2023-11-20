@@ -5,8 +5,8 @@ import tablemark from 'tablemark'
 
 import {buildUrl, R} from '@usevenice/util'
 
+import {parseIntConfigsFromRawEnv} from './connector-envs'
 import {env, envConfig} from './env'
-import {parseIntConfigsFromRawEnv} from './integration-envs'
 import {defIntegrations} from './integrations/integrations.def'
 
 const envList = R.pipe(

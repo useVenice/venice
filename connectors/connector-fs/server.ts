@@ -1,4 +1,4 @@
-import type {IntegrationServer, SyncOperation} from '@usevenice/cdk'
+import type {ConnectorServer, SyncOperation} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {
@@ -34,7 +34,7 @@ export const fsServer = {
           ),
         ),
     }),
-} satisfies IntegrationServer<typeof fsSchemas>
+} satisfies ConnectorServer<typeof fsSchemas>
 
 // MARK: - Source sync helpers
 
