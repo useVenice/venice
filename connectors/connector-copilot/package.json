@@ -1,0 +1,13 @@
+{
+  "name": "@usevenice/connector-copilot",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/connector-firebase": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {}
+}

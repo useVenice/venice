@@ -6,7 +6,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@usevenice/cdk": "workspace:*",
-    "@usevenice/integration-postgres": "workspace:*",
+    "@usevenice/connector-postgres": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

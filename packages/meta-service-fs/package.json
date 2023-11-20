@@ -6,7 +6,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@usevenice/cdk": "workspace:*",
-    "@usevenice/integration-fs": "workspace:*",
+    "@usevenice/connector-fs": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

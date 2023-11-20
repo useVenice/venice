@@ -1,0 +1,24 @@
+{
+  "name": "@usevenice/connector-onebrick",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "scripts": {
+    "//": "Cannot use --make-paths-enum due to https://github.com/drwpow/openapi-typescript/issues/935",
+    "codegen:next": "openapi-typescript https://dash.readme.com/api/v1/api-registry/rwkfe1gl7puob14 --output onebrick.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "openapi-typescript": "6.7.1"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}

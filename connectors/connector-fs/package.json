@@ -1,0 +1,14 @@
+{
+  "name": "@usevenice/connector-fs",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [
+    "register.node.ts"
+  ],
+  "module": "./index.ts",
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {}
+}

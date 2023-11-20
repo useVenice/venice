@@ -1,0 +1,14 @@
+{
+  "name": "@usevenice/connector-vercel",
+  "version": "0.0.0",
+  "private": true,
+  "module": "./index.ts",
+  "scripts": {
+    "download": "curl https://api.apis.guru/v2/specs/vercel.com/0.0.1/openapi.yaml > ./vercel.openapi.gen.yaml",
+    "generate": "openapi-typescript ./vercel.openapi.gen.yaml --output ./vercel.openapi.gen.d.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "openapi-typescript": "6.7.1"
+  }
+}

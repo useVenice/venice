@@ -1,0 +1,17 @@
+{
+  "name": "@usevenice/connector-heron",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "scripts": {
+    "codegen": "openapi-typescript https://app.herondata.io/swagger --make-paths-enum --output heron.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "openapi-typescript": "6.7.1"
+  }
+}

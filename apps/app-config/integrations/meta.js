@@ -6,8 +6,8 @@ module.exports = [
     dirName: 'integration-airtable',
     varName: 'integrationAirtable',
     imports: {
-      def: '@usevenice/integration-airtable/def',
-      server: '@usevenice/integration-airtable/server',
+      def: '@usevenice/connector-airtable/def',
+      server: '@usevenice/connector-airtable/server',
     },
   },
   {
@@ -20,8 +20,8 @@ module.exports = [
     dirName: 'integration-beancount',
     varName: 'integrationBeancount',
     imports: {
-      def: '@usevenice/integration-beancount/def',
-      server: '@usevenice/integration-beancount/server',
+      def: '@usevenice/connector-beancount/def',
+      server: '@usevenice/connector-beancount/server',
     },
   },
   {
@@ -29,8 +29,8 @@ module.exports = [
     dirName: 'integration-brex',
     varName: 'integrationBrex',
     imports: {
-      def: '@usevenice/integration-brex/def',
-      server: '@usevenice/integration-brex/server',
+      def: '@usevenice/connector-brex/def',
+      server: '@usevenice/connector-brex/server',
     },
   },
   {dirName: 'integration-copilot', varName: 'integrationCopilot', imports: {}},
@@ -39,8 +39,8 @@ module.exports = [
     dirName: 'integration-debug',
     varName: 'integrationDebug',
     imports: {
-      def: '@usevenice/integration-debug/def',
-      server: '@usevenice/integration-debug/server',
+      def: '@usevenice/connector-debug/def',
+      server: '@usevenice/connector-debug/server',
     },
   },
   {
@@ -48,8 +48,8 @@ module.exports = [
     dirName: 'integration-discord',
     varName: 'integrationDiscord',
     imports: {
-      def: '@usevenice/integration-discord/def',
-      server: '@usevenice/integration-discord/server',
+      def: '@usevenice/connector-discord/def',
+      server: '@usevenice/connector-discord/server',
     },
   },
   {
@@ -62,8 +62,8 @@ module.exports = [
     dirName: 'integration-firebase',
     varName: 'integrationFirebase',
     imports: {
-      def: '@usevenice/integration-firebase/def',
-      server: '@usevenice/integration-firebase/server',
+      def: '@usevenice/connector-firebase/def',
+      server: '@usevenice/connector-firebase/server',
     },
   },
   {
@@ -71,8 +71,8 @@ module.exports = [
     dirName: 'integration-foreceipt',
     varName: 'integrationForeceipt',
     imports: {
-      def: '@usevenice/integration-foreceipt/def',
-      server: '@usevenice/integration-foreceipt/server',
+      def: '@usevenice/connector-foreceipt/def',
+      server: '@usevenice/connector-foreceipt/server',
     },
   },
   {
@@ -80,8 +80,8 @@ module.exports = [
     dirName: 'integration-fs',
     varName: 'integrationFs',
     imports: {
-      def: '@usevenice/integration-fs/def',
-      server: '@usevenice/integration-fs/server',
+      def: '@usevenice/connector-fs/def',
+      server: '@usevenice/connector-fs/server',
     },
   },
   {
@@ -89,8 +89,8 @@ module.exports = [
     dirName: 'integration-heron',
     varName: 'integrationHeron',
     imports: {
-      def: '@usevenice/integration-heron/def',
-      server: '@usevenice/integration-heron/server',
+      def: '@usevenice/connector-heron/def',
+      server: '@usevenice/connector-heron/server',
     },
   },
   {
@@ -98,24 +98,24 @@ module.exports = [
     dirName: 'integration-lunchmoney',
     varName: 'integrationLunchmoney',
     imports: {
-      def: '@usevenice/integration-lunchmoney/def',
-      server: '@usevenice/integration-lunchmoney/server',
+      def: '@usevenice/connector-lunchmoney/def',
+      server: '@usevenice/connector-lunchmoney/server',
     },
   },
   {
     name: 'mercury',
     dirName: 'integration-mercury',
     varName: 'integrationMercury',
-    imports: {def: '@usevenice/integration-mercury/def'},
+    imports: {def: '@usevenice/connector-mercury/def'},
   },
   {
     name: 'merge',
     dirName: 'integration-merge',
     varName: 'integrationMerge',
     imports: {
-      def: '@usevenice/integration-merge/def',
-      client: '@usevenice/integration-merge/client',
-      server: '@usevenice/integration-merge/server',
+      def: '@usevenice/connector-merge/def',
+      client: '@usevenice/connector-merge/client',
+      server: '@usevenice/connector-merge/server',
     },
   },
   {
@@ -123,8 +123,8 @@ module.exports = [
     dirName: 'integration-mongodb',
     varName: 'integrationMongodb',
     imports: {
-      def: '@usevenice/integration-mongodb/def',
-      server: '@usevenice/integration-mongodb/server',
+      def: '@usevenice/connector-mongodb/def',
+      server: '@usevenice/connector-mongodb/server',
     },
   },
   {
@@ -132,8 +132,8 @@ module.exports = [
     dirName: 'integration-moota',
     varName: 'integrationMoota',
     imports: {
-      def: '@usevenice/integration-moota/def',
-      server: '@usevenice/integration-moota/server',
+      def: '@usevenice/connector-moota/def',
+      server: '@usevenice/connector-moota/server',
     },
   },
   {dirName: 'integration-notion', varName: 'integrationNotion', imports: {}},
@@ -142,9 +142,9 @@ module.exports = [
     dirName: 'integration-onebrick',
     varName: 'integrationOnebrick',
     imports: {
-      def: '@usevenice/integration-onebrick/def',
-      client: '@usevenice/integration-onebrick/client',
-      server: '@usevenice/integration-onebrick/server',
+      def: '@usevenice/connector-onebrick/def',
+      client: '@usevenice/connector-onebrick/client',
+      server: '@usevenice/connector-onebrick/server',
     },
   },
   {
@@ -152,9 +152,9 @@ module.exports = [
     dirName: 'integration-plaid',
     varName: 'integrationPlaid',
     imports: {
-      def: '@usevenice/integration-plaid/def',
-      client: '@usevenice/integration-plaid/client',
-      server: '@usevenice/integration-plaid/server',
+      def: '@usevenice/connector-plaid/def',
+      client: '@usevenice/connector-plaid/client',
+      server: '@usevenice/connector-plaid/server',
     },
   },
   {
@@ -162,8 +162,8 @@ module.exports = [
     dirName: 'integration-postgres',
     varName: 'integrationPostgres',
     imports: {
-      def: '@usevenice/integration-postgres/def',
-      server: '@usevenice/integration-postgres/server',
+      def: '@usevenice/connector-postgres/def',
+      server: '@usevenice/connector-postgres/server',
     },
   },
   {
@@ -171,8 +171,8 @@ module.exports = [
     dirName: 'integration-qbo',
     varName: 'integrationQbo',
     imports: {
-      def: '@usevenice/integration-qbo/def',
-      server: '@usevenice/integration-qbo/server',
+      def: '@usevenice/connector-qbo/def',
+      server: '@usevenice/connector-qbo/server',
     },
   },
   {
@@ -180,8 +180,8 @@ module.exports = [
     dirName: 'integration-ramp',
     varName: 'integrationRamp',
     imports: {
-      def: '@usevenice/integration-ramp/def',
-      server: '@usevenice/integration-ramp/server',
+      def: '@usevenice/connector-ramp/def',
+      server: '@usevenice/connector-ramp/server',
     },
   },
   {
@@ -189,8 +189,8 @@ module.exports = [
     dirName: 'integration-saltedge',
     varName: 'integrationSaltedge',
     imports: {
-      def: '@usevenice/integration-saltedge/def',
-      server: '@usevenice/integration-saltedge/server',
+      def: '@usevenice/connector-saltedge/def',
+      server: '@usevenice/connector-saltedge/server',
     },
   },
   {
@@ -198,8 +198,8 @@ module.exports = [
     dirName: 'integration-splitwise',
     varName: 'integrationSplitwise',
     imports: {
-      def: '@usevenice/integration-splitwise/def',
-      server: '@usevenice/integration-splitwise/server',
+      def: '@usevenice/connector-splitwise/def',
+      server: '@usevenice/connector-splitwise/server',
     },
   },
   {
@@ -207,8 +207,8 @@ module.exports = [
     dirName: 'integration-spreadsheet',
     varName: 'integrationSpreadsheet',
     imports: {
-      def: '@usevenice/integration-spreadsheet/def',
-      server: '@usevenice/integration-spreadsheet/server',
+      def: '@usevenice/connector-spreadsheet/def',
+      server: '@usevenice/connector-spreadsheet/server',
     },
   },
   {
@@ -216,8 +216,8 @@ module.exports = [
     dirName: 'integration-stripe',
     varName: 'integrationStripe',
     imports: {
-      def: '@usevenice/integration-stripe/def',
-      server: '@usevenice/integration-stripe/server',
+      def: '@usevenice/connector-stripe/def',
+      server: '@usevenice/connector-stripe/server',
     },
   },
   {
@@ -225,9 +225,9 @@ module.exports = [
     dirName: 'integration-teller',
     varName: 'integrationTeller',
     imports: {
-      def: '@usevenice/integration-teller/def',
-      client: '@usevenice/integration-teller/client',
-      server: '@usevenice/integration-teller/server',
+      def: '@usevenice/connector-teller/def',
+      client: '@usevenice/connector-teller/client',
+      server: '@usevenice/connector-teller/server',
     },
   },
   {
@@ -235,23 +235,23 @@ module.exports = [
     dirName: 'integration-toggl',
     varName: 'integrationToggl',
     imports: {
-      def: '@usevenice/integration-toggl/def',
-      server: '@usevenice/integration-toggl/server',
+      def: '@usevenice/connector-toggl/def',
+      server: '@usevenice/connector-toggl/server',
     },
   },
   {
     name: 'venmo',
     dirName: 'integration-venmo',
     varName: 'integrationVenmo',
-    imports: {def: '@usevenice/integration-venmo/def'},
+    imports: {def: '@usevenice/connector-venmo/def'},
   },
   {
     name: 'webhook',
     dirName: 'integration-webhook',
     varName: 'integrationWebhook',
     imports: {
-      def: '@usevenice/integration-webhook/def',
-      server: '@usevenice/integration-webhook/server',
+      def: '@usevenice/connector-webhook/def',
+      server: '@usevenice/connector-webhook/server',
     },
   },
   {
@@ -259,8 +259,8 @@ module.exports = [
     dirName: 'integration-wise',
     varName: 'integrationWise',
     imports: {
-      def: '@usevenice/integration-wise/def',
-      server: '@usevenice/integration-wise/server',
+      def: '@usevenice/connector-wise/def',
+      server: '@usevenice/connector-wise/server',
     },
   },
   {
@@ -268,9 +268,9 @@ module.exports = [
     dirName: 'integration-yodlee',
     varName: 'integrationYodlee',
     imports: {
-      def: '@usevenice/integration-yodlee/def',
-      client: '@usevenice/integration-yodlee/client',
-      server: '@usevenice/integration-yodlee/server',
+      def: '@usevenice/connector-yodlee/def',
+      client: '@usevenice/connector-yodlee/client',
+      server: '@usevenice/connector-yodlee/server',
     },
   },
 ]

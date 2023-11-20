@@ -167,108 +167,108 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
+      '@usevenice/connector-airtable':
+        specifier: workspace:*
+        version: link:../../connectors/connector-airtable
+      '@usevenice/connector-alphavantage':
+        specifier: workspace:*
+        version: link:../../connectors/connector-alphavantage
+      '@usevenice/connector-beancount':
+        specifier: workspace:*
+        version: link:../../connectors/connector-beancount
+      '@usevenice/connector-brex':
+        specifier: workspace:*
+        version: link:../../connectors/connector-brex
+      '@usevenice/connector-debug':
+        specifier: workspace:*
+        version: link:../../connectors/connector-debug
+      '@usevenice/connector-discord':
+        specifier: workspace:*
+        version: link:../../connectors/connector-discord
+      '@usevenice/connector-expensify':
+        specifier: workspace:*
+        version: link:../../connectors/connector-expensify
+      '@usevenice/connector-firebase':
+        specifier: workspace:*
+        version: link:../../connectors/connector-firebase
+      '@usevenice/connector-foreceipt':
+        specifier: workspace:*
+        version: link:../../connectors/connector-foreceipt
+      '@usevenice/connector-fs':
+        specifier: workspace:*
+        version: link:../../connectors/connector-fs
+      '@usevenice/connector-heron':
+        specifier: workspace:*
+        version: link:../../connectors/connector-heron
+      '@usevenice/connector-lunchmoney':
+        specifier: workspace:*
+        version: link:../../connectors/connector-lunchmoney
+      '@usevenice/connector-mercury':
+        specifier: workspace:*
+        version: link:../../connectors/connector-mercury
+      '@usevenice/connector-merge':
+        specifier: workspace:*
+        version: link:../../connectors/connector-merge
+      '@usevenice/connector-mongodb':
+        specifier: workspace:*
+        version: link:../../connectors/connector-mongodb
+      '@usevenice/connector-moota':
+        specifier: workspace:*
+        version: link:../../connectors/connector-moota
+      '@usevenice/connector-notion':
+        specifier: workspace:*
+        version: link:../../connectors/connector-notion
+      '@usevenice/connector-onebrick':
+        specifier: workspace:*
+        version: link:../../connectors/connector-onebrick
+      '@usevenice/connector-plaid':
+        specifier: workspace:*
+        version: link:../../connectors/connector-plaid
+      '@usevenice/connector-postgres':
+        specifier: workspace:*
+        version: link:../../connectors/connector-postgres
+      '@usevenice/connector-qbo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-qbo
+      '@usevenice/connector-ramp':
+        specifier: workspace:*
+        version: link:../../connectors/connector-ramp
+      '@usevenice/connector-saltedge':
+        specifier: workspace:*
+        version: link:../../connectors/connector-saltedge
+      '@usevenice/connector-splitwise':
+        specifier: workspace:*
+        version: link:../../connectors/connector-splitwise
+      '@usevenice/connector-spreadsheet':
+        specifier: workspace:*
+        version: link:../../connectors/connector-spreadsheet
+      '@usevenice/connector-stripe':
+        specifier: workspace:*
+        version: link:../../connectors/connector-stripe
+      '@usevenice/connector-teller':
+        specifier: workspace:*
+        version: link:../../connectors/connector-teller
+      '@usevenice/connector-toggl':
+        specifier: workspace:*
+        version: link:../../connectors/connector-toggl
+      '@usevenice/connector-venmo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-venmo
+      '@usevenice/connector-webhook':
+        specifier: workspace:*
+        version: link:../../connectors/connector-webhook
+      '@usevenice/connector-wise':
+        specifier: workspace:*
+        version: link:../../connectors/connector-wise
+      '@usevenice/connector-yodlee':
+        specifier: workspace:*
+        version: link:../../connectors/connector-yodlee
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
       '@usevenice/engine-frontend':
         specifier: workspace:*
         version: link:../../packages/engine-frontend
-      '@usevenice/integration-airtable':
-        specifier: workspace:*
-        version: link:../../integrations/integration-airtable
-      '@usevenice/integration-alphavantage':
-        specifier: workspace:*
-        version: link:../../integrations/integration-alphavantage
-      '@usevenice/integration-beancount':
-        specifier: workspace:*
-        version: link:../../integrations/integration-beancount
-      '@usevenice/integration-brex':
-        specifier: workspace:*
-        version: link:../../integrations/integration-brex
-      '@usevenice/integration-debug':
-        specifier: workspace:*
-        version: link:../../integrations/integration-debug
-      '@usevenice/integration-discord':
-        specifier: workspace:*
-        version: link:../../integrations/integration-discord
-      '@usevenice/integration-expensify':
-        specifier: workspace:*
-        version: link:../../integrations/integration-expensify
-      '@usevenice/integration-firebase':
-        specifier: workspace:*
-        version: link:../../integrations/integration-firebase
-      '@usevenice/integration-foreceipt':
-        specifier: workspace:*
-        version: link:../../integrations/integration-foreceipt
-      '@usevenice/integration-fs':
-        specifier: workspace:*
-        version: link:../../integrations/integration-fs
-      '@usevenice/integration-heron':
-        specifier: workspace:*
-        version: link:../../integrations/integration-heron
-      '@usevenice/integration-lunchmoney':
-        specifier: workspace:*
-        version: link:../../integrations/integration-lunchmoney
-      '@usevenice/integration-mercury':
-        specifier: workspace:*
-        version: link:../../integrations/integration-mercury
-      '@usevenice/integration-merge':
-        specifier: workspace:*
-        version: link:../../integrations/integration-merge
-      '@usevenice/integration-mongodb':
-        specifier: workspace:*
-        version: link:../../integrations/integration-mongodb
-      '@usevenice/integration-moota':
-        specifier: workspace:*
-        version: link:../../integrations/integration-moota
-      '@usevenice/integration-notion':
-        specifier: workspace:*
-        version: link:../../integrations/integration-notion
-      '@usevenice/integration-onebrick':
-        specifier: workspace:*
-        version: link:../../integrations/integration-onebrick
-      '@usevenice/integration-plaid':
-        specifier: workspace:*
-        version: link:../../integrations/integration-plaid
-      '@usevenice/integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/integration-postgres
-      '@usevenice/integration-qbo':
-        specifier: workspace:*
-        version: link:../../integrations/integration-qbo
-      '@usevenice/integration-ramp':
-        specifier: workspace:*
-        version: link:../../integrations/integration-ramp
-      '@usevenice/integration-saltedge':
-        specifier: workspace:*
-        version: link:../../integrations/integration-saltedge
-      '@usevenice/integration-splitwise':
-        specifier: workspace:*
-        version: link:../../integrations/integration-splitwise
-      '@usevenice/integration-spreadsheet':
-        specifier: workspace:*
-        version: link:../../integrations/integration-spreadsheet
-      '@usevenice/integration-stripe':
-        specifier: workspace:*
-        version: link:../../integrations/integration-stripe
-      '@usevenice/integration-teller':
-        specifier: workspace:*
-        version: link:../../integrations/integration-teller
-      '@usevenice/integration-toggl':
-        specifier: workspace:*
-        version: link:../../integrations/integration-toggl
-      '@usevenice/integration-venmo':
-        specifier: workspace:*
-        version: link:../../integrations/integration-venmo
-      '@usevenice/integration-webhook':
-        specifier: workspace:*
-        version: link:../../integrations/integration-webhook
-      '@usevenice/integration-wise':
-        specifier: workspace:*
-        version: link:../../integrations/integration-wise
-      '@usevenice/integration-yodlee':
-        specifier: workspace:*
-        version: link:../../integrations/integration-yodlee
       '@usevenice/meta-service-postgres':
         specifier: workspace:*
         version: link:../../packages/meta-service-postgres
@@ -324,78 +324,78 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
+      '@usevenice/connector-alphavantage':
+        specifier: workspace:*
+        version: link:../../connectors/connector-alphavantage
+      '@usevenice/connector-beancount':
+        specifier: workspace:*
+        version: link:../../connectors/connector-beancount
+      '@usevenice/connector-brex':
+        specifier: workspace:*
+        version: link:../../connectors/connector-brex
+      '@usevenice/connector-expensify':
+        specifier: workspace:*
+        version: link:../../connectors/connector-expensify
+      '@usevenice/connector-firebase':
+        specifier: workspace:*
+        version: link:../../connectors/connector-firebase
+      '@usevenice/connector-fs':
+        specifier: workspace:*
+        version: link:../../connectors/connector-fs
+      '@usevenice/connector-heron':
+        specifier: workspace:*
+        version: link:../../connectors/connector-heron
+      '@usevenice/connector-lunchmoney':
+        specifier: workspace:*
+        version: link:../../connectors/connector-lunchmoney
+      '@usevenice/connector-merge':
+        specifier: workspace:*
+        version: link:../../connectors/connector-merge
+      '@usevenice/connector-moota':
+        specifier: workspace:*
+        version: link:../../connectors/connector-moota
+      '@usevenice/connector-onebrick':
+        specifier: workspace:*
+        version: link:../../connectors/connector-onebrick
+      '@usevenice/connector-plaid':
+        specifier: workspace:*
+        version: link:../../connectors/connector-plaid
+      '@usevenice/connector-postgres':
+        specifier: workspace:*
+        version: link:../../connectors/connector-postgres
+      '@usevenice/connector-qbo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-qbo
+      '@usevenice/connector-ramp':
+        specifier: workspace:*
+        version: link:../../connectors/connector-ramp
+      '@usevenice/connector-saltedge':
+        specifier: workspace:*
+        version: link:../../connectors/connector-saltedge
+      '@usevenice/connector-stripe':
+        specifier: workspace:*
+        version: link:../../connectors/connector-stripe
+      '@usevenice/connector-teller':
+        specifier: workspace:*
+        version: link:../../connectors/connector-teller
+      '@usevenice/connector-toggl':
+        specifier: workspace:*
+        version: link:../../connectors/connector-toggl
+      '@usevenice/connector-venmo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-venmo
+      '@usevenice/connector-wise':
+        specifier: workspace:*
+        version: link:../../connectors/connector-wise
+      '@usevenice/connector-yodlee':
+        specifier: workspace:*
+        version: link:../../connectors/connector-yodlee
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
       '@usevenice/env':
         specifier: workspace:*
         version: link:../../utils/env
-      '@usevenice/integration-alphavantage':
-        specifier: workspace:*
-        version: link:../../integrations/integration-alphavantage
-      '@usevenice/integration-beancount':
-        specifier: workspace:*
-        version: link:../../integrations/integration-beancount
-      '@usevenice/integration-brex':
-        specifier: workspace:*
-        version: link:../../integrations/integration-brex
-      '@usevenice/integration-expensify':
-        specifier: workspace:*
-        version: link:../../integrations/integration-expensify
-      '@usevenice/integration-firebase':
-        specifier: workspace:*
-        version: link:../../integrations/integration-firebase
-      '@usevenice/integration-fs':
-        specifier: workspace:*
-        version: link:../../integrations/integration-fs
-      '@usevenice/integration-heron':
-        specifier: workspace:*
-        version: link:../../integrations/integration-heron
-      '@usevenice/integration-lunchmoney':
-        specifier: workspace:*
-        version: link:../../integrations/integration-lunchmoney
-      '@usevenice/integration-merge':
-        specifier: workspace:*
-        version: link:../../integrations/integration-merge
-      '@usevenice/integration-moota':
-        specifier: workspace:*
-        version: link:../../integrations/integration-moota
-      '@usevenice/integration-onebrick':
-        specifier: workspace:*
-        version: link:../../integrations/integration-onebrick
-      '@usevenice/integration-plaid':
-        specifier: workspace:*
-        version: link:../../integrations/integration-plaid
-      '@usevenice/integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/integration-postgres
-      '@usevenice/integration-qbo':
-        specifier: workspace:*
-        version: link:../../integrations/integration-qbo
-      '@usevenice/integration-ramp':
-        specifier: workspace:*
-        version: link:../../integrations/integration-ramp
-      '@usevenice/integration-saltedge':
-        specifier: workspace:*
-        version: link:../../integrations/integration-saltedge
-      '@usevenice/integration-stripe':
-        specifier: workspace:*
-        version: link:../../integrations/integration-stripe
-      '@usevenice/integration-teller':
-        specifier: workspace:*
-        version: link:../../integrations/integration-teller
-      '@usevenice/integration-toggl':
-        specifier: workspace:*
-        version: link:../../integrations/integration-toggl
-      '@usevenice/integration-venmo':
-        specifier: workspace:*
-        version: link:../../integrations/integration-venmo
-      '@usevenice/integration-wise':
-        specifier: workspace:*
-        version: link:../../integrations/integration-wise
-      '@usevenice/integration-yodlee':
-        specifier: workspace:*
-        version: link:../../integrations/integration-yodlee
       '@usevenice/meta-service-airbyte':
         specifier: workspace:*
         version: link:../../packages/meta-service-airbyte
@@ -536,15 +536,15 @@ importers:
       '@usevenice/connect':
         specifier: workspace:*
         version: link:../../packages/connect
+      '@usevenice/connector-postgres':
+        specifier: workspace:*
+        version: link:../../connectors/connector-postgres
       '@usevenice/engine-backend':
         specifier: workspace:*
         version: link:../../packages/engine-backend
       '@usevenice/engine-frontend':
         specifier: workspace:*
         version: link:../../packages/engine-frontend
-      '@usevenice/integration-postgres':
-        specifier: workspace:*
-        version: link:../../integrations/integration-postgres
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)
@@ -655,7 +655,7 @@ importers:
         specifier: '*'
         version: 5.74.0(esbuild@0.17.5)
 
-  integrations/integration-airtable:
+  connectors/connector-airtable:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -667,7 +667,7 @@ importers:
         specifier: 0.11.4
         version: 0.11.4
 
-  integrations/integration-alphavantage:
+  connectors/connector-alphavantage:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -676,7 +676,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-beancount:
+  connectors/connector-beancount:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -685,7 +685,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-brex:
+  connectors/connector-brex:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -698,19 +698,19 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-copilot:
+  connectors/connector-copilot:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
-      '@usevenice/integration-firebase':
+      '@usevenice/connector-firebase':
         specifier: workspace:*
-        version: link:../integration-firebase
+        version: link:../connector-firebase
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-debug:
+  connectors/connector-debug:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -719,7 +719,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-discord:
+  connectors/connector-discord:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -735,7 +735,7 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-expensify:
+  connectors/connector-expensify:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -744,7 +744,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-firebase:
+  connectors/connector-firebase:
     dependencies:
       '@firebase/app':
         specifier: 0.x
@@ -754,7 +754,7 @@ importers:
         version: 0.1.25
       '@firebase/app-types':
         specifier: 0.x
-        version: 0.7.0
+        version: 0.8.0
       '@firebase/auth':
         specifier: '*'
         version: 0.20.1(@firebase/app@0.7.24)
@@ -769,16 +769,16 @@ importers:
         version: 9.8.1(patch_hash=bmwbs4hhuxm5sycev5w2vhohk4)
       firebase-admin:
         specifier: 10.2.0
-        version: 10.2.0(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0)
+        version: 10.2.0(@firebase/app-compat@0.1.25)(@firebase/app-types@0.8.0)
 
-  integrations/integration-foreceipt:
+  connectors/connector-foreceipt:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
-      '@usevenice/integration-firebase':
+      '@usevenice/connector-firebase':
         specifier: workspace:*
-        version: link:../integration-firebase
+        version: link:../connector-firebase
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -786,7 +786,7 @@ importers:
         specifier: 9.8.1
         version: 9.8.1(patch_hash=bmwbs4hhuxm5sycev5w2vhohk4)
 
-  integrations/integration-fs:
+  connectors/connector-fs:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -795,29 +795,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-heron:
-    dependencies:
-      '@usevenice/cdk':
-        specifier: workspace:*
-        version: link:../../packages/cdk
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-    devDependencies:
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
-
-  integrations/integration-lunchmoney:
-    dependencies:
-      '@usevenice/cdk':
-        specifier: workspace:*
-        version: link:../../packages/cdk
-      '@usevenice/util':
-        specifier: workspace:*
-        version: link:../../packages/util
-
-  integrations/integration-mercury:
+  connectors/connector-heron:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -830,7 +808,29 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-merge:
+  connectors/connector-lunchmoney:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../packages/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
+  connectors/connector-mercury:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../packages/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+    devDependencies:
+      openapi-typescript:
+        specifier: 6.7.1
+        version: 6.7.1
+
+  connectors/connector-merge:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -852,7 +852,7 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-mongodb:
+  connectors/connector-mongodb:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -864,7 +864,7 @@ importers:
         specifier: 4.9.1
         version: 4.9.1
 
-  integrations/integration-moota:
+  connectors/connector-moota:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -873,13 +873,13 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-notion:
+  connectors/connector-notion:
     devDependencies:
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-onebrick:
+  connectors/connector-onebrick:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -898,7 +898,7 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-plaid:
+  connectors/connector-plaid:
     dependencies:
       '@t3-oss/env-core':
         specifier: 0.7.1
@@ -932,7 +932,7 @@ importers:
         specifier: 0.3.0
         version: 0.3.0
 
-  integrations/integration-postgres:
+  connectors/connector-postgres:
     dependencies:
       '@slonik/migrator':
         specifier: 0.11.3
@@ -966,7 +966,7 @@ importers:
         specifier: 8.6.5
         version: 8.6.5
 
-  integrations/integration-qbo:
+  connectors/connector-qbo:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -975,7 +975,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-ramp:
+  connectors/connector-ramp:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -984,7 +984,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-saltedge:
+  connectors/connector-saltedge:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -993,7 +993,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-splitwise:
+  connectors/connector-splitwise:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1002,7 +1002,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-spreadsheet:
+  connectors/connector-spreadsheet:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1021,7 +1021,7 @@ importers:
         specifier: 5.3.5
         version: 5.3.5
 
-  integrations/integration-stripe:
+  connectors/connector-stripe:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1034,7 +1034,7 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-teller:
+  connectors/connector-teller:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1050,7 +1050,7 @@ importers:
         specifier: 18.0.27
         version: 18.0.27
 
-  integrations/integration-toggl:
+  connectors/connector-toggl:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1059,7 +1059,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-venmo:
+  connectors/connector-venmo:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1068,13 +1068,13 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-vercel:
+  connectors/connector-vercel:
     devDependencies:
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
 
-  integrations/integration-webhook:
+  connectors/connector-webhook:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1083,7 +1083,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-wise:
+  connectors/connector-wise:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1092,7 +1092,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
-  integrations/integration-yodlee:
+  connectors/connector-yodlee:
     dependencies:
       '@usevenice/cdk':
         specifier: workspace:*
@@ -1283,9 +1283,9 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../cdk
-      '@usevenice/integration-fs':
+      '@usevenice/connector-fs':
         specifier: workspace:*
-        version: link:../../integrations/integration-fs
+        version: link:../../connectors/connector-fs
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -1299,9 +1299,9 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../cdk
-      '@usevenice/integration-postgres':
+      '@usevenice/connector-postgres':
         specifier: workspace:*
-        version: link:../../integrations/integration-postgres
+        version: link:../../connectors/connector-postgres
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
@@ -2643,7 +2643,7 @@ packages:
       '@firebase/app-compat': 0.1.25
       '@firebase/component': 0.5.14
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -2662,7 +2662,7 @@ packages:
       '@firebase/installations': 0.5.9(@firebase/app@0.7.24)
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-check-compat@0.2.8(@firebase/app-compat@0.1.25)(@firebase/app@0.7.24):
@@ -2676,7 +2676,7 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -2698,7 +2698,7 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-compat@0.1.25:
@@ -2708,7 +2708,7 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/app-types@0.7.0:
@@ -2726,7 +2726,7 @@ packages:
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
       idb: 7.0.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/auth-compat@0.2.14(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0)(@firebase/app@0.7.24):
@@ -2741,23 +2741,13 @@ packages:
       '@firebase/util': 1.6.0
       node-fetch: 2.6.7
       selenium-webdriver: 4.1.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
       - bufferutil
       - encoding
       - utf-8-validate
-    dev: false
-
-  /@firebase/auth-interop-types@0.1.6(@firebase/app-types@0.7.0)(@firebase/util@1.5.2):
-    resolution: {integrity: sha512-etIi92fW3CctsmR9e3sYM3Uqnoq861M0Id9mdOPF6PWIg38BXL5k4upCNBggGUpLIS0H1grMOvy/wn1xymwe2g==}
-    peerDependencies:
-      '@firebase/app-types': 0.x
-      '@firebase/util': 1.x
-    dependencies:
-      '@firebase/app-types': 0.7.0
-      '@firebase/util': 1.5.2
     dev: false
 
   /@firebase/auth-interop-types@0.1.6(@firebase/app-types@0.7.0)(@firebase/util@1.6.0):
@@ -2768,6 +2758,16 @@ packages:
     dependencies:
       '@firebase/app-types': 0.7.0
       '@firebase/util': 1.6.0
+    dev: false
+
+  /@firebase/auth-interop-types@0.1.6(@firebase/app-types@0.8.0)(@firebase/util@1.5.2):
+    resolution: {integrity: sha512-etIi92fW3CctsmR9e3sYM3Uqnoq861M0Id9mdOPF6PWIg38BXL5k4upCNBggGUpLIS0H1grMOvy/wn1xymwe2g==}
+    peerDependencies:
+      '@firebase/app-types': 0.x
+      '@firebase/util': 1.x
+    dependencies:
+      '@firebase/app-types': 0.8.0
+      '@firebase/util': 1.5.2
     dev: false
 
   /@firebase/auth-types@0.11.0(@firebase/app-types@0.7.0)(@firebase/util@1.6.0):
@@ -2791,7 +2791,7 @@ packages:
       '@firebase/util': 1.6.0
       node-fetch: 2.6.7
       selenium-webdriver: 4.1.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -2809,17 +2809,17 @@ packages:
     resolution: {integrity: sha512-ct2p1MTMV5P/nGIlkC3XjAVwHwjsIZaeo8JVyDAkJCNTROu5mYX3FBK16hjIUIIVJDpgnnzFh9nP74gciL4WrA==}
     dependencies:
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
-  /@firebase/database-compat@0.1.8(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0):
+  /@firebase/database-compat@0.1.8(@firebase/app-compat@0.1.25)(@firebase/app-types@0.8.0):
     resolution: {integrity: sha512-dhXr5CSieBuKNdU96HgeewMQCT9EgOIkfF1GNy+iRrdl7BWLxmlKuvLfK319rmIytSs/vnCzcD9uqyxTeU/A3A==}
     peerDependencies:
       '@firebase/app-compat': 0.x
     dependencies:
       '@firebase/app-compat': 0.1.25
       '@firebase/component': 0.5.13
-      '@firebase/database': 0.12.8(@firebase/app-types@0.7.0)
+      '@firebase/database': 0.12.8(@firebase/app-types@0.8.0)
       '@firebase/database-types': 0.9.7
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.5.2
@@ -2839,7 +2839,7 @@ packages:
       '@firebase/database-types': 0.9.8
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app-types'
     dev: false
@@ -2865,10 +2865,10 @@ packages:
       '@firebase/util': 1.6.0
     dev: false
 
-  /@firebase/database@0.12.8(@firebase/app-types@0.7.0):
+  /@firebase/database@0.12.8(@firebase/app-types@0.8.0):
     resolution: {integrity: sha512-JBQVfFLzfhxlQbl4OU6ov9fdsddkytBQdtSSR49cz48homj38ccltAhK6seum+BI7f28cV2LFHF9672lcN+qxA==}
     dependencies:
-      '@firebase/auth-interop-types': 0.1.6(@firebase/app-types@0.7.0)(@firebase/util@1.5.2)
+      '@firebase/auth-interop-types': 0.1.6(@firebase/app-types@0.8.0)(@firebase/util@1.5.2)
       '@firebase/component': 0.5.13
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.5.2
@@ -2886,7 +2886,7 @@ packages:
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
       faye-websocket: 0.11.4
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app-types'
     dev: false
@@ -2901,7 +2901,7 @@ packages:
       '@firebase/firestore': 3.4.9(@firebase/app@0.7.24)
       '@firebase/firestore-types': 2.5.0(@firebase/app-types@0.7.0)(@firebase/util@1.6.0)
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -2932,7 +2932,7 @@ packages:
       '@grpc/grpc-js': 1.7.1
       '@grpc/proto-loader': 0.6.13
       node-fetch: 2.6.7
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2947,7 +2947,7 @@ packages:
       '@firebase/functions': 0.8.1(@firebase/app-types@0.7.0)(@firebase/app@0.7.24)
       '@firebase/functions-types': 0.5.0
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -2970,7 +2970,7 @@ packages:
       '@firebase/messaging-interop-types': 0.1.0
       '@firebase/util': 1.6.0
       node-fetch: 2.6.7
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app-types'
       - encoding
@@ -2985,13 +2985,13 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/util': 1.6.0
       idb: 7.0.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/logger@0.3.2:
     resolution: {integrity: sha512-lzLrcJp9QBWpo40OcOM9B8QEtBw2Fk1zOZQdvv+rWS6gKmhQBCEMc4SMABQfWdjsylBcDfniD1Q+fUX1dcBTXA==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/messaging-compat@0.1.13(@firebase/app-compat@0.1.25)(@firebase/app@0.7.24):
@@ -3003,7 +3003,7 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/messaging': 0.9.13(@firebase/app@0.7.24)
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3023,7 +3023,7 @@ packages:
       '@firebase/messaging-interop-types': 0.1.0
       '@firebase/util': 1.6.0
       idb: 7.0.1
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/performance-compat@0.1.9(@firebase/app-compat@0.1.25)(@firebase/app@0.7.24):
@@ -3037,7 +3037,7 @@ packages:
       '@firebase/performance': 0.5.9(@firebase/app@0.7.24)
       '@firebase/performance-types': 0.1.0
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3056,7 +3056,7 @@ packages:
       '@firebase/installations': 0.5.9(@firebase/app@0.7.24)
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/polyfill@0.3.36:
@@ -3078,7 +3078,7 @@ packages:
       '@firebase/remote-config': 0.3.8(@firebase/app@0.7.24)
       '@firebase/remote-config-types': 0.2.0
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
     dev: false
@@ -3097,7 +3097,7 @@ packages:
       '@firebase/installations': 0.5.9(@firebase/app@0.7.24)
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/storage-compat@0.1.14(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0)(@firebase/app@0.7.24):
@@ -3110,7 +3110,7 @@ packages:
       '@firebase/storage': 0.9.6(@firebase/app@0.7.24)
       '@firebase/storage-types': 0.6.0(@firebase/app-types@0.7.0)(@firebase/util@1.6.0)
       '@firebase/util': 1.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
@@ -3136,7 +3136,7 @@ packages:
       '@firebase/component': 0.5.14
       '@firebase/util': 1.6.0
       node-fetch: 2.6.7
-      tslib: 2.4.1
+      tslib: 2.6.2
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -3150,7 +3150,7 @@ packages:
   /@firebase/util@1.6.0:
     resolution: {integrity: sha512-6+hhqb4Zzjoo12xofTDHPkgW3FnN4ydBsjd5X2KuQI268DR3W3Ld64W/gkKPZrKRgUxeNeb+pykfP3qRe7q+vA==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@firebase/util@1.7.0:
@@ -7432,7 +7432,7 @@ packages:
       abort-controller: 3.0.0
       abortcontroller-polyfill: 1.7.5
       lodash: 4.17.21
-      node-fetch: 2.6.7
+      node-fetch: 2.7.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -10790,11 +10790,11 @@ packages:
       path-exists: 4.0.0
     dev: true
 
-  /firebase-admin@10.2.0(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0):
+  /firebase-admin@10.2.0(@firebase/app-compat@0.1.25)(@firebase/app-types@0.8.0):
     resolution: {integrity: sha512-6ehn5J9UEFgi4+naqYvozmGpnZae3cJLdwSkSsDc8/Y0eTBjVMFdf9N2ft7N81UNHA0N5DknOyXhlsdAdyBLCA==}
     engines: {node: '>=12.7.0'}
     dependencies:
-      '@firebase/database-compat': 0.1.8(@firebase/app-compat@0.1.25)(@firebase/app-types@0.7.0)
+      '@firebase/database-compat': 0.1.8(@firebase/app-compat@0.1.25)(@firebase/app-types@0.8.0)
       '@firebase/database-types': 0.9.14
       '@types/node': 18.11.18
       dicer: 0.3.1
@@ -13435,6 +13435,7 @@ packages:
   /json-schema-ref-parser@9.0.9:
     resolution: {integrity: sha512-qcP2lmGy+JUoQJ4DOQeLaZDqH9qSkeGCK3suKWxJXS82dg728Mn3j97azDMaOUmJAN4uCq91LdPx4K7E8F1a7Q==}
     engines: {node: '>=10'}
+    deprecated: Please switch to @apidevtools/json-schema-ref-parser
     dependencies:
       '@apidevtools/json-schema-ref-parser': 9.0.9
     dev: true
@@ -14062,7 +14063,7 @@ packages:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
     dependencies:
-      semver: 6.3.0
+      semver: 6.3.1
 
   /make-error@1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
@@ -16147,7 +16148,7 @@ packages:
     engines: {node: '>=10.0'}
     hasBin: true
     dependencies:
-      shell-quote: 1.7.3
+      shell-quote: 1.8.1
       yargs: 17.7.2
     dev: false
 
@@ -18020,7 +18021,7 @@ packages:
     dependencies:
       jszip: 3.10.1
       tmp: 0.2.1
-      ws: 8.9.0
+      ws: 8.11.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -18040,7 +18041,6 @@ packages:
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
-    dev: true
 
   /semver@7.3.8:
     resolution: {integrity: sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==}
@@ -18218,10 +18218,10 @@ packages:
 
   /shell-quote@1.7.3:
     resolution: {integrity: sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw==}
+    dev: true
 
   /shell-quote@1.8.1:
     resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
-    dev: true
 
   /should-equal@2.0.0:
     resolution: {integrity: sha512-ZP36TMrK9euEuWQYBig9W55WPC7uo37qzAEmbjHz4gfyuXrEUgF8cUvQVO+w+d3OMfPvSRQJ22lSm8MQJ43LTA==}
@@ -20718,7 +20718,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: true
 
   /ws@8.2.3:
     resolution: {integrity: sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==}
@@ -20732,19 +20731,6 @@ packages:
       utf-8-validate:
         optional: true
     dev: true
-
-  /ws@8.9.0:
-    resolution: {integrity: sha512-Ja7nszREasGaYUYCI2k4lCKIRTt+y7XuqVoHR44YpI49TtryyqbqvDMn5eqfW7e6HzTukDRIsXqzVHScqRcafg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
 
   /xdg-basedir@4.0.0:
     resolution: {integrity: sha512-PSNhEJDejZYV7h50BohL09Er9VaIefr2LMAf3OEmpCkjOi34eYyQYAXUTjEQtZJTKcF0E2UKTh+osDLsgNim9Q==}

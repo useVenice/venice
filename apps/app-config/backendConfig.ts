@@ -13,8 +13,8 @@ import {mergedIntegrations} from './integrations/integrations.merged'
 export {
   DatabaseError,
   makePostgresClient,
-} from '@usevenice/integration-postgres/makePostgresClient'
-export {Papa} from '@usevenice/integration-spreadsheet'
+} from '@usevenice/connector-postgres/makePostgresClient'
+export {Papa} from '@usevenice/connector-spreadsheet'
 
 export const backendEnv = env
 

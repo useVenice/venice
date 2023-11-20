@@ -1,5 +1,5 @@
+import {_pathFromId} from '@usevenice/connector-fs'
 import {zKVStore} from '@usevenice/engine-backend'
-import {_pathFromId} from '@usevenice/integration-fs'
 import {
   $path,
   joinPath,

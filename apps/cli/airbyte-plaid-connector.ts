@@ -1,6 +1,6 @@
 import '@usevenice/app-config/register.node'
 
-import {plaidProvider} from '@usevenice/integration-plaid'
+import {plaidProvider} from '@usevenice/connector-plaid'
 import {makeAirbyteConnector} from '@usevenice/meta-service-airbyte/makeAirbyteConnector'
 
 import {cliFromRouter} from './cli-utils'

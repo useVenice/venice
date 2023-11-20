@@ -1,0 +1,22 @@
+{
+  "name": "@usevenice/connector-merge",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "scripts": {
+    "codegen:next:accounting": "openapi-typescript https://api.merge.dev/api/accounting/v1/schema --make-paths-enum --output merge.accounting.gen.ts"
+  },
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {
+    "@mergeapi/react-merge-link": "2.0.6",
+    "@types/react": "*",
+    "openapi-typescript": "6.7.1"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}

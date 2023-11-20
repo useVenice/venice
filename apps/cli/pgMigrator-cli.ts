@@ -3,7 +3,7 @@ import '@usevenice/app-config/register.node'
 
 import path from 'node:path'
 
-import {makePostgresClient} from '@usevenice/integration-postgres'
+import {makePostgresClient} from '@usevenice/connector-postgres'
 import {z} from '@usevenice/util'
 
 void makePostgresClient({

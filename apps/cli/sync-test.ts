@@ -4,8 +4,8 @@ import '@usevenice/app-config/register.node'
 
 import {logLink, sync} from '@usevenice/cdk'
 import {mapStandardEntityLink} from '@usevenice/cdk'
-import {plaidProvider} from '@usevenice/integration-plaid'
-import {postgresProvider} from '@usevenice/integration-postgres'
+import {plaidProvider} from '@usevenice/connector-plaid'
+import {postgresProvider} from '@usevenice/connector-postgres'
 import type {rxjs} from '@usevenice/util'
 import {R, Rx} from '@usevenice/util'
 
