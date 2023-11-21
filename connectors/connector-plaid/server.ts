@@ -38,7 +38,7 @@ export const plaidServerConnector = {
   // - commandsForResource
   preConnect: (
     config,
-    {extEndUserId: userId, resource, institutionExternalId, ...ctx},
+    {extEndUserId: userId, resource, integrationExternalId, ...ctx},
     input,
   ) => {
     if (input.sandboxPublicTokenCreate) {
@@ -52,8 +52,8 @@ export const plaidServerConnector = {
     return makePlaidClient(config)
       .linkTokenCreate({
         access_token: resource?.settings.accessToken, // Reconnecting
-        institution_id: institutionExternalId
-          ? `${institutionExternalId}`
+        institution_id: integrationExternalId
+          ? `${integrationExternalId}`
           : undefined, // Probably doesn't work, but we wish it does...
         user: {client_user_id: userId},
         client_name: config.clientName,
@@ -106,7 +106,7 @@ export const plaidServerConnector = {
     return {
       resourceExternalId: res.item_id,
       settings,
-      institution: insRes?.institution && {
+      integration: insRes?.institution && {
         externalId: insRes.institution.institution_id,
         data: insRes.institution,
       },
@@ -212,7 +212,7 @@ export const plaidServerConnector = {
             accessToken,
             institution,
           },
-          institution: institution && {
+          integration: institution && {
             externalId: institution.institution_id,
             data: institution,
           },
@@ -406,7 +406,7 @@ export const plaidServerConnector = {
           break
         }
         yield institutions.institutions.map((ins) =>
-          def._insOpData(ins.institution_id as ExternalId, ins),
+          def._intOpData(ins.institution_id as ExternalId, ins),
         )
         offset += institutions.institutions.length
       }

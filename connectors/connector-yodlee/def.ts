@@ -39,7 +39,7 @@ export const yodleeSchemas = {
   name: z.literal('yodlee'),
   connectorConfig: zConfig,
   resourceSettings: zSettings,
-  institutionData: zYodleeInstitution,
+  integrationData: zYodleeInstitution,
   // Should accessToken be cached based on provider / userId?
   connectInput: z.object({accessToken: zAccessToken, envName: zYodleeEnvName}),
   connectOutput: z.object({
@@ -81,7 +81,7 @@ export const yodleeDef = {
           name: getYodleeAccountName(a),
           lastFour: a.accountNumber?.slice(-4) ?? null,
           type: getYodleeAccountType(a),
-          institutionName: extConn.provider?.name,
+          integrationName: extConn.provider?.name,
           removed: a.isDeleted ?? false,
           informationalBalances: {
             available: getYodleeAccountBalance(a, 'availableBalance'),
@@ -178,10 +178,10 @@ export const yodleeDef = {
       },
     },
     // is the `id` actually externalId?
-    institution: (ins) => ({
-      logoUrl: ins.logo,
-      loginUrl: ins.loginUrl,
-      name: ins.name ?? `<${ins.id}>`,
+    integration: (int) => ({
+      logoUrl: int.logo,
+      loginUrl: int.loginUrl,
+      name: int.name ?? `<${int.id}>`,
     }),
     resource: (settings) => ({
       id: `${settings.providerAccountId}`,

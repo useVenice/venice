@@ -48,7 +48,7 @@ export const stripeDef = {
         entity: {
           name: a.settings?.dashboard.display_name ?? '',
           type: 'asset/digital_wallet',
-          institutionName: a.settings?.payments.statement_descriptor,
+          integrationName: a.settings?.payments.statement_descriptor,
           defaultUnit: a.default_currency?.toUpperCase() as Unit,
           // informationalBalances: {
           //   available: A(

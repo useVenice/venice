@@ -16,7 +16,7 @@ export const INDEPENDENT_IDS = {
 export const CONNECTOR_SCOPED_IDS = {
   connector_config: 'ccfg',
   resource: 'reso',
-  institution: 'ins',
+  integration: 'int',
 } as const
 
 export const IDS = {

@@ -56,7 +56,7 @@ export const tellerServer = {
     console.log('metaZSync teller', config)
     return rxjs
       .from(makeTellerClient(config).getInstitutions())
-      .pipe(Rx.map((ins) => helpers._insOpData(ins.id as ExternalId, ins)))
+      .pipe(Rx.map((ins) => helpers._intOpData(ins.id as ExternalId, ins)))
   },
 } satisfies ConnectorServer<typeof tellerSchemas>
 

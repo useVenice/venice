@@ -44,7 +44,7 @@ export const mergeServer = {
           accountToken: res.account_token,
           accountDetails: details,
         },
-        institution: {
+        integration: {
           externalId: res.integration.slug,
           data: res.integration,
         },
@@ -68,7 +68,7 @@ export const mergeServer = {
         accountToken: connectOutput.accountToken,
         accountDetails: details,
       },
-      institution: integration
+      integration: integration
         ? {externalId: integration.slug, data: integration}
         : undefined,
       triggerDefaultSync: true,

@@ -157,19 +157,19 @@ export function makeDBService({
       return {...int, connector, config}
     })
 
-  const getInstitutionOrFail = (id: Id['ins']) =>
-    metaService.tables.institution.get(id).then(async (ins) => {
+  const getIntegrationOrFail = (id: Id['int']) =>
+    metaService.tables.integration.get(id).then(async (ins) => {
       if (!ins) {
         throw new TRPCError({code: 'NOT_FOUND'})
       }
-      // TODO: Fix the root cause and ensure we always have institution.standard here
+      // TODO: Fix the root cause and ensure we always have integration.standard here
       if (!ins.standard?.name) {
         const connectorName = extractId(ins.id)[1]
         const provider = connectorMap[connectorName]
-        ins.standard = provider?.standardMappers?.institution?.(ins.external)
-        await metaLinks.patch('institution', ins.id, {standard: ins.standard})
+        ins.standard = provider?.standardMappers?.integration?.(ins.external)
+        await metaLinks.patch('integration', ins.id, {standard: ins.standard})
       }
-      return zRaw.institution.parse(ins)
+      return zRaw.integration.parse(ins)
     })
   const getResourceOrFail = (id: Id['reso']) =>
     metaService.tables.resource.get(id).then((reso) => {
@@ -193,10 +193,10 @@ export function makeDBService({
       )
       const settings: {} =
         connectorConfig.connector.schemas.resourceSettings?.parse(reso.settings)
-      const institution = reso.institutionId
-        ? await getInstitutionOrFail(reso.institutionId)
+      const integration = reso.integrationId
+        ? await getIntegrationOrFail(reso.integrationId)
         : undefined
-      return {...reso, connectorConfig, settings, institution}
+      return {...reso, connectorConfig, settings, integration}
     })
 
   const getPipelineExpandedOrFail = (id: Id['pipe']) =>

@@ -16,7 +16,7 @@ export const mergeSchemas = {
   connectorConfig: z.object({
     apiKey: z.string(),
   }),
-  institutionData: zIntegration,
+  integrationData: zIntegration,
   resourceSettings: z.object({
     accountToken: z.string(),
     accountDetails: zCast<components['schemas']['AccountDetails']>().optional(),
@@ -63,7 +63,7 @@ export const mergeDef = {
   },
 
   standardMappers: {
-    institution: (ins) => ({
+    integration: (ins) => ({
       name: ins.name,
       logoUrl: ins.square_image,
       envName: undefined,

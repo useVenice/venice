@@ -14,7 +14,7 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
 // MARK: - Standard types
 
-export const zInstitutionCategory = z.enum([
+export const zIntegrationCategory = z.enum([
   'accounting',
   'banking',
   'hris', // Aka payroll
@@ -24,9 +24,8 @@ export type ZStandard = {
   [k in keyof typeof zStandard]: z.infer<(typeof zStandard)[k]>
 }
 export const zStandard = {
-  /** Should this be renamed to `UpstreamProvider` instead? */
-  institution: z.object({
-    id: zId('ins'),
+  integration: z.object({
+    id: zId('int'),
     name: z.string(),
     // No http prefix preprocessing for logo url as they can be data urls
     logoUrl: z.string().url().optional(),
@@ -40,7 +39,7 @@ export const zStandard = {
           : url,
       z.string().url().optional(),
     ),
-    categories: z.array(zInstitutionCategory).nullish(),
+    categories: z.array(zIntegrationCategory).nullish(),
   }),
   resource: z.object({
     id: zId('reso'),
@@ -103,7 +102,7 @@ export const zRaw = {
       displayName: z.string().nullish(),
       endUserId: zEndUserId.nullish(),
       connectorConfigId: zId('ccfg'),
-      institutionId: zId('ins').nullish(),
+      integrationId: zId('int').nullish(),
       settings: z.record(z.unknown()).nullish(),
       standard: zStandard.resource.omit({id: true}).nullish(),
       disabled: z.boolean().optional(),
@@ -133,13 +132,13 @@ export const zRaw = {
       disabled: z.boolean().optional(),
     })
     .openapi({ref: 'Pipeline'}),
-  institution: zBase
+  integration: zBase
     .extend({
-      id: zId('ins'),
+      id: zId('int'),
       connectorName: z.string(),
-      standard: zStandard.institution.omit({id: true}).nullish(),
+      standard: zStandard.integration.omit({id: true}).nullish(),
       external: z.record(z.unknown()).nullish(),
     })
-    .openapi({ref: 'Institution'}),
+    .openapi({ref: 'Integration'}),
   // TODO: Add connection_attempts
 }

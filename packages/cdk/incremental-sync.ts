@@ -1,4 +1,4 @@
-// NEXT: add institution, etc.
+// NEXT: add integration entity, etc.
 
 export interface VeniceSourceState {
   streams?: string[] | null

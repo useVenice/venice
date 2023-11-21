@@ -52,10 +52,10 @@ export const ResourceCard = ({
       </span>
     </div>
 
-    {resource.institutionId ? (
-      <InstitutionLogo
+    {resource.integrationId ? (
+      <IntegrationLogo
         {...uiProps}
-        institution={resource.institution}
+        integration={resource.integration}
         className="grow"
       />
     ) : (
@@ -63,7 +63,7 @@ export const ResourceCard = ({
     )}
 
     {/* connector config id / provider name */}
-    {/* Institution logo with name */}
+    {/* Integration logo with name */}
     {/* Connection status / last synced time */}
     {/* Reconnect button */}
     {/* Do we want drop down menu? */}
@@ -73,18 +73,18 @@ export const ResourceCard = ({
   </Card>
 )
 
-export function InstitutionLogo({
-  institution,
+export function IntegrationLogo({
+  integration,
   className,
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
   Image = (props) => <img {...props} />,
 }: UIPropsNoChildren & {
-  institution?: ZStandard['institution'] | null | undefined
+  integration?: ZStandard['integration'] | null | undefined
 }) {
-  return institution?.logoUrl ? (
+  return integration?.logoUrl ? (
     <Image
-      src={institution.logoUrl}
-      alt={`"${institution.name}" logo`}
+      src={integration.logoUrl}
+      alt={`"${integration.name}" logo`}
       className={cn(
         'h-12 w-12 shrink-0 overflow-hidden object-contain',
         className,

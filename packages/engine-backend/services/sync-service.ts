@@ -271,20 +271,20 @@ export function makeSyncService({
     {
       endUserId: userId,
       settings,
-      institution,
+      integration,
       ...resoUpdate
     }: ResourceUpdate<AnyEntityPayload, {}>,
   ) => {
     console.log('[_syncResourceUpdate]', int.id, {
       userId,
       settings,
-      institution,
+      integration,
       ...resoUpdate,
     })
     const id = makeId('reso', int.connector.name, resoUpdate.resourceExternalId)
     await metaLinks
       .handlers({resource: {id, connectorConfigId: int.id, endUserId: userId}})
-      .resoUpdate({type: 'resoUpdate', id, settings, institution})
+      .resoUpdate({type: 'resoUpdate', id, settings, integration})
 
     // TODO: This should be happening async
     if (!resoUpdate.source$ && !resoUpdate.triggerDefaultSync) {

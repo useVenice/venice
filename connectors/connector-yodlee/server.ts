@@ -49,7 +49,7 @@ export const yodleeServerConnector = {
         user,
         accessToken: yodlee.accessToken,
       },
-      institution: provider
+      integration: provider
         ? {externalId: providerId, data: {...provider}}
         : undefined,
     }
@@ -96,7 +96,7 @@ export const yodleeServerConnector = {
       Rx.mergeMap((institutions) => rxjs.from(institutions)),
       Rx.map((ins) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        helpers._insOpData(`${ins.id!}` as ExternalId, {...ins}),
+        helpers._intOpData(`${ins.id!}` as ExternalId, {...ins}),
       ),
     )
   },

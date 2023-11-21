@@ -67,7 +67,7 @@ export const plaidSchemas = {
     /** Comes from webhook */
     webhookItemError: zCast<ErrorShape>().nullish(),
   }),
-  institutionData: zCast<plaid.Institution>(),
+  integrationData: zCast<plaid.Institution>(),
   preConnectInput: z.object({
     ...(process.env.NODE_ENV === 'production'
       ? {}
@@ -142,7 +142,7 @@ export const plaidDef = {
           lastFour: a.mask,
           // TODO: Map Plaid account type properly
           type: getPlaidAccountType(a),
-          institutionName: extConn.institution?.name,
+          integrationName: extConn.institution?.name,
           informationalBalances: {
             current: getPlaidAccountBalance(a, 'current'),
             available: getPlaidAccountBalance(a, 'available'),
@@ -190,7 +190,7 @@ export const plaidDef = {
     },
     // Should this run at runtime rather than sync time? That way we don't have to
     // keep resyncing the 10k institutions from Plaid to make this happen...
-    institution: (ins) => ({
+    integration: (ins) => ({
       name: ins.name,
       logoUrl: ins.logo ? `data:image/png;base64,${ins.logo}` : undefined,
       loginUrl: ins.url ?? undefined,

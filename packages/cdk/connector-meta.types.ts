@@ -98,7 +98,7 @@ export type ConnectOptions = z.input<typeof zConnectOptions>
 export const zConnectOptions = z.object({
   // userId: UserId,
   /** Noop if `connectionId` is specified */
-  institutionExternalId: zExternalId.nullish(),
+  integrationExternalId: zExternalId.nullish(),
   resourceExternalId: zExternalId.nullish(),
 })
 

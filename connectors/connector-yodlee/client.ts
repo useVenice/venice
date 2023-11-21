@@ -14,7 +14,7 @@ export const yodleeClientConnector = {
       {accessToken, envName},
       {
         resourceExternalId: providerAccountId,
-        institutionExternalId: providerId,
+        integrationExternalId: providerId,
       },
     ) => {
       console.log('[yodlee] connect', {

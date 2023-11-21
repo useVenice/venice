@@ -148,7 +148,7 @@ export const adminRouter = trpc.router({
                         entity: {
                           external: op.data.entity as unknown,
                           standard:
-                            int.connector.standardMappers?.institution?.(
+                            int.connector.standardMappers?.integration?.(
                               op.data.entity,
                             ),
                         },
@@ -160,9 +160,9 @@ export const adminRouter = trpc.router({
         ),
         // This single destination is a bottleneck to us removing
         // prefixed ids from protocol itself
-        destination: ctx.services.metaLinks.persistInstitution(),
+        destination: ctx.services.metaLinks.persistIntegration(),
       })
-      return `Synced ${stats} institutions from ${ints.length} providers`
+      return `Synced ${stats} integrations from ${ints.length} providers`
     }),
 
   // Manually run to repair mapping issues
@@ -173,12 +173,12 @@ export const adminRouter = trpc.router({
         return
       }
       // TODO: support pagination
-      const inss = await ctx.services.metaService.tables.institution.list({})
+      const inss = await ctx.services.metaService.tables.integration.list({})
       for (const ins of inss) {
-        console.log('Remap institution', ins.id)
+        console.log('Remap integration', ins.id)
         const provider = ctx.connectorMap[ins.connectorName]
-        const standard = provider?.standardMappers?.institution?.(ins.external)
-        await ctx.services.patch('institution', ins.id, {standard})
+        const standard = provider?.standardMappers?.integration?.(ins.external)
+        await ctx.services.patch('integration', ins.id, {standard})
       }
     }),
 })

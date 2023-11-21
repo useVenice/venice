@@ -7,7 +7,7 @@ import type {components} from './__generated__/transactions.gen'
 export const brexSchemas = {
   name: z.literal('brex'),
   connectorConfig: zCcfgAuth.oauthOrApikeyAuth,
-  institutionData: z.unknown(),
+  integrationData: z.unknown(),
   resourceSettings: z.object({
     accessToken: z.string(),
   }),
@@ -40,7 +40,7 @@ export const brexDef = {
     stage: 'beta',
   },
   standardMappers: {
-    institution: () => ({
+    integration: () => ({
       name: 'Brex',
       logoUrl: 'Add brex logo...',
       envName: undefined,

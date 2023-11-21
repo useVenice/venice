@@ -56,7 +56,7 @@ export interface ConnectorSchemas {
   name: z.ZodLiteral<string>
   connectorConfig?: z.ZodTypeAny
   resourceSettings?: z.ZodTypeAny
-  institutionData?: z.ZodTypeAny
+  integrationData?: z.ZodTypeAny
   webhookInput?: z.ZodTypeAny
   preConnectInput?: z.ZodTypeAny
   connectInput?: z.ZodTypeAny
@@ -99,9 +99,9 @@ export interface ConnectorDef<
   metadata?: ConnectorMetadata
 
   standardMappers?: {
-    institution?: (
-      data: T['_types']['institutionData'],
-    ) => Omit<ZStandard['institution'], 'id'>
+    integration?: (
+      data: T['_types']['integrationData'],
+    ) => Omit<ZStandard['integration'], 'id'>
     resource?: (
       settings: T['_types']['resourceSettings'],
     ) => Omit<ZStandard['resource'], 'id'>
@@ -238,7 +238,7 @@ export interface ConnectorServer<
       config: T['_types']['connectorConfig']
       // options: T['_types']['sourceState']
     }>,
-  ) => Source<T['_insOpType']['data']>
+  ) => Source<T['_intOpType']['data']>
 
   // MARK - Webhook
   // Need to add a input schema for each provider to verify the shape of the received
@@ -311,17 +311,17 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
     [v in keyof _verticals]: _verticals[v][keyof _verticals[v]]
   }[keyof _verticals]
 
-  type InsOpData = Extract<
+  type IntOpData = Extract<
     SyncOperation<{
       id: string
-      entityName: 'institution'
-      entity: _types['institutionData']
+      entityName: 'integration'
+      entity: _types['integrationData']
     }>,
     {type: 'data'}
   >
   type resoUpdate = ResoUpdateData<
     _types['resourceSettings'],
-    _types['institutionData']
+    _types['integrationData']
   >
   type stateUpdate = StateUpdateData<
     _types['sourceState'],
@@ -355,7 +355,7 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
     _resUpdateType: {} as resoUpdate,
     _stateUpdateType: {} as stateUpdate,
     _opType: {} as Op,
-    _insOpType: {} as InsOpData,
+    _intOpType: {} as IntOpData,
     _sourceType: {} as Src,
     _inputOpType: {} as InputOp,
     _resourceUpdateType: {} as _resourceUpdateType,
@@ -397,16 +397,16 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
         data: {entityName, id, entity} as unknown as OpData['data'],
         type: 'data',
       } satisfies OpData),
-    _insOpData: (
+    _intOpData: (
       id: ExternalId,
-      insitutionData: _types['institutionData'],
-    ): InsOpData => ({
+      integrationData: _types['integrationData'],
+    ): IntOpData => ({
       type: 'data',
       data: {
         // We don't prefix in `_opData`, should we actually prefix here?
-        id: makeId('ins', schemas.name.value, id),
-        entityName: 'institution',
-        entity: insitutionData,
+        id: makeId('int', schemas.name.value, id),
+        entityName: 'integration',
+        entity: integrationData,
       },
     }),
     _webhookReturn: (

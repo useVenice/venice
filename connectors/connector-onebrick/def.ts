@@ -53,7 +53,7 @@ export const oneBrickDef = {
           entity: {
             name: a.accountHolder,
             type: 'asset/digital_wallet',
-            institutionName: a.type,
+            integrationName: a.type,
             informationalBalances: {
               current: A(
                 parseMoney((a.balances.current ?? 0).toString()),

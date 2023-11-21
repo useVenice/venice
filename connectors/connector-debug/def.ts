@@ -8,7 +8,7 @@ export const debugSchemas = {
   resourceSettings: z.unknown(),
   connectorConfig: z.unknown(),
   sourceOutputEntity: z.unknown(),
-  institutionData: z.unknown(),
+  integrationData: z.unknown(),
 } satisfies ConnectorSchemas
 
 export const helpers = connHelpers(debugSchemas)

@@ -17,7 +17,7 @@ export interface Resource {
   status: ResourceStatus
   name?: string | null
   notes?: string | null
-  institution?: {
+  integration?: {
     name: string
     logoUrl?: string | null
     url?: string | null
@@ -52,7 +52,7 @@ export interface Account<TBalance extends Balance = Balance> {
   lastFour?: string | null
   /** Represent accounting account number */
   number?: string | null
-  institutionName?: string | null
+  integrationName?: string | null
   /** ISO country code ideally, but really could be anything... */
   countryCode?: string | null
   openDate?: ISODate | null

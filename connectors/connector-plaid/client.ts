@@ -56,7 +56,7 @@ export const plaidClientConnector = {
       }
     }, [open, ready, state])
 
-    return async (opts, {institutionExternalId}) => {
+    return async (opts, {integrationExternalId}) => {
       console.log('[plaid] Will connect', opts, plaidLink)
       if ('public_token' in opts) {
         return {publicToken: opts.public_token}
@@ -68,9 +68,9 @@ export const plaidClientConnector = {
       // TODO: Implement a dialog fallback to tell user to search for the needed
       // institution in the next screen to work around the problem that
       // plaid does not support instiutionId
-      if (institutionExternalId) {
-        console.warn('[plaid] institutionExternalId not handled', {
-          institutionExternalId,
+      if (integrationExternalId) {
+        console.warn('[plaid] integrationExternalId not handled', {
+          integrationExternalId,
         })
       }
       const res$ = new Deferred<(typeof helpers)['_types']['connectOutput']>()

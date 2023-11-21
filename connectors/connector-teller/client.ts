@@ -6,15 +6,15 @@ import type {tellerSchemas} from './def'
 export const tellerClient = {
   useConnectHook: (_) => {
     const loaded = useScript('//cdn.teller.io/connect/connect.js')
-    return async (opts, {institutionExternalId}) => {
+    return async (opts, {integrationExternalId}) => {
       await loaded
-      const institution = institutionExternalId
-        ? `${institutionExternalId}`
+      const integration = integrationExternalId
+        ? `${integrationExternalId}`
         : undefined
       return new Promise((resolve, reject) => {
         const tellerConnect = window.TellerConnect.setup({
           applicationId: opts.applicationId,
-          ...(institution && {institution}),
+          ...(integration && {integration}),
           onInit() {
             console.log('Teller Connect has initialized')
           },

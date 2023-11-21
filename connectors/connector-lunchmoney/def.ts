@@ -45,7 +45,7 @@ export const lunchmoneyDef = {
           a._type === 'asset'
             ? {
                 name: R.compact([a.display_name, a.name]).join(' '),
-                institutionName: a.institution_name,
+                integrationName: a.institution_name,
                 informationalBalances: {
                   current: A(parseMoney(a.balance), a.currency.toUpperCase()),
                 },

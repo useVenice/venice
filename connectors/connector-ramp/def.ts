@@ -61,7 +61,7 @@ export const rampDef = {
         entity: {
           name: `${a.business_name_on_card}`,
           type: 'asset/bank',
-          institutionName: a.business_name_legal,
+          integrationName: a.business_name_legal,
         },
       }),
       transaction: ({entity: t}) => ({

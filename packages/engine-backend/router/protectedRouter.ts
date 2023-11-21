@@ -81,9 +81,9 @@ export const protectedRouter = trpc.router({
       const resources = await ctx.services.metaService.tables.resource.list(
         input,
       )
-      const [institutions, _pipelines] = await Promise.all([
-        ctx.services.metaService.tables.institution.list({
-          ids: R.compact(resources.map((c) => c.institutionId)),
+      const [integrations, _pipelines] = await Promise.all([
+        ctx.services.metaService.tables.integration.list({
+          ids: R.compact(resources.map((c) => c.integrationId)),
         }),
         ctx.services.metaService.findPipelines({
           resourceIds: resources.map((c) => c.id),
@@ -91,23 +91,23 @@ export const protectedRouter = trpc.router({
       ])
       type ConnType = 'source' | 'destination'
 
-      const insById = R.mapToObj(institutions, (ins) => [ins.id, ins])
+      const intById = R.mapToObj(integrations, (ins) => [ins.id, ins])
 
       function parseResource(reso?: (typeof resources)[number] | null) {
         if (!reso) {
           return reso
         }
         const connectorName = extractId(reso.id)[1]
-        const institution = insById[reso.institutionId!]
+        const integrations = intById[reso.integrationId!]
         const mappers = ctx.connectorMap[connectorName]?.standardMappers
         const standardReso = zStandard.resource
           .omit({id: true})
           .nullish()
           .parse(mappers?.resource?.(reso.settings))
-        const standardIns = zStandard.institution
+        const standardInt = zStandard.integration
           .omit({id: true})
           .nullish()
-          .parse(institution && mappers?.institution?.(institution?.external))
+          .parse(integrations && mappers?.integration?.(integrations?.external))
 
         return {
           ...reso,
@@ -117,11 +117,11 @@ export const protectedRouter = trpc.router({
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             reso.displayName ||
             standardReso?.displayName ||
-            standardIns?.name ||
+            standardInt?.name ||
             '',
-          institution:
-            standardIns && institution
-              ? {...standardIns, id: institution.id}
+          integration:
+            standardInt && integrations
+              ? {...standardInt, id: integrations.id}
               : null,
         }
       }
@@ -207,25 +207,25 @@ export const protectedRouter = trpc.router({
           ),
         )
     }),
-  searchInstitutions: protectedProcedure
+  searchIntegrations: protectedProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) => {
       const ints = await ctx.services.listConnectorConfigs()
-      const institutions = await ctx.services.metaService.searchInstitutions({
+      const integrations = await ctx.services.metaService.searchIntegrations({
         keywords,
         limit: 10,
         connectorNames: R.uniq(ints.map((int) => int.connector.name)),
       })
       const intsByConnectorName = R.groupBy(ints, (int) => int.connector.name)
-      return institutions.flatMap((ins) => {
+      return integrations.flatMap((ins) => {
         const [, connectorName, externalId] = extractId(ins.id)
         const standard = ctx.connectorMap[
           connectorName
-        ]?.standardMappers?.institution?.(ins.external)
-        const res = zStandard.institution.omit({id: true}).safeParse(standard)
+        ]?.standardMappers?.integration?.(ins.external)
+        const res = zStandard.integration.omit({id: true}).safeParse(standard)
 
         if (!res.success) {
-          console.error('Invalid institution found', ins, res.error)
+          console.error('Invalid integration found', ins, res.error)
           return []
         }
         return (intsByConnectorName[connectorName] ?? []).map((int) => ({
@@ -317,7 +317,7 @@ export const protectedRouter = trpc.router({
               // Should also make the distinction between `config`, `settings` and `state` much more clear.
               // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
               state: R.identity<VeniceSourceState>({
-                streams: ['resource', 'institution'],
+                streams: ['resource', 'integration'],
               }),
             }) ?? rxjs.EMPTY,
           destination: ctx.asOrgIfNeeded.metaLinks.postSource({
@@ -335,9 +335,9 @@ export const protectedRouter = trpc.router({
         endUserId: reso.endUserId,
         settings: reso.settings,
         resourceExternalId: extractId(reso.id)[2],
-        institution: reso.institution && {
-          externalId: extractId(reso.institution.id)[2],
-          data: reso.institution.external ?? {},
+        integration: reso.integration && {
+          externalId: extractId(reso.integration.id)[2],
+          data: reso.integration.external ?? {},
         },
         triggerDefaultSync: true,
       })

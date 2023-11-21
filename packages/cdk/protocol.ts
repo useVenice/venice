@@ -38,7 +38,7 @@ export interface ResoUpdateData<
   settings?: TVariant extends 'partial'
     ? ObjectPartialDeep<NoInfer<TSettings>> | undefined
     : TSettings
-  institution?: {
+  integration?: {
     externalId: ExternalId
     data: TInsData
   }

@@ -11,7 +11,7 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 export interface TellerOptions {
   environment?: 'sandbox' | 'development' | 'production'
   applicationId: string
-  institution?: string
+  integration?: string
   enrollmentId?: string
   userId?: string
   connectToken?: string

@@ -86,7 +86,7 @@ export const makePostgresMetaService = zFunction(
     const tables: MetaService['tables'] = {
       // Delay calling of __getDeps until later..
       resource: metaTable('resource', _getDeps(opts)),
-      institution: metaTable('institution', _getDeps(opts)),
+      integration: metaTable('integration', _getDeps(opts)),
       connector_config: metaTable('connector_config', _getDeps(opts)),
       pipeline: metaTable('pipeline', _getDeps(opts)),
     }
@@ -113,7 +113,7 @@ export const makePostgresMetaService = zFunction(
         )
         return runQueries((pool) => pool.any<EndUserResultRow>(query))
       },
-      searchInstitutions: ({keywords, connectorNames, ...rest}) => {
+      searchIntegrations: ({keywords, connectorNames, ...rest}) => {
         const {runQueries, sql} = _getDeps(opts)
         const conditions = R.compact([
           connectorNames &&
@@ -126,7 +126,7 @@ export const makePostgresMetaService = zFunction(
             : sql``
         return runQueries((pool) =>
           pool.any(
-            applyLimitOffset(sql`SELECT * FROM institution ${where}`, rest),
+            applyLimitOffset(sql`SELECT * FROM integration ${where}`, rest),
           ),
         )
       },
@@ -197,7 +197,7 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
           connectorName && sql`connector_name = ${connectorName}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&
-            tableName === 'institution' &&
+            tableName === 'integration' &&
             sql`standard->>'name' ILIKE ${'%' + keywords + '%'}`,
         ])
         const where =

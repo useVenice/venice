@@ -45,7 +45,7 @@ export const mootaDef = {
           },
           type: 'asset/bank',
           countryCode: 'ID',
-          institutionName: a.label,
+          integrationName: a.label,
           defaultUnit: 'IDR' as Unit,
         },
       }),

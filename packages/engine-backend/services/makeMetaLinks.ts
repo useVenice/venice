@@ -10,7 +10,7 @@ import type {MetaService, MetaTable} from './metaService'
 // So we cannot use the ParsedPipeline type. Consider improving this
 // for the future
 
-// Should the mapping of the StandardInstitution happen inside here?
+// Should the mapping of the StandardIntegration happen inside here?
 
 export function makeMetaLinks(metaBase: MetaService) {
   type Res = Pick<ZRaw['resource'], 'id' | 'connectorConfigId' | 'endUserId'>
@@ -24,7 +24,7 @@ export function makeMetaLinks(metaBase: MetaService) {
   const postDestination = (opts: {pipeline: Pipe; dest: Res}) =>
     handle({resource: opts.dest, pipeline: opts.pipeline})
 
-  const persistInstitution = () => handle({})
+  const persistIntegration = () => handle({})
 
   const handle = (...args: Parameters<typeof handlers>) =>
     handlersLink<AnyEntityPayload>({
@@ -57,25 +57,25 @@ export function makeMetaLinks(metaBase: MetaService) {
           console.warn(`Unexpected resource id ${op.id} != ${resource?.id}`)
           return
         }
-        const {id, settings = {}, institution} = op
+        const {id, settings = {}, integration} = op
         const connectorName = extractId(resource.id)[1]
         console.log('[metaLink] resoUpdate', {
           id,
           settings: R.keys(settings),
-          institution,
+          integration,
           existingResource: resource,
         })
 
-        const institutionId = institution
-          ? makeId('ins', connectorName, institution.externalId)
+        const integrationId = integration
+          ? makeId('int', connectorName, integration.externalId)
           : undefined
 
         // Can we run this in one transaction?
-        if (institution && institutionId) {
+        if (integration && integrationId) {
           // Technically requires elevated permissions...
-          await patch('institution', institutionId, {
-            id: institutionId,
-            external: institution.data,
+          await patch('integration', integrationId, {
+            id: integrationId,
+            external: integration.data,
             // Map standard here?
           })
         }
@@ -94,10 +94,10 @@ export function makeMetaLinks(metaBase: MetaService) {
         await patch('resource', id, {
           id,
           settings,
-          // It is also an issue that institution may not exist at the initial time of
+          // It is also an issue that Integration may not exist at the initial time of
           // connection establishing..
           connectorConfigId,
-          institutionId,
+          integrationId,
           // maybe we should distinguish between setDefaults (from existingResource) vs. actually
           // updating the values...
           endUserId: resource.endUserId,
@@ -139,14 +139,14 @@ export function makeMetaLinks(metaBase: MetaService) {
       data: async (op) => {
         // prettier-ignore
         const {data: {entity, entityName, id}} = op
-        if (entityName !== IDS_INVERTED.ins) {
+        if (entityName !== IDS_INVERTED.int) {
           return
         }
         console.log('[metaLink] patch', id, entity)
         await patch(
-          'institution',
-          id as Id['ins'],
-          entity as ZRaw['institution'],
+          'integration',
+          id as Id['int'],
+          entity as ZRaw['integration'],
         )
         // console.log(`[meta] Did update resource`, id, op.data)
       },
@@ -174,7 +174,7 @@ export function makeMetaLinks(metaBase: MetaService) {
   return {
     postSource,
     postDestination,
-    persistInstitution,
+    persistIntegration,
     handlers,
     patch,
   }

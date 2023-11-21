@@ -9,12 +9,12 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      institution: {
+      integration: {
         Row: {
           created_at: string
           external: Json
           id: string
-          provider_name: string
+          connector_name: string
           standard: Json
           updated_at: string
         }
@@ -22,7 +22,7 @@ export interface Database {
           created_at?: string
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           standard?: Json
           updated_at?: string
         }
@@ -30,7 +30,7 @@ export interface Database {
           created_at?: string
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           standard?: Json
           updated_at?: string
         }
@@ -41,7 +41,7 @@ export interface Database {
           created_at: string
           id: string
           org_id: string
-          provider_name: string
+          connector_name: string
           updated_at: string
         }
         Insert: {
@@ -49,7 +49,7 @@ export interface Database {
           created_at?: string
           id?: string
           org_id: string
-          provider_name?: string
+          connector_name?: string
           updated_at?: string
         }
         Update: {
@@ -57,7 +57,7 @@ export interface Database {
           created_at?: string
           id?: string
           org_id?: string
-          provider_name?: string
+          connector_name?: string
           updated_at?: string
         }
       }
@@ -122,7 +122,7 @@ export interface Database {
           end_user_id: string | null
           external: Json
           id: string
-          provider_name: string
+          connector_name: string
           source_id: string | null
           standard: Json
           updated_at: string
@@ -132,7 +132,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -142,7 +142,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -154,7 +154,7 @@ export interface Database {
           end_user_id: string | null
           external: Json
           id: string
-          provider_name: string
+          connector_name: string
           source_id: string | null
           standard: Json
           updated_at: string
@@ -164,7 +164,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -174,7 +174,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -186,7 +186,7 @@ export interface Database {
           end_user_id: string | null
           external: Json
           id: string
-          provider_name: string
+          connector_name: string
           source_id: string | null
           standard: Json
           updated_at: string
@@ -196,7 +196,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -206,7 +206,7 @@ export interface Database {
           end_user_id?: string | null
           external?: Json
           id?: string
-          provider_name?: string
+          connector_name?: string
           source_id?: string | null
           standard?: Json
           updated_at?: string
@@ -219,9 +219,9 @@ export interface Database {
           end_user_id: string | null
           env_name: string | null
           id: string
-          institution_id: string | null
+          integration_id: string | null
           connector_config_id: string | null
-          provider_name: string
+          connector_name: string
           settings: Json
           updated_at: string
         }
@@ -231,9 +231,9 @@ export interface Database {
           end_user_id?: string | null
           env_name?: string | null
           id?: string
-          institution_id?: string | null
+          integration_id?: string | null
           connector_config_id?: string | null
-          provider_name?: string
+          connector_name?: string
           settings?: Json
           updated_at?: string
         }
@@ -243,9 +243,9 @@ export interface Database {
           end_user_id?: string | null
           env_name?: string | null
           id?: string
-          institution_id?: string | null
+          integration_id?: string | null
           connector_config_id?: string | null
-          provider_name?: string
+          connector_name?: string
           settings?: Json
           updated_at?: string
         }
@@ -264,7 +264,7 @@ export interface Database {
           institution_name: string | null
           last_four: string | null
           name: string | null
-          provider_name: string | null
+          connector_name: string | null
           type: string | null
           updated_at: string | null
         }
@@ -279,7 +279,7 @@ export interface Database {
           institution_name?: never
           last_four?: never
           name?: never
-          provider_name?: string | null
+          connector_name?: string | null
           type?: never
           updated_at?: string | null
         }
@@ -294,7 +294,7 @@ export interface Database {
           institution_name?: never
           last_four?: never
           name?: never
-          provider_name?: string | null
+          connector_name?: string | null
           type?: never
           updated_at?: string | null
         }
@@ -313,7 +313,7 @@ export interface Database {
           id: string | null
           notes: string | null
           payee: string | null
-          provider_name: string | null
+          connector_name: string | null
           splits: Json | null
           updated_at: string | null
         }
@@ -330,7 +330,7 @@ export interface Database {
           id?: string | null
           notes?: never
           payee?: never
-          provider_name?: string | null
+          connector_name?: string | null
           splits?: never
           updated_at?: string | null
         }
@@ -347,7 +347,7 @@ export interface Database {
           id?: string | null
           notes?: never
           payee?: never
-          provider_name?: string | null
+          connector_name?: string | null
           splits?: never
           updated_at?: string | null
         }

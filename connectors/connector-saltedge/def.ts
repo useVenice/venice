@@ -39,7 +39,7 @@ export const saltedgeDef = {
         entity: {
           // This works well for TransferWise (Personal access token)
           // (It names accounts as something like 123457678 MXN, not helpful)
-          // which is the main institution we want
+          // which is the main integration we want
           // SaltEdge for. Let's revisit if this causes issue for anyone else.
           name: `${c.provider_name} - ${a.name}`,
           informationalBalances: {

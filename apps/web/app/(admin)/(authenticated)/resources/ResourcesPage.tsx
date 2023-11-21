@@ -70,7 +70,7 @@ export default function ResourcesPage() {
           {accessorKey: 'id'},
           {accessorKey: 'status'},
           {accessorKey: 'connectorConfigId'},
-          {accessorKey: 'institutionId'},
+          {accessorKey: 'integrationId'},
         ]}
       />
     </div>

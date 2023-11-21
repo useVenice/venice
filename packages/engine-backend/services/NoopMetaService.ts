@@ -13,12 +13,12 @@ const noopTable: MetaTable<string, never> = {
 export const noopMetaService: MetaService = {
   tables: {
     resource: noopTable,
-    institution: noopTable,
+    integration: noopTable,
     connector_config: noopTable,
     pipeline: noopTable,
   },
   searchEndUsers: async () => [],
-  searchInstitutions: async () => [],
+  searchIntegrations: async () => [],
   findPipelines: async () => [],
   listConnectorConfigInfos: async () => [],
 }

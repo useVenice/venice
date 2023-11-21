@@ -46,14 +46,14 @@ export interface MetaService {
     limit?: number
     offset?: number
   }) => Promise<readonly EndUserResultRow[]>
-  searchInstitutions: (options: {
-    /** Leave empty to list the top institutions */
+  searchIntegrations: (options: {
+    /** Leave empty to list the top integrations */
     keywords?: string | null
     /** is there a stronger type here than string? */
     connectorNames?: string[]
     limit?: number
     offset?: number
-  }) => Promise<ReadonlyArray<ZRaw['institution']>>
+  }) => Promise<ReadonlyArray<ZRaw['integration']>>
   /** TODO: Implement limit & offset */
   findPipelines: (options: {
     resourceIds?: Array<Id['reso']>

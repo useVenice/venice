@@ -16,7 +16,7 @@ export const tellerSchemas = {
   resourceSettings: z.object({
     token: z.string(),
   }),
-  institutionData: zInstitution,
+  integrationData: zInstitution,
   connectInput: z.object({
     applicationId: z.string(),
     userToken: z.string().nullish(),
@@ -55,7 +55,7 @@ export const tellerDef = {
       displayName: 'TODO' + settings.token,
       institutionId: 'ins_teller_TODO',
     }),
-    institution: (data) => ({
+    integration: (data) => ({
       name: data.name,
       logoUrl: data.logoUrl,
       envName: undefined,
@@ -71,7 +71,7 @@ export const tellerDef = {
             name: a.name,
             lastFour: a.last_four,
             type: 'asset/bank',
-            institutionName: a.institution.name,
+            integrationName: a.institution.name,
             informationalBalances: {
               current: null,
               available: A(

@@ -20,7 +20,7 @@ export const mercuryDef = {
     stage: 'alpha',
   },
   standardMappers: {
-    institution: () => ({
+    integration: () => ({
       name: 'Mercury',
       logoUrl: 'TODO: Default to integration metadata logoUrl',
       categories: ['banking'],

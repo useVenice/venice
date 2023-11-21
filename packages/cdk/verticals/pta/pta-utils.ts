@@ -226,7 +226,7 @@ export const STD_ACCOUNT_KEYS: EnumOf<keyof Pta.Account> = {
   subtype: 'subtype',
   number: 'number',
   lastFour: 'lastFour',
-  institutionName: 'institutionName',
+  integrationName: 'integrationName',
   countryCode: 'countryCode',
   icon: 'icon',
   openDate: 'openDate',
