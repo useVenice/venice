@@ -15,7 +15,7 @@ const zOneBrickWebhookBody = z.object({
   userId: z.string().nullish(),
 })
 
-export const onebrickServerIntegration = {
+export const onebrickServerConnector = {
   preConnect: (config) =>
     Promise.resolve({
       publicToken: config.publicToken,
@@ -69,4 +69,4 @@ export const onebrickServerIntegration = {
 
 const _op: typeof R.identity<OnebrickSyncOperation> = R.identity
 
-export default onebrickServerIntegration
+export default onebrickServerConnector

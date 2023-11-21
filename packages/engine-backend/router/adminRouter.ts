@@ -4,7 +4,7 @@ import {
   extractConnectorName,
   handlersLink,
   makeId,
-  makeOauthIntegrationServer,
+  makeOauthConnectorServer,
   oauthBaseSchema,
   sync,
   zId,
@@ -17,11 +17,11 @@ import {adminProcedure, trpc} from './_base'
 export {type inferProcedureInput} from '@trpc/server'
 
 export const adminRouter = trpc.router({
-  adminListIntegrations: adminProcedure
-    .meta({openapi: {method: 'GET', path: '/integrations'}})
+  adminListConnectorConfigs: adminProcedure
+    .meta({openapi: {method: 'GET', path: '/connector_configs'}})
     .input(z.void())
-    .output(z.array(zRaw.integration))
-    .query(async ({ctx}) => ctx.services.list('integration', {})),
+    .output(z.array(zRaw.connector_config))
+    .query(async ({ctx}) => ctx.services.list('connector_config', {})),
   adminUpsertPipeline: adminProcedure
     .input(
       zRaw.pipeline
@@ -41,11 +41,11 @@ export const adminRouter = trpc.router({
       return ctx.services.patchReturning('pipeline', id, input)
     }),
   // TODO: Right now this means client has to be responsible for creating
-  // integration IDs, we should support creating integration with connectorName instead
-  adminUpsertIntegration: adminProcedure
-    .meta({openapi: {method: 'POST', path: '/integrations'}})
+  // connector config IDs, we should support creating connector config with connectorName instead
+  adminUpsertConnectorConfig: adminProcedure
+    .meta({openapi: {method: 'POST', path: '/connector_configs'}})
     .input(
-      zRaw.integration
+      zRaw.connector_config
         .pick({
           id: true,
           connectorName: true,
@@ -60,12 +60,12 @@ export const adminRouter = trpc.router({
         // this makes me wonder if UPSERT should always be the default....
         .required({orgId: true}),
     )
-    .output(zRaw.integration)
+    .output(zRaw.connector_config)
     .mutation(async ({input: {id: _id, connectorName, ...input}, ctx}) => {
       const id = _id
         ? _id
         : connectorName && input.orgId
-        ? makeId('int', connectorName, makeUlid())
+        ? makeId('ccfg', connectorName, makeUlid())
         : null
       if (!id) {
         throw new TRPCError({
@@ -82,30 +82,30 @@ export const adminRouter = trpc.router({
         })
       }
       if (connector.metadata?.nangoProvider) {
-        await makeOauthIntegrationServer({
-          intId: id,
+        await makeOauthConnectorServer({
+          ccfgId: id,
           nangoClient: ctx.nango,
           nangoProvider: connector.metadata.nangoProvider,
-        }).upsertIntegration(
-          oauthBaseSchema.integrationConfig.parse(input.config),
+        }).upsertConnectorConfig(
+          oauthBaseSchema.connectorConfig.parse(input.config),
         )
       }
 
-      return ctx.services.patchReturning('integration', id, input)
+      return ctx.services.patchReturning('connector_config', id, input)
     }),
   // Need a tuple for some reason... otherwise seems to not work in practice.
-  adminDeleteIntegration: adminProcedure
-    .meta({openapi: {method: 'DELETE', path: '/integrations/{id}'}})
-    .input(z.object({id: zId('int')}))
+  adminDeleteConnectorConfig: adminProcedure
+    .meta({openapi: {method: 'DELETE', path: '/connector_configs/{id}'}})
+    .input(z.object({id: zId('ccfg')}))
     .output(z.void())
-    .mutation(async ({input: {id: intId}, ctx}) => {
-      const provider = ctx.connectorMap[extractConnectorName(intId)]
+    .mutation(async ({input: {id: ccfgId}, ctx}) => {
+      const provider = ctx.connectorMap[extractConnectorName(ccfgId)]
       if (provider?.metadata?.nangoProvider) {
         await ctx.nango.delete('/config/{provider_config_key}', {
-          path: {provider_config_key: intId},
+          path: {provider_config_key: ccfgId},
         })
       }
-      return ctx.services.metaService.tables.integration.delete(intId)
+      return ctx.services.metaService.tables.connector_config.delete(ccfgId)
     }),
 
   adminSearchEndUsers: adminProcedure
@@ -117,22 +117,23 @@ export const adminRouter = trpc.router({
         // This fitlers out data that belongs to the org rather than specific end users
         .then((rows) => rows.filter((u) => !!u.id)),
     ),
-  adminGetIntegration: adminProcedure
-    .meta({openapi: {method: 'GET', path: '/integrations/{id}'}})
-    .input(z.object({id: zId('int')}))
-    .output(zRaw.integration)
-    .query(async ({input: {id: intId}, ctx}) => {
-      const {connector: _, ...int} = await ctx.services.getIntegrationOrFail(
-        intId,
-      )
+  adminGetConnectorConfig: adminProcedure
+    .meta({openapi: {method: 'GET', path: '/connector_configs/{id}'}})
+    .input(z.object({id: zId('ccfg')}))
+    .output(zRaw.connector_config)
+    .query(async ({input: {id: ccfgId}, ctx}) => {
+      const {connector: _, ...int} =
+        await ctx.services.getConnectorConfigOrFail(ccfgId)
       return int
     }),
   adminSyncMetadata: adminProcedure
-    .input(zId('int').nullish())
-    .mutation(async ({input: intId, ctx}) => {
-      const ints = intId
-        ? await ctx.services.getIntegrationOrFail(intId).then((int) => [int])
-        : await ctx.services.listIntegrations()
+    .input(zId('ccfg').nullish())
+    .mutation(async ({input: ccfgId, ctx}) => {
+      const ints = ccfgId
+        ? await ctx.services
+            .getConnectorConfigOrFail(ccfgId)
+            .then((int) => [int])
+        : await ctx.services.listConnectorConfigs()
       const stats = await sync({
         source: rxjs.merge(
           ...ints.map(

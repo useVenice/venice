@@ -8,7 +8,7 @@ import {itemProjectResponseSchema, itemTimeEntriesSchema} from './TogglCient'
 
 export const togglSchemas = {
   name: z.literal('toggl'),
-  // integrationConfig: zTogglConfig,
+  // connectorConfig: zTogglConfig,
   connectInput: z.object({
     apiToken: z.string(),
   }),

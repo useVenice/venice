@@ -13,9 +13,9 @@ import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk/viewer'
 import {R} from '@usevenice/util'
 
 import type {Env} from '../../apps/app-config/env'
-// Should we actually do this hmm
-import type {_Integration} from './services'
 import {makeServices as _makeServices} from './services'
+// Should we actually do this hmm
+import type {_ConnectorConfig} from './services/dbService'
 import type {MetaService} from './services/metaService'
 
 type Services = ReturnType<typeof _makeServices>
@@ -41,7 +41,7 @@ export interface RouterContext {
 
   /** Used for oauth based resources */
   getRedirectUrl?: (
-    integration: _Integration,
+    connectorConfig: _ConnectorConfig,
     ctx: {endUserId?: EndUserId | null},
   ) => string
 

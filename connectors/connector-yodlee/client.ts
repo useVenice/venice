@@ -7,7 +7,7 @@ import type {FastLinkOpenOptions} from './fastlink'
 
 const YODLEE_CONTAINER_ID = 'yodlee-container'
 
-export const yodleeClientIntegration = {
+export const yodleeClientConnector = {
   useConnectHook: (scope) => {
     const loaded = useScript('//cdn.yodlee.com/fastlink/v4/initialize.js')
     return async (
@@ -84,4 +84,4 @@ export const yodleeClientIntegration = {
   },
 } satisfies ConnectorClient<typeof yodleeSchemas>
 
-export default yodleeClientIntegration
+export default yodleeClientConnector

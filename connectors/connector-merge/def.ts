@@ -13,7 +13,7 @@ import {zCategory, zIntegration} from './MergeClient'
 
 export const mergeSchemas = {
   name: z.literal('merge'),
-  integrationConfig: z.object({
+  connectorConfig: z.object({
     apiKey: z.string(),
   }),
   institutionData: zIntegration,

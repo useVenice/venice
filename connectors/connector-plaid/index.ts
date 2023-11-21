@@ -1,11 +1,11 @@
-import plaidClientIntegration from './client'
+import plaidClientConnector from './client'
 import plaidDef from './def'
-import plaidServerIntegration from './server'
+import plaidServerConnector from './server'
 
 export const plaidProvider = {
   ...plaidDef,
-  ...plaidClientIntegration,
-  ...plaidServerIntegration,
+  ...plaidClientConnector,
+  ...plaidServerConnector,
 }
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,types,gen}.{ts,tsx}"}

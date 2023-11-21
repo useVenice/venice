@@ -24,11 +24,11 @@ export function makeAirbyteConnector(connector: AnyConnectorImpl) {
   const connSpec = z.object({
     settings: connector.schemas.resourceSettings ?? z.object({}),
     // For now, unclear whether it should actually live in airbyte config
-    // or perhaps it should just have a `veniceIntegrationId` field
+    // or perhaps it should just have a `veniceconnectorConfigId` field
     // so the data is not duplicated across dozens of integrations
-    // but then we'd have to think about "auth", or at least the integrationId would have to be
+    // but then we'd have to think about "auth", or at least the connectorConfigId would have to be
     // made a secret field too
-    config: connector.schemas.integrationConfig ?? z.object({}),
+    config: connector.schemas.connectorConfig ?? z.object({}),
   })
 
   type ConnectionSpecification = z.infer<typeof connSpec>

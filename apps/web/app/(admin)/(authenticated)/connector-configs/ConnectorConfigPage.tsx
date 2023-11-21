@@ -4,13 +4,13 @@ import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-import {zIntegrationStage, zIntegrationVertical, zRaw} from '@usevenice/cdk'
+import {zConnectorStage, zConnectorVertical, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
 import {
-  IntegrationCard as _IntegrationCard,
-  ConnectorCard as _ProviderCard,
+  ConnectorCard as _ConnectorCard,
+  ConnectorConfigCard as _ConnectorConfigCard,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -39,12 +39,12 @@ import {inPlaceSort, R, titleCase, z} from '@usevenice/util'
 import {useCurrengOrg} from '@/components/viewer-context'
 import {cn} from '@/lib-client/ui-utils'
 
-type Integration = RouterOutput['adminListIntegrations'][number]
+type ConnectorConfig = RouterOutput['adminListConnectorConfigs'][number]
 
-export default function IntegrationsPage() {
-  const integrationsRes = _trpcReact.adminListIntegrations.useQuery()
-  const catalog = _trpcReact.getIntegrationCatalog.useQuery()
-  if (!integrationsRes.data || !catalog.data) {
+export default function ConnectorConfigsPage() {
+  const connectorConfigsRes = _trpcReact.adminListConnectorConfigs.useQuery()
+  const catalog = _trpcReact.listConnectorMetas.useQuery()
+  if (!connectorConfigsRes.data || !catalog.data) {
     return <LoadingText className="block p-4" />
   }
 
@@ -53,37 +53,37 @@ export default function IntegrationsPage() {
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Connector Configs
       </h2>
-      {integrationsRes.isFetching && (
+      {connectorConfigsRes.isFetching && (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       )}
-      {integrationsRes.data ? (
+      {connectorConfigsRes.data ? (
         <div className="flex flex-wrap">
-          {integrationsRes.data.map((int) => {
+          {connectorConfigsRes.data.map((int) => {
             const connector = catalog.data[int.connectorName]!
             return (
-              <IntegrationCard
+              <ConnectorConfigCard
                 key={int.id}
                 connector={connector}
-                integration={int}>
-                <IntegrationSheet
-                  integration={int}
+                connectorConfig={int}>
+                <ConnectorConfigSheet
+                  connectorConfig={int}
                   connectorName={connector.name}
                 />
-              </IntegrationCard>
+              </ConnectorConfigCard>
             )
           })}
         </div>
       ) : (
-        <div>No integrations configured</div>
+        <div>No connectors configured</div>
       )}
       {/* Spacer */}
       <div className="mt-4" />
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
         Connector Catalog
       </h2>
-      {zIntegrationVertical.options.map((category) => {
+      {zConnectorVertical.options.map((category) => {
         const stageByIndex = R.mapToObj.indexed(
-          zIntegrationStage.options,
+          zConnectorStage.options,
           (o, i) => [o, i],
         )
         const connectors = inPlaceSort(
@@ -101,7 +101,7 @@ export default function IntegrationsPage() {
             </h3>
             <div className="flex flex-wrap">
               {connectors.map((connector) => (
-                <ProviderCard
+                <ConnectorCard
                   key={`${category}-${connector.name}`}
                   connector={connector}>
                   {connector.stage === 'alpha' ? (
@@ -110,15 +110,15 @@ export default function IntegrationsPage() {
                       variant="ghost"
                       onClick={() =>
                         window.open(
-                          `mailto:hi@venice.is?subject=Request%20access%20to%20${connector.displayName}%20integration&body=My%20use%20case%20is...`,
+                          `mailto:hi@venice.is?subject=Request%20access%20to%20${connector.displayName}%20connectors&body=My%20use%20case%20is...`,
                         )
                       }>
                       Request access
                     </Button>
                   ) : (
-                    <IntegrationSheet connectorName={connector.name} />
+                    <ConnectorConfigSheet connectorName={connector.name} />
                   )}
-                </ProviderCard>
+                </ConnectorCard>
               ))}
             </div>
           </div>
@@ -128,57 +128,60 @@ export default function IntegrationsPage() {
   )
 }
 
-// import {defConnectors } from '@usevenice/app-config/integrations/integrations.def'
+// import {defConnectors } from '@usevenice/app-config/connectorss/connectorss.def'
 
-export function IntegrationSheet({
-  integration: int,
+export function ConnectorConfigSheet({
+  connectorConfig: ccfg,
   connectorName,
 }: {
-  integration?: Omit<Integration, 'connectorName'>
+  connectorConfig?: Omit<ConnectorConfig, 'connectorName'>
   connectorName: string
 }) {
-  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.listConnectorMetas.useQuery()
   const connector = catalogRes.data?.[connectorName]
 
   // Consider calling this provider, actually seem to make more sense...
-  // given that we call the code itself integration
-  const formSchema = zRaw.integration
+  // given that we call the code itself connector config
+  const formSchema = zRaw.connector_config
     .pick({endUserAccess: true})
     .extend({config: z.object({})})
 
   const {orgId} = useCurrengOrg()
 
   const [open, setOpen] = React.useState(false)
-  const verb = int ? 'Edit' : 'Add'
+  const verb = ccfg ? 'Edit' : 'Add'
   const {toast} = useToast()
 
-  const upsertIntegration = _trpcReact.adminUpsertIntegration.useMutation({
-    onSuccess: () => {
-      setOpen(false)
-      toast({title: 'Integration saved', variant: 'success'})
-    },
-    onError: (err) => {
-      toast({
-        title: 'Failed to save integration',
-        description: `${err}`,
-        variant: 'destructive',
-      })
-    },
-  })
-  const deleteIntegration = _trpcReact.adminDeleteIntegration.useMutation({
-    onSuccess: () => {
-      setOpen(false)
-      toast({title: 'Integration deleted', variant: 'success'})
-    },
-    onError: (err) => {
-      toast({
-        title: 'Failed to create integration saved',
-        description: `${err}`,
-        variant: 'destructive',
-      })
-    },
-  })
-  const mutating = deleteIntegration.isLoading || upsertIntegration.isLoading
+  const upsertConnectorConfig =
+    _trpcReact.adminUpsertConnectorConfig.useMutation({
+      onSuccess: () => {
+        setOpen(false)
+        toast({title: 'connector config saved', variant: 'success'})
+      },
+      onError: (err) => {
+        toast({
+          title: 'Failed to save connector config',
+          description: `${err}`,
+          variant: 'destructive',
+        })
+      },
+    })
+  const deleteConnectorConfig =
+    _trpcReact.adminDeleteConnectorConfig.useMutation({
+      onSuccess: () => {
+        setOpen(false)
+        toast({title: 'connector config deleted', variant: 'success'})
+      },
+      onError: (err) => {
+        toast({
+          title: 'Failed to create connector config saved',
+          description: `${err}`,
+          variant: 'destructive',
+        })
+      },
+    })
+  const mutating =
+    deleteConnectorConfig.isLoading || upsertConnectorConfig.isLoading
 
   const formRef = React.useRef<SchemaFormElement>(null)
 
@@ -227,7 +230,7 @@ export function IntegrationSheet({
           </div>
 
           <SheetDescription>
-            {int && `ID: ${int.id}`}
+            {ccfg && `ID: ${ccfg.id}`}
             <br />
             Supported mode(s): {connector.supportedModes.join(', ')}
           </SheetDescription>
@@ -241,35 +244,33 @@ export function IntegrationSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                ...(connector.schemas.integrationConfig && {
-                  config: connector.schemas.integrationConfig,
+                ...(connector.schemas.connectorConfig && {
+                  config: connector.schemas.connectorConfig,
                 }),
               },
             })}
             formData={
-              int
-                ? {endUserAccess: int.endUserAccess, config: int.config ?? {}} // {} because required
+              ccfg
+                ? {endUserAccess: ccfg.endUserAccess, config: ccfg.config ?? {}} // {} because required
                 : undefined
             }
             // formData should be non-null at this point, we should fix the typing
-            loading={upsertIntegration.isLoading}
+            loading={upsertConnectorConfig.isLoading}
             onSubmit={({formData}) => {
               console.log('formData submitted', formData)
-              upsertIntegration.mutate({
+              upsertConnectorConfig.mutate({
                 ...formData,
-                ...(int ? {id: int.id} : {connectorName}),
+                ...(ccfg ? {id: ccfg.id} : {connectorName}),
                 orgId,
               })
             }}
             hideSubmitButton
           />
-          {!connector.schemas.integrationConfig && (
-            <p>No configuration needed</p>
-          )}
+          {!connector.schemas.connectorConfig && <p>No configuration needed</p>}
         </div>
         <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">
-          {int && (
+          {ccfg && (
             <AlertDialog>
               <AlertDialogTrigger className="mr-auto">
                 Delete
@@ -277,14 +278,14 @@ export function IntegrationSheet({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Confirm delete {connector.displayName} integration?
+                    Confirm delete {connector.displayName} connector config?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    ID: {int.id}
+                    ID: {ccfg.id}
                     <br />
                     This action cannot be undone. In order to to delete an
-                    integration, you may need to first delete all the resources
-                    that depend on this integration first
+                    connector config, you may need to first delete all the
+                    resources that depend on this connector config first
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -296,8 +297,10 @@ export function IntegrationSheet({
                       // Specifying asChild and using this variant does not appear to be
                       // working for some reason...
                       variant="destructive"
-                      onClick={() => deleteIntegration.mutate({id: int.id})}>
-                      {deleteIntegration.isLoading && (
+                      onClick={() =>
+                        deleteConnectorConfig.mutate({id: ccfg.id})
+                      }>
+                      {deleteConnectorConfig.isLoading && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
                       Delete
@@ -311,10 +314,10 @@ export function IntegrationSheet({
             disabled={mutating}
             type="submit"
             onClick={() => formRef.current?.submit()}>
-            {upsertIntegration.isLoading && (
+            {upsertConnectorConfig.isLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {int ? 'Save' : 'Create'}
+            {ccfg ? 'Save' : 'Create'}
           </Button>
         </SheetFooter>
       </SheetContent>
@@ -322,10 +325,10 @@ export function IntegrationSheet({
   )
 }
 
-const ProviderCard = (props: React.ComponentProps<typeof _ProviderCard>) => (
-  <_ProviderCard Image={Image as any} showStageBadge {...props} />
+const ConnectorCard = (props: React.ComponentProps<typeof _ConnectorCard>) => (
+  <_ConnectorCard Image={Image as any} showStageBadge {...props} />
 )
 
-const IntegrationCard = (
-  props: React.ComponentProps<typeof _IntegrationCard>,
-) => <_IntegrationCard Image={Image as any} showStageBadge {...props} />
+const ConnectorConfigCard = (
+  props: React.ComponentProps<typeof _ConnectorConfigCard>,
+) => <_ConnectorConfigCard Image={Image as any} showStageBadge {...props} />

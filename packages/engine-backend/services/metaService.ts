@@ -12,7 +12,7 @@ export interface MetaTable<
     /** Maybe remove this? not applicable everywhere */
     endUserId?: EndUserId | null
     /** Maybe remove this? not applicable everywhere */
-    integrationId?: Id['int'] | null
+    connectorConfigId?: Id['ccfg'] | null
     /** Maybe remove this? not applicable everywhere */
     connectorName?: string | null
     /** Used for search */
@@ -32,7 +32,7 @@ export interface EndUserResultRow {
   firstCreatedAt?: unknown
   lastUpdatedAt?: unknown
 }
-
+/** TODO: Rename to DB Adapter */
 export interface MetaService {
   tables: {
     [k in keyof ZRaw]: MetaTable<Id[(typeof IDS)[k]], ZRaw[k]>
@@ -61,12 +61,12 @@ export interface MetaService {
     includeDisabled?: boolean
   }) => Promise<ReadonlyArray<ZRaw['pipeline']>>
   /** Id is used to check RLS policy right now for end user */
-  listIntegrationInfos: (opts?: {
-    id?: Id['int'] | null
+  listConnectorConfigInfos: (opts?: {
+    id?: Id['ccfg'] | null
     connectorName?: string | null
   }) => Promise<
     ReadonlyArray<{
-      id: Id['int']
+      id: Id['ccfg']
       envName?: string | null
       displayName?: string | null
     }>

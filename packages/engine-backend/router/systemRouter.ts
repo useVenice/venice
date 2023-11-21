@@ -5,9 +5,9 @@ import {systemProcedure, trpc} from './_base'
 
 export const systemRouter = trpc.router({
   handleWebhook: systemProcedure
-    .input(z.tuple([zId('int'), zWebhookInput]))
-    .mutation(async ({input: [intId, input], ctx}) => {
-      const int = await ctx.services.getIntegrationOrFail(intId)
+    .input(z.tuple([zId('ccfg'), zWebhookInput]))
+    .mutation(async ({input: [ccfgId, input], ctx}) => {
+      const int = await ctx.services.getConnectorConfigOrFail(ccfgId)
 
       if (!int.connector.schemas.webhookInput || !int.connector.handleWebhook) {
         console.warn(`${int.connector.name} does not handle webhooks`)

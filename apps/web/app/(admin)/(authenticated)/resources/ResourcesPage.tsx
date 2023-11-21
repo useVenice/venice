@@ -56,7 +56,7 @@ export default function ResourcesPage() {
         </h2>
         <VeniceConnectButton clientConnectors={clientConnectors} />
       </header>
-      <p>Resources are created based on integration configurations</p>
+      <p>Resources are created based on connector configurations</p>
       <DataTable
         query={res}
         columns={[
@@ -69,7 +69,7 @@ export default function ResourcesPage() {
           {accessorKey: 'endUserId'},
           {accessorKey: 'id'},
           {accessorKey: 'status'},
-          {accessorKey: 'integrationId'},
+          {accessorKey: 'connectorConfigId'},
           {accessorKey: 'institutionId'},
         ]}
       />
@@ -145,11 +145,9 @@ function EditResourceSheet({
   open: boolean
   setOpen: (open: boolean) => void
 }) {
-  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.listConnectorMetas.useQuery()
   const connector = catalogRes.data?.[extractConnectorName(reso.id)]
 
-  // Consider calling this connector, actually seem to make more sense...
-  // given that we call the code itself integration
   const formSchema = zRaw.resource
     .pick({displayName: true})
     .extend({settings: z.object({})})

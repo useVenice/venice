@@ -78,9 +78,9 @@ const zBase = z.object({
   updatedAt: z.date(), // should be string but slonik returns date
 })
 export const zRaw = {
-  integration: zBase
+  connector_config: zBase
     .extend({
-      id: zId('int'),
+      id: zId('ccfg'),
       /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
       envName: z.string().nullish(),
       connectorName: z.string(),
@@ -95,20 +95,20 @@ export const zRaw = {
       displayName: z.string().nullish(),
       disabled: z.boolean().optional(),
     })
-    .openapi({ref: 'integration'}),
+    .openapi({ref: 'ConnectorConfig'}),
   resource: zBase
     .extend({
       id: zId('reso'),
       connectorName: z.string().describe('Unique name of the connector'),
       displayName: z.string().nullish(),
       endUserId: zEndUserId.nullish(),
-      integrationId: zId('int'),
+      connectorConfigId: zId('ccfg'),
       institutionId: zId('ins').nullish(),
       settings: z.record(z.unknown()).nullish(),
       standard: zStandard.resource.omit({id: true}).nullish(),
       disabled: z.boolean().optional(),
     })
-    .openapi({ref: 'resource'}),
+    .openapi({ref: 'Resource'}),
   pipeline: zBase
     .extend({
       id: zId('pipe'),
@@ -132,7 +132,7 @@ export const zRaw = {
       lastSyncCompletedAt: z.date().nullish(),
       disabled: z.boolean().optional(),
     })
-    .openapi({ref: 'pipeline'}),
+    .openapi({ref: 'Pipeline'}),
   institution: zBase
     .extend({
       id: zId('ins'),
@@ -140,6 +140,6 @@ export const zRaw = {
       standard: zStandard.institution.omit({id: true}).nullish(),
       external: z.record(z.unknown()).nullish(),
     })
-    .openapi({ref: 'institution'}),
+    .openapi({ref: 'Institution'}),
   // TODO: Add connection_attempts
 }

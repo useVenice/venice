@@ -26,11 +26,11 @@ import type {Pta} from './verticals/pta'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({
-  integration: {connector},
+  connectorConfig: {connector},
   settings: initialSettings,
   id: sourceId,
 }: {
-  integration: {connector: ConnectorDef}
+  connectorConfig: {connector: ConnectorDef}
   settings: unknown
   id: Id['reso'] | undefined
 }): Link<AnyEntityPayload, EntityPayloadWithRaw> {

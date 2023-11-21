@@ -16,7 +16,7 @@ const connectInputSchema = z.object({
 
 export const onebrickSchemas = {
   name: z.literal('onebrick'),
-  integrationConfig: zOneBrickConfig,
+  connectorConfig: zOneBrickConfig,
   resourceSettings: z.object({accessToken: z.string()}),
   connectInput: connectInputSchema,
   connectOutput: z.object({

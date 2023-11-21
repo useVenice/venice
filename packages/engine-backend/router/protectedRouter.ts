@@ -41,7 +41,7 @@ export const protectedRouter = trpc.router({
       zListParams
         .extend({
           endUserId: zEndUserId.nullish(),
-          integrationId: zId('int').nullish(),
+          connectorConfigId: zId('ccfg').nullish(),
           connectorName: z.string().nullish(),
         })
         .optional(),
@@ -154,18 +154,18 @@ export const protectedRouter = trpc.router({
           }
         })
     }),
-  listIntegrationInfos: protectedProcedure
-    .meta({openapi: {method: 'GET', path: '/integration_infos'}})
+  listConnectorConfigInfos: protectedProcedure
+    .meta({openapi: {method: 'GET', path: '/connector_config_infos'}})
     .input(
       z.object({
         type: z.enum(['source', 'destination']).nullish(),
-        id: zId('int').nullish(),
+        id: zId('ccfg').nullish(),
         connectorName: z.string().nullish(),
       }),
     )
     .output(
       z.array(
-        zRaw.integration
+        zRaw.connector_config
           .pick({
             id: true,
             envName: true,
@@ -179,7 +179,7 @@ export const protectedRouter = trpc.router({
       ),
     )
     .query(async ({input: {type, id, connectorName}, ctx}) => {
-      const intInfos = await ctx.services.metaService.listIntegrationInfos({
+      const intInfos = await ctx.services.metaService.listConnectorConfigInfos({
         id,
         connectorName,
       })
@@ -210,7 +210,7 @@ export const protectedRouter = trpc.router({
   searchInstitutions: protectedProcedure
     .input(z.object({keywords: z.string().trim().nullish()}).optional())
     .query(async ({input: {keywords} = {}, ctx}) => {
-      const ints = await ctx.services.listIntegrations()
+      const ints = await ctx.services.listConnectorConfigs()
       const institutions = await ctx.services.metaService.searchInstitutions({
         keywords,
         limit: 10,
@@ -258,10 +258,10 @@ export const protectedRouter = trpc.router({
       }
       const {
         settings,
-        integration: int,
+        connectorConfig: int,
         ...reso
       } = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
-      // console.log('checkResource', {settings, integration, ...conn}, opts)
+      // console.log('checkResource', {settings, connectorConfig, ...conn}, opts)
       const resoUpdate = await int.connector.checkResource?.({
         settings,
         config: int.config,
@@ -309,8 +309,8 @@ export const protectedRouter = trpc.router({
       if (opts?.metaOnly) {
         await sync({
           source:
-            reso.integration.connector.sourceSync?.({
-              config: reso.integration.config,
+            reso.connectorConfig.connector.sourceSync?.({
+              config: reso.connectorConfig.config,
               settings: reso.settings,
               endUser: reso.endUserId && {id: reso.endUserId},
               // Maybe we should rename `options` to `state`?
@@ -331,7 +331,7 @@ export const protectedRouter = trpc.router({
       // but pipeline is already being persisted properly. This current solution
       // is vulnerable to race condition and feels brittle. Though syncResource is only
       // called from the UI so we are fine for now.
-      await ctx.asOrgIfNeeded._syncResourceUpdate(reso.integration, {
+      await ctx.asOrgIfNeeded._syncResourceUpdate(reso.connectorConfig, {
         endUserId: reso.endUserId,
         settings: reso.settings,
         resourceExternalId: extractId(reso.id)[2],

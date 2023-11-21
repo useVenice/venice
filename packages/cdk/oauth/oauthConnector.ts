@@ -17,7 +17,7 @@ import {zConnection, zIntegration} from './NangoClient'
 
 export const oauthBaseSchema = {
   name: z.literal('__oauth__'), // TODO: This is a noop
-  integrationConfig: z.object({
+  connectorConfig: z.object({
     oauth: zIntegration.pick({
       client_id: true,
       client_secret: true,
@@ -32,7 +32,7 @@ export const oauthBaseSchema = {
     }),
   }),
   connectOutput: z.object({
-    providerConfigKey: zId('int'),
+    providerConfigKey: zId('ccfg'),
     connectionId: zId('reso'),
   }),
 } satisfies ConnectorSchemas
@@ -46,18 +46,18 @@ function isNangoAuthError(err: unknown): err is AuthError {
 export function oauthConnect({
   nangoFrontend,
   connectorName,
-  integrationId,
+  connectorConfigId,
   resourceId,
 }: {
   nangoFrontend: NangoFrontend
   connectorName: string
-  integrationId: Id['int']
+  connectorConfigId: Id['ccfg']
   /** Should address the re-connect scenario, but let's see... */
   resourceId?: Id['reso']
 }): Promise<OauthBaseTypes['connectOutput']> {
   return nangoFrontend
     .auth(
-      integrationId,
+      connectorConfigId,
       resourceId ?? makeId('reso', connectorName, makeUlid()),
     )
     .then((r) => oauthBaseSchema.connectOutput.parse(r))
@@ -72,30 +72,32 @@ export function oauthConnect({
     })
 }
 
-export function makeOauthIntegrationServer({
+export function makeOauthConnectorServer({
   nangoClient,
   nangoProvider,
-  intId,
+  ccfgId,
 }: {
   nangoClient: NangoClient
   nangoProvider: NangoProvider
-  intId: Id['int']
+  ccfgId: Id['ccfg']
 }) {
-  const intServer = {
+  const connServer = {
     async postConnect(connectOutput) {
       const {connectionId: resoId} = connectOutput
       const res = await nangoClient.get('/connection/{connectionId}', {
         path: {connectionId: resoId},
-        query: {provider_config_key: intId, refresh_token: true},
+        query: {provider_config_key: ccfgId, refresh_token: true},
       })
       return {resourceExternalId: extractId(resoId)[2], settings: {oauth: res}}
     },
   } satisfies ConnectorServer<typeof oauthBaseSchema>
   return {
-    ...intServer,
-    upsertIntegration: async (config: OauthBaseTypes['integrationConfig']) => {
+    ...connServer,
+    upsertConnectorConfig: async (
+      config: OauthBaseTypes['connectorConfig'],
+    ) => {
       const bodyJson: UpsertIntegration = {
-        provider_config_key: intId,
+        provider_config_key: ccfgId,
         provider: nangoProvider,
         oauth_client_id: config.oauth.client_id,
         oauth_client_secret: config.oauth.client_secret,

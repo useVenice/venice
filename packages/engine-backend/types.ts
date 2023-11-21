@@ -7,21 +7,22 @@ type _inferInput<T> = T extends z.ZodTypeAny ? z.input<T> : never
 
 // Would be nice to improve the typing of this... Make stuff non-optional
 /** https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types */
-export type IntegrationInput<T extends AnyConnectorImpl = AnyConnectorImpl> =
-  T extends AnyConnectorImpl
-    ? {
-        id: Id<T['name']>['int']
-        config?: Partial<_inferInput<T['schemas']['integrationConfig']>>
-      }
-    : never
+export type ConnectorConfigInput<
+  T extends AnyConnectorImpl = AnyConnectorImpl,
+> = T extends AnyConnectorImpl
+  ? {
+      id: Id<T['name']>['ccfg']
+      config?: Partial<_inferInput<T['schemas']['connectorConfig']>>
+    }
+  : never
 
 // Is there a way to infer this? Or would that be too much?
 export type ResourceInput<T extends AnyConnectorImpl = AnyConnectorImpl> =
   T extends AnyConnectorImpl
     ? {
         id: Id<T['name']>['reso']
-        integrationId?: Id<T['name']>['int']
-        integration?: IntegrationInput<T>
+        connectorConfigId?: Id<T['name']>['ccfg']
+        connectorConfig?: ConnectorConfigInput<T>
         settings?: Partial<_inferInput<T['schemas']['resourceSettings']>> &
           object
       }

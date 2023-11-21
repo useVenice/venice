@@ -7,13 +7,13 @@ import {defConnectors} from './connectors/connectors.def'
 
 /** We would prefer to use `.` but vercel env var name can only be number, letter and underscore... */
 const separator = '__'
-const getPrefix = (name: string) => makeId('int', name, '')
+const getPrefix = (name: string) => makeId('ccfg', name, '')
 
 // Should this be all providers or only dcoumented ones?
 
 export const zFlatConfigByProvider = R.mapValues(defConnectors, (def, name) =>
   zFlattenForEnv(
-    (def.schemas as ConnectorSchemas)?.integrationConfig ?? z.unknown(),
+    (def.schemas as ConnectorSchemas)?.connectorConfig ?? z.unknown(),
     {
       prefix: getPrefix(name),
       separator,
@@ -21,7 +21,7 @@ export const zFlatConfigByProvider = R.mapValues(defConnectors, (def, name) =>
   ),
 )
 
-export const zIntegrationEnv = zEnvVars(
+export const zConnectorConfigEnv = zEnvVars(
   R.pipe(
     zFlatConfigByProvider,
     R.values,
@@ -30,13 +30,13 @@ export const zIntegrationEnv = zEnvVars(
   ) as {},
 )
 
-// MARK: - Parsing integration configs
+// MARK: - Parsing connector configs
 
 /**
  * Input env must be raw, so means most likely we are parsing the flatConfig input twice
  * for the moment unfortunately... But we need this to support transforms in flatConfig
  */
-export function parseIntConfigsFromRawEnv(
+export function parseConnectorConfigsFromRawEnv(
   env: Record<string, string | undefined> = process.env,
 ) {
   return R.pipe(
@@ -62,13 +62,13 @@ export function parseIntConfigsFromRawEnv(
     }),
     (configMap) => R.pickBy(configMap, (val) => val !== undefined),
   ) as {
-    [k in keyof typeof defConnectors]?: GetIntConfig<
+    [k in keyof typeof defConnectors]?: GetConnectorConfig<
       ConnHelpers<(typeof defConnectors)[k]['schemas']>['_types']
     >
   }
 }
 
 /** Feels like bit of a hack... */
-type GetIntConfig<T> = T extends {integrationConfig: unknown}
-  ? T['integrationConfig']
+type GetConnectorConfig<T> = T extends {connectorConfig: unknown}
+  ? T['connectorConfig']
   : {}

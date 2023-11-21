@@ -4,7 +4,7 @@ import {flatRouter} from '@usevenice/engine-backend'
 import {getEnvVar} from '@usevenice/util'
 
 import {contextFactory} from './backendConfig'
-import {parseIntConfigsFromRawEnv} from './connector-envs'
+import {parseConnectorConfigsFromRawEnv} from './connector-envs'
 
 // TODO: Is this file needed? We can most likely just
 // embed the functionality into venice cli directly...
@@ -16,15 +16,15 @@ export async function bootstrap() {
     ...contextFactory.fromViewer({role: 'org', orgId}),
     remoteResourceId: null,
   })
-  const configs = parseIntConfigsFromRawEnv()
+  const configs = parseConnectorConfigsFromRawEnv()
 
   for (const [connectorName, config] of Object.entries(configs ?? {})) {
     if (!config) {
       continue
     }
-    const id = makeId('int', connectorName, extractId(orgId)[1])
-    await caller.adminUpsertIntegration({id, config: config as {}, orgId})
-    console.log('Upsert integration', id)
+    const id = makeId('ccfg', connectorName, extractId(orgId)[1])
+    await caller.adminUpsertConnectorConfig({id, config: config as {}, orgId})
+    console.log('Upsert ConnectorConfig', id)
   }
   console.log('Bootstrap complete')
 }

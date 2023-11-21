@@ -3,12 +3,12 @@
  * https://share.cleanshot.com/QjmQTFf9
  */
 import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers, zIntAuth} from '@usevenice/cdk'
+import {connHelpers, zCcfgAuth} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
 
 export const mercurySchemas = {
   name: z.literal('mercury'),
-  integrationConfig: zIntAuth.oauthOrApikeyAuth,
+  connectorConfig: zCcfgAuth.oauthOrApikeyAuth,
 } satisfies ConnectorSchemas
 
 export const mercuryDef = {

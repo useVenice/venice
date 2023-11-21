@@ -37,7 +37,7 @@ const zSettings = zUserCreds.extend({
 
 export const yodleeSchemas = {
   name: z.literal('yodlee'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   resourceSettings: zSettings,
   institutionData: zYodleeInstitution,
   // Should accessToken be cached based on provider / userId?

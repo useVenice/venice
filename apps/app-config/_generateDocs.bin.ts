@@ -5,7 +5,7 @@ import tablemark from 'tablemark'
 
 import {buildUrl, R} from '@usevenice/util'
 
-import {parseIntConfigsFromRawEnv} from './connector-envs'
+import {parseConnectorConfigsFromRawEnv} from './connector-envs'
 import {defConnectors} from './connectors/connectors.def'
 import {env, envConfig} from './env'
 
@@ -14,8 +14,10 @@ const envList = R.pipe(
   R.toPairs,
   R.filter(
     ([key]) =>
-      !key.startsWith('int') ||
-      Object.values(defConnectors).some((p) => key.startsWith(`int_${p.name}`)),
+      !key.startsWith('ccfg') ||
+      Object.values(defConnectors).some((p) =>
+        key.startsWith(`ccfg_${p.name}`),
+      ),
   ),
   R.map(([key, schema]) => {
     const cmtLines = R.pipe(
@@ -125,7 +127,7 @@ console.log(`Wrote ${dotEnvExampleOutPath}`)
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('Test out loading env vars')
-  const configs = parseIntConfigsFromRawEnv()
+  const configs = parseConnectorConfigsFromRawEnv()
   console.log('Parsed env', env)
   console.log('Parsed intConfigs', configs)
 }

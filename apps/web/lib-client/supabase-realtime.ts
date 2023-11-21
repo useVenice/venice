@@ -75,10 +75,10 @@ export const InvalidateQueriesOnPostgresChanges = React.memo(
       console.log('invalidate pipelines and related')
       void trpcUtils.listPipelines.invalidate()
     })
-    usePostgresChanges(props.client, 'integration', () => {
+    usePostgresChanges(props.client, 'connector_config', () => {
       console.log('invalidate integrations and related')
-      void trpcUtils.adminListIntegrations.invalidate()
-      void trpcUtils.listIntegrationInfos.invalidate()
+      void trpcUtils.adminListConnectorConfigs.invalidate()
+      void trpcUtils.listConnectorConfigInfos.invalidate()
     })
     return null
   },

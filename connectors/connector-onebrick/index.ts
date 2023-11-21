@@ -1,11 +1,11 @@
-import onebrickClientIntegration from './client'
+import onebrickClientConector from './client'
 import oneBrickDef from './def'
-import onebrickServerIntegration from './server'
+import onebrickServerConnector from './server'
 
 export const oneBrickProvider = {
   ...oneBrickDef,
-  ...onebrickClientIntegration,
-  ...onebrickServerIntegration,
+  ...onebrickClientConector,
+  ...onebrickServerConnector,
 }
 
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{d,spec,test,fixture,gen,node}.{ts,tsx}"}

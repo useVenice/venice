@@ -11,7 +11,7 @@ import {
 
 export const wiseSchemas = {
   name: z.literal('wise'),
-  // integrationConfig: zWiseConfig,
+  // connectorConfig: zWiseConfig,
   resourceSettings: z.object({
     envName: zEnvName,
     apiToken: z.string().nullish(),

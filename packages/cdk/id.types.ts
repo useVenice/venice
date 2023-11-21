@@ -13,15 +13,15 @@ export const INDEPENDENT_IDS = {
   pipeline: 'pipe',
 } as const
 
-export const PROVIDER_IDS = {
-  integration: 'int',
+export const CONNECTOR_SCOPED_IDS = {
+  connector_config: 'ccfg',
   resource: 'reso',
   institution: 'ins',
 } as const
 
 export const IDS = {
   ...INDEPENDENT_IDS,
-  ...PROVIDER_IDS,
+  ...CONNECTOR_SCOPED_IDS,
 }
 
 export const IDS_INVERTED = invert(IDS)
@@ -87,7 +87,7 @@ export function extractId(id: Id[keyof Id]) {
 }
 
 // TODO: Should we have a branded type for connectorName?
-export function extractConnectorName(id: Id['int'] | Id['reso']) {
+export function extractConnectorName(id: Id['ccfg'] | Id['reso']) {
   return extractId(id)[1]
 }
 

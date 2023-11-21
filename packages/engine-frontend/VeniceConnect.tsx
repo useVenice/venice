@@ -16,12 +16,13 @@ import {
   extractConnectorName,
   extractId,
   oauthConnect,
-  zIntegrationVertical,
+  zConnectorVertical,
 } from '@usevenice/cdk'
 import type {RouterInput, RouterOutput} from '@usevenice/engine-backend'
 import type {SchemaFormElement, UIProps, UIPropsNoChildren} from '@usevenice/ui'
 import {
   Button,
+  ConnectorConfigCard,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -36,7 +37,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  IntegrationCard,
   ResourceCard,
   SchemaForm,
   useToast,
@@ -52,9 +52,9 @@ export interface VeniceConnectProps extends UIPropsNoChildren {
   /** Whether to display the existing connections */
   showExisting?: boolean
   clientConnectors: Record<string, ConnectorClient>
-  onEvent?: (event: {type: ConnectEventType; intId: Id['int']}) => void
-  /** Only connect to this integration */
-  integrationId?: Id['int'] | null
+  onEvent?: (event: {type: ConnectEventType; ccfgId: Id['ccfg']}) => void
+  /** Only connect to this connector config */
+  connectorConfigId?: Id['ccfg'] | null
   connectorName?: string | null
 }
 
@@ -91,12 +91,14 @@ export function VeniceConnectButton({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New connection</DialogTitle>
-          <DialogDescription>Choose an integration to start</DialogDescription>
+          <DialogDescription>
+            Choose a connector config to start
+          </DialogDescription>
         </DialogHeader>
         <VeniceConnect
           {...props}
           onEvent={(event) => {
-            // How do we close the dialog when an integration has been chosen?
+            // How do we close the dialog when an connector config has been chosen?
             // This is problematic because if VeniceConnect itself gets removed from dom
             // then any dialog it presents goes away also
             // Tested forceMount though and it doesn't quite work... So we might want something like a hidden
@@ -114,26 +116,26 @@ export function VeniceConnectButton({
 // Also it would be nice if there was an easy way to automatically prefetch on the server side
 // based on calls to useQuery so it doesn't need to be separately handled again on the client...
 export function VeniceConnect(props: VeniceConnectProps) {
-  const listIntegrationsRes = _trpcReact.listIntegrationInfos.useQuery({
-    id: props.integrationId,
+  const listConnectorConfigsRes = _trpcReact.listConnectorConfigInfos.useQuery({
+    id: props.connectorConfigId,
     connectorName: props.connectorName,
   })
-  const catalogRes = _trpcReact.getIntegrationCatalog.useQuery()
+  const catalogRes = _trpcReact.listConnectorMetas.useQuery()
 
-  if (!listIntegrationsRes.data || !catalogRes.data) {
+  if (!listConnectorConfigsRes.data || !catalogRes.data) {
     return <div>Loading...</div>
   }
   return (
     <_VeniceConnect
-      integrationInfos={listIntegrationsRes.data ?? []}
+      connectorConfigInfos={listConnectorConfigsRes.data ?? []}
       catalog={catalogRes.data}
       {...props}
     />
   )
 }
 
-type IntegrationInfos = RouterOutput['listIntegrationInfos']
-type Catalog = RouterOutput['getIntegrationCatalog']
+type ConnectorConfigInfos = RouterOutput['listConnectorConfigInfos']
+type Catalog = RouterOutput['listConnectorMetas']
 type ConnectorMeta = Catalog[string]
 
 // TODOD: Dedupe this with app-config/constants
@@ -141,17 +143,17 @@ const __DEBUG__ = Boolean(
   typeof window !== 'undefined' && window.location.hostname === 'localhost',
 )
 
-/** Need _VeniceConnect integrationIds to not have useConnectHook execute unreliably  */
+/** Need _VeniceConnect connectorConfigIds to not have useConnectHook execute unreliably  */
 export function _VeniceConnect({
   catalog,
   clientConnectors,
   onEvent,
   showExisting,
   className,
-  integrationInfos,
+  connectorConfigInfos: connectorConfigInfos,
   ...uiProps
 }: VeniceConnectProps & {
-  integrationInfos: IntegrationInfos
+  connectorConfigInfos: ConnectorConfigInfos
   catalog: Catalog
 }) {
   const nangoPublicKey =
@@ -164,7 +166,7 @@ export function _VeniceConnect({
     [nangoPublicKey],
   )
 
-  // VeniceConnect should be fetching its own integrationIds as well as resources
+  // VeniceConnect should be fetching its own connectorConfigIds as well as resources
   // this way it can esure those are refreshed as operations take place
   // This is esp true when we are operating in client envs (js embed)
   // and cannot run on server-side per-se
@@ -174,31 +176,31 @@ export function _VeniceConnect({
     {enabled: showExisting},
   )
 
-  const integrations = integrationInfos
+  const connectorConfigs = connectorConfigInfos
     .map(({id, ...info}) => {
       const connector = catalog[extractConnectorName(id)]
       if (!connector) {
-        console.warn('Missing connector for integration', id)
+        console.warn('Missing connector for connector config', id)
       }
       return connector ? {...info, id, connector} : null
     })
     .filter((i): i is NonNullable<typeof i> => !!i)
-  const integrationById = R.mapToObj(integrations, (i) => [i.id, i])
+  const connectorConfigById = R.mapToObj(connectorConfigs, (i) => [i.id, i])
 
   // TODO: seems that we are still displaying some data from cache, fix me here...
   // Also maybe connect should be deployed to a different domain to prevent unexpected state persistence
   // that can cause sublte bugs
   const connections = ((showExisting && listConnectionsRes.data) || [])
     .map((conn) => {
-      const integration = integrationById[conn.integrationId]
-      if (!integration) {
-        console.warn('Missing integration for connection', conn)
+      const ccfg = connectorConfigById[conn.connectorConfigId]
+      if (!ccfg) {
+        console.warn('Missing connector config for connection', conn)
       }
-      return integration ? {...conn, integration} : null
+      return ccfg ? {...conn, connectorConfig: ccfg} : null
     })
     .filter((c): c is NonNullable<typeof c> => !!c)
 
-  console.log('[VeniceConnect] integrations', integrations)
+  console.log('[VeniceConnect] connector configs', connectorConfigs)
   console.log('[VeniceConnect] connections', connections)
 
   const [_dialogConfig, setDialogConfig] = React.useState<DialogConfig | null>(
@@ -214,37 +216,37 @@ export function _VeniceConnect({
 
   // Do we actually need this here or can this go inside a ConnectCard somehow?
   const connectFnMap = R.pipe(
-    integrationInfos,
-    R.map((intInfo) => extractConnectorName(intInfo.id)),
+    connectorConfigInfos,
+    R.map((ccfgInfo) => extractConnectorName(ccfgInfo.id)),
     R.uniq,
     R.mapToObj((connectorName: string) => {
       let fn = clientConnectors[connectorName]?.useConnectHook?.({openDialog})
       const nangoProvider = catalog[connectorName]?.nangoProvider
       if (!fn && nangoProvider) {
         console.log('adding nnango provider for', nangoProvider)
-        fn = (_, {integrationId}) => {
+        fn = (_, {connectorConfigId}) => {
           if (!nangoFrontend) {
             throw new Error('Missing nango public key')
           }
-          return oauthConnect({integrationId, nangoFrontend, connectorName})
+          return oauthConnect({connectorConfigId, nangoFrontend, connectorName})
         }
       }
       return [connectorName, fn]
     }),
   )
 
-  const categories = zIntegrationVertical.options
+  const categories = zConnectorVertical.options
     .map((category) => ({
       key: category,
       name: titleCase(category),
-      integrations: integrations.filter((integration) =>
-        integration.connector?.categories.includes(category),
+      connectorConfigs: connectorConfigs.filter((ccfg) =>
+        ccfg.connector?.categories.includes(category),
       ),
     }))
-    .filter((item) => item.integrations.length > 0)
+    .filter((item) => item.connectorConfigs.length > 0)
 
-  if (!integrations.length) {
-    return <div>No end user integrations configured</div>
+  if (!connectorConfigs.length) {
+    return <div>No end user connectors configured</div>
   }
   return (
     <div className={cn('flex flex-wrap', className)}>
@@ -255,7 +257,7 @@ export function _VeniceConnect({
             <h3 className="mb-4 ml-4 text-xl font-semibold tracking-tight">
               {category.name}
             </h3>
-            {category.integrations.map((int) => (
+            {category.connectorConfigs.map((int) => (
               <div key={int.id}>Connect with {int.id}</div>
             ))}
           </div>
@@ -267,40 +269,40 @@ export function _VeniceConnect({
           {...uiProps}
           key={conn.id}
           resource={conn}
-          connector={conn.integration.connector}>
+          connector={conn.connectorConfig.connector}>
           <ResourceDropdownMenu
-            integration={conn.integration}
+            connectorConfig={conn.connectorConfig}
             resource={conn}
-            connectFn={connectFnMap[conn.integration.connector.name]}
+            connectFn={connectFnMap[conn.connectorConfig.connector.name]}
             onEvent={(e) => {
-              onEvent?.({type: e.type, intId: conn.integration.id})
+              onEvent?.({type: e.type, ccfgId: conn.connectorConfig.id})
             }}
           />
           {/* <ProviderConnectButton
-            integration={conn.integration}
+            connectorConfig={conn.connectorConfig}
             resource={conn}
-            connectFn={connectFnMap[conn.integration.connector.name]}
+            connectFn={connectFnMap[conn.connectorConfig.connector.name]}
             onEvent={(e) => {
-              onEvent?.({type: e.type, intId: conn.integration.id})
+              onEvent?.({type: e.type, ccfgId: conn.connectorConfig.id})
             }}
           /> */}
         </ResourceCard>
       ))}
       {/* Add new  */}
-      {integrations.map((int) => (
-        <IntegrationCard
+      {connectorConfigs.map((ccfg) => (
+        <ConnectorConfigCard
           {...uiProps}
-          key={int.id}
-          integration={int}
-          connector={int.connector}>
+          key={ccfg.id}
+          connectorConfig={ccfg}
+          connector={ccfg.connector}>
           <ProviderConnectButton
-            integration={int}
-            connectFn={connectFnMap[int.connector.name]}
+            connectorConfig={ccfg}
+            connectFn={connectFnMap[ccfg.connector.name]}
             onEvent={(e) => {
-              onEvent?.({type: e.type, intId: int.id})
+              onEvent?.({type: e.type, ccfgId: ccfg.id})
             }}
           />
-        </IntegrationCard>
+        </ConnectorConfigCard>
       ))}
     </div>
   )
@@ -313,7 +315,7 @@ export const ProviderConnectButton = ({
   className,
   ...props
 }: UIProps & {
-  integration: {id: Id['int']; connector: ConnectorMeta}
+  connectorConfig: {id: Id['ccfg']; connector: ConnectorMeta}
   resource?: Resource
   connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
@@ -344,12 +346,12 @@ export const ProviderConnectButton = ({
 )
 
 export const WithProviderConnect = ({
-  integration: int,
+  connectorConfig: ccfg,
   resource,
   connectFn,
   children,
 }: {
-  integration: {id: Id['int']; connector: ConnectorMeta}
+  connectorConfig: {id: Id['ccfg']; connector: ConnectorMeta}
   resource?: Resource
   connectFn?: ReturnType<UseConnectHook>
   onEvent?: (event: {type: ConnectEventType}) => void
@@ -366,8 +368,8 @@ export const WithProviderConnect = ({
 
   // TODO: Handle preConnectInput schema and such... for example for Plaid
   const preConnect = _trpcReact.preConnect.useQuery(
-    [int.id, {resourceExternalId}, {}],
-    {enabled: int.connector.hasPreConnect},
+    [ccfg.id, {resourceExternalId}, {}],
+    {enabled: ccfg.connector.hasPreConnect},
   )
   const postConnect = _trpcReact.postConnect.useMutation()
   const createResource = _trpcReact.createResource.useMutation()
@@ -378,30 +380,30 @@ export const WithProviderConnect = ({
     // not sure if it's the right idea to have create and connect together in
     // one mutation, starting to feel a bit confusing...
     async (input?: RouterInput['createResource']) => {
-      // For postgres and various integrations that does not require client side JS
+      // For postgres and various connectors that does not require client side JS
       if (input) {
         return createResource.mutateAsync(input)
       }
-      // For plaid and other integrations that requires client side JS
+      // For plaid and other connectors that requires client side JS
       // TODO: Test this...
       // How to make sure does not actually refetch we if we already have data?
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const connInput = int.connector.hasPreConnect
+      const connInput = ccfg.connector.hasPreConnect
         ? (await preConnect.refetch()).data
         : {}
-      console.log(`[VeniceConnect] ${int.id} connInput`, connInput)
+      console.log(`[VeniceConnect] ${ccfg.id} connInput`, connInput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const connOutput = connectFn
-        ? await connectFn?.(connInput, {integrationId: int.id})
+        ? await connectFn?.(connInput, {connectorConfigId: ccfg.id})
         : connInput
-      console.log(`[VeniceConnect] ${int.id} connOutput`, connOutput)
+      console.log(`[VeniceConnect] ${ccfg.id} connOutput`, connOutput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const postConnOutput = int.connector.hasPostConnect
-        ? await postConnect.mutateAsync([connOutput, int.id, {}])
+      const postConnOutput = ccfg.connector.hasPostConnect
+        ? await postConnect.mutateAsync([connOutput, ccfg.id, {}])
         : connOutput
-      console.log(`[VeniceConnect] ${int.id} postConnOutput`, postConnOutput)
+      console.log(`[VeniceConnect] ${ccfg.id} postConnOutput`, postConnOutput)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return postConnOutput
@@ -410,7 +412,7 @@ export const WithProviderConnect = ({
       onSuccess(msg) {
         if (msg) {
           toast({
-            title: `Success (${int.connector.displayName})`,
+            title: `Success (${ccfg.connector.displayName})`,
             description: `${msg}`,
             variant: 'success',
           })
@@ -422,7 +424,7 @@ export const WithProviderConnect = ({
           return
         }
         toast({
-          title: `Failed to connect to ${int.connector.displayName}`,
+          title: `Failed to connect to ${ccfg.connector.displayName}`,
           description: `${err}`,
           variant: 'destructive',
         })
@@ -433,7 +435,7 @@ export const WithProviderConnect = ({
   const [open, setOpen] = React.useState(false)
   const formRef = React.useRef<SchemaFormElement>(null)
 
-  // console.log('int', int.id, 'open', open)
+  // console.log('ccfg', int.id, 'open', open)
   return (
     // non modal dialog do not add pointer events none to the body
     // which workaround issue with multiple portals (dropdown, dialog) conflicting
@@ -451,21 +453,23 @@ export const WithProviderConnect = ({
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Connect to {int.connector.name}</DialogTitle>
-          <DialogDescription>Using integration ID: {int.id}</DialogDescription>
+          <DialogTitle>Connect to {ccfg.connector.name}</DialogTitle>
+          <DialogDescription>
+            Using connector config ID: {ccfg.id}
+          </DialogDescription>
         </DialogHeader>
         <SchemaForm
           ref={formRef}
           schema={z.object({})}
           jsonSchemaTransform={(schema) =>
-            int.connector.schemas.resourceSettings ?? schema
+            ccfg.connector.schemas.resourceSettings ?? schema
           }
           formData={{}}
           // formData should be non-null at this point, we should fix the typing
           loading={connect.isLoading}
           onSubmit={({formData}) => {
             console.log('resource form submitted', formData)
-            connect.mutate({integrationId: int.id, settings: formData})
+            connect.mutate({connectorConfigId: ccfg.id, settings: formData})
           }}
           hideSubmitButton
         />
@@ -492,8 +496,8 @@ export const WithProviderConnect = ({
  */
 export function ResourceDropdownMenu(
   props: UIProps & {
-    integration: {
-      id: Id['int']
+    connectorConfig: {
+      id: Id['ccfg']
       connector: ConnectorMeta
     }
     resource: Resource

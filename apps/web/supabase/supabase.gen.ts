@@ -35,7 +35,7 @@ export interface Database {
           updated_at?: string
         }
       }
-      integration: {
+      connector_config: {
         Row: {
           config: Json
           created_at: string
@@ -220,7 +220,7 @@ export interface Database {
           env_name: string | null
           id: string
           institution_id: string | null
-          integration_id: string | null
+          connector_config_id: string | null
           provider_name: string
           settings: Json
           updated_at: string
@@ -232,7 +232,7 @@ export interface Database {
           env_name?: string | null
           id?: string
           institution_id?: string | null
-          integration_id?: string | null
+          connector_config_id?: string | null
           provider_name?: string
           settings?: Json
           updated_at?: string
@@ -244,7 +244,7 @@ export interface Database {
           env_name?: string | null
           id?: string
           institution_id?: string | null
-          integration_id?: string | null
+          connector_config_id?: string | null
           provider_name?: string
           settings?: Json
           updated_at?: string

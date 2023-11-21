@@ -9,7 +9,7 @@ import {CACHED_CATEGORIES_MAP, zConfig} from './saltedgeClient'
 
 export const saltedgeSchemas = {
   name: z.literal('saltedge'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   resourceSettings: zCast<SaltEdge.Connection & {_id: ExternalId}>(),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({

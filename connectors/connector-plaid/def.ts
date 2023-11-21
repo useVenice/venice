@@ -25,7 +25,7 @@ import {zCountryCode, zLanguage, zPlaidEnvName, zProducts} from './PlaidClient'
 export const plaidSchemas = {
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
-  integrationConfig: z.object({
+  connectorConfig: z.object({
     envName: zPlaidEnvName,
     credentials: z
       .union([

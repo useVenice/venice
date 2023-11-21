@@ -13,7 +13,7 @@ import type {MetaService, MetaTable} from './metaService'
 // Should the mapping of the StandardInstitution happen inside here?
 
 export function makeMetaLinks(metaBase: MetaService) {
-  type Res = Pick<ZRaw['resource'], 'id' | 'integrationId' | 'endUserId'>
+  type Res = Pick<ZRaw['resource'], 'id' | 'connectorConfigId' | 'endUserId'>
   type Pipe = Pick<
     ZRaw['pipeline'],
     'id' | 'sourceId' | 'destinationId' | 'linkOptions'
@@ -79,14 +79,15 @@ export function makeMetaLinks(metaBase: MetaService) {
             // Map standard here?
           })
         }
-        // Workaround for default integrations such as `int_plaid` etc which
+        // Workaround for default connector configs such as `ccfg_plaid` etc which
         // do not exist in the database and would otherwise cause foreign key issue
         // Is it a hack? When there is no 3rd component of id, does that always
-        // mean that the integration does not in fact exist in database?
-        const integrationId =
-          resource.integrationId && extractId(resource.integrationId)[2] === ''
+        // mean that the connector config does not in fact exist in database?
+        const connectorConfigId =
+          resource.connectorConfigId &&
+          extractId(resource.connectorConfigId)[2] === ''
             ? undefined
-            : resource.integrationId
+            : resource.connectorConfigId
 
         // Can we run this in one transaction?
 
@@ -95,7 +96,7 @@ export function makeMetaLinks(metaBase: MetaService) {
           settings,
           // It is also an issue that institution may not exist at the initial time of
           // connection establishing..
-          integrationId,
+          connectorConfigId,
           institutionId,
           // maybe we should distinguish between setDefaults (from existingResource) vs. actually
           // updating the values...

@@ -7,7 +7,7 @@ import type {components} from './heron.gen'
 
 export const heronSchemas = {
   name: z.literal('heron'),
-  integrationConfig: z.object({apiKey: z.string()}),
+  connectorConfig: z.object({apiKey: z.string()}),
   // is endUserId actually needed here?
   // How do we create default resources for integrations that are basically single resource?
   destinationInputEntity: zCast<EntityPayload>(),

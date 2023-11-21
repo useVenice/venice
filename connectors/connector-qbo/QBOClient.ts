@@ -9,7 +9,7 @@ import {
   zFunction,
 } from '@usevenice/util'
 
-export const zConfig = oauthBaseSchema.integrationConfig.extend({
+export const zConfig = oauthBaseSchema.connectorConfig.extend({
   envName: z.enum(['sandbox', 'production']),
   url: z.string().nullish().describe('For proxies, not typically needed'),
   verifierToken: z.string().nullish().describe('For webhooks'),

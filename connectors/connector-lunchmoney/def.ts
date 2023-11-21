@@ -12,7 +12,7 @@ import {
 
 export const lunchmoneySchemas = {
   name: z.literal('lunchmoney'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

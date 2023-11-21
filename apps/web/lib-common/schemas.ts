@@ -21,34 +21,34 @@ export function zOrgMetadata<
 >({
   srcResoId,
   destResoId,
-  destIntId,
-  srcIntId,
+  destCcfgId,
+  srcCcfgId,
 }: {
   srcResoId: TSrcReso
   destResoId: TDestReso
-  srcIntId: TSrcInt
-  destIntId: TDestInt
+  srcCcfgId: TSrcInt
+  destCcfgId: TDestInt
 }) {
   return z.object({
     automations: z.object({
       defaultSource: z
         .object({
           sourceResourceId: srcResoId.optional(),
-          destinationIntegrationIds: z.array(destIntId),
+          destinationConnectorConfigIds: z.array(destCcfgId),
         })
         .optional()
         .describe(
-          'Automatically create pipeline from source resource when resources are created in destination integrations',
+          'Automatically create pipeline from source resource when resources are created in destination connectors',
         ),
       // How to enable these fields conditionally in the form? https://share.cleanshot.com/H1GQQCby
       defaultDestination: z
         .object({
           destinationResourceId: destResoId.optional(),
-          sourceIntegrationids: z.array(srcIntId),
+          sourceConnectorConfigIds: z.array(srcCcfgId),
         })
         .optional()
         .describe(
-          'Automatically create pipeline to destination resource when resources are created in source integrations',
+          'Automatically create pipeline to destination resource when resources are created in source connectors',
         ),
     }),
   })
@@ -61,8 +61,8 @@ export const zAuth = {
     publicMetadata: zOrgMetadata({
       srcResoId: zId('reso'),
       destResoId: zId('reso'),
-      srcIntId: zId('int'),
-      destIntId: zId('int'),
+      srcCcfgId: zId('ccfg'),
+      destCcfgId: zId('ccfg'),
     }),
     privateMetadata: z.object({
       [kApikeyMetadata]: z.string().optional(),
@@ -83,8 +83,8 @@ export type ZAuth = {
 
 type Pipeline = RouterOutput['listPipelines'][number]
 type Resource = RouterOutput['listConnections'][number]
-type Integration = RouterOutput['adminListIntegrations'][number]
-type ConnectorMeta = RouterOutput['getIntegrationCatalog'][string]
+type ConnectorConfig = RouterOutput['adminListConnectorConfigs'][number]
+type ConnectorMeta = RouterOutput['listConnectorMetas'][string]
 
 export const zClient = {
   pipeline: zRecord<Pipeline>().refine(
@@ -95,15 +95,13 @@ export const zClient = {
     (r) => zId('reso').safeParse(r.id).success,
     {message: 'Invalid resource'},
   ),
-  integration: zRecord<Integration>().refine(
-    (i) => zId('int').safeParse(i.id).success,
-    {message: 'Invalid integration'},
+  connector_config: zRecord<ConnectorConfig>().refine(
+    (i) => zId('ccfg').safeParse(i.id).success,
+    {message: 'Invalid connector config'},
   ),
   connector: zRecord<ConnectorMeta>().refine(
     (p) => p.__typename === 'connector',
-    {
-      message: 'Invalid pipeline',
-    },
+    {message: 'Invalid connector meta'},
   ),
 }
 export type ZClient = {

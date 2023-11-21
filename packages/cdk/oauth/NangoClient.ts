@@ -335,7 +335,7 @@ export function buildNangoConnectUrl({
   provider_config_key,
   ...params
 }: z.infer<typeof zNangoOauthConnectParams>) {
-  // http://localhost:3000/connect?displayName=Spendoso&integrationId=int_qbo&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgwODM2NjgsInJvbGUiOiJlbmRfdXNlciIsInN1YiI6Im9yZ18yUEk1VU42ZDRVMTdlOHpYaTFLdDloYzg4dnMvc3BlbmRvc28tdGVzdGVyIiwiZW5kX3VzZXJfaWQiOiJzcGVuZG9zby10ZXN0ZXIiLCJvcmdfaWQiOiJvcmdfMlBJNVVONmQ0VTE3ZTh6WGkxS3Q5aGM4OHZzIiwiaWF0IjoxNjk4MDgwMDY4fQ.GNFK71PloX0LkWQ3RCaWN6KCENSQtiXwvopfQk6ymB4
+  // http://localhost:3000/connect?displayName=Spendoso&connectorConfigId=int_qbo&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgwODM2NjgsInJvbGUiOiJlbmRfdXNlciIsInN1YiI6Im9yZ18yUEk1VU42ZDRVMTdlOHpYaTFLdDloYzg4dnMvc3BlbmRvc28tdGVzdGVyIiwiZW5kX3VzZXJfaWQiOiJzcGVuZG9zby10ZXN0ZXIiLCJvcmdfaWQiOiJvcmdfMlBJNVVONmQ0VTE3ZTh6WGkxS3Q5aGM4OHZzIiwiaWF0IjoxNjk4MDgwMDY4fQ.GNFK71PloX0LkWQ3RCaWN6KCENSQtiXwvopfQk6ymB4
   const url = new URL(`/oauth/connect/${provider_config_key}`, NANGO_API_HOST)
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, `${value}`)

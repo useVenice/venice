@@ -14,7 +14,7 @@ function getSource(name: string) {
     case 'plaid':
       return plaidProvider.sourceSync({
         endUser: null,
-        config: plaidProvider.schemas.integrationConfig.parse({
+        config: plaidProvider.schemas.connectorConfig.parse({
           envName: 'sandbox',
           clientId: process.env['int_plaid__clientId'] ?? '',
           clientSecret:
@@ -101,7 +101,7 @@ sync({
       mapStandardEntityLink({
         id: 'reso_plaid_demo',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-        integration: {connector: plaidProvider as any},
+        connectorConfig: {connector: plaidProvider as any},
         settings: {},
       }),
     process.argv[2] === 'plaid' && logLink({prefix: 'preDest'}),

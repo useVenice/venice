@@ -87,7 +87,7 @@ export const makePostgresMetaService = zFunction(
       // Delay calling of __getDeps until later..
       resource: metaTable('resource', _getDeps(opts)),
       institution: metaTable('institution', _getDeps(opts)),
-      integration: metaTable('integration', _getDeps(opts)),
+      connector_config: metaTable('connector_config', _getDeps(opts)),
       pipeline: metaTable('pipeline', _getDeps(opts)),
     }
     return {
@@ -151,11 +151,11 @@ export const makePostgresMetaService = zFunction(
           pool.any(sql`SELECT * FROM pipeline ${where}`),
         )
       },
-      listIntegrationInfos: ({id, connectorName} = {}) => {
+      listConnectorConfigInfos: ({id, connectorName} = {}) => {
         const {runQueries, sql} = _getDeps(opts)
         return runQueries((pool) =>
           pool.any(
-            sql`SELECT id, env_name, display_name FROM integration ${
+            sql`SELECT id, env_name, display_name FROM connector_config ${
               id && connectorName
                 ? sql`WHERE id = ${id} AND connector_name = ${connectorName}`
                 : id
@@ -181,12 +181,19 @@ function metaTable<TID extends string, T extends Record<string, unknown>>(
 
   // TODO: Convert case from snake_case to camelCase
   return {
-    list: ({ids, endUserId, integrationId, connectorName, keywords, ...rest}) =>
+    list: ({
+      ids,
+      endUserId,
+      connectorConfigId,
+      connectorName,
+      keywords,
+      ...rest
+    }) =>
       runQueries((pool) => {
         const conditions = R.compact([
           ids && sql`id = ANY(${sql.array(ids, 'varchar')})`,
           endUserId && sql`end_user_id = ${endUserId}`,
-          integrationId && sql`integration_id = ${integrationId}`,
+          connectorConfigId && sql`connector_config_id = ${connectorConfigId}`,
           connectorName && sql`connector_name = ${connectorName}`,
           // Temp solution, shall use fts and make this work for any table...
           keywords &&

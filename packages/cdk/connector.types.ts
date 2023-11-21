@@ -7,7 +7,7 @@ import type {
   CheckResourceOptions,
   ConnectContext,
   ConnectOptions,
-  IntegrationMetadata,
+  ConnectorMetadata,
   OpenDialogFn,
   ResourceUpdate,
   WebhookReturnType,
@@ -54,7 +54,7 @@ export interface Verticals<
 
 export interface ConnectorSchemas {
   name: z.ZodLiteral<string>
-  integrationConfig?: z.ZodTypeAny
+  connectorConfig?: z.ZodTypeAny
   resourceSettings?: z.ZodTypeAny
   institutionData?: z.ZodTypeAny
   webhookInput?: z.ZodTypeAny
@@ -77,7 +77,7 @@ export interface ConnectorSchemas {
   }
 }
 
-export type AnyIntegrationHelpers = ConnHelpers
+export type AnyConnectorHelpers = ConnHelpers
 
 export type EntityMapper<
   T extends {remote: unknown; settings: unknown} = {
@@ -96,7 +96,7 @@ export interface ConnectorDef<
 > {
   name: TSchemas['name']['_def']['value']
   schemas: TSchemas
-  metadata?: IntegrationMetadata
+  metadata?: ConnectorMetadata
 
   standardMappers?: {
     institution?: (
@@ -156,7 +156,7 @@ export interface ConnectorClient<
     connectInput: T['_types']['connectInput'],
     context: ConnectOptions & {
       // TODO: Does this belong here?
-      integrationId: Id['int']
+      connectorConfigId: Id['ccfg']
     },
   ) => Promise<T['_types']['connectOutput']>
 }
@@ -170,7 +170,7 @@ export interface ConnectorServer<
   // MARK: - Connect
 
   preConnect?: (
-    config: T['_types']['integrationConfig'],
+    config: T['_types']['connectorConfig'],
     context: ConnectContext<T['_types']['resourceSettings']>,
     // TODO: Turn this into an object instead
     input: T['_types']['preConnectInput'],
@@ -178,7 +178,7 @@ export interface ConnectorServer<
 
   postConnect?: (
     connectOutput: T['_types']['connectOutput'],
-    config: T['_types']['integrationConfig'],
+    config: T['_types']['connectorConfig'],
     context: ConnectContext<T['_types']['resourceSettings']>,
   ) => MaybePromise<
     Omit<
@@ -193,7 +193,7 @@ export interface ConnectorServer<
   checkResource?: (
     input: OmitNever<{
       settings: T['_types']['resourceSettings']
-      config: T['_types']['integrationConfig']
+      config: T['_types']['connectorConfig']
       options: CheckResourceOptions
       context: CheckResourceContext
     }>,
@@ -210,7 +210,7 @@ export interface ConnectorServer<
   // This probably need to also return an observable
   revokeResource?: (
     settings: T['_types']['resourceSettings'],
-    config: T['_types']['integrationConfig'],
+    config: T['_types']['connectorConfig'],
   ) => Promise<unknown>
 
   // MARK: - Sync
@@ -218,7 +218,7 @@ export interface ConnectorServer<
   sourceSync?: (
     input: OmitNever<{
       endUser: {id: EndUserId} | null | undefined
-      config: T['_types']['integrationConfig']
+      config: T['_types']['connectorConfig']
       settings: T['_types']['resourceSettings']
       state: T['_types']['sourceState']
     }>,
@@ -227,7 +227,7 @@ export interface ConnectorServer<
   destinationSync?: (
     input: OmitNever<{
       endUser: {id: EndUserId} | null | undefined
-      config: T['_types']['integrationConfig']
+      config: T['_types']['connectorConfig']
       settings: T['_types']['resourceSettings']
       state: T['_types']['destinationState']
     }>,
@@ -235,7 +235,7 @@ export interface ConnectorServer<
 
   metaSync?: (
     input: OmitNever<{
-      config: T['_types']['integrationConfig']
+      config: T['_types']['connectorConfig']
       // options: T['_types']['sourceState']
     }>,
   ) => Source<T['_insOpType']['data']>
@@ -245,7 +245,7 @@ export interface ConnectorServer<
   // webhook requests...
   handleWebhook?: (
     webhookInput: T['_types']['webhookInput'],
-    config: T['_types']['integrationConfig'],
+    config: T['_types']['connectorConfig'],
   ) => MaybePromise<
     WebhookReturnType<
       T['_types']['sourceOutputEntity'],
@@ -259,7 +259,7 @@ export interface ConnectorServer<
    * of contextual typing for interfaces. @see https://github.com/microsoft/TypeScript/issues/1373
    */
   newInstance?: (opts: {
-    config: T['_types']['integrationConfig']
+    config: T['_types']['connectorConfig']
     settings: T['_types']['resourceSettings']
     onSettingsChange: (
       newSettings: T['_types']['resourceSettings'],

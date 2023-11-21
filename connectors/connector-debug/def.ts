@@ -6,7 +6,7 @@ export const debugSchemas = {
   name: z.literal('debug'),
   webhookInput: zWebhookInput,
   resourceSettings: z.unknown(),
-  integrationConfig: z.unknown(),
+  connectorConfig: z.unknown(),
   sourceOutputEntity: z.unknown(),
   institutionData: z.unknown(),
 } satisfies ConnectorSchemas

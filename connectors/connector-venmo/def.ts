@@ -22,7 +22,7 @@ const zSettings = z.object({
 
 export const venmoSchemas = {
   name: z.literal('venmo'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   resourceSettings: zSettings,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({

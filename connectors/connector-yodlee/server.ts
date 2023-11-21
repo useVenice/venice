@@ -5,7 +5,7 @@ import type {yodleeSchemas} from './def'
 import {helpers} from './def'
 import {makeYodleeClient} from './YodleeClient'
 
-export const yodleeServerIntegration = {
+export const yodleeServerConnector = {
   // TODO: handle reconnecting scenario
   preConnect: async (config, {extEndUserId: userId}) => {
     const loginName =
@@ -105,4 +105,4 @@ export const yodleeServerIntegration = {
 const SHOULD_SYNC_HOLDINGS = false
 const SHOULD_SYNC_INVESTMENT_TRANSACTIONS = true
 
-export default yodleeServerIntegration
+export default yodleeServerConnector

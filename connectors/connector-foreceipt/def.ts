@@ -13,7 +13,7 @@ import {makeForeceiptClient, zForeceiptConfig} from './ForeceiptClient'
 // type ForeceiptSyncOperation = typeof def['_opType']
 export const foreceiptSchemas = {
   name: z.literal('foreceipt'),
-  // integrationConfig: zForeceiptConfig,
+  // connectorConfig: zForeceiptConfig,
   resourceSettings: z.object({
     credentials: zCast<Readonly<Foreceipt.Credentials>>(),
     options: zCast<ForeceiptClientOptions>(),

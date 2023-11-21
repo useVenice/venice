@@ -4,7 +4,7 @@ import {z} from '@usevenice/util'
 
 export const discordSchemas = {
   name: z.literal('discord'),
-  integrationConfig: oauthBaseSchema.integrationConfig,
+  connectorConfig: oauthBaseSchema.connectorConfig,
   resourceSettings: oauthBaseSchema.resourceSettings,
   connectOutput: oauthBaseSchema.connectOutput,
 } satisfies ConnectorSchemas

@@ -1,5 +1,5 @@
 import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers, zIntAuth} from '@usevenice/cdk'
+import {connHelpers, zCcfgAuth} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, R, z} from '@usevenice/util'
 
@@ -10,7 +10,7 @@ import {
 
 export const rampSchemas = {
   name: z.literal('ramp'),
-  integrationConfig: zIntAuth.oauth,
+  connectorConfig: zCcfgAuth.oauth,
   resourceSettings: z.object({
     accessToken: z.string().nullish(),
     startAfterTransactionId: z.string().nullish(),

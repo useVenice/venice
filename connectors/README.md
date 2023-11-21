@@ -1,10 +1,10 @@
 ```dataview
 TABLE WITHOUT ID
-	link(file.path, replace(replace(file.path, "/README.md", ""), "integrations/integration-", "")
-	) as integration, 
+	link(file.path, replace(replace(file.path, "/README.md", ""), "connectorss/connectors-", "")
+	) as connectors, 
 	status as Status
-FROM "integrations"
-WHERE file.path != "integrations/README.md"
+FROM "connectorss"
+WHERE file.path != "connectorss/README.md"
 ```
 
 

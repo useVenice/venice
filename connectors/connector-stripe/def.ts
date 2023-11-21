@@ -1,5 +1,5 @@
 import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers, zIntAuth} from '@usevenice/cdk'
+import {connHelpers, zCcfgAuth} from '@usevenice/cdk'
 import {makePostingsMap} from '@usevenice/cdk'
 import {A, z, zCast} from '@usevenice/util'
 
@@ -7,7 +7,7 @@ import type {components} from './stripe.gen'
 
 export const stripeSchemas = {
   name: z.literal('stripe'),
-  integrationConfig: zIntAuth.oauthOrApikeyAuth,
+  connectorConfig: zCcfgAuth.oauthOrApikeyAuth,
   resourceSettings: z.object({secretKey: z.string()}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({

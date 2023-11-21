@@ -18,13 +18,13 @@ import {
 import type {z} from '@usevenice/util'
 import {objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
 
+import type {zSyncOptions} from '../types'
 import type {
-  _Integration,
+  _ConnectorConfig,
   _PipelineExpanded,
   _ResourceExpanded,
   makeDBService,
-} from '.'
-import type {zSyncOptions} from '../types'
+} from './dbService'
 import type {makeMetaLinks} from './makeMetaLinks'
 import type {MetaService} from './metaService'
 
@@ -48,9 +48,9 @@ export function makeSyncService({
       )
 
   // NOTE: Stop the hard-coding some point!
-  // - Integration metadata should be able to specify the set of transformations desired
-  // - Integration config should additionally be able to specify transformations!
-  // Integrations shall include `config`.
+  // - connector metadata should be able to specify the set of transformations desired
+  // - connector config should additionally be able to specify transformations!
+  // connectors shall include `config`.
   // In contrast, resource shall include `external`
   // We do need to figure out which secrets to tokenize and which one not to though
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
@@ -60,7 +60,7 @@ export function makeSyncService({
     destination,
   }: _PipelineExpanded): Link[] => {
     // console.log('getLinksForPipeline', {source, links, destination})
-    if (destination.integration.connector.name === 'beancount') {
+    if (destination.connectorConfig.connector.name === 'beancount') {
       return [
         ...links,
         mapStandardEntityLink(source),
@@ -73,7 +73,7 @@ export function makeSyncService({
         logLink({prefix: 'preDest', verbose: true}),
       ]
     }
-    if (destination.integration.connector.name === 'alka') {
+    if (destination.connectorConfig.connector.name === 'alka') {
       return [
         ...links,
         // logLink({prefix: 'preMap'}),
@@ -82,7 +82,7 @@ export function makeSyncService({
         logLink({prefix: 'preDest'}),
       ]
     }
-    if (source.integration.connector.name === 'postgres') {
+    if (source.connectorConfig.connector.name === 'postgres') {
       return [...links, logLink({prefix: 'preDest'})]
     }
     return [
@@ -91,7 +91,7 @@ export function makeSyncService({
       mapStandardEntityLink(source),
       Rx.map((op) =>
         op.type === 'data' &&
-        destination.integration.connector.name !== 'postgres'
+        destination.connectorConfig.connector.name !== 'postgres'
           ? R.identity({
               ...op,
               data: {
@@ -120,9 +120,9 @@ export function makeSyncService({
     opts: {fullResync?: boolean | null}
   }) => {
     const defaultSource$ = () =>
-      src.integration.connector.sourceSync?.({
+      src.connectorConfig.connector.sourceSync?.({
         endUser,
-        config: src.integration.config,
+        config: src.connectorConfig.config,
         settings: src.settings,
         // Maybe we should rename `options` to `state`?
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
@@ -131,7 +131,7 @@ export function makeSyncService({
       })
 
     const verticalSources$ = () => {
-      const connector = src.integration.connector
+      const connector = src.connectorConfig.connector
       const helpers = connHelpers(connector.schemas)
       const primaryKey = connector.streams?.$defaults.primaryKey?.split('.') as
         | [string]
@@ -149,7 +149,7 @@ export function makeSyncService({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const instance = connector.newInstance?.({
-        config: src.integration.config,
+        config: src.connectorConfig.config,
         settings: src.settings,
         onSettingsChange: (newSettings) => {
           // extId is technically redundant... but we have yet to define the primaryKey attribute for settings
@@ -220,19 +220,21 @@ export function makeSyncService({
 
     const destination$$ =
       opts.destination$$ ??
-      dest.integration.connector.destinationSync?.({
+      dest.connectorConfig.connector.destinationSync?.({
         endUser,
-        config: dest.integration.config,
+        config: dest.connectorConfig.config,
         settings: dest.settings,
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
         state: opts.fullResync ? {} : pipe.destinationState,
       })
 
     if (!source$) {
-      throw new Error(`${src.integration.connector.name} missing source`)
+      throw new Error(`${src.connectorConfig.connector.name} missing source`)
     }
     if (!destination$$) {
-      throw new Error(`${dest.integration.connector.name} missing destination`)
+      throw new Error(
+        `${dest.connectorConfig.connector.name} missing destination`,
+      )
     }
     await metaLinks
       .handlers({pipeline})
@@ -265,7 +267,7 @@ export function makeSyncService({
   }
 
   const _syncResourceUpdate = async (
-    int: _Integration,
+    int: _ConnectorConfig,
     {
       endUserId: userId,
       settings,
@@ -281,7 +283,7 @@ export function makeSyncService({
     })
     const id = makeId('reso', int.connector.name, resoUpdate.resourceExternalId)
     await metaLinks
-      .handlers({resource: {id, integrationId: int.id, endUserId: userId}})
+      .handlers({resource: {id, connectorConfigId: int.id, endUserId: userId}})
       .resoUpdate({type: 'resoUpdate', id, settings, institution})
 
     // TODO: This should be happening async

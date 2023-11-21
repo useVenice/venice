@@ -7,7 +7,7 @@ import {zConfig} from './mootaClient'
 
 export const mootaSchemas = {
   name: z.literal('moota'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

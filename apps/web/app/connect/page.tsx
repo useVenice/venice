@@ -62,26 +62,28 @@ export default async function ConnectPageContainer({
     )
   }
 
-  // Implement shorthand for specifying only integrationId by connectorName
-  let integrationId = params.integrationId
-  if (!integrationId && params.connectorName) {
-    const ints = await ssg.listIntegrationInfos.fetch({
+  // Implement shorthand for specifying only connectorConfigId by connectorName
+  let connectorConfigId = params.connectorConfigId
+  if (!connectorConfigId && params.connectorName) {
+    const ints = await ssg.listConnectorConfigInfos.fetch({
       connectorName: params.connectorName,
     })
     if (ints.length === 1 && ints[0]?.id) {
-      integrationId = ints[0]?.id
+      connectorConfigId = ints[0]?.id
     } else if (ints.length < 1) {
-      return <div>No integration for {params.connectorName} configured</div>
+      return (
+        <div>No connector config for {params.connectorName} configured</div>
+      )
     } else if (ints.length > 1) {
       console.warn(
-        `${ints.length} integrations found for ${params.connectorName}`,
+        `${ints.length} connector configs found for ${params.connectorName}`,
       )
     }
   }
 
-  // Special case when we are handling a single oauth integration
-  if (integrationId) {
-    const connectorName = extractConnectorName(integrationId)
+  // Special case when we are handling a single oauth connector config
+  if (connectorConfigId) {
+    const connectorName = extractConnectorName(connectorConfigId)
     const intDef = defConnectors[
       connectorName as keyof typeof defConnectors
     ] as ConnectorDef
@@ -92,7 +94,7 @@ export default async function ConnectPageContainer({
       const url = await nango.getOauthConnectUrl({
         public_key: env.NEXT_PUBLIC_NANGO_PUBLIC_KEY,
         connection_id: resourceId,
-        provider_config_key: integrationId,
+        provider_config_key: connectorConfigId,
         // Consider using hookdeck so we can work with any number of urls
         // redirect_uri: joinPath(getServerUrl(null), '/connect/callback'),
       })
@@ -119,8 +121,8 @@ export default async function ConnectPageContainer({
   const [org] = await Promise.all([
     clerkClient.organizations.getOrganization({organizationId: viewer.orgId}),
     // Switch to using react suspense / server fetch for this instead of prefetch
-    ssg.listIntegrationInfos.prefetch({
-      id: integrationId,
+    ssg.listConnectorConfigInfos.prefetch({
+      id: connectorConfigId,
       connectorName: params.connectorName,
     }),
     params.showExisting ? ssg.listConnections.prefetch({}) : Promise.resolve(),

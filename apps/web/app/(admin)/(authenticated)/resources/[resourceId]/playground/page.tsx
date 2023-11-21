@@ -17,7 +17,7 @@ export default async function PlaygroundPageServer({
 
   const resource = await ctx.services.getResourceExpandedOrFail(resourceId)
 
-  const oas = resource.integration.connector.metadata?.openapiSpec?.proxied
+  const oas = resource.connectorConfig.connector.metadata?.openapiSpec?.proxied
 
   if (!oas) {
     return (

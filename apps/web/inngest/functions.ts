@@ -115,7 +115,7 @@ export const createDefaultPipeline = inngest.createFunction(
     )
     const [_org, pipelines] = await Promise.all([
       clerkClient.organizations.getOrganization({
-        organizationId: resource.integration.orgId,
+        organizationId: resource.connectorConfig.orgId,
       }),
       ctx.services.metaService.findPipelines({resourceIds: [resource.id]}),
     ])
@@ -128,7 +128,9 @@ export const createDefaultPipeline = inngest.createFunction(
     const {defaultSource, defaultDestination} = org.publicMetadata.automations
     if (
       defaultSource?.sourceResourceId &&
-      defaultSource.destinationIntegrationIds.includes(resource.integrationId)
+      defaultSource.destinationConnectorConfigIds.includes(
+        resource.connectorConfigId,
+      )
     ) {
       const pipelineId = makeId('pipe', makeUlid())
 
@@ -142,7 +144,9 @@ export const createDefaultPipeline = inngest.createFunction(
 
     if (
       defaultDestination?.destinationResourceId &&
-      defaultDestination.sourceIntegrationids.includes(resource.integrationId)
+      defaultDestination.sourceConnectorConfigIds.includes(
+        resource.connectorConfigId,
+      )
     ) {
       const pipelineId = makeId('pipe', makeUlid())
       await helpers.patch('pipeline', pipelineId, {
@@ -163,8 +167,9 @@ export const handleWebhook = inngest.createFunction(
     if (data.path.startsWith('database')) {
       console.log('handle database event', data)
       await handleDatabaseWebhook(data.body as any)
-    } else if (data.path.startsWith('integration/')) {
-      console.log('handle integration event', data.path)
+    } else if (data.path.startsWith('connector/')) {
+      // TODO: handle me right
+      console.log('handle connector event', data.path)
     } else {
       console.warn('Unexpected webhook received', data)
     }

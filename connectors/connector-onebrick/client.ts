@@ -5,7 +5,7 @@ import {Deferred} from '@usevenice/util'
 
 import type {helpers, onebrickSchemas} from './def'
 
-export const onebrickClientIntegration = {
+export const onebrickClientConector = {
   useConnectHook: (_) => {
     const [options, setOptions] = React.useState<
       (typeof helpers)['_types']['connectInput']
@@ -31,4 +31,4 @@ export const onebrickClientIntegration = {
   },
 } satisfies ConnectorClient<typeof onebrickSchemas>
 
-export default onebrickClientIntegration
+export default onebrickClientConector

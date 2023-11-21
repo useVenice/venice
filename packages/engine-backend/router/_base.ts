@@ -97,10 +97,10 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
       path: (ctx as any).path as string,
       remote: {
         id: resource.id,
-        connector: resource.integration.connector,
+        connector: resource.connectorConfig.connector,
         connectorName: resource.connectorName,
         settings: resource.settings,
-        config: resource.integration.config,
+        config: resource.connectorConfig.config,
       },
     },
   })

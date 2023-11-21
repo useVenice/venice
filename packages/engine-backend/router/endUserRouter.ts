@@ -8,7 +8,7 @@ import type {
 } from '@usevenice/cdk'
 import {
   makeId,
-  makeOauthIntegrationServer,
+  makeOauthConnectorServer,
   zConnectOptions,
   zEndUserId,
   zId,
@@ -48,8 +48,8 @@ export const zConnectPageParams = z.object({
     ),
   // TODO: How to make sure we actually have a typed api here and can use zProviderName
   connectorName: z.string().nullish().describe('Which provider to use'),
-  /** Launch the integration right away */
-  integrationId: zId('int').optional(),
+  /** Launch the conector with config right away */
+  connectorConfigId: zId('ccfg').optional(),
   /** Whether to show existing resources */
   showExisting: z.coerce.boolean().optional().default(true),
 })
@@ -138,14 +138,14 @@ export const endUserRouter = trpc.router({
 
   // MARK: - Connect
   preConnect: protectedProcedure
-    .input(z.tuple([zId('int'), zConnectOptions, z.unknown()]))
+    .input(z.tuple([zId('ccfg'), zConnectOptions, z.unknown()]))
     // Consider using sessionId, so preConnect corresponds 1:1 with postConnect
     .query(
       async ({
-        input: [intId, {resourceExternalId, ...connCtxInput}, preConnInput],
+        input: [ccfgId, {resourceExternalId, ...connCtxInput}, preConnInput],
         ctx,
       }) => {
-        const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
+        const int = await ctx.asOrgIfNeeded.getConnectorConfigOrFail(ccfgId)
         if (!int.connector.preConnect) {
           return null
         }
@@ -180,17 +180,17 @@ export const endUserRouter = trpc.router({
   // for cli usage, can just call `postConnect` directly. Consider making the
   // flow a bit smoother with a guided cli flow
   postConnect: protectedProcedure
-    .input(z.tuple([z.unknown(), zId('int'), zPostConnectOptions]))
+    .input(z.tuple([z.unknown(), zId('ccfg'), zPostConnectOptions]))
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
     // How do we verify that the userId here is the same as the userId from preConnectOption?
 
     .mutation(
       async ({
-        input: [input, intId, {resourceExternalId, ...connCtxInput}],
+        input: [input, ccfgId, {resourceExternalId, ...connCtxInput}],
         ctx,
       }) => {
-        const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(intId)
+        const int = await ctx.asOrgIfNeeded.getConnectorConfigOrFail(ccfgId)
         console.log('didConnect start', int.connector.name, input, connCtxInput)
 
         const resoUpdate = await (async () => {
@@ -198,9 +198,9 @@ export const endUserRouter = trpc.router({
             !int.connector.postConnect &&
             int.connector.metadata?.nangoProvider
           ) {
-            return (await makeOauthIntegrationServer({
+            return (await makeOauthConnectorServer({
               nangoClient: ctx.nango,
-              intId,
+              ccfgId,
               nangoProvider: int.connector.metadata.nangoProvider,
             }).postConnect(input as OauthBaseTypes['connectOutput'])) as Omit<
               ResourceUpdate<any, any>,
@@ -250,7 +250,7 @@ export const endUserRouter = trpc.router({
           resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
         const resourceId = await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...resoUpdate,
-          // No need for each integration to worry about this, unlike in the case of handleWebhook.
+          // No need for each connector to worry about this, unlike in the case of handleWebhook.
           endUserId:
             ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
           triggerDefaultSync:
@@ -268,39 +268,47 @@ export const endUserRouter = trpc.router({
     ),
   createResource: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/resources'}})
-    .input(zRaw.resource.pick({integrationId: true, settings: true}))
+    .input(zRaw.resource.pick({connectorConfigId: true, settings: true}))
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
     // How do we verify that the userId here is the same as the userId from preConnectOption?
     .output(z.string())
-    .mutation(async ({input: {integrationId, settings}, ctx}) => {
-      // Authorization
-      await ctx.services.getIntegrationInfoOrFail(integrationId)
+    .mutation(
+      async ({
+        input: {connectorConfigId: connectorConfigId, settings},
+        ctx,
+      }) => {
+        // Authorization
+        await ctx.services.getConnectorConfigInfoOrFail(connectorConfigId)
 
-      // Escalate to now have enough pemission to sync
-      const int = await ctx.asOrgIfNeeded.getIntegrationOrFail(integrationId)
+        // Escalate to now have enough pemission to sync
+        const int = await ctx.asOrgIfNeeded.getConnectorConfigOrFail(
+          connectorConfigId,
+        )
 
-      const _extId = makeUlid()
-      const resoId = makeId('reso', int.connector.name, _extId)
+        const _extId = makeUlid()
+        const resoId = makeId('reso', int.connector.name, _extId)
 
-      // Should throw if not working..
-      const resoUpdate = {
-        triggerDefaultSync: false,
-        // TODO: Should no longer depend on external ID
-        resourceExternalId: _extId,
-        settings,
-        ...(await int.connector.checkResource?.({
-          config: int.config,
+        // Should throw if not working..
+        const resoUpdate = {
+          triggerDefaultSync: false,
+          // TODO: Should no longer depend on external ID
+          resourceExternalId: _extId,
           settings,
-          context: {webhookBaseUrl: ''},
-          options: {},
-        })),
-        // TODO: Fix me up
-        endUserId: ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
-      } satisfies ResourceUpdate
-      await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
-      return resoId
-    }),
+          ...(await int.connector.checkResource?.({
+            config: int.config,
+            settings,
+            context: {webhookBaseUrl: ''},
+            options: {},
+          })),
+          // TODO: Fix me up
+          endUserId:
+            ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
+        } satisfies ResourceUpdate
+        await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
+        return resoId
+      },
+    ),
 
   // TODO: Run server-side validation
   updateResource: protectedProcedure
@@ -321,13 +329,13 @@ export const endUserRouter = trpc.router({
       if (ctx.viewer.role === 'end_user') {
         await ctx.services.getResourceOrFail(resoId)
       }
-      const {settings, integration, ...reso} =
-        await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
+      const {
+        settings,
+        connectorConfig: ccfg,
+        ...reso
+      } = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       if (!opts?.skipRevoke) {
-        await integration.connector.revokeResource?.(
-          settings,
-          integration.config,
-        )
+        await ccfg.connector.revokeResource?.(settings, ccfg.config)
       }
       // if (opts?.todo_deleteAssociatedData) {
       // TODO: Figure out how to delete... Destination is not part of meta service

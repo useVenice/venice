@@ -19,7 +19,7 @@ export default function SettingsPage() {
     onError,
   })
   const resourcesRes = trpcReact.listResources.useQuery()
-  const integrationsRes = trpcReact.listIntegrationInfos.useQuery({})
+  const connectorConfigsRes = trpcReact.listConnectorConfigInfos.useQuery({})
 
   const zResoId = z.union(
     (resourcesRes.data ?? []).map((r) =>
@@ -28,8 +28,8 @@ export default function SettingsPage() {
         .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
-  const zIntId = z.union(
-    (integrationsRes.data ?? []).map((i) =>
+  const zCcfgId = z.union(
+    (connectorConfigsRes.data ?? []).map((i) =>
       z
         .literal(i.id)
         .describe(i.connectorName ? `${i.connectorName} <${i.id}>` : i.id),
@@ -39,8 +39,8 @@ export default function SettingsPage() {
   const formSchema = zOrgMetadata({
     srcResoId: zResoId,
     destResoId: zResoId,
-    destIntId: zIntId,
-    srcIntId: zIntId,
+    destCcfgId: zCcfgId,
+    srcCcfgId: zCcfgId,
   })
 
   // console.log('org public meta', org.organization?.publicMetadata)
@@ -48,7 +48,7 @@ export default function SettingsPage() {
   if (
     !org.organization ||
     resourcesRes.isLoading ||
-    integrationsRes.isLoading
+    connectorConfigsRes.isLoading
   ) {
     return <LoadingText className="block p-4" />
   }

@@ -9,7 +9,7 @@ import {Deferred} from '@usevenice/util'
 
 import type {helpers, plaidSchemas} from './def'
 
-export const plaidClientIntegration = {
+export const plaidClientConnector = {
   useConnectHook: (_) => {
     const [state, setState] = React.useState<{
       options: RequiredOnly<PlaidLinkOptions, 'token'>
@@ -80,4 +80,4 @@ export const plaidClientIntegration = {
   },
 } satisfies ConnectorClient<typeof plaidSchemas>
 
-export default plaidClientIntegration
+export default plaidClientConnector

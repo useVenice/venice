@@ -25,12 +25,12 @@ export function makeVeniceClient({
 
   return {
     listResources: async (opts: {
-      integrationId?: string
+      connectorConfigId?: string
       connectorName?: string
     }) => {
       const url = new URL('resources', apiBase)
-      if (opts.integrationId) {
-        url.searchParams.set('integrationId', opts.integrationId)
+      if (opts.connectorConfigId) {
+        url.searchParams.set('connectorConfigId', opts.connectorConfigId)
       }
       if (opts.connectorName) {
         url.searchParams.set('connectorName', opts.connectorName)
@@ -43,7 +43,7 @@ export function makeVeniceClient({
     // Maybe we should allow end user to create magic link for themselves too so that
     // this operation can be done client side instead of server side?
     createMagicLink: async (opts: {
-      integrationId?: string
+      connectorConfigId?: string
       connectorName?: string
       endUserId?: string
       validityInSeconds?: number

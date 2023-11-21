@@ -13,7 +13,7 @@ export const spreadsheetServer = {
       .pipe(
         Rx.map((row, index) =>
           // This part is rather generic. we don't know what a row represents just yet
-          // At some point we can extract core-integration-csv out of integration-csv
+          // At some point we can extract core-connector-csv out of connector-csv
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           spreadsheetHelpers._opData('csv_row', `row_${index}`, {
             preset: settings.preset,

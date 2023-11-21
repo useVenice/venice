@@ -5,7 +5,7 @@ export const _zOauthConfig = z.object({
   clientSecret: z.string(),
 })
 
-export const zIntAuth = {
+export const zCcfgAuth = {
   oauth: z.object({oauth: _zOauthConfig}),
   oauthOrApikeyAuth: z.object({
     oauth: z

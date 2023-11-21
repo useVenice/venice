@@ -70,7 +70,7 @@ export const spreadsheetSchemas = {
     accountExternalId: z.string(),
   }),
   sourceOutputEntity: zSrcEntitySchema,
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   /** NEXT: Implement other import sources such as Airtable */
   // csvString belongs in syncState because among other things we can actually naturally
   // persist the csvString used for every single sync as part of the pipeline_jobs table!

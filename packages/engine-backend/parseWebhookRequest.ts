@@ -12,14 +12,14 @@ const kWebhook = 'webhook' as const
 export function parseWebhookRequest(
   req: WebhookInput & {pathSegments: NonEmptyArray<string>; method?: string},
 ) {
-  const [procedure, intId] = req.pathSegments
+  const [procedure, ccfgId] = req.pathSegments
   if (procedure !== kWebhook) {
     return {...req, procedure}
   }
 
-  // Consider naming it integrationId? not sure.
+  // Consider naming it connectorConfigId? not sure.
   const input: RouterInput['handleWebhook'] = [
-    intId!,
+    ccfgId!,
     {query: req.query, headers: req.headers, body: req.body},
   ]
   return {
@@ -34,4 +34,5 @@ export function parseWebhookRequest(
 parseWebhookRequest.isWebhook = (pathSegments: NonEmptyArray<string>) =>
   pathSegments[0] === kWebhook
 
-parseWebhookRequest.pathOf = (intId: Id['int']) => [kWebhook, intId].join('/')
+parseWebhookRequest.pathOf = (ccfgId: Id['ccfg']) =>
+  [kWebhook, ccfgId].join('/')

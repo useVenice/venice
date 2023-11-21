@@ -12,7 +12,7 @@ import {
 
 export const tellerSchemas = {
   name: z.literal('teller'),
-  integrationConfig: zTellerConfig,
+  connectorConfig: zTellerConfig,
   resourceSettings: z.object({
     token: z.string(),
   }),

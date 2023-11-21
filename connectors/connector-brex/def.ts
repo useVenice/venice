@@ -1,12 +1,12 @@
 import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers, zIntAuth} from '@usevenice/cdk'
+import {connHelpers, zCcfgAuth} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 import type {components} from './__generated__/transactions.gen'
 
 export const brexSchemas = {
   name: z.literal('brex'),
-  integrationConfig: zIntAuth.oauthOrApikeyAuth,
+  connectorConfig: zCcfgAuth.oauthOrApikeyAuth,
   institutionData: z.unknown(),
   resourceSettings: z.object({
     accessToken: z.string(),

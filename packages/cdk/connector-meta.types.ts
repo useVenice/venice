@@ -53,7 +53,7 @@ export const metaForConnector = (
 })
 
 // aka verticals
-export const zIntegrationVertical = z.enum([
+export const zConnectorVertical = z.enum([
   'banking',
   'accounting',
   'commerce',
@@ -66,20 +66,20 @@ export const zIntegrationVertical = z.enum([
   'other',
 ])
 
-export const zIntegrationStage = z.enum(['hidden', 'alpha', 'beta', 'ga'])
+export const zConnectorStage = z.enum(['hidden', 'alpha', 'beta', 'ga'])
 
 export type OpenApiSpec = oas30.OpenAPIObject | oas31.OpenAPIObject
 
-export interface IntegrationMetadata {
+export interface ConnectorMetadata {
   logoUrl?: string
   logoSvg?: string
   displayName?: string
   /** @deprecated way to indicate an integration outputs raw rather than standardized data */
   layer?: 'core' | 'ledger'
   platforms?: Array<'cloud' | 'local'>
-  stage?: z.infer<typeof zIntegrationStage>
+  stage?: z.infer<typeof zConnectorStage>
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
-  categories?: Array<z.infer<typeof zIntegrationVertical>>
+  categories?: Array<z.infer<typeof zConnectorVertical>>
 
   openapiSpec?: {
     proxied?: OpenApiSpec
@@ -122,7 +122,7 @@ export type UseConnectHook<T extends ConnHelpers = ConnHelpers> = (scope: {
   connectInput: T['_types']['connectInput'],
   context: ConnectOptions & {
     // TODO: Does this belong here?
-    integrationId: Id['int']
+    connectorConfigId: Id['ccfg']
   },
 ) => Promise<T['_types']['connectOutput']>
 

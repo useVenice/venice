@@ -18,7 +18,7 @@ export const publicRouter = trpc.router({
     .input(z.void())
     .output(z.string())
     .query(() => 'Ok ' + new Date().toISOString()),
-  getIntegrationCatalog: publicProcedure
+  listConnectorMetas: publicProcedure
     .meta({
       openapi: {
         method: 'GET',
@@ -35,7 +35,7 @@ export const publicRouter = trpc.router({
         metaForConnector(connector, input),
       ),
     ),
-  getConnector: publicProcedure
+  getConnectorMeta: publicProcedure
     .meta({
       openapi: {
         method: 'GET',

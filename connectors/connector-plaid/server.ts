@@ -25,7 +25,7 @@ import {inferPlaidEnvFromToken} from './plaid-utils'
 import type {paths} from './plaid.oas'
 import {getPlatformConfig, makePlaidClient, zWebhook} from './PlaidClient'
 
-export const plaidServerIntegration = {
+export const plaidServerConnector = {
   // TODO: Do we actually need the preConnect and postConnect phase at all?
   // What if everything is encapsulated in useConnectHook and integrations each get to
   // expose trpc endpoints that the frontend can call at will?
@@ -542,4 +542,4 @@ const invHoldingsGetLimit = RateLimit(10, {timeUnit: 60 * 1000})
 /** 30 req / item / min. We do 20 to be safe */
 const invTxnGetLimit = RateLimit(20, {timeUnit: 60 * 1000})
 
-export default plaidServerIntegration
+export default plaidServerConnector

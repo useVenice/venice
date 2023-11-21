@@ -9,7 +9,7 @@ import {zConfig, zSettings} from './QBOClient'
 
 export const qboSchemas = {
   name: z.literal('qbo'),
-  integrationConfig: zConfig,
+  connectorConfig: zConfig,
   resourceSettings: zSettings,
   connectOutput: oauthBaseSchema.connectOutput,
   sourceOutputEntity: zEntityPayload,
