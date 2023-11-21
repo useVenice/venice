@@ -7,18 +7,21 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "codegen": "openapi --name YodleeAPI -o ./yodlee.generated -i https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml -c axios --useOptions --useUnionTypes --request ./request.noop.ts --exportCore true --exportSchemas true --indent 2",
-    "codegen:next": "openapi-typescript https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml --make-paths-enum --output yodlee.gen.ts"
+    "download": "curl https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml > yodlee.oas.yaml",
+    "generate": "pnpm generate:oas && pnpm generate:types",
+    "generate:oas": "swagger2openapi ./yodlee.oas.yaml | prettier --parser json > ./yodlee.oas.json",
+    "generate:types": "openapi-typescript ./yodlee.oas.json --output yodlee.oas.d.ts"
   },
   "dependencies": {
     "@usevenice/cdk": "workspace:*",
+    "@usevenice/openapi-client": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {
-    "@cfworker/json-schema": "1.12.4",
     "@types/react": "*",
     "openapi-typescript": "6.7.1",
-    "openapi-typescript-codegen": "0.23.0"
+    "prettier": "3.1.0",
+    "swagger2openapi": "7.0.8"
   },
   "peerDependencies": {
     "react": "*"

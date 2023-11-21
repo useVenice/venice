@@ -1,7 +1,6 @@
-import type {FetchOptions, FetchResponse} from 'openapi-fetch'
+import type {BodySerializer, FetchOptions, FetchResponse} from 'openapi-fetch'
 import _createClient from 'openapi-fetch'
 import type {PathsWithMethod} from 'openapi-typescript-helpers'
-
 import type {HTTPMethod} from './HTTPError'
 import {HTTPError} from './HTTPError'
 
@@ -32,6 +31,7 @@ export function createClient<Paths extends {}>({
   const client = _createClient<Paths>({...clientOptions, fetch: customFetch})
 
   return {
+    client,
     /** Untyped request */
     request: <T>(
       method: HTTPMethod,
@@ -71,11 +71,22 @@ export function createClient<Paths extends {}>({
   }
 }
 
-function throwIfNotOk<T>(method: HTTPMethod) {
+export function throwIfNotOk<T>(method: HTTPMethod) {
   return (res: FetchResponse<T>) => {
     if (res.error) {
       throw new HTTPError<T>({method, error: res.error, response: res.response})
     }
     return res
   }
+}
+
+/**
+ * Would be nice if we got this automatically, but openapi ts is types only...
+ * https://openapi-ts.pages.dev/openapi-fetch/api#bodyserializer */
+export const formDataBodySerializer: BodySerializer<unknown> = (body) => {
+  const fd = new FormData()
+  for (const [k, v] of Object.entries(body ?? {})) {
+    fd.append(k, `${v}`)
+  }
+  return fd
 }

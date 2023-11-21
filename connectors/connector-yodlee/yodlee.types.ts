@@ -1,11 +1,5 @@
-import type {Schema} from '@cfworker/json-schema'
-import {Validator} from '@cfworker/json-schema'
-
 import {z, zCast} from '@usevenice/util'
-
-import type {Institution, ProviderDetail, UserDetail} from './yodlee.generated'
-import {$UserDetail} from './yodlee.generated'
-import {$ProviderDetail} from './yodlee.generated/schemas/$ProviderDetail'
+import type {components} from './yodlee.oas'
 
 // TODO: Deprecate most of me and use the types generated from openAPI
 
@@ -161,28 +155,10 @@ export const zYodleeAccount = z.object({
   isDeleted: z.boolean().nullish(),
 })
 
-export const zYodleeInstitution = zCast<Institution>()
+export const zYodleeInstitution = zCast<components['schemas']['Institution']>()
 
 /** TODO: Extract me into zod-utils - zod from JSONSchema */
-export const zYodleeProvider = zCast<ProviderDetail>().superRefine(
-  (input, ctx) => {
-    const validator = new Validator({
-      ...$ProviderDetail,
-      type: 'object',
-    } as unknown as Schema)
-    const res = validator.validate(input)
-    for (const {error, ...data} of res.errors) {
-      ctx.addIssue({
-        code: 'custom',
-        path: [], // TODO: Check what the error shape looks like...
-        message: error,
-        params: data,
-        fatal: true,
-      })
-    }
-    return res.valid
-  },
-)
+export const zYodleeProvider = zCast<components['schemas']['ProviderDetail']>()
 
 /**
  * e.g.
@@ -190,23 +166,7 @@ export const zYodleeProvider = zCast<ProviderDetail>().superRefine(
  * timeZone: 'PST'
  * dateFormat: 'MM/dd/yyyy'
  */
-export const zUser = zCast<UserDetail>().superRefine((input, ctx) => {
-  const validator = new Validator({
-    ...$UserDetail,
-    type: 'object',
-  } as unknown as Schema)
-  const res = validator.validate(input)
-  for (const {error, ...data} of res.errors) {
-    ctx.addIssue({
-      code: 'custom',
-      path: [], // TODO: Check what the error shape looks like...
-      message: error,
-      params: data,
-      fatal: true,
-    })
-  }
-  return res.valid
-})
+export const zUser = zCast<components['schemas']['UserDetail']>()
 
 export const zProviderAccount = z.object({
   aggregationSource: z.string(),

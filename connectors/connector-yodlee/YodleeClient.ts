@@ -1,8 +1,12 @@
-// @deprecated import to yodlee.generated, switch to yodlee.gen once switch to openapi-typescript from openapi-typescript-codegen
+// @deprecated , directly use the new openapi client instead
+import {
+  createClient,
+  formDataBodySerializer,
+  HTTPError as OpenapiHTTPError,
+} from '@usevenice/openapi-client'
 import {
   $makeProxyAgent,
   createHTTPClient,
-  createOpenApiRequestFactory,
   DateTime,
   getDefaultProxyAgent,
   parseDateTime,
@@ -11,8 +15,7 @@ import {
   zFunction,
   type HTTPError,
 } from '@usevenice/util'
-
-import {AuthService, CancelablePromise, YodleeAPI} from './yodlee.generated'
+import type {paths} from './yodlee.oas'
 import type {YodleeAccount, YodleeTransaction} from './yodlee.types'
 
 export type YodleeEnvName = z.infer<typeof zYodleeEnvName>
@@ -135,37 +138,31 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (cfg, creds) => {
       },
     },
   })
-
-  const api = new YodleeAPI(
-    {BASE: http.defaults.baseURL},
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-    createOpenApiRequestFactory(http, CancelablePromise) as any,
-  )
+  const api = createClient<paths>({
+    baseUrl: baseUrlFromEnvName(cfg.envName),
+  })
 
   const generateAccessToken = zFunction(z.string(), async (loginName: string) =>
-    new AuthService({
-      config: api.request.config,
-      request: (opts) =>
-        api.request.request({...opts, headers: {...opts.headers, loginName}}),
-    })
-      .generateAccessToken({
-        clientId: cfg.clientId,
-        secret: cfg.clientSecret,
+    api
+      .POST('/auth/token', {
+        headers: {loginName},
+        body: {clientId: cfg.clientId, secret: cfg.clientSecret},
+        bodySerializer: formDataBodySerializer,
       })
-      .then((r) => zAccessToken.parse(r.token)),
+      .then((r) => zAccessToken.parse(r.data)),
   )
 
   const getProvider = zFunction(zYodleeId, async (providerId) =>
-    api.providers
-      .getProvider({providerId: zYodleeId.parse(providerId)})
-      .then((res) => {
-        if (!res.provider) {
+    api
+      .GET('/providers/{providerId}', {params: {path: {providerId}}})
+      .then((r) => {
+        if (!r.data?.provider?.[0]) {
           throw new YodleeNotFoundError({
             entityName: 'Provider',
             entityId: `${providerId}`,
           })
         }
-        return res.provider[0]
+        return r.data.provider[0]
       }),
   )
 
@@ -187,11 +184,17 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (cfg, creds) => {
     },
 
     getUser: () =>
-      api.user
-        .getUser()
-        .then((r) => r.user)
+      api
+        .GET('/user')
+        .then((r) => r.data?.user)
         .catch((err) => {
-          if (err instanceof YodleeError && err.data.errorCode === 'Y008') {
+          if (
+            err instanceof OpenapiHTTPError &&
+            // TODO: is this still correct? We really need better error typing...
+            // Alternatively maybe we should not throw errors by default because it makes it much harder
+            // to get typed error handling...
+            (err.error as any).errorCode === 'Y008'
+          ) {
             throw new YodleeNotFoundError({
               entityName: 'User',
               entityId: creds.role === 'user' ? creds.loginName : '',
@@ -426,10 +429,6 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (cfg, creds) => {
         .then((r) => r.data.statement || [])
     },
 
-    getTransactions2: (
-      params: Parameters<typeof api.transactions.getTransactions>[0],
-    ) => api.transactions.getTransactions(params).then((r) => r.transaction),
-
     async getTransactions(params: Yodlee.GetTransactionParams) {
       return http
         .get<{transaction: YodleeTransaction[]}>('/transactions', {
@@ -542,7 +541,10 @@ export const makeYodleeClient = zFunction([zConfig, zCreds], (cfg, creds) => {
       // take into account rate limiter though...
       while (true) {
         // console.log('Will request institution', {skip})
-        const res = await api.institutions.getInstitutions({skip, top: limit})
+        const {data: res = {}} = await api.GET('/institutions', {
+          params: {query: {skip, top: limit}},
+        })
+
         // console.log('got ins response', res)
         if (res.institution?.length) {
           yield res.institution

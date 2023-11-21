@@ -9,7 +9,7 @@
   "scripts": {
     "download:oas": "curl https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml > ./plaid.oas.yaml",
     "generate": "pnpm generate:oas && pnpm generate:types",
-    "generate:oas": "pnpm download:oas && yaml2json ./plaid.oas.yaml | prettier --parser json > ./plaid.oas.json",
+    "generate:oas": "yaml2json ./plaid.oas.yaml | prettier --parser json > ./plaid.oas.json",
     "generate:types": "openapi-typescript ./plaid.oas.json --output plaid.oas.d.ts"
   },
   "dependencies": {

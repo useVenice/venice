@@ -1,6 +1,5 @@
 import type http from 'node:http'
 import type https from 'node:https'
-
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -9,9 +8,7 @@ import type {
   Method,
 } from 'axios'
 import _Axios from 'axios'
-
 import {defineProxyFn} from '../di-utils'
-import {stringifyQueryParams} from '../url-utils'
 
 export {default as Axios} from 'axios'
 export type {AxiosError as IAxiosError} from 'axios'
@@ -238,137 +235,4 @@ export function createHTTPClient({
     },
   )
   return axios
-}
-
-// MARK: - OpenAPI codegen
-
-// Copied over from various generated files...
-
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-export type ApiRequestOptions = {
-  readonly method:
-    | 'GET'
-    | 'PUT'
-    | 'POST'
-    | 'DELETE'
-    | 'OPTIONS'
-    | 'HEAD'
-    | 'PATCH'
-  readonly url: string
-  readonly path?: Record<string, unknown>
-  readonly cookies?: Record<string, unknown>
-  readonly headers?: Record<string, unknown>
-  readonly query?: Record<string, unknown>
-  readonly formData?: Record<string, unknown>
-  readonly body?: unknown
-  readonly mediaType?: string
-  readonly responseHeader?: string
-  readonly errors?: Record<number, string>
-}
-
-type Resolver<T> = (options: ApiRequestOptions) => Promise<T>
-type Headers = Record<string, string>
-
-type OpenAPIConfig = {
-  BASE: string
-  VERSION: string
-  WITH_CREDENTIALS: boolean
-  CREDENTIALS: 'include' | 'omit' | 'same-origin'
-  TOKEN?: string | Resolver<string>
-  USERNAME?: string | Resolver<string>
-  PASSWORD?: string | Resolver<string>
-  HEADERS?: Headers | Resolver<Headers>
-  ENCODE_PATH?: (path: string) => string
-}
-
-const getUrl = (config: OpenAPIConfig, options: ApiRequestOptions): string => {
-  const encoder = config.ENCODE_PATH ?? encodeURI
-
-  const path = options.url
-    .replace('{api-version}', config.VERSION)
-    .replace(/{(.*?)}/g, (substring: string, group: string) => {
-      if (options.path?.hasOwnProperty(group)) {
-        return encoder(String(options.path[group]))
-      }
-      return substring
-    })
-
-  return `${config.BASE}${path}`
-}
-
-/* eslint-enable @typescript-eslint/consistent-type-definitions */
-
-/**
- * To be used together with https://github.com/ferdikoomen/openapi-typescript-codegen
- * Adapted from https://gist.github.com/tonyxiao/9df2d9ce50096a1adf96c5437a084d06
- */
-export function createOpenApiRequestFactory(
-  http: HTTPClient,
-  CancelablePromise: new <T>(
-    executor: (
-      resolve: (value: T | PromiseLike<T>) => void,
-      reject: (reason?: unknown) => void,
-      onCancel: (handleCancel: () => void) => void,
-    ) => void,
-  ) => Promise<T>,
-) {
-  return class OpenApiRequestFactory {
-    constructor(public readonly config: OpenAPIConfig) {}
-
-    /**
-     * Request method
-     * @param opts The request options from the service
-     * @returns CancelablePromise<T>
-     * @throws ApiError
-     */
-    request<T>(opts: ApiRequestOptions) {
-      return new CancelablePromise<T>((resolve, reject, onCancel) => {
-        // Get the request URL. Depending on your needs, this might need additional processing,
-        // @see ./src/templates/core/functions/getUrl.hbs
-        const url = getUrl(this.config, opts)
-        // console.log('Will request url', url, opts)
-        // Optional: Get and link the cancelation token, so the request can be aborted.
-        const source = _Axios.CancelToken.source()
-        onCancel(() => source.cancel('The user aborted a request.'))
-
-        const formData = opts.formData
-          ? stringifyQueryParams(opts.formData)
-          : null
-
-        // Execute the request. This is a minimal example, in real world scenarios
-        // you will need to add headers, process form data, etc.
-        // @see ./src/templates/core/axios/request.hbs
-        http
-          .request<T>({
-            url,
-            method: opts.method,
-            withCredentials: this.config.WITH_CREDENTIALS,
-            params: opts.query,
-            data: formData ?? opts.body,
-            headers: {
-              ...opts.headers,
-              ...(formData && {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              }),
-            },
-            cancelToken: source.token,
-          })
-          .then((res) => resolve(res.data))
-          .catch((_err: unknown) => {
-            let error = _err
-            if (_err instanceof HTTPError && _err.response) {
-              const statusText = opts.errors?.[_err.response.status]
-              if (statusText) {
-                error = new HTTPError(
-                  _err.request,
-                  {..._err.response, statusText},
-                  _err.originalMessage,
-                )
-              }
-            }
-            reject(error)
-          })
-      })
-    }
-  }
 }

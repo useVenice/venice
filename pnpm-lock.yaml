@@ -1097,6 +1097,9 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../packages/cdk
+      '@usevenice/openapi-client':
+        specifier: workspace:*
+        version: link:../../utils/openapi-client
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1104,18 +1107,18 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
     devDependencies:
-      '@cfworker/json-schema':
-        specifier: 1.12.4
-        version: 1.12.4
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
-      openapi-typescript-codegen:
-        specifier: 0.23.0
-        version: 0.23.0
+      prettier:
+        specifier: 3.1.0
+        version: 3.1.0
+      swagger2openapi:
+        specifier: 7.0.8
+        version: 7.0.8
 
   packages/cdk:
     dependencies:
@@ -1643,15 +1646,6 @@ packages:
       '@jsdevtools/ono': 7.1.3
       call-me-maybe: 1.0.1
       js-yaml: 3.14.1
-    dev: true
-
-  /@apidevtools/json-schema-ref-parser@9.0.9:
-    resolution: {integrity: sha512-GBD2Le9w2+lVFoc4vswGI/TjkNIZSVp7+9xPf+X3uidBfWnAeUWmquteSyt0+VCrhNMWj/FTABISQrD3Z/YA+w==}
-    dependencies:
-      '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.11
-      call-me-maybe: 1.0.1
-      js-yaml: 4.1.0
     dev: true
 
   /@apidevtools/openapi-schemas@2.1.0:
@@ -2442,10 +2436,6 @@ packages:
   /@blossomfinance/iso-4217-currencies@0.2.5:
     resolution: {integrity: sha512-UPdNaQ03GSqwGemFP4F5T4SgehjvZqpdcq9Byu2UUL+eMLyfiCZgvW3Jb4w9+ivjAA4M50xMQrj1dv6IYOf9NQ==}
     dev: false
-
-  /@cfworker/json-schema@1.12.4:
-    resolution: {integrity: sha512-Uixq/lBfvw9Gwj68OP/breqzpWOPgxE+38z/LJB01exvaGhi9hlPoSSNWddClYFg7jTVwrDzCXCefyDFOexMZw==}
-    dev: true
 
   /@clerk/backend@0.19.1:
     resolution: {integrity: sha512-yY9UBWtC9xqD3cHcpGU4KFQouDrzKKtr5gibfoWneihvoziC08ARVccpNozR8pqz0xp3Zzk5Eg8Tdz+aq52J/A==}
@@ -11161,15 +11151,6 @@ packages:
   /fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
 
-  /fs-extra@10.1.0:
-    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      graceful-fs: 4.2.10
-      jsonfile: 6.1.0
-      universalify: 2.0.0
-    dev: true
-
   /fs-extra@11.1.1:
     resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
     engines: {node: '>=14.14'}
@@ -13623,14 +13604,6 @@ packages:
       lodash: 4.17.21
     dev: false
 
-  /json-schema-ref-parser@9.0.9:
-    resolution: {integrity: sha512-qcP2lmGy+JUoQJ4DOQeLaZDqH9qSkeGCK3suKWxJXS82dg728Mn3j97azDMaOUmJAN4uCq91LdPx4K7E8F1a7Q==}
-    engines: {node: '>=10'}
-    deprecated: Please switch to @apidevtools/json-schema-ref-parser
-    dependencies:
-      '@apidevtools/json-schema-ref-parser': 9.0.9
-    dev: true
-
   /json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
@@ -15973,17 +15946,6 @@ packages:
 
   /openapi-types@12.1.0:
     resolution: {integrity: sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==}
-    dev: true
-
-  /openapi-typescript-codegen@0.23.0:
-    resolution: {integrity: sha512-gOJXy5g3H3HlLpVNN+USrNK2i2KYBmDczk9Xk34u6JorwrGiDJZUj+al4S+i9TXdfUQ/ZaLxE59Xf3wqkxGfqA==}
-    hasBin: true
-    dependencies:
-      camelcase: 6.3.0
-      commander: 9.4.1
-      fs-extra: 10.1.0
-      handlebars: 4.7.7
-      json-schema-ref-parser: 9.0.9
     dev: true
 
   /openapi-typescript-helpers@0.0.4:
