@@ -71,11 +71,11 @@ const nextConfig = {
     return config
   },
   images: {
-    domains: [
-      'yodlee-1.hs.llnwd.net',
-      'merge-api-production.s3.amazonaws.com',
-      'img.clerk.com',
-      'images.clerk.dev',
+    remotePatterns: [
+      {hostname: 'yodlee-1.hs.llnwd.net'},
+      {hostname: 'merge-api-production.s3.amazonaws.com'},
+      {hostname: 'img.clerk.com'},
+      {hostname: 'images.clerk.dev'},
     ],
   },
 
