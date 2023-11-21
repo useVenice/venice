@@ -1,7 +1,4 @@
-import prettier from 'prettier'
-
 import {z} from '@usevenice/zod'
-
 import {get, mapper} from './new-mapper'
 
 const Vendor = z.object({
@@ -27,13 +24,16 @@ const mapper2 = (vendor: z.infer<typeof QBOVendor>) => ({
 })
 
 function prettify(code: string) {
-  return prettier.format(code, {
-    arrowParens: 'avoid',
-    parser: 'typescript',
-    singleQuote: true,
-    semi: false,
-    printWidth: 30,
-  })
+  // Make this work with the new version of prettier...
+  // https://share.cleanshot.com/ZBNbBWm9
+  return code
+  // return prettier.format(code, {
+  //   arrowParens: 'avoid',
+  //   parser: 'typescript',
+  //   singleQuote: true,
+  //   semi: false,
+  //   printWidth: 30,
+  // })
 }
 
 test('doc gen', () => {
@@ -44,8 +44,8 @@ test('doc gen', () => {
       typeof v === 'function'
         ? prettify(v.toString())
         : typeof v === 'object' && 'keypath' in v
-        ? `.${v.keypath}`
-        : JSON.stringify(v),
+          ? `.${v.keypath}`
+          : JSON.stringify(v),
     )
   })
   console.log(prettify(mapper2.toString()))
