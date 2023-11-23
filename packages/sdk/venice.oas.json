@@ -2158,7 +2158,7 @@
         }
       }
     },
-    "/": {
+    "/openapi.json": {
       "get": {
         "operationId": "getOpenapiDocument",
         "responses": {

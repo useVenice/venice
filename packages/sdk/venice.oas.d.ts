@@ -406,7 +406,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/': {
+  '/openapi.json': {
     parameters: {
       query?: never
       header?: never

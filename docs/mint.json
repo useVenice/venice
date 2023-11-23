@@ -76,9 +76,7 @@
       "pages": [
         {
           "group": "internal",
-          "pages": [
-            "api/internal/health-check"
-          ]
+          "pages": ["api/internal/health-check"]
         },
         {
           "group": "connectors",
@@ -134,7 +132,7 @@
             "api/investment/get-investmentsecurity"
           ]
         },
-        "api/get-"
+        "api/get-openapijson"
       ]
     }
   ],

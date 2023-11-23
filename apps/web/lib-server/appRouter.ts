@@ -1,6 +1,5 @@
 import {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
-
 import {getServerUrl} from '@usevenice/app-config/constants'
 import {flatRouter} from '@usevenice/engine-backend'
 import {
@@ -10,7 +9,6 @@ import {
 } from '@usevenice/engine-backend/router/_base'
 import {generateOpenApiDocument} from '@usevenice/trpc-openapi'
 import {z} from '@usevenice/util'
-
 import {zAuth} from '@/lib-common/schemas'
 
 const customRouter = trpc.router({
@@ -25,7 +23,7 @@ const customRouter = trpc.router({
     }),
 
   getOpenapiDocument: publicProcedure
-    .meta({openapi: {method: 'GET', path: '/'}})
+    .meta({openapi: {method: 'GET', path: '/openapi.json'}})
     .input(z.void())
     .output(z.unknown())
     .query((): unknown => generateOpenApi()),

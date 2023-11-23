@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",
+    "@usevenice/sdk": "workspace:*",
     "mintlify": "4.0.59"
   }
 }

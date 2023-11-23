@@ -67,6 +67,7 @@
     "prettier-plugin-tailwindcss": "0.5.7",
     "ts-brand": "0.0.2",
     "tsx": "3.12.2",
+    "turbo": "^1.10.16",
     "typescript": "5.0.4"
   },
   "engines": {
