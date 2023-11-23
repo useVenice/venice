@@ -1,0 +1,8 @@
+{
+  "name": "@usevenice/vdk",
+  "description": "Vertical Development Kit",
+  "dependencies": {
+    "@trpc/server": "10.40.0",
+    "@usevenice/zod": "workspace:*"
+  }
+}

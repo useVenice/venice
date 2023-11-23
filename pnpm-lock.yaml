@@ -1135,6 +1135,15 @@ importers:
         specifier: 4.0.59
         version: 4.0.59(axios@0.21.1)(openapi-types@12.1.0)
 
+  kits/vdk:
+    dependencies:
+      '@trpc/server':
+        specifier: 10.40.0
+        version: 10.40.0
+      '@usevenice/zod':
+        specifier: workspace:*
+        version: link:../../utils/zod
+
   packages/cdk:
     dependencies:
       '@trpc/server':
@@ -1640,6 +1649,36 @@ importers:
       zod-openapi:
         specifier: 2.11.0
         version: 2.11.0(zod@3.21.4)
+
+  verticals/vertical-accounting:
+    dependencies:
+      '@usevenice/vdk':
+        specifier: workspace:*
+        version: link:../../kits/vdk
+    devDependencies:
+      '@usevenice/connector-qbo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-qbo
+
+  verticals/vertical-investment:
+    dependencies:
+      '@usevenice/vdk':
+        specifier: workspace:*
+        version: link:../../kits/vdk
+    devDependencies:
+      '@usevenice/connector-plaid':
+        specifier: workspace:*
+        version: link:../../connectors/connector-plaid
+
+  verticals/vertical-pta:
+    dependencies:
+      '@usevenice/vdk':
+        specifier: workspace:*
+        version: link:../../kits/vdk
+    devDependencies:
+      '@usevenice/connector-qbo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-qbo
 
 packages:
 

@@ -1,6 +1,8 @@
 packages:
+  - 'apps/*'
   - 'packages/*'
   - 'connectors/*'
-  - 'apps/*'
+  - 'verticals/*'
+  - 'kits/*'
   - 'utils/*'
   - 'docs/'

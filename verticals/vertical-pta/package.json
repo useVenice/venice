@@ -1,0 +1,9 @@
+{
+  "name": "@usevenice/vertical-pta",
+  "dependencies": {
+    "@usevenice/vdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/connector-qbo": "workspace:*"
+  }
+}

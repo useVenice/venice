@@ -1,0 +1,9 @@
+{
+  "name": "@usevenice/vertical-accounting",
+  "dependencies": {
+    "@usevenice/vdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/connector-qbo": "workspace:*"
+  }
+}

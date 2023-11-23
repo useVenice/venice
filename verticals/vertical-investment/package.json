@@ -1,0 +1,9 @@
+{
+  "name": "@usevenice/vertical-investment",
+  "dependencies": {
+    "@usevenice/vdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/connector-plaid": "workspace:*"
+  }
+}
