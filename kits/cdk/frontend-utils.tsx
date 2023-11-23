@@ -1,6 +1,5 @@
 import React from 'react'
 import useScriptHook from 'react-script-hook'
-
 import {Deferred} from '@usevenice/util'
 
 export function useScript(src: string) {

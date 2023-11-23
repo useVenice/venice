@@ -12,7 +12,7 @@ const nextConfig = {
   transpilePackages: [
     path.resolve(__dirname, '../app-config'),
     // Should we generate this list from fs also?
-    path.resolve(__dirname, '../../packages/cdk'),
+    path.resolve(__dirname, '../../kits/cdk'),
     path.resolve(__dirname, '../../packages/engine-backend'),
     path.resolve(__dirname, '../../packages/engine-frontend'),
     path.resolve(__dirname, '../../packages/ui'),

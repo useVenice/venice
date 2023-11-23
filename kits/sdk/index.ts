@@ -1,5 +1,4 @@
 import {createClient} from '@usevenice/openapi-client'
-
 import type {paths} from './venice.oas'
 
 export interface VeniceClientOptions {

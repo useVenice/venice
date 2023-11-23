@@ -17,7 +17,7 @@ import type {
 import type {
   ConnectorSchemas,
   ConnHelpers,
-} from '../../packages/cdk/connector.types'
+} from '../../kits/cdk/connector.types'
 
 export const zInvestment = {
   account: z.object({

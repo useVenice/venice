@@ -13,7 +13,7 @@ import {
 import type {
   ConnectorSchemas,
   ConnHelpers,
-} from '../../packages/cdk/connector.types'
+} from '../../kits/cdk/connector.types'
 import type * as Pta from './pta-types'
 
 export * from './pta-utils'

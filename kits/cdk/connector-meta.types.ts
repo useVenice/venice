@@ -1,5 +1,4 @@
 import type {oas30, oas31} from 'openapi3-ts'
-
 import {
   castIs,
   R,
@@ -8,7 +7,6 @@ import {
   zodToJsonSchema,
 } from '@usevenice/util'
 import {z} from '@usevenice/zod'
-
 import type {
   AnyConnectorImpl,
   ConnectorSchemas,

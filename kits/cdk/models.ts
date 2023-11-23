@@ -1,5 +1,4 @@
 import {z} from '@usevenice/zod'
-
 import {zEndUserId, zId} from './id.types'
 
 // Utility types
