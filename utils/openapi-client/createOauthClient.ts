@@ -38,13 +38,10 @@ export function createOauthClient<Paths extends {}>({
         tokens = await refreshTokens(client)
         onTokenRefreshed?.(tokens)
       }
-      return preRequest(url, {
-        ...init,
-        headers: {
-          ...init?.headers,
-          Authorization: `Bearer ${tokens.accessToken}`,
-        },
-      })
+      // Need to use Headers class otherwise spread doesn't handle all cases
+      const headers = new Headers(init?.headers)
+      headers.set('Authorization', `Bearer ${tokens.accessToken}`)
+      return preRequest(url, {...init, headers})
     },
   })
   return client
