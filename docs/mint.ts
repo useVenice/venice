@@ -2,8 +2,7 @@ import apiPages from './api-reference/index.json'
 
 const mintConfig: MintConfig = {
   name: 'Venice',
-  openapi:
-    'https://raw.githubusercontent.com/useVenice/venice/main/kits/sdk/venice.oas.json', // see if this helps...
+  openapi: './venice.oas.json',
   logo: {
     light: '/images/logo/venice-black-logo.svg',
     dark: '/images/logo/venice-white-logo.svg',

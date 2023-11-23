@@ -1,6 +1,6 @@
 {
   "name": "Venice",
-  "openapi": "https://raw.githubusercontent.com/useVenice/venice/main/kits/sdk/venice.oas.json",
+  "openapi": "./venice.oas.json",
   "logo": {
     "light": "/images/logo/venice-black-logo.svg",
     "dark": "/images/logo/venice-white-logo.svg"
@@ -76,7 +76,9 @@
       "pages": [
         {
           "group": "Internal",
-          "pages": ["api-reference/internal/health-check"]
+          "pages": [
+            "api-reference/internal/health-check"
+          ]
         },
         "api-reference/post-connect-token",
         "api-reference/post-magic-link",
