@@ -1,5 +1,4 @@
 import {z} from 'zod'
-
 import {defaultVeniceHost} from './common'
 
 export const zVeniceClientConfig = z.object({

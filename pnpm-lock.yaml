@@ -431,7 +431,7 @@ importers:
     dependencies:
       '@usevenice/connect':
         specifier: workspace:*
-        version: link:../../packages/connect
+        version: link:../../kits/connect
       '@usevenice/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -538,7 +538,7 @@ importers:
         version: link:../../kits/cdk
       '@usevenice/connect':
         specifier: workspace:*
-        version: link:../../packages/connect
+        version: link:../../kits/connect
       '@usevenice/connector-postgres':
         specifier: workspace:*
         version: link:../../connectors/connector-postgres
@@ -1172,6 +1172,25 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
 
+  kits/connect:
+    dependencies:
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
+    devDependencies:
+      '@types/react':
+        specifier: 18.0.27
+        version: 18.0.27
+      tsup:
+        specifier: 7.2.0
+        version: 7.2.0(typescript@5.0.4)
+      typescript:
+        specifier: '*'
+        version: 5.0.4
+
   kits/sdk:
     dependencies:
       '@usevenice/openapi-client':
@@ -1190,25 +1209,6 @@ importers:
       '@usevenice/zod':
         specifier: workspace:*
         version: link:../../utils/zod
-
-  packages/connect:
-    dependencies:
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      zod:
-        specifier: 3.21.4
-        version: 3.21.4(patch_hash=bzwjzhue3hmpww5lnv24u5k2ru)
-    devDependencies:
-      '@types/react':
-        specifier: 18.0.27
-        version: 18.0.27
-      tsup:
-        specifier: 7.2.0
-        version: 7.2.0(typescript@5.0.4)
-      typescript:
-        specifier: '*'
-        version: 5.0.4
 
   packages/engine-backend:
     dependencies:
