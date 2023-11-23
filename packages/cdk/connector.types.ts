@@ -1,7 +1,6 @@
 import type {MaybePromise, PathsOf} from '@usevenice/util'
 import {R} from '@usevenice/util'
 import type {z} from '@usevenice/zod'
-
 import type {
   CheckResourceContext,
   CheckResourceOptions,
@@ -24,9 +23,14 @@ import type {
   StateUpdateData,
   SyncOperation,
 } from './protocol'
-import type {AccountingMethods, ZAccounting} from './verticals/accounting'
-import type {InvestmentMethods, ZInvestment} from './verticals/investment'
-import type {PtaMethods, ZPta} from './verticals/pta'
+import type {
+  AccountingMethods,
+  InvestmentMethods,
+  PtaMethods,
+  ZAccounting,
+  ZInvestment,
+  ZPta,
+} from './verticals'
 
 export interface Verticals<
   TDef extends ConnectorSchemas = ConnectorSchemas,
@@ -367,7 +371,7 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
       ...args: {} extends Omit<Extract<Op, {type: K}>, 'type'>
         ? [K]
         : [K, Omit<Extract<Op, {type: K}>, 'type'>]
-    ) => ({...args[1], type: args[0]} as unknown as Extract<Op, {type: K}>),
+    ) => ({...args[1], type: args[0]}) as unknown as Extract<Op, {type: K}>,
     _opRes: (id: string, rest: Omit<OpRes, 'id' | 'type'>) =>
       R.identity<Op>({
         // We don't prefix in `_opData`, should we actually prefix here?
@@ -396,7 +400,7 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
         // TODO: Figure out why we need an `unknown` cast here
         data: {entityName, id, entity} as unknown as OpData['data'],
         type: 'data',
-      } satisfies OpData),
+      }) satisfies OpData,
     _intOpData: (
       id: ExternalId,
       integrationData: _types['integrationData'],

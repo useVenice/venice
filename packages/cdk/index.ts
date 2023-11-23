@@ -1,8 +1,6 @@
 export * from './oauth/NangoClient'
 export * from './oauth/oauthConnector'
 
-export * from './verticals/pta'
-
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture}.{ts,tsx}"}
 export * from './base-links'
 export * from './connector-meta.types'
@@ -15,5 +13,6 @@ export * from './incremental-sync'
 export * from './models'
 export * from './protocol'
 export * from './sync'
+export * from './verticals'
 export * from './viewer'
 // codegen:end

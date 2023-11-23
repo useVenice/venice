@@ -11,18 +11,18 @@ import {
   setDefault,
   zFunction,
 } from '@usevenice/util'
+import type {Pta} from '@usevenice/vertical-pta'
 import {z} from '@usevenice/zod'
-
 import {handlersLink, transformLink} from './base-links'
 import type {ConnectorDef, EntityMapper} from './connector.types'
 import type {Id} from './id.types'
-import type {AnyEntityPayload, Link} from './protocol'
 import type {
+  AnyEntityPayload,
   EntityPayload,
   EntityPayloadWithRaw,
+  Link,
   StdSyncOperation,
 } from './protocol'
-import type {Pta} from './verticals/pta'
 
 // TODO: Can we use the `parsedReso` type here?
 export function mapStandardEntityLink({

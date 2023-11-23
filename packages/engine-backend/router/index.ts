@@ -1,9 +1,11 @@
 import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
 // import {accountingRouter} from './verticals/accounting'
 
-import {createAccountingRouter} from '@usevenice/cdk/verticals/accounting'
-import {createInvestmentRouter} from '@usevenice/cdk/verticals/investment'
-import {createPtaRouter} from '@usevenice/cdk/verticals/pta'
+import {
+  createAccountingRouter,
+  createInvestmentRouter,
+  createPtaRouter,
+} from '@usevenice/cdk/verticals'
 import {remoteProcedure, trpc} from './_base'
 import {adminRouter} from './adminRouter'
 import {connectorConfigRouter} from './connectorConfigRouter'

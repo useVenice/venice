@@ -1152,6 +1152,15 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../util
+      '@usevenice/vertical-accounting':
+        specifier: workspace:*
+        version: link:../../verticals/vertical-accounting
+      '@usevenice/vertical-investment':
+        specifier: workspace:*
+        version: link:../../verticals/vertical-investment
+      '@usevenice/vertical-pta':
+        specifier: workspace:*
+        version: link:../../verticals/vertical-pta
       '@usevenice/zod':
         specifier: workspace:*
         version: link:../../utils/zod

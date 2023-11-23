@@ -7,6 +7,9 @@
   "dependencies": {
     "@trpc/server": "10.40.0",
     "@usevenice/util": "workspace:*",
+    "@usevenice/vertical-accounting": "workspace:*",
+    "@usevenice/vertical-investment": "workspace:*",
+    "@usevenice/vertical-pta": "workspace:*",
     "@usevenice/zod": "workspace:*",
     "jsonwebtoken": "9.0.0",
     "react-script-hook": "1.7.2"
