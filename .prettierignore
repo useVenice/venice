@@ -23,3 +23,5 @@ pnpm-lock.yaml
 # vim: set filetype=ignore:
 
 .obsidian/
+
+docs/venice.oas.json

@@ -3,3 +3,4 @@ packages:
   - 'connectors/*'
   - 'apps/*'
   - 'utils/*'
+  - 'docs/'

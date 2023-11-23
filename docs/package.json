@@ -1,0 +1,10 @@
+{
+  "name": "@usevenice/docs",
+  "scripts": {
+    "scrape": "mintlify-scrape openapi-file -o api ../packages/sdk/venice.oas.json | tail -n +2 > ./api/index.json"
+  },
+  "devDependencies": {
+    "@mintlify/scraping": "^3.0.64",
+    "mintlify": "4.0.59"
+  }
+}

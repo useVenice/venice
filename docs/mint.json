@@ -1,5 +1,6 @@
 {
   "name": "Venice",
+  "openapi": "./venice.oas.json",
   "logo": {
     "light": "/images/logo/venice-black-logo.svg",
     "dark": "/images/logo/venice-white-logo.svg"
@@ -32,6 +33,16 @@
       "url": "https://github.com/usevenice/venice"
     }
   ],
+  "tabs": [
+    {
+      "name": "API References",
+      "url": "api"
+    },
+    {
+      "name": "OpenAPI.json",
+      "url": "https://raw.githubusercontent.com/useVenice/venice/main/packages/sdk/venice.oas.json"
+    }
+  ],
   "navigation": [
     {
       "group": "Getting Started",
@@ -58,6 +69,64 @@
         "support/custom-integration",
         "support/contact-us",
         "support/attribution"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        {
+          "group": "internal",
+          "pages": [
+            "api/internal/health-check"
+          ]
+        },
+        "api/get-resources",
+        "api/post-resources",
+        "api/get-pipelines",
+        "api/delete-pipelines",
+        "api/get-integration_infos",
+        "api/get-resources-1",
+        "api/delete-resources",
+        "api/patch-resources",
+        "api/post-connect-token",
+        "api/post-magic-link",
+        "api/get-integrations",
+        "api/post-integrations",
+        "api/get-integrations-1",
+        "api/delete-integrations",
+        {
+          "group": "resource",
+          "pages": [
+            "api/resource/post-passthrough",
+            "api/resource/post-resources-source_sync"
+          ]
+        },
+        {
+          "group": "accounting",
+          "pages": [
+            "api/accounting/get-accountingaccount",
+            "api/accounting/get-accountingexpense",
+            "api/accounting/get-accountingvendor"
+          ]
+        },
+        {
+          "group": "pta",
+          "pages": [
+            "api/pta/get-ptaaccount",
+            "api/pta/get-ptatransaction",
+            "api/pta/get-ptacommodity"
+          ]
+        },
+        {
+          "group": "investment",
+          "pages": [
+            "api/investment/get-investmentaccount",
+            "api/investment/get-investmenttransaction",
+            "api/investment/get-investmentholding",
+            "api/investment/get-investmentsecurity"
+          ]
+        },
+        "api/get-"
       ]
     }
   ],
