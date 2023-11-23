@@ -147,7 +147,9 @@ export default mintConfig
 if (require.main === module) {
   const outPath = process.argv[2]
   if (outPath) {
-    console.log(`Writing mint config to ${outPath}`)
+    console.log(
+      `[${new Date().toISOString()}] Writing mint config to ${outPath}`,
+    )
     // eslint-disable-next-line unicorn/prefer-top-level-await
     void import('node:fs').then((fs) =>
       fs.writeFileSync(outPath, JSON.stringify(mintConfig, null, 2)),

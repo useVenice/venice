@@ -23,4 +23,4 @@
 # vim: set filetype=ignore:
 .obsidian/
 
-/docs/venice.oas.json
+docs/venice.oas.json

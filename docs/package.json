@@ -1,7 +1,9 @@
 {
   "name": "@usevenice/docs",
   "scripts": {
-    "scrape": "mintlify-scrape openapi-file -o api ../packages/sdk/venice.oas.json | tail -n +2 > ./api/index.json"
+    "generate": "pnpm run generate:api-pages && pnpm run generate:mint",
+    "generate:api-pages": "rm -rf api && mkdir -p api && mintlify-scrape openapi-file -o api ../packages/sdk/venice.oas.json | tail -n +2 > ./api/index.json",
+    "generate:mint": "node --loader tsx mint.ts mint.json"
   },
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",

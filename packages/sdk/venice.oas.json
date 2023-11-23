@@ -39,6 +39,188 @@
         }
       }
     },
+    "/connectors": {
+      "get": {
+        "operationId": "listConnectorMetas",
+        "summary": "Get catalog of all available connectors",
+        "tags": ["connectors"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "includeOas",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors/{name}": {
+      "get": {
+        "operationId": "getConnectorMeta",
+        "tags": ["connectors"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "includeOas",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors/{name}/oas": {
+      "get": {
+        "operationId": "getConnectorOpenApiSpec",
+        "tags": ["connectors"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "original",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/resources": {
       "get": {
         "operationId": "listResources",
@@ -68,11 +250,11 @@
           },
           {
             "in": "query",
-            "name": "integrationId",
+            "name": "connectorConfigId",
             "schema": {
               "allOf": [
                 {
-                  "$ref": "#/components/schemas/id.int"
+                  "$ref": "#/components/schemas/id.ccfg"
                 }
               ],
               "nullable": true
@@ -80,7 +262,7 @@
           },
           {
             "in": "query",
-            "name": "providerName",
+            "name": "connectorName",
             "schema": {
               "type": "string",
               "nullable": true
@@ -95,7 +277,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/resource"
+                    "$ref": "#/components/schemas/Resource"
                   }
                 }
               }
@@ -142,8 +324,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "integrationId": {
-                    "$ref": "#/components/schemas/id.int"
+                  "connectorConfigId": {
+                    "$ref": "#/components/schemas/id.ccfg"
                   },
                   "settings": {
                     "type": "object",
@@ -151,7 +333,7 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": ["integrationId"]
+                "required": ["connectorConfigId"]
               }
             }
           }
@@ -227,7 +409,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/pipeline"
+                    "$ref": "#/components/schemas/Pipeline"
                   }
                 }
               }
@@ -324,9 +506,9 @@
         }
       }
     },
-    "/integration_infos": {
+    "/connector_config_infos": {
       "get": {
-        "operationId": "listIntegrationInfos",
+        "operationId": "listConnectorConfigInfos",
         "parameters": [
           {
             "in": "query",
@@ -343,7 +525,7 @@
             "schema": {
               "allOf": [
                 {
-                  "$ref": "#/components/schemas/id.int"
+                  "$ref": "#/components/schemas/id.ccfg"
                 }
               ],
               "nullable": true
@@ -351,7 +533,7 @@
           },
           {
             "in": "query",
-            "name": "providerName",
+            "name": "connectorName",
             "schema": {
               "type": "string",
               "nullable": true
@@ -369,7 +551,7 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "$ref": "#/components/schemas/id.int"
+                        "$ref": "#/components/schemas/id.ccfg"
                       },
                       "envName": {
                         "type": "string",
@@ -379,7 +561,7 @@
                         "type": "string",
                         "nullable": true
                       },
-                      "providerName": {
+                      "connectorName": {
                         "type": "string"
                       },
                       "isSource": {
@@ -391,7 +573,7 @@
                     },
                     "required": [
                       "id",
-                      "providerName",
+                      "connectorName",
                       "isSource",
                       "isDestination"
                     ]
@@ -452,7 +634,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/resource"
+                  "$ref": "#/components/schemas/Resource"
                 }
               }
             }
@@ -528,7 +710,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/resource"
+                  "$ref": "#/components/schemas/Resource"
                 }
               }
             }
@@ -721,13 +903,13 @@
                     "nullable": true,
                     "description": "Where to send user to after connect / if they press back button"
                   },
-                  "providerName": {
+                  "connectorName": {
                     "type": "string",
                     "nullable": true,
                     "description": "Which provider to use"
                   },
-                  "integrationId": {
-                    "$ref": "#/components/schemas/id.int"
+                  "connectorConfigId": {
+                    "$ref": "#/components/schemas/id.ccfg"
                   },
                   "showExisting": {
                     "type": "boolean",
@@ -778,9 +960,9 @@
         }
       }
     },
-    "/integrations": {
+    "/connector_configs": {
       "get": {
-        "operationId": "adminListIntegrations",
+        "operationId": "adminListConnectorConfigs",
         "responses": {
           "200": {
             "description": "Successful response",
@@ -789,7 +971,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/integration"
+                    "$ref": "#/components/schemas/ConnectorConfig"
                   }
                 }
               }
@@ -808,7 +990,7 @@
         }
       },
       "post": {
-        "operationId": "adminUpsertIntegration",
+        "operationId": "adminUpsertConnectorConfig",
         "requestBody": {
           "required": true,
           "content": {
@@ -817,9 +999,9 @@
                 "type": "object",
                 "properties": {
                   "id": {
-                    "$ref": "#/components/schemas/id.int"
+                    "$ref": "#/components/schemas/id.ccfg"
                   },
-                  "providerName": {
+                  "connectorName": {
                     "type": "string"
                   },
                   "orgId": {
@@ -851,7 +1033,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "$ref": "#/components/schemas/ConnectorConfig"
                 }
               }
             }
@@ -879,15 +1061,15 @@
         }
       }
     },
-    "/integrations/{id}": {
+    "/connector_configs/{id}": {
       "delete": {
-        "operationId": "adminDeleteIntegration",
+        "operationId": "adminDeleteConnectorConfig",
         "parameters": [
           {
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.int"
+              "$ref": "#/components/schemas/id.ccfg"
             },
             "required": true
           }
@@ -934,13 +1116,13 @@
         }
       },
       "get": {
-        "operationId": "adminGetIntegration",
+        "operationId": "adminGetConnectorConfig",
         "parameters": [
           {
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.int"
+              "$ref": "#/components/schemas/id.ccfg"
             },
             "required": true
           }
@@ -951,7 +1133,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "$ref": "#/components/schemas/ConnectorConfig"
                 }
               }
             }
@@ -2047,96 +2229,6 @@
           "issues": []
         }
       },
-      "id.int": {
-        "type": "string",
-        "description": "Must start with 'int_'"
-      },
-      "resource": {
-        "type": "object",
-        "properties": {
-          "createdAt": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
-          },
-          "id": {
-            "$ref": "#/components/schemas/id.reso"
-          },
-          "providerName": {
-            "type": "string",
-            "description": "Unique name of the connector"
-          },
-          "displayName": {
-            "type": "string",
-            "nullable": true
-          },
-          "endUserId": {
-            "type": "string",
-            "nullable": true,
-            "minLength": 1
-          },
-          "integrationId": {
-            "$ref": "#/components/schemas/id.int"
-          },
-          "institutionId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/id.ins"
-              }
-            ],
-            "nullable": true
-          },
-          "settings": {
-            "type": "object",
-            "nullable": true,
-            "additionalProperties": {}
-          },
-          "standard": {
-            "type": "object",
-            "nullable": true,
-            "properties": {
-              "displayName": {
-                "type": "string"
-              },
-              "status": {
-                "type": "string",
-                "nullable": true,
-                "enum": ["healthy", "disconnected", "error", "manual", null]
-              },
-              "statusMessage": {
-                "type": "string",
-                "nullable": true
-              },
-              "labels": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": ["displayName"]
-          },
-          "disabled": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "createdAt",
-          "updatedAt",
-          "id",
-          "providerName",
-          "integrationId"
-        ]
-      },
-      "id.reso": {
-        "type": "string",
-        "description": "Must start with 'reso_'"
-      },
-      "id.ins": {
-        "type": "string",
-        "description": "Must start with 'ins_'"
-      },
       "error.BAD_REQUEST": {
         "type": "object",
         "properties": {
@@ -2211,7 +2303,97 @@
           "issues": []
         }
       },
-      "pipeline": {
+      "id.ccfg": {
+        "type": "string",
+        "description": "Must start with 'ccfg_'"
+      },
+      "Resource": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "id": {
+            "$ref": "#/components/schemas/id.reso"
+          },
+          "connectorName": {
+            "type": "string",
+            "description": "Unique name of the connector"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "endUserId": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1
+          },
+          "connectorConfigId": {
+            "$ref": "#/components/schemas/id.ccfg"
+          },
+          "integrationId": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/id.int"
+              }
+            ],
+            "nullable": true
+          },
+          "settings": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {}
+          },
+          "standard": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "displayName": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "nullable": true,
+                "enum": ["healthy", "disconnected", "error", "manual", null]
+              },
+              "statusMessage": {
+                "type": "string",
+                "nullable": true
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["displayName"]
+          },
+          "disabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "createdAt",
+          "updatedAt",
+          "id",
+          "connectorName",
+          "connectorConfigId"
+        ]
+      },
+      "id.reso": {
+        "type": "string",
+        "description": "Must start with 'reso_'"
+      },
+      "id.int": {
+        "type": "string",
+        "description": "Must start with 'int_'"
+      },
+      "Pipeline": {
         "type": "object",
         "properties": {
           "createdAt": {
@@ -2260,7 +2442,7 @@
         "type": "string",
         "description": "Must start with 'pipe_'"
       },
-      "integration": {
+      "ConnectorConfig": {
         "type": "object",
         "properties": {
           "createdAt": {
@@ -2270,13 +2452,13 @@
             "type": "string"
           },
           "id": {
-            "$ref": "#/components/schemas/id.int"
+            "$ref": "#/components/schemas/id.ccfg"
           },
           "envName": {
             "type": "string",
             "nullable": true
           },
-          "providerName": {
+          "connectorName": {
             "type": "string"
           },
           "config": {
@@ -2300,7 +2482,7 @@
             "type": "boolean"
           }
         },
-        "required": ["createdAt", "updatedAt", "id", "providerName", "orgId"]
+        "required": ["createdAt", "updatedAt", "id", "connectorName", "orgId"]
       },
       "id.org": {
         "type": "string",

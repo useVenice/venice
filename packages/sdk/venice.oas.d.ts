@@ -21,6 +21,55 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/connectors': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get catalog of all available connectors */
+    get: operations['listConnectorMetas']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/connectors/{name}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getConnectorMeta']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/connectors/{name}/oas': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getConnectorOpenApiSpec']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/resources': {
     parameters: {
       query?: never
@@ -69,14 +118,14 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/integration_infos': {
+  '/connector_config_infos': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['listIntegrationInfos']
+    get: operations['listConnectorConfigInfos']
     put?: never
     post?: never
     delete?: never
@@ -133,33 +182,33 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/integrations': {
+  '/connector_configs': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['adminListIntegrations']
+    get: operations['adminListConnectorConfigs']
     put?: never
-    post: operations['adminUpsertIntegration']
+    post: operations['adminUpsertConnectorConfig']
     delete?: never
     options?: never
     head?: never
     patch?: never
     trace?: never
   }
-  '/integrations/{id}': {
+  '/connector_configs/{id}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    get: operations['adminGetIntegration']
+    get: operations['adminGetConnectorConfig']
     put?: never
     post?: never
-    delete: operations['adminDeleteIntegration']
+    delete: operations['adminDeleteConnectorConfig']
     options?: never
     head?: never
     patch?: never
@@ -405,34 +454,6 @@ export interface components {
         message: string
       }[]
     }
-    /** @description Must start with 'int_' */
-    'id.int': string
-    resource: {
-      createdAt: string
-      updatedAt: string
-      id: components['schemas']['id.reso']
-      /** @description Unique name of the connector */
-      connectorName: string
-      displayName?: string | null
-      endUserId?: string | null
-      integrationId: components['schemas']['id.int']
-      institutionId?: components['schemas']['id.ins'] | null
-      settings?: {
-        [key: string]: unknown
-      } | null
-      standard?: {
-        displayName: string
-        /** @enum {string|null} */
-        status?: 'healthy' | 'disconnected' | 'error' | 'manual' | null
-        statusMessage?: string | null
-        labels?: string[]
-      } | null
-      disabled?: boolean
-    }
-    /** @description Must start with 'reso_' */
-    'id.reso': string
-    /** @description Must start with 'ins_' */
-    'id.ins': string
     /**
      * Error
      * @description The error information
@@ -489,7 +510,35 @@ export interface components {
         message: string
       }[]
     }
-    pipeline: {
+    /** @description Must start with 'ccfg_' */
+    'id.ccfg': string
+    Resource: {
+      createdAt: string
+      updatedAt: string
+      id: components['schemas']['id.reso']
+      /** @description Unique name of the connector */
+      connectorName: string
+      displayName?: string | null
+      endUserId?: string | null
+      connectorConfigId: components['schemas']['id.ccfg']
+      integrationId?: components['schemas']['id.int'] | null
+      settings?: {
+        [key: string]: unknown
+      } | null
+      standard?: {
+        displayName: string
+        /** @enum {string|null} */
+        status?: 'healthy' | 'disconnected' | 'error' | 'manual' | null
+        statusMessage?: string | null
+        labels?: string[]
+      } | null
+      disabled?: boolean
+    }
+    /** @description Must start with 'reso_' */
+    'id.reso': string
+    /** @description Must start with 'int_' */
+    'id.int': string
+    Pipeline: {
       createdAt: string
       updatedAt: string
       id: components['schemas']['id.pipe']
@@ -508,10 +557,10 @@ export interface components {
     }
     /** @description Must start with 'pipe_' */
     'id.pipe': string
-    integration: {
+    ConnectorConfig: {
       createdAt: string
       updatedAt: string
-      id: components['schemas']['id.int']
+      id: components['schemas']['id.ccfg']
       envName?: string | null
       connectorName: string
       config?: {
@@ -563,13 +612,164 @@ export interface operations {
       }
     }
   }
+  listConnectorMetas: {
+    parameters: {
+      query?: {
+        includeOas?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  getConnectorMeta: {
+    parameters: {
+      query?: {
+        includeOas?: boolean
+      }
+      header?: never
+      path: {
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  getConnectorOpenApiSpec: {
+    parameters: {
+      query?: {
+        original?: boolean
+      }
+      header?: never
+      path: {
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
   listResources: {
     parameters: {
       query?: {
         limit?: number
         offset?: number
         endUserId?: string | null
-        integrationId?: components['schemas']['id.int'] | null
+        connectorConfigId?: components['schemas']['id.ccfg'] | null
         connectorName?: string | null
       }
       header?: never
@@ -584,7 +784,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['resource'][]
+          'application/json': components['schemas']['Resource'][]
         }
       }
       /** @description Invalid input data */
@@ -626,7 +826,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': {
-          integrationId: components['schemas']['id.int']
+          connectorConfigId: components['schemas']['id.ccfg']
           settings?: {
             [key: string]: unknown
           } | null
@@ -682,7 +882,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['pipeline'][]
+          'application/json': components['schemas']['Pipeline'][]
         }
       }
       /** @description Invalid input data */
@@ -763,11 +963,11 @@ export interface operations {
       }
     }
   }
-  listIntegrationInfos: {
+  listConnectorConfigInfos: {
     parameters: {
       query?: {
         type?: 'source' | 'destination' | null
-        id?: components['schemas']['id.int'] | null
+        id?: components['schemas']['id.ccfg'] | null
         connectorName?: string | null
       }
       header?: never
@@ -783,7 +983,7 @@ export interface operations {
         }
         content: {
           'application/json': {
-            id: components['schemas']['id.int']
+            id: components['schemas']['id.ccfg']
             envName?: string | null
             displayName?: string | null
             connectorName: string
@@ -838,7 +1038,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['resource']
+          'application/json': components['schemas']['Resource']
         }
       }
       /** @description Invalid input data */
@@ -947,7 +1147,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['resource']
+          'application/json': components['schemas']['Resource']
         }
       }
       /** @description Invalid input data */
@@ -1054,7 +1254,7 @@ export interface operations {
           redirectUrl?: string | null
           /** @description Which provider to use */
           connectorName?: string | null
-          integrationId?: components['schemas']['id.int']
+          connectorConfigId?: components['schemas']['id.ccfg']
           /** @default true */
           showExisting: boolean
         }
@@ -1092,7 +1292,7 @@ export interface operations {
       }
     }
   }
-  adminListIntegrations: {
+  adminListConnectorConfigs: {
     parameters: {
       query?: never
       header?: never
@@ -1107,7 +1307,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['integration'][]
+          'application/json': components['schemas']['ConnectorConfig'][]
         }
       }
       /** @description Internal server error */
@@ -1121,7 +1321,7 @@ export interface operations {
       }
     }
   }
-  adminUpsertIntegration: {
+  adminUpsertConnectorConfig: {
     parameters: {
       query?: never
       header?: never
@@ -1131,7 +1331,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': {
-          id?: components['schemas']['id.int']
+          id?: components['schemas']['id.ccfg']
           connectorName?: string
           orgId: components['schemas']['id.org']
           config?: {
@@ -1150,7 +1350,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['integration']
+          'application/json': components['schemas']['ConnectorConfig']
         }
       }
       /** @description Invalid input data */
@@ -1173,12 +1373,12 @@ export interface operations {
       }
     }
   }
-  adminGetIntegration: {
+  adminGetConnectorConfig: {
     parameters: {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.int']
+        id: components['schemas']['id.ccfg']
       }
       cookie?: never
     }
@@ -1190,7 +1390,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['integration']
+          'application/json': components['schemas']['ConnectorConfig']
         }
       }
       /** @description Invalid input data */
@@ -1222,12 +1422,12 @@ export interface operations {
       }
     }
   }
-  adminDeleteIntegration: {
+  adminDeleteConnectorConfig: {
     parameters: {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.int']
+        id: components['schemas']['id.ccfg']
       }
       cookie?: never
     }

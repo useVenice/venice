@@ -1,24 +1,30 @@
 [
   {
     "group": "internal",
+    "pages": ["api/internal/health-check"]
+  },
+  {
+    "group": "connectors",
     "pages": [
-      "api/internal/health-check"
+      "api/connectors/get-catalog-of-all-available-connectors",
+      "api/connectors/get-connectors",
+      "api/connectors/get-connectors-oas"
     ]
   },
   "api/get-resources",
   "api/post-resources",
   "api/get-pipelines",
   "api/delete-pipelines",
-  "api/get-integration_infos",
+  "api/get-connector_config_infos",
   "api/get-resources-1",
   "api/delete-resources",
   "api/patch-resources",
   "api/post-connect-token",
   "api/post-magic-link",
-  "api/get-integrations",
-  "api/post-integrations",
-  "api/get-integrations-1",
-  "api/delete-integrations",
+  "api/get-connector_configs",
+  "api/post-connector_configs",
+  "api/get-connector_configs-1",
+  "api/delete-connector_configs",
   {
     "group": "resource",
     "pages": [
