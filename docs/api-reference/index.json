@@ -1,0 +1,61 @@
+[
+  {
+    "group": "internal",
+    "pages": ["api-reference/internal/health-check"]
+  },
+  {
+    "group": "connectors",
+    "pages": [
+      "api-reference/connectors/get-catalog-of-all-available-connectors",
+      "api-reference/connectors/get-connectors",
+      "api-reference/connectors/get-connectors-oas"
+    ]
+  },
+  "api-reference/get-resources",
+  "api-reference/post-resources",
+  "api-reference/get-pipelines",
+  "api-reference/delete-pipelines",
+  "api-reference/get-connector_config_infos",
+  "api-reference/get-resources-1",
+  "api-reference/delete-resources",
+  "api-reference/patch-resources",
+  "api-reference/post-connect-token",
+  "api-reference/post-magic-link",
+  "api-reference/get-connector_configs",
+  "api-reference/post-connector_configs",
+  "api-reference/get-connector_configs-1",
+  "api-reference/delete-connector_configs",
+  {
+    "group": "resource",
+    "pages": [
+      "api-reference/resource/post-passthrough",
+      "api-reference/resource/post-resources-source_sync"
+    ]
+  },
+  {
+    "group": "accounting",
+    "pages": [
+      "api-reference/accounting/get-accountingaccount",
+      "api-reference/accounting/get-accountingexpense",
+      "api-reference/accounting/get-accountingvendor"
+    ]
+  },
+  {
+    "group": "pta",
+    "pages": [
+      "api-reference/pta/get-ptaaccount",
+      "api-reference/pta/get-ptatransaction",
+      "api-reference/pta/get-ptacommodity"
+    ]
+  },
+  {
+    "group": "investment",
+    "pages": [
+      "api-reference/investment/get-investmentaccount",
+      "api-reference/investment/get-investmenttransaction",
+      "api-reference/investment/get-investmentholding",
+      "api-reference/investment/get-investmentsecurity"
+    ]
+  },
+  "api-reference/get-openapijson"
+]

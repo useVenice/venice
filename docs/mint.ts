@@ -1,4 +1,4 @@
-import apiPages from './api/index.json'
+import apiPages from './api-reference/index.json'
 
 const mintConfig: MintConfig = {
   name: 'Venice',
@@ -39,7 +39,7 @@ const mintConfig: MintConfig = {
   tabs: [
     {
       name: 'API References',
-      url: 'api',
+      url: 'api-reference',
     },
     {
       name: 'OpenAPI.json',
