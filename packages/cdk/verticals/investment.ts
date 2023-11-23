@@ -1,10 +1,9 @@
-import type {MaybePromise} from '@usevenice/util'
-import {objectEntries} from '@usevenice/util'
 // This is unfortunately quite duplicated...
 // Guess it means accounting router also belongs in the engine backend...
-import {R} from '@usevenice/util'
-import {z} from '@usevenice/zod'
 
+import type {MaybePromise} from '@usevenice/util'
+import {objectEntries, R, startCase} from '@usevenice/util'
+import {z} from '@usevenice/zod'
 import type {ConnectorSchemas, ConnHelpers} from '../connector.types'
 import type {
   PaginatedOutput,
@@ -69,7 +68,7 @@ export function createInvestmentRouter(opts: VerticalRouterOpts) {
           openapi: {
             method: 'GET',
             path: `/${vertical}/${entityName}`,
-            tags: [vertical],
+            tags: [startCase(vertical)],
           },
         })
         .input(zPaginationParams.nullish())

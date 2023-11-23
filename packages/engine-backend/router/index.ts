@@ -1,14 +1,15 @@
 import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
-
 // import {accountingRouter} from './verticals/accounting'
 
 import {createAccountingRouter} from '@usevenice/cdk/verticals/accounting'
 import {createInvestmentRouter} from '@usevenice/cdk/verticals/investment'
 import {createPtaRouter} from '@usevenice/cdk/verticals/pta'
-
 import {remoteProcedure, trpc} from './_base'
 import {adminRouter} from './adminRouter'
+import {connectorConfigRouter} from './connectorConfigRouter'
+import {connectorRouter} from './connectorRouter'
 import {endUserRouter} from './endUserRouter'
+import {pipelineRouter} from './pipelineRouter'
 import {protectedRouter} from './protectedRouter'
 import {publicRouter} from './publicRouter'
 import {resourceRouter} from './resourceRouter'
@@ -25,8 +26,11 @@ export const routers = {
   protected: protectedRouter,
   endUser: endUserRouter,
   admin: adminRouter,
+  connectorConfig: connectorConfigRouter,
   system: systemRouter,
   resource: resourceRouter,
+  pipeline: pipelineRouter,
+  connector: connectorRouter,
   //
   accounting: accountingRouter,
   pta: ptaRouter,
@@ -43,6 +47,9 @@ export const flatRouter = trpc.mergeRouters(
   adminRouter,
   systemRouter,
   resourceRouter,
+  connectorConfigRouter,
+  connectorRouter,
+  pipelineRouter,
   //
   accountingRouter,
   ptaRouter,

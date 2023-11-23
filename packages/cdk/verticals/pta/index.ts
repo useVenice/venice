@@ -1,7 +1,5 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R, z, zObject} from '@usevenice/util'
-
-import type * as Pta from './pta-types'
+import {objectEntries, R, startCase, z, zObject} from '@usevenice/util'
 import type {ConnectorSchemas, ConnHelpers} from '../../connector.types'
 import type {
   PaginatedOutput,
@@ -13,6 +11,7 @@ import {
   proxyListRemoteRedux,
   zPaginationParams,
 } from '../new-mapper'
+import type * as Pta from './pta-types'
 
 export * from './pta-utils'
 export type {Pta}
@@ -65,7 +64,7 @@ export function createPtaRouter(opts: VerticalRouterOpts) {
           openapi: {
             method: 'GET',
             path: `/${vertical}/${entityName}`,
-            tags: [vertical],
+            tags: [startCase(vertical)],
           },
         })
         .input(zPaginationParams.nullish())

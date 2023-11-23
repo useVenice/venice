@@ -1,7 +1,6 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R} from '@usevenice/util'
+import {objectEntries, R, startCase} from '@usevenice/util'
 import {z} from '@usevenice/zod'
-
 import type {ConnectorSchemas, ConnHelpers} from '../connector.types'
 import type {
   PaginatedOutput,
@@ -78,7 +77,7 @@ export function createAccountingRouter(opts: VerticalRouterOpts) {
           openapi: {
             method: 'GET',
             path: `/${vertical}/${entityName}`,
-            tags: [vertical],
+            tags: [startCase(vertical)],
           },
         })
         .input(zPaginationParams.nullish())

@@ -1,5 +1,4 @@
 import {TRPCError} from '@trpc/server'
-
 import type {
   EndUserId,
   OauthBaseTypes,
@@ -13,10 +12,8 @@ import {
   zEndUserId,
   zId,
   zPostConnectOptions,
-  zRaw,
 } from '@usevenice/cdk'
-import {joinPath, makeUlid, z} from '@usevenice/util'
-
+import {joinPath, z} from '@usevenice/util'
 import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {protectedProcedure, trpc} from './_base'
@@ -266,82 +263,4 @@ export const endUserRouter = trpc.router({
         return 'Resource successfully connected'
       },
     ),
-  createResource: protectedProcedure
-    .meta({openapi: {method: 'POST', path: '/resources'}})
-    .input(zRaw.resource.pick({connectorConfigId: true, settings: true}))
-    // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
-    // needed
-    // How do we verify that the userId here is the same as the userId from preConnectOption?
-    .output(z.string())
-    .mutation(
-      async ({
-        input: {connectorConfigId: connectorConfigId, settings},
-        ctx,
-      }) => {
-        // Authorization
-        await ctx.services.getConnectorConfigInfoOrFail(connectorConfigId)
-
-        // Escalate to now have enough pemission to sync
-        const int = await ctx.asOrgIfNeeded.getConnectorConfigOrFail(
-          connectorConfigId,
-        )
-
-        const _extId = makeUlid()
-        const resoId = makeId('reso', int.connector.name, _extId)
-
-        // Should throw if not working..
-        const resoUpdate = {
-          triggerDefaultSync: false,
-          // TODO: Should no longer depend on external ID
-          resourceExternalId: _extId,
-          settings,
-          ...(await int.connector.checkResource?.({
-            config: int.config,
-            settings,
-            context: {webhookBaseUrl: ''},
-            options: {},
-          })),
-          // TODO: Fix me up
-          endUserId:
-            ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
-        } satisfies ResourceUpdate
-        await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
-        return resoId
-      },
-    ),
-
-  // TODO: Run server-side validation
-  updateResource: protectedProcedure
-    .meta({openapi: {method: 'PATCH', path: '/resources/{id}'}})
-    .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
-    .output(zRaw.resource)
-    .mutation(async ({input: {id, ...input}, ctx}) =>
-      // TODO: Run mapStandardResource after editing
-      // Also we probably do not want deeply nested patch
-      // shallow is sufficient more most situations
-      ctx.services.patchReturning('resource', id, input),
-    ),
-  deleteResource: protectedProcedure
-    .meta({openapi: {method: 'DELETE', path: '/resources/{id}'}})
-    .input(z.object({id: zId('reso'), skipRevoke: z.boolean().optional()}))
-    .output(z.void())
-    .mutation(async ({input: {id: resoId, ...opts}, ctx}) => {
-      if (ctx.viewer.role === 'end_user') {
-        await ctx.services.getResourceOrFail(resoId)
-      }
-      const {
-        settings,
-        connectorConfig: ccfg,
-        ...reso
-      } = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
-      if (!opts?.skipRevoke) {
-        await ccfg.connector.revokeResource?.(settings, ccfg.config)
-      }
-      // if (opts?.todo_deleteAssociatedData) {
-      // TODO: Figure out how to delete... Destination is not part of meta service
-      // and we don't easily have the ability to handle a delete, it's not part of the sync protocol yet...
-      // We should probably introduce a reset / delete event...
-      // }
-      await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
-    }),
 })

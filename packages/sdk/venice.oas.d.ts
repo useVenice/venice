@@ -21,135 +21,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/connectors': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get catalog of all available connectors */
-    get: operations['listConnectorMetas']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/connectors/{name}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getConnectorMeta']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/connectors/{name}/oas': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getConnectorOpenApiSpec']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/resources': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['listResources']
-    put?: never
-    post: operations['createResource']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/pipelines': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['listPipelines']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/pipelines/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete: operations['deletePipeline']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/connector_config_infos': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['listConnectorConfigInfos']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/resources/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getResource']
-    put?: never
-    post?: never
-    delete: operations['deleteResource']
-    options?: never
-    head?: never
-    patch: operations['updateResource']
-    trace?: never
-  }
   '/connect-token': {
     parameters: {
       query?: never
@@ -182,38 +53,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/connector_configs': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['adminListConnectorConfigs']
-    put?: never
-    post: operations['adminUpsertConnectorConfig']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/connector_configs/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['adminGetConnectorConfig']
-    put?: never
-    post?: never
-    delete: operations['adminDeleteConnectorConfig']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/passthrough': {
     parameters: {
       query?: never
@@ -230,7 +69,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/resources/{id}/source_sync': {
+  '/platform/resources/{id}/source_sync': {
     parameters: {
       query?: never
       header?: never
@@ -240,6 +79,86 @@ export interface paths {
     get?: never
     put?: never
     post: operations['sourceSync']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/resources': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['listResources']
+    put?: never
+    post: operations['createResource']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/resources/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getResource']
+    put?: never
+    post?: never
+    delete: operations['deleteResource']
+    options?: never
+    head?: never
+    patch: operations['updateResource']
+    trace?: never
+  }
+  '/platform/connector_configs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['adminListConnectorConfigs']
+    put?: never
+    post: operations['adminUpsertConnectorConfig']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/connector_configs/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['adminGetConnectorConfig']
+    put?: never
+    post?: never
+    delete: operations['adminDeleteConnectorConfig']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/connector_config_infos': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['listConnectorConfigInfos']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -482,6 +401,34 @@ export interface components {
         message: string
       }[]
     }
+    /** @description Must start with 'ccfg_' */
+    'id.ccfg': string
+    /** @description Must start with 'reso_' */
+    'id.reso': string
+    Resource: {
+      createdAt: string
+      updatedAt: string
+      id: components['schemas']['id.reso']
+      /** @description Unique name of the connector */
+      connectorName: string
+      displayName?: string | null
+      endUserId?: string | null
+      connectorConfigId: components['schemas']['id.ccfg']
+      integrationId?: components['schemas']['id.int'] | null
+      settings?: {
+        [key: string]: unknown
+      } | null
+      standard?: {
+        displayName: string
+        /** @enum {string|null} */
+        status?: 'healthy' | 'disconnected' | 'error' | 'manual' | null
+        statusMessage?: string | null
+        labels?: string[]
+      } | null
+      disabled?: boolean
+    }
+    /** @description Must start with 'int_' */
+    'id.int': string
     /**
      * Error
      * @description The error information
@@ -510,53 +457,6 @@ export interface components {
         message: string
       }[]
     }
-    /** @description Must start with 'ccfg_' */
-    'id.ccfg': string
-    Resource: {
-      createdAt: string
-      updatedAt: string
-      id: components['schemas']['id.reso']
-      /** @description Unique name of the connector */
-      connectorName: string
-      displayName?: string | null
-      endUserId?: string | null
-      connectorConfigId: components['schemas']['id.ccfg']
-      integrationId?: components['schemas']['id.int'] | null
-      settings?: {
-        [key: string]: unknown
-      } | null
-      standard?: {
-        displayName: string
-        /** @enum {string|null} */
-        status?: 'healthy' | 'disconnected' | 'error' | 'manual' | null
-        statusMessage?: string | null
-        labels?: string[]
-      } | null
-      disabled?: boolean
-    }
-    /** @description Must start with 'reso_' */
-    'id.reso': string
-    /** @description Must start with 'int_' */
-    'id.int': string
-    Pipeline: {
-      createdAt: string
-      updatedAt: string
-      id: components['schemas']['id.pipe']
-      sourceId?: components['schemas']['id.reso']
-      sourceState?: {
-        [key: string]: unknown
-      }
-      destinationId?: components['schemas']['id.reso']
-      destinationState?: {
-        [key: string]: unknown
-      }
-      linkOptions?: unknown[] | null
-      lastSyncStartedAt?: string | null
-      lastSyncCompletedAt?: string | null
-      disabled?: boolean
-    }
-    /** @description Must start with 'pipe_' */
-    'id.pipe': string
     ConnectorConfig: {
       createdAt: string
       updatedAt: string
@@ -612,16 +512,26 @@ export interface operations {
       }
     }
   }
-  listConnectorMetas: {
+  createConnectToken: {
     parameters: {
-      query?: {
-        includeOas?: boolean
-      }
+      query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    requestBody?: never
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Anything that uniquely identifies the end user that you will be sending the magic link to */
+          endUserId?: string
+          /**
+           * @description How long the magic link will be valid for (in seconds) before it expires
+           * @default 3600
+           */
+          validityInSeconds: number
+        }
+      }
+    }
     responses: {
       /** @description Successful response */
       200: {
@@ -629,7 +539,9 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': unknown
+          'application/json': {
+            token: string
+          }
         }
       }
       /** @description Invalid input data */
@@ -639,15 +551,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
         }
       }
       /** @description Internal server error */
@@ -661,18 +564,35 @@ export interface operations {
       }
     }
   }
-  getConnectorMeta: {
+  createMagicLink: {
     parameters: {
-      query?: {
-        includeOas?: boolean
-      }
+      query?: never
       header?: never
-      path: {
-        name: string
-      }
+      path?: never
       cookie?: never
     }
-    requestBody?: never
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Anything that uniquely identifies the end user that you will be sending the magic link to */
+          endUserId?: string
+          /**
+           * @description How long the magic link will be valid for (in seconds) before it expires
+           * @default 3600
+           */
+          validityInSeconds: number
+          /** @description What to call user by */
+          displayName?: string | null
+          /** @description Where to send user to after connect / if they press back button */
+          redirectUrl?: string | null
+          /** @description Which provider to use */
+          connectorName?: string | null
+          connectorConfigId?: components['schemas']['id.ccfg']
+          /** @default true */
+          showExisting: boolean
+        }
+      }
+    }
     responses: {
       /** @description Successful response */
       200: {
@@ -680,7 +600,9 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': unknown
+          'application/json': {
+            url: string
+          }
         }
       }
       /** @description Invalid input data */
@@ -690,15 +612,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
         }
       }
       /** @description Internal server error */
@@ -712,18 +625,31 @@ export interface operations {
       }
     }
   }
-  getConnectorOpenApiSpec: {
+  passthrough: {
     parameters: {
-      query?: {
-        original?: boolean
-      }
+      query?: never
       header?: never
-      path: {
-        name: string
-      }
+      path?: never
       cookie?: never
     }
-    requestBody?: never
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @enum {string} */
+          method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS'
+          path: string
+          query?: {
+            [key: string]: unknown
+          }
+          headers?: {
+            [key: string]: unknown
+          }
+          body?: {
+            [key: string]: unknown
+          }
+        }
+      }
+    }
     responses: {
       /** @description Successful response */
       200: {
@@ -743,13 +669,54 @@ export interface operations {
           'application/json': components['schemas']['error.BAD_REQUEST']
         }
       }
-      /** @description Not found */
-      404: {
+      /** @description Internal server error */
+      500: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  sourceSync: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: components['schemas']['id.reso']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          state?: {
+            [key: string]: unknown
+          }
+        }
+      }
+    }
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            [key: string]: unknown
+          }[]
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
         }
       }
       /** @description Internal server error */
@@ -850,164 +817,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  listPipelines: {
-    parameters: {
-      query?: {
-        limit?: number
-        offset?: number
-        resourceIds?: components['schemas']['id.reso'][]
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Pipeline'][]
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  deletePipeline: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: components['schemas']['id.pipe']
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': true
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  listConnectorConfigInfos: {
-    parameters: {
-      query?: {
-        type?: 'source' | 'destination' | null
-        id?: components['schemas']['id.ccfg'] | null
-        connectorName?: string | null
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            id: components['schemas']['id.ccfg']
-            envName?: string | null
-            displayName?: string | null
-            connectorName: string
-            isSource: boolean
-            isDestination: boolean
-          }[]
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Not found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.NOT_FOUND']
         }
       }
       /** @description Internal server error */
@@ -1166,119 +975,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.NOT_FOUND']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  createConnectToken: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': {
-          /** @description Anything that uniquely identifies the end user that you will be sending the magic link to */
-          endUserId?: string
-          /**
-           * @description How long the magic link will be valid for (in seconds) before it expires
-           * @default 3600
-           */
-          validityInSeconds: number
-        }
-      }
-    }
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            token: string
-          }
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  createMagicLink: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': {
-          /** @description Anything that uniquely identifies the end user that you will be sending the magic link to */
-          endUserId?: string
-          /**
-           * @description How long the magic link will be valid for (in seconds) before it expires
-           * @default 3600
-           */
-          validityInSeconds: number
-          /** @description What to call user by */
-          displayName?: string | null
-          /** @description Where to send user to after connect / if they press back button */
-          redirectUrl?: string | null
-          /** @description Which provider to use */
-          connectorName?: string | null
-          connectorConfigId?: components['schemas']['id.ccfg']
-          /** @default true */
-          showExisting: boolean
-        }
-      }
-    }
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            url: string
-          }
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
         }
       }
       /** @description Internal server error */
@@ -1471,79 +1167,18 @@ export interface operations {
       }
     }
   }
-  passthrough: {
+  listConnectorConfigInfos: {
     parameters: {
-      query?: never
+      query?: {
+        type?: 'source' | 'destination' | null
+        id?: components['schemas']['id.ccfg'] | null
+        connectorName?: string | null
+      }
       header?: never
       path?: never
       cookie?: never
     }
-    requestBody: {
-      content: {
-        'application/json': {
-          /** @enum {string} */
-          method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS'
-          path: string
-          query?: {
-            [key: string]: unknown
-          }
-          headers?: {
-            [key: string]: unknown
-          }
-          body?: {
-            [key: string]: unknown
-          }
-        }
-      }
-    }
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': unknown
-        }
-      }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.BAD_REQUEST']
-        }
-      }
-      /** @description Internal server error */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
-        }
-      }
-    }
-  }
-  sourceSync: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: components['schemas']['id.reso']
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': {
-          state?: {
-            [key: string]: unknown
-          }
-        }
-      }
-    }
+    requestBody?: never
     responses: {
       /** @description Successful response */
       200: {
@@ -1552,7 +1187,12 @@ export interface operations {
         }
         content: {
           'application/json': {
-            [key: string]: unknown
+            id: components['schemas']['id.ccfg']
+            envName?: string | null
+            displayName?: string | null
+            connectorName: string
+            isSource: boolean
+            isDestination: boolean
           }[]
         }
       }
@@ -1563,6 +1203,15 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
         }
       }
       /** @description Internal server error */

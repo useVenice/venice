@@ -1,6 +1,6 @@
 {
   "name": "Venice",
-  "openapi": "./venice.oas.json",
+  "openapi": "https://raw.githubusercontent.com/useVenice/venice/main/packages/sdk/venice.oas.json",
   "logo": {
     "light": "/images/logo/venice-black-logo.svg",
     "dark": "/images/logo/venice-white-logo.svg"
@@ -78,33 +78,28 @@
           "group": "internal",
           "pages": ["api-reference/internal/health-check"]
         },
-        {
-          "group": "connectors",
-          "pages": [
-            "api-reference/connectors/get-catalog-of-all-available-connectors",
-            "api-reference/connectors/get-connectors",
-            "api-reference/connectors/get-connectors-oas"
-          ]
-        },
-        "api-reference/get-resources",
-        "api-reference/post-resources",
-        "api-reference/get-pipelines",
-        "api-reference/delete-pipelines",
-        "api-reference/get-connector_config_infos",
-        "api-reference/get-resources-1",
-        "api-reference/delete-resources",
-        "api-reference/patch-resources",
         "api-reference/post-connect-token",
         "api-reference/post-magic-link",
-        "api-reference/get-connector_configs",
-        "api-reference/post-connector_configs",
-        "api-reference/get-connector_configs-1",
-        "api-reference/delete-connector_configs",
+        "api-reference/post-passthrough",
         {
-          "group": "resource",
+          "group": "Resource",
           "pages": [
-            "api-reference/resource/post-passthrough",
-            "api-reference/resource/post-resources-source_sync"
+            "api-reference/resource/post-platformresources-source_sync",
+            "api-reference/resource/get-platformresources",
+            "api-reference/resource/post-platformresources",
+            "api-reference/resource/get-platformresources-1",
+            "api-reference/resource/delete-platformresources",
+            "api-reference/resource/patch-platformresources"
+          ]
+        },
+        {
+          "group": "Connector Configs",
+          "pages": [
+            "api-reference/connector-configs/get-platformconnector_configs",
+            "api-reference/connector-configs/post-platformconnector_configs",
+            "api-reference/connector-configs/get-platformconnector_configs-1",
+            "api-reference/connector-configs/delete-platformconnector_configs",
+            "api-reference/connector-configs/get-platformconnector_config_infos"
           ]
         },
         {
