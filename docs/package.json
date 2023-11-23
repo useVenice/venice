@@ -2,7 +2,7 @@
   "name": "@usevenice/docs",
   "scripts": {
     "generate": "pnpm run generate:api-pages && pnpm run generate:mint",
-    "generate:api-pages": "cp ../packages/sdk/venice.oas.json ./ && rm -rf api-reference && mkdir -p api-reference && mintlify-scrape openapi-file -o api-reference ./venice.oas.json | tail -n +2 > ./api-reference/index.json",
+    "generate:api-pages": "rm -rf api-reference && mkdir -p api-reference && mintlify-scrape openapi-file -o api-reference ./venice.oas.json | tail -n +2 > ./api-reference/index.json",
     "generate:mint": "node --loader tsx mint.ts mint.json"
   },
   "devDependencies": {
