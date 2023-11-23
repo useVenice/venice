@@ -75,7 +75,7 @@
       "group": "API Reference",
       "pages": [
         {
-          "group": "internal",
+          "group": "Internal",
           "pages": ["api-reference/internal/health-check"]
         },
         "api-reference/post-connect-token",
@@ -103,7 +103,22 @@
           ]
         },
         {
-          "group": "accounting",
+          "group": "Connectors",
+          "pages": [
+            "api-reference/connectors/get-catalog-of-all-available-connectors",
+            "api-reference/connectors/get-platformconnectors",
+            "api-reference/connectors/get-platformconnectors-oas"
+          ]
+        },
+        {
+          "group": "Pipeline",
+          "pages": [
+            "api-reference/pipeline/get-platformpipelines",
+            "api-reference/pipeline/delete-platformpipelines"
+          ]
+        },
+        {
+          "group": "Accounting",
           "pages": [
             "api-reference/accounting/get-accountingaccount",
             "api-reference/accounting/get-accountingexpense",
@@ -111,7 +126,7 @@
           ]
         },
         {
-          "group": "pta",
+          "group": "Pta",
           "pages": [
             "api-reference/pta/get-ptaaccount",
             "api-reference/pta/get-ptatransaction",
@@ -119,7 +134,7 @@
           ]
         },
         {
-          "group": "investment",
+          "group": "Investment",
           "pages": [
             "api-reference/investment/get-investmentaccount",
             "api-reference/investment/get-investmenttransaction",
