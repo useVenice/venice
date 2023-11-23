@@ -21,7 +21,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/connect-token': {
+  '/platform/connect-token': {
     parameters: {
       query?: never
       header?: never
@@ -37,7 +37,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/magic-link': {
+  '/platform/magic-link': {
     parameters: {
       query?: never
       header?: never
@@ -53,7 +53,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/passthrough': {
+  '/platform/passthrough': {
     parameters: {
       query?: never
       header?: never
@@ -246,7 +246,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/accounting/account': {
+  '/verticals/accounting/account': {
     parameters: {
       query?: never
       header?: never
@@ -262,7 +262,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/accounting/expense': {
+  '/verticals/accounting/expense': {
     parameters: {
       query?: never
       header?: never
@@ -278,7 +278,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/accounting/vendor': {
+  '/verticals/accounting/vendor': {
     parameters: {
       query?: never
       header?: never
@@ -294,7 +294,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/pta/account': {
+  '/verticals/pta/account': {
     parameters: {
       query?: never
       header?: never
@@ -310,7 +310,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/pta/transaction': {
+  '/verticals/pta/transaction': {
     parameters: {
       query?: never
       header?: never
@@ -326,7 +326,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/pta/commodity': {
+  '/verticals/pta/commodity': {
     parameters: {
       query?: never
       header?: never
@@ -342,7 +342,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/investment/account': {
+  '/verticals/investment/account': {
     parameters: {
       query?: never
       header?: never
@@ -358,7 +358,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/investment/transaction': {
+  '/verticals/investment/transaction': {
     parameters: {
       query?: never
       header?: never
@@ -374,7 +374,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/investment/holding': {
+  '/verticals/investment/holding': {
     parameters: {
       query?: never
       header?: never
@@ -390,7 +390,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/investment/security': {
+  '/verticals/investment/security': {
     parameters: {
       query?: never
       header?: never

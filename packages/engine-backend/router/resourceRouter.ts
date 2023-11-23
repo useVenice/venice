@@ -23,7 +23,7 @@ const tags = ['Resource']
 export const resourceRouter = trpc.router({
   // TODO: maybe we should allow resourceId to be part of the path rather than only in the headers
   passthrough: remoteProcedure
-    .meta({openapi: {method: 'POST', path: '/passthrough'}}) // Where do we put this?
+    .meta({openapi: {method: 'POST', path: '/platform/passthrough', tags}}) // Where do we put this?
     .input(zPassthroughInput)
     .output(z.any())
     .mutation(async ({input, ctx}) => {

@@ -39,9 +39,10 @@
         }
       }
     },
-    "/connect-token": {
+    "/platform/connect-token": {
       "post": {
         "operationId": "createConnectToken",
+        "tags": ["Connect"],
         "requestBody": {
           "required": true,
           "content": {
@@ -104,9 +105,10 @@
         }
       }
     },
-    "/magic-link": {
+    "/platform/magic-link": {
       "post": {
         "operationId": "createMagicLink",
+        "tags": ["Connect"],
         "requestBody": {
           "required": true,
           "content": {
@@ -191,9 +193,10 @@
         }
       }
     },
-    "/passthrough": {
+    "/platform/passthrough": {
       "post": {
         "operationId": "passthrough",
+        "tags": ["Resource"],
         "requestBody": {
           "required": true,
           "content": {
@@ -1318,10 +1321,10 @@
         }
       }
     },
-    "/accounting/account": {
+    "/verticals/accounting/account": {
       "get": {
         "operationId": "accounting_account_list",
-        "tags": ["Accounting"],
+        "tags": ["Verticals/Accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1411,10 +1414,10 @@
         }
       }
     },
-    "/accounting/expense": {
+    "/verticals/accounting/expense": {
       "get": {
         "operationId": "accounting_expense_list",
-        "tags": ["Accounting"],
+        "tags": ["Verticals/Accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1508,10 +1511,10 @@
         }
       }
     },
-    "/accounting/vendor": {
+    "/verticals/accounting/vendor": {
       "get": {
         "operationId": "accounting_vendor_list",
-        "tags": ["Accounting"],
+        "tags": ["Verticals/Accounting"],
         "parameters": [
           {
             "in": "query",
@@ -1597,10 +1600,10 @@
         }
       }
     },
-    "/pta/account": {
+    "/verticals/pta/account": {
       "get": {
         "operationId": "pta_account_list",
-        "tags": ["Pta"],
+        "tags": ["Verticals/Pta"],
         "parameters": [
           {
             "in": "query",
@@ -1676,10 +1679,10 @@
         }
       }
     },
-    "/pta/transaction": {
+    "/verticals/pta/transaction": {
       "get": {
         "operationId": "pta_transaction_list",
-        "tags": ["Pta"],
+        "tags": ["Verticals/Pta"],
         "parameters": [
           {
             "in": "query",
@@ -1755,10 +1758,10 @@
         }
       }
     },
-    "/pta/commodity": {
+    "/verticals/pta/commodity": {
       "get": {
         "operationId": "pta_commodity_list",
-        "tags": ["Pta"],
+        "tags": ["Verticals/Pta"],
         "parameters": [
           {
             "in": "query",
@@ -1834,10 +1837,10 @@
         }
       }
     },
-    "/investment/account": {
+    "/verticals/investment/account": {
       "get": {
         "operationId": "investment_account_list",
-        "tags": ["Investment"],
+        "tags": ["Verticals/Investment"],
         "parameters": [
           {
             "in": "query",
@@ -1920,10 +1923,10 @@
         }
       }
     },
-    "/investment/transaction": {
+    "/verticals/investment/transaction": {
       "get": {
         "operationId": "investment_transaction_list",
-        "tags": ["Investment"],
+        "tags": ["Verticals/Investment"],
         "parameters": [
           {
             "in": "query",
@@ -2003,10 +2006,10 @@
         }
       }
     },
-    "/investment/holding": {
+    "/verticals/investment/holding": {
       "get": {
         "operationId": "investment_holding_list",
-        "tags": ["Investment"],
+        "tags": ["Verticals/Investment"],
         "parameters": [
           {
             "in": "query",
@@ -2086,10 +2089,10 @@
         }
       }
     },
-    "/investment/security": {
+    "/verticals/investment/security": {
       "get": {
         "operationId": "investment_security_list",
-        "tags": ["Investment"],
+        "tags": ["Verticals/Investment"],
         "parameters": [
           {
             "in": "query",

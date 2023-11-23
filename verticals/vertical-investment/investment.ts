@@ -70,8 +70,8 @@ export function createInvestmentRouter(opts: VerticalRouterOpts) {
         .meta({
           openapi: {
             method: 'GET',
-            path: `/${vertical}/${entityName}`,
-            tags: [startCase(vertical)],
+            path: `/verticals/${vertical}/${entityName}`,
+            tags: [`Verticals/${startCase(vertical)}`],
           },
         })
         .input(zPaginationParams.nullish())

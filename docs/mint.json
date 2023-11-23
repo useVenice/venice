@@ -76,16 +76,19 @@
       "pages": [
         {
           "group": "Internal",
+          "pages": ["api-reference/internal/health-check"]
+        },
+        {
+          "group": "Connect",
           "pages": [
-            "api-reference/internal/health-check"
+            "api-reference/connect/post-platformconnect-token",
+            "api-reference/connect/post-platformmagic-link"
           ]
         },
-        "api-reference/post-connect-token",
-        "api-reference/post-magic-link",
-        "api-reference/post-passthrough",
         {
           "group": "Resource",
           "pages": [
+            "api-reference/resource/post-platformpassthrough",
             "api-reference/resource/post-platformresources-source_sync",
             "api-reference/resource/get-platformresources",
             "api-reference/resource/post-platformresources",
@@ -120,28 +123,28 @@
           ]
         },
         {
-          "group": "Accounting",
+          "group": "Verticals/Accounting",
           "pages": [
-            "api-reference/accounting/get-accountingaccount",
-            "api-reference/accounting/get-accountingexpense",
-            "api-reference/accounting/get-accountingvendor"
+            "api-reference/verticalsaccounting/get-verticalsaccountingaccount",
+            "api-reference/verticalsaccounting/get-verticalsaccountingexpense",
+            "api-reference/verticalsaccounting/get-verticalsaccountingvendor"
           ]
         },
         {
-          "group": "Pta",
+          "group": "Verticals/Pta",
           "pages": [
-            "api-reference/pta/get-ptaaccount",
-            "api-reference/pta/get-ptatransaction",
-            "api-reference/pta/get-ptacommodity"
+            "api-reference/verticalspta/get-verticalsptaaccount",
+            "api-reference/verticalspta/get-verticalsptatransaction",
+            "api-reference/verticalspta/get-verticalsptacommodity"
           ]
         },
         {
-          "group": "Investment",
+          "group": "Verticals/Investment",
           "pages": [
-            "api-reference/investment/get-investmentaccount",
-            "api-reference/investment/get-investmenttransaction",
-            "api-reference/investment/get-investmentholding",
-            "api-reference/investment/get-investmentsecurity"
+            "api-reference/verticalsinvestment/get-verticalsinvestmentaccount",
+            "api-reference/verticalsinvestment/get-verticalsinvestmenttransaction",
+            "api-reference/verticalsinvestment/get-verticalsinvestmentholding",
+            "api-reference/verticalsinvestment/get-verticalsinvestmentsecurity"
           ]
         },
         "api-reference/get-openapijson"

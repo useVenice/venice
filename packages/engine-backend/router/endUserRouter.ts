@@ -107,10 +107,12 @@ function asEndUser(
 
 // MARK: - Endpoints
 
+const tags = ['Connect']
+
 /** TODO: Modify this so that admin user can execute it... not just endUser */
 export const endUserRouter = trpc.router({
   createConnectToken: protectedProcedure
-    .meta({openapi: {method: 'POST', path: '/connect-token'}})
+    .meta({openapi: {method: 'POST', path: '/platform/connect-token', tags}})
     .input(endUserRouterSchema.createConnectToken.input)
     .output(z.object({token: z.string()}))
     .mutation(({input: {validityInSeconds, ...input}, ctx}) => ({
@@ -119,7 +121,7 @@ export const endUserRouter = trpc.router({
       }),
     })),
   createMagicLink: protectedProcedure
-    .meta({openapi: {method: 'POST', path: '/magic-link'}})
+    .meta({openapi: {method: 'POST', path: '/platform/magic-link', tags}})
     .input(endUserRouterSchema.createMagicLink.input)
     .output(z.object({url: z.string()}))
     .mutation(({input: {endUserId, validityInSeconds, ...params}, ctx}) => {
