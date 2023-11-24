@@ -52,10 +52,13 @@ export const flatRouter = trpc.mergeRouters(
   connectorConfigRouter,
   connectorRouter,
   pipelineRouter,
-  //
-  accountingRouter,
-  ptaRouter,
-  investmentRouter,
+  trpc.router({
+    verticals: trpc.router({
+      accounting: accountingRouter,
+      pta: ptaRouter,
+      investment: investmentRouter,
+    }),
+  }),
 )
 
 export type FlatRouter = typeof flatRouter

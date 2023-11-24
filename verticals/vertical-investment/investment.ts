@@ -65,7 +65,7 @@ export function createInvestmentRouter(opts: VerticalRouterOpts) {
 
   return opts.trpc.router(
     R.mapToObj(objectEntries(zInvestment), ([entityName, v]) => [
-      `${vertical}_${entityName}_list`,
+      `${entityName}_list`,
       opts.remoteProcedure
         .meta({
           openapi: {

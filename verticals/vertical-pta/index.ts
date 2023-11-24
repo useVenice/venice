@@ -61,7 +61,7 @@ export function createPtaRouter(opts: VerticalRouterOpts) {
 
   return opts.trpc.router(
     R.mapToObj(objectEntries(zPta), ([entityName, v]) => [
-      `${vertical}_${entityName}_list`,
+      `${entityName}_list`,
       opts.remoteProcedure
         .meta({
           openapi: {
