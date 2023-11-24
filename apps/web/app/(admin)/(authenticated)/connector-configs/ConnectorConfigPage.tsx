@@ -3,7 +3,6 @@
 import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-
 import {zConnectorStage, zConnectorVertical, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {_trpcReact} from '@usevenice/engine-frontend'
@@ -34,8 +33,7 @@ import {
   SheetTrigger,
   useToast,
 } from '@usevenice/ui'
-import {inPlaceSort, R, titleCase, z} from '@usevenice/util'
-
+import {inPlaceSort, R, titleCase, z, zodToJsonSchema} from '@usevenice/util'
 import {useCurrengOrg} from '@/components/viewer-context'
 import {cn} from '@/lib-client/ui-utils'
 
@@ -139,6 +137,30 @@ export function ConnectorConfigSheet({
 }) {
   const catalogRes = _trpcReact.listConnectorMetas.useQuery()
   const connector = catalogRes.data?.[connectorName]
+
+  const resourcesRes = _trpcReact.listResources.useQuery({
+    connectorName: 'postgres',
+  })
+
+  const zResoId = z.union(
+    (resourcesRes.data ?? []).map((r) =>
+      z
+        .literal(r.id)
+        .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
+    ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
+  )
+
+  const ccfgSchema = connector?.schemas.connectorConfig as {
+    type: 'object'
+    properties?: {}
+  }
+  // Side effect is not ideal, figure out better pattern...
+  if (ccfgSchema && ccfgSchema.type === 'object') {
+    ccfgSchema.properties = {
+      ...ccfgSchema.properties,
+      default_destination_id: zodToJsonSchema(zResoId),
+    }
+  }
 
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself connector config
@@ -244,9 +266,7 @@ export function ConnectorConfigSheet({
               ...schema,
               properties: {
                 ...schema.properties,
-                ...(connector.schemas.connectorConfig && {
-                  config: connector.schemas.connectorConfig,
-                }),
+                ...(ccfgSchema && {config: ccfgSchema}),
               },
             })}
             formData={
@@ -266,7 +286,7 @@ export function ConnectorConfigSheet({
             }}
             hideSubmitButton
           />
-          {!connector.schemas.connectorConfig && <p>No configuration needed</p>}
+          {!ccfgSchema && <p>No configuration needed</p>}
         </div>
         <Separator orientation="horizontal" />
         <SheetFooter className="shrink-0">

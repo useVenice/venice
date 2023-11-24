@@ -13,6 +13,35 @@ export const zEnvName = z.enum(['sandbox', 'development', 'production'])
 
 // MARK: - Standard types
 
+// Should this live inside ZStandard?
+/** Will allow users to make these required as needed */
+export const zStandardConnectorConfig = z.object({
+  env_name: z
+    .string()
+    .nullish()
+    .describe('e.g. sandbox, development, production'),
+  default_destination_id: zId('reso')
+    .nullish()
+    .describe(
+      'Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL',
+    ),
+  default_source_id: zId('reso')
+    .nullish()
+    .describe(
+      'Automatically sync data to any resources associated with this config from the source resource, which is typically a Postgres database. Think Reverse ETL (Postgres -> QBO)',
+    ),
+  pipeline_defaults: z
+    .object({
+      // TODO: Add representation for configured streams for pipeline also, and of course allow pipelipe
+      // to override these settings
+      sync_frequency: z
+        .enum(['manual', 'hourly', 'daily', 'weekly', 'monthly'])
+        .nullish(),
+    })
+    .nullish()
+    .describe('Not implemented yet'),
+})
+
 export const zIntegrationCategory = z.enum([
   'accounting',
   'banking',
@@ -79,8 +108,6 @@ export const zRaw = {
   connector_config: zBase
     .extend({
       id: zId('ccfg'),
-      /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
-      envName: z.string().nullish(),
       connectorName: z.string(),
       config: z.record(z.unknown()).nullish(),
       endUserAccess: z
@@ -92,6 +119,14 @@ export const zRaw = {
       orgId: zId('org'),
       displayName: z.string().nullish(),
       disabled: z.boolean().optional(),
+
+      /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
+      envName: z.string().nullish(),
+      /** Generated column from `config.defalt_destination_id */
+      defaultDestinationId:
+        zStandardConnectorConfig.shape.default_destination_id,
+      /** Generated column from `config.default_source_id */
+      defaultSourceId: zStandardConnectorConfig.shape.default_source_id,
     })
     .openapi({ref: 'ConnectorConfig'}),
   resource: zBase
