@@ -165,7 +165,7 @@ export function ConnectorConfigSheet({
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself connector config
   const formSchema = zRaw.connector_config
-    .pick({endUserAccess: true})
+    .pick({endUserAccess: true, displayName: true})
     .extend({config: z.object({})})
 
   const {orgId} = useCurrengOrg()
@@ -271,7 +271,11 @@ export function ConnectorConfigSheet({
             })}
             formData={
               ccfg
-                ? {endUserAccess: ccfg.endUserAccess, config: ccfg.config ?? {}} // {} because required
+                ? {
+                    endUserAccess: ccfg.endUserAccess,
+                    displayName: ccfg.displayName,
+                    config: ccfg.config ?? {},
+                  } // {} because required
                 : undefined
             }
             // formData should be non-null at this point, we should fix the typing

@@ -110,6 +110,7 @@ export const zRaw = {
       id: zId('ccfg'),
       connectorName: z.string(),
       config: z.record(z.unknown()).nullish(),
+      /** @deprecated. This should be determined on a per-portal basis */
       endUserAccess: z
         .boolean()
         .nullish()
