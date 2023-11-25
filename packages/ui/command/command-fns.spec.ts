@@ -1,6 +1,5 @@
 import {zId} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
-
 import {executeCommand, filterCommands, prepareCommands} from './command-fns'
 import type {CommandDefinitionMap} from './command-types'
 
@@ -25,7 +24,7 @@ test('filter commands', () => {
   expect(filtered.commands[0]?.key).toBe('pipeline:delete')
 })
 
-test('filter commands not patching params', () => {
+test('filter commands not matching params', () => {
   const filtered = filterCommands({commands, params: {pipeline: '123'}})
   expect(filtered.commands).toHaveLength(0)
 })

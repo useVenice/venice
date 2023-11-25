@@ -150,10 +150,14 @@ export function ConnectorConfigSheet({
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
 
-  const ccfgSchema = connector?.schemas.connectorConfig as {
-    type: 'object'
-    properties?: {}
-  }
+  const ccfgSchema = (
+    connector?.schemas.connectorConfig
+      ? // Sometimes we have extra data inside the config due to extra data, so workaround for now
+        // as we have no way of displaying such information / allow user to fix it
+        {...connector?.schemas.connectorConfig, additionalProperties: true}
+      : undefined
+  ) as {type: 'object'; properties?: {}; additionalProperties: boolean}
+
   // Side effect is not ideal, figure out better pattern...
   if (ccfgSchema && ccfgSchema.type === 'object') {
     ccfgSchema.properties = {

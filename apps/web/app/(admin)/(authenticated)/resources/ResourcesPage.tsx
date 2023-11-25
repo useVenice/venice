@@ -4,7 +4,6 @@ import {Copy, Database, Loader2, MoreHorizontal, Pencil} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-
 import {clientConnectors} from '@usevenice/app-config/connectors/connectors.client'
 import {extractConnectorName, zRaw} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
@@ -41,6 +40,7 @@ import {
   useToast,
 } from '@usevenice/ui'
 import {z} from '@usevenice/util'
+import {VCommandMenu} from '@/vcommands/vcommand-components'
 
 type Resource = RouterOutput['listConnections'][number]
 
@@ -65,12 +65,20 @@ export default function ResourcesPage() {
             enableHiding: false,
             cell: ({row}) => <ResourceMenu resource={row.original} />,
           },
+          {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({row}) => (
+              <VCommandMenu initialParams={{resource: row.original}} />
+            ),
+          },
           {accessorKey: 'displayName'},
           {accessorKey: 'endUserId'},
           {accessorKey: 'id'},
           {accessorKey: 'status'},
           {accessorKey: 'connectorConfigId'},
           {accessorKey: 'integrationId'},
+          {accessorKey: 'pipelineIds'},
         ]}
       />
     </div>

@@ -5,12 +5,10 @@ import type {
   PlaidAccount as PlaidLinkAccount,
   PlaidLinkOnSuccessMetadata,
 } from 'react-plaid-link'
+import type {ConnectorDef, ConnectorSchemas, OpenApiSpec} from '@usevenice/cdk'
 import {
-  ConnectorDef,
-  ConnectorSchemas,
   connHelpers,
   makePostingsMap,
-  OpenApiSpec,
   zStandardConnectorConfig,
   zWebhookInput,
 } from '@usevenice/cdk'

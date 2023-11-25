@@ -1,12 +1,9 @@
 import {useTheme} from 'next-themes'
-
 import type {CommandDefinitionInput, CommandDefinitionMap} from '@usevenice/ui'
 import {cmdInit} from '@usevenice/ui'
 import {delay, z} from '@usevenice/util'
-
 import {__DEBUG__} from '@/../app-config/constants'
 import {zClient} from '@/lib-common/schemas'
-
 import {copyToClipboard} from '../lib-client/copyToClipboard'
 import type {CommandContext} from './vcommand-context'
 
@@ -71,10 +68,15 @@ export const resourceCommands = {
     ..._resourceCommand,
     icon: 'Trash',
   },
-  'resource:sync': {
+  'resource:sync': cmd.identity({
     ..._resourceCommand,
     icon: 'RefreshCw',
-  },
+    execute: ({params: {resource}, ctx}) => {
+      void ctx.withToast(() =>
+        ctx.trpcCtx.client.syncResource.mutate([resource.id, {}]),
+      )
+    },
+  }),
   'postgres/run_sql': {
     ..._resourceCommand,
     icon: 'Database',
@@ -91,13 +93,20 @@ export const resourceCommands = {
 export const entityCommands = {
   copy_id: cmd.identity({
     icon: 'Copy',
-    params: z.object({pipeline: z.object({id: z.string()})}),
+    params: z.object({
+      pipeline: z.object({id: z.string()}).optional(),
+      resource: z.object({id: z.string()}).optional(),
+    }),
     useCommand: (initial) => ({
-      subtitle: initial.pipeline?.id,
+      subtitle: initial.resource?.id ?? initial.pipeline?.id,
       execute: ({params, ctx}) =>
-        ctx.withToast(() => copyToClipboard(params.pipeline.id), {
-          title: 'Copied to clipboard',
-        }),
+        ctx.withToast(
+          () =>
+            copyToClipboard(initial.resource?.id ?? params.pipeline?.id ?? ''),
+          {
+            title: 'Copied to clipboard',
+          },
+        ),
     }),
   }),
 } satisfies CommandDefinitionMap<CommandContext>
@@ -152,8 +161,8 @@ export const navCommands = {
           theme === 'dark'
             ? 'SunMedium'
             : theme === 'light'
-            ? 'Moon'
-            : 'Laptop',
+              ? 'Moon'
+              : 'Laptop',
         execute: () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark'),
       }
     },
@@ -171,8 +180,8 @@ export const miscCommands = {
           theme === 'dark'
             ? 'SunMedium'
             : theme === 'light'
-            ? 'Moon'
-            : 'Laptop',
+              ? 'Moon'
+              : 'Laptop',
         execute: () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark'),
       }
     },

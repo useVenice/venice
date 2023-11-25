@@ -104,6 +104,7 @@ export const pipelineRouter = trpc.router({
             ...r,
             syncInProgress: pipes.some((p) => p.syncInProgress),
             type,
+            pipelineIds: pipes.map((p) => p.id),
             // TODO: Fix me
             lastSyncCompletedAt: pipes.find((p) => p.lastSyncCompletedAt)
               ?.lastSyncCompletedAt,
