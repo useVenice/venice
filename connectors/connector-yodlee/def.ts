@@ -1,10 +1,7 @@
-import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers} from '@usevenice/cdk'
-import type {Pta} from '@usevenice/cdk'
-import {makePostingsMap} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas, Pta} from '@usevenice/cdk'
+import {connHelpers, makePostingsMap} from '@usevenice/cdk'
 import type {Brand} from '@usevenice/util'
 import {A, objectFromObject, parseDateTime, z, zCast} from '@usevenice/util'
-
 import {
   getYodleeAccountBalance,
   getYodleeAccountName,
@@ -26,14 +23,19 @@ import {
   zYodleeId,
 } from './YodleeClient'
 
-const zSettings = zUserCreds.extend({
-  /** Used to be _id */
-  providerAccountId: zYodleeId,
-  // Cache
-  user: zUser.nullish(),
-  provider: zYodleeProvider.nullish(),
-  providerAccount: zProviderAccount.nullish(),
-})
+const zSettings = zUserCreds
+  .extend({
+    /** Used to be _id */
+    providerAccountId: zYodleeId,
+    // Cache
+    user: zUser.nullish(),
+    provider: zYodleeProvider.nullish(),
+    providerAccount: zProviderAccount.nullish(),
+  })
+  // @see https://github.com/samchungy/zod-openapi#zod-effects
+  // Ideally when converting we should default to always refType input... Or basically
+  // allow the zodToOas31Schema to control this instead.
+  .openapi({refType: 'input'})
 
 export const yodleeSchemas = {
   name: z.literal('yodlee'),
@@ -42,10 +44,12 @@ export const yodleeSchemas = {
   integrationData: zYodleeInstitution,
   // Should accessToken be cached based on provider / userId?
   connectInput: z.object({accessToken: zAccessToken, envName: zYodleeEnvName}),
-  connectOutput: z.object({
-    providerAccountId: zYodleeId,
-    providerId: zYodleeId, // Technically optional
-  }),
+  connectOutput: z
+    .object({
+      providerAccountId: zYodleeId,
+      providerId: zYodleeId, // Technically optional
+    })
+    .openapi({refType: 'input'}),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),

@@ -1,6 +1,6 @@
-import type {z} from 'zod'
-import _zodToJsonSchema from 'zod-to-json-schema'
-import {R} from '.'
+import * as R from 'remeda'
+import type {z} from '@usevenice/zod'
+import {zodToOas31Schema} from '@usevenice/zod'
 import {jsonSchemaWalkNodes} from './jsonschema-nodewalker'
 
 /** Warning will modify input */
@@ -49,12 +49,9 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
   return jsonSchema
 }
 
-/**
- * TODO: Consider switching to this repo to allow better actual customizations
- * https://github.com/anatine/zod-plugins/tree/main/packages/zod-openapi
- * @deprecated use the zodtooas31schema instead.
- */
+/** @deprecated use the zodtooas31schema instead. */
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
+  return zodToOas31Schema(schema)
   // Defaulting title should occur last, this way we don't end up with extraneous one
-  return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))
+  // return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))
 }

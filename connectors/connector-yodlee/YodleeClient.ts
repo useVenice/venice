@@ -61,6 +61,9 @@ type YodleeIds = z.input<typeof zYodleeIds>
 export const zYodleeId = z
   .union([z.number(), z.string()])
   .transform((id) => (typeof id === 'string' ? Number.parseInt(id) : id))
+  .openapi({refType: 'input'}) // @see https://github.com/samchungy/zod-openapi#zod-effects
+// Ideally when converting we should default to always refType input... Or basically
+// allow the zodToOas31Schema to control this instead.
 const zYodleeIds = z.union([zYodleeId, z.array(zYodleeId)])
 
 function idToString(id: YodleeIds) {

@@ -44,9 +44,15 @@ export const metaForConnector = (
   hasPostConnect:
     connector.postConnect != null || connector.metadata?.nangoProvider,
   nangoProvider: connector.metadata?.nangoProvider,
-  schemas: R.mapValues(connector.schemas ?? {}, (schema) =>
-    schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined,
-  ) as Record<keyof ConnectorSchemas, JSONSchema>,
+  schemas: R.mapValues(connector.schemas ?? {}, (schema, type) => {
+    try {
+      return schema instanceof z.ZodSchema ? zodToJsonSchema(schema) : undefined
+    } catch (err) {
+      throw new Error(
+        `Failed to convert schema for ${connector.name}.${type}: ${err}`,
+      )
+    }
+  }) as Record<keyof ConnectorSchemas, JSONSchema>,
   openapiSpec: opts.includeOas ? connector.metadata?.openapiSpec : undefined,
 })
 

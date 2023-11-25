@@ -7,6 +7,7 @@
   "dependencies": {
     "@blossomfinance/iso-4217-currencies": "0.2.5",
     "@trpc/server": "10.40.0",
+    "@usevenice/zod": "workspace:*",
     "accounting": "0.4.1",
     "async-sema": "3.1.1",
     "awilix": "7.0.3",
@@ -38,8 +39,7 @@
     "type-fest": "3.8.0",
     "ulidx": "0.4.0",
     "zod": "3.21.4",
-    "zod-openapi": "2.11.0",
-    "zod-to-json-schema": "3.21.1"
+    "zod-openapi": "2.11.0"
   },
   "devDependencies": {
     "@types/accounting": "0.4.2",

@@ -35,13 +35,13 @@ export const plaidSchemas = {
       credentials: z
         .union([
           // TODO: This should be z.literal('default') but it does not render well in the UI :/
-          z.null().describe('Use Venice platform credentials'),
+          z.null().openapi({title: 'Use Venice platform credentials'}),
           z
             .object({
               clientId: z.string(),
               clientSecret: z.string(),
             })
-            .describe('Use my own'),
+            .openapi({title: 'Use my own'}),
         ])
         .optional(),
       clientName: z
@@ -118,7 +118,9 @@ export const plaidSchemas = {
   ]),
   webhookInput: zWebhookInput,
 
-  destinationState: z.undefined(), // Temp hack... As unkonwn causes type error during sourceSync
+  // Temp hack... As unkonwn causes type error during sourceSync, also need .type object
+  // otherwise zod-openapi does not like it https://github.com/asteasolutions/zod-to-openapi/issues/196
+  destinationState: z.undefined().openapi({type: 'object'}),
 } satisfies ConnectorSchemas
 
 export const helpers = connHelpers(plaidSchemas)

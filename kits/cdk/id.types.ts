@@ -51,7 +51,10 @@ function _zId<TPrefix extends IdPrefix>(prefix: TPrefix) {
       (s): s is Id[TPrefix] => s.startsWith(`${prefix}_`),
       `Is not a valid ${IDS_INVERTED[prefix]} id, expecting ${prefix}_`,
     )
-    .openapi({ref: `id.${prefix}`, description: `Must start with '${prefix}_'`})
+    .openapi({
+      // ref: `id.${prefix}`,  // Do not use ref because otherwise we end up wtih oneOf instead of typeArray and screws up the rendering inside react-jsonschema-form
+      description: `Must start with '${prefix}_'`,
+    })
 }
 
 export const zId = memoize(_zId, {
