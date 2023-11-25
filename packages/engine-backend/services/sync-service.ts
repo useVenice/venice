@@ -2,22 +2,32 @@ import type {
   AnyEntityPayload,
   Destination,
   EndUserId,
+  EntityPayloadWithRaw,
   Id,
   Link,
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk'
-import {extractId} from '@usevenice/cdk'
-import {connHelpers, logLink, makeId, sync} from '@usevenice/cdk'
-import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {
   addRemainderByDateLink,
+  connHelpers,
+  extractId,
+  logLink,
+  makeId,
   mapAccountNameAndTypeLink,
   mapStandardEntityLink,
+  sync,
 } from '@usevenice/cdk'
-import type {z} from '@usevenice/util'
-import {objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
-
+import type {
+  z} from '@usevenice/util';
+import {
+  makeUlid,
+  objectEntries,
+  objectKeys,
+  R,
+  Rx,
+  rxjs
+} from '@usevenice/util'
 import type {zSyncOptions} from '../types'
 import type {
   _ConnectorConfig,
@@ -32,14 +42,49 @@ export function makeSyncService({
   metaLinks,
   metaService,
   getPipelineExpandedOrFail,
+  getResourceExpandedOrFail,
 }: {
   metaService: MetaService
   metaLinks: ReturnType<typeof makeMetaLinks>
   getPipelineExpandedOrFail: ReturnType<
     typeof makeDBService
   >['getPipelineExpandedOrFail']
+  getResourceExpandedOrFail: ReturnType<
+    typeof makeDBService
+  >['getResourceExpandedOrFail']
 }) {
-  // NOTE: 1) avoid roundtrip to db 2) Bring back getDefaultPipeline (https://share.cleanshot.com/ly1Xwts5) somehow
+  async function ensurePipelinesForResource(resoId: Id['reso']) {
+    const pipelines = await metaService.findPipelines({resourceIds: [resoId]})
+    const reso = await getResourceExpandedOrFail(resoId)
+    if (
+      reso.connectorConfig.defaultDestinationId &&
+      !pipelines.some(
+        (p) => p.destinationId === reso.connectorConfig.defaultDestinationId,
+      )
+    ) {
+      const pipelineId = makeId('pipe', makeUlid())
+      await metaLinks.patch('pipeline', pipelineId, {
+        sourceId: resoId,
+        destinationId: reso.connectorConfig.defaultDestinationId,
+      })
+    }
+
+    if (
+      reso.connectorConfig.defaultSourceId &&
+      !pipelines.some(
+        (p) => p.sourceId === reso.connectorConfig.defaultSourceId,
+      )
+    ) {
+      const pipelineId = makeId('pipe', makeUlid())
+      await metaLinks.patch('pipeline', pipelineId, {
+        sourceId: reso.connectorConfig.defaultSourceId,
+        destinationId: resoId,
+      })
+    }
+  }
+
+  // NOTE: Would be great to avoid the all the round tripping with something like a data loader.
+  // or possibly drizzle orm
   const getPipelinesForResource = (resoId: Id['reso']) =>
     metaService
       .findPipelines({resourceIds: [resoId]})
@@ -294,6 +339,7 @@ export function makeSyncService({
       return id
     }
 
+    await ensurePipelinesForResource(id)
     const pipelines = await getPipelinesForResource(id)
 
     console.log('_syncResourceUpdate existingPipes.len', pipelines.length)

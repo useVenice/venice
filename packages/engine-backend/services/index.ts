@@ -1,7 +1,4 @@
- 
-
 import type {AnyConnectorImpl} from '@usevenice/cdk'
-
 import {makeDBService} from './dbService'
 import type {MetaService} from './metaService'
 import {makeSyncService} from './sync-service'
@@ -20,8 +17,9 @@ export function makeServices({
   })
   const syncService = makeSyncService({
     metaService,
-    getPipelineExpandedOrFail: dbService.getPipelineExpandedOrFail,
     metaLinks: dbService.metaLinks,
+    getPipelineExpandedOrFail: dbService.getPipelineExpandedOrFail,
+    getResourceExpandedOrFail: dbService.getResourceExpandedOrFail,
   })
   return {...dbService, ...syncService}
 }
