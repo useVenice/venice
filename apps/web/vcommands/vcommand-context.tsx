@@ -2,7 +2,6 @@ import {useMutation} from '@tanstack/react-query'
 import {Loader2} from 'lucide-react'
 import {useRouter} from 'next/navigation'
 import React from 'react'
-
 import type {SchemaSheetRefValue} from '@usevenice/ui'
 import {
   AlertDialog,
@@ -16,10 +15,9 @@ import {
   Button,
   useWithToast,
 } from '@usevenice/ui'
-
 import {PipelineSheet} from '@/components/PipelineSheet'
+import {ResourceSheet} from '@/components/ResourceSheet'
 import type {ZClient} from '@/lib-common/schemas'
-
 import {trpcReact} from '../lib-client/trpcReact'
 
 interface AlertProps {
@@ -42,6 +40,10 @@ export function useCommandContextValue() {
     open: false,
     pipeline: undefined as undefined | ZClient['pipeline'],
   })
+  const [resourceSheetState, setResourceSheetState] = React.useState({
+    open: false,
+    resource: undefined as undefined | ZClient['resource'],
+  })
   const [alertDialogState, setAlertDialogState] =
     React.useState<AlertProps | null>(null)
 
@@ -60,6 +62,8 @@ export function useCommandContextValue() {
     router,
     pipelineSheetState,
     setPipelineSheetState,
+    resourceSheetState,
+    setResourceSheetState,
     alertDialogState,
     setAlertDialogState,
     alertMutation,
@@ -72,7 +76,8 @@ export function WithCommandContext(props: {
   children: (ctx: CommandContext) => React.ReactNode
 }) {
   const _ctx = useCommandContextValue()
-  const ref = React.useRef<SchemaSheetRefValue>(null)
+  const pipelineSheet = React.useRef<SchemaSheetRefValue>(null)
+  const resourceSheet = React.useRef<SchemaSheetRefValue>(null)
 
   const ctx = React.useMemo(
     () =>
@@ -81,11 +86,17 @@ export function WithCommandContext(props: {
         // Hack around not being able to pass open/setOpen to pipeline sheet yet
         setPipelineSheetState: (newState) => {
           if (typeof newState === 'object') {
-            ref.current?.setOpen(newState.open)
+            pipelineSheet.current?.setOpen(newState.open)
           }
           _ctx.setPipelineSheetState(newState)
         },
-      } satisfies typeof _ctx),
+        setResourceSheetState: (newState) => {
+          if (typeof newState === 'object') {
+            resourceSheet.current?.setOpen(newState.open)
+          }
+          _ctx.setResourceSheetState(newState)
+        },
+      }) satisfies typeof _ctx,
     [_ctx],
   )
 
@@ -93,9 +104,14 @@ export function WithCommandContext(props: {
     <>
       {props.children(ctx)}
       <PipelineSheet
-        ref={ref}
+        ref={pipelineSheet}
         triggerButton={false}
         pipeline={ctx.pipelineSheetState.pipeline}
+      />
+      <ResourceSheet
+        ref={resourceSheet}
+        triggerButton={false}
+        resource={ctx.resourceSheetState.resource}
       />
       {!!ctx.alertDialogState && (
         <AlertDialog

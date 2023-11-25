@@ -60,14 +60,26 @@ const _resourceCommand = {
 } satisfies CommandDefinitionInput<CommandContext>
 
 export const resourceCommands = {
-  'resource:edit': {
+  'resource:edit': cmd.identity({
     ..._resourceCommand,
     icon: 'Pencil',
-  },
-  'resource:delete': {
-    ..._resourceCommand,
+    execute: ({ctx, params}) =>
+      ctx.setResourceSheetState({resource: params.resource, open: true}),
+  }),
+  'resource:delete': cmd.identity({
     icon: 'Trash',
-  },
+    ..._resourceCommand,
+    execute: ({ctx, params}) =>
+      ctx.setAlertDialogState({
+        title: `Confirm deleting resource ${params.resource.id}`,
+        destructive: true,
+        // 1) i18n this string so it's shorter and 2) support markdown syntax 3) make user confirm by typing id
+        description:
+          'Already synchronized data will be untouched. However this will delete any incremental sync state so when a new resource is created you will have to sync from scratch.',
+        onConfirm: () =>
+          ctx.trpcCtx.client.deleteResource.mutate({id: params.resource.id}),
+      }),
+  }),
   'resource:sync': cmd.identity({
     ..._resourceCommand,
     icon: 'RefreshCw',
@@ -77,16 +89,32 @@ export const resourceCommands = {
       )
     },
   }),
-  'postgres/run_sql': {
+  'resource:navigate_sql': cmd.identity({
     ..._resourceCommand,
     icon: 'Database',
+    title: 'Run sql',
     // Only show me for postgres resources
-  },
-  'plaid/simulate_disconnect': {
+    execute: ({params: {resource}, ctx}) => {
+      // TODO: Display loading indicator while this is happening...
+      ctx.router.push(`/resources/${resource.id}/sql`)
+    },
+  }),
+  'resource:navigate_playground': cmd.identity({
     ..._resourceCommand,
-    icon: 'Unlink',
-    // Only show me for sandbox plaid resources
-  },
+    icon: 'Database',
+    title: 'Playground',
+    // Only show me for postgres resources
+    execute: ({params: {resource}, ctx}) => {
+      ctx.router.push(`/resources/${resource.id}/playground`)
+    },
+  }),
+
+  // TODO: Move this out of the core, now that we have plaid specific operations
+  // 'plaid/simulate_disconnect': {
+  //   ..._resourceCommand,
+  //   icon: 'Unlink',
+  //   // Only show me for sandbox plaid resources
+  // },
 } satisfies CommandDefinitionMap<CommandContext>
 
 /** Generic command that should apply to ANY entity... */

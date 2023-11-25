@@ -3,9 +3,7 @@
 import type {UseMutationResult} from '@tanstack/react-query'
 import {Loader2} from 'lucide-react'
 import React from 'react'
-
 import type {z} from '@usevenice/util'
-
 import {
   Button,
   Sheet,
@@ -40,6 +38,7 @@ export const SchemaSheet = React.forwardRef(function SchemaSheet<
     formProps,
     triggerButton = true,
     buttonProps,
+    children,
   }: {
     formProps?: Omit<SchemaFormProps<T>, 'onSubmit' | 'schema' | 'formData'>
     schema: T
@@ -53,6 +52,7 @@ export const SchemaSheet = React.forwardRef(function SchemaSheet<
     // Trigger button
     triggerButton?: boolean
     buttonProps?: ButtonProps
+    children?: React.ReactNode
   },
   ref: SchemaSheetRef,
 ) {
@@ -88,10 +88,12 @@ export const SchemaSheet = React.forwardRef(function SchemaSheet<
         position="right"
         size="xl"
         className="flex flex-col bg-background">
-        <SheetHeader>
-          <SheetTitle>{title}</SheetTitle>
-          <SheetDescription></SheetDescription>
-        </SheetHeader>
+        {children ?? (
+          <SheetHeader>
+            <SheetTitle>{title}</SheetTitle>
+            <SheetDescription></SheetDescription>
+          </SheetHeader>
+        )}
         <SchemaForm
           className="overflow-scroll"
           {...formProps}
