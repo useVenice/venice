@@ -1,12 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
-
 import {__DEBUG__} from '@usevenice/app-config/constants'
 import type {IconName} from '@usevenice/ui'
 import {Button, Icon, ScrollArea} from '@usevenice/ui'
 import {R} from '@usevenice/util'
-
 import {cn} from '@/lib-client/ui-utils'
 
 type TypedHref = Extract<React.ComponentProps<typeof Link>['href'], string>
@@ -77,11 +75,12 @@ const sectionedLinks: Array<{
         href: '/api-access',
         icon: 'Key',
       },
-      {
-        title: 'Settings',
-        href: '/settings',
-        icon: 'Settings',
-      },
+      // Nothing interesting in here anymore
+      // {
+      //   title: 'Settings',
+      //   href: '/settings',
+      //   icon: 'Settings',
+      // },
     ],
   },
 ]

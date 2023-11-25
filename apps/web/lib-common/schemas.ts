@@ -1,5 +1,4 @@
 import type {clerkClient} from '@clerk/nextjs'
-
 import {kApikeyMetadata} from '@usevenice/app-config/constants'
 import {zId} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
@@ -13,57 +12,15 @@ export type ClerkUser = Awaited<
   ReturnType<(typeof clerkClient)['users']['getUser']>
 >
 
-export function zOrgMetadata<
-  TSrcReso extends z.ZodTypeAny,
-  TSrcInt extends z.ZodTypeAny,
-  TDestReso extends z.ZodTypeAny,
-  TDestInt extends z.ZodTypeAny,
->({
-  srcResoId,
-  destResoId,
-  destCcfgId,
-  srcCcfgId,
-}: {
-  srcResoId: TSrcReso
-  destResoId: TDestReso
-  srcCcfgId: TSrcInt
-  destCcfgId: TDestInt
-}) {
-  return z.object({
-    automations: z.object({
-      defaultSource: z
-        .object({
-          sourceResourceId: srcResoId.optional(),
-          destinationConnectorConfigIds: z.array(destCcfgId),
-        })
-        .optional()
-        .describe(
-          'Automatically create pipeline from source resource when resources are created in destination connectors',
-        ),
-      // How to enable these fields conditionally in the form? https://share.cleanshot.com/H1GQQCby
-      defaultDestination: z
-        .object({
-          destinationResourceId: destResoId.optional(),
-          sourceConnectorConfigIds: z.array(srcCcfgId),
-        })
-        .optional()
-        .describe(
-          'Automatically create pipeline to destination resource when resources are created in source connectors',
-        ),
-    }),
-  })
+export function zOrgMetadata() {
+  return z.object({})
 }
 
 export const zAuth = {
   organization: z.object({
     id: zId('org'),
     slug: z.string(),
-    publicMetadata: zOrgMetadata({
-      srcResoId: zId('reso'),
-      destResoId: zId('reso'),
-      srcCcfgId: zId('ccfg'),
-      destCcfgId: zId('ccfg'),
-    }),
+    publicMetadata: zOrgMetadata(),
     privateMetadata: z.object({
       [kApikeyMetadata]: z.string().optional(),
     }),
