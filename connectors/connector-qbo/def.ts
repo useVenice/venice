@@ -6,7 +6,7 @@ import {
   zEntityPayload,
 } from '@usevenice/cdk'
 import type {EnumOf} from '@usevenice/util'
-import {A, DateTime, z, zCast} from '@usevenice/util'
+import {A, DateTime, R, z, zCast} from '@usevenice/util'
 import {zConfig, zSettings} from './QBOClient'
 
 export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
@@ -35,6 +35,8 @@ export const qboSchemas = {
   resourceSettings: zSettings,
   connectOutput: oauthBaseSchema.connectOutput,
   sourceOutputEntity: zEntityPayload,
+  sourceOutputEntities: R.mapValues(QBO_ENTITY_NAME, () => z.unknown()),
+
   verticals: {
     accounting: {
       account: zCast<QBO.Account>(),
@@ -78,7 +80,6 @@ export const qboDef = {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-qbo.svg',
     nangoProvider: 'quickbooks',
-    sourceStreams: Object.values(QBO_ENTITY_NAME),
   },
   streams: {
     $defaults: {

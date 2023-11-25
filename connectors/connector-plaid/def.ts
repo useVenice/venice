@@ -7,7 +7,7 @@ import type {
 } from 'react-plaid-link'
 import type {ConnectorDef, ConnectorSchemas, OpenApiSpec} from '@usevenice/cdk'
 import {connHelpers, makePostingsMap, zWebhookInput} from '@usevenice/cdk'
-import {A, z, zCast} from '@usevenice/util'
+import {A, R, z, zCast} from '@usevenice/util'
 import {
   getPlaidAccountBalance,
   getPlaidAccountFullName,
@@ -84,19 +84,22 @@ export const plaidSchemas = {
   /** "Manually" extending for now, this will get better / safer */
   sourceState: z
     .object({
-      streams: z.array(z.string()).nullish(),
-      /** Account ids to sync */
+      /**
+       * Account ids to sync. Should this live in the stream config somehow?
+       * We should keep state to only incremental sync state for future
+       */
       accountIds: z.array(z.string()).nullish(),
       /** Date to sync since */
       sinceDate: z.string().nullish() /** ISO8601 */,
       transactionSyncCursor: z.string().nullish(),
       /** ISO8601 */
       investmentTransactionEndDate: z.string().nullish(),
-
-      syncInvestments: z.boolean().nullish(),
     })
     .default({}),
-
+  sourceOutputEntities: R.mapToObj(
+    ['transaction', 'account', 'investment_transaction', 'holding'] as const,
+    (e) => [e, z.unknown()],
+  ),
   sourceOutputEntity: z.discriminatedUnion('entityName', [
     z.object({
       id: z.string(),
@@ -131,12 +134,6 @@ export const plaidDef = {
     openapiSpec: {
       proxied: plaidOas as unknown as OpenApiSpec,
     },
-    sourceStreams: [
-      'transaction',
-      'account',
-      'investment_transaction',
-      'holding',
-    ],
   },
   standardMappers: {
     entity: {

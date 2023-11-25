@@ -1,5 +1,5 @@
 import {TRPCError} from '@trpc/server'
-import type {ResourceUpdate, VeniceSourceState, ZRaw} from '@usevenice/cdk'
+import type {ResourceUpdate, ZRaw} from '@usevenice/cdk'
 import {
   extractId,
   makeId,
@@ -10,7 +10,7 @@ import {
   zPassthroughInput,
   zRaw,
 } from '@usevenice/cdk'
-import {joinPath, makeUlid, R, Rx, rxjs, z} from '@usevenice/util'
+import {joinPath, makeUlid, Rx, rxjs, z} from '@usevenice/util'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {zSyncOptions} from '../types'
 import {protectedProcedure, remoteProcedure, trpc} from './_base'
@@ -241,12 +241,7 @@ export const resourceRouter = trpc.router({
               config: reso.connectorConfig.config,
               settings: reso.settings,
               endUser: reso.endUserId && {id: reso.endUserId},
-              // Maybe we should rename `options` to `state`?
-              // Should also make the distinction between `config`, `settings` and `state` much more clear.
-              // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
-              state: R.identity<VeniceSourceState>({
-                streams: ['resource', 'integration'],
-              }),
+              state: {},
               streams: {},
             }) ?? rxjs.EMPTY,
           destination: ctx.asOrgIfNeeded.metaLinks.postSource({

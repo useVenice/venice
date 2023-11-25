@@ -68,7 +68,10 @@ export interface ConnectorSchemas {
   connectOutput?: z.ZodTypeAny
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
   sourceState?: z.ZodTypeAny
+
+  /** @deprecated. Should use sourceOutputEntities for the future... */
   sourceOutputEntity?: z.ZodTypeAny
+  sourceOutputEntities?: Record<string, z.ZodTypeAny>
 
   destinationState?: z.ZodTypeAny
   destinationInputEntity?: z.ZodTypeAny
@@ -226,7 +229,7 @@ export interface ConnectorServer<
       config: T['_types']['connectorConfig']
       settings: T['_types']['resourceSettings']
       /* Enabled streams */
-      streams: Record<string, boolean | null>
+      streams: {[k in T['_streamName']]?: boolean | null}
       state: T['_types']['sourceState']
     }>,
   ) => Source<T['_types']['sourceOutputEntity']>
@@ -302,10 +305,16 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
   schemas: TSchemas,
 ) {
   type _types = {
-    [k in keyof TSchemas as k extends 'verticals' ? never : k]: _infer<
-      TSchemas[k]
+    [k in keyof TSchemas as k extends 'verticals' | 'sourceOutputEntities'
+      ? never
+      : k]: _infer<TSchemas[k]>
+  }
+  type _streams = {
+    [k in keyof TSchemas['sourceOutputEntities']]: _infer<
+      TSchemas['sourceOutputEntities'][k]
     >
   }
+  type _streamName = keyof _streams
 
   type TSVerticals = NonNullable<TSchemas['verticals']>
   type _verticals = {
@@ -357,6 +366,8 @@ export function connHelpers<TSchemas extends ConnectorSchemas>(
   return {
     ...schemas,
     _types: {} as _types,
+    _streams: {} as _streams,
+    _streamName: {} as _streamName,
     _verticals: {} as _verticals,
     _remoteEntity: {} as _remoteEntity,
     _resUpdateType: {} as resoUpdate,

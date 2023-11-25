@@ -1,8 +1,7 @@
-import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
+import * as plaid from 'plaid'
 import {CountryCode, Products} from 'plaid'
 import type {ConnectorServer} from '@usevenice/cdk'
-import {shouldSync} from '@usevenice/cdk'
 import type {
   DurationObjectUnits,
   IAxiosError,
@@ -187,21 +186,20 @@ export const plaidServerConnector = {
         data: {item, status},
       } = await client.itemGet({access_token: accessToken})
 
-      const institution =
-        item.institution_id && shouldSync(state, 'institution')
-          ? await client
-              .institutionsGetById({
-                institution_id: item.institution_id,
-                country_codes: config.countryCodes,
-                options: {include_optional_metadata: true},
-              })
-              .then((r) => r.data.institution)
-          : undefined
+      const institution = item.institution_id
+        ? await client
+            .institutionsGetById({
+              institution_id: item.institution_id,
+              country_codes: config.countryCodes,
+              options: {include_optional_metadata: true},
+            })
+            .then((r) => r.data.institution)
+        : undefined
 
       const {item_id: itemId} = item
       yield [
         def._opRes(itemId, {
-          settings: shouldSync(state, 'resource') && {
+          settings: {
             item,
             status,
             // Clear previous webhook error since item is now up to date
@@ -222,7 +220,7 @@ export const plaidServerConnector = {
       }
 
       // Sync accounts
-      if (streams['account']) {
+      if (streams.account) {
         const {
           data: {accounts},
         } = await client.accountsGet({
@@ -234,7 +232,7 @@ export const plaidServerConnector = {
 
       let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined | null
       // Investments shall be explicitly enabled for now...
-      if (streams['holding']) {
+      if (streams.holding) {
         await invHoldingsGetLimit()
         holdingsRes = await client
           .investmentsHoldingsGet({
@@ -273,7 +271,7 @@ export const plaidServerConnector = {
         }
       }
 
-      if (streams['transaction']) {
+      if (streams.transaction) {
         // Sync transactions
         let cursor = state.transactionSyncCursor ?? undefined
         while (true) {
@@ -324,7 +322,7 @@ export const plaidServerConnector = {
       }
 
       // Sync investment transactions
-      if (streams['investment_transaction']) {
+      if (streams.investment_transaction) {
         // TODO: QA the incremental sync logic given that we are syncing
         // from the most recent to the least recent. Most of the time it should
         // be the other way around. Maybe combine responsiveness along with
