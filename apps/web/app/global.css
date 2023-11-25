@@ -81,7 +81,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 
@@ -129,7 +131,7 @@
   }
   /* Tend to be used for object fields */
   .schema-form .panel {
-    @apply border border-gray-300 shadow rounded p-4;
+    @apply rounded border border-gray-300 p-4 shadow;
   }
   .schema-form label.control-label {
     @apply mb-1 block font-bold;
@@ -220,5 +222,12 @@
   .schema-form button:disabled,
   .schema-form input:disabled {
     @apply cursor-not-allowed opacity-50;
+  }
+  /* Hide extraneous label for select option @see https://share.cleanshot.com/Gqw0mrTZ */
+  .form-group:has(> select) + .field > fieldset > legend {
+    display: none;
+  }
+  .form-group:has(> select) + .field > label {
+    display: none;
   }
 }
