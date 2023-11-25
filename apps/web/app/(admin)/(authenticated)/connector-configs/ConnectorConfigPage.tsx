@@ -33,7 +33,7 @@ import {
   SheetTrigger,
   useToast,
 } from '@usevenice/ui'
-import {inPlaceSort, R, titleCase, z, zodToJsonSchema} from '@usevenice/util'
+import {inPlaceSort, R, titleCase, z} from '@usevenice/util'
 import {useCurrengOrg} from '@/components/viewer-context'
 import {cn} from '@/lib-client/ui-utils'
 
@@ -49,7 +49,7 @@ export default function ConnectorConfigsPage() {
   return (
     <div className="p-6">
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Connector Configs
+        Configured connectors
       </h2>
       {connectorConfigsRes.isFetching && (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -77,7 +77,7 @@ export default function ConnectorConfigsPage() {
       {/* Spacer */}
       <div className="mt-4" />
       <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-        Connector Catalog
+        Available connectors
       </h2>
       {zConnectorVertical.options.map((category) => {
         const stageByIndex = R.mapToObj.indexed(
@@ -136,7 +136,7 @@ export function ConnectorConfigSheet({
   connectorName: string
 }) {
   const catalogRes = _trpcReact.listConnectorMetas.useQuery()
-  const connector = catalogRes.data?.[connectorName]
+  const connectorMeta = catalogRes.data?.[connectorName]
 
   const resourcesRes = _trpcReact.listResources.useQuery({
     connectorName: 'postgres',
@@ -146,31 +146,35 @@ export function ConnectorConfigSheet({
     (resourcesRes.data ?? []).map((r) =>
       z
         .literal(r.id)
-        .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
+        .openapi({title: r.displayName ? `${r.displayName} <${r.id}>` : r.id}),
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
 
   const ccfgSchema = (
-    connector?.schemas.connectorConfig
+    connectorMeta?.schemas.connectorConfig
       ? // Sometimes we have extra data inside the config due to extra data, so workaround for now
         // as we have no way of displaying such information / allow user to fix it
-        {...connector?.schemas.connectorConfig, additionalProperties: true}
+        {...connectorMeta?.schemas.connectorConfig, additionalProperties: true}
       : undefined
   ) as {type: 'object'; properties?: {}; additionalProperties: boolean}
-
-  // Side effect is not ideal, figure out better pattern...
-  if (ccfgSchema && ccfgSchema.type === 'object') {
-    ccfgSchema.properties = {
-      ...ccfgSchema.properties,
-      default_destination_id: zodToJsonSchema(zResoId),
-    }
-  }
 
   // Consider calling this provider, actually seem to make more sense...
   // given that we call the code itself connector config
   const formSchema = zRaw.connector_config
     .pick({endUserAccess: true, displayName: true})
-    .extend({config: z.object({})})
+    .extend({
+      config: z.object({}),
+      ...(connectorMeta?.supportedModes.includes('source') && {
+        defaultDestinationId: zResoId.describe(
+          zRaw.connector_config.shape.defaultDestinationId.description!,
+        ),
+      }),
+      ...(connectorMeta?.supportedModes.includes('destination') && {
+        defaultSourceId: zResoId.describe(
+          zRaw.connector_config.shape.defaultSourceId.description!,
+        ),
+      }),
+    })
 
   const {orgId} = useCurrengOrg()
 
@@ -211,7 +215,7 @@ export function ConnectorConfigSheet({
 
   const formRef = React.useRef<SchemaFormElement>(null)
 
-  if (!connector) {
+  if (!connectorMeta) {
     return <LoadingText className="block p-4" />
   }
 
@@ -228,29 +232,29 @@ export function ConnectorConfigSheet({
         className="flex flex-col bg-background">
         <SheetHeader className="shrink-0">
           <SheetTitle>
-            {verb} {connector.displayName} connector config
+            {verb} {connectorMeta.displayName} connector config
           </SheetTitle>
 
           <div className="flex max-h-[100px] flex-row items-center justify-between">
-            {connector.logoUrl ? (
+            {connectorMeta.logoUrl ? (
               <Image
                 width={100}
                 height={100}
-                src={connector.logoUrl}
-                alt={connector.displayName}
+                src={connectorMeta.logoUrl}
+                alt={connectorMeta.displayName}
               />
             ) : (
-              <span>{connector.displayName}</span>
+              <span>{connectorMeta.displayName}</span>
             )}
             <Badge
               variant="secondary"
               className={cn(
                 'ml-auto',
-                connector.stage === 'ga' && 'bg-green-200',
-                connector.stage === 'beta' && 'bg-blue-200',
-                connector.stage === 'alpha' && 'bg-pink-50',
+                connectorMeta.stage === 'ga' && 'bg-green-200',
+                connectorMeta.stage === 'beta' && 'bg-blue-200',
+                connectorMeta.stage === 'alpha' && 'bg-pink-50',
               )}>
-              {connector.stage}
+              {connectorMeta.stage}
             </Badge>
             {/* Add help text here */}
           </div>
@@ -258,7 +262,7 @@ export function ConnectorConfigSheet({
           <SheetDescription>
             {ccfg && `ID: ${ccfg.id}`}
             <br />
-            Supported mode(s): {connector.supportedModes.join(', ')}
+            Supported mode(s): {connectorMeta.supportedModes.join(', ')}
           </SheetDescription>
         </SheetHeader>
         <Separator orientation="horizontal" />
@@ -306,7 +310,7 @@ export function ConnectorConfigSheet({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Confirm delete {connector.displayName} connector config?
+                    Confirm delete {connectorMeta.displayName} connector config?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     ID: {ccfg.id}

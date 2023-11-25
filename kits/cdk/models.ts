@@ -20,16 +20,6 @@ export const zStandardConnectorConfig = z.object({
     .string()
     .nullish()
     .describe('e.g. sandbox, development, production'),
-  default_destination_id: zId('reso')
-    .nullish()
-    .describe(
-      'Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL',
-    ),
-  default_source_id: zId('reso')
-    .nullish()
-    .describe(
-      'Automatically sync data to any resources associated with this config from the source resource, which is typically a Postgres database. Think Reverse ETL (Postgres -> QBO)',
-    ),
   pipeline_defaults: z
     .object({
       // TODO: Add representation for configured streams for pipeline also, and of course allow pipelipe
@@ -121,13 +111,18 @@ export const zRaw = {
       displayName: z.string().nullish(),
       disabled: z.boolean().optional(),
 
+      defaultDestinationId: zId('reso')
+        .nullish()
+        .describe(
+          'Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL',
+        ),
+      defaultSourceId: zId('reso')
+        .nullish()
+        .describe(
+          'Automatically sync data to any resources associated with this config from the source resource, which is typically a Postgres database. Think Reverse ETL (Postgres -> QBO)',
+        ),
       /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
       envName: z.string().nullish(),
-      /** Generated column from `config.defalt_destination_id */
-      defaultDestinationId:
-        zStandardConnectorConfig.shape.default_destination_id,
-      /** Generated column from `config.default_source_id */
-      defaultSourceId: zStandardConnectorConfig.shape.default_source_id,
     })
     .openapi({ref: 'ConnectorConfig'}),
   resource: zBase

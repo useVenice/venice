@@ -6,12 +6,7 @@ import type {
   PlaidLinkOnSuccessMetadata,
 } from 'react-plaid-link'
 import type {ConnectorDef, ConnectorSchemas, OpenApiSpec} from '@usevenice/cdk'
-import {
-  connHelpers,
-  makePostingsMap,
-  zStandardConnectorConfig,
-  zWebhookInput,
-} from '@usevenice/cdk'
+import {connHelpers, makePostingsMap, zWebhookInput} from '@usevenice/cdk'
 import {A, z, zCast} from '@usevenice/util'
 import {
   getPlaidAccountBalance,
@@ -27,42 +22,40 @@ import {zCountryCode, zLanguage, zPlaidEnvName, zProducts} from './PlaidClient'
 export const plaidSchemas = {
   name: z.literal('plaid'),
   // There is a mixing of cases here... Unfortunately...
-  connectorConfig: zStandardConnectorConfig
-    .pick({default_destination_id: true})
-    .extend({
-      // TODO: Change to snake_case... then move envName variable over...
-      envName: zPlaidEnvName,
-      credentials: z
-        .union([
-          // TODO: This should be z.literal('default') but it does not render well in the UI :/
-          z.null().openapi({title: 'Use Venice platform credentials'}),
-          z
-            .object({
-              clientId: z.string(),
-              clientSecret: z.string(),
-            })
-            .openapi({title: 'Use my own'}),
-        ])
-        .optional(),
-      clientName: z
-        .string()
-        .max(30)
-        .default('This Application')
-        .describe(
-          `The name of your application, as it should be displayed in Link.
+  connectorConfig: z.object({
+    // TODO: Change to snake_case... then move envName variable over...
+    envName: zPlaidEnvName,
+    credentials: z
+      .union([
+        // TODO: This should be z.literal('default') but it does not render well in the UI :/
+        z.null().openapi({title: 'Use Venice platform credentials'}),
+        z
+          .object({
+            clientId: z.string(),
+            clientSecret: z.string(),
+          })
+          .openapi({title: 'Use my own'}),
+      ])
+      .optional(),
+    clientName: z
+      .string()
+      .max(30)
+      .default('This Application')
+      .describe(
+        `The name of your application, as it should be displayed in Link.
         Maximum length of 30 characters.
         If a value longer than 30 characters is provided, Link will display "This Application" instead.`,
-        ),
-      products: z.array(zProducts).default([Products.Transactions]),
-      countryCodes: z
-        .array(zCountryCode)
-        .default([CountryCode.Us, CountryCode.Ca]),
-      /**
-       * When using a Link customization, the language configured
-       * here must match the setting in the customization, or the customization will not be applied.
-       */
-      language: zLanguage.default('en'),
-    }),
+      ),
+    products: z.array(zProducts).default([Products.Transactions]),
+    countryCodes: z
+      .array(zCountryCode)
+      .default([CountryCode.Us, CountryCode.Ca]),
+    /**
+     * When using a Link customization, the language configured
+     * here must match the setting in the customization, or the customization will not be applied.
+     */
+    language: zLanguage.default('en'),
+  }),
   resourceSettings: z.object({
     itemId: z.string().nullish(),
     accessToken: z.string(),

@@ -1,13 +1,11 @@
 'use client'
 
 import React from 'react'
-
 import {zId} from '@usevenice/cdk'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaSheetRef} from '@usevenice/ui'
 import {SchemaSheet} from '@usevenice/ui'
 import {z} from '@usevenice/util'
-
 import type {ZClient} from '@/lib-common/schemas'
 
 /** TODO: See if we can eliminate the need having entity specific sheets */
@@ -21,7 +19,7 @@ export const PipelineSheet = React.forwardRef(function PipelineSheet(
     (resourcesRes.data ?? []).map((r) =>
       z
         .literal(r.id)
-        .describe(r.displayName ? `${r.displayName} <${r.id}>` : r.id),
+        .openapi({title: r.displayName ? `${r.displayName} <${r.id}>` : r.id}),
     ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
   )
   // Filter for only sources vs destinations when saving...
