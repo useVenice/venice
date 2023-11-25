@@ -247,6 +247,7 @@ export const resourceRouter = trpc.router({
               state: R.identity<VeniceSourceState>({
                 streams: ['resource', 'integration'],
               }),
+              streams: {},
             }) ?? rxjs.EMPTY,
           destination: ctx.asOrgIfNeeded.metaLinks.postSource({
             src: reso,

@@ -1,7 +1,6 @@
 import type {ConnectorServer} from '@usevenice/cdk'
 import {firebaseServer, serializeTimestamp} from '@usevenice/connector-firebase'
 import {Rx, rxjs} from '@usevenice/util'
-
 import type {foreceiptSchemas} from './def'
 import {foreceiptHelpers} from './def'
 import {makeForeceiptClient} from './ForeceiptClient'
@@ -39,6 +38,7 @@ export const foreceiptServer = {
                 config: {},
                 settings: client.fbSettings,
                 state: {_fb: fb, _queries: Object.values(q)},
+                streams: {},
               })
             }),
           )

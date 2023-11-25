@@ -1,6 +1,5 @@
 import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
-
 import type {qboSchemas} from './def'
 import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 import {makeQBOClient} from './QBOClient'
@@ -9,12 +8,16 @@ export const qboServer = {
   newInstance: ({config, settings, onSettingsChange}) =>
     makeQBOClient(config, settings, onSettingsChange),
 
-  sourceSync: ({config, settings}) => {
+  sourceSync: ({config, settings, streams}) => {
     // TODO: get the data from newInstance..
     const qbo = makeQBOClient(config, settings, () => {})
     async function* iterateEntities() {
       const updatedSince = undefined
+      console.log('[qbo] Starting sync', streams)
       for (const type of Object.values(QBO_ENTITY_NAME)) {
+        if (!streams[type]) {
+          continue
+        }
         for await (const res of qbo.getAll(type, {updatedSince})) {
           const entities = res.entities as QBO.Transaction[]
           yield entities.map((t) =>

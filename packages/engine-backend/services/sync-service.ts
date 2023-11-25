@@ -10,8 +10,6 @@ import type {
 } from '@usevenice/cdk'
 import {
   addRemainderByDateLink,
-  connHelpers,
-  extractId,
   logLink,
   makeId,
   mapAccountNameAndTypeLink,
@@ -19,7 +17,7 @@ import {
   sync,
 } from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
-import {makeUlid, objectEntries, objectKeys, R, Rx, rxjs} from '@usevenice/util'
+import {makeUlid, R, Rx, rxjs} from '@usevenice/util'
 import type {zSyncOptions} from '../types'
 import type {
   _ConnectorConfig,
@@ -172,68 +170,73 @@ export function makeSyncService({
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
         state: opts.fullResync ? {} : state,
+        streams: src.connectorConfig.defaultPipeOut?.streams ?? {},
       })
 
-    const verticalSources$ = () => {
-      const connector = src.connectorConfig.connector
-      const helpers = connHelpers(connector.schemas)
-      const primaryKey = connector.streams?.$defaults.primaryKey?.split('.') as
-        | [string]
-        | undefined
+    // const verticalSources$ = () => {
+    //   const connector = src.connectorConfig.connector
+    //   const helpers = connHelpers(connector.schemas)
+    //   const primaryKey = connector.streams?.$defaults.primaryKey?.split('.') as
+    //     | [string]
+    //     | undefined
 
-      const getId = (e: any) => {
-        const id = primaryKey && R.pathOr(e, primaryKey, undefined)
-        if (!id) {
-          console.error('object missing primary key', primaryKey, e)
-          throw new Error(`Primary key missing: ${primaryKey}`)
-        }
-        return `${id}`
-      }
-      const settingsSub = new rxjs.Subject<Array<(typeof helpers)['_opType']>>()
+    //   const getId = (e: any) => {
+    //     const id = primaryKey && R.pathOr(e, primaryKey, undefined)
+    //     if (!id) {
+    //       console.error('object missing primary key', primaryKey, e)
+    //       throw new Error(`Primary key missing: ${primaryKey}`)
+    //     }
+    //     return `${id}`
+    //   }
+    //   const settingsSub = new rxjs.Subject<Array<(typeof helpers)['_opType']>>()
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const instance = connector.newInstance?.({
-        config: src.connectorConfig.config,
-        settings: src.settings,
-        onSettingsChange: (newSettings) => {
-          // extId is technically redundant... but we have yet to define the primaryKey attribute for settings
-          src.settings = newSettings
-          settingsSub.next([
-            helpers._opRes(extractId(src.id)[2], {settings: newSettings}),
-          ])
-        },
-      })
+    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //   const instance = connector.newInstance?.({
+    //     config: src.connectorConfig.config,
+    //     settings: src.settings,
+    //     onSettingsChange: (newSettings) => {
+    //       // extId is technically redundant... but we have yet to define the primaryKey attribute for settings
+    //       src.settings = newSettings
+    //       settingsSub.next([
+    //         helpers._opRes(extractId(src.id)[2], {settings: newSettings}),
+    //       ])
+    //     },
+    //   })
 
-      async function* iterateEntities() {
-        if (!primaryKey) {
-          return
-        }
+    //   async function* iterateEntities() {
+    //     if (!primaryKey) {
+    //       return
+    //     }
 
-        // TODO: Implement incremental sync...
-        for (const [vertical, schemas] of objectEntries(
-          connector.schemas.verticals ?? {},
-        )) {
-          for (const name of objectKeys(schemas ?? {})) {
-            const res = await connector.verticals?.[vertical]?.list?.(
-              instance,
-              name as never,
-              {limit: 1000},
-            )
-            if (!res?.items.length) {
-              continue
-            }
-            yield res.items.map((e) =>
-              helpers._opData(`${vertical}.${name}`, getId(e), e),
-            )
-          }
-        }
-      }
+    //     // TODO: Implement incremental sync...
+    //     for (const [vertical, schemas] of objectEntries(
+    //       connector.schemas.verticals ?? {},
+    //     )) {
+    //       for (const name of objectKeys(schemas ?? {})) {
+    //         const res = await connector.verticals?.[vertical]?.list?.(
+    //           instance,
+    //           name as never,
+    //           {limit: 1000},
+    //         )
+    //         if (!res?.items.length) {
+    //           continue
+    //         }
+    //         yield res.items.map((e) =>
+    //           helpers._opData(`${vertical}.${name}`, getId(e), e),
+    //         )
+    //       }
+    //     }
+    //   }
 
-      return settingsSub
-        .pipe(Rx.mergeWith(rxjs.from(iterateEntities())))
-        .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
-    }
-    return rxjs.concat(defaultSource$() ?? rxjs.EMPTY, verticalSources$())
+    //   return settingsSub
+    //     .pipe(Rx.mergeWith(rxjs.from(iterateEntities())))
+    //     .pipe(Rx.mergeMap((ops) => rxjs.from([...ops, helpers._op('commit')])))
+    // }
+
+    return rxjs.concat(
+      defaultSource$() ?? rxjs.EMPTY,
+      // verticalSources$()
+    )
   }
 
   const _syncPipeline = async (

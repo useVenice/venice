@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import {initTRPC} from '@trpc/server'
-
 import type {AnyConnectorImpl, AnyEntityPayload} from '@usevenice/cdk'
 import {
   fromMaybePromise,
@@ -11,7 +10,6 @@ import {
   z,
   zodToJsonSchema,
 } from '@usevenice/util'
-
 import type {ABMessage, ABMessageStream} from './protocol/protocol'
 import {abMessage} from './protocol/protocol'
 import type {AirbyteStream} from './protocol/protocol.gen'
@@ -122,6 +120,7 @@ export function makeAirbyteConnector(connector: AnyConnectorImpl) {
             config: config.config,
             settings: config.settings,
             state,
+            streams: {}, // can implement the catalog now...
           })
           .pipe(
             Rx.map((op): ABMessage<'RECORD' | 'STATE' | 'LOG'> => {

@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
-
 import readline from 'node:readline'
-
 import {sync} from '@usevenice/cdk'
 import {brexImpl} from '@usevenice/connector-brex'
 import {fsServer} from '@usevenice/connector-fs'
@@ -28,6 +26,7 @@ switch (process.argv[2]) {
         endUser: null,
         settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
         state: {},
+        streams: {},
       }),
       destination: (obs) =>
         obs.pipe(
@@ -44,6 +43,7 @@ switch (process.argv[2]) {
         state: undefined,
         config: {},
         endUser: null,
+        streams: {},
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
           sourceQueries: {
@@ -86,6 +86,7 @@ switch (process.argv[2]) {
         config: {apiKey: process.env['HERON_API_KEY']!},
         endUser: null,
         state: {},
+        streams: {},
       }),
       destination: (obs) =>
         obs.pipe(
@@ -123,6 +124,7 @@ switch (process.argv[2]) {
         },
         config: {apiKey: process.env['MERGE_TEST_API_KEY'] ?? ''},
         state: {},
+        streams: {},
       }),
       destination: (obs) =>
         obs.pipe(
@@ -177,6 +179,7 @@ switch (process.argv[2]) {
         settings: {basePath: srcPath},
         config: {},
         state: {},
+        streams: {},
       }),
       destination: fsServer.destinationSync({
         endUser: null,

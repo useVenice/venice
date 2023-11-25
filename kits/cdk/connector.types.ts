@@ -225,6 +225,8 @@ export interface ConnectorServer<
       endUser: {id: EndUserId} | null | undefined
       config: T['_types']['connectorConfig']
       settings: T['_types']['resourceSettings']
+      /* Enabled streams */
+      streams: Record<string, boolean | null>
       state: T['_types']['sourceState']
     }>,
   ) => Source<T['_types']['sourceOutputEntity']>

@@ -1,7 +1,6 @@
 import * as plaid from 'plaid'
 import type {PlaidApi, PlaidError} from 'plaid'
 import {CountryCode, Products} from 'plaid'
-
 import type {ConnectorServer} from '@usevenice/cdk'
 import {shouldSync} from '@usevenice/cdk'
 import type {
@@ -18,7 +17,6 @@ import {
   rxjs,
   safeJSONParse,
 } from '@usevenice/util'
-
 import type {plaidSchemas} from './def'
 import {helpers as def} from './def'
 import {inferPlaidEnvFromToken} from './plaid-utils'
@@ -177,7 +175,7 @@ export const plaidServerConnector = {
         throw err
       }),
 
-  sourceSync: ({config, settings, state}) => {
+  sourceSync: ({config, settings, state, streams}) => {
     const {accessToken} = settings
     // Explicit typing to make TS Compiler job easier...
     const client: PlaidApi = makePlaidClient(config)
@@ -224,7 +222,7 @@ export const plaidServerConnector = {
       }
 
       // Sync accounts
-      if (shouldSync(state, 'account')) {
+      if (streams['account']) {
         const {
           data: {accounts},
         } = await client.accountsGet({
@@ -236,7 +234,7 @@ export const plaidServerConnector = {
 
       let holdingsRes: plaid.InvestmentsHoldingsGetResponse | undefined | null
       // Investments shall be explicitly enabled for now...
-      if (shouldSync(state, 'account') && state.syncInvestments) {
+      if (streams['holding']) {
         await invHoldingsGetLimit()
         holdingsRes = await client
           .investmentsHoldingsGet({
@@ -275,60 +273,58 @@ export const plaidServerConnector = {
         }
       }
 
-      if (!shouldSync(state, 'transaction')) {
-        return
-      }
+      if (streams['transaction']) {
+        // Sync transactions
+        let cursor = state.transactionSyncCursor ?? undefined
+        while (true) {
+          const res = await client
+            .transactionsSync({
+              access_token: accessToken,
+              cursor,
+              options: {include_personal_finance_category: true},
+            })
+            .then((r) => r.data)
+            .catch((err: IAxiosError) => {
+              const code =
+                err.isAxiosError &&
+                (err.response?.data as PlaidError | undefined)?.error_code
+              // Do not crash in case we run into this.
+              if (
+                code === 'TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION' &&
+                cursor !== undefined
+              ) {
+                cursor = undefined // Restart from scratch
+                return null
+              }
+              throw err
+            })
+          // Only reason it would be null is if TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION
+          // Gotta be careful of running into an infinite loop though. However it would eventually time out
+          if (!res) {
+            continue
+          }
 
-      // Sync transactions
-      let cursor = state.transactionSyncCursor ?? undefined
-      while (true) {
-        const res = await client
-          .transactionsSync({
-            access_token: accessToken,
-            cursor,
-            options: {include_personal_finance_category: true},
-          })
-          .then((r) => r.data)
-          .catch((err: IAxiosError) => {
-            const code =
-              err.isAxiosError &&
-              (err.response?.data as PlaidError | undefined)?.error_code
-            // Do not crash in case we run into this.
-            if (
-              code === 'TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION' &&
-              cursor !== undefined
-            ) {
-              cursor = undefined // Restart from scratch
-              return null
-            }
-            throw err
-          })
-        // Only reason it would be null is if TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION
-        // Gotta be careful of running into an infinite loop though. However it would eventually time out
-        if (!res) {
-          continue
-        }
-
-        cursor = res.next_cursor
-        yield [
-          ...[...res.added, ...res.modified]
-            .filter((t) => !accountIds || accountIds.includes(t.account_id))
-            .map((t) => def._opData('transaction', t.transaction_id, t)),
-          ...R.pipe(
-            res.removed,
-            R.map((t) => t.transaction_id),
-            R.compact,
-            R.map((id) => def._opData('transaction', id, null)),
-          ),
-          def._opState({transactionSyncCursor: cursor}),
-        ]
-        if (!res.has_more) {
-          break
+          cursor = res.next_cursor
+          yield [
+            ...[...res.added, ...res.modified]
+              .filter((t) => !accountIds || accountIds.includes(t.account_id))
+              .map((t) => def._opData('transaction', t.transaction_id, t)),
+            ...R.pipe(
+              res.removed,
+              R.map((t) => t.transaction_id),
+              R.compact,
+              R.map((id) => def._opData('transaction', id, null)),
+            ),
+            def._opState({transactionSyncCursor: cursor}),
+          ]
+          if (!res.has_more) {
+            break
+          }
         }
       }
 
       // Sync investment transactions
-      if (holdingsRes) {
+      if (streams['investment_transaction']) {
         // TODO: QA the incremental sync logic given that we are syncing
         // from the most recent to the least recent. Most of the time it should
         // be the other way around. Maybe combine responsiveness along with

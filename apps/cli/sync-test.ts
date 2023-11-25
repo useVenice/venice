@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable unicorn/prefer-top-level-await */
 import '@usevenice/app-config/register.node'
-
-import {logLink, sync} from '@usevenice/cdk'
-import {mapStandardEntityLink} from '@usevenice/cdk'
+import {logLink, mapStandardEntityLink, sync} from '@usevenice/cdk'
 import {plaidProvider} from '@usevenice/connector-plaid'
 import {postgresProvider} from '@usevenice/connector-postgres'
 import type {rxjs} from '@usevenice/util'
@@ -24,12 +22,14 @@ function getSource(name: string) {
         }),
         settings: {accessToken: process.env['PLAID_ACCESS_TOKEN'] ?? ''},
         state: {},
+        streams: {},
       })
     case 'postgres':
       return postgresProvider.sourceSync({
         config: {},
         endUser: null,
         state: {},
+        streams: {},
         settings: {
           databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
           sourceQueries: {
