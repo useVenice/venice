@@ -1,4 +1,6 @@
+import {zRaw} from '@usevenice/cdk'
 import {R, z} from '@usevenice/util'
+import {zodToOas31Schema} from '@usevenice/zod'
 import {publicProcedure, trpc} from './_base'
 
 export const publicRouter = trpc.router({
@@ -17,4 +19,16 @@ export const publicRouter = trpc.router({
   getPublicEnv: publicProcedure.query(({ctx}) =>
     R.pick(ctx.env, ['NEXT_PUBLIC_NANGO_PUBLIC_KEY']),
   ),
+  getRawSchemas: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/debug/raw-schemas',
+        tags: ['Internal'],
+        summary: 'Get raw schemas',
+      },
+    })
+    .input(z.void())
+    .output(z.unknown())
+    .query(() => R.mapValues(zRaw, (zodSchema) => zodToOas31Schema(zodSchema))),
 })

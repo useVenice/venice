@@ -1,11 +1,33 @@
-import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
-import {connHelpers, makePostingsMap, oauthBaseSchema} from '@usevenice/cdk'
-import type {Pta} from '@usevenice/cdk'
-import {zEntityPayload} from '@usevenice/cdk'
+import type {ConnectorDef, ConnectorSchemas, Pta} from '@usevenice/cdk'
+import {
+  connHelpers,
+  makePostingsMap,
+  oauthBaseSchema,
+  zEntityPayload,
+} from '@usevenice/cdk'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, z, zCast} from '@usevenice/util'
-
 import {zConfig, zSettings} from './QBOClient'
+
+export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
+  Purchase: 'Purchase',
+  Deposit: 'Deposit',
+  JournalEntry: 'JournalEntry',
+  Invoice: 'Invoice',
+  Payment: 'Payment',
+}
+
+export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
+  ...TRANSACTION_TYPE_NAME,
+  Account: 'Account',
+  Bill: 'Bill',
+  BillPayment: 'BillPayment',
+  CreditMemo: 'CreditMemo',
+  Transfer: 'Transfer',
+  Vendor: 'Vendor',
+  Customer: 'Customer',
+  Item: 'Item',
+}
 
 export const qboSchemas = {
   name: z.literal('qbo'),
@@ -56,6 +78,7 @@ export const qboDef = {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-qbo.svg',
     nangoProvider: 'quickbooks',
+    sourceStreams: Object.values(QBO_ENTITY_NAME),
   },
   streams: {
     $defaults: {
@@ -298,26 +321,6 @@ export const qboDef = {
     },
   },
 } satisfies ConnectorDef<typeof qboSchemas>
-
-export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
-  Purchase: 'Purchase',
-  Deposit: 'Deposit',
-  JournalEntry: 'JournalEntry',
-  Invoice: 'Invoice',
-  Payment: 'Payment',
-}
-
-export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
-  ...TRANSACTION_TYPE_NAME,
-  Account: 'Account',
-  Bill: 'Bill',
-  BillPayment: 'BillPayment',
-  CreditMemo: 'CreditMemo',
-  Transfer: 'Transfer',
-  Vendor: 'Vendor',
-  Customer: 'Customer',
-  Item: 'Item',
-}
 
 const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
   QBO.Account['Classification'],

@@ -1,11 +1,11 @@
-/* eslint-disable unicorn/template-indent */ /* eslint-disable jest-formatting/padding-around-test-blocks */
 import {z, zodToOas31Schema} from './index'
+
+/* eslint-disable unicorn/template-indent */ /* eslint-disable jest-formatting/padding-around-test-blocks */
 
 test('simple value', () => {
   expect(zodToOas31Schema(z.literal('myvalue'))).toMatchInlineSnapshot(
     `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "enum": [
         "myvalue",
       ],
@@ -15,26 +15,29 @@ test('simple value', () => {
   )
 })
 test('enums', () => {
-  // Well that's technically an error as zod does not alow enums with number types...
-  expect(zodToOas31Schema(z.enum([123, 223] as unknown as [string])))
-    .toMatchInlineSnapshot(`
+  /* that's technically an error as zod does not alow enums with number types... */ expect(
+    zodToOas31Schema(z.enum([123, 223] as unknown as [string])),
+  ).toMatchInlineSnapshot(
+    `
+                                                                                      {
+                                                                                        "enum": [
+                                                                                          123,
+                                                                                          223,
+                                                                                        ],
+                                                                                        "type": "string",
+                                                                                      }
+                                                                                    `,
+  )
+  expect(
+    zodToOas31Schema(z.enum([] as unknown as [string])),
+  ).toMatchInlineSnapshot(
+    `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
-      "enum": [
-        123,
-        223,
-      ],
-      "type": "string",
-    }
-  `)
-  expect(zodToOas31Schema(z.enum([] as unknown as [string])))
-    .toMatchInlineSnapshot(`
-    {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "enum": [],
       "type": "string",
     }
-  `)
+  `,
+  )
 })
 test('union with description', () => {
   expect(
@@ -47,7 +50,6 @@ test('union with description', () => {
   ).toMatchInlineSnapshot(
     `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "anyOf": [
         {
           "description": "hello",
@@ -83,7 +85,6 @@ test('enum description to title', () => {
   ).toMatchInlineSnapshot(
     `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "oneOf": [
         {
           "properties": {
@@ -144,7 +145,6 @@ test('enum description to title 2', () => {
   ).toMatchInlineSnapshot(
     `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "properties": {
         "apikey": {
           "type": "boolean",
@@ -189,7 +189,6 @@ test('refs value', () => {
   expect(zodToOas31Schema(connConfig, {config})).toMatchInlineSnapshot(
     `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "components": {
         "schemas": {
           "config": {
@@ -236,9 +235,9 @@ test('Nullable values', () => {
       }),
       {resoId},
     ),
-  ).toMatchInlineSnapshot(`
+  ).toMatchInlineSnapshot(
+    `
     {
-      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
       "components": {
         "schemas": {
           "resoId": {
@@ -273,5 +272,110 @@ test('Nullable values', () => {
       },
       "type": "object",
     }
-  `)
+  `,
+  )
+})
+test('streams', () => {
+  expect(zodToOas31Schema(z.record(z.object({})))).toMatchInlineSnapshot(
+    `
+    {
+      "additionalProperties": {
+        "properties": {},
+        "type": "object",
+      },
+      "type": "object",
+    }
+  `,
+  )
+  expect(
+    zodToOas31Schema(
+      z.object({
+        streams: z.record(
+          z.enum(['transaction', 'account']),
+          z.object({enabled: z.boolean().nullish()}),
+        ),
+      }),
+    ),
+  ).toMatchInlineSnapshot(
+    `
+    {
+      "properties": {
+        "streams": {
+          "additionalProperties": false,
+          "properties": {
+            "account": {
+              "properties": {
+                "enabled": {
+                  "type": [
+                    "boolean",
+                    "null",
+                  ],
+                },
+              },
+              "type": "object",
+            },
+            "transaction": {
+              "properties": {
+                "enabled": {
+                  "type": [
+                    "boolean",
+                    "null",
+                  ],
+                },
+              },
+              "type": "object",
+            },
+          },
+          "type": "object",
+        },
+      },
+      "required": [
+        "streams",
+      ],
+      "type": "object",
+    }
+  `,
+  )
+  expect(
+    zodToOas31Schema(
+      z.array(z.object({name: z.enum(['transaction', 'account'])})),
+    ),
+  ).toMatchInlineSnapshot(
+    `
+    {
+      "items": {
+        "properties": {
+          "name": {
+            "enum": [
+              "transaction",
+              "account",
+            ],
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+        ],
+        "type": "object",
+      },
+      "type": "array",
+    }
+  `,
+  )
+  expect(
+    zodToOas31Schema(z.array(z.enum(['transaction', 'account']))),
+  ).toMatchInlineSnapshot(
+    `
+    {
+      "items": {
+        "enum": [
+          "transaction",
+          "account",
+        ],
+        "type": "string",
+      },
+      "type": "array",
+    }
+  `,
+  )
 })

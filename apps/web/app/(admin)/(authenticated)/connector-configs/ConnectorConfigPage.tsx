@@ -165,16 +165,45 @@ export function ConnectorConfigSheet({
     .extend({
       config: z.object({}),
       ...(connectorMeta?.supportedModes.includes('source') && {
-        defaultDestinationId: zResoId.describe(
-          zRaw.connector_config.shape.defaultDestinationId.description!,
-        ),
+        defaultPipeOut: z
+          .union([
+            z.null().openapi({title: 'Disabled'}),
+            z
+              .object({
+                ...(connectorMeta?.sourceStreams?.length && {
+                  streams: z
+                    .record(
+                      z.enum(connectorMeta.sourceStreams as [string]),
+                      z.boolean(),
+                    )
+                    .openapi({description: 'Entities to sync'}),
+                }),
+                destination_id: zResoId,
+              })
+              .openapi({title: 'Enabled'}),
+          ])
+          .openapi({
+            title: 'Default outgoing pipeline',
+            description: zRaw.connector_config.shape.defaultPipeOut.description,
+          }),
       }),
       ...(connectorMeta?.supportedModes.includes('destination') && {
-        defaultSourceId: zResoId.describe(
-          zRaw.connector_config.shape.defaultSourceId.description!,
-        ),
+        defaultPipeIn: z
+          .union([
+            z.null().openapi({title: 'Disabled'}),
+            z
+              .object({
+                source_id: zResoId,
+              })
+              .openapi({title: 'Enabled'}),
+          ])
+          .openapi({
+            title: 'Default incoming pipeline',
+            description: zRaw.connector_config.shape.defaultPipeIn.description,
+          }),
       }),
     })
+  connectorMeta?.__typename
 
   const {orgId} = useCurrengOrg()
 
@@ -283,6 +312,8 @@ export function ConnectorConfigSheet({
                     endUserAccess: ccfg.endUserAccess,
                     displayName: ccfg.displayName,
                     config: ccfg.config ?? {},
+                    defaultPipeOut: ccfg.defaultPipeOut ?? null,
+                    defaultPipeIn: ccfg.defaultPipeIn ?? null,
                   } // {} because required
                 : undefined
             }

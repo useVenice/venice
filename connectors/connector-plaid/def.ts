@@ -131,6 +131,12 @@ export const plaidDef = {
     openapiSpec: {
       proxied: plaidOas as unknown as OpenApiSpec,
     },
+    sourceStreams: [
+      'transaction',
+      'account',
+      'investment_transaction',
+      'holding',
+    ],
   },
   standardMappers: {
     entity: {

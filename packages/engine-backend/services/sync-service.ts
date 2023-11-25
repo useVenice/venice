@@ -49,37 +49,33 @@ export function makeSyncService({
     const pipelines = await metaService.findPipelines({resourceIds: [resoId]})
     const reso = await getResourceExpandedOrFail(resoId)
     const createdIds: Array<Id['pipe']> = []
+    const defaultDestId = reso.connectorConfig?.defaultPipeOut?.destination_id
+
     if (
-      reso.connectorConfig.defaultDestinationId &&
-      !pipelines.some(
-        (p) => p.destinationId === reso.connectorConfig.defaultDestinationId,
-      )
+      defaultDestId &&
+      !pipelines.some((p) => p.destinationId === defaultDestId)
     ) {
       const pipelineId = makeId('pipe', makeUlid())
       createdIds.push(pipelineId)
       console.log(
-        `[sync-serivce] Creating default outgoing pipeline ${pipelineId} for ${resoId} to ${reso.connectorConfig.defaultDestinationId}`,
+        `[sync-serivce] Creating default outgoing pipeline ${pipelineId} for ${resoId} to ${defaultDestId}`,
       )
 
       await metaLinks.patch('pipeline', pipelineId, {
         sourceId: resoId,
-        destinationId: reso.connectorConfig.defaultDestinationId,
+        destinationId: defaultDestId,
       })
     }
 
-    if (
-      reso.connectorConfig.defaultSourceId &&
-      !pipelines.some(
-        (p) => p.sourceId === reso.connectorConfig.defaultSourceId,
-      )
-    ) {
+    const defaultSrcId = reso.connectorConfig?.defaultPipeIn?.source_id
+    if (defaultSrcId && !pipelines.some((p) => p.sourceId === defaultSrcId)) {
       const pipelineId = makeId('pipe', makeUlid())
       createdIds.push(pipelineId)
       console.log(
-        `[sync-serivce] Creating default incoming pipeline ${pipelineId} for ${resoId} from ${reso.connectorConfig.defaultSourceId}`,
+        `[sync-serivce] Creating default incoming pipeline ${pipelineId} for ${resoId} from ${defaultSrcId}`,
       )
       await metaLinks.patch('pipeline', pipelineId, {
-        sourceId: reso.connectorConfig.defaultSourceId,
+        sourceId: defaultSrcId,
         destinationId: resoId,
       })
     }

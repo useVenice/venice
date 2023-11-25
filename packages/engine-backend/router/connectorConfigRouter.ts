@@ -36,6 +36,8 @@ export const connectorConfigRouter = trpc.router({
           config: true,
           displayName: true,
           endUserAccess: true,
+          defaultPipeOut: true,
+          defaultPipeIn: true,
         })
         .partial()
         // Due to insert on conflict update it appears that orgId is actually required
@@ -73,6 +75,7 @@ export const connectorConfigRouter = trpc.router({
           oauthBaseSchema.connectorConfig.parse(input.config),
         )
       }
+      console.log('saving connector config', id, input)
 
       return ctx.services.patchReturning('connector_config', id, input)
     }),

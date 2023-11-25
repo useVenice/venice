@@ -36,7 +36,10 @@ export function zodToOas31Schema(
     }),
     /**
      * Superset of the [JSON Schema Specification Draft 2020-12](https://json-schema.org/draft/2020-12/schema)
+     * Technically at https://spec.openapis.org/oas/3.1/dialect/base, but many tools don't support meta schemas
+     * so we forget it for now.
      */
-    $schema: 'https://spec.openapis.org/oas/3.1/dialect/base',
+    // $schema: 'https://json-schema.org/draft/2020-12/schema,'
+    // $schema: 'https://spec.openapis.org/oas/3.1/dialect/base',
   }
 }

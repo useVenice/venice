@@ -111,15 +111,23 @@ export const zRaw = {
       displayName: z.string().nullish(),
       disabled: z.boolean().optional(),
 
-      defaultDestinationId: zId('reso')
+      /** Could be full object later */
+      defaultPipeOut: z
+        .object({
+          streams: z.record(z.boolean()).nullish(),
+          destination_id: zId('reso'),
+        })
         .nullish()
         .describe(
           'Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL',
         ),
-      defaultSourceId: zId('reso')
+      defaultPipeIn: z
+        .object({
+          source_id: zId('reso'),
+        })
         .nullish()
         .describe(
-          'Automatically sync data to any resources associated with this config from the source resource, which is typically a Postgres database. Think Reverse ETL (Postgres -> QBO)',
+          'Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL',
         ),
       /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
       envName: z.string().nullish(),

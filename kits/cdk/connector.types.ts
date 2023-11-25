@@ -69,6 +69,7 @@ export interface ConnectorSchemas {
   /** Maybe can be derived from webhookInput | postConnOutput | inlineInput? */
   sourceState?: z.ZodTypeAny
   sourceOutputEntity?: z.ZodTypeAny
+
   destinationState?: z.ZodTypeAny
   destinationInputEntity?: z.ZodTypeAny
 

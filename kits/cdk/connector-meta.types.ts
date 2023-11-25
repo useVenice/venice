@@ -36,6 +36,9 @@ export interface ConnectorMetadata {
   // labels?: Array<'featured' | 'banking' | 'accounting' | 'enrichment'>
   categories?: Array<z.infer<typeof zConnectorVertical>>
 
+  /** TODO: Move this to schemas later, which would allow us to have better title / description */
+  sourceStreams?: string[]
+
   openapiSpec?: {
     proxied?: OpenApiSpec
     original?: OpenApiSpec

@@ -18,6 +18,7 @@ export const metaForConnector = (
   stage: connector.metadata?.stage ?? 'alpha',
   platforms: connector.metadata?.platforms ?? ['cloud', 'local'],
   categories: connector.metadata?.categories ?? ['other'],
+  sourceStreams: connector.metadata?.sourceStreams,
   supportedModes: R.compact([
     connector.sourceSync ? ('source' as const) : null,
     connector.destinationSync ? ('destination' as const) : null,

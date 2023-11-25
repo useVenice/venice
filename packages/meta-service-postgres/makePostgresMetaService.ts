@@ -173,19 +173,19 @@ export const makePostgresMetaService = zFunction(
           pool.any<{id: Id['reso']}>(sql`
             SELECT
               r.id,
-              cc.default_destination_id,
-              cc.default_source_id,
+              cc.default_pipe_out_destination_id,
+              cc.default_pipe_in_source_id,
               pipe_out.id destination_pipeline_id,
               pipe_in.id source_pipeline_id
             FROM
               resource r
               JOIN connector_config cc ON r.connector_config_id = cc.id
               LEFT JOIN pipeline pipe_out ON pipe_out.source_id = r.id
-                AND pipe_out.destination_id = cc.default_destination_id
+                AND pipe_out.destination_id = cc.default_pipe_out_destination_id
               LEFT JOIN pipeline pipe_in ON pipe_in.destination_id = r.id
-                AND pipe_in.source_id = cc.default_source_id
-            WHERE (cc.default_destination_id IS NOT NULL AND pipe_out IS NULL)
-              OR (cc.default_source_id IS NOT NULL AND pipe_in IS NULL)
+                AND pipe_in.source_id = cc.default_pipe_in_source_id
+            WHERE (cc.default_pipe_out_destination_id IS NOT NULL AND pipe_out IS NULL)
+              OR (cc.default_pipe_in_source_id IS NOT NULL AND pipe_in IS NULL)
           `),
         )
       },

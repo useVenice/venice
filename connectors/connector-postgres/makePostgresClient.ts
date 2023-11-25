@@ -5,7 +5,6 @@ import type {
   PrimitiveValueExpression,
   TaggedTemplateLiteralInvocation,
 } from 'slonik/dist/src/types'
-
 import type {MaybeArray} from '@usevenice/util'
 import {
   fromMaybeArray,
@@ -15,7 +14,6 @@ import {
   snakeCase,
   zFunction,
 } from '@usevenice/util'
-
 import {zPgConfig} from './def'
 
 export {DatabaseError} from 'pg'
@@ -133,8 +131,8 @@ export function upsertByIdQuery(
     v instanceof Date
       ? 'date'
       : isPlainObject(v) || Array.isArray(v)
-      ? 'jsonb'
-      : null,
+        ? 'jsonb'
+        : null,
   )
 
   const cols = keys.map((k) => {
@@ -142,7 +140,10 @@ export function upsertByIdQuery(
     const fullId = sql`${table}.${colId}`
     const excluded =
       opts.mergeJson === 'shallow' && typeMap[k] === 'jsonb'
-        ? sql`${fullId} || excluded.${colId}`
+        ? // We need to coalesce to an empty object otherwise null || anything will still end up
+          // being null in postgres. This does not effect the inverse, anything || null will still
+          // set to null which is desired
+          sql`COALESCE(${fullId}, '{}'::jsonb) || excluded.${colId}`
         : sql`excluded.${colId}`
     return {key: k, colId, fullId, excluded}
   })
@@ -154,8 +155,8 @@ export function upsertByIdQuery(
         ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
           sql.jsonb(v as any)
         : typeMap[k] === 'date'
-        ? sql.timestamp(v as Date)
-        : (v as PrimitiveValueExpression)
+          ? sql.timestamp(v as Date)
+          : (v as PrimitiveValueExpression)
     }),
   )
 

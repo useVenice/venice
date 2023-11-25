@@ -1,10 +1,8 @@
 import {TRPCError} from '@trpc/server'
-
 import type {AnyConnectorImpl, Id, IDS, ZRaw} from '@usevenice/cdk'
 import {extractId, zRaw} from '@usevenice/cdk'
 import type {ObjectPartialDeep} from '@usevenice/util'
 import {deepMerge, z} from '@usevenice/util'
-
 import {makeMetaLinks} from './makeMetaLinks'
 import type {MetaService, MetaTable} from './metaService'
 
@@ -91,6 +89,7 @@ export function makeDBService({
         config:
           getConnectorOrFail(id as Id['ccfg']).schemas.connectorConfig ??
           z.object({}).nullish(),
+        // TODO: Should validate a consistently
       })
     } else if (tableName === 'resource') {
       schema = (schema as (typeof zRaw)['resource']).extend({
