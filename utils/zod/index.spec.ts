@@ -1,7 +1,5 @@
-/* eslint-disable unicorn/template-indent */ /* eslint-disable jest-formatting/padding-around-test-blocks */ import {
-  z,
-  zodToOas31Schema,
-} from './index'
+/* eslint-disable unicorn/template-indent */ /* eslint-disable jest-formatting/padding-around-test-blocks */
+import {z, zodToOas31Schema} from './index'
 
 test('simple value', () => {
   expect(zodToOas31Schema(z.literal('myvalue'))).toMatchInlineSnapshot(
@@ -15,6 +13,28 @@ test('simple value', () => {
     }
   `,
   )
+})
+test('enums', () => {
+  // Well that's technically an error as zod does not alow enums with number types...
+  expect(zodToOas31Schema(z.enum([123, 223] as unknown as [string])))
+    .toMatchInlineSnapshot(`
+    {
+      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
+      "enum": [
+        123,
+        223,
+      ],
+      "type": "string",
+    }
+  `)
+  expect(zodToOas31Schema(z.enum([] as unknown as [string])))
+    .toMatchInlineSnapshot(`
+    {
+      "$schema": "https://spec.openapis.org/oas/3.1/dialect/base",
+      "enum": [],
+      "type": "string",
+    }
+  `)
 })
 test('union with description', () => {
   expect(

@@ -25,15 +25,6 @@ export function defaultTitleAsJsonPath<T = unknown>(jsonSchema: T) {
 
 export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
   jsonSchemaWalkNodes(jsonSchema, (node, meta) => {
-    if (!node.type && node.anyOf && node.anyOf[0]?.type) {
-      const types = R.uniq(node.anyOf.map((x) => x.type))
-      // Small hack for react-jsonschema-form
-      // without type sometimes nothing renders.... (e.g. enum of string)
-      if (types.length === 1) {
-        // console.warn(`Multiple types in anyOf: ${types}, skip defaulting`)
-        node.type = types[0]
-      }
-    }
     // Ensure option title
     const parent = meta.lineage && meta.lineage[meta.lineage.length - 1]
     if (parent?.anyOf && node.description && !node.title) {
@@ -49,9 +40,24 @@ export function ensureNodeTitle<T = unknown>(jsonSchema: T) {
   return jsonSchema
 }
 
+export function ensureEnumType<T = unknown>(jsonSchema: T) {
+  jsonSchemaWalkNodes(jsonSchema, (node) => {
+    if (!node.type && node.anyOf && node.anyOf[0]?.type) {
+      const types = R.uniq(node.anyOf.map((x) => x.type))
+      // Small hack for react-jsonschema-form
+      // without type sometimes nothing renders.... (e.g. enum of string) @see https://share.cleanshot.com/8vjdCZmd
+      if (types.length === 1) {
+        // console.warn(`Multiple types in anyOf: ${types}, skip defaulting`)
+        node.type = types[0]
+      }
+    }
+  })
+  return jsonSchema
+}
+
 /** @deprecated use the zodtooas31schema instead. */
 export function zodToJsonSchema(schema: z.ZodTypeAny) {
-  return zodToOas31Schema(schema)
+  return ensureEnumType(zodToOas31Schema(schema))
   // Defaulting title should occur last, this way we don't end up with extraneous one
-  // return defaultTitleAsJsonPath(ensureNodeTitle(_zodToJsonSchema(schema)))
+  // return defaultTitleAsJsonPath(ensureNodeTitle(ensureEnumType(_zodToJsonSchema(schema))))
 }
