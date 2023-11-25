@@ -1,4 +1,4 @@
-import type {Viewer, ZRaw} from '@usevenice/cdk'
+import type {Id, Viewer, ZRaw} from '@usevenice/cdk'
 import {zViewer} from '@usevenice/cdk'
 import {zPgConfig} from '@usevenice/connector-postgres/def'
 import type {
@@ -159,12 +159,34 @@ export const makePostgresMetaService = zFunction(
               id && connectorName
                 ? sql`WHERE id = ${id} AND connector_name = ${connectorName}`
                 : id
-                ? sql`WHERE id = ${id}`
-                : connectorName
-                ? sql`WHERE connector_name = ${connectorName}`
-                : sql``
+                  ? sql`WHERE id = ${id}`
+                  : connectorName
+                    ? sql`WHERE connector_name = ${connectorName}`
+                    : sql``
             }`,
           ),
+        )
+      },
+      findResourcesMissingDefaultPipeline: () => {
+        const {runQueries, sql} = _getDeps(opts)
+        return runQueries((pool) =>
+          pool.any<{id: Id['reso']}>(sql`
+            SELECT
+              r.id,
+              cc.default_destination_id,
+              cc.default_source_id,
+              pipe_out.id destination_pipeline_id,
+              pipe_in.id source_pipeline_id
+            FROM
+              resource r
+              JOIN connector_config cc ON r.connector_config_id = cc.id
+              LEFT JOIN pipeline pipe_out ON pipe_out.source_id = r.id
+                AND pipe_out.destination_id = cc.default_destination_id
+              LEFT JOIN pipeline pipe_in ON pipe_in.destination_id = r.id
+                AND pipe_in.source_id = cc.default_source_id
+            WHERE (cc.default_destination_id IS NOT NULL AND pipe_out IS NULL)
+              OR (cc.default_source_id IS NOT NULL AND pipe_in IS NULL)
+          `),
         )
       },
     }

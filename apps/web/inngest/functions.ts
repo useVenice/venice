@@ -1,7 +1,5 @@
 import '@usevenice/app-config/register.node'
-
 import {clerkClient} from '@clerk/nextjs'
-
 import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
 import {env} from '@usevenice/app-config/env'
 import type {EndUserId} from '@usevenice/cdk'
@@ -9,9 +7,7 @@ import {makeId, zEndUserId, zId, zUserId} from '@usevenice/cdk'
 import {flatRouter} from '@usevenice/engine-backend'
 import {inngest} from '@usevenice/engine-backend/events'
 import {makeUlid} from '@usevenice/util'
-
 import {zAuth} from '@/lib-common/schemas'
-
 import {getPool, sql} from '../lib-server'
 import {serverAnalytics} from '../lib-server/analytics-server'
 import {makeSentryClient} from '../lib-server/sentry-client'
@@ -27,6 +23,13 @@ export const scheduleSyncs = inngest.createFunction(
     : {cron: '0 * * * *'}, // Once an hour, https://crontab.guru/#0_*_*_*_*
   () =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
+      await flatRouter
+        .createCaller({
+          ...contextFactory.fromViewer({role: 'system'}),
+          remoteResourceId: null,
+        })
+        .ensureDefaultPipelines()
+
       const pipelines = await contextFactory.config
         .getMetaService({role: 'system'})
         // Every hour

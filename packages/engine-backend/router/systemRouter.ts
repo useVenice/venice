@@ -1,9 +1,19 @@
 import {zId, zWebhookInput} from '@usevenice/cdk'
 import {z} from '@usevenice/util'
-
-import {systemProcedure, trpc} from './_base'
+import {adminProcedure, systemProcedure, trpc} from './_base'
 
 export const systemRouter = trpc.router({
+  ensureDefaultPipelines: adminProcedure.mutation(async ({ctx}) => {
+    const resources =
+      await ctx.services.metaService.findResourcesMissingDefaultPipeline()
+    return await Promise.all(
+      resources.map((reso) =>
+        ctx.services
+          .ensurePipelinesForResource(reso.id)
+          .then((pipelineIds) => ({resourceId: reso.id, pipelineIds})),
+      ),
+    )
+  }),
   handleWebhook: systemProcedure
     .input(z.tuple([zId('ccfg'), zWebhookInput]))
     .mutation(async ({input: [ccfgId, input], ctx}) => {

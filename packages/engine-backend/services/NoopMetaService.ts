@@ -21,4 +21,5 @@ export const noopMetaService: MetaService = {
   searchIntegrations: async () => [],
   findPipelines: async () => [],
   listConnectorConfigInfos: async () => [],
+  findResourcesMissingDefaultPipeline: async () => [],
 }

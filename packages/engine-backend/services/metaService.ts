@@ -71,4 +71,8 @@ export interface MetaService {
       displayName?: string | null
     }>
   >
+  /** Missing default pipeline */
+  findResourcesMissingDefaultPipeline: () => Promise<
+    ReadonlyArray<{id: Id['reso']}>
+  >
 }
