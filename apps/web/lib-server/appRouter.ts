@@ -32,12 +32,22 @@ const customRouter = trpc.router({
 export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
 
 function generateOpenApi() {
-  return generateOpenApiDocument(appRouter, {
-    // openApiVersion: '3.1.0',
+  const oas = generateOpenApiDocument(appRouter, {
+    openApiVersion: '3.1.0', // Want jsonschema
     title: 'Venice OpenAPI',
     version: '0.0.0',
+    securitySchemes: {
+      apikey: {
+        type: 'apiKey',
+        name: 'x-apikey',
+        in: 'header',
+      },
+    },
     baseUrl: getServerUrl(null) + '/api/v0',
   })
+  // Unfortunately trpc-openapi is missing bunch of options...
+  oas.security = [{apikey: []}]
+  return oas
 }
 
 export type AppRouter = typeof appRouter
