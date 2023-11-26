@@ -1,0 +1,16 @@
+{
+  "name": "@usevenice/sdk-discord",
+  "version": "0.0.0",
+  "module": "./index.ts",
+  "scripts": {
+    "download": "curl --fail https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json -o ./discord.oas.json",
+    "generate": "openapi-typescript ./discord.oas.json --output ./discord.oas.d.ts"
+  },
+  "dependencies": {
+    "@usevenice/openapi-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/sdk": "workspace:*",
+    "openapi-typescript": "6.7.1"
+  }
+}

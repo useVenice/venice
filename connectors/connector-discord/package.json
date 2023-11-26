@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "scripts": {
-    "download": "curl https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json | json2yaml > ./discord.openapi.gen.yaml",
+    "download": "curl --fail https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json | json2yaml > ./discord.openapi.gen.yaml",
     "generate": "openapi-typescript ./discord.openapi.gen.yaml --output ./discord.openapi.gen.d.ts"
   },
   "dependencies": {

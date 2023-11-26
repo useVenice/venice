@@ -10,7 +10,7 @@ export {extendZodWithOpenApi, createDocument}
 export type OpenAPISpec = oas30.OpenAPIObject | oas31.OpenAPIObject
 
 /** We use a super-set of JSON schema defined by the OpenAPI 3.1 spec */
-export type Oas13Schema = oas31.SchemaObject & {$schema?: string}
+export type Oas31Schema = oas31.SchemaObject & {$schema?: string}
 
 /**
  * Convert to JSONSchema using OpenAPI 3.1 spec, which is a superset of JSONSchema Draft 2020-12
@@ -20,7 +20,7 @@ export type Oas13Schema = oas31.SchemaObject & {$schema?: string}
 export function zodToOas31Schema(
   zodSchema: z.ZodTypeAny,
   zodDefinitions?: Record<string, z.ZodTypeAny>,
-): Oas13Schema {
+): Oas31Schema {
   const oas = createDocument({
     openapi: '3.1.0', // Only 3.1 is basically fully compatible with JSON-schema
     info: {title: '', version: ''},

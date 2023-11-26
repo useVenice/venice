@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "scripts": {
-    "download": "curl https://api.apis.guru/v2/specs/notion.com/1.0.0/openapi.yaml > ./notion.openapi.gen.yaml",
+    "download": "curl --fail https://api.apis.guru/v2/specs/notion.com/1.0.0/openapi.yaml > ./notion.openapi.gen.yaml",
     "generate": "openapi-typescript ./notion.openapi.gen.yaml --output ./notion.openapi.gen.d.ts"
   },
   "dependencies": {},

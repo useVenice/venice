@@ -7,7 +7,7 @@
   ],
   "module": "./index.ts",
   "scripts": {
-    "download": "curl https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml > yodlee.oas.yaml",
+    "download": "curl --fail https://raw.githubusercontent.com/Yodlee/OpenAPI/main/swagger.yaml > yodlee.oas.yaml",
     "generate": "pnpm generate:oas && pnpm generate:types",
     "generate:oas": "swagger2openapi ./yodlee.oas.yaml | prettier --parser json > ./yodlee.oas.json",
     "generate:types": "openapi-typescript ./yodlee.oas.json --output yodlee.oas.d.ts"

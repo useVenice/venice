@@ -28,3 +28,7 @@ export function createVeniceClient(opts: VeniceClientOptions): VeniceClient {
   })
   return {...client, oas}
 }
+
+// codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture,d}.{ts,tsx}"}
+export * from './createSdk'
+// codegen:end

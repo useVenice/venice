@@ -8,6 +8,8 @@
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",
     "@usevenice/sdk": "workspace:*",
+    "@usevenice/sdk-discord": "workspace:*",
+    "@usevenice/sdk-slack": "workspace:*",
     "mintlify": "4.0.59"
   }
 }
