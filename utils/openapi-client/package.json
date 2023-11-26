@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "clean": "rm -rf ./dist",
-    "pub": "pnpm publish --no-git-checks"
+    "pub": "pnpm publish --no-git-checks --access public"
   },
   "dependencies": {
     "openapi-fetch": "0.8.1",

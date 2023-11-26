@@ -11,6 +11,7 @@
     "prepack": "pnpm run build"
   },
   "dependencies": {
+    "@usevenice/sdk": "workspace:*",
     "zod": "3.21.4"
   },
   "devDependencies": {
