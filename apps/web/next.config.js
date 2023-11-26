@@ -39,7 +39,13 @@ const nextConfig = {
     afterFiles: [],
     fallback: [],
   }),
-
+  redirects: async () => [
+    {
+      source: '/docs/:p*',
+      destination: 'https://usevenice.readme.io/:p*',
+      permanent: false,
+    },
+  ],
   swcMinify: true,
   typescript: {ignoreBuildErrors: true},
   eslint: {ignoreDuringBuilds: true},
