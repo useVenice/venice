@@ -11,7 +11,7 @@ export const connectorRouter = trpc.router({
     .meta({
       openapi: {
         method: 'GET',
-        path: '/platform/connectors',
+        path: '/connector',
         tags,
         summary: 'Get catalog of all available connectors',
       },
@@ -28,7 +28,7 @@ export const connectorRouter = trpc.router({
     .meta({
       openapi: {
         method: 'GET',
-        path: '/platform/connectors/{name}',
+        path: '/connector/{name}',
         tags,
       },
     })
@@ -49,7 +49,7 @@ export const connectorRouter = trpc.router({
     .meta({
       openapi: {
         method: 'GET',
-        path: '/platform/connectors/{name}/oas',
+        path: '/connector/{name}/oas',
         tags,
       },
     })
@@ -71,7 +71,7 @@ export const connectorRouter = trpc.router({
     .meta({
       openapi: {
         method: 'GET',
-        path: '/platform/connectors/{name}/schemas',
+        path: '/connector/{name}/schemas',
         tags,
       },
     })

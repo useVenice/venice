@@ -23,7 +23,7 @@ const tags = ['Resource']
 export const resourceRouter = trpc.router({
   // TODO: maybe we should allow resourceId to be part of the path rather than only in the headers
   passthrough: remoteProcedure
-    .meta({openapi: {method: 'POST', path: '/platform/passthrough', tags}}) // Where do we put this?
+    .meta({openapi: {method: 'POST', path: '/core/passthrough', tags}}) // Where do we put this?
     .input(zPassthroughInput)
     .output(z.any())
     .mutation(async ({input, ctx}) => {
@@ -47,7 +47,7 @@ export const resourceRouter = trpc.router({
     .meta({
       openapi: {
         method: 'POST',
-        path: '/platform/resources/{id}/source_sync',
+        path: '/core/resource/{id}/source_sync',
         tags,
       },
     })
@@ -70,7 +70,7 @@ export const resourceRouter = trpc.router({
       return rxjs.firstValueFrom(res.pipe(Rx.toArray()))
     }),
   createResource: protectedProcedure
-    .meta({openapi: {method: 'POST', path: '/platform/resources', tags}})
+    .meta({openapi: {method: 'POST', path: '/core/resource', tags}})
     .input(zRaw.resource.pick({connectorConfigId: true, settings: true}))
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
@@ -114,7 +114,7 @@ export const resourceRouter = trpc.router({
 
   // TODO: Run server-side validation
   updateResource: protectedProcedure
-    .meta({openapi: {method: 'PATCH', path: '/platform/resources/{id}', tags}})
+    .meta({openapi: {method: 'PATCH', path: '/core/resource/{id}', tags}})
     .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
     .output(zRaw.resource)
     .mutation(async ({input: {id, ...input}, ctx}) =>
@@ -124,7 +124,7 @@ export const resourceRouter = trpc.router({
       ctx.services.patchReturning('resource', id, input),
     ),
   deleteResource: protectedProcedure
-    .meta({openapi: {method: 'DELETE', path: '/platform/resources/{id}', tags}})
+    .meta({openapi: {method: 'DELETE', path: '/core/resource/{id}', tags}})
     .input(z.object({id: zId('reso'), skipRevoke: z.boolean().optional()}))
     .output(z.void())
     .mutation(async ({input: {id: resoId, ...opts}, ctx}) => {
@@ -147,7 +147,7 @@ export const resourceRouter = trpc.router({
       await ctx.asOrgIfNeeded.metaService.tables.resource.delete(reso.id)
     }),
   listResources: protectedProcedure
-    .meta({openapi: {method: 'GET', path: '/platform/resources', tags}})
+    .meta({openapi: {method: 'GET', path: '/core/resource', tags}})
     .input(
       zListParams
         .extend({
@@ -166,7 +166,7 @@ export const resourceRouter = trpc.router({
   getResource: protectedProcedure
     .meta({
       description: 'Not automatically called, used for debugging for now',
-      openapi: {method: 'GET', path: '/platform/resources/{id}', tags},
+      openapi: {method: 'GET', path: '/core/resource/{id}', tags},
     })
     .input(z.object({id: zId('reso')}))
     .output(zRaw.resource) // TODO: This is actually expanded...

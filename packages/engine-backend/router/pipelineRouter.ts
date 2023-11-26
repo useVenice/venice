@@ -11,7 +11,7 @@ const tags = ['Pipeline']
 
 export const pipelineRouter = trpc.router({
   listPipelines: protectedProcedure
-    .meta({openapi: {method: 'GET', path: '/platform/pipelines', tags}})
+    .meta({openapi: {method: 'GET', path: '/core/pipeline', tags}})
     .input(
       zListParams
         .extend({resourceIds: z.array(zId('reso')).optional()})
@@ -23,7 +23,7 @@ export const pipelineRouter = trpc.router({
       return pipelines as Array<ZRaw['pipeline']>
     }),
   deletePipeline: protectedProcedure
-    .meta({openapi: {method: 'DELETE', path: '/platform/pipelines/{id}', tags}})
+    .meta({openapi: {method: 'DELETE', path: '/core/pipeline/{id}', tags}})
     .input(z.object({id: zId('pipe')}))
     .output(z.literal(true))
     .mutation(async ({ctx, input}) => {

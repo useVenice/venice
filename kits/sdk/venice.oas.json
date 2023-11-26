@@ -14,7 +14,9 @@
       "get": {
         "operationId": "health",
         "summary": "Health check",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -43,7 +45,9 @@
       "get": {
         "operationId": "getRawSchemas",
         "summary": "Get raw schemas",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -66,10 +70,12 @@
         }
       }
     },
-    "/platform/connect-token": {
+    "/core/connect-token": {
       "post": {
         "operationId": "createConnectToken",
-        "tags": ["Connect"],
+        "tags": [
+          "Connect"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -104,7 +110,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["token"]
+                  "required": [
+                    "token"
+                  ]
                 }
               }
             }
@@ -132,10 +140,12 @@
         }
       }
     },
-    "/platform/magic-link": {
+    "/core/magic-link": {
       "post": {
         "operationId": "createMagicLink",
-        "tags": ["Connect"],
+        "tags": [
+          "Connect"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -193,7 +203,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["url"]
+                  "required": [
+                    "url"
+                  ]
                 }
               }
             }
@@ -221,10 +233,12 @@
         }
       }
     },
-    "/platform/passthrough": {
+    "/core/passthrough": {
       "post": {
         "operationId": "passthrough",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -234,7 +248,14 @@
                 "properties": {
                   "method": {
                     "type": "string",
-                    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+                    "enum": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE",
+                      "OPTIONS"
+                    ]
                   },
                   "path": {
                     "type": "string"
@@ -252,7 +273,10 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": ["method", "path"]
+                "required": [
+                  "method",
+                  "path"
+                ]
               }
             }
           }
@@ -289,10 +313,12 @@
         }
       }
     },
-    "/platform/resources/{id}/source_sync": {
+    "/core/resource/{id}/source_sync": {
       "post": {
         "operationId": "sourceSync",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -358,10 +384,12 @@
         }
       }
     },
-    "/platform/resources": {
+    "/core/resource": {
       "post": {
         "operationId": "createResource",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -379,7 +407,9 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": ["connectorConfigId"]
+                "required": [
+                  "connectorConfigId"
+                ]
               }
             }
           }
@@ -419,7 +449,9 @@
       },
       "get": {
         "operationId": "listResources",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -509,10 +541,12 @@
         }
       }
     },
-    "/platform/resources/{id}": {
+    "/core/resource/{id}": {
       "patch": {
         "operationId": "updateResource",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -590,7 +624,9 @@
       },
       "delete": {
         "operationId": "deleteResource",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -652,7 +688,9 @@
       },
       "get": {
         "operationId": "getResource",
-        "tags": ["Resource"],
+        "tags": [
+          "Resource"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -708,10 +746,12 @@
         }
       }
     },
-    "/platform/connector_configs": {
+    "/core/connector_config": {
       "get": {
         "operationId": "adminListConnectorConfigs",
-        "tags": ["Connector Configs"],
+        "tags": [
+          "Connector Configs"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -740,7 +780,9 @@
       },
       "post": {
         "operationId": "adminUpsertConnectorConfig",
-        "tags": ["Connector Configs"],
+        "tags": [
+          "Connector Configs"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -789,7 +831,9 @@
                         "description": "Must start with 'reso_'"
                       }
                     },
-                    "required": ["destination_id"],
+                    "required": [
+                      "destination_id"
+                    ],
                     "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
                   },
                   "defaultPipeIn": {
@@ -801,11 +845,15 @@
                         "description": "Must start with 'reso_'"
                       }
                     },
-                    "required": ["source_id"],
+                    "required": [
+                      "source_id"
+                    ],
                     "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
                   }
                 },
-                "required": ["orgId"]
+                "required": [
+                  "orgId"
+                ]
               }
             }
           }
@@ -844,10 +892,12 @@
         }
       }
     },
-    "/platform/connector_configs/{id}": {
+    "/core/connector_config/{id}": {
       "delete": {
         "operationId": "adminDeleteConnectorConfig",
-        "tags": ["Connector Configs"],
+        "tags": [
+          "Connector Configs"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -902,7 +952,9 @@
       },
       "get": {
         "operationId": "adminGetConnectorConfig",
-        "tags": ["Connector Configs"],
+        "tags": [
+          "Connector Configs"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -958,10 +1010,12 @@
         }
       }
     },
-    "/platform/connector_config_infos": {
+    "/core/connector_config_info": {
       "get": {
         "operationId": "listConnectorConfigInfos",
-        "tags": ["Connector Configs"],
+        "tags": [
+          "Connector Configs"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -969,7 +1023,11 @@
             "schema": {
               "type": "string",
               "nullable": true,
-              "enum": ["source", "destination", null]
+              "enum": [
+                "source",
+                "destination",
+                null
+              ]
             }
           },
           {
@@ -1066,11 +1124,13 @@
         }
       }
     },
-    "/platform/connectors": {
+    "/connector": {
       "get": {
         "operationId": "listConnectorMetas",
         "summary": "Get catalog of all available connectors",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1122,10 +1182,12 @@
         }
       }
     },
-    "/platform/connectors/{name}": {
+    "/connector/{name}": {
       "get": {
         "operationId": "getConnectorMeta",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1185,10 +1247,12 @@
         }
       }
     },
-    "/platform/connectors/{name}/oas": {
+    "/connector/{name}/oas": {
       "get": {
         "operationId": "getConnectorOpenApiSpec",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1248,10 +1312,12 @@
         }
       }
     },
-    "/platform/connectors/{name}/schemas": {
+    "/connector/{name}/schemas": {
       "get": {
         "operationId": "getConnectorSchemas",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1311,10 +1377,12 @@
         }
       }
     },
-    "/platform/pipelines": {
+    "/core/pipeline": {
       "get": {
         "operationId": "listPipelines",
-        "tags": ["Pipeline"],
+        "tags": [
+          "Pipeline"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1389,10 +1457,12 @@
         }
       }
     },
-    "/platform/pipelines/{id}": {
+    "/core/pipeline/{id}": {
       "delete": {
         "operationId": "deletePipeline",
-        "tags": ["Pipeline"],
+        "tags": [
+          "Pipeline"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1411,7 +1481,9 @@
               "application/json": {
                 "schema": {
                   "type": "boolean",
-                  "enum": [true]
+                  "enum": [
+                    true
+                  ]
                 }
               }
             }
@@ -1452,7 +1524,9 @@
     "/verticals/accounting/account": {
       "get": {
         "operationId": "verticals-accounting-account_list",
-        "tags": ["Verticals/Accounting"],
+        "tags": [
+          "Verticals/Accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1500,11 +1574,18 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name", "type"]
+                        "required": [
+                          "id",
+                          "name",
+                          "type"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1545,7 +1626,9 @@
     "/verticals/accounting/expense": {
       "get": {
         "operationId": "verticals-accounting-expense_list",
-        "tags": ["Verticals/Accounting"],
+        "tags": [
+          "Verticals/Accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1601,7 +1684,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1642,7 +1728,9 @@
     "/verticals/accounting/vendor": {
       "get": {
         "operationId": "verticals-accounting-vendor_list",
-        "tags": ["Verticals/Accounting"],
+        "tags": [
+          "Verticals/Accounting"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1686,11 +1774,18 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name", "url"]
+                        "required": [
+                          "id",
+                          "name",
+                          "url"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1731,7 +1826,9 @@
     "/verticals/pta/account": {
       "get": {
         "operationId": "verticals-pta-account_list",
-        "tags": ["Verticals/Pta"],
+        "tags": [
+          "Verticals/Pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1769,7 +1866,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1810,7 +1910,9 @@
     "/verticals/pta/transaction": {
       "get": {
         "operationId": "verticals-pta-transaction_list",
-        "tags": ["Verticals/Pta"],
+        "tags": [
+          "Verticals/Pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1848,7 +1950,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1889,7 +1994,9 @@
     "/verticals/pta/commodity": {
       "get": {
         "operationId": "verticals-pta-commodity_list",
-        "tags": ["Verticals/Pta"],
+        "tags": [
+          "Verticals/Pta"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1927,7 +2034,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1968,7 +2078,9 @@
     "/verticals/investment/account": {
       "get": {
         "operationId": "verticals-investment-account_list",
-        "tags": ["Verticals/Investment"],
+        "tags": [
+          "Verticals/Investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2009,11 +2121,17 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name"]
+                        "required": [
+                          "id",
+                          "name"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2054,7 +2172,9 @@
     "/verticals/investment/transaction": {
       "get": {
         "operationId": "verticals-investment-transaction_list",
-        "tags": ["Verticals/Investment"],
+        "tags": [
+          "Verticals/Investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2092,11 +2212,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2137,7 +2262,9 @@
     "/verticals/investment/holding": {
       "get": {
         "operationId": "verticals-investment-holding_list",
-        "tags": ["Verticals/Investment"],
+        "tags": [
+          "Verticals/Investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2175,11 +2302,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2220,7 +2352,9 @@
     "/verticals/investment/security": {
       "get": {
         "operationId": "verticals-investment-security_list",
-        "tags": ["Verticals/Investment"],
+        "tags": [
+          "Verticals/Investment"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2258,11 +2392,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2356,13 +2495,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2393,13 +2537,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2458,7 +2607,13 @@
               "status": {
                 "type": "string",
                 "nullable": true,
-                "enum": ["healthy", "disconnected", "error", "manual", null]
+                "enum": [
+                  "healthy",
+                  "disconnected",
+                  "error",
+                  "manual",
+                  null
+                ]
               },
               "statusMessage": {
                 "type": "string",
@@ -2471,7 +2626,9 @@
                 }
               }
             },
-            "required": ["displayName"]
+            "required": [
+              "displayName"
+            ]
           },
           "disabled": {
             "type": "boolean"
@@ -2507,13 +2664,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2575,7 +2737,9 @@
                 "description": "Must start with 'reso_'"
               }
             },
-            "required": ["destination_id"],
+            "required": [
+              "destination_id"
+            ],
             "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
           },
           "defaultPipeIn": {
@@ -2587,7 +2751,9 @@
                 "description": "Must start with 'reso_'"
               }
             },
-            "required": ["source_id"],
+            "required": [
+              "source_id"
+            ],
             "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
           },
           "envName": {
@@ -2595,7 +2761,13 @@
             "nullable": true
           }
         },
-        "required": ["createdAt", "updatedAt", "id", "connectorName", "orgId"]
+        "required": [
+          "createdAt",
+          "updatedAt",
+          "id",
+          "connectorName",
+          "orgId"
+        ]
       },
       "Pipeline": {
         "type": "object",
@@ -2643,7 +2815,11 @@
             "type": "boolean"
           }
         },
-        "required": ["createdAt", "updatedAt", "id"]
+        "required": [
+          "createdAt",
+          "updatedAt",
+          "id"
+        ]
       }
     }
   }

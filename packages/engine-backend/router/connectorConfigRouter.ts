@@ -17,7 +17,7 @@ const tags = ['Connector Configs']
 
 export const connectorConfigRouter = trpc.router({
   adminListConnectorConfigs: adminProcedure
-    .meta({openapi: {method: 'GET', path: '/platform/connector_configs', tags}})
+    .meta({openapi: {method: 'GET', path: '/core/connector_config', tags}})
     .input(z.void())
     .output(z.array(zRaw.connector_config))
     .query(async ({ctx}) => ctx.services.list('connector_config', {})),
@@ -25,7 +25,7 @@ export const connectorConfigRouter = trpc.router({
   // connector config IDs, we should support creating connector config with connectorName instead
   adminUpsertConnectorConfig: adminProcedure
     .meta({
-      openapi: {method: 'POST', tags, path: '/platform/connector_configs'},
+      openapi: {method: 'POST', tags, path: '/core/connector_config'},
     })
     .input(
       zRaw.connector_config
@@ -84,7 +84,7 @@ export const connectorConfigRouter = trpc.router({
     .meta({
       openapi: {
         method: 'DELETE',
-        path: '/platform/connector_configs/{id}',
+        path: '/core/connector_config/{id}',
         tags,
       },
     })
@@ -102,7 +102,7 @@ export const connectorConfigRouter = trpc.router({
 
   adminGetConnectorConfig: adminProcedure
     .meta({
-      openapi: {method: 'GET', path: '/platform/connector_configs/{id}', tags},
+      openapi: {method: 'GET', path: '/core/connector_config/{id}', tags},
     })
     .input(z.object({id: zId('ccfg')}))
     .output(zRaw.connector_config)
@@ -114,7 +114,7 @@ export const connectorConfigRouter = trpc.router({
 
   listConnectorConfigInfos: protectedProcedure
     .meta({
-      openapi: {method: 'GET', path: '/platform/connector_config_infos', tags},
+      openapi: {method: 'GET', path: '/core/connector_config_info', tags},
     })
     .input(
       z.object({
