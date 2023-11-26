@@ -1,6 +1,6 @@
 {
   "name": "@usevenice/openapi-client",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": false,
   "sideEffects": false,
   "main": "./dist/index.js",

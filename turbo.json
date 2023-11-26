@@ -9,8 +9,9 @@
       "cache": false,
       "outputs": ["*.oas.d.ts"]
     },
+    "clean": {},
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "clean"]
     },
     "pub": {"cache": false, "dependsOn": ["build"]}
   }
