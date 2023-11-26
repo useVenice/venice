@@ -51,3 +51,4 @@ temp/
 # We version control json files instead of the yaml ones
 *.oas.yaml
 .turbo
+dist/

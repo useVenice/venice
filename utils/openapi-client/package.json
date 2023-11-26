@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "private": false,
   "sideEffects": false,
-  "module": "./index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json"
+  },
   "dependencies": {
     "openapi-fetch": "0.8.1",
     "openapi-typescript-helpers": "0.0.4"

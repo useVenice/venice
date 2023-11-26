@@ -8,7 +8,11 @@ export interface VeniceClientOptions {
   resourceId?: string
 }
 
-export function createVeniceClient(opts: VeniceClientOptions) {
+// This is necessary because we cannot publish inferred type otherwise
+// @see https://share.cleanshot.com/06NvskP0
+export type VeniceClient = ReturnType<typeof createClient<paths>>
+
+export function createVeniceClient(opts: VeniceClientOptions): VeniceClient {
   return createClient<paths>({
     baseUrl: 'https://app.venice.is/api/v0',
     headers: {
