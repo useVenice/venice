@@ -39,6 +39,33 @@
         }
       }
     },
+    "/debug/raw-schemas": {
+      "get": {
+        "operationId": "getRawSchemas",
+        "summary": "Get raw schemas",
+        "tags": ["Internal"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/platform/connect-token": {
       "post": {
         "operationId": "createConnectToken",
@@ -142,7 +169,8 @@
                     "description": "Which provider to use"
                   },
                   "connectorConfigId": {
-                    "$ref": "#/components/schemas/id.ccfg"
+                    "type": "string",
+                    "description": "Must start with 'ccfg_'"
                   },
                   "showExisting": {
                     "type": "boolean",
@@ -270,7 +298,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.reso"
+              "type": "string",
+              "description": "Must start with 'reso_'"
             },
             "required": true
           }
@@ -341,7 +370,8 @@
                 "type": "object",
                 "properties": {
                   "connectorConfigId": {
-                    "$ref": "#/components/schemas/id.ccfg"
+                    "type": "string",
+                    "description": "Must start with 'ccfg_'"
                   },
                   "settings": {
                     "type": "object",
@@ -418,12 +448,9 @@
             "in": "query",
             "name": "connectorConfigId",
             "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/id.ccfg"
-                }
-              ],
-              "nullable": true
+              "type": "string",
+              "nullable": true,
+              "description": "Must start with 'ccfg_'"
             }
           },
           {
@@ -491,7 +518,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.reso"
+              "type": "string",
+              "description": "Must start with 'reso_'"
             },
             "required": true
           }
@@ -568,7 +596,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.reso"
+              "type": "string",
+              "description": "Must start with 'reso_'"
             },
             "required": true
           },
@@ -629,7 +658,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.reso"
+              "type": "string",
+              "description": "Must start with 'reso_'"
             },
             "required": true
           }
@@ -719,13 +749,15 @@
                 "type": "object",
                 "properties": {
                   "id": {
-                    "$ref": "#/components/schemas/id.ccfg"
+                    "type": "string",
+                    "description": "Must start with 'ccfg_'"
                   },
                   "connectorName": {
                     "type": "string"
                   },
                   "orgId": {
-                    "$ref": "#/components/schemas/id.org"
+                    "type": "string",
+                    "description": "Must start with 'org_'"
                   },
                   "config": {
                     "type": "object",
@@ -740,6 +772,37 @@
                     "type": "boolean",
                     "nullable": true,
                     "description": "Allow end user to create resources using this connector's configuration"
+                  },
+                  "defaultPipeOut": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "streams": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": {
+                          "type": "boolean"
+                        }
+                      },
+                      "destination_id": {
+                        "type": "string",
+                        "description": "Must start with 'reso_'"
+                      }
+                    },
+                    "required": ["destination_id"],
+                    "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
+                  },
+                  "defaultPipeIn": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "source_id": {
+                        "type": "string",
+                        "description": "Must start with 'reso_'"
+                      }
+                    },
+                    "required": ["source_id"],
+                    "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
                   }
                 },
                 "required": ["orgId"]
@@ -790,7 +853,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.ccfg"
+              "type": "string",
+              "description": "Must start with 'ccfg_'"
             },
             "required": true
           }
@@ -844,7 +908,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.ccfg"
+              "type": "string",
+              "description": "Must start with 'ccfg_'"
             },
             "required": true
           }
@@ -911,12 +976,9 @@
             "in": "query",
             "name": "id",
             "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/id.ccfg"
-                }
-              ],
-              "nullable": true
+              "type": "string",
+              "nullable": true,
+              "description": "Must start with 'ccfg_'"
             }
           },
           {
@@ -939,7 +1001,8 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "$ref": "#/components/schemas/id.ccfg"
+                        "type": "string",
+                        "description": "Must start with 'ccfg_'"
                       },
                       "envName": {
                         "type": "string",
@@ -1185,6 +1248,69 @@
         }
       }
     },
+    "/platform/connectors/{name}/schemas": {
+      "get": {
+        "operationId": "getConnectorSchemas",
+        "tags": ["Connectors"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/platform/pipelines": {
       "get": {
         "operationId": "listPipelines",
@@ -1210,7 +1336,8 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/id.reso"
+                "type": "string",
+                "description": "Must start with 'reso_'"
               }
             }
           }
@@ -1271,7 +1398,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "$ref": "#/components/schemas/id.pipe"
+              "type": "string",
+              "description": "Must start with 'pipe_'"
             },
             "required": true
           }
@@ -1323,7 +1451,7 @@
     },
     "/verticals/accounting/account": {
       "get": {
-        "operationId": "accounting_account_list",
+        "operationId": "verticals-accounting-account_list",
         "tags": ["Verticals/Accounting"],
         "parameters": [
           {
@@ -1416,7 +1544,7 @@
     },
     "/verticals/accounting/expense": {
       "get": {
-        "operationId": "accounting_expense_list",
+        "operationId": "verticals-accounting-expense_list",
         "tags": ["Verticals/Accounting"],
         "parameters": [
           {
@@ -1513,7 +1641,7 @@
     },
     "/verticals/accounting/vendor": {
       "get": {
-        "operationId": "accounting_vendor_list",
+        "operationId": "verticals-accounting-vendor_list",
         "tags": ["Verticals/Accounting"],
         "parameters": [
           {
@@ -1602,7 +1730,7 @@
     },
     "/verticals/pta/account": {
       "get": {
-        "operationId": "pta_account_list",
+        "operationId": "verticals-pta-account_list",
         "tags": ["Verticals/Pta"],
         "parameters": [
           {
@@ -1681,7 +1809,7 @@
     },
     "/verticals/pta/transaction": {
       "get": {
-        "operationId": "pta_transaction_list",
+        "operationId": "verticals-pta-transaction_list",
         "tags": ["Verticals/Pta"],
         "parameters": [
           {
@@ -1760,7 +1888,7 @@
     },
     "/verticals/pta/commodity": {
       "get": {
-        "operationId": "pta_commodity_list",
+        "operationId": "verticals-pta-commodity_list",
         "tags": ["Verticals/Pta"],
         "parameters": [
           {
@@ -1839,7 +1967,7 @@
     },
     "/verticals/investment/account": {
       "get": {
-        "operationId": "investment_account_list",
+        "operationId": "verticals-investment-account_list",
         "tags": ["Verticals/Investment"],
         "parameters": [
           {
@@ -1925,7 +2053,7 @@
     },
     "/verticals/investment/transaction": {
       "get": {
-        "operationId": "investment_transaction_list",
+        "operationId": "verticals-investment-transaction_list",
         "tags": ["Verticals/Investment"],
         "parameters": [
           {
@@ -2008,7 +2136,7 @@
     },
     "/verticals/investment/holding": {
       "get": {
-        "operationId": "investment_holding_list",
+        "operationId": "verticals-investment-holding_list",
         "tags": ["Verticals/Investment"],
         "parameters": [
           {
@@ -2091,7 +2219,7 @@
     },
     "/verticals/investment/security": {
       "get": {
-        "operationId": "investment_security_list",
+        "operationId": "verticals-investment-security_list",
         "tags": ["Verticals/Investment"],
         "parameters": [
           {
@@ -2280,14 +2408,6 @@
           "issues": []
         }
       },
-      "id.ccfg": {
-        "type": "string",
-        "description": "Must start with 'ccfg_'"
-      },
-      "id.reso": {
-        "type": "string",
-        "description": "Must start with 'reso_'"
-      },
       "Resource": {
         "type": "object",
         "properties": {
@@ -2298,7 +2418,8 @@
             "type": "string"
           },
           "id": {
-            "$ref": "#/components/schemas/id.reso"
+            "type": "string",
+            "description": "Must start with 'reso_'"
           },
           "connectorName": {
             "type": "string",
@@ -2314,15 +2435,13 @@
             "minLength": 1
           },
           "connectorConfigId": {
-            "$ref": "#/components/schemas/id.ccfg"
+            "type": "string",
+            "description": "Must start with 'ccfg_'"
           },
           "integrationId": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/id.int"
-              }
-            ],
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Must start with 'int_'"
           },
           "settings": {
             "type": "object",
@@ -2365,10 +2484,6 @@
           "connectorName",
           "connectorConfigId"
         ]
-      },
-      "id.int": {
-        "type": "string",
-        "description": "Must start with 'int_'"
       },
       "error.NOT_FOUND": {
         "type": "object",
@@ -2417,11 +2532,8 @@
             "type": "string"
           },
           "id": {
-            "$ref": "#/components/schemas/id.ccfg"
-          },
-          "envName": {
             "type": "string",
-            "nullable": true
+            "description": "Must start with 'ccfg_'"
           },
           "connectorName": {
             "type": "string"
@@ -2437,7 +2549,8 @@
             "description": "Allow end user to create resources using this connector's configuration"
           },
           "orgId": {
-            "$ref": "#/components/schemas/id.org"
+            "type": "string",
+            "description": "Must start with 'org_'"
           },
           "displayName": {
             "type": "string",
@@ -2445,13 +2558,44 @@
           },
           "disabled": {
             "type": "boolean"
+          },
+          "defaultPipeOut": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "streams": {
+                "type": "object",
+                "nullable": true,
+                "additionalProperties": {
+                  "type": "boolean"
+                }
+              },
+              "destination_id": {
+                "type": "string",
+                "description": "Must start with 'reso_'"
+              }
+            },
+            "required": ["destination_id"],
+            "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
+          },
+          "defaultPipeIn": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "source_id": {
+                "type": "string",
+                "description": "Must start with 'reso_'"
+              }
+            },
+            "required": ["source_id"],
+            "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
+          },
+          "envName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": ["createdAt", "updatedAt", "id", "connectorName", "orgId"]
-      },
-      "id.org": {
-        "type": "string",
-        "description": "Must start with 'org_'"
       },
       "Pipeline": {
         "type": "object",
@@ -2463,17 +2607,20 @@
             "type": "string"
           },
           "id": {
-            "$ref": "#/components/schemas/id.pipe"
+            "type": "string",
+            "description": "Must start with 'pipe_'"
           },
           "sourceId": {
-            "$ref": "#/components/schemas/id.reso"
+            "type": "string",
+            "description": "Must start with 'reso_'"
           },
           "sourceState": {
             "type": "object",
             "additionalProperties": {}
           },
           "destinationId": {
-            "$ref": "#/components/schemas/id.reso"
+            "type": "string",
+            "description": "Must start with 'reso_'"
           },
           "destinationState": {
             "type": "object",
@@ -2497,10 +2644,6 @@
           }
         },
         "required": ["createdAt", "updatedAt", "id"]
-      },
-      "id.pipe": {
-        "type": "string",
-        "description": "Must start with 'pipe_'"
       }
     }
   }

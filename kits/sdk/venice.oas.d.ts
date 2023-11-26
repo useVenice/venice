@@ -21,6 +21,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/debug/raw-schemas': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get raw schemas */
+    get: operations['getRawSchemas']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/connect-token': {
     parameters: {
       query?: never
@@ -214,6 +231,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/connectors/{name}/schemas': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getConnectorSchemas']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/pipelines': {
     parameters: {
       query?: never
@@ -253,7 +286,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['accounting_account_list']
+    get: operations['verticals-accounting-account_list']
     put?: never
     post?: never
     delete?: never
@@ -269,7 +302,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['accounting_expense_list']
+    get: operations['verticals-accounting-expense_list']
     put?: never
     post?: never
     delete?: never
@@ -285,7 +318,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['accounting_vendor_list']
+    get: operations['verticals-accounting-vendor_list']
     put?: never
     post?: never
     delete?: never
@@ -301,7 +334,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['pta_account_list']
+    get: operations['verticals-pta-account_list']
     put?: never
     post?: never
     delete?: never
@@ -317,7 +350,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['pta_transaction_list']
+    get: operations['verticals-pta-transaction_list']
     put?: never
     post?: never
     delete?: never
@@ -333,7 +366,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['pta_commodity_list']
+    get: operations['verticals-pta-commodity_list']
     put?: never
     post?: never
     delete?: never
@@ -349,7 +382,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['investment_account_list']
+    get: operations['verticals-investment-account_list']
     put?: never
     post?: never
     delete?: never
@@ -365,7 +398,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['investment_transaction_list']
+    get: operations['verticals-investment-transaction_list']
     put?: never
     post?: never
     delete?: never
@@ -381,7 +414,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['investment_holding_list']
+    get: operations['verticals-investment-holding_list']
     put?: never
     post?: never
     delete?: never
@@ -397,7 +430,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['investment_security_list']
+    get: operations['verticals-investment-security_list']
     put?: never
     post?: never
     delete?: never
@@ -482,20 +515,19 @@ export interface components {
         message: string
       }[]
     }
-    /** @description Must start with 'ccfg_' */
-    'id.ccfg': string
-    /** @description Must start with 'reso_' */
-    'id.reso': string
     Resource: {
       createdAt: string
       updatedAt: string
-      id: components['schemas']['id.reso']
+      /** @description Must start with 'reso_' */
+      id: string
       /** @description Unique name of the connector */
       connectorName: string
       displayName?: string | null
       endUserId?: string | null
-      connectorConfigId: components['schemas']['id.ccfg']
-      integrationId?: components['schemas']['id.int'] | null
+      /** @description Must start with 'ccfg_' */
+      connectorConfigId: string
+      /** @description Must start with 'int_' */
+      integrationId?: string | null
       settings?: {
         [key: string]: unknown
       } | null
@@ -508,8 +540,6 @@ export interface components {
       } | null
       disabled?: boolean
     }
-    /** @description Must start with 'int_' */
-    'id.int': string
     /**
      * Error
      * @description The error information
@@ -541,29 +571,45 @@ export interface components {
     ConnectorConfig: {
       createdAt: string
       updatedAt: string
-      id: components['schemas']['id.ccfg']
-      envName?: string | null
+      /** @description Must start with 'ccfg_' */
+      id: string
       connectorName: string
       config?: {
         [key: string]: unknown
       } | null
       /** @description Allow end user to create resources using this connector's configuration */
       endUserAccess?: boolean | null
-      orgId: components['schemas']['id.org']
+      /** @description Must start with 'org_' */
+      orgId: string
       displayName?: string | null
       disabled?: boolean
+      /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
+      defaultPipeOut?: {
+        streams?: {
+          [key: string]: boolean | undefined
+        } | null
+        /** @description Must start with 'reso_' */
+        destination_id: string
+      } | null
+      /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
+      defaultPipeIn?: {
+        /** @description Must start with 'reso_' */
+        source_id: string
+      } | null
+      envName?: string | null
     }
-    /** @description Must start with 'org_' */
-    'id.org': string
     Pipeline: {
       createdAt: string
       updatedAt: string
-      id: components['schemas']['id.pipe']
-      sourceId?: components['schemas']['id.reso']
+      /** @description Must start with 'pipe_' */
+      id: string
+      /** @description Must start with 'reso_' */
+      sourceId?: string
       sourceState?: {
         [key: string]: unknown
       }
-      destinationId?: components['schemas']['id.reso']
+      /** @description Must start with 'reso_' */
+      destinationId?: string
       destinationState?: {
         [key: string]: unknown
       }
@@ -572,8 +618,6 @@ export interface components {
       lastSyncCompletedAt?: string | null
       disabled?: boolean
     }
-    /** @description Must start with 'pipe_' */
-    'id.pipe': string
   }
   responses: never
   parameters: never
@@ -599,6 +643,35 @@ export interface operations {
         }
         content: {
           'application/json': string
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  getRawSchemas: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
         }
       }
       /** @description Internal server error */
@@ -687,7 +760,8 @@ export interface operations {
           redirectUrl?: string | null
           /** @description Which provider to use */
           connectorName?: string | null
-          connectorConfigId?: components['schemas']['id.ccfg']
+          /** @description Must start with 'ccfg_' */
+          connectorConfigId?: string
           /** @default true */
           showExisting: boolean
         }
@@ -785,7 +859,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.reso']
+        id: string
       }
       cookie?: never
     }
@@ -836,7 +910,7 @@ export interface operations {
         limit?: number
         offset?: number
         endUserId?: string | null
-        connectorConfigId?: components['schemas']['id.ccfg'] | null
+        connectorConfigId?: string | null
         connectorName?: string | null
       }
       header?: never
@@ -893,7 +967,8 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': {
-          connectorConfigId: components['schemas']['id.ccfg']
+          /** @description Must start with 'ccfg_' */
+          connectorConfigId: string
           settings?: {
             [key: string]: unknown
           } | null
@@ -935,7 +1010,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.reso']
+        id: string
       }
       cookie?: never
     }
@@ -986,7 +1061,7 @@ export interface operations {
       }
       header?: never
       path: {
-        id: components['schemas']['id.reso']
+        id: string
       }
       cookie?: never
     }
@@ -1035,7 +1110,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.reso']
+        id: string
       }
       cookie?: never
     }
@@ -1127,15 +1202,30 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': {
-          id?: components['schemas']['id.ccfg']
+          /** @description Must start with 'ccfg_' */
+          id?: string
           connectorName?: string
-          orgId: components['schemas']['id.org']
+          /** @description Must start with 'org_' */
+          orgId: string
           config?: {
             [key: string]: unknown
           } | null
           displayName?: string | null
           /** @description Allow end user to create resources using this connector's configuration */
           endUserAccess?: boolean | null
+          /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
+          defaultPipeOut?: {
+            streams?: {
+              [key: string]: boolean | undefined
+            } | null
+            /** @description Must start with 'reso_' */
+            destination_id: string
+          } | null
+          /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
+          defaultPipeIn?: {
+            /** @description Must start with 'reso_' */
+            source_id: string
+          } | null
         }
       }
     }
@@ -1174,7 +1264,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.ccfg']
+        id: string
       }
       cookie?: never
     }
@@ -1223,7 +1313,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.ccfg']
+        id: string
       }
       cookie?: never
     }
@@ -1271,7 +1361,7 @@ export interface operations {
     parameters: {
       query?: {
         type?: 'source' | 'destination' | null
-        id?: components['schemas']['id.ccfg'] | null
+        id?: string | null
         connectorName?: string | null
       }
       header?: never
@@ -1287,7 +1377,8 @@ export interface operations {
         }
         content: {
           'application/json': {
-            id: components['schemas']['id.ccfg']
+            /** @description Must start with 'ccfg_' */
+            id: string
             envName?: string | null
             displayName?: string | null
             connectorName: string
@@ -1476,12 +1567,63 @@ export interface operations {
       }
     }
   }
+  getConnectorSchemas: {
+    parameters: {
+      query?: {
+        type?: string
+      }
+      header?: never
+      path: {
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
   listPipelines: {
     parameters: {
       query?: {
         limit?: number
         offset?: number
-        resourceIds?: components['schemas']['id.reso'][]
+        resourceIds?: string[]
       }
       header?: never
       path?: never
@@ -1532,7 +1674,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        id: components['schemas']['id.pipe']
+        id: string
       }
       cookie?: never
     }
@@ -1576,7 +1718,7 @@ export interface operations {
       }
     }
   }
-  accounting_account_list: {
+  'verticals-accounting-account_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1635,7 +1777,7 @@ export interface operations {
       }
     }
   }
-  accounting_expense_list: {
+  'verticals-accounting-expense_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1694,7 +1836,7 @@ export interface operations {
       }
     }
   }
-  accounting_vendor_list: {
+  'verticals-accounting-vendor_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1752,7 +1894,7 @@ export interface operations {
       }
     }
   }
-  pta_account_list: {
+  'verticals-pta-account_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1807,7 +1949,7 @@ export interface operations {
       }
     }
   }
-  pta_transaction_list: {
+  'verticals-pta-transaction_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1862,7 +2004,7 @@ export interface operations {
       }
     }
   }
-  pta_commodity_list: {
+  'verticals-pta-commodity_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1917,7 +2059,7 @@ export interface operations {
       }
     }
   }
-  investment_account_list: {
+  'verticals-investment-account_list': {
     parameters: {
       query?: {
         limit?: number
@@ -1974,7 +2116,7 @@ export interface operations {
       }
     }
   }
-  investment_transaction_list: {
+  'verticals-investment-transaction_list': {
     parameters: {
       query?: {
         limit?: number
@@ -2030,7 +2172,7 @@ export interface operations {
       }
     }
   }
-  investment_holding_list: {
+  'verticals-investment-holding_list': {
     parameters: {
       query?: {
         limit?: number
@@ -2086,7 +2228,7 @@ export interface operations {
       }
     }
   }
-  investment_security_list: {
+  'verticals-investment-security_list': {
     parameters: {
       query?: {
         limit?: number
