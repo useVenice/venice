@@ -1,7 +1,7 @@
+import type {oas30, oas31} from 'openapi3-ts'
 import {createClient} from '@usevenice/openapi-client'
-import type {OpenAPISpec} from '@usevenice/zod'
 
-export {OpenAPISpec}
+export type OpenAPISpec = oas30.OpenAPIObject | oas31.OpenAPIObject
 
 // export interface SdkTypes {
 //   components: unknown

@@ -1205,10 +1205,10 @@ importers:
       '@usevenice/openapi-client':
         specifier: workspace:*
         version: link:../../utils/openapi-client
+      openapi3-ts:
+        specifier: 4.1.2
+        version: 4.1.2
     devDependencies:
-      '@usevenice/zod':
-        specifier: workspace:*
-        version: link:../../utils/zod
       openapi-typescript:
         specifier: 7.0.0-next.3
         version: 7.0.0-next.3

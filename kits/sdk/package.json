@@ -1,6 +1,6 @@
 {
   "name": "@usevenice/sdk",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "private": false,
   "sideEffects": false,
   "module": "./index.ts",
@@ -14,10 +14,10 @@
     "pub": "pnpm publish --no-git-checks --access public"
   },
   "dependencies": {
-    "@usevenice/openapi-client": "workspace:*"
+    "@usevenice/openapi-client": "workspace:*",
+    "openapi3-ts": "4.1.2"
   },
   "devDependencies": {
-    "@usevenice/zod": "workspace:*",
     "openapi-typescript": "7.0.0-next.3"
   }
 }
