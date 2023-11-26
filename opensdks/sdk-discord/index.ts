@@ -21,6 +21,8 @@ export interface DiscordTypes {
 
 export const discordSdkDef = {
   _types: {} as DiscordTypes,
+  // Consider using the import * as y syntax so clicking on .oas takes you to the JSON object itself!
+  // @see https://share.cleanshot.com/rsKvGsBs
   oas: discordOas as {} as OpenAPISpec,
 } satisfies SdkDefinition<paths>
 

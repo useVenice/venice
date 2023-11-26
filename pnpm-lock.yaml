@@ -730,13 +730,13 @@ importers:
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
+      '@usevenice/sdk-discord':
+        specifier: workspace:*
+        version: link:../../opensdks/sdk-discord
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
     devDependencies:
-      json2yaml:
-        specifier: 1.1.0
-        version: 1.1.0
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
