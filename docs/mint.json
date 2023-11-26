@@ -76,75 +76,59 @@
       "pages": [
         {
           "group": "Internal",
-          "pages": ["api-reference/internal/health-check"]
+          "pages": [
+            "api-reference/internal/health-check",
+            "api-reference/internal/get-debugraw-schemas",
+            "api-reference/internal/post-passthrough"
+          ]
         },
         {
           "group": "Connect",
           "pages": [
-            "api-reference/connect/post-platformconnect-token",
-            "api-reference/connect/post-platformmagic-link"
+            "api-reference/connect/post-connecttoken",
+            "api-reference/connect/post-connectmagic-link"
           ]
         },
         {
-          "group": "Resource",
+          "group": "Core",
           "pages": [
-            "api-reference/resource/post-platformpassthrough",
-            "api-reference/resource/post-platformresources-source_sync",
-            "api-reference/resource/get-platformresources",
-            "api-reference/resource/post-platformresources",
-            "api-reference/resource/get-platformresources-1",
-            "api-reference/resource/delete-platformresources",
-            "api-reference/resource/patch-platformresources"
-          ]
-        },
-        {
-          "group": "Connector Configs",
-          "pages": [
-            "api-reference/connector-configs/get-platformconnector_configs",
-            "api-reference/connector-configs/post-platformconnector_configs",
-            "api-reference/connector-configs/get-platformconnector_configs-1",
-            "api-reference/connector-configs/delete-platformconnector_configs",
-            "api-reference/connector-configs/get-platformconnector_config_infos"
+            "api-reference/core/post-coreresource-source_sync",
+            "api-reference/core/get-coreresource",
+            "api-reference/core/post-coreresource",
+            "api-reference/core/get-coreresource-1",
+            "api-reference/core/delete-coreresource",
+            "api-reference/core/patch-coreresource",
+            "api-reference/core/get-coreconnector_config",
+            "api-reference/core/post-coreconnector_config",
+            "api-reference/core/get-coreconnector_config-1",
+            "api-reference/core/delete-coreconnector_config",
+            "api-reference/core/get-coreconnector_config_info",
+            "api-reference/core/get-corepipeline",
+            "api-reference/core/delete-corepipeline"
           ]
         },
         {
           "group": "Connectors",
           "pages": [
-            "api-reference/connectors/get-catalog-of-all-available-connectors",
-            "api-reference/connectors/get-platformconnectors",
-            "api-reference/connectors/get-platformconnectors-oas"
+            "api-reference/connectors/get-connector",
+            "api-reference/connectors/get-connector-1",
+            "api-reference/connectors/get-connector-oas",
+            "api-reference/connectors/get-connector-schemas"
           ]
         },
         {
-          "group": "Pipeline",
+          "group": "Verticals",
           "pages": [
-            "api-reference/pipeline/get-platformpipelines",
-            "api-reference/pipeline/delete-platformpipelines"
-          ]
-        },
-        {
-          "group": "Verticals/Accounting",
-          "pages": [
-            "api-reference/verticalsaccounting/get-verticalsaccountingaccount",
-            "api-reference/verticalsaccounting/get-verticalsaccountingexpense",
-            "api-reference/verticalsaccounting/get-verticalsaccountingvendor"
-          ]
-        },
-        {
-          "group": "Verticals/Pta",
-          "pages": [
-            "api-reference/verticalspta/get-verticalsptaaccount",
-            "api-reference/verticalspta/get-verticalsptatransaction",
-            "api-reference/verticalspta/get-verticalsptacommodity"
-          ]
-        },
-        {
-          "group": "Verticals/Investment",
-          "pages": [
-            "api-reference/verticalsinvestment/get-verticalsinvestmentaccount",
-            "api-reference/verticalsinvestment/get-verticalsinvestmenttransaction",
-            "api-reference/verticalsinvestment/get-verticalsinvestmentholding",
-            "api-reference/verticalsinvestment/get-verticalsinvestmentsecurity"
+            "api-reference/verticals/get-verticalsaccountingaccount",
+            "api-reference/verticals/get-verticalsaccountingexpense",
+            "api-reference/verticals/get-verticalsaccountingvendor",
+            "api-reference/verticals/get-verticalsptaaccount",
+            "api-reference/verticals/get-verticalsptatransaction",
+            "api-reference/verticals/get-verticalsptacommodity",
+            "api-reference/verticals/get-verticalsinvestmentaccount",
+            "api-reference/verticals/get-verticalsinvestmenttransaction",
+            "api-reference/verticals/get-verticalsinvestmentholding",
+            "api-reference/verticals/get-verticalsinvestmentsecurity"
           ]
         },
         "api-reference/get-openapijson"
