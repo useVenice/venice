@@ -7,6 +7,10 @@ export interface VeniceClientOptions {
   apiKey?: string
   /** `reso_xxx` */
   resourceId?: string
+  /** For end user authentication */
+  accessToken?: string
+  /** For using things like self hosting and staging env */
+  apiHost?: string
 }
 
 // This is necessary because we cannot publish inferred type otherwise
@@ -19,11 +23,15 @@ export type VeniceClient = ReturnType<typeof createClient<paths>> & {
 
 export function createVeniceClient(opts: VeniceClientOptions): VeniceClient {
   const client = createClient<paths>({
-    baseUrl: 'https://app.venice.is/api/v0',
+    baseUrl: new URL(
+      '/api/v0',
+      opts.apiHost ?? 'https://app.venice.is',
+    ).toString(),
     headers: {
       // NOTE: Centralize reference to these headers
       ...(opts.apiKey && {'x-apikey': opts.apiKey}),
       ...(opts.resourceId && {'x-resource-id': opts.resourceId}),
+      ...(opts.accessToken && {Authorization: `Bearer ${opts.accessToken}`}),
     },
   })
   return {...client, oas}
