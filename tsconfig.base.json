@@ -20,7 +20,9 @@
     "sourceMap": true,
     "declaration": true,
     // This is what allows vscode etc. to automatically jump to /src files
-    // as user navigate into the library
+    // as user navigate into the library. And this is the reason we cannot use tsup
+    // for the foreseeable future
+    // @see https://github.com/egoist/tsup/issues/885
     "declarationMap": true,
     // This is a hack because otherwise when running code that imports from the
     // web module we get package not found issues. (such as `generate` call in the sdk)
