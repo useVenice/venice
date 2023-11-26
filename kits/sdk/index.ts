@@ -1,5 +1,6 @@
 import {createClient} from '@usevenice/openapi-client'
 import type {paths} from './venice.oas'
+import oas from './venice.oas.json'
 
 export interface VeniceClientOptions {
   /** Optional because certain apis are public */
@@ -10,10 +11,14 @@ export interface VeniceClientOptions {
 
 // This is necessary because we cannot publish inferred type otherwise
 // @see https://share.cleanshot.com/06NvskP0
-export type VeniceClient = ReturnType<typeof createClient<paths>>
+export type VeniceClient = ReturnType<typeof createClient<paths>> & {
+  // This should be made optional to keep the bundle size small
+  // company should be able to opt-in for things like validation
+  oas: typeof oas
+}
 
 export function createVeniceClient(opts: VeniceClientOptions): VeniceClient {
-  return createClient<paths>({
+  const client = createClient<paths>({
     baseUrl: 'https://app.venice.is/api/v0',
     headers: {
       // NOTE: Centralize reference to these headers
@@ -21,4 +26,5 @@ export function createVeniceClient(opts: VeniceClientOptions): VeniceClient {
       ...(opts.resourceId && {'x-resource-id': opts.resourceId}),
     },
   })
+  return {...client, oas}
 }
