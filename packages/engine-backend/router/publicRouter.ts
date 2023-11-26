@@ -25,7 +25,7 @@ export const publicRouter = trpc.router({
         method: 'GET',
         path: '/debug/raw-schemas',
         tags: ['Internal'],
-        summary: 'Get raw schemas',
+        description: 'Get raw schemas',
       },
     })
     .input(z.void())

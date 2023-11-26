@@ -28,7 +28,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get raw schemas */
+        /** @description Get raw schemas */
         get: operations["getRawSchemas"];
         put?: never;
         post?: never;
