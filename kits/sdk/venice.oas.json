@@ -70,7 +70,7 @@
         }
       }
     },
-    "/core/connect-token": {
+    "/connect/token": {
       "post": {
         "operationId": "createConnectToken",
         "tags": [
@@ -140,7 +140,7 @@
         }
       }
     },
-    "/core/magic-link": {
+    "/connect/magic-link": {
       "post": {
         "operationId": "createMagicLink",
         "tags": [
@@ -233,11 +233,11 @@
         }
       }
     },
-    "/core/passthrough": {
+    "/passthrough": {
       "post": {
         "operationId": "passthrough",
         "tags": [
-          "Resource"
+          "Internal"
         ],
         "requestBody": {
           "required": true,
@@ -317,7 +317,7 @@
       "post": {
         "operationId": "sourceSync",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "parameters": [
           {
@@ -388,7 +388,7 @@
       "post": {
         "operationId": "createResource",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "requestBody": {
           "required": true,
@@ -450,7 +450,7 @@
       "get": {
         "operationId": "listResources",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "parameters": [
           {
@@ -545,7 +545,7 @@
       "patch": {
         "operationId": "updateResource",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "parameters": [
           {
@@ -625,7 +625,7 @@
       "delete": {
         "operationId": "deleteResource",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "parameters": [
           {
@@ -689,7 +689,7 @@
       "get": {
         "operationId": "getResource",
         "tags": [
-          "Resource"
+          "Core"
         ],
         "parameters": [
           {
@@ -750,7 +750,7 @@
       "get": {
         "operationId": "adminListConnectorConfigs",
         "tags": [
-          "Connector Configs"
+          "Core"
         ],
         "responses": {
           "200": {
@@ -781,7 +781,7 @@
       "post": {
         "operationId": "adminUpsertConnectorConfig",
         "tags": [
-          "Connector Configs"
+          "Core"
         ],
         "requestBody": {
           "required": true,
@@ -896,7 +896,7 @@
       "delete": {
         "operationId": "adminDeleteConnectorConfig",
         "tags": [
-          "Connector Configs"
+          "Core"
         ],
         "parameters": [
           {
@@ -953,7 +953,7 @@
       "get": {
         "operationId": "adminGetConnectorConfig",
         "tags": [
-          "Connector Configs"
+          "Core"
         ],
         "parameters": [
           {
@@ -1014,7 +1014,7 @@
       "get": {
         "operationId": "listConnectorConfigInfos",
         "tags": [
-          "Connector Configs"
+          "Core"
         ],
         "parameters": [
           {
@@ -1127,7 +1127,7 @@
     "/connector": {
       "get": {
         "operationId": "listConnectorMetas",
-        "summary": "Get catalog of all available connectors",
+        "description": "Get catalog of all available connectors",
         "tags": [
           "Connectors"
         ],
@@ -1381,7 +1381,7 @@
       "get": {
         "operationId": "listPipelines",
         "tags": [
-          "Pipeline"
+          "Core"
         ],
         "parameters": [
           {
@@ -1461,7 +1461,7 @@
       "delete": {
         "operationId": "deletePipeline",
         "tags": [
-          "Pipeline"
+          "Core"
         ],
         "parameters": [
           {
@@ -1525,7 +1525,7 @@
       "get": {
         "operationId": "verticals-accounting-account_list",
         "tags": [
-          "Verticals/Accounting"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -1627,7 +1627,7 @@
       "get": {
         "operationId": "verticals-accounting-expense_list",
         "tags": [
-          "Verticals/Accounting"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -1729,7 +1729,7 @@
       "get": {
         "operationId": "verticals-accounting-vendor_list",
         "tags": [
-          "Verticals/Accounting"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -1827,7 +1827,7 @@
       "get": {
         "operationId": "verticals-pta-account_list",
         "tags": [
-          "Verticals/Pta"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -1911,7 +1911,7 @@
       "get": {
         "operationId": "verticals-pta-transaction_list",
         "tags": [
-          "Verticals/Pta"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -1995,7 +1995,7 @@
       "get": {
         "operationId": "verticals-pta-commodity_list",
         "tags": [
-          "Verticals/Pta"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -2079,7 +2079,7 @@
       "get": {
         "operationId": "verticals-investment-account_list",
         "tags": [
-          "Verticals/Investment"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -2173,7 +2173,7 @@
       "get": {
         "operationId": "verticals-investment-transaction_list",
         "tags": [
-          "Verticals/Investment"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -2263,7 +2263,7 @@
       "get": {
         "operationId": "verticals-investment-holding_list",
         "tags": [
-          "Verticals/Investment"
+          "Verticals"
         ],
         "parameters": [
           {
@@ -2353,7 +2353,7 @@
       "get": {
         "operationId": "verticals-investment-security_list",
         "tags": [
-          "Verticals/Investment"
+          "Verticals"
         ],
         "parameters": [
           {

@@ -13,7 +13,7 @@ import {adminProcedure, protectedProcedure, trpc} from './_base'
 
 export {type inferProcedureInput} from '@trpc/server'
 
-const tags = ['Connector Configs']
+const tags = ['Core']
 
 export const connectorConfigRouter = trpc.router({
   adminListConnectorConfigs: adminProcedure

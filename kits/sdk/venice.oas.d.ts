@@ -38,7 +38,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/core/connect-token": {
+    "/connect/token": {
         parameters: {
             query?: never;
             header?: never;
@@ -54,7 +54,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/core/magic-link": {
+    "/connect/magic-link": {
         parameters: {
             query?: never;
             header?: never;
@@ -70,7 +70,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/core/passthrough": {
+    "/passthrough": {
         parameters: {
             query?: never;
             header?: never;
@@ -189,7 +189,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get catalog of all available connectors */
+        /** @description Get catalog of all available connectors */
         get: operations["listConnectorMetas"];
         put?: never;
         post?: never;

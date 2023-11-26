@@ -7,7 +7,7 @@ import {zListParams} from './_schemas'
 
 export {type inferProcedureInput} from '@trpc/server'
 
-const tags = ['Pipeline']
+const tags = ['Core']
 
 export const pipelineRouter = trpc.router({
   listPipelines: protectedProcedure

@@ -18,12 +18,14 @@ import {zListParams} from './_schemas'
 
 export {type inferProcedureInput} from '@trpc/server'
 
-const tags = ['Resource']
+const tags = ['Core']
 
 export const resourceRouter = trpc.router({
   // TODO: maybe we should allow resourceId to be part of the path rather than only in the headers
+
+  // Should this really be part of the resource router? or left elsewhere?
   passthrough: remoteProcedure
-    .meta({openapi: {method: 'POST', path: '/core/passthrough', tags}}) // Where do we put this?
+    .meta({openapi: {method: 'POST', path: '/passthrough', tags: ['Internal']}}) // Where do we put this?
     .input(zPassthroughInput)
     .output(z.any())
     .mutation(async ({input, ctx}) => {

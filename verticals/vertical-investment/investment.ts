@@ -2,17 +2,17 @@
 // Guess it means accounting router also belongs in the engine backend...
 
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R, startCase} from '@usevenice/util'
+import {objectEntries, R} from '@usevenice/util'
+import type {
+  PaginatedOutput,
+  Pagination,
+  VerticalRouterOpts,
+} from '@usevenice/vdk'
 import {
   paginatedOutput,
   proxyListRemoteRedux,
   z,
   zPaginationParams,
-} from '@usevenice/vdk'
-import type {
-  PaginatedOutput,
-  Pagination,
-  VerticalRouterOpts,
 } from '@usevenice/vdk'
 import type {
   ConnectorSchemas,
@@ -71,7 +71,7 @@ export function createInvestmentRouter(opts: VerticalRouterOpts) {
           openapi: {
             method: 'GET',
             path: `/verticals/${vertical}/${entityName}`,
-            tags: [`Verticals/${startCase(vertical)}`],
+            tags: ['Verticals'],
           },
         })
         .input(zPaginationParams.nullish())

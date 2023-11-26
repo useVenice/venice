@@ -13,7 +13,7 @@ export const connectorRouter = trpc.router({
         method: 'GET',
         path: '/connector',
         tags,
-        summary: 'Get catalog of all available connectors',
+        description: 'Get catalog of all available connectors',
       },
     })
     .input(z.object({includeOas: z.boolean().optional()}).optional())

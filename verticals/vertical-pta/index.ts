@@ -1,5 +1,5 @@
 import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R, startCase, z, zObject} from '@usevenice/util'
+import {objectEntries, R, z, zObject} from '@usevenice/util'
 import type {
   PaginatedOutput,
   Pagination,
@@ -67,7 +67,7 @@ export function createPtaRouter(opts: VerticalRouterOpts) {
           openapi: {
             method: 'GET',
             path: `/verticals/${vertical}/${entityName}`,
-            tags: [`Verticals/${startCase(vertical)}`],
+            tags: ['Verticals'],
           },
         })
         .input(zPaginationParams.nullish())
