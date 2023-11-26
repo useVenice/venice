@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    // This is a hack because otherwise when running code that imports from the
+    // web module we get package not found issues. (such as `generate` call in the sdk)
+    "baseUrl": "../../"
   },
   "include": ["index.ts"]
 }

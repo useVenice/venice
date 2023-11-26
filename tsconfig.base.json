@@ -21,7 +21,12 @@
     "declaration": true,
     // This is what allows vscode etc. to automatically jump to /src files
     // as user navigate into the library
-    "declarationMap": true
+    "declarationMap": true,
+    // This is a hack because otherwise when running code that imports from the
+    // web module we get package not found issues. (such as `generate` call in the sdk)
+    "paths": {
+      "@/*": ["./apps/web/*"]
+    }
   },
   "exclude": ["node_modules"]
 }
