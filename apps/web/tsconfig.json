@@ -15,12 +15,7 @@
     "jsx": "preserve",
     "strictNullChecks": true,
     "plugins": [{"name": "next"}],
-    "paths": {
-      "@/*": ["./*"],
-      // Override because we don't want to use ./dist unnecessarily
-      "@usevenice/connect": ["../../kits/connect/src/index.ts"],
-      "@usevenice/connect/*": ["../../kits/connect/src/*"]
-    }
+    "paths": {"@/*": ["./*"]}
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

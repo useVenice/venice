@@ -2,8 +2,7 @@
 
 import {Loader2} from 'lucide-react'
 import React from 'react'
-
-import type {FrameMessage} from '@usevenice/connect/common'
+import type {FrameMessage} from '@usevenice/connect'
 
 export function CallbackEffect(props: {
   msg: FrameMessage | null
