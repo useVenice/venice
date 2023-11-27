@@ -1704,6 +1704,25 @@ importers:
         specifier: workspace:*
         version: link:../../connectors/connector-qbo
 
+  verticals/vertical-banking:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/vdk':
+        specifier: workspace:*
+        version: link:../../kits/vdk
+      rxjs:
+        specifier: 7.5.6
+        version: 7.5.6
+    devDependencies:
+      '@usevenice/connector-plaid':
+        specifier: workspace:*
+        version: link:../../connectors/connector-plaid
+      '@usevenice/connector-qbo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-qbo
+
   verticals/vertical-investment:
     dependencies:
       '@usevenice/vdk':
@@ -6277,7 +6296,7 @@ packages:
       react-query: 3.39.3(react-dom@18.2.0)(react@18.2.0)
       react-router-dom: 5.3.4(react@18.2.0)
       react-router-hash-link: 2.4.3(react-router-dom@5.3.4)(react@18.2.0)
-      tslib: 2.4.1
+      tslib: 2.6.2
       urijs: 1.19.11
       util: 0.12.5
       xml-formatter: 2.6.1
@@ -6350,7 +6369,7 @@ packages:
       lodash.pickby: 4.6.0
       openapi3-ts: 2.0.2
       postman-collection: 4.1.7
-      tslib: 2.4.1
+      tslib: 2.6.2
       type-is: 1.6.18
     dev: false
 
@@ -6607,7 +6626,7 @@ packages:
       react-fast-compare: 3.2.0
       react-overflow-list: 0.5.0(react-dom@18.2.0)(react@18.2.0)
       ts-keycode-enum: 1.0.6
-      tslib: 2.4.1
+      tslib: 2.6.2
       use-resize-observer: 9.1.0(react-dom@18.2.0)(react@18.2.0)
       zustand: 3.7.2(react@18.2.0)
     transitivePeerDependencies:
@@ -6663,7 +6682,7 @@ packages:
       '@stoplight/ordered-object-literal': 1.0.4
       '@stoplight/types': 13.9.1
       '@stoplight/yaml-ast-parser': 0.0.48
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@supabase/realtime-js@2.7.2:
