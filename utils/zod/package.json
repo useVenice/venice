@@ -4,6 +4,10 @@
   "private": false,
   "sideEffects": false,
   "module": "./index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
   "dependencies": {
     "zod": "3.21.4",
     "zod-openapi": "2.11.0"

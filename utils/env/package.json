@@ -4,6 +4,10 @@
   "private": false,
   "sideEffects": false,
   "module": "./index.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
   "dependencies": {
     "@t3-oss/env-core": "0.7.1",
     "@usevenice/zod": "workspace:*"
