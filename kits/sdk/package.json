@@ -1,11 +1,13 @@
 {
   "name": "@usevenice/sdk",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "private": false,
   "sideEffects": false,
-  "module": "./index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ./tsconfig.json && pnpm build:json",
+    "build": "tsc -p ./tsconfig.json && run-s build:json build:dts",
+    "build:dts": "cp ./venice.oas.d.ts ./dist/venice.oas.d.ts",
     "build:json": "node --loader tsx ./bin/jsonToJs.ts ./dist/venice.oas.json",
     "clean": "rm -rf ./dist",
     "generate": "pnpm generate:schema && pnpm generate:types",

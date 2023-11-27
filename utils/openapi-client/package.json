@@ -4,7 +4,6 @@
   "private": false,
   "sideEffects": false,
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",

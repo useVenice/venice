@@ -6,5 +6,5 @@
     // web module we get package not found issues. (such as `generate` call in the sdk)
     "baseUrl": "../../"
   },
-  "include": ["index.ts"]
+  "include": ["./index.ts"]
 }

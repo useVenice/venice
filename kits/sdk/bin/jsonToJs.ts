@@ -27,3 +27,8 @@ try {
   console.error('An error occurred while generating the JavaScript file:', err)
   process.exit(1)
 }
+
+
+// TODO: There is additional problem where tsc does not copy .d.ts files to build, and therefore we
+// need to do it manully
+// https://stackoverflow.com/questions/56018167/typescript-does-not-copy-d-ts-files-to-build
