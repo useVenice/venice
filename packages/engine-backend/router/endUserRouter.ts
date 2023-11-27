@@ -98,7 +98,7 @@ function asEndUser(
   if (!endUserId) {
     throw new TRPCError({
       code: 'BAD_REQUEST',
-      message: 'Either call as an endUser or psas endUserId explicitly',
+      message: 'Either call as an endUser or pass endUserId explicitly',
     })
   }
 

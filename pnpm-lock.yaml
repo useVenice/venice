@@ -1131,6 +1131,9 @@ importers:
       '@mintlify/scraping':
         specifier: ^3.0.64
         version: 3.0.64(openapi-types@12.1.0)(typescript@5.0.4)
+      '@usevenice/openapi-client':
+        specifier: workspace:*
+        version: link:../utils/openapi-client
       '@usevenice/sdk':
         specifier: workspace:*
         version: link:../kits/sdk

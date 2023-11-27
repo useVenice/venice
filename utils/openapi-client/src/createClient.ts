@@ -80,7 +80,8 @@ export function throwIfNotOk<T>(method: HTTPMethod) {
     if (res.error) {
       throw new HTTPError<T>({method, error: res.error, response: res.response})
     }
-    return res
+    // error is not set, so safely casting..
+    return res as Extract<typeof res, {data: unknown}>
   }
 }
 

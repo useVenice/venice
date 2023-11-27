@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",
+    "@usevenice/openapi-client": "workspace:*",
     "@usevenice/sdk": "workspace:*",
     "@usevenice/sdk-discord": "workspace:*",
     "@usevenice/sdk-slack": "workspace:*",
