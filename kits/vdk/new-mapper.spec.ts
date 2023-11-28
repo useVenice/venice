@@ -1,5 +1,5 @@
 import {z} from '@usevenice/zod'
-import {get, mapper} from './new-mapper'
+import {literal, mapper} from './new-mapper'
 
 const Vendor = z.object({
   name: z.string(),
@@ -12,8 +12,8 @@ const QBOVendor = z.object({
   qboID: z.number(),
 })
 const qboVendorMap = mapper(QBOVendor, Vendor, {
-  id: get('title'),
-  name: 'qboooo',
+  id: 'title',
+  name: literal('qboname yo'),
   url: (vendor) => `${vendor.qboID}`,
 }).mapping
 

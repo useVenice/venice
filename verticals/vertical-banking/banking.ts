@@ -46,7 +46,6 @@ export function bankingLink(): Link {
     }
 
     if (op.data.entityName === 'qbo_purchase') {
-      const entity = op.data.entity as QBO.Purchase
       const mapped = applyMapper(
         mappers.qbo_purchase,
         op.data.entity as QBO.Purchase,
@@ -74,14 +73,15 @@ export function bankingLink(): Link {
         } satisfies AnyEntityPayload,
       })
     }
-    return rxjs.of(op)
+    // Do not allow any other entities to pass through
+    return rxjs.EMPTY
   })
 }
 
 const mappers = {
   // Should be able to have input and output entity types in here also.
 
-  qbo_purchase: mapper(zCast<QBO.Purchase>(), zBanking.transaction, {
+  qbo_purchase: mapper(zCast<StrictObj<QBO.Purchase>>(), zBanking.transaction, {
     id: 'Id',
     amount: 'TotalAmt',
     currency: 'CurrencyRef.value',

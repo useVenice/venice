@@ -384,8 +384,8 @@ declare namespace QBO {
     // https://developer.intuit.com/app/developer/qbo/docs/develop/explore-the-quickbooks-online-api/change-data-capture#using-change-data-capture
     status?: 'deleted'
     Metadata: MetaData
-    // cannot do this otherwise keyof will be merely string...
-    // [k: string]: unknown
+    // simple keyof will be merely string... but we can try and fix it
+    [k: string]: unknown
   }
 
   export interface Entity {

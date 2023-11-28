@@ -1358,9 +1358,6 @@ importers:
       yaml:
         specifier: 2.3.4
         version: 2.3.4
-      yamljs:
-        specifier: 0.3.0
-        version: 0.3.0
 
   packages/meta-service-fs:
     dependencies:

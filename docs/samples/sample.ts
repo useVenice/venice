@@ -9,7 +9,7 @@ const discord = createSdk(discordSdkDef)
 void discord
   .GET('/channels/{channel_id}', {params: {path: {channel_id: ''}}})
   .then((r) => {
-    r.last_message_id
+    r.data.flags
   })
 
 const slack = createSdk(slackSdkDef)
