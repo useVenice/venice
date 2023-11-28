@@ -94,6 +94,10 @@ const zBase = z.object({
   createdAt: z.date(), // should be string but slonik returns date
   updatedAt: z.date(), // should be string but slonik returns date
 })
+
+/** TODO: Add other links / gather the schema from various links here */
+export const zLink = z.enum(['banking'])
+
 export const zRaw = {
   connector_config: zBase
     .extend({
@@ -115,6 +119,7 @@ export const zRaw = {
       defaultPipeOut: z
         .object({
           streams: z.record(z.boolean()).nullish(),
+          links: z.array(zLink).nullish(),
           destination_id: zId('reso'),
         })
         .nullish()
@@ -123,6 +128,7 @@ export const zRaw = {
         ),
       defaultPipeIn: z
         .object({
+          links: z.array(zLink).nullish(),
           source_id: zId('reso'),
         })
         .nullish()

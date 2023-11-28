@@ -1,6 +1,6 @@
 import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
-import type {AnyEntityPayload, Link} from '@usevenice/cdk'
+import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
 import type {components as Plaid} from '@usevenice/connector-plaid/plaid.oas'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {StrictObj} from '@usevenice/types'
@@ -43,39 +43,44 @@ export type ZBanking = {
 type PostgresInputPayload =
   (typeof postgresHelpers)['_types']['destinationInputEntity']
 
-export function bankingLink(): Link<AnyEntityPayload, PostgresInputPayload> {
+export function bankingLink(ctx: {
+  source: {id: Id['reso']; connectorConfig: {connectorName: string}}
+}): Link<AnyEntityPayload, PostgresInputPayload> {
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
     }
-
-    if (op.data.entityName === 'qbo_purchase') {
-      const mapped = applyMapper(
-        mappers.qbo_purchase,
-        op.data.entity as QBO.Purchase,
-      )
-      return rxjs.of({
-        ...op,
-        data: {
-          id: mapped.id,
-          entityName: 'banking_transaction',
-          entity: {raw: op.data.entity, unified: mapped},
-        } satisfies PostgresInputPayload,
-      })
+    if (ctx.source.connectorConfig.connectorName === 'qbo') {
+      if (op.data.entityName === 'purchase') {
+        const mapped = applyMapper(
+          mappers.qbo_purchase,
+          op.data.entity as QBO.Purchase,
+        )
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_transaction',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
     }
-    if (op.data.entityName === 'plaid_transaction') {
-      const mapped = applyMapper(
-        mappers.plaid_transaction,
-        op.data.entity as Plaid['schemas']['Transaction'],
-      )
-      return rxjs.of({
-        ...op,
-        data: {
-          id: mapped.id,
-          entityName: 'banking_transaction',
-          entity: {raw: op.data.entity, unified: mapped},
-        } satisfies PostgresInputPayload,
-      })
+    if (ctx.source.connectorConfig.connectorName === 'plaid') {
+      if (op.data.entityName === 'transaction') {
+        const mapped = applyMapper(
+          mappers.plaid_transaction,
+          op.data.entity as Plaid['schemas']['Transaction'],
+        )
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_transaction',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
     }
     // Do not allow any other entities to pass through
     return rxjs.EMPTY

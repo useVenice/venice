@@ -2,22 +2,14 @@ import type {
   AnyEntityPayload,
   Destination,
   EndUserId,
-  EntityPayloadWithRaw,
   Id,
   Link,
   ResourceUpdate,
   Source,
 } from '@usevenice/cdk'
-import {
-  addRemainderByDateLink,
-  logLink,
-  makeId,
-  mapAccountNameAndTypeLink,
-  mapStandardEntityLink,
-  sync,
-} from '@usevenice/cdk'
+import {bankingLink, logLink, makeId, sync} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
-import {makeUlid, R, Rx, rxjs} from '@usevenice/util'
+import {makeUlid, rxjs} from '@usevenice/util'
 import type {zSyncOptions} from '../types'
 import type {
   _ConnectorConfig,
@@ -98,56 +90,72 @@ export function makeSyncService({
   // Perhaps the best way is to use `secret_` prefix? (think how we might work with vgs)
   const getLinksForPipeline = ({
     source,
-    links,
     destination,
+    links, // eslint-disable-next-line arrow-body-style
   }: _PipelineExpanded): Link[] => {
-    // console.log('getLinksForPipeline', {source, links, destination})
-    if (destination.connectorConfig.connector.name === 'beancount') {
-      return [
-        ...links,
-        mapStandardEntityLink(source),
-        addRemainderByDateLink as Link, // What about just the addRemainder plugin?
-        // renameAccountLink({
-        //   Ramp: 'Ramp/Posted',
-        //   'Apple Card': 'Apple Card/Posted',
-        // }),
-        mapAccountNameAndTypeLink() as Link,
-        logLink({prefix: 'preDest', verbose: true}),
-      ]
-    }
-    if (destination.connectorConfig.connector.name === 'alka') {
-      return [
-        ...links,
-        // logLink({prefix: 'preMap'}),
-        mapStandardEntityLink(source),
-        // prefixIdLink(src.connector.name),
-        logLink({prefix: 'preDest'}),
-      ]
-    }
-    if (source.connectorConfig.connector.name === 'postgres') {
-      return [...links, logLink({prefix: 'preDest'})]
-    }
     return [
       ...links,
-      // logLink({prefix: 'preMapStandard', verbose: true}),
-      mapStandardEntityLink(source),
-      Rx.map((op) =>
-        op.type === 'data' &&
-        destination.connectorConfig.connector.name !== 'postgres'
-          ? R.identity({
-              ...op,
-              data: {
-                ...op.data,
-                entity: {
-                  standard: op.data.entity,
-                  external: (op.data as EntityPayloadWithRaw).raw,
-                },
-              },
-            })
-          : op,
-      ),
+      ...[
+        ...(source.connectorConfig.defaultPipeOut?.links ?? []),
+        ...(destination.connectorConfig.defaultPipeIn?.links ?? []),
+      ].map((l) => {
+        // TODO: make me less hard-coded.
+        switch (l) {
+          case 'banking':
+            return bankingLink({source})
+          default:
+            throw new Error(`Unknown link ${l}`)
+        }
+      }),
       logLink({prefix: 'preDest'}),
     ]
+    // // console.log('getLinksForPipeline', {source, links, destination})
+    // if (destination.connectorConfig.connector.name === 'beancount') {
+    //   return [
+    //     ...links,
+    //     mapStandardEntityLink(source),
+    //     addRemainderByDateLink as Link, // What about just the addRemainder plugin?
+    //     // renameAccountLink({
+    //     //   Ramp: 'Ramp/Posted',
+    //     //   'Apple Card': 'Apple Card/Posted',
+    //     // }),
+    //     mapAccountNameAndTypeLink() as Link,
+    //     logLink({prefix: 'preDest', verbose: true}),
+    //   ]
+    // }
+    // if (destination.connectorConfig.connector.name === 'alka') {
+    //   return [
+    //     ...links,
+    //     // logLink({prefix: 'preMap'}),
+    //     mapStandardEntityLink(source),
+    //     // prefixIdLink(src.connector.name),
+    //     logLink({prefix: 'preDest'}),
+    //   ]
+    // }
+    // if (source.connectorConfig.connector.name === 'postgres') {
+    //   return [...links, logLink({prefix: 'preDest'})]
+    // }
+    // return [
+    //   ...links,
+    //   // logLink({prefix: 'preMapStandard', verbose: true}),
+    //   mapStandardEntityLink(source),
+    //   Rx.map((op) =>
+    //     op.type === 'data' &&
+    //     destination.connectorConfig.connector.name !== 'postgres'
+    //       ? R.identity({
+    //           ...op,
+    //           data: {
+    //             ...op.data,
+    //             entity: {
+    //               standard: op.data.entity,
+    //               external: (op.data as EntityPayloadWithRaw).raw,
+    //             },
+    //           },
+    //         })
+    //       : op,
+    //   ),
+    //   logLink({prefix: 'preDest'}),
+    // ]
   }
 
   const sourceSync = ({

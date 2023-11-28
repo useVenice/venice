@@ -148,10 +148,16 @@ function getValueAtKeyPath(object: unknown, path: string) {
   const keys = path.split('.')
   let result = object
   for (const key of keys) {
+    if (result == null) {
+      return result
+    }
     if (typeof result !== 'object') {
-      throw new TypeError(
-        `Cannot get value at keypath ${path} from non-object ${object}`,
+      console.error(
+        `Cannot get value at keypath ${path} from non-object`,
+        object,
       )
+      // TODO: Make object log properly
+      throw new TypeError(`Cannot get value at keypath ${path} from non-object`)
     }
     result = (result as Record<string, unknown>)[key]
   }
