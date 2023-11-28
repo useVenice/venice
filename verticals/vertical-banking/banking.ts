@@ -53,7 +53,7 @@ export function bankingLink(ctx: {
     if (ctx.source.connectorConfig.connectorName === 'qbo') {
       if (op.data.entityName === 'purchase') {
         const mapped = applyMapper(
-          mappers.qbo_purchase,
+          mappers.qbo.purchase,
           op.data.entity as QBO.Purchase,
         )
         return rxjs.of({
@@ -65,11 +65,39 @@ export function bankingLink(ctx: {
           } satisfies PostgresInputPayload,
         })
       }
+      if (op.data.entityName === 'account') {
+        const mapped = applyMapper(
+          mappers.qbo.account,
+          op.data.entity as QBO.Account,
+        )
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_account',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
+      if (op.data.entityName === 'vendor') {
+        const mapped = applyMapper(
+          mappers.qbo.vendor,
+          op.data.entity as QBO.Vendor,
+        )
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_merchant',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
     }
     if (ctx.source.connectorConfig.connectorName === 'plaid') {
       if (op.data.entityName === 'transaction') {
         const mapped = applyMapper(
-          mappers.plaid_transaction,
+          mappers.plaid.transaction,
           op.data.entity as Plaid['schemas']['Transaction'],
         )
         return rxjs.of({
@@ -89,38 +117,50 @@ export function bankingLink(ctx: {
 
 const mappers = {
   // Should be able to have input and output entity types in here also.
-
-  qbo_purchase: mapper(zCast<StrictObj<QBO.Purchase>>(), zBanking.transaction, {
-    id: 'Id',
-    amount: 'TotalAmt',
-    currency: 'CurrencyRef.value',
-    date: 'TxnDate',
-    account_id: 'AccountRef.value',
-    account_name: 'AccountRef.name',
-    category: (p) => p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
-    description: 'PrivateNote', // Is this right?
-    merchant_id: 'EntityRef.value',
-    merchant_name: 'EntityRef.name',
-  }),
-  plaid_transaction: mapper(
-    zCast<StrictObj<Plaid['schemas']['Transaction']>>(),
-    zBanking.transaction,
-    {
-      id: 'transaction_id',
-      amount: 'amount',
-      currency: 'iso_currency_code',
-      date: 'date',
-      account_id: 'account_id',
+  qbo: {
+    purchase: mapper(zCast<StrictObj<QBO.Purchase>>(), zBanking.transaction, {
+      id: 'Id',
+      amount: 'TotalAmt',
+      currency: 'CurrencyRef.value',
+      date: 'TxnDate',
+      account_id: 'AccountRef.value',
+      account_name: 'AccountRef.name',
       category: (p) =>
-        [
-          p.personal_finance_category?.primary,
-          p.personal_finance_category?.detailed,
-        ]
-          .filter((c) => !!c)
-          .join('/'),
-      description: 'original_description',
-      merchant_id: 'merchant_entity_id',
-      merchant_name: 'merchant_name',
-    },
-  ),
+        p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
+      description: 'PrivateNote', // Is this right?
+      merchant_id: 'EntityRef.value',
+      merchant_name: 'EntityRef.name',
+    }),
+    account: mapper(zCast<StrictObj<QBO.Account>>(), zBanking.account, {
+      id: 'Id',
+      name: 'FullyQualifiedName',
+    }),
+    vendor: mapper(zCast<StrictObj<QBO.Vendor>>(), zBanking.merchant, {
+      id: 'Id',
+      name: 'DisplayName',
+    }),
+  },
+  plaid: {
+    transaction: mapper(
+      zCast<StrictObj<Plaid['schemas']['Transaction']>>(),
+      zBanking.transaction,
+      {
+        id: 'transaction_id',
+        amount: 'amount',
+        currency: 'iso_currency_code',
+        date: 'date',
+        account_id: 'account_id',
+        category: (p) =>
+          [
+            p.personal_finance_category?.primary,
+            p.personal_finance_category?.detailed,
+          ]
+            .filter((c) => !!c)
+            .join('/'),
+        description: 'original_description',
+        merchant_id: 'merchant_entity_id',
+        merchant_name: 'merchant_name',
+      },
+    ),
+  },
 }
