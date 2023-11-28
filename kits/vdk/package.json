@@ -3,6 +3,8 @@
   "description": "Vertical Development Kit",
   "dependencies": {
     "@trpc/server": "10.40.0",
-    "@usevenice/zod": "workspace:*"
+    "@usevenice/types": "workspace:*",
+    "@usevenice/zod": "workspace:*",
+    "remeda": "1.6.1"
   }
 }

@@ -9,8 +9,8 @@ import type {
   MaybePromise,
 } from '@trpc/server'
 import {TRPCError} from '@trpc/server'
-import type {PathsOf} from 'packages/util'
-import {R} from 'packages/util'
+import * as R from 'remeda'
+import type {PathsOf} from '@usevenice/types'
 import {z} from '@usevenice/zod'
 // FIXME: This is explicitly bypassing the package system because we have a circular
 // dependency here which is not great but ....
@@ -157,14 +157,3 @@ function getValueAtKeyPath(object: unknown, path: string) {
   }
   return result
 }
-
-// MARK: - Deprecated
-
-// TODO: Gotta fix this to work with PathsOf aka nested keys
-// Also move this into a separate types package
-export type ExtractKeyOfValueType<T, V> = Extract<
-  keyof {
-    [k in keyof T as T[k] extends V ? k : never]: T[k]
-  },
-  string
->

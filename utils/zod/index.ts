@@ -43,3 +43,14 @@ export function zodToOas31Schema(
     // $schema: 'https://spec.openapis.org/oas/3.1/dialect/base',
   }
 }
+
+/** `zCast<TOut>()` standalone */
+export const zCast = <T>(...args: Parameters<(typeof z)['unknown']>) =>
+  z.unknown(...args) as z.ZodType<T, z.ZodTypeDef, unknown>
+
+/** Alternative to zCast that only accepts Records as inputs */
+export const zRecord = <T extends Record<string, unknown>>() =>
+  z.record(z.unknown()) as z.ZodType<T, z.ZodTypeDef, Record<string, unknown>>
+
+export const zObject = <T extends Record<string, unknown>>() =>
+  z.object({}) as unknown as z.ZodType<T, z.ZodTypeDef, Record<string, unknown>>
