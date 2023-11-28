@@ -2,6 +2,7 @@ import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
 import type {AnyEntityPayload, Link} from '@usevenice/cdk'
 import type {components as Plaid} from '@usevenice/connector-plaid/plaid.oas'
+import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {StrictObj} from '@usevenice/types'
 import {applyMapper, mapper, z, zCast} from '@usevenice/vdk'
 
@@ -39,7 +40,10 @@ export type ZBanking = {
   [k in keyof typeof zBanking]: z.infer<(typeof zBanking)[k]>
 }
 
-export function bankingLink(): Link {
+type PostgresInputPayload =
+  (typeof postgresHelpers)['_types']['destinationInputEntity']
+
+export function bankingLink(): Link<AnyEntityPayload, PostgresInputPayload> {
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
@@ -55,22 +59,22 @@ export function bankingLink(): Link {
         data: {
           id: mapped.id,
           entityName: 'banking_transaction',
-          entity: mapped,
-        } satisfies AnyEntityPayload,
+          entity: {raw: op.data.entity, unified: mapped},
+        } satisfies PostgresInputPayload,
       })
     }
     if (op.data.entityName === 'plaid_transaction') {
       const mapped = applyMapper(
         mappers.plaid_transaction,
-        op.data.entity as any,
+        op.data.entity as Plaid['schemas']['Transaction'],
       )
       return rxjs.of({
         ...op,
         data: {
           id: mapped.id,
           entityName: 'banking_transaction',
-          entity: mapped,
-        } satisfies AnyEntityPayload,
+          entity: {raw: op.data.entity, unified: mapped},
+        } satisfies PostgresInputPayload,
       })
     }
     // Do not allow any other entities to pass through

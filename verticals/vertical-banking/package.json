@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@usevenice/connector-plaid": "workspace:*",
+    "@usevenice/connector-postgres": "workspace:*",
     "@usevenice/connector-qbo": "workspace:*",
     "@usevenice/types": "workspace:*"
   }

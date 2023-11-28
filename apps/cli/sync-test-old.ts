@@ -106,6 +106,7 @@ switch (process.argv[2]) {
         },
       }),
       destination: heronImpl.destinationSync({
+        source: undefined,
         endUser: null,
         settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
         config: {apiKey: process.env['HERON_API_KEY']!},
@@ -162,6 +163,7 @@ switch (process.argv[2]) {
         })
       }),
       destination: fsServer.destinationSync({
+        source: undefined,
         endUser: null,
         config: {},
         state: {},
@@ -182,6 +184,7 @@ switch (process.argv[2]) {
         streams: {},
       }),
       destination: fsServer.destinationSync({
+        source: undefined,
         endUser: null,
         settings: {basePath: destPath},
         config: {},

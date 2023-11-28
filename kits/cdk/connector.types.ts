@@ -236,6 +236,8 @@ export interface ConnectorServer<
 
   destinationSync?: (
     input: OmitNever<{
+      /** Needed for namespacing when syncing multiple source into same destination */
+      source: {id: Id['reso']} | undefined
       endUser: {id: EndUserId} | null | undefined
       config: T['_types']['connectorConfig']
       settings: T['_types']['resourceSettings']

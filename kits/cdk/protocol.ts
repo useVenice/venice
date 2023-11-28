@@ -119,6 +119,20 @@ export const zEntityPayload = z.object({
   entity: z.record(z.unknown()),
 })
 
+/**
+ * This doesn't fully address the `discriminatedUnion` case...
+ * So do we still want to use it? Sometimes entitySchema resolves to unknown too.
+ */
+export function entityPayload<EntityType extends z.AnyZodObject>(
+  entitySchema: EntityType,
+) {
+  return z.object({
+    entityName: z.string(),
+    id: z.string(),
+    entitySchema,
+  })
+}
+
 export type EntityPayloadWithRaw = z.infer<typeof zEntityPayloadWithRaw>
 export const zEntityPayloadWithRaw = zEntityPayload.extend({
   raw: z.unknown(),

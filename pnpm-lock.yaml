@@ -1731,6 +1731,9 @@ importers:
       '@usevenice/connector-plaid':
         specifier: workspace:*
         version: link:../../connectors/connector-plaid
+      '@usevenice/connector-postgres':
+        specifier: workspace:*
+        version: link:../../connectors/connector-postgres
       '@usevenice/connector-qbo':
         specifier: workspace:*
         version: link:../../connectors/connector-qbo

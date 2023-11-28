@@ -268,6 +268,7 @@ export function makeSyncService({
     const destination$$ =
       opts.destination$$ ??
       dest.connectorConfig.connector.destinationSync?.({
+        source: {id: src.id},
         endUser,
         config: dest.connectorConfig.config,
         settings: dest.settings,

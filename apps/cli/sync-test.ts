@@ -72,6 +72,7 @@ function getDestination(name: string | undefined) {
     //   })
     case 'postgres':
       return postgresProvider.destinationSync({
+        source: undefined,
         config: {},
         state: {},
         endUser: null,

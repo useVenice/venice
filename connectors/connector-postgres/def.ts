@@ -1,6 +1,9 @@
-import type {ConnectorDef, ConnectorSchemas} from '@usevenice/cdk'
+import type {
+  ConnectorDef,
+  ConnectorSchemas,
+  EntityPayloadWithRaw,
+} from '@usevenice/cdk'
 import {connHelpers} from '@usevenice/cdk'
-import type {EntityPayloadWithRaw} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 export const zPgConfig = z.object({
@@ -30,7 +33,18 @@ export const postgresSchemas = {
       // @see https://share.cleanshot.com/w0KVx1Y2
       .optional(),
   }),
-  destinationInputEntity: zCast<EntityPayloadWithRaw>(),
+  destinationInputEntity: z.object({
+    id: z.string(),
+    entityName: z.string(),
+    // TODO: Fix the support here. We hare hacking postgres to be able
+    // support both unified +unified inputs and raw only inputs
+    // Basically this should work with or without a link... And it's hard to abstract for now
+    entity: z.object({
+      // For now... in future we shall support arbitrary columns later
+      raw: z.unknown(),
+      unified: z.unknown(),
+    }),
+  }),
   sourceOutputEntity: zCast<EntityPayloadWithRaw>(),
   sourceState: z
     .object({

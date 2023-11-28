@@ -3,11 +3,9 @@
 
 import type {DatabasePool} from 'slonik'
 import {sql} from 'slonik'
-
 import type {ConnectorServer} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
 import {R, Rx, rxjs, snakeCase} from '@usevenice/util'
-
 import type {postgresSchemas} from './def'
 import {postgresHelpers} from './def'
 import {makePostgresClient, upsertByIdQuery} from './makePostgresClient'
@@ -29,15 +27,15 @@ async function setupTable({
     CREATE TABLE IF NOT EXISTS ${table} (
       source_id VARCHAR NOT NULL,
       id VARCHAR NOT NULL,
-      unified jsonb,
-      raw jsonb DEFAULT '{}'::jsonb NOT NULL,
       end_user_id VARCHAR,
       created_at timestamp with time zone DEFAULT now() NOT NULL,
       updated_at timestamp with time zone DEFAULT now() NOT NULL,
-      provider_name VARCHAR GENERATED ALWAYS AS (split_part((source_id)::text, '_'::text, 2)) STORED NOT NULL,
+      connector_name VARCHAR GENERATED ALWAYS AS (split_part((source_id)::text, '_'::text, 2)) STORED NOT NULL,
       CONSTRAINT ${sql.identifier([
         `pk_${tableName}`,
-      ])} PRIMARY KEY ("source_id", "id")
+      ])} PRIMARY KEY ("source_id", "id"),
+      unified jsonb,
+      raw jsonb DEFAULT '{}'::jsonb NOT NULL
     );
   `)
   // NOTE: Should we add org_id?
@@ -46,7 +44,7 @@ async function setupTable({
   for (const col of [
     'id',
     'source_id',
-    'provider_name',
+    'connector_name',
     'created_at',
     'updated_at',
     'end_user_id',
@@ -87,14 +85,14 @@ export const postgresServer = {
 
       for (const entityName of ['account', 'transaction'] as const) {
         const res = await pool.query<{
-          created_at: string
-          raw: any
           id: string
-          end_user_id: string | null
-          provider_name: string
-          source_id: string | null
-          unified: any
+          created_at: string
           updated_at: string
+          end_user_id: string | null
+          connector_name: string
+          source_id: string | null
+          raw: any
+          unified: any
         }>(
           sql`SELECT * FROM ${sql.identifier([
             entityName,
@@ -166,7 +164,7 @@ export const postgresServer = {
         ),
       )
   },
-  destinationSync: ({endUser, settings: {databaseUrl}}) => {
+  destinationSync: ({endUser, source, settings: {databaseUrl}}) => {
     console.log('[destinationSync] Will makePostgresClient', {
       // databaseUrl,
       // migrationsPath: __dirname + '/migrations',
@@ -195,17 +193,24 @@ export const postgresServer = {
     return handlersLink({
       data: (op) => {
         const {
-          data: {id, entityName, connectorName, sourceId = null, ...data},
+          data: {id, entityName, ...data},
         } = op
         const tableName = entityName
         const batch = batches[tableName] ?? []
         batches[tableName] = batch
+
         batch.push({
+          // This is really not ideal. Maybe this should be a resource level seteting
+          // about how we want to "normalize"?
+          // Or be provided by the Operation itself?
+          ...(typeof data.entity === 'object' &&
+          data.entity &&
+          'raw' in data.entity
+            ? {...data.entity}
+            : {raw: data.entity}),
           id,
           end_user_id: endUser?.id ?? null,
-          unified: data.entity,
-          raw: data.raw,
-          source_id: sourceId,
+          source_id: source?.id,
         })
         return rxjs.of(op)
       },
