@@ -125,6 +125,8 @@ const mappers = {
       date: 'TxnDate',
       account_id: 'AccountRef.value',
       account_name: 'AccountRef.name',
+      // This is a significant approximation, as there can also be ItemBasedLineDetail as well as
+      // multiple lines... However we sit with it for now...
       category: (p) =>
         p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
       description: 'PrivateNote', // Is this right?

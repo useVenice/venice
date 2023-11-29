@@ -96,7 +96,7 @@ const zBase = z.object({
 })
 
 /** TODO: Add other links / gather the schema from various links here */
-export const zLink = z.enum(['banking'])
+export const zLink = z.enum(['banking']).openapi({ref: 'Link'})
 
 export const zRaw = {
   connector_config: zBase
@@ -119,7 +119,12 @@ export const zRaw = {
       defaultPipeOut: z
         .object({
           streams: z.record(z.boolean()).nullish(),
-          links: z.array(zLink).nullish(),
+          links: z
+            .array(zLink)
+            .nullish()
+            .describe(
+              'Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization.',
+            ),
           destination_id: zId('reso'),
         })
         .nullish()
@@ -128,7 +133,12 @@ export const zRaw = {
         ),
       defaultPipeIn: z
         .object({
-          links: z.array(zLink).nullish(),
+          links: z
+            .array(zLink)
+            .nullish()
+            .describe(
+              'Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization.',
+            ),
           source_id: zId('reso'),
         })
         .nullish()
