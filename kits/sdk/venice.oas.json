@@ -16,8 +16,8 @@
         "summary": "Health check",
         "tags": ["Internal"],
         "responses": {
+          "description": "Successful response",
           "200": {
-            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
@@ -530,6 +530,9 @@
                   },
                   "displayName": {
                     "type": ["string", "null"]
+                  },
+                  "metadata": {
+                    "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
                   }
                 }
               }
@@ -770,6 +773,13 @@
                           "type": "boolean"
                         }
                       },
+                      "links": {
+                        "type": ["array", "null"],
+                        "items": {
+                          "$ref": "#/components/schemas/Link"
+                        },
+                        "description": "Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization."
+                      },
                       "destination_id": {
                         "type": "string",
                         "description": "Must start with 'reso_'"
@@ -781,6 +791,13 @@
                   "defaultPipeIn": {
                     "type": ["object", "null"],
                     "properties": {
+                      "links": {
+                        "type": ["array", "null"],
+                        "items": {
+                          "$ref": "#/components/schemas/Link"
+                        },
+                        "description": "Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization."
+                      },
                       "source_id": {
                         "type": "string",
                         "description": "Must start with 'reso_'"
@@ -830,6 +847,88 @@
       }
     },
     "/core/connector_config/{id}": {
+      "patch": {
+        "operationId": "adminUpdateConnectorConfig",
+        "tags": ["Core"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Must start with 'ccfg_'"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadata": {
+                    "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
+                  },
+                  "displayName": {
+                    "type": ["string", "null"]
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "endUserAccess": {
+                    "type": ["boolean", "null"],
+                    "description": "Allow end user to create resources using this connector's configuration"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectorConfig"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "operationId": "adminDeleteConnectorConfig",
         "tags": ["Core"],
@@ -1370,6 +1469,81 @@
       }
     },
     "/core/pipeline/{id}": {
+      "patch": {
+        "operationId": "updatePipeline",
+        "tags": ["Core"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Must start with 'pipe_'"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadata": {
+                    "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pipeline"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "operationId": "deletePipeline",
         "tags": ["Core"],
@@ -2448,6 +2622,9 @@
           },
           "disabled": {
             "type": "boolean"
+          },
+          "metadata": {
+            "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
           }
         },
         "required": [
@@ -2538,6 +2715,13 @@
                   "type": "boolean"
                 }
               },
+              "links": {
+                "type": ["array", "null"],
+                "items": {
+                  "$ref": "#/components/schemas/Link"
+                },
+                "description": "Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization."
+              },
               "destination_id": {
                 "type": "string",
                 "description": "Must start with 'reso_'"
@@ -2549,6 +2733,13 @@
           "defaultPipeIn": {
             "type": ["object", "null"],
             "properties": {
+              "links": {
+                "type": ["array", "null"],
+                "items": {
+                  "$ref": "#/components/schemas/Link"
+                },
+                "description": "Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization."
+              },
               "source_id": {
                 "type": "string",
                 "description": "Must start with 'reso_'"
@@ -2559,9 +2750,16 @@
           },
           "envName": {
             "type": ["string", "null"]
+          },
+          "metadata": {
+            "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
           }
         },
         "required": ["createdAt", "updatedAt", "id", "connectorName", "orgId"]
+      },
+      "Link": {
+        "type": "string",
+        "enum": ["banking"]
       },
       "Pipeline": {
         "type": "object",
@@ -2604,10 +2802,18 @@
           },
           "disabled": {
             "type": "boolean"
+          },
+          "metadata": {
+            "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
           }
         },
         "required": ["createdAt", "updatedAt", "id"]
       }
     }
-  }
+  },
+  "security": [
+    {
+      "apikey": []
+    }
+  ]
 }

@@ -163,7 +163,7 @@ export interface paths {
     delete: operations['adminDeleteConnectorConfig']
     options?: never
     head?: never
-    patch?: never
+    patch: operations['adminUpdateConnectorConfig']
     trace?: never
   }
   '/core/connector_config_info': {
@@ -276,7 +276,7 @@ export interface paths {
     delete: operations['deletePipeline']
     options?: never
     head?: never
-    patch?: never
+    patch: operations['updatePipeline']
     trace?: never
   }
   '/verticals/accounting/account': {
@@ -539,6 +539,12 @@ export interface components {
         labels?: string[]
       } | null
       disabled?: boolean
+      /** @description
+       *       JSON object can can be used to associate arbitrary metadata to
+       *       avoid needing a separate 1-1 table just for simple key values in your application.
+       *       During updates this object will be shallowly merged
+       *      */
+      metadata?: unknown
     }
     /**
      * Error
@@ -588,16 +594,28 @@ export interface components {
         streams?: {
           [key: string]: boolean | undefined
         } | null
+        /** @description Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization. */
+        links?: components['schemas']['Link'][] | null
         /** @description Must start with 'reso_' */
         destination_id: string
       } | null
       /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
       defaultPipeIn?: {
+        /** @description Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization. */
+        links?: components['schemas']['Link'][] | null
         /** @description Must start with 'reso_' */
         source_id: string
       } | null
       envName?: string | null
+      /** @description
+       *       JSON object can can be used to associate arbitrary metadata to
+       *       avoid needing a separate 1-1 table just for simple key values in your application.
+       *       During updates this object will be shallowly merged
+       *      */
+      metadata?: unknown
     }
+    /** @enum {string} */
+    Link: 'banking'
     Pipeline: {
       createdAt: string
       updatedAt: string
@@ -617,6 +635,12 @@ export interface components {
       lastSyncStartedAt?: string | null
       lastSyncCompletedAt?: string | null
       disabled?: boolean
+      /** @description
+       *       JSON object can can be used to associate arbitrary metadata to
+       *       avoid needing a separate 1-1 table just for simple key values in your application.
+       *       During updates this object will be shallowly merged
+       *      */
+      metadata?: unknown
     }
   }
   responses: never
@@ -1121,6 +1145,12 @@ export interface operations {
             [key: string]: unknown
           } | null
           displayName?: string | null
+          /** @description
+           *       JSON object can can be used to associate arbitrary metadata to
+           *       avoid needing a separate 1-1 table just for simple key values in your application.
+           *       During updates this object will be shallowly merged
+           *      */
+          metadata?: unknown
         }
       }
     }
@@ -1218,11 +1248,15 @@ export interface operations {
             streams?: {
               [key: string]: boolean | undefined
             } | null
+            /** @description Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization. */
+            links?: components['schemas']['Link'][] | null
             /** @description Must start with 'reso_' */
             destination_id: string
           } | null
           /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
           defaultPipeIn?: {
+            /** @description Array of transformations that the data gets piped through on the way out. Typically used for things like unification / normalization. */
+            links?: components['schemas']['Link'][] | null
             /** @description Must start with 'reso_' */
             source_id: string
           } | null
@@ -1326,6 +1360,70 @@ export interface operations {
         }
         content: {
           'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  adminUpdateConnectorConfig: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description
+           *       JSON object can can be used to associate arbitrary metadata to
+           *       avoid needing a separate 1-1 table just for simple key values in your application.
+           *       During updates this object will be shallowly merged
+           *      */
+          metadata?: unknown
+          displayName?: string | null
+          disabled?: boolean
+          /** @description Allow end user to create resources using this connector's configuration */
+          endUserAccess?: boolean | null
+        }
+      }
+    }
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ConnectorConfig']
         }
       }
       /** @description Invalid input data */
@@ -1687,6 +1785,67 @@ export interface operations {
         }
         content: {
           'application/json': true
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  updatePipeline: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description
+           *       JSON object can can be used to associate arbitrary metadata to
+           *       avoid needing a separate 1-1 table just for simple key values in your application.
+           *       During updates this object will be shallowly merged
+           *      */
+          metadata?: unknown
+          disabled?: boolean
+        }
+      }
+    }
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Pipeline']
         }
       }
       /** @description Invalid input data */
