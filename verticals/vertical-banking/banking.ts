@@ -13,7 +13,8 @@ export const zBanking = {
     id: z.string(),
     date: z.string().datetime(),
     description: z.string().nullish(),
-    category: z.string().nullish(),
+    category_id: z.string().nullish(),
+    category_name: z.string().nullish(),
     amount: z.number(),
     currency: z.string(),
     merchant_id: z.string().nullish(),
@@ -29,6 +30,10 @@ export const zBanking = {
     id: z.string(),
     name: z.string(),
     url: z.string().nullish(),
+  }),
+  category: z.object({
+    id: z.string(),
+    name: z.string(),
   }),
 }
 
@@ -66,18 +71,37 @@ export function bankingLink(ctx: {
         })
       }
       if (op.data.entityName === 'account') {
-        const mapped = applyMapper(
-          mappers.qbo.account,
-          op.data.entity as QBO.Account,
-        )
-        return rxjs.of({
-          ...op,
-          data: {
-            id: mapped.id,
-            entityName: 'banking_account',
-            entity: {raw: op.data.entity, unified: mapped},
-          } satisfies PostgresInputPayload,
-        })
+        const entity = op.data.entity as QBO.Account
+        if (
+          entity.Classification === 'Revenue' ||
+          entity.Classification === 'Expense'
+        ) {
+          const mapped = applyMapper(
+            mappers.qbo.category,
+            op.data.entity as QBO.Account,
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_category',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        } else {
+          const mapped = applyMapper(
+            mappers.qbo.account,
+            op.data.entity as QBO.Account,
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_account',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        }
       }
       if (op.data.entityName === 'vendor') {
         const mapped = applyMapper(
@@ -127,13 +151,19 @@ const mappers = {
       account_name: 'AccountRef.name',
       // This is a significant approximation, as there can also be ItemBasedLineDetail as well as
       // multiple lines... However we sit with it for now...
-      category: (p) =>
+      category_id: (p) =>
+        p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.value,
+      category_name: (p) =>
         p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
       description: 'PrivateNote', // Is this right?
       merchant_id: 'EntityRef.value',
       merchant_name: 'EntityRef.name',
     }),
     account: mapper(zCast<StrictObj<QBO.Account>>(), zBanking.account, {
+      id: 'Id',
+      name: 'FullyQualifiedName',
+    }),
+    category: mapper(zCast<StrictObj<QBO.Account>>(), zBanking.category, {
       id: 'Id',
       name: 'FullyQualifiedName',
     }),
@@ -152,7 +182,7 @@ const mappers = {
         currency: 'iso_currency_code',
         date: 'date',
         account_id: 'account_id',
-        category: (p) =>
+        category_name: (p) =>
           [
             p.personal_finance_category?.primary,
             p.personal_finance_category?.detailed,
