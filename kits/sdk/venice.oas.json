@@ -16,8 +16,8 @@
         "summary": "Health check",
         "tags": ["Internal"],
         "responses": {
-          "description": "Successful response",
           "200": {
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
@@ -760,10 +760,6 @@
                   "displayName": {
                     "type": ["string", "null"]
                   },
-                  "endUserAccess": {
-                    "type": ["boolean", "null"],
-                    "description": "Allow end user to create resources using this connector's configuration"
-                  },
                   "defaultPipeOut": {
                     "type": ["object", "null"],
                     "properties": {
@@ -876,10 +872,6 @@
                   },
                   "disabled": {
                     "type": "boolean"
-                  },
-                  "endUserAccess": {
-                    "type": ["boolean", "null"],
-                    "description": "Allow end user to create resources using this connector's configuration"
                   }
                 }
               }
@@ -2691,10 +2683,6 @@
           "config": {
             "type": ["object", "null"],
             "additionalProperties": {}
-          },
-          "endUserAccess": {
-            "type": ["boolean", "null"],
-            "description": "Allow end user to create resources using this connector's configuration"
           },
           "orgId": {
             "type": "string",

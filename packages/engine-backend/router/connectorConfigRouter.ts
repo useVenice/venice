@@ -35,7 +35,6 @@ export const connectorConfigRouter = trpc.router({
           orgId: true,
           config: true,
           displayName: true,
-          endUserAccess: true,
           defaultPipeOut: true,
           defaultPipeIn: true,
         })
@@ -94,7 +93,6 @@ export const connectorConfigRouter = trpc.router({
         metadata: true,
         displayName: true,
         disabled: true,
-        endUserAccess: true,
       }),
     )
     .output(zRaw.connector_config)

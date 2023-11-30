@@ -110,13 +110,6 @@ export const zRaw = {
       id: zId('ccfg'),
       connectorName: z.string(),
       config: z.record(z.unknown()).nullish(),
-      /** @deprecated. This should be determined on a per-portal basis */
-      endUserAccess: z
-        .boolean()
-        .nullish()
-        .describe(
-          "Allow end user to create resources using this connector's configuration",
-        ),
       orgId: zId('org'),
       displayName: z.string().nullish(),
       disabled: z.boolean().optional(),

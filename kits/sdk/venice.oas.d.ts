@@ -583,8 +583,6 @@ export interface components {
       config?: {
         [key: string]: unknown
       } | null
-      /** @description Allow end user to create resources using this connector's configuration */
-      endUserAccess?: boolean | null
       /** @description Must start with 'org_' */
       orgId: string
       displayName?: string | null
@@ -1241,8 +1239,6 @@ export interface operations {
             [key: string]: unknown
           } | null
           displayName?: string | null
-          /** @description Allow end user to create resources using this connector's configuration */
-          endUserAccess?: boolean | null
           /** @description Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL */
           defaultPipeOut?: {
             streams?: {
@@ -1411,8 +1407,6 @@ export interface operations {
           metadata?: unknown
           displayName?: string | null
           disabled?: boolean
-          /** @description Allow end user to create resources using this connector's configuration */
-          endUserAccess?: boolean | null
         }
       }
     }
