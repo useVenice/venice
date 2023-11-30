@@ -38,6 +38,12 @@ export const zIntegrationCategory = z.enum([
   'hris', // Aka payroll
 ])
 
+export const zMetadata = z.unknown().describe(`
+  JSON object can can be used to associate arbitrary metadata to
+  avoid needing a separate 1-1 table just for simple key values in your application.
+  During updates this object will be shallowly merged
+`)
+
 export type ZStandard = {
   [k in keyof typeof zStandard]: z.infer<(typeof zStandard)[k]>
 }
@@ -147,6 +153,7 @@ export const zRaw = {
         ),
       /** This is a generated column, which is not the most flexible. Maybe we need some kind of mapStandardIntegration method? */
       envName: z.string().nullish(),
+      metadata: zMetadata,
     })
     .openapi({ref: 'ConnectorConfig'}),
   resource: zBase
@@ -160,6 +167,7 @@ export const zRaw = {
       settings: z.record(z.unknown()).nullish(),
       standard: zStandard.resource.omit({id: true}).nullish(),
       disabled: z.boolean().optional(),
+      metadata: zMetadata,
     })
     .openapi({ref: 'Resource'}),
   pipeline: zBase
@@ -184,6 +192,7 @@ export const zRaw = {
       lastSyncStartedAt: z.date().nullish(),
       lastSyncCompletedAt: z.date().nullish(),
       disabled: z.boolean().optional(),
+      metadata: zMetadata,
     })
     .openapi({ref: 'Pipeline'}),
   integration: zBase

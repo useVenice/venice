@@ -79,6 +79,29 @@ export const connectorConfigRouter = trpc.router({
 
       return ctx.services.patchReturning('connector_config', id, input)
     }),
+
+  adminUpdateConnectorConfig: adminProcedure
+    .meta({
+      openapi: {
+        method: 'PATCH',
+        path: '/core/connector_config/{id}',
+        tags,
+      },
+    })
+    .input(
+      zRaw.connector_config.pick({
+        id: true,
+        metadata: true,
+        displayName: true,
+        disabled: true,
+        endUserAccess: true,
+      }),
+    )
+    .output(zRaw.connector_config)
+    .mutation(async ({input: {id, ...input}, ctx}) =>
+      ctx.services.patchReturning('connector_config', id, input),
+    ),
+
   // Need a tuple for some reason... otherwise seems to not work in practice.
   adminDeleteConnectorConfig: adminProcedure
     .meta({

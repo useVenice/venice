@@ -22,6 +22,19 @@ export const pipelineRouter = trpc.router({
       const pipelines = await ctx.services.metaService.findPipelines(input)
       return pipelines as Array<ZRaw['pipeline']>
     }),
+  updatePipeline: protectedProcedure
+    .meta({openapi: {method: 'PATCH', path: '/core/pipeline/{id}', tags}})
+    .input(
+      zRaw.pipeline.pick({
+        id: true,
+        metadata: true,
+        disabled: true,
+      }),
+    )
+    .output(zRaw.pipeline)
+    .mutation(async ({ctx, input: {id, ...input}}) =>
+      ctx.services.patchReturning('pipeline', id, input),
+    ),
   deletePipeline: protectedProcedure
     .meta({openapi: {method: 'DELETE', path: '/core/pipeline/{id}', tags}})
     .input(z.object({id: zId('pipe')}))

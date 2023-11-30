@@ -117,7 +117,14 @@ export const resourceRouter = trpc.router({
   // TODO: Run server-side validation
   updateResource: protectedProcedure
     .meta({openapi: {method: 'PATCH', path: '/core/resource/{id}', tags}})
-    .input(zRaw.resource.pick({id: true, settings: true, displayName: true}))
+    .input(
+      zRaw.resource.pick({
+        id: true,
+        settings: true,
+        displayName: true,
+        metadata: true,
+      }),
+    )
     .output(zRaw.resource)
     .mutation(async ({input: {id, ...input}, ctx}) =>
       // TODO: Run mapStandardResource after editing
