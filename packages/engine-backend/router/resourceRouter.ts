@@ -180,7 +180,8 @@ export const resourceRouter = trpc.router({
     .input(z.object({id: zId('reso')}))
     .output(zRaw.resource) // TODO: This is actually expanded...
     .query(async ({input, ctx}) => {
-      const reso = await ctx.services.getResourceExpandedOrFail(input.id)
+      // do not expand for now otherwise permission issues..
+      const reso = await ctx.services.getResourceOrFail(input.id)
       return reso
     }),
   checkResource: protectedProcedure
