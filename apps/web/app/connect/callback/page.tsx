@@ -1,17 +1,13 @@
 import '@usevenice/app-config/register.node'
-
 import {cookies} from 'next/headers'
-
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
 import type {Id} from '@usevenice/cdk'
 import {makeNangoClient} from '@usevenice/cdk'
 import type {FrameMessage} from '@usevenice/connect'
-
 import {FullScreenCenter} from '@/components/FullScreenCenter'
 import {serverSideHelpersFromViewer} from '@/lib-server'
 import {serverComponentGetViewer} from '@/lib-server/server-component-helpers'
-
 import {kConnectSession, zConnectSession} from '../page'
 import {CallbackEffect} from './CallbackEffect'
 

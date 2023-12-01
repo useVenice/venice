@@ -246,14 +246,14 @@ export const endUserRouter = trpc.router({
         }
 
         const syncInBackground =
-          resoUpdate.triggerDefaultSync && !connCtxInput.syncInBand
+          resoUpdate.triggerDefaultSync !== false && !connCtxInput.syncInBand
         const resourceId = await ctx.asOrgIfNeeded._syncResourceUpdate(int, {
           ...resoUpdate,
           // No need for each connector to worry about this, unlike in the case of handleWebhook.
           endUserId:
             ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
           triggerDefaultSync:
-            !syncInBackground && resoUpdate.triggerDefaultSync,
+            !syncInBackground && resoUpdate.triggerDefaultSync !== false,
         })
 
         await inngest.send('connect/resource-connected', {data: {resourceId}})
