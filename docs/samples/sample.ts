@@ -2,8 +2,8 @@
 import {createClient} from '@usevenice/openapi-client'
 import {createSdk, createVeniceClient} from '@usevenice/sdk'
 import discordSdkDef from '@usevenice/sdk-discord'
+import openaiSdkDef from '@usevenice/sdk-openai'
 import slackSdkDef from '@usevenice/sdk-slack'
-import openaiSdkDef from '../../opensdks/sdk-openai'
 
 const discord = createSdk(discordSdkDef)
 
