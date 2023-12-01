@@ -1,9 +1,9 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import openaiSdkDef from 'opensdks/sdk-openai'
 import {createClient} from '@usevenice/openapi-client'
 import {createSdk, createVeniceClient} from '@usevenice/sdk'
 import discordSdkDef from '@usevenice/sdk-discord'
 import slackSdkDef from '@usevenice/sdk-slack'
+import openaiSdkDef from '../../opensdks/sdk-openai'
 
 const discord = createSdk(discordSdkDef)
 
