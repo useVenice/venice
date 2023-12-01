@@ -10,6 +10,7 @@
     "@usevenice/openapi-client": "workspace:*",
     "@usevenice/sdk": "workspace:*",
     "@usevenice/sdk-discord": "workspace:*",
+    "@usevenice/sdk-openai": "workspace:*",
     "@usevenice/sdk-slack": "workspace:*",
     "mintlify": "4.0.59"
   }

@@ -1140,6 +1140,9 @@ importers:
       '@usevenice/sdk-discord':
         specifier: workspace:*
         version: link:../opensdks/sdk-discord
+      '@usevenice/sdk-openai':
+        specifier: workspace:*
+        version: link:../opensdks/sdk-openai
       '@usevenice/sdk-slack':
         specifier: workspace:*
         version: link:../opensdks/sdk-slack
@@ -1243,6 +1246,22 @@ importers:
       openapi-typescript:
         specifier: 6.7.1
         version: 6.7.1
+
+  opensdks/sdk-openai:
+    dependencies:
+      '@usevenice/openapi-client':
+        specifier: workspace:*
+        version: link:../../utils/openapi-client
+    devDependencies:
+      '@usevenice/sdk':
+        specifier: workspace:*
+        version: link:../../kits/sdk
+      openapi-typescript:
+        specifier: 6.7.1
+        version: 6.7.1
+      yaml:
+        specifier: 2.3.4
+        version: 2.3.4
 
   opensdks/sdk-slack:
     dependencies:
@@ -16337,9 +16356,9 @@ packages:
     hasBin: true
     dependencies:
       ansi-colors: 4.1.3
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       js-yaml: 4.1.0
-      supports-color: 9.3.1
+      supports-color: 9.4.0
       undici: 5.27.0
       yargs-parser: 21.1.1
     dev: true
@@ -19811,11 +19830,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       has-flag: 4.0.0
-
-  /supports-color@9.3.1:
-    resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
-    engines: {node: '>=12'}
-    dev: true
 
   /supports-color@9.4.0:
     resolution: {integrity: sha512-VL+lNrEoIXww1coLPOmiEmK/0sGigko5COxI09KzHc2VJXJsQ37UaQ+8quuxjDeA7+KnLGTWRyOXSLLR2Wb4jw==}
