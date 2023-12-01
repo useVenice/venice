@@ -11,7 +11,8 @@
     },
     "clean": {},
     "build": {
-      "dependsOn": ["^build", "clean"]
+      "dependsOn": ["^build", "clean"],
+      "cache": false
     },
     "pub": {"cache": false, "dependsOn": ["build"]}
   }
