@@ -1,0 +1,17 @@
+{
+  "name": "@usevenice/sdk-openai",
+  "version": "0.0.0",
+  "module": "./index.ts",
+  "scripts": {
+    "download": "curl --fail https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml -o ./openai.oas.yaml",
+    "generate": "cat openai.oas.yaml | node ./yaml2json.js -o openai.oas && openapi-typescript ./openai.oas.json --output ./openai.oas.d.ts "
+  },
+  "dependencies": {
+    "@usevenice/openapi-client": "workspace:*",
+    "yaml": "2.3.4"
+  },
+  "devDependencies": {
+    "@usevenice/sdk": "workspace:*",
+    "openapi-typescript": "6.7.1"
+  }
+}
