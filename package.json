@@ -29,6 +29,9 @@
     "**/*.{js,ts,tsx,json,css,yml,yaml}": "prettier --write",
     "**/*.{js,ts,tsx}": "eslint --ext .js,.ts,.tsx --cache --fix"
   },
+  "dependencies": {
+    "@usevenice/cli": "workspace:*"
+  },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
     "@roarr/cli": "5.7.0",
@@ -38,7 +41,6 @@
     "@types/prettier": "3.0.0",
     "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
-    "@usevenice/cli": "workspace:*",
     "@usevenice/sdk": "workspace:*",
     "@usevenice/util": "workspace:*",
     "esbuild": "0.17.5",

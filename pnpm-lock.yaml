@@ -43,6 +43,10 @@ patchedDependencies:
 importers:
 
   .:
+    dependencies:
+      '@usevenice/cli':
+        specifier: workspace:*
+        version: link:apps/cli
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: 4.1.1
@@ -68,9 +72,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: 5.57.1
         version: 5.57.1(eslint@8.23.0)(typescript@5.0.4)
-      '@usevenice/cli':
-        specifier: workspace:*
-        version: link:apps/cli
       '@usevenice/sdk':
         specifier: workspace:*
         version: link:kits/sdk

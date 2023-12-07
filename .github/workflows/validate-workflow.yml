@@ -68,13 +68,14 @@ jobs:
       #   uses: mxschmitt/action-tmate@v2
       # - name: Setup upterm session
       #   uses: lhotari/action-upterm@v1
+
       - name: Run type checks
         run: pnpm run typecheck
 
         # TODO: Figure out a pattern to make environment variables parsed / required on demand rather than on startup time
         # Ideally have a way to switch between the two... Where we can also choose proactive parsing for sanity checking...
       - name: Run health check
-        run: SKIP_ENV_VALIDATION=1 JWT_SECRET_OR_PUBLIC_KEY=NOOP POSTGRES_OR_WEBHOOK_URL=noop node --loader tsx ./bin/venice.ts health
+        run: SKIP_ENV_VALIDATION=1 JWT_SECRET_OR_PUBLIC_KEY=NOOP POSTGRES_OR_WEBHOOK_URL=noop npx tsx ./bin/venice.ts health
 
       - name: Run migration check
         run: POSTGRES_OR_WEBHOOK_URL=postgres://postgres:test@localhost:5432/test pnpm migration up
