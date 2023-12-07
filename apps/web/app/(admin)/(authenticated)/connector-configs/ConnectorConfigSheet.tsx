@@ -3,7 +3,7 @@
 import {Loader2} from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import {zRaw} from '@usevenice/cdk'
+import {zId, zRaw} from '@usevenice/cdk'
 import {_trpcReact} from '@usevenice/engine-frontend'
 import type {SchemaFormElement} from '@usevenice/ui'
 import {
@@ -51,13 +51,15 @@ export function ConnectorConfigSheet({
     connectorName: 'postgres',
   })
 
-  const zResoId = z.union(
-    (resourcesRes.data ?? []).map((r) =>
-      z
-        .literal(r.id)
-        .openapi({title: r.displayName ? `${r.displayName} <${r.id}>` : r.id}),
-    ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
-  )
+  const zResoId = resourcesRes.data?.length
+    ? z.union(
+        resourcesRes.data.map((r) =>
+          z.literal(r.id).openapi({
+            title: r.displayName ? `${r.displayName} <${r.id}>` : r.id,
+          }),
+        ) as [z.ZodLiteral<string>, z.ZodLiteral<string>],
+      )
+    : zId('reso')
 
   const ccfgSchema = (
     connectorMeta?.schemas.connectorConfig
