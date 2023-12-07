@@ -39,7 +39,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # TODO: Can we get this from "engine" field in package.json?
+          node-version: 20 # TODO: Can we get this from "engine" field in package.json?
 
       - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
@@ -66,10 +66,8 @@ jobs:
 
       # - name: Set up tmate session
       #   uses: mxschmitt/action-tmate@v2
-
       # - name: Setup upterm session
       #   uses: lhotari/action-upterm@v1
-
       - name: Run type checks
         run: pnpm run typecheck
 
