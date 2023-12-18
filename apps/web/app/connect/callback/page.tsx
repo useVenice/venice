@@ -82,6 +82,7 @@ export default async function ConnectCallback({
         data: {resourceId: res.data.connectionId as Id['reso']},
       }
     } catch (err) {
+      console.error('[oauth] Error during connect', err)
       return {
         type: 'ERROR',
         data: {code: 'INTERNAL_SERVER_ERROR', message: `${err}`},

@@ -56,7 +56,10 @@ export function makeDBService({
   ) => {
     const data = await get(tableName, id)
     if (!data) {
-      throw new TRPCError({code: 'NOT_FOUND', message: `${tableName}: ${id}`})
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: `[db] ${tableName}: ${id} not found`,
+      })
     }
     return data
   }
@@ -140,7 +143,10 @@ export function makeDBService({
   const getConnectorConfigInfoOrFail = (id: Id['ccfg']) =>
     metaService.listConnectorConfigInfos({id}).then((ints) => {
       if (!ints[0]) {
-        throw new TRPCError({code: 'NOT_FOUND'})
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `ccfg info not found: ${id}`,
+        })
       }
       return ints[0]
     })
@@ -148,7 +154,10 @@ export function makeDBService({
   const getConnectorConfigOrFail = (id: Id['ccfg']) =>
     metaService.tables.connector_config.get(id).then((_int) => {
       if (!_int) {
-        throw new TRPCError({code: 'NOT_FOUND'})
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `ccfg not found: ${id}`,
+        })
       }
       const int = zRaw.connector_config.parse(_int)
       const connector = getConnectorOrFail(int.id)
@@ -159,7 +168,10 @@ export function makeDBService({
   const getIntegrationOrFail = (id: Id['int']) =>
     metaService.tables.integration.get(id).then(async (ins) => {
       if (!ins) {
-        throw new TRPCError({code: 'NOT_FOUND'})
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `int not found: ${id}`,
+        })
       }
       // TODO: Fix the root cause and ensure we always have integration.standard here
       if (!ins.standard?.name) {
@@ -173,14 +185,20 @@ export function makeDBService({
   const getResourceOrFail = (id: Id['reso']) =>
     metaService.tables.resource.get(id).then((reso) => {
       if (!reso) {
-        throw new TRPCError({code: 'NOT_FOUND'})
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `reso not found: ${id}`,
+        })
       }
       return zRaw.resource.parse(reso)
     })
   const getPipelineOrFail = (id: Id['pipe']) =>
     metaService.tables.pipeline.get(id).then((pipe) => {
       if (!pipe) {
-        throw new TRPCError({code: 'NOT_FOUND'})
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `pipe not found: ${id}`,
+        })
       }
       return zRaw.pipeline.parse(pipe)
     })
