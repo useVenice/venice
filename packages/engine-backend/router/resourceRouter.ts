@@ -73,7 +73,17 @@ export const resourceRouter = trpc.router({
     }),
   createResource: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/core/resource', tags}})
-    .input(zRaw.resource.pick({connectorConfigId: true, settings: true}))
+    .input(
+      zRaw.resource.pick({
+        connectorConfigId: true,
+        settings: true,
+        displayName: true,
+        endUserId: true,
+        disabled: true,
+        metadata: true,
+        integrationId: true,
+      }),
+    )
     // Questionable why `zConnectContextInput` should be there. Examine whether this is actually
     // needed
     // How do we verify that the userId here is the same as the userId from preConnectOption?
@@ -123,6 +133,10 @@ export const resourceRouter = trpc.router({
         settings: true,
         displayName: true,
         metadata: true,
+        disabled: true,
+        // Not sure if we should allow these two?
+        endUserId: true,
+        integrationId: true,
       }),
     )
     .output(zRaw.resource)
