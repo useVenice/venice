@@ -1,10 +1,10 @@
+import {logLink} from '@opensdks/runtime'
 import {initTRPC, TRPCError} from '@trpc/server'
-
 import {getExtEndUserId, hasRole} from '@usevenice/cdk'
 import type {OpenApiMeta} from '@usevenice/trpc-openapi'
-import {HTTPError} from '@usevenice/util'
-
+import {HTTPError, R} from '@usevenice/util'
 import type {RouterContext} from '../context'
+import {nangoProxyLink} from '../lib/nangoProxyLink'
 
 export interface RouterMeta extends OpenApiMeta {
   response?: {
@@ -90,6 +90,15 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
   const resource = await ctx.services.getResourceExpandedOrFail(
     ctx.remoteResourceId,
   )
+  const sdkLinks = R.compact([
+    logLink(),
+    resource.connectorConfig.connector.metadata?.nangoProvider &&
+      nangoProxyLink({
+        secretKey: ctx.env.NANGO_SECRET_KEY,
+        connectionId: resource.id,
+        providerConfigKey: resource.connectorConfigId,
+      }),
+  ])
 
   return next({
     ctx: {
@@ -101,6 +110,7 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
         connectorName: resource.connectorName,
         settings: resource.settings,
         config: resource.connectorConfig.config,
+        sdkLinks,
       },
     },
   })

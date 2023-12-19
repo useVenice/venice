@@ -1,12 +1,37 @@
+import {initSDK} from '@opensdks/runtime'
+import type {QBOSDKTypes} from '@opensdks/sdk-qbo'
+import {qboSdkDef} from '@opensdks/sdk-qbo'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
 import type {qboSchemas} from './def'
 import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 import {makeQBOClient} from './QBOClient'
 
+function initQBOSdk(options: QBOSDKTypes['options']) {
+  const sdk = initSDK(qboSdkDef, options)
+  // TODO: Should add options to sdk itself
+  return {realmId: options.realmId, ...sdk}
+}
+
 export const qboServer = {
-  newInstance: ({config, settings, onSettingsChange}) =>
-    makeQBOClient(config, settings, onSettingsChange),
+  newInstance: ({config, settings, sdkLinks}) => {
+    const qbo = initQBOSdk({
+      envName: config.envName,
+      realmId: settings.oauth.connection_config.realmId,
+      links: (defaultLinks) => [
+        (req, next) => {
+          if (qbo.clientOptions.baseUrl) {
+            req.headers.set('base-url-override', qbo.clientOptions.baseUrl)
+          }
+          return next(req)
+        },
+        ...sdkLinks,
+        ...defaultLinks,
+      ],
+      accessToken: '', // Will use passthrough api for this..
+    })
+    return qbo
+  },
 
   sourceSync: ({config, settings, streams}) => {
     // TODO: get the data from newInstance..
@@ -84,6 +109,6 @@ export const qboServer = {
       },
     },
   },
-} satisfies ConnectorServer<typeof qboSchemas, ReturnType<typeof makeQBOClient>>
+} satisfies ConnectorServer<typeof qboSchemas, ReturnType<typeof initQBOSdk>>
 
 export default qboServer

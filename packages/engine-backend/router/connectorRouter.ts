@@ -83,7 +83,7 @@ export const connectorRouter = trpc.router({
       if (!connector) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `Connector ${name}not found`,
+          message: `Connector ${name} not found`,
         })
       }
 
