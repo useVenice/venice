@@ -12,9 +12,20 @@ export const zViewer = z
     z.object({role: z.literal(zRole.Enum.anon)}),
     // prettier-ignore
     z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, orgId: zId('org')}),
-    // prettier-ignore
-    z.object({role: z.literal(zRole.Enum.user), userId: zUserId, orgId: zId('org').nullish()}),
-    z.object({role: z.literal(zRole.Enum.org), orgId: zId('org')}),
+    z.object({
+      role: z.literal(zRole.Enum.user),
+      userId: zUserId,
+      orgId: zId('org').nullish(),
+      extra: z.record(z.unknown()).optional().describe('Currently clerk user'),
+    }),
+    z.object({
+      role: z.literal(zRole.Enum.org),
+      orgId: zId('org'),
+      extra: z
+        .record(z.unknown())
+        .optional()
+        .describe('Currently clerk organization'),
+    }),
     z.object({role: z.literal(zRole.Enum.system)}),
   ])
   .openapi({ref: 'Viewer'})

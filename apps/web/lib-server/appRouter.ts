@@ -1,6 +1,8 @@
 import {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
 import {getServerUrl} from '@usevenice/app-config/constants'
+import type {Viewer} from '@usevenice/cdk'
+import {zViewer} from '@usevenice/cdk'
 import {flatRouter} from '@usevenice/engine-backend'
 import {
   adminProcedure,
@@ -12,6 +14,28 @@ import {z} from '@usevenice/util'
 import {zAuth} from '@/lib-common/schemas'
 
 const customRouter = trpc.router({
+  getViewer: publicProcedure
+    .meta({
+      openapi: {
+        method: 'GET',
+        path: '/viewer',
+        summary: 'Get current viewer accessing the API',
+      },
+    })
+    .input(z.void())
+    .output(zViewer)
+    .query(async ({ctx}) => {
+      const extra =
+        ctx.viewer.role === 'org'
+          ? await clerkClient.organizations.getOrganization({
+              organizationId: ctx.viewer.orgId,
+            })
+          : ctx.viewer.role === 'user'
+            ? await clerkClient.users.getUser(ctx.viewer.userId)
+            : undefined
+
+      return {...ctx.viewer, extra} as Viewer
+    }),
   updateOrganization: adminProcedure
     .input(zAuth.organization.pick({id: true, publicMetadata: true}))
     .mutation(async ({ctx, input: {id, ...update}}) => {
