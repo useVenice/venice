@@ -88,41 +88,41 @@ export const resourceRouter = trpc.router({
     // needed
     // How do we verify that the userId here is the same as the userId from preConnectOption?
     .output(z.string())
-    .mutation(
-      async ({
-        input: {connectorConfigId: connectorConfigId, settings},
-        ctx,
-      }) => {
-        // Authorization
-        await ctx.services.getConnectorConfigInfoOrFail(connectorConfigId)
+    .mutation(async ({input: {connectorConfigId, settings, ...input}, ctx}) => {
+      // Authorization
+      await ctx.services.getConnectorConfigInfoOrFail(connectorConfigId)
 
-        // Escalate to now have enough pemission to sync
-        const int =
-          await ctx.asOrgIfNeeded.getConnectorConfigOrFail(connectorConfigId)
+      // Escalate to now have enough pemission to sync
+      const int =
+        await ctx.asOrgIfNeeded.getConnectorConfigOrFail(connectorConfigId)
 
-        const _extId = makeUlid()
-        const resoId = makeId('reso', int.connector.name, _extId)
+      const _extId = makeUlid()
+      const resoId = makeId('reso', int.connector.name, _extId)
 
-        // Should throw if not working..
-        const resoUpdate = {
-          triggerDefaultSync: false,
-          // TODO: Should no longer depend on external ID
-          resourceExternalId: _extId,
+      // Should throw if not working..
+      const resoUpdate = {
+        triggerDefaultSync: false,
+        // TODO: Should no longer depend on external ID
+        resourceExternalId: _extId,
+        settings,
+        ...(await int.connector.checkResource?.({
+          config: int.config,
           settings,
-          ...(await int.connector.checkResource?.({
-            config: int.config,
-            settings,
-            context: {webhookBaseUrl: ''},
-            options: {},
-          })),
-          // TODO: Fix me up
-          endUserId:
-            ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
-        } satisfies ResourceUpdate
-        await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
-        return resoId
-      },
-    ),
+          context: {webhookBaseUrl: ''},
+          options: {},
+        })),
+        // TODO: Fix me up
+        endUserId: ctx.viewer.role === 'end_user' ? ctx.viewer.endUserId : null,
+      } satisfies ResourceUpdate
+      await ctx.asOrgIfNeeded._syncResourceUpdate(int, resoUpdate)
+
+      // TODO: Do this in one go not two
+      if (input.displayName) {
+        await ctx.services.patchReturning('resource', resoId, input)
+      }
+      // TODO: return the entire resource object...
+      return resoId
+    }),
 
   // TODO: Run server-side validation
   updateResource: protectedProcedure
