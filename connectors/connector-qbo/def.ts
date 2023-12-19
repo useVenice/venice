@@ -1,3 +1,4 @@
+import type {components} from '@opensdks/sdk-qbo/qbo.oas.types'
 import type {ConnectorDef, ConnectorSchemas, Pta} from '@usevenice/cdk'
 import {
   connHelpers,
@@ -7,9 +8,15 @@ import {
 } from '@usevenice/cdk'
 import type {EnumOf} from '@usevenice/util'
 import {A, DateTime, R, z, zCast} from '@usevenice/util'
-import {zConfig, zSettings} from './QBOClient'
 
-export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
+export type QBO = components['schemas']
+
+export type TransactionTypeName = Extract<
+  QBO['EntityName'],
+  'Purchase' | 'Deposit' | 'JournalEntry' | 'Invoice' | 'Payment'
+>
+
+export const TRANSACTION_TYPE_NAME: EnumOf<TransactionTypeName> = {
   Purchase: 'Purchase',
   Deposit: 'Deposit',
   JournalEntry: 'JournalEntry',
@@ -17,7 +24,7 @@ export const TRANSACTION_TYPE_NAME: EnumOf<QBO.TransactionTypeName> = {
   Payment: 'Payment',
 }
 
-export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
+export const QBO_ENTITY_NAME: EnumOf<QBO['EntityName']> = {
   ...TRANSACTION_TYPE_NAME,
   Account: 'Account',
   Bill: 'Bill',
@@ -27,7 +34,29 @@ export const QBO_ENTITY_NAME: EnumOf<QBO.EntityName> = {
   Vendor: 'Vendor',
   Customer: 'Customer',
   Item: 'Item',
+  CompanyInfo: 'CompanyInfo',
 }
+
+export const zConfig = oauthBaseSchema.connectorConfig.extend({
+  envName: z.enum(['sandbox', 'production']),
+  url: z.string().nullish().describe('For proxies, not typically needed'),
+  verifierToken: z.string().nullish().describe('For webhooks'),
+})
+
+const oReso = oauthBaseSchema.resourceSettings
+/** Very verbose definition... Do we want it a bit simpler maybe? */
+export const zSettings = oReso.extend({
+  oauth: oReso.shape.oauth.extend({
+    connection_config: z.object({
+      realmId: z.string(),
+    }),
+    credentials: oReso.shape.oauth.shape.credentials.extend({
+      raw: oReso.shape.oauth.shape.credentials.shape.raw.extend({
+        refresh_token: z.string(),
+      }),
+    }),
+  }),
+})
 
 export const qboSchemas = {
   name: z.literal('qbo'),
@@ -39,30 +68,33 @@ export const qboSchemas = {
 
   verticals: {
     accounting: {
-      account: zCast<QBO.Account>(),
-      expense: zCast<QBO.Purchase>(),
-      vendor: zCast<QBO.Vendor>(),
+      account: zCast<QBO['Account']>(),
+      expense: zCast<QBO['Purchase']>(),
+      vendor: zCast<QBO['Vendor']>(),
     },
     pta: {
-      account: zCast<QBO.Account>(),
+      account: zCast<QBO['Account']>(),
       transaction: z.discriminatedUnion('type', [
         z
-          .object({type: z.literal('Deposit'), entity: zCast<QBO.Deposit>()})
+          .object({type: z.literal('Deposit'), entity: zCast<QBO['Deposit']>()})
           .extend({realmId: z.string()}),
         z
-          .object({type: z.literal('Purchase'), entity: zCast<QBO.Purchase>()})
+          .object({
+            type: z.literal('Purchase'),
+            entity: zCast<QBO['Purchase']>(),
+          })
           .extend({realmId: z.string()}),
         z
           .object({
             type: z.literal('JournalEntry'),
-            entity: zCast<QBO.JournalEntry>(),
+            entity: zCast<QBO['JournalEntry']>(),
           })
           .extend({realmId: z.string()}),
         z
-          .object({type: z.literal('Invoice'), entity: zCast<QBO.Invoice>()})
+          .object({type: z.literal('Invoice'), entity: zCast<QBO['Invoice']>()})
           .extend({realmId: z.string()}),
         z
-          .object({type: z.literal('Payment'), entity: zCast<QBO.Payment>()})
+          .object({type: z.literal('Payment'), entity: zCast<QBO['Payment']>()})
           .extend({realmId: z.string()}),
       ]),
     },
@@ -324,7 +356,7 @@ export const qboDef = {
 } satisfies ConnectorDef<typeof qboSchemas>
 
 const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
-  QBO.Account['Classification'],
+  QBO['Account']['Classification'],
   Pta.AccountType
 > = {
   Asset: 'asset',
@@ -334,7 +366,7 @@ const QBO_CLASSFICATION_TO_ACCOUNT_TYPE: Record<
   Expense: 'expense',
 }
 
-function mapQboAccountType(a: QBO.Account) {
+function mapQboAccountType(a: QBO['Account']) {
   // TODO: Take into account a.AccountType and a.AccountSubtype
   return QBO_CLASSFICATION_TO_ACCOUNT_TYPE[a.Classification]
 }

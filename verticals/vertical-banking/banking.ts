@@ -3,10 +3,9 @@ import * as Rx from 'rxjs/operators'
 import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
 import type {components as Plaid} from '@usevenice/connector-plaid/plaid.oas'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
+import type {QBO} from '@usevenice/connector-qbo'
 import type {StrictObj} from '@usevenice/types'
 import {applyMapper, mapper, z, zCast} from '@usevenice/vdk'
-
-// import {QBO} from '@usevenice/connector-qbo/qbo'
 
 export const zBanking = {
   transaction: z.object({
@@ -59,7 +58,7 @@ export function bankingLink(ctx: {
       if (op.data.entityName === 'purchase') {
         const mapped = applyMapper(
           mappers.qbo.purchase,
-          op.data.entity as QBO.Purchase,
+          op.data.entity as QBO['Purchase'],
         )
         return rxjs.of({
           ...op,
@@ -71,14 +70,14 @@ export function bankingLink(ctx: {
         })
       }
       if (op.data.entityName === 'account') {
-        const entity = op.data.entity as QBO.Account
+        const entity = op.data.entity as QBO['Account']
         if (
           entity.Classification === 'Revenue' ||
           entity.Classification === 'Expense'
         ) {
           const mapped = applyMapper(
             mappers.qbo.category,
-            op.data.entity as QBO.Account,
+            op.data.entity as QBO['Account'],
           )
           return rxjs.of({
             ...op,
@@ -91,7 +90,7 @@ export function bankingLink(ctx: {
         } else {
           const mapped = applyMapper(
             mappers.qbo.account,
-            op.data.entity as QBO.Account,
+            op.data.entity as QBO['Account'],
           )
           return rxjs.of({
             ...op,
@@ -106,7 +105,7 @@ export function bankingLink(ctx: {
       if (op.data.entityName === 'vendor') {
         const mapped = applyMapper(
           mappers.qbo.vendor,
-          op.data.entity as QBO.Vendor,
+          op.data.entity as QBO['Vendor'],
         )
         return rxjs.of({
           ...op,
@@ -142,32 +141,36 @@ export function bankingLink(ctx: {
 const mappers = {
   // Should be able to have input and output entity types in here also.
   qbo: {
-    purchase: mapper(zCast<StrictObj<QBO.Purchase>>(), zBanking.transaction, {
-      id: 'Id',
-      amount: 'TotalAmt',
-      currency: 'CurrencyRef.value',
-      date: 'TxnDate',
-      account_id: 'AccountRef.value',
-      account_name: 'AccountRef.name',
-      // This is a significant approximation, as there can also be ItemBasedLineDetail as well as
-      // multiple lines... However we sit with it for now...
-      category_id: (p) =>
-        p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.value,
-      category_name: (p) =>
-        p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
-      description: (p) => p.Line[0]?.Description,
-      merchant_id: 'EntityRef.value',
-      merchant_name: 'EntityRef.name',
-    }),
-    account: mapper(zCast<StrictObj<QBO.Account>>(), zBanking.account, {
+    purchase: mapper(
+      zCast<StrictObj<QBO['Purchase']>>(),
+      zBanking.transaction,
+      {
+        id: 'Id',
+        amount: 'TotalAmt',
+        currency: 'CurrencyRef.value',
+        date: 'TxnDate',
+        account_id: 'AccountRef.value',
+        account_name: 'AccountRef.name',
+        // This is a significant approximation, as there can also be ItemBasedLineDetail as well as
+        // multiple lines... However we sit with it for now...
+        category_id: (p) =>
+          p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.value,
+        category_name: (p) =>
+          p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
+        description: (p) => p.Line[0]?.Description,
+        merchant_id: 'EntityRef.value',
+        merchant_name: 'EntityRef.name',
+      },
+    ),
+    account: mapper(zCast<StrictObj<QBO['Account']>>(), zBanking.account, {
       id: 'Id',
       name: 'FullyQualifiedName',
     }),
-    category: mapper(zCast<StrictObj<QBO.Account>>(), zBanking.category, {
+    category: mapper(zCast<StrictObj<QBO['Account']>>(), zBanking.category, {
       id: 'Id',
       name: 'FullyQualifiedName',
     }),
-    vendor: mapper(zCast<StrictObj<QBO.Vendor>>(), zBanking.merchant, {
+    vendor: mapper(zCast<StrictObj<QBO['Vendor']>>(), zBanking.merchant, {
       id: 'Id',
       name: 'DisplayName',
     }),

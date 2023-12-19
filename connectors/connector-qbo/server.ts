@@ -3,7 +3,7 @@ import type {QBOSDKTypes} from '@opensdks/sdk-qbo'
 import {qboSdkDef} from '@opensdks/sdk-qbo'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
-import type {qboSchemas} from './def'
+import type {QBO, qboSchemas, TransactionTypeName} from './def'
 import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
 
 function initQBOSdk(options: QBOSDKTypes['options']) {
@@ -41,7 +41,7 @@ export const qboServer = {
           continue
         }
         for await (const res of qbo.getAll(type, {updatedSince})) {
-          const entities = res.entities as QBO.Transaction[]
+          const entities = res.entities as Array<QBO[TransactionTypeName]>
           yield entities.map((t) =>
             qboHelpers._opData(snakeCase(type), t.Id, t),
           )
@@ -87,11 +87,13 @@ export const qboServer = {
               const updatedSince = undefined
               for (const type of Object.values(TRANSACTION_TYPE_NAME)) {
                 for await (const res of qbo.getAll(type, {updatedSince})) {
-                  const entities = res.entities as QBO.Transaction[]
+                  const entities = res.entities as Array<
+                    QBO[TransactionTypeName]
+                  >
                   yield entities.map((t) => ({
                     Id: t.Id, // For primary key...
                     type: type as 'Purchase',
-                    entity: t as QBO.Purchase,
+                    entity: t as QBO['Purchase'],
                     realmId: qbo.realmId,
                   }))
                 }
