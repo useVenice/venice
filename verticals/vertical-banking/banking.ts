@@ -155,7 +155,7 @@ const mappers = {
         p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.value,
       category_name: (p) =>
         p.Line[0]?.AccountBasedExpenseLineDetail?.AccountRef.name,
-      description: 'PrivateNote', // Is this right?
+      description: (p) => p.Line[0]?.Description,
       merchant_id: 'EntityRef.value',
       merchant_name: 'EntityRef.name',
     }),
