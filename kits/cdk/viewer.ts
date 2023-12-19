@@ -7,15 +7,17 @@ import {zEndUserId, zId, zUserId} from './id.types'
 
 export const zRole = z.enum(['anon', 'end_user', 'user', 'org', 'system'])
 
-export const zViewer = z.discriminatedUnion('role', [
-  z.object({role: z.literal(zRole.Enum.anon)}),
-  // prettier-ignore
-  z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, orgId: zId('org')}),
-  // prettier-ignore
-  z.object({role: z.literal(zRole.Enum.user), userId: zUserId, orgId: zId('org').nullish()}),
-  z.object({role: z.literal(zRole.Enum.org), orgId: zId('org')}),
-  z.object({role: z.literal(zRole.Enum.system)}),
-])
+export const zViewer = z
+  .discriminatedUnion('role', [
+    z.object({role: z.literal(zRole.Enum.anon)}),
+    // prettier-ignore
+    z.object({role: z.literal(zRole.Enum.end_user), endUserId: zEndUserId, orgId: zId('org')}),
+    // prettier-ignore
+    z.object({role: z.literal(zRole.Enum.user), userId: zUserId, orgId: zId('org').nullish()}),
+    z.object({role: z.literal(zRole.Enum.org), orgId: zId('org')}),
+    z.object({role: z.literal(zRole.Enum.system)}),
+  ])
+  .openapi({ref: 'Viewer'})
 
 export type ViewerRole = z.infer<typeof zRole>
 export type Viewer<R extends ViewerRole = ViewerRole> = Extract<
