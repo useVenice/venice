@@ -976,11 +976,11 @@ importers:
   connectors/connector-qbo:
     dependencies:
       '@opensdks/runtime':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.0.12
+        version: 0.0.12
       '@opensdks/sdk-qbo':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.0.11
+        version: 0.0.11
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -1181,6 +1181,9 @@ importers:
       '@nangohq/frontend':
         specifier: 0.33.8
         version: 0.33.8(patch_hash=cscdyzeu5adridjxg5g7kdqy6q)
+      '@opensdks/runtime':
+        specifier: 0.0.12
+        version: 0.0.12
       '@types/jsonwebtoken':
         specifier: 9.0.2
         version: 9.0.2
@@ -1304,6 +1307,12 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(zod@3.21.4)
     devDependencies:
+      '@opensdks/runtime':
+        specifier: 0.0.12
+        version: 0.0.12
+      '@opensdks/sdk-qbo':
+        specifier: 0.0.11
+        version: 0.0.11
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)
@@ -4632,22 +4641,19 @@ packages:
       '@octokit/openapi-types': 18.1.1
     dev: true
 
-  /@opensdks/links@0.0.1:
-    resolution: {integrity: sha512-MDxFY5OmxzjF4vuQ9i5Q6C3a4uLGBr7KF6w+EZ8jwvwvUP24Hfsnh7aC8uGR11XrenM5nMlhe+9aDgIMXqgS1g==}
-    dev: false
+  /@opensdks/links@0.0.11:
+    resolution: {integrity: sha512-KpvPp4b567pJCeLnqanakkkZbXJTheA2WRIe9gOMjC8EYDRixkWjurikLtDQ49yDBPSg5ybk+nZ443IfAcCgdQ==}
 
-  /@opensdks/runtime@0.0.1:
-    resolution: {integrity: sha512-sx5Phiaq9xRd26UGCQGEBc6a4tzv8YRjHw2QmLMHPqtg2C2t0hX5Y93OHu+0l5ODcqecfYXM6Xwuq6RWi/WlbA==}
+  /@opensdks/runtime@0.0.12:
+    resolution: {integrity: sha512-y7ch7QBK82ypLIgj9fYxX4i7KKpcAH3VOGe+4IxkVLufntY12HvoF7e5terdRd0fel8eCfVluKZjYHEQouAiuA==}
     dependencies:
-      '@opensdks/links': 0.0.1
+      '@opensdks/links': 0.0.11
       openapi-fetch: 0.8.1
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
-    dev: false
 
-  /@opensdks/sdk-qbo@0.0.1:
-    resolution: {integrity: sha512-9uac+9aeoaWILc/wqRTJ2gfCJ14t4McgK4DtKkJZChy49NJbXZRMh1T4GKCaZdQt5Au9HusD4+Y9imidfgdOtw==}
-    dev: false
+  /@opensdks/sdk-qbo@0.0.11:
+    resolution: {integrity: sha512-8d8KNTjMDh5Cidm7NMNzoz3qmqpWMzqfREI6As+ETDgZNze1TprtZZzP6aMYIi/awRUQBJQZXTR4hTEOFSuwUQ==}
 
   /@panva/asn1.js@1.0.0:
     resolution: {integrity: sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==}

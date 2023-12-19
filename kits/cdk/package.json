@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@nangohq/frontend": "0.33.8",
+    "@opensdks/runtime": "0.0.12",
     "@types/jsonwebtoken": "9.0.2",
     "@types/react": "*",
     "@usevenice/trpc-openapi": "1.3.8",
