@@ -5,7 +5,6 @@ import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
 import type {qboSchemas} from './def'
 import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
-import {makeQBOClient} from './QBOClient'
 
 function initQBOSdk(options: QBOSDKTypes['options']) {
   const sdk = initSDK(qboSdkDef, options)
@@ -33,9 +32,7 @@ export const qboServer = {
     return qbo
   },
 
-  sourceSync: ({config, settings, streams}) => {
-    // TODO: get the data from newInstance..
-    const qbo = makeQBOClient(config, settings, () => {})
+  sourceSync: ({instance: qbo, streams}) => {
     async function* iterateEntities() {
       const updatedSince = undefined
       console.log('[qbo] Starting sync', streams)

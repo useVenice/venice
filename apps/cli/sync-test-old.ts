@@ -13,6 +13,17 @@ import {Rx, rxjs, safeJSONParse} from '@usevenice/util'
 const srcPath = './apps/tests/__encrypted__/meta'
 const destPath = './temp'
 
+function getInstance(
+  provider: {
+    sourceSync?: (...args: any) => any
+    newInstance?: (args: any) => any
+  },
+  opts: {config: any; settings: any},
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  return {...opts, instance: provider.newInstance?.(opts)}
+}
+
 // Output sync messages to standard out
 
 // TODO: Take inspiration from airbyte-plaid-connector and make the integration
@@ -22,11 +33,13 @@ switch (process.argv[2]) {
   case 'source-brex': {
     sync({
       source: brexImpl.sourceSync({
-        config: {apikeyAuth: true},
         endUser: null,
-        settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
         state: {},
         streams: {},
+        ...getInstance(brexImpl, {
+          config: {apikeyAuth: true},
+          settings: {accessToken: process.env['BREX_TOKEN'] ?? ''},
+        }),
       }),
       destination: (obs) =>
         obs.pipe(
@@ -41,13 +54,14 @@ switch (process.argv[2]) {
     sync({
       source: postgresProvider.sourceSync({
         state: undefined,
-        config: {},
         endUser: null,
         streams: {},
-        settings: {
-          databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
-          sourceQueries: {
-            invoice: `
+        ...getInstance(postgresProvider, {
+          config: {},
+          settings: {
+            databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
+            sourceQueries: {
+              invoice: `
               SELECT
                 iv.id,
                 iv.customer_id as contact,
@@ -67,8 +81,9 @@ switch (process.argv[2]) {
                   ON iv.id = il.invoice_id
               GROUP BY
                 iv.id;`,
+            },
           },
-        },
+        }),
       }),
       destination: (obs) =>
         obs.pipe(
@@ -82,11 +97,13 @@ switch (process.argv[2]) {
   case 'source-heron': {
     sync({
       source: heronImpl.sourceSync({
-        settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
-        config: {apiKey: process.env['HERON_API_KEY']!},
         endUser: null,
         state: {},
         streams: {},
+        ...getInstance(heronImpl, {
+          settings: {endUserId: 'b27c6987-22ea-4518-be81-f9da4bbc40c8'},
+          config: {apiKey: process.env['HERON_API_KEY']!},
+        }),
       }),
       destination: (obs) =>
         obs.pipe(
@@ -120,12 +137,15 @@ switch (process.argv[2]) {
     sync({
       source: mergeImpl.sourceSync({
         endUser: null,
-        settings: {
-          accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
-        },
-        config: {apiKey: process.env['MERGE_TEST_API_KEY'] ?? ''},
+
         state: {},
         streams: {},
+        ...getInstance(mergeImpl, {
+          settings: {
+            accountToken: process.env['MERGE_TEST_LINKED_ACCOUNT_TOKEN'] ?? '',
+          },
+          config: {apiKey: process.env['MERGE_TEST_API_KEY'] ?? ''},
+        }),
       }),
       destination: (obs) =>
         obs.pipe(
@@ -178,10 +198,12 @@ switch (process.argv[2]) {
     sync({
       source: fsServer.sourceSync({
         endUser: null,
-        settings: {basePath: srcPath},
-        config: {},
         state: {},
         streams: {},
+        ...getInstance(fsServer, {
+          settings: {basePath: srcPath},
+          config: {},
+        }),
       }),
       destination: fsServer.destinationSync({
         source: undefined,

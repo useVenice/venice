@@ -263,6 +263,13 @@ export const resourceRouter = trpc.router({
         await sync({
           source:
             reso.connectorConfig.connector.sourceSync?.({
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              instance: reso.connectorConfig.connector.newInstance?.({
+                config: reso.connectorConfig.config,
+                settings: reso.settings,
+                sdkLinks: ctx.services.getSdkLinks(reso),
+                onSettingsChange: () => {},
+              }),
               config: reso.connectorConfig.config,
               settings: reso.settings,
               endUser: reso.endUserId && {id: reso.endUserId},

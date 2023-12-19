@@ -119,6 +119,13 @@ export function makeAirbyteConnector(connector: AnyConnectorImpl) {
             endUser: null,
             config: config.config,
             settings: config.settings,
+
+            instance: connector.newInstance?.({
+              config: config.config,
+              settings: config.settings,
+              sdkLinks: [], // TODO: Add fetchLinks when we need to actually impl this.
+              onSettingsChange: () => {},
+            }),
             state,
             streams: {}, // can implement the catalog now...
           })

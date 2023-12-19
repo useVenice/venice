@@ -1,3 +1,4 @@
+import type {Link as SdkLink} from '@opensdks/runtime'
 import type {
   AnyEntityPayload,
   Destination,
@@ -25,6 +26,7 @@ export function makeSyncService({
   metaService,
   getPipelineExpandedOrFail,
   getResourceExpandedOrFail,
+  getSdkLinks,
 }: {
   metaService: MetaService
   metaLinks: ReturnType<typeof makeMetaLinks>
@@ -34,6 +36,7 @@ export function makeSyncService({
   getResourceExpandedOrFail: ReturnType<
     typeof makeDBService
   >['getResourceExpandedOrFail']
+  getSdkLinks: (reso: _ResourceExpanded) => SdkLink[]
 }) {
   async function ensurePipelinesForResource(resoId: Id['reso']) {
     const pipelines = await metaService.findPipelines({resourceIds: [resoId]})
@@ -172,6 +175,13 @@ export function makeSyncService({
     const defaultSource$ = () =>
       src.connectorConfig.connector.sourceSync?.({
         endUser,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        instance: src.connectorConfig.connector.newInstance?.({
+          config: src.connectorConfig.config,
+          settings: src.settings,
+          sdkLinks: getSdkLinks(src),
+          onSettingsChange: () => {},
+        }),
         config: src.connectorConfig.config,
         settings: src.settings,
         // Maybe we should rename `options` to `state`?

@@ -39,6 +39,7 @@ export const foreceiptServer = {
                 settings: client.fbSettings,
                 state: {_fb: fb, _queries: Object.values(q)},
                 streams: {},
+                instance: undefined, // Not implemented by firebaseServer yet...
               })
             }),
           )

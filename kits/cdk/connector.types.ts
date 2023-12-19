@@ -226,12 +226,15 @@ export interface ConnectorServer<
 
   sourceSync?: (
     input: OmitNever<{
+      instance: TInstance
       endUser: {id: EndUserId} | null | undefined
-      config: T['_types']['connectorConfig']
-      settings: T['_types']['resourceSettings']
       /* Enabled streams */
       streams: {[k in T['_streamName']]?: boolean | null}
       state: T['_types']['sourceState']
+      /** @deprecated, use `instance` instead */
+      config: T['_types']['connectorConfig']
+      /** @deprecated, use `instance` instead */
+      settings: T['_types']['resourceSettings']
     }>,
   ) => Source<T['_types']['sourceOutputEntity']>
 

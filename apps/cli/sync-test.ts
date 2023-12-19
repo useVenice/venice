@@ -7,33 +7,47 @@ import {postgresProvider} from '@usevenice/connector-postgres'
 import type {rxjs} from '@usevenice/util'
 import {R, Rx} from '@usevenice/util'
 
+function getInstance(
+  provider: {
+    sourceSync?: (...args: any) => any
+    newInstance?: (args: any) => any
+  },
+  opts: {config: any; settings: any},
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  return {...opts, instance: provider.newInstance?.(opts)}
+}
+
 function getSource(name: string) {
   switch (name) {
     case 'plaid':
       return plaidProvider.sourceSync({
         endUser: null,
-        config: plaidProvider.schemas.connectorConfig.parse({
-          envName: 'sandbox',
-          clientId: process.env['int_plaid__clientId'] ?? '',
-          clientSecret:
-            process.env['int_plaid__clientSecret'] ??
-            process.env['int_plaid__secrets__sandbox'] ??
-            '',
+        ...getInstance(plaidProvider, {
+          config: plaidProvider.schemas.connectorConfig.parse({
+            envName: 'sandbox',
+            clientId: process.env['int_plaid__clientId'] ?? '',
+            clientSecret:
+              process.env['int_plaid__clientSecret'] ??
+              process.env['int_plaid__secrets__sandbox'] ??
+              '',
+          }),
+          settings: {accessToken: process.env['PLAID_ACCESS_TOKEN'] ?? ''},
         }),
-        settings: {accessToken: process.env['PLAID_ACCESS_TOKEN'] ?? ''},
         state: {},
         streams: {},
       })
     case 'postgres':
       return postgresProvider.sourceSync({
-        config: {},
         endUser: null,
         state: {},
         streams: {},
-        settings: {
-          databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
-          sourceQueries: {
-            invoice: `
+        ...getInstance(postgresProvider, {
+          config: {},
+          settings: {
+            databaseUrl: process.env['POSTGRES_OR_WEBHOOK_URL'] ?? '',
+            sourceQueries: {
+              invoice: `
               SELECT
                 iv.id,
                 iv.customer_id as contact,
@@ -53,8 +67,9 @@ function getSource(name: string) {
                   ON iv.id = il.invoice_id
               GROUP BY
                 iv.id;`,
+            },
           },
-        },
+        }),
       })
     default:
       throw new Error(`Unknown source: ${name}`)

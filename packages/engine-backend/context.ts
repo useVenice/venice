@@ -1,5 +1,4 @@
 import {TRPCError} from '@trpc/server'
-
 import type {
   AnyConnectorImpl,
   EndUserId,
@@ -11,7 +10,6 @@ import {makeNangoClient} from '@usevenice/cdk'
 import type {JWTClient, Viewer, ViewerRole} from '@usevenice/cdk/viewer'
 import {makeJwtClient, zViewerFromJwtPayload} from '@usevenice/cdk/viewer'
 import {R} from '@usevenice/util'
-
 import type {Env} from '../../apps/app-config/env'
 import {makeServices as _makeServices} from './services'
 // Should we actually do this hmm
@@ -82,7 +80,7 @@ export function getContextFactory<
   const jwt = makeJwtClient({secretOrPublicKey: jwtSecret})
 
   const getServices = (viewer: Viewer) =>
-    _makeServices({metaService: getMetaService(viewer), connectorMap})
+    _makeServices({metaService: getMetaService(viewer), connectorMap, env})
 
   function fromViewer(viewer: Viewer): Omit<RouterContext, 'remoteResourceId'> {
     return {
