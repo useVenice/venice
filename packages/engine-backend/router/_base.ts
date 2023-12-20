@@ -43,9 +43,19 @@ export const trpc = initTRPC
     },
   })
 
-export const publicProcedure = trpc.procedure
+export const publicProcedure = trpc.procedure.use(
+  ({next, ctx, input, rawInput, meta, path}) => {
+    console.log('[trpc]', {
+      input,
+      rawInput,
+      meta,
+      path,
+    })
+    return next({ctx})
+  },
+)
 
-export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
+export const protectedProcedure = publicProcedure.use(({next, ctx}) => {
   if (!hasRole(ctx.viewer, ['end_user', 'user', 'org', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
@@ -59,7 +69,7 @@ export const protectedProcedure = trpc.procedure.use(({next, ctx}) => {
   return next({ctx: {...ctx, viewer: ctx.viewer, asOrgIfNeeded, extEndUserId}})
 })
 
-export const adminProcedure = trpc.procedure.use(({next, ctx}) => {
+export const adminProcedure = publicProcedure.use(({next, ctx}) => {
   if (!hasRole(ctx.viewer, ['user', 'org', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
@@ -68,7 +78,7 @@ export const adminProcedure = trpc.procedure.use(({next, ctx}) => {
   return next({ctx: {...ctx, viewer: ctx.viewer}})
 })
 
-export const systemProcedure = trpc.procedure.use(({next, ctx}) => {
+export const systemProcedure = publicProcedure.use(({next, ctx}) => {
   if (!hasRole(ctx.viewer, ['system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',
