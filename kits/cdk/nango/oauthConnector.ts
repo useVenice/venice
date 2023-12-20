@@ -41,6 +41,7 @@ function isNangoAuthError(err: unknown): err is AuthError {
   return typeof err === 'object' && err != null && 'type' in err
 }
 
+/** Aka `nangoConnect` */
 export function oauthConnect({
   nangoFrontend,
   connectorName,
@@ -70,6 +71,7 @@ export function oauthConnect({
     })
 }
 
+/** aka `makeNangoConnectorServer` */
 export function makeOauthConnectorServer({
   nangoClient,
   nangoProvider,

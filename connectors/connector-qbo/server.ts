@@ -2,6 +2,7 @@ import {initSDK} from '@opensdks/runtime'
 import type {QBOSDKTypes} from '@opensdks/sdk-qbo'
 import {qboSdkDef} from '@opensdks/sdk-qbo'
 import type {ConnectorServer} from '@usevenice/cdk'
+import {nangoProxyLink} from '@usevenice/cdk'
 import {Rx, rxjs, snakeCase} from '@usevenice/util'
 import type {QBO, qboSchemas, TransactionTypeName} from './def'
 import {QBO_ENTITY_NAME, qboHelpers, TRANSACTION_TYPE_NAME} from './def'
@@ -17,17 +18,23 @@ export const qboServer = {
     const qbo = initQBOSdk({
       envName: config.envName,
       realmId: settings.oauth.connection_config.realmId,
+      // Access token may be out of date, we are relying on fetchLinks to contain a middleware to
+      // either refresh the token or proxy the request and with its own tokens
+      // Which means that in practice this is probably not gonna be used...
+      accessToken: settings.oauth.credentials.access_token,
       links: (defaultLinks) => [
         (req, next) => {
           if (qbo.clientOptions.baseUrl) {
-            req.headers.set('base-url-override', qbo.clientOptions.baseUrl)
+            req.headers.set(
+              nangoProxyLink.kBaseUrlOverride,
+              qbo.clientOptions.baseUrl,
+            )
           }
           return next(req)
         },
         ...fetchLinks,
         ...defaultLinks,
       ],
-      accessToken: '', // Will use passthrough api for this..
     })
     return qbo
   },

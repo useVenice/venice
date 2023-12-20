@@ -1,7 +1,7 @@
 import {logLink} from '@opensdks/runtime'
 import type {AnyConnectorImpl} from '@usevenice/cdk'
+import {nangoProxyLink} from '@usevenice/cdk'
 import {R} from '@usevenice/util'
-import {nangoProxyLink} from '../lib/nangoProxyLink'
 import type {_ResourceExpanded} from './dbService'
 import {makeDBService} from './dbService'
 import type {MetaService} from './metaService'

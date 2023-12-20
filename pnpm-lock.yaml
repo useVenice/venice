@@ -1159,6 +1159,9 @@ importers:
 
   kits/cdk:
     dependencies:
+      '@opensdks/runtime':
+        specifier: 0.0.12
+        version: 0.0.12
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
@@ -1181,9 +1184,9 @@ importers:
       '@nangohq/frontend':
         specifier: 0.33.8
         version: 0.33.8(patch_hash=cscdyzeu5adridjxg5g7kdqy6q)
-      '@opensdks/runtime':
-        specifier: 0.0.12
-        version: 0.0.12
+      '@opensdks/sdk-qbo':
+        specifier: 0.0.11
+        version: 0.0.11
       '@types/jsonwebtoken':
         specifier: 9.0.2
         version: 9.0.2
@@ -1310,9 +1313,6 @@ importers:
       '@opensdks/runtime':
         specifier: 0.0.12
         version: 0.0.12
-      '@opensdks/sdk-qbo':
-        specifier: 0.0.11
-        version: 0.0.11
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)

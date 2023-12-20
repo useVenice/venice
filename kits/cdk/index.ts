@@ -1,6 +1,3 @@
-export * from './oauth/NangoClient'
-export * from './oauth/oauthConnector'
-
 // codegen:start {preset: barrel, include: "./{*.{ts,tsx},*/index.{ts,tsx}}", exclude: "./**/*.{spec,test,fixture}.{ts,tsx}"}
 export * from './base-links'
 export * from './connector-meta.types'
@@ -11,6 +8,7 @@ export * from './frontend-utils'
 export * from './id.types'
 export * from './metaForConnector'
 export * from './models'
+export * from './nango/index'
 export * from './protocol'
 export * from './sync'
 export * from './verticals'

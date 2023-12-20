@@ -1,3 +1,4 @@
+/** TODO: Move this into @opensdks */
 import type {Endpoints, InfoFromEndpoints} from '@usevenice/util'
 import {makeOpenApiClient} from '@usevenice/util'
 import {z} from '@usevenice/zod'
