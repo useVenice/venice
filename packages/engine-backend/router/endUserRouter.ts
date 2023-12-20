@@ -44,7 +44,14 @@ export const zConnectPageParams = z.object({
       'Where to send user to after connect / if they press back button',
     ),
   // TODO: How to make sure we actually have a typed api here and can use zProviderName
-  connectorName: z.string().nullish().describe('Which provider to use'),
+  connectorName: z
+    .string()
+    .nullish()
+    .describe('Filter connector config by connector name'),
+  connectorConfigDisplayName: z
+    .string()
+    .nullish()
+    .describe('Filter connector config by displayName '),
   /** Launch the conector with config right away */
   connectorConfigId: zId('ccfg').optional(),
   /** Whether to show existing resources */

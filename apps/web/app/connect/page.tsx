@@ -1,6 +1,5 @@
 import {clerkClient} from '@clerk/nextjs'
 import Image from 'next/image'
-
 import {defConnectors} from '@usevenice/app-config/connectors/connectors.def'
 import {kAccessToken} from '@usevenice/app-config/constants'
 import {env} from '@usevenice/app-config/env'
@@ -14,11 +13,9 @@ import {
 } from '@usevenice/cdk'
 import {zConnectPageParams} from '@usevenice/engine-backend/router/endUserRouter'
 import {makeUlid, z} from '@usevenice/util'
-
 import {ClientRoot} from '@/components/ClientRoot'
 import {SuperHydrate} from '@/components/SuperHydrate'
 import {createServerComponentHelpers} from '@/lib-server/server-component-helpers'
-
 import ConnectPage from './ConnectPage'
 import {SetCookieAndRedirect} from './SetCookieAndRedirect'
 
@@ -65,9 +62,14 @@ export default async function ConnectPageContainer({
   // Implement shorthand for specifying only connectorConfigId by connectorName
   let connectorConfigId = params.connectorConfigId
   if (!connectorConfigId && params.connectorName) {
-    const ints = await ssg.listConnectorConfigInfos.fetch({
+    let ints = await ssg.listConnectorConfigInfos.fetch({
       connectorName: params.connectorName,
     })
+    if (params.connectorConfigDisplayName) {
+      ints = ints.filter(
+        (int) => int.displayName === params.connectorConfigDisplayName,
+      )
+    }
     if (ints.length === 1 && ints[0]?.id) {
       connectorConfigId = ints[0]?.id
     } else if (ints.length < 1) {
