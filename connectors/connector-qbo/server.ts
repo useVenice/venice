@@ -13,7 +13,7 @@ function initQBOSdk(options: QBOSDKTypes['options']) {
 }
 
 export const qboServer = {
-  newInstance: ({config, settings, sdkLinks}) => {
+  newInstance: ({config, settings, fetchLinks}) => {
     const qbo = initQBOSdk({
       envName: config.envName,
       realmId: settings.oauth.connection_config.realmId,
@@ -24,7 +24,7 @@ export const qboServer = {
           }
           return next(req)
         },
-        ...sdkLinks,
+        ...fetchLinks,
         ...defaultLinks,
       ],
       accessToken: '', // Will use passthrough api for this..

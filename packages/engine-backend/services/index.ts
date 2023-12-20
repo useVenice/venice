@@ -21,7 +21,7 @@ export function makeServices({
     metaService,
     connectorMap,
   })
-  function getSdkLinks(reso: _ResourceExpanded) {
+  function getFetchLinks(reso: _ResourceExpanded) {
     return R.compact([
       logLink(),
       reso.connectorConfig.connector.metadata?.nangoProvider &&
@@ -37,8 +37,8 @@ export function makeServices({
     metaLinks: dbService.metaLinks,
     getPipelineExpandedOrFail: dbService.getPipelineExpandedOrFail,
     getResourceExpandedOrFail: dbService.getResourceExpandedOrFail,
-    getSdkLinks,
+    getFetchLinks,
   })
 
-  return {...dbService, ...syncService, getSdkLinks}
+  return {...dbService, ...syncService, getFetchLinks}
 }

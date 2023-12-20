@@ -99,7 +99,7 @@ export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
         connectorName: resource.connectorName,
         settings: resource.settings,
         config: resource.connectorConfig.config,
-        sdkLinks: ctx.services.getSdkLinks(resource),
+        fetchLinks: ctx.services.getFetchLinks(resource),
       },
     },
   })

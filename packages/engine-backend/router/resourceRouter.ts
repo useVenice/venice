@@ -40,7 +40,7 @@ export const resourceRouter = trpc.router({
       const instance = ctx.remote.connector.newInstance?.({
         config: ctx.remote.config,
         settings: ctx.remote.settings,
-        sdkLinks: ctx.remote.sdkLinks,
+        fetchLinks: ctx.remote.fetchLinks,
         onSettingsChange: () => {}, // not implemented
       })
       return await ctx.remote.connector.passthrough(instance, input)
@@ -267,7 +267,7 @@ export const resourceRouter = trpc.router({
               instance: reso.connectorConfig.connector.newInstance?.({
                 config: reso.connectorConfig.config,
                 settings: reso.settings,
-                sdkLinks: ctx.services.getSdkLinks(reso),
+                fetchLinks: ctx.services.getFetchLinks(reso),
                 onSettingsChange: () => {},
               }),
               config: reso.connectorConfig.config,

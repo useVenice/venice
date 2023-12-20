@@ -1,4 +1,4 @@
-import type {Link as SdkLink} from '@opensdks/runtime'
+import type {Link as FetchLink} from '@opensdks/runtime'
 import type {
   AnyEntityPayload,
   Destination,
@@ -26,7 +26,7 @@ export function makeSyncService({
   metaService,
   getPipelineExpandedOrFail,
   getResourceExpandedOrFail,
-  getSdkLinks,
+  getFetchLinks,
 }: {
   metaService: MetaService
   metaLinks: ReturnType<typeof makeMetaLinks>
@@ -36,7 +36,7 @@ export function makeSyncService({
   getResourceExpandedOrFail: ReturnType<
     typeof makeDBService
   >['getResourceExpandedOrFail']
-  getSdkLinks: (reso: _ResourceExpanded) => SdkLink[]
+  getFetchLinks: (reso: _ResourceExpanded) => FetchLink[]
 }) {
   async function ensurePipelinesForResource(resoId: Id['reso']) {
     const pipelines = await metaService.findPipelines({resourceIds: [resoId]})
@@ -179,7 +179,7 @@ export function makeSyncService({
         instance: src.connectorConfig.connector.newInstance?.({
           config: src.connectorConfig.config,
           settings: src.settings,
-          sdkLinks: getSdkLinks(src),
+          fetchLinks: getFetchLinks(src),
           onSettingsChange: () => {},
         }),
         config: src.connectorConfig.config,

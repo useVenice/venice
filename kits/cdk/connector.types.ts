@@ -1,4 +1,4 @@
-import type {Link} from '@opensdks/runtime'
+import type {Link as FetchLink} from '@opensdks/runtime'
 import type {MaybePromise, PathsOf} from '@usevenice/util'
 import {R} from '@usevenice/util'
 import type {z} from '@usevenice/zod'
@@ -277,8 +277,8 @@ export interface ConnectorServer<
   newInstance?: (opts: {
     config: T['_types']['connectorConfig']
     settings: T['_types']['resourceSettings']
-    sdkLinks: Link[]
-    /** @deprecated, use sdkLinks instead for things like token refreshes or connection status update */
+    fetchLinks: FetchLink[]
+    /** @deprecated, use fetchLinks instead for things like token refreshes or connection status update */
     onSettingsChange: (
       newSettings: T['_types']['resourceSettings'],
     ) => MaybePromise<void>

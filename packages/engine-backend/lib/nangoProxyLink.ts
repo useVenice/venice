@@ -1,4 +1,4 @@
-import type {Link} from '@opensdks/runtime'
+import type {Link as FetchLink} from '@opensdks/runtime'
 import {mergeHeaders, modifyRequest} from '@opensdks/runtime'
 
 const kBaseUrlOverride = 'base-url-override'
@@ -26,7 +26,7 @@ export function nangoProxyLink(opts: {
   baseUrlOverride?: string
   /** `retries` header */
   retries?: number
-}): Link {
+}): FetchLink {
   const nangoHeaders = {
     authorization: `Bearer ${opts.secretKey}`,
     'connection-id': opts.connectionId,

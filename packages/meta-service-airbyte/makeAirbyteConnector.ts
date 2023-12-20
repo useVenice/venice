@@ -123,7 +123,7 @@ export function makeAirbyteConnector(connector: AnyConnectorImpl) {
             instance: connector.newInstance?.({
               config: config.config,
               settings: config.settings,
-              sdkLinks: [], // TODO: Add fetchLinks when we need to actually impl this.
+              fetchLinks: [], // TODO: Add fetchLinks when we need to actually impl this.
               onSettingsChange: () => {},
             }),
             state,
