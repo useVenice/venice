@@ -16,6 +16,10 @@ export default (function trpcOpenAPIHandler(req, res) {
   if (respondToCORS(req, res)) {
     return
   }
+  if (req.headers['transfer-encoding'] === 'chunked') {
+    res.status(400).send('Chunked transfer encoding is not supported')
+    return
+  }
   console.log(
     '[trpcOpenAPIHandler]',
     req.url,
