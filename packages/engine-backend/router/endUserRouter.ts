@@ -83,7 +83,7 @@ function asEndUser(
   viewer: Viewer,
   input: {endUserId?: EndUserId | null},
 ): Viewer<'end_user'> {
-  console.log('[asEndUser]', viewer, input)
+  // console.log('[asEndUser]', viewer, input)
   // Figure out a better way to share code here...
   if (!('orgId' in viewer) || !viewer.orgId) {
     throw new TRPCError({
@@ -123,16 +123,16 @@ export const endUserRouter = trpc.router({
     .meta({openapi: {method: 'POST', path: '/connect/token', tags}})
     .input(endUserRouterSchema.createConnectToken.input)
     .output(z.object({token: z.string()}))
-    .mutation(({input: {validityInSeconds, ...input}, ctx}) => {
-      console.log('[createConnectToken]', ctx.viewer, input, {
-        validityInSeconds,
-      })
-      return {
+    .mutation(({input: {validityInSeconds, ...input}, ctx}) => 
+      // console.log('[createConnectToken]', ctx.viewer, input, {
+      //   validityInSeconds,
+      // })
+       ({
         token: ctx.jwt.signViewer(asEndUser(ctx.viewer, input), {
           validityInSeconds,
         }),
-      }
-    }),
+      })
+    ),
   createMagicLink: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/connect/magic-link', tags}})
     .input(endUserRouterSchema.createMagicLink.input)

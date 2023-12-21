@@ -20,8 +20,8 @@ export default (function trpcOpenAPIHandler(req, res) {
     '[trpcOpenAPIHandler]',
     req.url,
     req.method,
-    req.headers,
-    req.body,
+    // req.headers,
+    // req.body,
   )
 
   return handler(req, res)
