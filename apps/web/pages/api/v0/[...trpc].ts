@@ -1,12 +1,8 @@
 import '@usevenice/app-config/register.node'
-
 import type {NextApiHandler} from 'next'
-
 import {createOpenApiNextHandler} from '@usevenice/trpc-openapi'
-
 import {respondToCORS} from '@/lib-server'
 import {appRouter} from '@/lib-server/appRouter'
-
 import {createContext, onError} from '../trpc/[...trpc]'
 
 const handler = createOpenApiNextHandler({
@@ -16,13 +12,17 @@ const handler = createOpenApiNextHandler({
   onError,
 })
 
-export default (function trpcHandler(req, res) {
+export default (function trpcOpenAPIHandler(req, res) {
   if (respondToCORS(req, res)) {
     return
   }
-  // allow the root document to work.
-  if (!req.query['trpc']) {
-    req.query['trpc'] = ''
-  }
+  console.log(
+    '[trpcOpenAPIHandler]',
+    req.url,
+    req.method,
+    req.headers,
+    req.body,
+  )
+
   return handler(req, res)
 } satisfies NextApiHandler)
