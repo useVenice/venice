@@ -22,7 +22,7 @@ export {type inferProcedureInput} from '@trpc/server'
 
 export const zConnectTokenPayload = z.object({
   endUserId: zEndUserId
-    .nullable()
+    .optional() // Optional because when creating magic link as current end user we dont' need it...
     .describe(
       'Anything that uniquely identifies the end user that you will be sending the magic link to',
     ),
@@ -123,15 +123,15 @@ export const endUserRouter = trpc.router({
     .meta({openapi: {method: 'POST', path: '/connect/token', tags}})
     .input(endUserRouterSchema.createConnectToken.input)
     .output(z.object({token: z.string()}))
-    .mutation(({input: {validityInSeconds, ...input}, ctx}) => 
+    .mutation(({input: {validityInSeconds, ...input}, ctx}) =>
       // console.log('[createConnectToken]', ctx.viewer, input, {
       //   validityInSeconds,
       // })
-       ({
+      ({
         token: ctx.jwt.signViewer(asEndUser(ctx.viewer, input), {
           validityInSeconds,
         }),
-      })
+      }),
     ),
   createMagicLink: protectedProcedure
     .meta({openapi: {method: 'POST', path: '/connect/magic-link', tags}})
