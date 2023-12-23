@@ -20,4 +20,13 @@ const handler = async (req: Request) => {
   return modifyResponse(res, {headers: (h) => h.delete('x-middleware-rewrite')})
 }
 
-export {handler as GET, handler as POST, handler as PUT, handler as DELETE}
+export {
+  handler as GET,
+  handler as PUT,
+  handler as POST,
+  handler as DELETE,
+  handler as OPTIONS,
+  handler as HEAD,
+  handler as PATCH,
+  handler as TRACE,
+}
