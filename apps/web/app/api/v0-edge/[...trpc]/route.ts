@@ -6,12 +6,12 @@ export const runtime = 'edge'
 // transfer-encoding: chunked
 const handler = async (req: Request) => {
   const body = await req.text()
-  console.log('[trpcOpenAPIHandler]', req.url, req.method, body)
+  console.log('[v0-edge]', req.url, req.method, body)
   const res = await fetch(
     modifyRequest(req, {
       url: req.url.replace('/api/v0-edge', '/api/v0'),
       headers: (h) => h.delete('transfer-encoding'),
-      body,
+      ...(body && {body}),
     }),
   )
   // console.log('[trpcOpenAPIHandler]', req.url, req.method, res.status)
