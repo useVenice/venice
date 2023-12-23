@@ -505,8 +505,8 @@ importers:
         specifier: ^0.8.0
         version: 0.8.0(@types/node@18.11.18)(graphql-ws@5.11.3)(graphql@16.6.0)
       '@opensdks/fetch-links':
-        specifier: 0.0.15
-        version: 0.0.15
+        specifier: 0.0.16
+        version: 0.0.16
       '@sentry/nextjs':
         specifier: 7.53.0
         version: 7.53.0(next@14.0.2)(react@18.2.0)(webpack@5.74.0)
@@ -4644,8 +4644,8 @@ packages:
       '@octokit/openapi-types': 18.1.1
     dev: true
 
-  /@opensdks/fetch-links@0.0.15:
-    resolution: {integrity: sha512-MmZ9bRHRUCSdozxmnNESRLafAPYn3zcL6B/9qgYOymkaC2rLVRbCGql8z9BIoeoWVk9w/CNFlmqZ+UqSsdDYrQ==}
+  /@opensdks/fetch-links@0.0.16:
+    resolution: {integrity: sha512-q+wmJWdQ/gn0DehhQBG3Vipt0PuqEitEeEfR/oK0CsdWaGZnYLI70GAdmSRfUQhXJtqfC+gFC1F1egOmPBByhA==}
     dev: false
 
   /@opensdks/links@0.0.11:
