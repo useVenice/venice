@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import '@usevenice/app-config/register.node'
-import 'global-agent/bootstrap'
-
-import {ProxyAgent, setGlobalDispatcher} from 'undici'
-
 import {parseConnectorConfigsFromRawEnv} from '@usevenice/app-config/connector-envs'
 import type {defConnectors} from '@usevenice/app-config/connectors/connectors.def'
+import '@usevenice/app-config/register.node'
 import {makeJwtClient, makeNangoClient} from '@usevenice/cdk'
 import {makeAlphavantageClient} from '@usevenice/connector-alphavantage'
 import {makeHeronClient} from '@usevenice/connector-heron'
@@ -33,11 +29,8 @@ import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 import {createVeniceClient} from '@usevenice/sdk'
 import type {ZFunctionMap} from '@usevenice/util'
 import {getEnvVar, R, z, zodInsecureDebug} from '@usevenice/util'
-
 import type {CliOpts} from './cli-utils'
 import {cliFromZFunctionMap} from './cli-utils'
-
-setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']!))
 
 if (getEnvVar('DEBUG_ZOD')) {
   zodInsecureDebug()
@@ -47,7 +40,7 @@ function env() {
   process.env['_SKIP_ENV_VALIDATION'] = 'true'
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return require('@usevenice/app-config/env')
-    .env as typeof import('@usevenice/app-config/env')['env']
+    .env as (typeof import('@usevenice/app-config/env'))['env']
 }
 
 function intConfig<T extends keyof typeof defConnectors>(name: T) {

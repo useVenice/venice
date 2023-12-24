@@ -13,11 +13,5 @@
   "dependencies": {
     "openapi-fetch": "0.8.1",
     "openapi-typescript-helpers": "0.0.4"
-  },
-  "devDependencies": {
-    "undici": "5.27.0"
-  },
-  "optionalDependencies": {
-    "undici": "5.27.0"
   }
 }

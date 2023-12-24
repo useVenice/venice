@@ -7,13 +7,11 @@
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import url from 'node:url'
-
 import chokidar from 'chokidar'
 import crossFetch, {Headers, Request, Response} from 'cross-fetch'
 import {readFile} from 'read-file-safe'
 import tunnel from 'tunnel'
 import {writeFile as _writeFile} from 'write-file-safe'
-
 import {
   $appendFile,
   $chokidar,
@@ -49,8 +47,7 @@ if (process.env['SILENT']) {
 
 console.log('[Dep] app-config/register.node')
 
-// Prefer crossfetch for agent aka tunneling support
-// TODO: Fix me by switchig to the undici ProxyAgent.
+// Prefer crossfetch for agent aka tunneling support, though we not need it anymore when using Proxyman
 // @see https://undici.nodejs.org/#/docs/api/ProxyAgent
 // And https://github.com/nodejs/undici/issues/1489
 implementProxyFn($getFetchFn, () => crossFetch ?? globalThis.fetch, {

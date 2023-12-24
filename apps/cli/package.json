@@ -34,10 +34,8 @@
     "@usevenice/meta-service-postgres": "workspace:*",
     "@usevenice/util": "workspace:*",
     "cac": "6.7.12",
-    "global-agent": "3.0.0",
     "keytar": "7.9.0",
     "micro": "9.3.5-canary.3",
-    "ngrok": "5.0.0-beta.2",
-    "undici": "5.27.0"
+    "ngrok": "5.0.0-beta.2"
   }
 }
