@@ -686,6 +686,18 @@ importers:
         specifier: workspace:*
         version: link:../../packages/util
 
+  connectors/connector-apollo:
+    dependencies:
+      '@opensdks/sdk-apollo':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
   connectors/connector-beancount:
     dependencies:
       '@usevenice/cdk':
@@ -740,10 +752,6 @@ importers:
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
-    devDependencies:
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
 
   connectors/connector-expensify:
     dependencies:
@@ -4629,6 +4637,10 @@ packages:
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
     dev: true
+
+  /@opensdks/sdk-apollo@0.0.14:
+    resolution: {integrity: sha512-+7Kba7jx1eK37TrJlZ9Eo23k5VZaYRnJOppRRx6fzUsIpEQwYfX4pc94V/QGY7BszEcVWLJBTef58DYNgpahYw==}
+    dev: false
 
   /@opensdks/sdk-discord@0.0.14:
     resolution: {integrity: sha512-GvA3dEvhiy18Ddd2XTP68YJOheSwg2UFoOKb5nXr8WxWfOwW/o9RvJW+kMhZKKNM5R39oP90xMcIjtSp3GrozQ==}

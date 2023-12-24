@@ -1,11 +1,11 @@
 {
-  "name": "@usevenice/connector-discord",
+  "name": "@usevenice/connector-apollo",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",
   "scripts": {},
   "dependencies": {
-    "@opensdks/sdk-discord": "^0.0.14",
+    "@opensdks/sdk-apollo": "^0.0.14",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
