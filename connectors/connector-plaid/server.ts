@@ -1,3 +1,4 @@
+import type {paths} from '@opensdks/sdk-plaid/plaid.oas.types'
 import type {PlaidApi, PlaidError} from 'plaid'
 import * as plaid from 'plaid'
 import {CountryCode, Products} from 'plaid'
@@ -19,7 +20,6 @@ import {
 import type {plaidSchemas} from './def'
 import {helpers as def} from './def'
 import {inferPlaidEnvFromToken} from './plaid-utils'
-import type {paths} from './plaid.oas'
 import {getPlatformConfig, makePlaidClient, zWebhook} from './PlaidClient'
 
 export const plaidServerConnector = {

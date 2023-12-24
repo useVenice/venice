@@ -1,11 +1,13 @@
 import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
 import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
-import type {components as Plaid} from '@usevenice/connector-plaid/plaid.oas'
+import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
 import type {StrictObj} from '@usevenice/types'
 import {applyMapper, mapper, z, zCast} from '@usevenice/vdk'
+
+type Plaid = PlaidSDKTypes['oas']['components']
 
 export const zBanking = {
   transaction: z.object({

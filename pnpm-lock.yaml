@@ -493,8 +493,8 @@ importers:
         version: 1.6.1
     devDependencies:
       openapi-typescript:
-        specifier: 6.1.0
-        version: 6.1.0
+        specifier: 6.7.1
+        version: 6.7.1
       tsx:
         specifier: 3.12.2
         version: 3.12.2
@@ -924,6 +924,12 @@ importers:
 
   connectors/connector-plaid:
     dependencies:
+      '@opensdks/runtime':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-plaid':
+        specifier: ^0.0.14
+        version: 0.0.14
       '@t3-oss/env-core':
         specifier: 0.7.1
         version: 0.7.1(typescript@5.0.4)(zod@3.21.4)
@@ -946,9 +952,6 @@ importers:
       '@types/react':
         specifier: 18.0.27
         version: 18.0.27
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
       prettier:
         specifier: 3.1.0
         version: 3.1.0
@@ -4652,6 +4655,10 @@ packages:
   /@opensdks/sdk-openai@0.0.14:
     resolution: {integrity: sha512-QqLiT2LAZnHZc5pyGNRyhBsk87QfDYUwAi3zE3VhGQSLnT88KiZ+TOpIJIyM1zqcQIlXPIy98H/DSWSWufDDQA==}
     dev: true
+
+  /@opensdks/sdk-plaid@0.0.14:
+    resolution: {integrity: sha512-LcutnqPz94xXGjz9UhA/737tIoIbhoqgXJ0jB8qBJM4wBIfHFTmu1K9Jy6B0ixWIliv8IfDMpoHyxvg0bUgJ4Q==}
+    dev: false
 
   /@opensdks/sdk-qbo@0.0.11:
     resolution: {integrity: sha512-8d8KNTjMDh5Cidm7NMNzoz3qmqpWMzqfREI6As+ETDgZNze1TprtZZzP6aMYIi/awRUQBJQZXTR4hTEOFSuwUQ==}
@@ -16394,18 +16401,6 @@ packages:
   /openapi-typescript-helpers@0.0.4:
     resolution: {integrity: sha512-Q0MTapapFAG993+dx8lNw33X6P/6EbFr31yNymJHq56fNc6dODyRm8tWyRnGxuC74lyl1iCRMV6nQCGQsfVNKg==}
 
-  /openapi-typescript@6.1.0:
-    resolution: {integrity: sha512-4G0hQu9zXHESZe4fZouucmA+6J5oKSBNYzG0gPbV9V4aKBNIwfUY86ur/cxyTMzuN9vQuAiMe//q4ZMXgMvGtQ==}
-    hasBin: true
-    dependencies:
-      ansi-colors: 4.1.3
-      fast-glob: 3.3.2
-      js-yaml: 4.1.0
-      supports-color: 9.4.0
-      undici: 5.27.0
-      yargs-parser: 21.1.1
-    dev: true
-
   /openapi-typescript@6.7.1:
     resolution: {integrity: sha512-Q3Ltt0KUm2smcPrsaR8qKmSwQ1KM4yGDJVoQdpYa0yvKPeN8huDx5utMT7DvwvJastHHzUxajjivK3WN2+fobg==}
     hasBin: true
@@ -20638,6 +20633,7 @@ packages:
     engines: {node: '>=14.0'}
     dependencies:
       '@fastify/busboy': 2.0.0
+    dev: false
 
   /undici@5.27.2:
     resolution: {integrity: sha512-iS857PdOEy/y3wlM3yRp+6SNQQ6xU0mmZcwRSriqk+et/cwWAtwmIGf6WkoDN2EK/AMdCO/dfXzIwi+rFMrjjQ==}

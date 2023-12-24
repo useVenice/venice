@@ -6,13 +6,9 @@
     "register.node.ts"
   ],
   "module": "./index.ts",
-  "scripts": {
-    "download:oas": "curl --fail https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml > ./plaid.oas.yaml",
-    "generate": "pnpm generate:oas && pnpm generate:types",
-    "generate:oas": "yaml2json ./plaid.oas.yaml | prettier --parser json > ./plaid.oas.json",
-    "generate:types": "openapi-typescript ./plaid.oas.json --output plaid.oas.d.ts"
-  },
   "dependencies": {
+    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/sdk-plaid": "^0.0.14",
     "@t3-oss/env-core": "0.7.1",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*",
@@ -21,7 +17,6 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "openapi-typescript": "6.7.1",
     "prettier": "3.1.0",
     "yamljs": "0.3.0"
   },
