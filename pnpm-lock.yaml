@@ -177,6 +177,9 @@ importers:
       '@usevenice/connector-alphavantage':
         specifier: workspace:*
         version: link:../../connectors/connector-alphavantage
+      '@usevenice/connector-apollo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-apollo
       '@usevenice/connector-beancount':
         specifier: workspace:*
         version: link:../../connectors/connector-beancount
@@ -688,6 +691,9 @@ importers:
 
   connectors/connector-apollo:
     dependencies:
+      '@opensdks/runtime':
+        specifier: ^0.0.14
+        version: 0.0.14
       '@opensdks/sdk-apollo':
         specifier: ^0.0.14
         version: 0.0.14
@@ -4612,7 +4618,6 @@ packages:
 
   /@opensdks/fetch-links@0.0.14:
     resolution: {integrity: sha512-WxrUtSLvdH60x1ZyTv4UUHbIcBH8Wkfge30rEX4HQtjX4rRNnc+U3kU5/PSvrQgwKiIM16N29zM7z2Bz0Sb1LA==}
-    dev: true
 
   /@opensdks/fetch-links@0.0.16:
     resolution: {integrity: sha512-q+wmJWdQ/gn0DehhQBG3Vipt0PuqEitEeEfR/oK0CsdWaGZnYLI70GAdmSRfUQhXJtqfC+gFC1F1egOmPBByhA==}
@@ -4636,7 +4641,6 @@ packages:
       openapi-fetch: 0.8.1
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
-    dev: true
 
   /@opensdks/sdk-apollo@0.0.14:
     resolution: {integrity: sha512-+7Kba7jx1eK37TrJlZ9Eo23k5VZaYRnJOppRRx6fzUsIpEQwYfX4pc94V/QGY7BszEcVWLJBTef58DYNgpahYw==}

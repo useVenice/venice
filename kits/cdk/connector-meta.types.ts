@@ -11,6 +11,8 @@ import type {AnyEntityPayload, ResoUpdateData, Source} from './protocol'
 export const zConnectorVertical = z.enum([
   'banking',
   'accounting',
+  'crm',
+  'sales-engagement',
   'commerce',
   'expense-management',
   'enrichment',

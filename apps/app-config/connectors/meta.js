@@ -16,6 +16,15 @@ module.exports = [
     imports: {},
   },
   {
+    name: 'apollo',
+    dirName: 'connector-apollo',
+    varName: 'connectorApollo',
+    imports: {
+      def: '@usevenice/connector-apollo/def',
+      server: '@usevenice/connector-apollo/server',
+    },
+  },
+  {
     name: 'beancount',
     dirName: 'connector-beancount',
     varName: 'connectorBeancount',

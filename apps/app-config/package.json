@@ -14,6 +14,7 @@
     "@usevenice/cdk": "workspace:*",
     "@usevenice/connector-airtable": "workspace:*",
     "@usevenice/connector-alphavantage": "workspace:*",
+    "@usevenice/connector-apollo": "workspace:*",
     "@usevenice/connector-beancount": "workspace:*",
     "@usevenice/connector-brex": "workspace:*",
     "@usevenice/connector-debug": "workspace:*",

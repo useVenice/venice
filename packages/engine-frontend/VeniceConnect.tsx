@@ -4,7 +4,6 @@ import NangoFrontend from '@nangohq/frontend'
 import {useMutation} from '@tanstack/react-query'
 import {Link2, Loader2, RefreshCw, Trash2} from 'lucide-react'
 import React from 'react'
-
 import type {
   ConnectorClient,
   Id,
@@ -43,7 +42,6 @@ import {
 } from '@usevenice/ui'
 import {cn} from '@usevenice/ui/utils'
 import {R, titleCase, z} from '@usevenice/util'
-
 import {_trpcReact} from './TRPCProvider'
 
 type ConnectEventType = 'open' | 'close' | 'error'
@@ -239,14 +237,14 @@ export function _VeniceConnect({
     .map((category) => ({
       key: category,
       name: titleCase(category),
-      connectorConfigs: connectorConfigs.filter((ccfg) =>
-        ccfg.connector?.categories.includes(category),
+      connectorConfigs: connectorConfigs.filter(
+        (ccfg) => ccfg.connector?.categories.includes(category),
       ),
     }))
     .filter((item) => item.connectorConfigs.length > 0)
 
   if (!connectorConfigs.length) {
-    return <div>No end user connectors configured</div>
+    return <div>No connectors configured</div>
   }
   return (
     <div className={cn('flex flex-wrap', className)}>
