@@ -165,11 +165,13 @@ export function makeSyncService({
     src,
     state,
     endUser,
+    streams,
     opts,
   }: {
     src: _ResourceExpanded
     state: unknown
     endUser?: {id: EndUserId} | null | undefined
+    streams?: Record<string, boolean>
     opts: {fullResync?: boolean | null}
   }) => {
     const defaultSource$ = () =>
@@ -188,7 +190,7 @@ export function makeSyncService({
         // Should also make the distinction between `config`, `settings` and `state` much more clear.
         // Undefined causes crash in Plaid provider due to destructuring, Think about how to fix it for reals
         state: opts.fullResync ? {} : state,
-        streams: src.connectorConfig.defaultPipeOut?.streams ?? {},
+        streams: streams ?? src.connectorConfig.defaultPipeOut?.streams ?? {},
       })
 
     // const verticalSources$ = () => {

@@ -1,7 +1,9 @@
 import oas from '@opensdks/sdk-apollo/apollo.oas.json'
 import type {ConnectorDef, ConnectorSchemas, OpenApiSpec} from '@usevenice/cdk'
 import {connHelpers} from '@usevenice/cdk'
-import {z} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
+
+export const APOLLO_ENTITY_NAME = ['contact', 'account'] as const
 
 export const apolloSchemas = {
   name: z.literal('apollo'),
@@ -9,6 +11,7 @@ export const apolloSchemas = {
   resourceSettings: z.object({
     api_key: z.string(),
   }),
+  sourceOutputEntities: R.mapToObj(APOLLO_ENTITY_NAME, (k) => [k, z.unknown()]),
 } satisfies ConnectorSchemas
 
 export const apolloHelpers = connHelpers(apolloSchemas)

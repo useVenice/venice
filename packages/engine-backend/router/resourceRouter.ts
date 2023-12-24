@@ -54,7 +54,15 @@ export const resourceRouter = trpc.router({
         tags,
       },
     })
-    .input(z.object({id: zId('reso'), state: z.record(z.unknown()).optional()}))
+    .input(
+      z.object({
+        id: zId('reso'),
+        // This is an argument for source_sync to be typed per provider
+        state: z.record(z.unknown()).optional(),
+        streams: z.record(z.boolean()).optional(),
+        // TODO: Introduce `links` array here so we can pass them in too...
+      }),
+    )
     .output(z.array(z.record(z.any())))
     .mutation(async ({input, ctx}) => {
       const reso = await ctx.services.getResourceExpandedOrFail(input.id)
@@ -64,7 +72,8 @@ export const resourceRouter = trpc.router({
 
       const res = ctx.services.sourceSync({
         opts: {},
-        state: {},
+        state: input.state ?? {},
+        streams: input.streams ?? {},
         src: reso,
         endUser:
           ctx.viewer.role === 'end_user' ? {id: ctx.viewer.endUserId} : null,

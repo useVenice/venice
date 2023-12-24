@@ -969,6 +969,9 @@ export interface operations {
           state?: {
             [key: string]: unknown
           }
+          streams?: {
+            [key: string]: boolean | undefined
+          }
         }
       }
     }

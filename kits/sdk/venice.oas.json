@@ -315,6 +315,12 @@
                   "state": {
                     "type": "object",
                     "additionalProperties": {}
+                  },
+                  "streams": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "boolean"
+                    }
                   }
                 }
               }
