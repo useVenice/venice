@@ -5,5 +5,4 @@ packages:
   - 'verticals/*'
   - 'kits/*'
   - 'utils/*'
-  - 'opensdks/*'
   - 'docs/'

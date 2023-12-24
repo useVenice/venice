@@ -5,8 +5,8 @@
   "module": "./index.ts",
   "scripts": {},
   "dependencies": {
+    "@opensdks/sdk-discord": "^0.0.14",
     "@usevenice/cdk": "workspace:*",
-    "@usevenice/sdk-discord": "workspace:*",
     "@usevenice/util": "workspace:*"
   },
   "devDependencies": {

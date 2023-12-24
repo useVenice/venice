@@ -731,12 +731,12 @@ importers:
 
   connectors/connector-discord:
     dependencies:
+      '@opensdks/sdk-discord':
+        specifier: ^0.0.14
+        version: 0.0.14
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
-      '@usevenice/sdk-discord':
-        specifier: workspace:*
-        version: link:../../opensdks/sdk-discord
       '@usevenice/util':
         specifier: workspace:*
         version: link:../../packages/util
@@ -1141,21 +1141,21 @@ importers:
       '@mintlify/scraping':
         specifier: ^3.0.64
         version: 3.0.64(openapi-types@12.1.0)(typescript@5.0.4)
-      '@usevenice/openapi-client':
-        specifier: workspace:*
-        version: link:../utils/openapi-client
-      '@usevenice/sdk':
-        specifier: workspace:*
-        version: link:../kits/sdk
-      '@usevenice/sdk-discord':
-        specifier: workspace:*
-        version: link:../opensdks/sdk-discord
-      '@usevenice/sdk-openai':
-        specifier: workspace:*
-        version: link:../opensdks/sdk-openai
-      '@usevenice/sdk-slack':
-        specifier: workspace:*
-        version: link:../opensdks/sdk-slack
+      '@opensdks/runtime':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-discord':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-openai':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-slack':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-venice':
+        specifier: ^0.0.14
+        version: 0.0.14(@opensdks/runtime@0.0.14)
       mintlify:
         specifier: 4.0.59
         version: 4.0.59(axios@0.21.1)(openapi-types@12.1.0)
@@ -1249,48 +1249,6 @@ importers:
       remeda:
         specifier: 1.6.1
         version: 1.6.1
-
-  opensdks/sdk-discord:
-    dependencies:
-      '@usevenice/openapi-client':
-        specifier: workspace:*
-        version: link:../../utils/openapi-client
-    devDependencies:
-      '@usevenice/sdk':
-        specifier: workspace:*
-        version: link:../../kits/sdk
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
-
-  opensdks/sdk-openai:
-    dependencies:
-      '@usevenice/openapi-client':
-        specifier: workspace:*
-        version: link:../../utils/openapi-client
-    devDependencies:
-      '@usevenice/sdk':
-        specifier: workspace:*
-        version: link:../../kits/sdk
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
-      yaml:
-        specifier: 2.3.4
-        version: 2.3.4
-
-  opensdks/sdk-slack:
-    dependencies:
-      '@usevenice/openapi-client':
-        specifier: workspace:*
-        version: link:../../utils/openapi-client
-    devDependencies:
-      '@usevenice/sdk':
-        specifier: workspace:*
-        version: link:../../kits/sdk
-      openapi-typescript:
-        specifier: 6.7.1
-        version: 6.7.1
 
   packages/engine-backend:
     dependencies:
@@ -4644,6 +4602,10 @@ packages:
       '@octokit/openapi-types': 18.1.1
     dev: true
 
+  /@opensdks/fetch-links@0.0.14:
+    resolution: {integrity: sha512-WxrUtSLvdH60x1ZyTv4UUHbIcBH8Wkfge30rEX4HQtjX4rRNnc+U3kU5/PSvrQgwKiIM16N29zM7z2Bz0Sb1LA==}
+    dev: true
+
   /@opensdks/fetch-links@0.0.16:
     resolution: {integrity: sha512-q+wmJWdQ/gn0DehhQBG3Vipt0PuqEitEeEfR/oK0CsdWaGZnYLI70GAdmSRfUQhXJtqfC+gFC1F1egOmPBByhA==}
     dev: false
@@ -4659,8 +4621,36 @@ packages:
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
 
+  /@opensdks/runtime@0.0.14:
+    resolution: {integrity: sha512-uvX9JbsO+RbR2/OZvIFrh+lI8PfZQqIOYPWd46JJQcTo0aUCK7DUu/YZC5dFfIRPXq2TGsrfF8q2RbUYDIfnSg==}
+    dependencies:
+      '@opensdks/fetch-links': 0.0.14
+      openapi-fetch: 0.8.1
+      openapi-typescript-helpers: 0.0.4
+      openapi3-ts: 4.1.2
+    dev: true
+
+  /@opensdks/sdk-discord@0.0.14:
+    resolution: {integrity: sha512-GvA3dEvhiy18Ddd2XTP68YJOheSwg2UFoOKb5nXr8WxWfOwW/o9RvJW+kMhZKKNM5R39oP90xMcIjtSp3GrozQ==}
+
+  /@opensdks/sdk-openai@0.0.14:
+    resolution: {integrity: sha512-QqLiT2LAZnHZc5pyGNRyhBsk87QfDYUwAi3zE3VhGQSLnT88KiZ+TOpIJIyM1zqcQIlXPIy98H/DSWSWufDDQA==}
+    dev: true
+
   /@opensdks/sdk-qbo@0.0.11:
     resolution: {integrity: sha512-8d8KNTjMDh5Cidm7NMNzoz3qmqpWMzqfREI6As+ETDgZNze1TprtZZzP6aMYIi/awRUQBJQZXTR4hTEOFSuwUQ==}
+
+  /@opensdks/sdk-slack@0.0.14:
+    resolution: {integrity: sha512-//w9OelCjMc+wwCU12JD26cHxDp4RAwIcD246Lf+r0kRY9uMPiczgEnsdwN+5sy/4TP+JRRKyc14L3591Qr4fA==}
+    dev: true
+
+  /@opensdks/sdk-venice@0.0.14(@opensdks/runtime@0.0.14):
+    resolution: {integrity: sha512-mGbUqCrqsh5kGxI2gpjCCeqPCbYF0KMyB5Cc8xmcwursZIMFOxMZTYerlYYS0Ht5tRa/WltOuQJTgqUPYmimxg==}
+    peerDependencies:
+      '@opensdks/runtime': 0.0.14
+    dependencies:
+      '@opensdks/runtime': 0.0.14
+    dev: true
 
   /@panva/asn1.js@1.0.0:
     resolution: {integrity: sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==}

@@ -7,11 +7,11 @@
   },
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",
-    "@usevenice/openapi-client": "workspace:*",
-    "@usevenice/sdk": "workspace:*",
-    "@usevenice/sdk-discord": "workspace:*",
-    "@usevenice/sdk-openai": "workspace:*",
-    "@usevenice/sdk-slack": "workspace:*",
+    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/sdk-discord": "^0.0.14",
+    "@opensdks/sdk-openai": "^0.0.14",
+    "@opensdks/sdk-slack": "^0.0.14",
+    "@opensdks/sdk-venice": "^0.0.14",
     "mintlify": "4.0.59"
   }
 }
