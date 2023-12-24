@@ -2,9 +2,11 @@ import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
 // import {accountingRouter} from './verticals/accounting'
 
 import {
+  apolloAdapter,
   createAccountingRouter,
   createInvestmentRouter,
   createPtaRouter,
+  createSalesEngagementRouter,
 } from '@usevenice/cdk/verticals'
 import {remoteProcedure, trpc} from './_base'
 import {adminRouter} from './adminRouter'
@@ -17,9 +19,25 @@ import {publicRouter} from './publicRouter'
 import {resourceRouter} from './resourceRouter'
 import {systemRouter} from './systemRouter'
 
-const accountingRouter = createAccountingRouter({trpc, remoteProcedure})
-const ptaRouter = createPtaRouter({trpc, remoteProcedure})
-const investmentRouter = createInvestmentRouter({trpc, remoteProcedure})
+const accountingRouter = createAccountingRouter({
+  trpc,
+  remoteProcedure,
+  adapterByName: {},
+})
+const ptaRouter = createPtaRouter({trpc, remoteProcedure, adapterByName: {}})
+const investmentRouter = createInvestmentRouter({
+  trpc,
+  remoteProcedure,
+  adapterByName: {},
+})
+const salesEngagementRouter = createSalesEngagementRouter({
+  trpc,
+  remoteProcedure,
+  // TODO: This should be moved into the vertical itself.
+  adapterByName: {
+    apollo: apolloAdapter,
+  },
+})
 
 // accountingRouter._def.procedures.listAccounts._def.meta?.openapi?.path += '/accounting/'
 
@@ -37,6 +55,7 @@ export const routers = {
   accounting: accountingRouter,
   pta: ptaRouter,
   investment: investmentRouter,
+  salesEngagement: salesEngagementRouter,
 }
 
 // Which one is best?
@@ -57,6 +76,7 @@ export const flatRouter = trpc.mergeRouters(
       accounting: accountingRouter,
       pta: ptaRouter,
       investment: investmentRouter,
+      salesEngagement: salesEngagementRouter,
     }),
   }),
 )

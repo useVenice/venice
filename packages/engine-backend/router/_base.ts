@@ -89,33 +89,35 @@ export const systemProcedure = publicProcedure.use(({next, ctx}) => {
   return next({ctx: {...ctx, viewer: ctx.viewer}})
 })
 
-export const remoteProcedure = protectedProcedure.use(async ({next, ctx}) => {
-  // TODO Should parse headers in here?
-  if (!ctx.remoteResourceId) {
-    throw new TRPCError({
-      code: 'BAD_REQUEST',
-      message: 'x-resource-id header is required',
-    })
-  }
-  const resource = await ctx.services.getResourceExpandedOrFail(
-    ctx.remoteResourceId,
-  )
+export const remoteProcedure = protectedProcedure.use(
+  async ({next, ctx, path}) => {
+    // TODO Should parse headers in here?
+    if (!ctx.remoteResourceId) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'x-resource-id header is required',
+      })
+    }
+    const resource = await ctx.services.getResourceExpandedOrFail(
+      ctx.remoteResourceId,
+    )
 
-  return next({
-    ctx: {
-      ...ctx,
-      path: (ctx as any).path as string,
-      remote: {
-        id: resource.id,
-        connector: resource.connectorConfig.connector,
-        connectorName: resource.connectorName,
-        settings: resource.settings,
-        config: resource.connectorConfig.config,
-        fetchLinks: ctx.services.getFetchLinks(resource),
+    return next({
+      ctx: {
+        ...ctx,
+        path: path ?? ((ctx as any).path as string),
+        remote: {
+          id: resource.id,
+          connector: resource.connectorConfig.connector,
+          connectorName: resource.connectorName,
+          settings: resource.settings,
+          config: resource.connectorConfig.config,
+          fetchLinks: ctx.services.getFetchLinks(resource),
+        },
       },
-    },
-  })
-})
+    })
+  },
+)
 export type RemoteProcedureContext = ReturnType<
   (typeof remoteProcedure)['query']
 >['_def']['_ctx_out']

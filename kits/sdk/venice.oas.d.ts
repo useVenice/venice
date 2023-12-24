@@ -439,6 +439,39 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/verticals/sales-engagement/contacts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['verticals-salesEngagement-listContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/viewer': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get current viewer accessing the API */
+    get: operations['getViewer']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/openapi.json': {
     parameters: {
       query?: never
@@ -640,6 +673,49 @@ export interface components {
        *      */
       metadata?: unknown
     }
+    'sales-engagement.contact': {
+      id: string
+      first_name: string
+      last_name: string
+    }
+    Viewer:
+      | {
+          /** @enum {string} */
+          role: 'anon'
+        }
+      | {
+          /** @enum {string} */
+          role: 'end_user'
+          endUserId: string
+          /** @description Must start with 'org_' */
+          orgId: string
+        }
+      | {
+          /** @enum {string} */
+          role: 'user'
+          /** @description Must start with 'user_' */
+          userId: string
+          /** @description Must start with 'org_' */
+          orgId?: string | null
+          /** @description Currently clerk user */
+          extra?: {
+            [key: string]: unknown
+          }
+        }
+      | {
+          /** @enum {string} */
+          role: 'org'
+          /** @description Must start with 'org_' */
+          orgId: string
+          /** @description Currently clerk organization */
+          extra?: {
+            [key: string]: unknown
+          }
+        }
+      | {
+          /** @enum {string} */
+          role: 'system'
+        }
   }
   responses: never
   parameters: never
@@ -780,8 +856,10 @@ export interface operations {
           displayName?: string | null
           /** @description Where to send user to after connect / if they press back button */
           redirectUrl?: string | null
-          /** @description Which provider to use */
+          /** @description Filter connector config by connector name */
           connectorName?: string | null
+          /** @description Filter connector config by displayName  */
+          connectorConfigDisplayName?: string | null
           /** @description Must start with 'ccfg_' */
           connectorConfigId?: string
           /** @default true */
@@ -994,6 +1072,17 @@ export interface operations {
           settings?: {
             [key: string]: unknown
           } | null
+          displayName?: string | null
+          endUserId?: string | null
+          disabled?: boolean
+          /** @description
+           *       JSON object can can be used to associate arbitrary metadata to
+           *       avoid needing a separate 1-1 table just for simple key values in your application.
+           *       During updates this object will be shallowly merged
+           *      */
+          metadata?: unknown
+          /** @description Must start with 'int_' */
+          integrationId?: string | null
         }
       }
     }
@@ -1149,6 +1238,10 @@ export interface operations {
            *       During updates this object will be shallowly merged
            *      */
           metadata?: unknown
+          disabled?: boolean
+          endUserId?: string | null
+          /** @description Must start with 'int_' */
+          integrationId?: string | null
         }
       }
     }
@@ -2424,6 +2517,88 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  'verticals-salesEngagement-listContacts': {
+    parameters: {
+      query?: {
+        limit?: number
+        offset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            hasNextPage: boolean
+            items: components['schemas']['sales-engagement.contact'][]
+          }
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  getViewer: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Viewer']
         }
       }
       /** @description Internal server error */

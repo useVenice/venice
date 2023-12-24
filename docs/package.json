@@ -12,6 +12,7 @@
     "@opensdks/sdk-openai": "^0.0.14",
     "@opensdks/sdk-slack": "^0.0.14",
     "@opensdks/sdk-venice": "^0.0.14",
+    "@usevenice/sdk": "workspace:*",
     "mintlify": "4.0.59"
   }
 }

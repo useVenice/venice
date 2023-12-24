@@ -163,7 +163,11 @@
                   },
                   "connectorName": {
                     "type": ["string", "null"],
-                    "description": "Which provider to use"
+                    "description": "Filter connector config by connector name"
+                  },
+                  "connectorConfigDisplayName": {
+                    "type": ["string", "null"],
+                    "description": "Filter connector config by displayName "
                   },
                   "connectorConfigId": {
                     "type": "string",
@@ -373,6 +377,23 @@
                   "settings": {
                     "type": ["object", "null"],
                     "additionalProperties": {}
+                  },
+                  "displayName": {
+                    "type": ["string", "null"]
+                  },
+                  "endUserId": {
+                    "type": ["string", "null"],
+                    "minLength": 1
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
+                  },
+                  "integrationId": {
+                    "type": ["string", "null"],
+                    "description": "Must start with 'int_'"
                   }
                 },
                 "required": ["connectorConfigId"]
@@ -533,6 +554,17 @@
                   },
                   "metadata": {
                     "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "endUserId": {
+                    "type": ["string", "null"],
+                    "minLength": 1
+                  },
+                  "integrationId": {
+                    "type": ["string", "null"],
+                    "description": "Must start with 'int_'"
                   }
                 }
               }
@@ -2445,6 +2477,109 @@
         }
       }
     },
+    "/verticals/sales-engagement/contacts": {
+      "get": {
+        "operationId": "verticals-salesEngagement-listContacts",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasNextPage": {
+                      "type": "boolean"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/sales-engagement.contact"
+                      }
+                    }
+                  },
+                  "required": ["hasNextPage", "items"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/viewer": {
+      "get": {
+        "operationId": "getViewer",
+        "summary": "Get current viewer accessing the API",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Viewer"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/openapi.json": {
       "get": {
         "operationId": "getOpenapiDocument",
@@ -2796,6 +2931,105 @@
           }
         },
         "required": ["createdAt", "updatedAt", "id"]
+      },
+      "sales-engagement.contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "first_name", "last_name"]
+      },
+      "Viewer": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["anon"]
+              }
+            },
+            "required": ["role"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["end_user"]
+              },
+              "endUserId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "orgId": {
+                "type": "string",
+                "description": "Must start with 'org_'"
+              }
+            },
+            "required": ["role", "endUserId", "orgId"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["user"]
+              },
+              "userId": {
+                "type": "string",
+                "description": "Must start with 'user_'"
+              },
+              "orgId": {
+                "type": ["string", "null"],
+                "description": "Must start with 'org_'"
+              },
+              "extra": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Currently clerk user"
+              }
+            },
+            "required": ["role", "userId"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["org"]
+              },
+              "orgId": {
+                "type": "string",
+                "description": "Must start with 'org_'"
+              },
+              "extra": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Currently clerk organization"
+              }
+            },
+            "required": ["role", "orgId"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["system"]
+              }
+            },
+            "required": ["role"]
+          }
+        ]
       }
     }
   },

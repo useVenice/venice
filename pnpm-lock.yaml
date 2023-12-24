@@ -695,8 +695,8 @@ importers:
         specifier: ^0.0.14
         version: 0.0.14
       '@opensdks/sdk-apollo':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.17
+        version: 0.0.17
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -1173,6 +1173,9 @@ importers:
       '@opensdks/sdk-venice':
         specifier: ^0.0.14
         version: 0.0.14(@opensdks/runtime@0.0.14)
+      '@usevenice/sdk':
+        specifier: workspace:*
+        version: link:../kits/sdk
       mintlify:
         specifier: 4.0.59
         version: 4.0.59(axios@0.21.1)(openapi-types@12.1.0)
@@ -1247,6 +1250,9 @@ importers:
       openapi3-ts:
         specifier: 4.1.2
         version: 4.1.2
+      tsx:
+        specifier: 3.12.2
+        version: 3.12.2
     devDependencies:
       openapi-typescript:
         specifier: 7.0.0-next.3
@@ -1773,6 +1779,25 @@ importers:
       '@usevenice/connector-qbo':
         specifier: workspace:*
         version: link:../../connectors/connector-qbo
+
+  verticals/vertical-sales-engagement:
+    dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/vdk':
+        specifier: workspace:*
+        version: link:../../kits/vdk
+    devDependencies:
+      '@usevenice/connector-apollo':
+        specifier: workspace:*
+        version: link:../../connectors/connector-apollo
+      '@usevenice/connector-postgres':
+        specifier: workspace:*
+        version: link:../../connectors/connector-postgres
+      '@usevenice/types':
+        specifier: workspace:*
+        version: link:../../utils/types
 
 packages:
 
@@ -2712,21 +2737,18 @@ packages:
     dependencies:
       '@esbuild-kit/core-utils': 3.0.0
       get-tsconfig: 4.2.0
-    dev: true
 
   /@esbuild-kit/core-utils@3.0.0:
     resolution: {integrity: sha512-TXmwH9EFS3DC2sI2YJWJBgHGhlteK0Xyu1VabwetMULfm3oYhbrsWV5yaSr2NTWZIgDGVLHbRf0inxbjXqAcmQ==}
     dependencies:
       esbuild: 0.17.5
       source-map-support: 0.5.21
-    dev: true
 
   /@esbuild-kit/esm-loader@2.5.4:
     resolution: {integrity: sha512-afmtLf6uqxD5IgwCzomtqCYIgz/sjHzCWZFvfS5+FzeYxOURPUo4QcHtqJxbxWOMOogKriZanN/1bJQE/ZL93A==}
     dependencies:
       '@esbuild-kit/core-utils': 3.0.0
       get-tsconfig: 4.2.0
-    dev: true
 
   /@esbuild/android-arm64@0.17.5:
     resolution: {integrity: sha512-KHWkDqYAMmKZjY4RAN1PR96q6UOtfkWlTS8uEwWxdLtkRt/0F/csUhXIrVfaSIFxnscIBMPynGfhsMwQDRIBQw==}
@@ -4645,8 +4667,8 @@ packages:
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
 
-  /@opensdks/sdk-apollo@0.0.14:
-    resolution: {integrity: sha512-+7Kba7jx1eK37TrJlZ9Eo23k5VZaYRnJOppRRx6fzUsIpEQwYfX4pc94V/QGY7BszEcVWLJBTef58DYNgpahYw==}
+  /@opensdks/sdk-apollo@0.0.17:
+    resolution: {integrity: sha512-S1PAAPZd5Z6gH781+OZmkw48gKEajg9UlYEOvaHSXRlfuZi/w5kl7Sg5yFDHZr8NLEl3l1c0EkpF4YsiVBD8HA==}
     dev: false
 
   /@opensdks/sdk-discord@0.0.14:
@@ -11719,7 +11741,6 @@ packages:
 
   /get-tsconfig@4.2.0:
     resolution: {integrity: sha512-X8u8fREiYOE6S8hLbq99PeykTDoLVnxvF4DjWKJmz9xy2nNRdUcV8ZN9tniJFeKyTU3qnC9lL8n4Chd6LmVKHg==}
-    dev: true
 
   /get-value@2.0.6:
     resolution: {integrity: sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==}
@@ -20369,7 +20390,6 @@ packages:
       '@esbuild-kit/esm-loader': 2.5.4
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}

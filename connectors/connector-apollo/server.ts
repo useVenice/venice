@@ -4,10 +4,14 @@ import {apolloSdkDef} from '@opensdks/sdk-apollo'
 import type {ConnectorServer} from '@usevenice/cdk'
 import type {apolloSchemas} from './def'
 
+export {ApolloSDKTypes}
+
 function initApolloSdk(options: ApolloSDKTypes['options']) {
   const sdk = initSDK(apolloSdkDef, options)
   return {...sdk, options}
 }
+
+export type ApolloSdk = ReturnType<typeof initApolloSdk>
 
 export const apolloServer = {
   newInstance: (opts) =>
@@ -21,9 +25,6 @@ export const apolloServer = {
       params: {query: input.query},
       body: JSON.stringify(input.body),
     }),
-} satisfies ConnectorServer<
-  typeof apolloSchemas,
-  ReturnType<typeof initApolloSdk>
->
+} satisfies ConnectorServer<typeof apolloSchemas, ApolloSdk>
 
 export default apolloServer

@@ -17,8 +17,11 @@ import {z} from '@usevenice/zod'
 import type {
   remoteProcedure,
   RemoteProcedureContext,
+  RouterMeta,
   trpc,
 } from '../../packages/engine-backend/router/_base'
+
+export {RouterMeta, inferProcedureInput, inferProcedureOutput}
 
 export type RouterMap<TRouter extends AnyRouter, TOpts = {}> = {
   [k in keyof TRouter as TRouter[k] extends AnyProcedure
@@ -33,6 +36,38 @@ export type RouterMap<TRouter extends AnyRouter, TOpts = {}> = {
 export interface VerticalRouterOpts {
   trpc: typeof trpc
   remoteProcedure: typeof remoteProcedure
+  adapterByName: Record<string, any>
+}
+
+export async function proxyCallRemote({
+  input,
+  ctx,
+  opts,
+}: {
+  input: unknown
+  ctx: RemoteProcedureContext
+  opts: VerticalRouterOpts
+}) {
+  const instance = ctx.remote.connector.newInstance?.({
+    config: ctx.remote.config,
+    settings: ctx.remote.settings,
+    fetchLinks: ctx.remote.fetchLinks,
+    onSettingsChange: (settings) =>
+      ctx.services.metaLinks.patch('resource', ctx.remote.id, {settings}),
+  })
+  // verticals.salesEngagement.listContacts -> listContacts
+  const adapter = opts.adapterByName[ctx.remote.connectorName]
+  const methodName = ctx.path.split('.').pop() ?? ''
+  const implementation = adapter?.[methodName] as Function
+
+  if (typeof implementation !== 'function') {
+    throw new TRPCError({
+      code: 'NOT_IMPLEMENTED',
+      message: `${ctx.remote.connectorName} adapter does not implement ${ctx.path}`,
+    })
+  }
+
+  return await implementation({instance, input})
 }
 
 export async function proxyListRemoteRedux({
@@ -115,19 +150,28 @@ export function mapper<
       | ((ext: TIn) => TOut[k]) // Function that can do whatever
   },
 ) {
-  return {
+  const meta = {
     _in: undefined as TIn,
     _out: undefined as TOut,
     inputSchema: zCom,
     outputSchema: zExt,
     mapping,
   }
+  const apply = (input: TIn): TOut => applyMapper(meta, input)
+  apply._in = undefined as TIn
+  apply._out = undefined as TOut
+  apply.inputSchema = zCom
+  apply.outputSchema = zExt
+  apply.mapping = mapping
+  return apply
 }
 
-export function applyMapper<T extends ReturnType<typeof mapper>>(
-  mapper: T,
-  input: T['_in'],
-): T['_out'] {
+export function applyMapper<
+  T extends Pick<
+    ReturnType<typeof mapper>,
+    'mapping' | '_in' | '_out' | 'inputSchema' | 'outputSchema'
+  >,
+>(mapper: T, input: T['_in']): T['_out'] {
   // This can probably be extracted into its own function without needint TIn and TOut even
   return R.mapValues(mapper.mapping, (m, key) => {
     if (typeof m === 'function') {

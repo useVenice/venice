@@ -1,0 +1,12 @@
+{
+  "name": "@usevenice/vertical-sales-engagement",
+  "dependencies": {
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/vdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@usevenice/connector-apollo": "workspace:*",
+    "@usevenice/connector-postgres": "workspace:*",
+    "@usevenice/types": "workspace:*"
+  }
+}
