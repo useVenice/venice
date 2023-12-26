@@ -23,7 +23,7 @@ export const apolloDef = {
     categories: ['sales-engagement'],
     displayName: 'Apollo',
     stage: 'beta',
-    logoUrl: '/_assets/logo-apollo.png',
+    logoUrl: '/_assets/logo-apollo.svg',
     openapiSpec: {proxied: oas as OpenApiSpec},
   },
 } satisfies ConnectorDef<typeof apolloSchemas>
