@@ -30,6 +30,8 @@ import {default as connectorMoota_def} from '@usevenice/connector-moota/def'
 import {default as connectorMoota_server} from '@usevenice/connector-moota/server'
 import {default as connectorOnebrick_def} from '@usevenice/connector-onebrick/def'
 import {default as connectorOnebrick_server} from '@usevenice/connector-onebrick/server'
+import {default as connectorOutreach_def} from '@usevenice/connector-outreach/def'
+import {default as connectorOutreach_server} from '@usevenice/connector-outreach/server'
 import {default as connectorPlaid_def} from '@usevenice/connector-plaid/def'
 import {default as connectorPlaid_server} from '@usevenice/connector-plaid/server'
 import {default as connectorPostgres_def} from '@usevenice/connector-postgres/def'
@@ -137,6 +139,11 @@ const connectorOnebrick = {
   ...connectorOnebrick_server,
 }
 
+const connectorOutreach = {
+  ...connectorOutreach_def,
+  ...connectorOutreach_server,
+}
+
 const connectorPlaid = {
   ...connectorPlaid_def,
   ...connectorPlaid_server,
@@ -223,6 +230,7 @@ export const mergedConnectors = {
   mongodb: connectorMongodb,
   moota: connectorMoota,
   onebrick: connectorOnebrick,
+  outreach: connectorOutreach,
   plaid: connectorPlaid,
   postgres: connectorPostgres,
   qbo: connectorQbo,

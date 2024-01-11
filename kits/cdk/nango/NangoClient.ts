@@ -8,6 +8,7 @@ const zNangoProvider = z.enum([
   'adobe',
   'aircall',
   'airtable',
+  'apollo',
   'amazon',
   'amplitude',
   'asana',

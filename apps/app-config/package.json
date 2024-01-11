@@ -31,6 +31,7 @@
     "@usevenice/connector-moota": "workspace:*",
     "@usevenice/connector-notion": "workspace:*",
     "@usevenice/connector-onebrick": "workspace:*",
+    "@usevenice/connector-outreach": "workspace:*",
     "@usevenice/connector-plaid": "workspace:*",
     "@usevenice/connector-postgres": "workspace:*",
     "@usevenice/connector-qbo": "workspace:*",

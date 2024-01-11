@@ -15,6 +15,7 @@ import {default as connectorMerge} from '@usevenice/connector-merge/def'
 import {default as connectorMongodb} from '@usevenice/connector-mongodb/def'
 import {default as connectorMoota} from '@usevenice/connector-moota/def'
 import {default as connectorOnebrick} from '@usevenice/connector-onebrick/def'
+import {default as connectorOutreach} from '@usevenice/connector-outreach/def'
 import {default as connectorPlaid} from '@usevenice/connector-plaid/def'
 import {default as connectorPostgres} from '@usevenice/connector-postgres/def'
 import {default as connectorQbo} from '@usevenice/connector-qbo/def'
@@ -47,6 +48,7 @@ export const defConnectors = {
   mongodb: connectorMongodb,
   moota: connectorMoota,
   onebrick: connectorOnebrick,
+  outreach: connectorOutreach,
   plaid: connectorPlaid,
   postgres: connectorPostgres,
   qbo: connectorQbo,

@@ -1,11 +1,11 @@
 {
-  "name": "@usevenice/connector-qbo",
+  "name": "@usevenice/connector-outreach",
   "version": "0.0.0",
   "private": true,
   "module": "./index.ts",
   "dependencies": {
     "@opensdks/runtime": "^0.0.14",
-    "@opensdks/sdk-qbo": "^0.0.14",
+    "@opensdks/sdk-outreach": "0.0.14",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

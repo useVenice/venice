@@ -14,6 +14,7 @@ import {default as connectorMerge} from '@usevenice/connector-merge/server'
 import {default as connectorMongodb} from '@usevenice/connector-mongodb/server'
 import {default as connectorMoota} from '@usevenice/connector-moota/server'
 import {default as connectorOnebrick} from '@usevenice/connector-onebrick/server'
+import {default as connectorOutreach} from '@usevenice/connector-outreach/server'
 import {default as connectorPlaid} from '@usevenice/connector-plaid/server'
 import {default as connectorPostgres} from '@usevenice/connector-postgres/server'
 import {default as connectorQbo} from '@usevenice/connector-qbo/server'
@@ -44,6 +45,7 @@ export const serverConnectors = {
   mongodb: connectorMongodb,
   moota: connectorMoota,
   onebrick: connectorOnebrick,
+  outreach: connectorOutreach,
   plaid: connectorPlaid,
   postgres: connectorPostgres,
   qbo: connectorQbo,

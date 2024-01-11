@@ -153,6 +153,15 @@ module.exports = [
     },
   },
   {
+    name: 'outreach',
+    dirName: 'connector-outreach',
+    varName: 'connectorOutreach',
+    imports: {
+      def: '@usevenice/connector-outreach/def',
+      server: '@usevenice/connector-outreach/server',
+    },
+  },
+  {
     name: 'plaid',
     dirName: 'connector-plaid',
     varName: 'connectorPlaid',

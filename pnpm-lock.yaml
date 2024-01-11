@@ -228,6 +228,9 @@ importers:
       '@usevenice/connector-onebrick':
         specifier: workspace:*
         version: link:../../connectors/connector-onebrick
+      '@usevenice/connector-outreach':
+        specifier: workspace:*
+        version: link:../../connectors/connector-outreach
       '@usevenice/connector-plaid':
         specifier: workspace:*
         version: link:../../connectors/connector-plaid
@@ -916,6 +919,21 @@ importers:
         specifier: 6.7.1
         version: 6.7.1
 
+  connectors/connector-outreach:
+    dependencies:
+      '@opensdks/runtime':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-outreach':
+        specifier: 0.0.14
+        version: 0.0.14
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
   connectors/connector-plaid:
     dependencies:
       '@opensdks/runtime':
@@ -990,11 +1008,11 @@ importers:
   connectors/connector-qbo:
     dependencies:
       '@opensdks/runtime':
-        specifier: 0.0.12
-        version: 0.0.12
+        specifier: ^0.0.14
+        version: 0.0.14
       '@opensdks/sdk-qbo':
-        specifier: 0.0.11
-        version: 0.0.11
+        specifier: ^0.0.14
+        version: 0.0.14
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -1177,8 +1195,8 @@ importers:
   kits/cdk:
     dependencies:
       '@opensdks/runtime':
-        specifier: 0.0.12
-        version: 0.0.12
+        specifier: ^0.0.14
+        version: 0.0.14
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
@@ -1289,8 +1307,8 @@ importers:
         version: 2.11.0(zod@3.21.4)
     devDependencies:
       '@opensdks/runtime':
-        specifier: 0.0.12
-        version: 0.0.12
+        specifier: ^0.0.14
+        version: 0.0.14
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)
@@ -4639,17 +4657,6 @@ packages:
     resolution: {integrity: sha512-q+wmJWdQ/gn0DehhQBG3Vipt0PuqEitEeEfR/oK0CsdWaGZnYLI70GAdmSRfUQhXJtqfC+gFC1F1egOmPBByhA==}
     dev: false
 
-  /@opensdks/links@0.0.11:
-    resolution: {integrity: sha512-KpvPp4b567pJCeLnqanakkkZbXJTheA2WRIe9gOMjC8EYDRixkWjurikLtDQ49yDBPSg5ybk+nZ443IfAcCgdQ==}
-
-  /@opensdks/runtime@0.0.12:
-    resolution: {integrity: sha512-y7ch7QBK82ypLIgj9fYxX4i7KKpcAH3VOGe+4IxkVLufntY12HvoF7e5terdRd0fel8eCfVluKZjYHEQouAiuA==}
-    dependencies:
-      '@opensdks/links': 0.0.11
-      openapi-fetch: 0.8.1
-      openapi-typescript-helpers: 0.0.4
-      openapi3-ts: 4.1.2
-
   /@opensdks/runtime@0.0.14:
     resolution: {integrity: sha512-uvX9JbsO+RbR2/OZvIFrh+lI8PfZQqIOYPWd46JJQcTo0aUCK7DUu/YZC5dFfIRPXq2TGsrfF8q2RbUYDIfnSg==}
     dependencies:
@@ -4669,12 +4676,21 @@ packages:
     resolution: {integrity: sha512-QqLiT2LAZnHZc5pyGNRyhBsk87QfDYUwAi3zE3VhGQSLnT88KiZ+TOpIJIyM1zqcQIlXPIy98H/DSWSWufDDQA==}
     dev: true
 
+  /@opensdks/sdk-outreach@0.0.14:
+    resolution: {integrity: sha512-UmHptoaIYmVGAfKmZOvb++A3/iOchFVS1fK/mviupOUMvm52sc0yqOTgutnAzU9iq6odP7Igm67CCV7cLfJvzQ==}
+    dev: false
+
   /@opensdks/sdk-plaid@0.0.14:
     resolution: {integrity: sha512-LcutnqPz94xXGjz9UhA/737tIoIbhoqgXJ0jB8qBJM4wBIfHFTmu1K9Jy6B0ixWIliv8IfDMpoHyxvg0bUgJ4Q==}
     dev: false
 
   /@opensdks/sdk-qbo@0.0.11:
     resolution: {integrity: sha512-8d8KNTjMDh5Cidm7NMNzoz3qmqpWMzqfREI6As+ETDgZNze1TprtZZzP6aMYIi/awRUQBJQZXTR4hTEOFSuwUQ==}
+    dev: true
+
+  /@opensdks/sdk-qbo@0.0.14:
+    resolution: {integrity: sha512-zmOzVWcitonWc8uGyST4zFDjg93KZnB5vk8aPggizcB9+1xeNZ3bc7AqUqFA3uJRip8MT5SklIl5L5f8AG7PYA==}
+    dev: false
 
   /@opensdks/sdk-slack@0.0.14:
     resolution: {integrity: sha512-//w9OelCjMc+wwCU12JD26cHxDp4RAwIcD246Lf+r0kRY9uMPiczgEnsdwN+5sy/4TP+JRRKyc14L3591Qr4fA==}
