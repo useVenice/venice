@@ -10,7 +10,7 @@ import type {
 } from '@trpc/server'
 import {TRPCError} from '@trpc/server'
 import * as R from 'remeda'
-import type {PathsOf} from '@usevenice/types'
+import type {PathsOf, StrictObj} from '@usevenice/types'
 import {z} from '@usevenice/zod'
 // FIXME: This is explicitly bypassing the package system because we have a circular
 // dependency here which is not great but ....
@@ -21,7 +21,7 @@ import type {
   trpc,
 } from '../../packages/engine-backend/router/_base'
 
-export {RouterMeta, inferProcedureInput, inferProcedureOutput}
+export {RouterMeta, inferProcedureInput, inferProcedureOutput, StrictObj}
 
 export type RouterMap<TRouter extends AnyRouter, TOpts = {}> = {
   [k in keyof TRouter as TRouter[k] extends AnyProcedure

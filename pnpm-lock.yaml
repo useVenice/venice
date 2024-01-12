@@ -1808,9 +1808,6 @@ importers:
 
   verticals/vertical-sales-engagement:
     dependencies:
-      '@usevenice/cdk':
-        specifier: workspace:*
-        version: link:../../kits/cdk
       '@usevenice/vdk':
         specifier: workspace:*
         version: link:../../kits/vdk
@@ -1824,9 +1821,6 @@ importers:
       '@usevenice/connector-salesloft':
         specifier: workspace:*
         version: link:../../connectors/connector-salesloft
-      '@usevenice/types':
-        specifier: workspace:*
-        version: link:../../utils/types
 
 packages:
 
