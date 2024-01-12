@@ -5,7 +5,7 @@
   "module": "./index.ts",
   "dependencies": {
     "@opensdks/runtime": "^0.0.14",
-    "@opensdks/sdk-salesloft": "0.0.14",
+    "@opensdks/sdk-salesloft": "0.0.15",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

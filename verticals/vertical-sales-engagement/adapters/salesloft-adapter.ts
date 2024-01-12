@@ -25,9 +25,6 @@ const mappers = {
 export const salesloftAdapter = {
   listContacts: async ({instance}) => {
     const res = await instance.GET('/v2/people.json', {})
-    // TODO: Fix openAPI spec to return the right types here
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-    const people = (res.data as any).data as Array<Salesloft['Person']>
-    return {hasNextPage: true, items: people.map(mappers.contact)}
+    return {hasNextPage: true, items: res.data.data.map(mappers.contact)}
   },
 } satisfies VerticalSalesEngagement<{instance: SalesloftSDK}>
