@@ -7,6 +7,8 @@ import {
   createInvestmentRouter,
   createPtaRouter,
   createSalesEngagementRouter,
+  outreachAdapter,
+  salesloftAdapter,
 } from '@usevenice/cdk/verticals'
 import {remoteProcedure, trpc} from './_base'
 import {adminRouter} from './adminRouter'
@@ -36,6 +38,8 @@ const salesEngagementRouter = createSalesEngagementRouter({
   // TODO: This should be moved into the vertical itself.
   adapterByName: {
     apollo: apolloAdapter,
+    salesloft: salesloftAdapter,
+    outreach: outreachAdapter,
   },
 })
 

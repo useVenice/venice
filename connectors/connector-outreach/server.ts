@@ -10,6 +10,8 @@ function initOutreachSDK(options: OutreachSDKTypes['options']) {
   return {...sdk, options}
 }
 
+export type OutreachSDK = ReturnType<typeof initOutreachSDK>
+
 export const outreachServer = {
   newInstance: ({settings, fetchLinks}) => {
     const qbo = initOutreachSDK({

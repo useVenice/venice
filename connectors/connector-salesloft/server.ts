@@ -10,6 +10,8 @@ function initSalesloftSDK(options: SalesloftSDKTypes['options']) {
   return {...sdk, options}
 }
 
+export type SalesloftSDK = ReturnType<typeof initSalesloftSDK>
+
 export const salesloftServer = {
   newInstance: ({settings, fetchLinks}) => {
     const qbo = initSalesloftSDK({

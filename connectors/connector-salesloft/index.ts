@@ -2,3 +2,4 @@
 export * from './def'
 export * from './server'
 // codegen:end
+export * from '@opensdks/sdk-salesloft'

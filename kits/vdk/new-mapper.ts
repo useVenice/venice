@@ -67,7 +67,9 @@ export async function proxyCallRemote({
     })
   }
 
-  return await implementation({instance, input})
+  const out = await implementation({instance, input})
+  // console.log('[proxyCallRemote] output', out)
+  return out
 }
 
 export async function proxyListRemoteRedux({

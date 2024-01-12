@@ -1818,9 +1818,15 @@ importers:
       '@usevenice/connector-apollo':
         specifier: workspace:*
         version: link:../../connectors/connector-apollo
+      '@usevenice/connector-outreach':
+        specifier: workspace:*
+        version: link:../../connectors/connector-outreach
       '@usevenice/connector-postgres':
         specifier: workspace:*
         version: link:../../connectors/connector-postgres
+      '@usevenice/connector-salesloft':
+        specifier: workspace:*
+        version: link:../../connectors/connector-salesloft
       '@usevenice/types':
         specifier: workspace:*
         version: link:../../utils/types
