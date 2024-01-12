@@ -199,6 +199,15 @@ module.exports = [
     },
   },
   {
+    name: 'salesloft',
+    dirName: 'connector-salesloft',
+    varName: 'connectorSalesloft',
+    imports: {
+      def: '@usevenice/connector-salesloft/def',
+      server: '@usevenice/connector-salesloft/server',
+    },
+  },
+  {
     name: 'saltedge',
     dirName: 'connector-saltedge',
     varName: 'connectorSaltedge',

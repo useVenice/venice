@@ -36,6 +36,7 @@
     "@usevenice/connector-postgres": "workspace:*",
     "@usevenice/connector-qbo": "workspace:*",
     "@usevenice/connector-ramp": "workspace:*",
+    "@usevenice/connector-salesloft": "workspace:*",
     "@usevenice/connector-saltedge": "workspace:*",
     "@usevenice/connector-splitwise": "workspace:*",
     "@usevenice/connector-spreadsheet": "workspace:*",

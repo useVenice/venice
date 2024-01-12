@@ -19,6 +19,7 @@ import {default as connectorPlaid} from '@usevenice/connector-plaid/server'
 import {default as connectorPostgres} from '@usevenice/connector-postgres/server'
 import {default as connectorQbo} from '@usevenice/connector-qbo/server'
 import {default as connectorRamp} from '@usevenice/connector-ramp/server'
+import {default as connectorSalesloft} from '@usevenice/connector-salesloft/server'
 import {default as connectorSaltedge} from '@usevenice/connector-saltedge/server'
 import {default as connectorSplitwise} from '@usevenice/connector-splitwise/server'
 import {default as connectorSpreadsheet} from '@usevenice/connector-spreadsheet/server'
@@ -50,6 +51,7 @@ export const serverConnectors = {
   postgres: connectorPostgres,
   qbo: connectorQbo,
   ramp: connectorRamp,
+  salesloft: connectorSalesloft,
   saltedge: connectorSaltedge,
   splitwise: connectorSplitwise,
   spreadsheet: connectorSpreadsheet,

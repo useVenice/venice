@@ -199,7 +199,7 @@ export const zIntegration = zIntegrationShort.extend({
   client_id: z.string(),
   client_secret: z.string(),
   /** comma deliminated scopes with no spaces in between */
-  scopes: z.string(),
+  scopes: z.string().optional(),
   app_link: z.string().nullish(),
   // In practice we only use nango for oauth integrations
   // but in theory we could use it for a generic secret store as well

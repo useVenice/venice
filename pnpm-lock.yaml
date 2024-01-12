@@ -243,6 +243,9 @@ importers:
       '@usevenice/connector-ramp':
         specifier: workspace:*
         version: link:../../connectors/connector-ramp
+      '@usevenice/connector-salesloft':
+        specifier: workspace:*
+        version: link:../../connectors/connector-salesloft
       '@usevenice/connector-saltedge':
         specifier: workspace:*
         version: link:../../connectors/connector-saltedge
@@ -1022,6 +1025,21 @@ importers:
 
   connectors/connector-ramp:
     dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
+  connectors/connector-salesloft:
+    dependencies:
+      '@opensdks/runtime':
+        specifier: ^0.0.14
+        version: 0.0.14
+      '@opensdks/sdk-salesloft':
+        specifier: 0.0.14
+        version: 0.0.14
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -4690,6 +4708,10 @@ packages:
 
   /@opensdks/sdk-qbo@0.0.14:
     resolution: {integrity: sha512-zmOzVWcitonWc8uGyST4zFDjg93KZnB5vk8aPggizcB9+1xeNZ3bc7AqUqFA3uJRip8MT5SklIl5L5f8AG7PYA==}
+    dev: false
+
+  /@opensdks/sdk-salesloft@0.0.14:
+    resolution: {integrity: sha512-yBU6j9DuOyev4mpmkLPh+S+w0QyJKaIk7XdJ5Ye3hih6LoWSatR4EbNrJ+0VTp3FXPU96qhXmHfiIR2l97UtEw==}
     dev: false
 
   /@opensdks/sdk-slack@0.0.14:
