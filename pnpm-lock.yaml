@@ -692,11 +692,11 @@ importers:
   connectors/connector-apollo:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-apollo':
-        specifier: ^0.0.17
-        version: 0.0.17
+        specifier: ^0.0.18
+        version: 0.0.18
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -925,11 +925,11 @@ importers:
   connectors/connector-outreach:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-outreach':
-        specifier: 0.0.14
-        version: 0.0.14
+        specifier: 0.0.15
+        version: 0.0.15
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -940,8 +940,8 @@ importers:
   connectors/connector-plaid:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-plaid':
         specifier: ^0.0.14
         version: 0.0.14
@@ -1011,8 +1011,8 @@ importers:
   connectors/connector-qbo:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-qbo':
         specifier: ^0.0.14
         version: 0.0.14
@@ -1035,11 +1035,11 @@ importers:
   connectors/connector-salesloft:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-salesloft':
-        specifier: 0.0.15
-        version: 0.0.15
+        specifier: 0.0.16
+        version: 0.0.16
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -1189,8 +1189,8 @@ importers:
         specifier: ^3.0.64
         version: 3.0.64(openapi-types@12.1.0)(typescript@5.0.4)
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-discord':
         specifier: ^0.0.14
         version: 0.0.14
@@ -1202,7 +1202,7 @@ importers:
         version: 0.0.14
       '@opensdks/sdk-venice':
         specifier: ^0.0.14
-        version: 0.0.14(@opensdks/runtime@0.0.14)
+        version: 0.0.14(@opensdks/runtime@0.0.16)
       '@usevenice/sdk':
         specifier: workspace:*
         version: link:../kits/sdk
@@ -1213,8 +1213,8 @@ importers:
   kits/cdk:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@trpc/server':
         specifier: 10.40.0
         version: 10.40.0
@@ -1325,8 +1325,8 @@ importers:
         version: 2.11.0(zod@3.21.4)
     devDependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.14
-        version: 0.0.14
+        specifier: ^0.0.16
+        version: 0.0.16
       '@usevenice/trpc-openapi':
         specifier: 1.3.8
         version: 1.3.8(@trpc/server@10.40.0)(zod@3.21.4)
@@ -4665,23 +4665,23 @@ packages:
       '@octokit/openapi-types': 18.1.1
     dev: true
 
-  /@opensdks/fetch-links@0.0.14:
-    resolution: {integrity: sha512-WxrUtSLvdH60x1ZyTv4UUHbIcBH8Wkfge30rEX4HQtjX4rRNnc+U3kU5/PSvrQgwKiIM16N29zM7z2Bz0Sb1LA==}
-
   /@opensdks/fetch-links@0.0.16:
     resolution: {integrity: sha512-q+wmJWdQ/gn0DehhQBG3Vipt0PuqEitEeEfR/oK0CsdWaGZnYLI70GAdmSRfUQhXJtqfC+gFC1F1egOmPBByhA==}
     dev: false
 
-  /@opensdks/runtime@0.0.14:
-    resolution: {integrity: sha512-uvX9JbsO+RbR2/OZvIFrh+lI8PfZQqIOYPWd46JJQcTo0aUCK7DUu/YZC5dFfIRPXq2TGsrfF8q2RbUYDIfnSg==}
+  /@opensdks/fetch-links@0.0.17:
+    resolution: {integrity: sha512-BUomrnpFtlu085W1wOY0k52Kf6qkJwBDifQxFoSHkfjyjS81AkpOTPsBTYS5HffAXS8rgoBBJF+7fu2NSYipFw==}
+
+  /@opensdks/runtime@0.0.16:
+    resolution: {integrity: sha512-aCRhxlWr2e+hB38quP2tLkaPGZNPMV9rBE+IoTwDoHS4mql2dyn7HvxRYisoU3XmdaMCLvbf8+H/7Nrj02tMpg==}
     dependencies:
-      '@opensdks/fetch-links': 0.0.14
+      '@opensdks/fetch-links': 0.0.17
       openapi-fetch: 0.8.1
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
 
-  /@opensdks/sdk-apollo@0.0.17:
-    resolution: {integrity: sha512-S1PAAPZd5Z6gH781+OZmkw48gKEajg9UlYEOvaHSXRlfuZi/w5kl7Sg5yFDHZr8NLEl3l1c0EkpF4YsiVBD8HA==}
+  /@opensdks/sdk-apollo@0.0.18:
+    resolution: {integrity: sha512-i2rps56eTt22cM1pwbVyTVlZtpjP65T3jMJhX2rKO2CiHd7+QoI3+hT+ko6dCIsi6STPnoM+IIJhmyQZjJIktA==}
     dev: false
 
   /@opensdks/sdk-discord@0.0.14:
@@ -4691,8 +4691,8 @@ packages:
     resolution: {integrity: sha512-QqLiT2LAZnHZc5pyGNRyhBsk87QfDYUwAi3zE3VhGQSLnT88KiZ+TOpIJIyM1zqcQIlXPIy98H/DSWSWufDDQA==}
     dev: true
 
-  /@opensdks/sdk-outreach@0.0.14:
-    resolution: {integrity: sha512-UmHptoaIYmVGAfKmZOvb++A3/iOchFVS1fK/mviupOUMvm52sc0yqOTgutnAzU9iq6odP7Igm67CCV7cLfJvzQ==}
+  /@opensdks/sdk-outreach@0.0.15:
+    resolution: {integrity: sha512-X3HsfDHFs3VFi6xn3EZ75b6WoKL0geVIj+00MuypAgilbbecfrtNlslfMHD/KHQgfZPo+n92ipECJfO5XbtYsg==}
     dev: false
 
   /@opensdks/sdk-plaid@0.0.14:
@@ -4707,20 +4707,20 @@ packages:
     resolution: {integrity: sha512-zmOzVWcitonWc8uGyST4zFDjg93KZnB5vk8aPggizcB9+1xeNZ3bc7AqUqFA3uJRip8MT5SklIl5L5f8AG7PYA==}
     dev: false
 
-  /@opensdks/sdk-salesloft@0.0.15:
-    resolution: {integrity: sha512-/G26fC6TVkvCli3x/NdEjUcMufY6cgBYFX9it5lujNNfhEmA99cHLHDpPyZGhlA+W6zVZRQgqQ/Y7nIk5EdQ7w==}
+  /@opensdks/sdk-salesloft@0.0.16:
+    resolution: {integrity: sha512-G59x1L+XdFyw4SNJP2hQFYd6Iw6lSHskCl3ZPpFmTzCahFS48a3HwNpOsl3lk+c29Cr7ZXVEiq8pmpLzHR7CHQ==}
     dev: false
 
   /@opensdks/sdk-slack@0.0.14:
     resolution: {integrity: sha512-//w9OelCjMc+wwCU12JD26cHxDp4RAwIcD246Lf+r0kRY9uMPiczgEnsdwN+5sy/4TP+JRRKyc14L3591Qr4fA==}
     dev: true
 
-  /@opensdks/sdk-venice@0.0.14(@opensdks/runtime@0.0.14):
+  /@opensdks/sdk-venice@0.0.14(@opensdks/runtime@0.0.16):
     resolution: {integrity: sha512-mGbUqCrqsh5kGxI2gpjCCeqPCbYF0KMyB5Cc8xmcwursZIMFOxMZTYerlYYS0Ht5tRa/WltOuQJTgqUPYmimxg==}
     peerDependencies:
       '@opensdks/runtime': 0.0.14
     dependencies:
-      '@opensdks/runtime': 0.0.14
+      '@opensdks/runtime': 0.0.16
     dev: true
 
   /@panva/asn1.js@1.0.0:

@@ -5,7 +5,7 @@
   "sideEffects": false,
   "module": "./index.ts",
   "dependencies": {
-    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/runtime": "^0.0.16",
     "@trpc/server": "10.40.0",
     "@usevenice/util": "workspace:*",
     "@usevenice/zod": "workspace:*",

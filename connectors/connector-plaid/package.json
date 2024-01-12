@@ -7,7 +7,7 @@
   ],
   "module": "./index.ts",
   "dependencies": {
-    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/runtime": "^0.0.16",
     "@opensdks/sdk-plaid": "^0.0.14",
     "@t3-oss/env-core": "0.7.1",
     "@usevenice/cdk": "workspace:*",

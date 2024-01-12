@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@mintlify/scraping": "^3.0.64",
-    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/runtime": "^0.0.16",
     "@opensdks/sdk-discord": "^0.0.14",
     "@opensdks/sdk-openai": "^0.0.14",
     "@opensdks/sdk-slack": "^0.0.14",

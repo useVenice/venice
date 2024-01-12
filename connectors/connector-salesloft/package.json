@@ -4,8 +4,8 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@opensdks/runtime": "^0.0.14",
-    "@opensdks/sdk-salesloft": "0.0.15",
+    "@opensdks/runtime": "^0.0.16",
+    "@opensdks/sdk-salesloft": "0.0.16",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

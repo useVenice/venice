@@ -4,7 +4,7 @@
   "private": true,
   "module": "./index.ts",
   "dependencies": {
-    "@opensdks/runtime": "^0.0.14",
+    "@opensdks/runtime": "^0.0.16",
     "@opensdks/sdk-qbo": "^0.0.14",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"

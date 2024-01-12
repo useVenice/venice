@@ -1,4 +1,4 @@
-import type {ApolloSdk, ApolloSDKTypes} from '@usevenice/connector-apollo'
+import type {ApolloSDK, ApolloSDKTypes} from '@usevenice/connector-apollo'
 import type {StrictObj} from '@usevenice/vdk'
 import {mapper, zCast} from '@usevenice/vdk'
 import type {VerticalSalesEngagement} from '../sales-engagement'
@@ -26,4 +26,4 @@ export const apolloAdapter = {
       items: res.data.contacts.map(mappers.contact),
     }
   },
-} satisfies VerticalSalesEngagement<{instance: ApolloSdk}>
+} satisfies VerticalSalesEngagement<{instance: ApolloSDK}>

@@ -1,16 +1,8 @@
-import {initSDK} from '@opensdks/runtime'
-import type {SalesloftSDKTypes} from '@opensdks/sdk-salesloft'
-import {salesloftSdkDef} from '@opensdks/sdk-salesloft'
+import type {SalesloftSDK} from '@opensdks/sdk-salesloft'
+import {initSalesloftSDK} from '@opensdks/sdk-salesloft'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {nangoProxyLink} from '@usevenice/cdk'
 import type {salesloftSchemas} from './def'
-
-function initSalesloftSDK(options: SalesloftSDKTypes['options']) {
-  const sdk = initSDK(salesloftSdkDef, options)
-  return {...sdk, options}
-}
-
-export type SalesloftSDK = ReturnType<typeof initSalesloftSDK>
 
 export const salesloftServer = {
   newInstance: ({settings, fetchLinks}) => {
@@ -41,9 +33,6 @@ export const salesloftServer = {
       params: {query: input.query},
       body: JSON.stringify(input.body),
     }),
-} satisfies ConnectorServer<
-  typeof salesloftSchemas,
-  ReturnType<typeof initSalesloftSDK>
->
+} satisfies ConnectorServer<typeof salesloftSchemas, SalesloftSDK>
 
 export default salesloftServer

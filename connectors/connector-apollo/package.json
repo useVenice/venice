@@ -5,8 +5,8 @@
   "module": "./index.ts",
   "scripts": {},
   "dependencies": {
-    "@opensdks/runtime": "^0.0.14",
-    "@opensdks/sdk-apollo": "^0.0.17",
+    "@opensdks/runtime": "^0.0.16",
+    "@opensdks/sdk-apollo": "^0.0.18",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
   },

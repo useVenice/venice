@@ -1,16 +1,8 @@
-import {initSDK} from '@opensdks/runtime'
-import type {OutreachSDKTypes} from '@opensdks/sdk-outreach'
-import {outreachSdkDef} from '@opensdks/sdk-outreach'
+import type {OutreachSDK} from '@opensdks/sdk-outreach'
+import {initOutreachSDK} from '@opensdks/sdk-outreach'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {nangoProxyLink} from '@usevenice/cdk'
 import type {outreachSchemas} from './def'
-
-function initOutreachSDK(options: OutreachSDKTypes['options']) {
-  const sdk = initSDK(outreachSdkDef, options)
-  return {...sdk, options}
-}
-
-export type OutreachSDK = ReturnType<typeof initOutreachSDK>
 
 export const outreachServer = {
   newInstance: ({settings, fetchLinks}) => {
@@ -41,9 +33,6 @@ export const outreachServer = {
       params: {query: input.query},
       body: JSON.stringify(input.body),
     }),
-} satisfies ConnectorServer<
-  typeof outreachSchemas,
-  ReturnType<typeof initOutreachSDK>
->
+} satisfies ConnectorServer<typeof outreachSchemas, OutreachSDK>
 
 export default outreachServer

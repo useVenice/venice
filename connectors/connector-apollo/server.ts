@@ -1,23 +1,13 @@
-import {initSDK} from '@opensdks/runtime'
-import type {ApolloSDKTypes} from '@opensdks/sdk-apollo'
-import {apolloSdkDef} from '@opensdks/sdk-apollo'
+import type {ApolloSDK} from '@opensdks/sdk-apollo'
+import {initApolloSDK} from '@opensdks/sdk-apollo'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
 import type {apolloSchemas} from './def'
 import {APOLLO_ENTITY_NAME, apolloHelpers} from './def'
 
-export {ApolloSDKTypes}
-
-function initApolloSdk(options: ApolloSDKTypes['options']) {
-  const sdk = initSDK(apolloSdkDef, options)
-  return {...sdk, options}
-}
-
-export type ApolloSdk = ReturnType<typeof initApolloSdk>
-
 export const apolloServer = {
   newInstance: (opts) =>
-    initApolloSdk({
+    initApolloSDK({
       api_key: opts.settings.api_key,
       links: (defaultLinks) => [...opts.fetchLinks, ...defaultLinks],
     }),
@@ -51,6 +41,6 @@ export const apolloServer = {
         Rx.mergeMap((ops) => rxjs.from([...ops, apolloHelpers._op('commit')])),
       )
   },
-} satisfies ConnectorServer<typeof apolloSchemas, ApolloSdk>
+} satisfies ConnectorServer<typeof apolloSchemas, ApolloSDK>
 
 export default apolloServer
