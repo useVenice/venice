@@ -6,17 +6,17 @@ import type {outreachSchemas} from './def'
 
 export const outreachServer = {
   newInstance: ({settings, fetchLinks}) => {
-    const qbo = initOutreachSDK({
+    const sdk = initOutreachSDK({
       // We rely on nango to refresh the access token...
       headers: {
         authorization: `Bearer ${settings.oauth.credentials.access_token}`,
       },
       links: (defaultLinks) => [
         (req, next) => {
-          if (qbo.clientOptions.baseUrl) {
+          if (sdk.clientOptions.baseUrl) {
             req.headers.set(
               nangoProxyLink.kBaseUrlOverride,
-              qbo.clientOptions.baseUrl,
+              sdk.clientOptions.baseUrl,
             )
           }
           return next(req)
@@ -25,7 +25,7 @@ export const outreachServer = {
         ...defaultLinks,
       ],
     })
-    return qbo
+    return sdk
   },
   passthrough: (instance, input) =>
     instance.request(input.method, input.path, {
