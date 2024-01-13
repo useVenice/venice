@@ -23,7 +23,7 @@
     "@usevenice/util": "workspace:*",
     "@zodios/core": "10.9.6",
     "@zodios/fetch": "11.0.0-beta.19",
-    "zod": "3.21.4"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@redocly/cli": "1.4.0",

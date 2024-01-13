@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@usevenice/sdk": "workspace:*",
-    "zod": "3.21.4"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/react": "*",

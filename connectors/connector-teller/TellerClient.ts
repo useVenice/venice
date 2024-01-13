@@ -1,5 +1,4 @@
 import {createHTTPClient, memoize, z, zFunction} from '@usevenice/util'
-
 import institutionsWsResponse from './institutionWsResponse.json'
 
 export const zEnvName = z.enum(['sandbox', 'development', 'production'])
@@ -212,7 +211,7 @@ export const makeTellerClient = zFunction(zTellerConfig, (cfg) => {
         [string, string, string, string]
       >
       return list.map(([, id, svg, name]) =>
-        zInstitution.parse<'typed'>({
+        zInstitution.parse({
           id,
           name,
           // Courtesy of https://css-tricks.com/probably-dont-base64-svg/
