@@ -169,13 +169,16 @@ export const makeJwtClient = zFunction(
             message: 'JWT payload must be an object, not a string.',
           })
         }
+        // console.log('jwt.verify', data)
         return zViewerFromJwtPayload.parse(data)
       } catch (err) {
-        if (!`${err}`.includes('TokenExpiredError')) {
-          // This dependency is not great... But don't know of a better pattern for now
-          throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
-        }
-        return {role: 'anon'}
+        // console.log('jwt.verify Error', err)
+        // Actually throw token expired errror
+        throw new TRPCError({code: 'UNAUTHORIZED', message: `${err}`})
+        // if (!`${err}`.includes('TokenExpiredError')) {
+        //   // This dependency is not great... But don't know of a better pattern for now
+        // }
+        // return {role: 'anon'}
       }
     },
     signViewer: (
