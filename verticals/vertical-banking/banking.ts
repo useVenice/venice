@@ -26,6 +26,8 @@ export const zBanking = {
   account: z.object({
     id: z.string(),
     name: z.string(),
+    current_balance: z.number().optional(),
+    currency: z.string().optional(),
   }),
   merchant: z.object({
     id: z.string(),
@@ -134,6 +136,20 @@ export function bankingLink(ctx: {
           } satisfies PostgresInputPayload,
         })
       }
+      if (op.data.entityName === 'account') {
+        const mapped = applyMapper(
+          mappers.plaid.account,
+          op.data.entity as Plaid['schemas']['AccountBase'],
+        )
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_account',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
     }
     // Do not allow any other entities to pass through
     return rxjs.EMPTY
@@ -197,6 +213,16 @@ const mappers = {
         description: 'original_description',
         merchant_id: 'merchant_entity_id',
         merchant_name: 'merchant_name',
+      },
+    ),
+    account: mapper(
+      zCast<StrictObj<Plaid['schemas']['AccountBase']>>(),
+      zBanking.account,
+      {
+        id: 'account_id',
+        name: 'name',
+        current_balance: (a) => a.balances.current ?? undefined,
+        currency: (a) => a.balances.iso_currency_code ?? undefined,
       },
     ),
   },
