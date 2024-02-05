@@ -42,6 +42,7 @@ export const qboServer = {
   sourceSync: ({instance: qbo, streams}) => {
     async function* iterateEntities() {
       const updatedSince = undefined
+      // TODO: Inplement incremental sync...
       console.log('[qbo] Starting sync', streams)
       for (const type of Object.values(QBO_ENTITY_NAME)) {
         if (!streams[type]) {

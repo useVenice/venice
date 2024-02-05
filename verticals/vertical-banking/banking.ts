@@ -52,8 +52,17 @@ type PostgresInputPayload =
   (typeof postgresHelpers)['_types']['destinationInputEntity']
 
 export function bankingLink(ctx: {
-  source: {id: Id['reso']; connectorConfig: {connectorName: string}}
+  source: {
+    id: Id['reso']
+    connectorConfig: {connectorName: string}
+    metadata?: unknown
+  }
 }): Link<AnyEntityPayload, PostgresInputPayload> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const categories: Record<string, boolean> =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+    (ctx.source.metadata as any)?.categories ?? {}
+
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
@@ -64,6 +73,23 @@ export function bankingLink(ctx: {
           mappers.qbo.purchase,
           op.data.entity as QBO['Purchase'],
         )
+        // TODO: Make this better, should at the minimum apply to both Plaid & QBO, options are
+        // 1) Banking link needs to take input parameters to determine if by default
+        // transactions should go through if metadata is missing or not
+        // 2) Banking vertical should include abstraction for account / category selection UI etc.
+        // 3) Extract this into a more generic filtering link that works for ANY entity.
+        // In addition, will need to handle incremental sync state reset when we change stream filtering
+        // parameter like this, as well as deleting the no longer relevant entities in destination
+        if (!categories[mapped.category_name ?? '']) {
+          // console.trace(
+          //   `[banking] skip txn ${mapped.id} in ${mapped.category_name}`,
+          // )
+          return rxjs.EMPTY
+        } else {
+          // console.trace(
+          //   `[banking] allow txn ${mapped.id} in ${mapped.category_name}`,
+          // )
+        }
         return rxjs.of({
           ...op,
           data: {
