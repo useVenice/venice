@@ -2591,7 +2591,15 @@
                     "items": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/banking.category"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/banking.category"
+                          }
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "_raw": {}
+                        }
                       }
                     }
                   },

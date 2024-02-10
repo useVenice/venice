@@ -2626,7 +2626,9 @@ export interface operations {
         content: {
           'application/json': {
             hasNextPage: boolean
-            items: components['schemas']['banking.category'][]
+            items: ({
+              _raw?: unknown
+            } & components['schemas']['banking.category'])[]
           }
         }
       }

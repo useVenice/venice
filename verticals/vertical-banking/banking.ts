@@ -276,7 +276,6 @@ function oapi(meta: NonNullable<RouterMeta['openapi']>): RouterMeta {
 }
 
 export function createBankingRouter(opts: VerticalRouterOpts) {
-  console.error('create banking router')
   const router = opts.trpc.router({
     listCategories: opts.remoteProcedure
       .meta(oapi({method: 'GET', path: '/category'}))
@@ -284,7 +283,9 @@ export function createBankingRouter(opts: VerticalRouterOpts) {
       .output(
         z.object({
           hasNextPage: z.boolean(),
-          items: z.array(zBanking.category),
+          items: z.array(
+            zBanking.category.extend({_raw: z.unknown().optional()}),
+          ),
         }),
       )
       .query(async ({input, ctx}) => proxyCallRemote({input, ctx, opts})),
