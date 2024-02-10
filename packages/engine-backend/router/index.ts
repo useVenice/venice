@@ -9,6 +9,7 @@ import {
   createPtaRouter,
   createSalesEngagementRouter,
   outreachAdapter,
+  qboAdapter,
   salesloftAdapter,
 } from '@usevenice/cdk/verticals'
 import {remoteProcedure, trpc} from './_base'
@@ -25,7 +26,7 @@ import {systemRouter} from './systemRouter'
 const bankingRouter = createBankingRouter({
   trpc,
   remoteProcedure,
-  adapterByName: {},
+  adapterByName: {qbo: qboAdapter},
 })
 const accountingRouter = createAccountingRouter({
   trpc,

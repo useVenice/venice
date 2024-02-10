@@ -1,28 +1,15 @@
 import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
-import type {
-  AnyEntityPayload,
-  ConnectorSchemas,
-  ConnHelpers,
-  Id,
-  Link,
-} from '@usevenice/cdk'
+import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
 import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
 import type {StrictObj} from '@usevenice/types'
-import type {MaybePromise} from '@usevenice/util'
-import {objectEntries, R} from '@usevenice/util'
-import type {
-  PaginatedOutput,
-  Pagination,
-  VerticalRouterOpts,
-} from '@usevenice/vdk'
+import type {RouterMap, RouterMeta, VerticalRouterOpts} from '@usevenice/vdk'
 import {
   applyMapper,
   mapper,
-  paginatedOutput,
-  proxyListRemoteRedux,
+  proxyCallRemote,
   z,
   zCast,
   zPaginationParams,
@@ -31,34 +18,42 @@ import {
 type Plaid = PlaidSDKTypes['oas']['components']
 
 export const zBanking = {
-  transaction: z.object({
-    id: z.string(),
-    date: z.string().datetime(),
-    description: z.string().nullish(),
-    category_id: z.string().nullish(),
-    category_name: z.string().nullish(),
-    amount: z.number(),
-    currency: z.string(),
-    merchant_id: z.string().nullish(),
-    merchant_name: z.string().nullish(),
-    account_id: z.string().nullish(),
-    account_name: z.string().nullish(),
-  }),
-  account: z.object({
-    id: z.string(),
-    name: z.string(),
-    current_balance: z.number().optional(),
-    currency: z.string().optional(),
-  }),
-  merchant: z.object({
-    id: z.string(),
-    name: z.string(),
-    url: z.string().nullish(),
-  }),
-  category: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
+  transaction: z
+    .object({
+      id: z.string(),
+      date: z.string().datetime(),
+      description: z.string().nullish(),
+      category_id: z.string().nullish(),
+      category_name: z.string().nullish(),
+      amount: z.number(),
+      currency: z.string(),
+      merchant_id: z.string().nullish(),
+      merchant_name: z.string().nullish(),
+      account_id: z.string().nullish(),
+      account_name: z.string().nullish(),
+    })
+    .openapi({ref: 'banking.transaction'}),
+  account: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      current_balance: z.number().optional(),
+      currency: z.string().optional(),
+    })
+    .openapi({ref: 'banking.account'}),
+  merchant: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      url: z.string().nullish(),
+    })
+    .openapi({ref: 'banking.merchant'}),
+  category: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .openapi({ref: 'banking.category'}),
 }
 
 export const zBankingEntityName = z.enum(
@@ -275,44 +270,28 @@ const mappers = {
   },
 }
 
-export interface BankingMethods<
-  TDef extends ConnectorSchemas,
-  TInstance,
-  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
-> {
-  list?: <TType extends keyof T['_verticals']['banking']>(
-    instance: TInstance,
-    stream: TType,
-    opts: Pagination,
-  ) => MaybePromise<PaginatedOutput<T['_verticals']['banking'][TType]>>
-  get?: <TType extends keyof T['_verticals']['banking']>(
-    instance: TInstance,
-    stream: TType,
-    opts: Pagination,
-  ) => MaybePromise<T['_verticals']['banking'][TType] | null>
+function oapi(meta: NonNullable<RouterMeta['openapi']>): RouterMeta {
+  const vertical = 'banking'
+  return {openapi: {...meta, path: `/verticals/${vertical}${meta.path}`}}
 }
 
 export function createBankingRouter(opts: VerticalRouterOpts) {
-  const vertical = 'banking'
+  console.error('create banking router')
+  const router = opts.trpc.router({
+    listCategories: opts.remoteProcedure
+      .meta(oapi({method: 'GET', path: '/category'}))
+      .input(zPaginationParams.nullish())
+      .output(
+        z.object({
+          hasNextPage: z.boolean(),
+          items: z.array(zBanking.category),
+        }),
+      )
+      .query(async ({input, ctx}) => proxyCallRemote({input, ctx, opts})),
+  })
 
-  return opts.trpc.router(
-    R.mapToObj(objectEntries(zBanking), ([entityName, v]) => [
-      `${entityName}_list`,
-      opts.remoteProcedure
-        .meta({
-          openapi: {
-            method: 'GET',
-            path: `/verticals/${vertical}/${entityName}`,
-            tags: ['Verticals'],
-          },
-        })
-        .input(zPaginationParams.nullish())
-        .output(paginatedOutput(v))
-        .query(async ({input, ctx}) =>
-          proxyListRemoteRedux({input, ctx, meta: {entityName, vertical}}),
-        ),
-    ]),
-    // We cannot use a single trpc procedure because neither openAPI nor trpc
-    // supports switching output shape that depends on input
-  )
+  return router
 }
+
+export type BankingRouter = ReturnType<typeof createBankingRouter>
+export type VerticalBanking<TOpts> = RouterMap<BankingRouter, TOpts>

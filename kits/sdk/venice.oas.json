@@ -2558,305 +2558,9 @@
         }
       }
     },
-    "/verticals/banking/transaction": {
-      "get": {
-        "operationId": "verticals-banking-transaction_list",
-        "tags": ["Verticals"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "offset",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "hasNextPage": {
-                      "type": "boolean"
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "date": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "description": {
-                            "type": ["string", "null"]
-                          },
-                          "category_id": {
-                            "type": ["string", "null"]
-                          },
-                          "category_name": {
-                            "type": ["string", "null"]
-                          },
-                          "amount": {
-                            "type": "number"
-                          },
-                          "currency": {
-                            "type": "string"
-                          },
-                          "merchant_id": {
-                            "type": ["string", "null"]
-                          },
-                          "merchant_name": {
-                            "type": ["string", "null"]
-                          },
-                          "account_id": {
-                            "type": ["string", "null"]
-                          },
-                          "account_name": {
-                            "type": ["string", "null"]
-                          },
-                          "_original": {}
-                        },
-                        "required": ["id", "date", "amount", "currency"]
-                      }
-                    }
-                  },
-                  "required": ["hasNextPage", "items"]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.BAD_REQUEST"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.NOT_FOUND"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/verticals/banking/account": {
-      "get": {
-        "operationId": "verticals-banking-account_list",
-        "tags": ["Verticals"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "offset",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "hasNextPage": {
-                      "type": "boolean"
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "current_balance": {
-                            "type": "number"
-                          },
-                          "currency": {
-                            "type": "string"
-                          },
-                          "_original": {}
-                        },
-                        "required": ["id", "name"]
-                      }
-                    }
-                  },
-                  "required": ["hasNextPage", "items"]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.BAD_REQUEST"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.NOT_FOUND"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/verticals/banking/merchant": {
-      "get": {
-        "operationId": "verticals-banking-merchant_list",
-        "tags": ["Verticals"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "offset",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "hasNextPage": {
-                      "type": "boolean"
-                    },
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "url": {
-                            "type": ["string", "null"]
-                          },
-                          "_original": {}
-                        },
-                        "required": ["id", "name"]
-                      }
-                    }
-                  },
-                  "required": ["hasNextPage", "items"]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.BAD_REQUEST"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.NOT_FOUND"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/verticals/banking/category": {
       "get": {
-        "operationId": "verticals-banking-category_list",
-        "tags": ["Verticals"],
+        "operationId": "verticals-banking-listCategories",
         "parameters": [
           {
             "in": "query",
@@ -2887,17 +2591,7 @@
                     "items": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "_original": {}
-                        },
-                        "required": ["id", "name"]
+                        "$ref": "#/components/schemas/banking.category"
                       }
                     }
                   },
@@ -3333,6 +3027,18 @@
           }
         },
         "required": ["id", "first_name", "last_name"]
+      },
+      "banking.category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name"]
       },
       "Viewer": {
         "oneOf": [

@@ -26,11 +26,9 @@ import type {
 } from './protocol'
 import type {
   AccountingMethods,
-  BankingMethods,
   InvestmentMethods,
   PtaMethods,
   ZAccounting,
-  ZBanking,
   ZInvestment,
   ZPta,
 } from './verticals'
@@ -46,10 +44,6 @@ export interface Verticals<
   investment: {
     models: ZInvestment
     methods: InvestmentMethods<TDef, TInstance>
-  }
-  banking: {
-    models: ZBanking
-    methods: BankingMethods<TDef, TInstance>
   }
   /** plain text accounting */
   pta: {
