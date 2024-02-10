@@ -63,6 +63,21 @@ export const qboServer = {
   },
 
   verticals: {
+    banking: {
+      list: async (qbo, type, _opts) => {
+        switch (type) {
+          case 'category': {
+            const res = await qbo.query(
+              // QBO API does not support OR in SQL query...
+              "SELECT * FROM Account WHERE Classification IN ('Revenue', 'Expense')",
+            )
+            return {hasNextPage: false, items: res.Account ?? []}
+          }
+          default:
+            throw new Error(`Not implemented: ${type}`)
+        }
+      },
+    },
     accounting: {
       list: async (qbo, type, _opts) => {
         switch (type) {

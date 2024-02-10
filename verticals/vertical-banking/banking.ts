@@ -1,11 +1,32 @@
 import * as rxjs from 'rxjs'
 import * as Rx from 'rxjs/operators'
-import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
+import type {
+  AnyEntityPayload,
+  ConnectorSchemas,
+  ConnHelpers,
+  Id,
+  Link,
+} from '@usevenice/cdk'
 import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
 import type {StrictObj} from '@usevenice/types'
-import {applyMapper, mapper, z, zCast} from '@usevenice/vdk'
+import type {MaybePromise} from '@usevenice/util'
+import {objectEntries, R} from '@usevenice/util'
+import type {
+  PaginatedOutput,
+  Pagination,
+  VerticalRouterOpts,
+} from '@usevenice/vdk'
+import {
+  applyMapper,
+  mapper,
+  paginatedOutput,
+  proxyListRemoteRedux,
+  z,
+  zCast,
+  zPaginationParams,
+} from '@usevenice/vdk'
 
 type Plaid = PlaidSDKTypes['oas']['components']
 
@@ -252,4 +273,46 @@ const mappers = {
       },
     ),
   },
+}
+
+export interface BankingMethods<
+  TDef extends ConnectorSchemas,
+  TInstance,
+  T extends ConnHelpers<TDef> = ConnHelpers<TDef>,
+> {
+  list?: <TType extends keyof T['_verticals']['banking']>(
+    instance: TInstance,
+    stream: TType,
+    opts: Pagination,
+  ) => MaybePromise<PaginatedOutput<T['_verticals']['banking'][TType]>>
+  get?: <TType extends keyof T['_verticals']['banking']>(
+    instance: TInstance,
+    stream: TType,
+    opts: Pagination,
+  ) => MaybePromise<T['_verticals']['banking'][TType] | null>
+}
+
+export function createBankingRouter(opts: VerticalRouterOpts) {
+  const vertical = 'banking'
+
+  return opts.trpc.router(
+    R.mapToObj(objectEntries(zBanking), ([entityName, v]) => [
+      `${entityName}_list`,
+      opts.remoteProcedure
+        .meta({
+          openapi: {
+            method: 'GET',
+            path: `/verticals/${vertical}/${entityName}`,
+            tags: ['Verticals'],
+          },
+        })
+        .input(zPaginationParams.nullish())
+        .output(paginatedOutput(v))
+        .query(async ({input, ctx}) =>
+          proxyListRemoteRedux({input, ctx, meta: {entityName, vertical}}),
+        ),
+    ]),
+    // We cannot use a single trpc procedure because neither openAPI nor trpc
+    // supports switching output shape that depends on input
+  )
 }

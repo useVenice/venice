@@ -67,6 +67,12 @@ export const qboSchemas = {
   sourceOutputEntities: R.mapValues(QBO_ENTITY_NAME, () => z.unknown()),
 
   verticals: {
+    banking: {
+      account: zCast<QBO['Account']>(),
+      transaction: zCast<QBO['Purchase']>(),
+      category: zCast<QBO['Account']>(),
+      merchant: zCast<QBO['Vendor']>(),
+    },
     accounting: {
       account: zCast<QBO['Account']>(),
       expense: zCast<QBO['Purchase']>(),
@@ -117,6 +123,10 @@ export const qboDef = {
     $defaults: {
       primaryKey: 'Id',
       cursorField: 'Metadata.LastUpdatedTime',
+    },
+    // @ts-expect-error TODO: Fix me
+    banking: {
+      category: (c) => ({id: c.Id, name: c.Name}),
     },
     accounting: {
       account: (a) => ({
