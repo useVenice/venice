@@ -96,7 +96,11 @@ export function bankingLink(ctx: {
         // 3) Extract this into a more generic filtering link that works for ANY entity.
         // In addition, will need to handle incremental sync state reset when we change stream filtering
         // parameter like this, as well as deleting the no longer relevant entities in destination
-        if (!categories[mapped.category_name ?? '']) {
+        if (
+          // Support both name and ID
+          !categories[mapped.category_name ?? ''] &&
+          !categories[mapped.category_id ?? '']
+        ) {
           // console.trace(
           //   `[banking] skip txn ${mapped.id} in ${mapped.category_name}`,
           // )
