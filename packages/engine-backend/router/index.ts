@@ -4,10 +4,12 @@ import type {inferRouterInputs, inferRouterOutputs} from '@trpc/server'
 import {
   apolloAdapter,
   createAccountingRouter,
+  createBankingRouter,
   createInvestmentRouter,
   createPtaRouter,
   createSalesEngagementRouter,
   outreachAdapter,
+  qboAdapter,
   salesloftAdapter,
 } from '@usevenice/cdk/verticals'
 import {remoteProcedure, trpc} from './_base'
@@ -21,6 +23,11 @@ import {publicRouter} from './publicRouter'
 import {resourceRouter} from './resourceRouter'
 import {systemRouter} from './systemRouter'
 
+const bankingRouter = createBankingRouter({
+  trpc,
+  remoteProcedure,
+  adapterByName: {qbo: qboAdapter},
+})
 const accountingRouter = createAccountingRouter({
   trpc,
   remoteProcedure,
@@ -60,6 +67,7 @@ export const routers = {
   pta: ptaRouter,
   investment: investmentRouter,
   salesEngagement: salesEngagementRouter,
+  banking: bankingRouter,
 }
 
 // Which one is best?
@@ -81,6 +89,7 @@ export const flatRouter = trpc.mergeRouters(
       pta: ptaRouter,
       investment: investmentRouter,
       salesEngagement: salesEngagementRouter,
+      banking: bankingRouter,
     }),
   }),
 )

@@ -13,6 +13,8 @@ function initQBOSdk(options: QBOSDKTypes['options']) {
   return {realmId: options.realmId, ...sdk}
 }
 
+export type QBOSDK = ReturnType<typeof initQBOSdk>
+
 export const qboServer = {
   newInstance: ({config, settings, fetchLinks}) => {
     const qbo = initQBOSdk({

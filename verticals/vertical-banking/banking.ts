@@ -5,39 +5,55 @@ import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
 import type {StrictObj} from '@usevenice/types'
-import {applyMapper, mapper, z, zCast} from '@usevenice/vdk'
+import type {RouterMap, RouterMeta, VerticalRouterOpts} from '@usevenice/vdk'
+import {
+  applyMapper,
+  mapper,
+  proxyCallRemote,
+  z,
+  zCast,
+  zPaginationParams,
+} from '@usevenice/vdk'
 
 type Plaid = PlaidSDKTypes['oas']['components']
 
 export const zBanking = {
-  transaction: z.object({
-    id: z.string(),
-    date: z.string().datetime(),
-    description: z.string().nullish(),
-    category_id: z.string().nullish(),
-    category_name: z.string().nullish(),
-    amount: z.number(),
-    currency: z.string(),
-    merchant_id: z.string().nullish(),
-    merchant_name: z.string().nullish(),
-    account_id: z.string().nullish(),
-    account_name: z.string().nullish(),
-  }),
-  account: z.object({
-    id: z.string(),
-    name: z.string(),
-    current_balance: z.number().optional(),
-    currency: z.string().optional(),
-  }),
-  merchant: z.object({
-    id: z.string(),
-    name: z.string(),
-    url: z.string().nullish(),
-  }),
-  category: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
+  transaction: z
+    .object({
+      id: z.string(),
+      date: z.string().datetime(),
+      description: z.string().nullish(),
+      category_id: z.string().nullish(),
+      category_name: z.string().nullish(),
+      amount: z.number(),
+      currency: z.string(),
+      merchant_id: z.string().nullish(),
+      merchant_name: z.string().nullish(),
+      account_id: z.string().nullish(),
+      account_name: z.string().nullish(),
+    })
+    .openapi({ref: 'banking.transaction'}),
+  account: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      current_balance: z.number().optional(),
+      currency: z.string().optional(),
+    })
+    .openapi({ref: 'banking.account'}),
+  merchant: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      url: z.string().nullish(),
+    })
+    .openapi({ref: 'banking.merchant'}),
+  category: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .openapi({ref: 'banking.category'}),
 }
 
 export const zBankingEntityName = z.enum(
@@ -253,3 +269,30 @@ const mappers = {
     ),
   },
 }
+
+function oapi(meta: NonNullable<RouterMeta['openapi']>): RouterMeta {
+  const vertical = 'banking'
+  return {openapi: {...meta, path: `/verticals/${vertical}${meta.path}`}}
+}
+
+export function createBankingRouter(opts: VerticalRouterOpts) {
+  const router = opts.trpc.router({
+    listCategories: opts.remoteProcedure
+      .meta(oapi({method: 'GET', path: '/category'}))
+      .input(zPaginationParams.nullish())
+      .output(
+        z.object({
+          hasNextPage: z.boolean(),
+          items: z.array(
+            zBanking.category.extend({_raw: z.unknown().optional()}),
+          ),
+        }),
+      )
+      .query(async ({input, ctx}) => proxyCallRemote({input, ctx, opts})),
+  })
+
+  return router
+}
+
+export type BankingRouter = ReturnType<typeof createBankingRouter>
+export type VerticalBanking<TOpts> = RouterMap<BankingRouter, TOpts>
