@@ -98,7 +98,14 @@ export const remoteProcedure = protectedProcedure.use(
         message: 'x-resource-id header is required',
       })
     }
-    const resource = await ctx.services.getResourceExpandedOrFail(
+
+    // Ensure that end user can access its own resources
+    if (ctx.viewer.role === 'end_user') {
+      await ctx.services.getResourceOrFail(ctx.remoteResourceId)
+    }
+
+    // Elevant role to organization here
+    const resource = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(
       ctx.remoteResourceId,
     )
 
@@ -111,6 +118,8 @@ export const remoteProcedure = protectedProcedure.use(
           connector: resource.connectorConfig.connector,
           connectorName: resource.connectorName,
           settings: resource.settings,
+          // TODO: Need to be careful this is never returned to any end user endpoints
+          // and only used for making requests with remotes
           config: resource.connectorConfig.config,
           fetchLinks: ctx.services.getFetchLinks(resource),
         },
