@@ -95,6 +95,7 @@ export interface paths {
     }
     get?: never
     put?: never
+    /** @description Return records that would have otherwise been emitted during a sync and return it instead */
     post: operations['sourceSync']
     delete?: never
     options?: never
@@ -132,6 +133,22 @@ export interface paths {
     options?: never
     head?: never
     patch: operations['updateResource']
+    trace?: never
+  }
+  '/core/resource/{id}/_sync': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['syncResource']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/core/connector_config': {
@@ -277,6 +294,22 @@ export interface paths {
     options?: never
     head?: never
     patch: operations['updatePipeline']
+    trace?: never
+  }
+  '/core/pipeline/{id}/_sync': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['syncPipeline']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/verticals/accounting/account': {
@@ -1307,6 +1340,55 @@ export interface operations {
       }
     }
   }
+  syncResource: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          metaOnly?: boolean | null
+          fullResync?: boolean | null
+          todo_upstreamRefresh?: boolean | null
+          todo_removeUnsyncedData?: boolean | null
+        }
+      }
+    }
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
   adminListConnectorConfigs: {
     parameters: {
       query?: never
@@ -1974,6 +2056,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['error.NOT_FOUND']
+        }
+      }
+      /** @description Internal server error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.INTERNAL_SERVER_ERROR']
+        }
+      }
+    }
+  }
+  syncPipeline: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          metaOnly?: boolean | null
+          fullResync?: boolean | null
+          todo_upstreamRefresh?: boolean | null
+          todo_removeUnsyncedData?: boolean | null
+        }
+      }
+    }
+    responses: {
+      /** @description Successful response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['error.BAD_REQUEST']
         }
       }
       /** @description Internal server error */

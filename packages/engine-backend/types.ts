@@ -55,22 +55,33 @@ export interface PipelineInput<
 }
 
 export const zSyncOptions = z.object({
-  /** Only sync resource metadata and skip pipelines */
-  metaOnly: z.boolean().nullish(),
-  /**
-   * Remove `state` of resource and trigger a full resync
-   */
-  fullResync: z.boolean().nullish(),
+  async: z
+    .boolean()
+    .nullish()
+    .describe(
+      'Run sync in the background, not compatible with other options for now...',
+    ),
 
-  /**
-   * Triggers provider to refresh data from its source
-   * https://plaid.com/docs/api/products/transactions/#transactionsrefresh
-   * This may also load historical transactions. For example,
-   * Finicity treats historical transaction as premium service.
-   */
-  todo_upstreamRefresh: z.boolean().nullish(),
+  metaOnly: z
+    .boolean()
+    .nullish()
+    .describe('Only sync resource metadata and skip pipelines '),
+
+  fullResync: z
+    .boolean()
+    .nullish()
+    .describe('Remove `state` of pipeline and trigger a full resync'),
+
+  todo_upstreamRefresh: z.boolean().nullish().describe(`
+    Triggers provider to refresh data from its source
+    https://plaid.com/docs/api/products/transactions/#transactionsrefresh
+    This may also load historical transactions. For example,
+    Finicity treats historical transaction as premium service.
+  `),
 
   // See coda's implmementation. Requires adding a new message to the sync protocol
   // to remove all data from a particular source_id
-  todo_removeUnsyncedData: z.boolean().nullish(),
+  todo_removeUnsyncedData: z.boolean().nullish().describe(`
+    See coda's implmementation. Requires adding a new message to the sync protocol
+    to remove all data from a particular source_id`),
 })

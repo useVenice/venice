@@ -11,6 +11,7 @@ import {
   zRaw,
 } from '@usevenice/cdk'
 import {joinPath, makeUlid, Rx, rxjs, z} from '@usevenice/util'
+import {inngest} from '../events'
 import {parseWebhookRequest} from '../parseWebhookRequest'
 import {zSyncOptions} from '../types'
 import {protectedProcedure, remoteProcedure, trpc} from './_base'
@@ -51,7 +52,9 @@ export const resourceRouter = trpc.router({
       openapi: {
         method: 'POST',
         path: '/core/resource/{id}/source_sync',
-        tags,
+        tags: ['Internal'],
+        description:
+          'Return records that would have otherwise been emitted during a sync and return it instead',
       },
     })
     .input(
@@ -259,10 +262,18 @@ export const resourceRouter = trpc.router({
   // MARK: - Sync
 
   syncResource: protectedProcedure
-    .input(z.tuple([zId('reso'), zSyncOptions.optional()]))
-    .mutation(async function syncResource({input: [resoId, opts], ctx}) {
+    .meta({openapi: {method: 'POST', path: '/core/resource/{id}/_sync', tags}})
+    .input(z.object({id: zId('reso')}).merge(zSyncOptions))
+    .output(z.void())
+    .mutation(async function syncResource({input: {id: resoId, ...opts}, ctx}) {
       if (ctx.viewer.role === 'end_user') {
         await ctx.services.getResourceOrFail(resoId)
+      }
+      if (opts?.async) {
+        await inngest.send('sync/resource-requested', {
+          data: {resourceId: resoId},
+        })
+        return
       }
       const reso = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
       console.log('[syncResource]', reso, opts)

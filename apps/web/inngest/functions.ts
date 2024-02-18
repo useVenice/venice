@@ -65,7 +65,7 @@ export const syncPipeline = inngest.createFunction(
         ...contextFactory.fromViewer({role: 'system'}),
         remoteResourceId: null,
       })
-      .syncPipeline([pipelineId, {}])
+      .syncPipeline({id: pipelineId})
     console.log('did sync pipeline', pipelineId)
     return pipelineId
   },
@@ -90,7 +90,7 @@ export const syncResource = inngest.createFunction(
           ...contextFactory.fromViewer({role: 'system'}),
           remoteResourceId: null,
         })
-        .syncResource([resourceId, {}])
+        .syncResource({id: resourceId})
 
       console.log('did sync pipeline', resourceId)
       return resourceId

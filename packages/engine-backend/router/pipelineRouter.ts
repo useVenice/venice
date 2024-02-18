@@ -1,6 +1,7 @@
 import type {ZRaw} from '@usevenice/cdk'
 import {extractId, zEndUserId, zId, zRaw, zStandard} from '@usevenice/cdk'
 import {R, z} from '@usevenice/util'
+import {inngest} from '../events'
 import {zSyncOptions} from '../types'
 import {protectedProcedure, trpc} from './_base'
 import {zListParams} from './_schemas'
@@ -125,10 +126,18 @@ export const pipelineRouter = trpc.router({
         })
     }),
   syncPipeline: protectedProcedure
-    .input(z.tuple([zId('pipe'), zSyncOptions.optional()]))
-    .mutation(async function syncPipeline({input: [pipeId, opts], ctx}) {
+    .meta({openapi: {method: 'POST', path: '/core/pipeline/{id}/_sync', tags}})
+    .input(z.object({id: zId('pipe')}).merge(zSyncOptions))
+    .output(z.void())
+    .mutation(async function syncPipeline({input: {id: pipeId, ...opts}, ctx}) {
       if (ctx.viewer.role === 'end_user') {
         await ctx.services.getPipelineOrFail(pipeId) // Authorization
+      }
+      if (opts?.async) {
+        await inngest.send('sync/pipeline-requested', {
+          data: {pipelineId: pipeId},
+        })
+        return
       }
       const pipeline = await ctx.asOrgIfNeeded.getPipelineExpandedOrFail(pipeId)
       console.log('[syncPipeline]', pipeline)

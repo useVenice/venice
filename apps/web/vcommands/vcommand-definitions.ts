@@ -34,7 +34,7 @@ export const pipelineCommands = {
     icon: 'RefreshCw',
     execute: ({params: {pipeline}, ctx}) => {
       void ctx.withToast(() =>
-        ctx.trpcCtx.client.syncPipeline.mutate([pipeline.id, {}]),
+        ctx.trpcCtx.client.syncPipeline.mutate({id: pipeline.id}),
       )
     },
   }),
@@ -85,7 +85,7 @@ export const resourceCommands = {
     icon: 'RefreshCw',
     execute: ({params: {resource}, ctx}) => {
       void ctx.withToast(() =>
-        ctx.trpcCtx.client.syncResource.mutate([resource.id, {}]),
+        ctx.trpcCtx.client.syncResource.mutate({id: resource.id}),
       )
     },
   }),
