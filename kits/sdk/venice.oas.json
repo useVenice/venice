@@ -763,17 +763,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "async": {
+                    "type": ["boolean", "null"],
+                    "description": "Run sync in the background, not compatible with other options for now..."
+                  },
                   "metaOnly": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "Only sync resource metadata and skip pipelines "
                   },
                   "fullResync": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "Remove `state` of pipeline and trigger a full resync"
                   },
                   "todo_upstreamRefresh": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "\n    Triggers provider to refresh data from its source\n    https://plaid.com/docs/api/products/transactions/#transactionsrefresh\n    This may also load historical transactions. For example,\n    Finicity treats historical transaction as premium service.\n  "
                   },
                   "todo_removeUnsyncedData": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "\n    See coda's implmementation. Requires adding a new message to the sync protocol\n    to remove all data from a particular source_id"
                   }
                 }
               }
@@ -1727,17 +1735,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "async": {
+                    "type": ["boolean", "null"],
+                    "description": "Run sync in the background, not compatible with other options for now..."
+                  },
                   "metaOnly": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "Only sync resource metadata and skip pipelines "
                   },
                   "fullResync": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "Remove `state` of pipeline and trigger a full resync"
                   },
                   "todo_upstreamRefresh": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "\n    Triggers provider to refresh data from its source\n    https://plaid.com/docs/api/products/transactions/#transactionsrefresh\n    This may also load historical transactions. For example,\n    Finicity treats historical transaction as premium service.\n  "
                   },
                   "todo_removeUnsyncedData": {
-                    "type": ["boolean", "null"]
+                    "type": ["boolean", "null"],
+                    "description": "\n    See coda's implmementation. Requires adding a new message to the sync protocol\n    to remove all data from a particular source_id"
                   }
                 }
               }
