@@ -101,14 +101,14 @@ export function bankingLink(ctx: {
           !categories[mapped.category_name ?? ''] &&
           !categories[mapped.category_id ?? '']
         ) {
-          // console.trace(
-          //   `[banking] skip txn ${mapped.id} in ${mapped.category_name}`,
-          // )
+          console.log(
+            `[banking] skip txn ${mapped.id} in ${mapped.category_id}: ${mapped.category_name}`,
+          )
           return rxjs.EMPTY
         } else {
-          // console.trace(
-          //   `[banking] allow txn ${mapped.id} in ${mapped.category_name}`,
-          // )
+          console.log(
+            `[banking] allow txn ${mapped.id} in ${mapped.category_id}: ${mapped.category_name}`,
+          )
         }
         return rxjs.of({
           ...op,

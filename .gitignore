@@ -52,3 +52,5 @@ temp/
 *.oas.yaml
 .turbo
 dist/
+
+*.play.*
