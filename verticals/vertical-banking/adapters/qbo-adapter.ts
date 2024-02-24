@@ -22,7 +22,7 @@ export const qboAdapter = {
   listCategories: async ({instance}) => {
     const res = await instance.query(
       // QBO API does not support OR in SQL query...
-      "SELECT * FROM Account WHERE Classification IN ('Revenue', 'Expense')",
+      "SELECT * FROM Account WHERE Classification IN ('Revenue', 'Expense') MAXRESULTS 1000",
     )
     return {
       hasNextPage: false,
