@@ -14,7 +14,9 @@
       "get": {
         "operationId": "health",
         "summary": "Health check",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -43,7 +45,9 @@
       "get": {
         "operationId": "getRawSchemas",
         "description": "Get raw schemas",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -69,7 +73,9 @@
     "/connect/token": {
       "post": {
         "operationId": "createConnectToken",
-        "tags": ["Connect"],
+        "tags": [
+          "Connect"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -104,7 +110,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["token"]
+                  "required": [
+                    "token"
+                  ]
                 }
               }
             }
@@ -135,7 +143,9 @@
     "/connect/magic-link": {
       "post": {
         "operationId": "createMagicLink",
-        "tags": ["Connect"],
+        "tags": [
+          "Connect"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -154,19 +164,31 @@
                     "description": "How long the magic link will be valid for (in seconds) before it expires"
                   },
                   "displayName": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "What to call user by"
                   },
                   "redirectUrl": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Where to send user to after connect / if they press back button"
                   },
                   "connectorName": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Filter connector config by connector name"
                   },
                   "connectorConfigDisplayName": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Filter connector config by displayName "
                   },
                   "connectorConfigId": {
@@ -194,7 +216,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["url"]
+                  "required": [
+                    "url"
+                  ]
                 }
               }
             }
@@ -225,7 +249,9 @@
     "/passthrough": {
       "post": {
         "operationId": "passthrough",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -235,7 +261,14 @@
                 "properties": {
                   "method": {
                     "type": "string",
-                    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+                    "enum": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE",
+                      "OPTIONS"
+                    ]
                   },
                   "path": {
                     "type": "string"
@@ -253,7 +286,10 @@
                     "additionalProperties": {}
                   }
                 },
-                "required": ["method", "path"]
+                "required": [
+                  "method",
+                  "path"
+                ]
               }
             }
           }
@@ -294,7 +330,9 @@
       "post": {
         "operationId": "sourceSync",
         "description": "Return records that would have otherwise been emitted during a sync and return it instead",
-        "tags": ["Internal"],
+        "tags": [
+          "Internal"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -369,7 +407,9 @@
     "/core/resource": {
       "post": {
         "operationId": "createResource",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -382,14 +422,23 @@
                     "description": "Must start with 'ccfg_'"
                   },
                   "settings": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "additionalProperties": {}
                   },
                   "displayName": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "endUserId": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "minLength": 1
                   },
                   "disabled": {
@@ -399,11 +448,16 @@
                     "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
                   },
                   "integrationId": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Must start with 'int_'"
                   }
                 },
-                "required": ["connectorConfigId"]
+                "required": [
+                  "connectorConfigId"
+                ]
               }
             }
           }
@@ -443,7 +497,9 @@
       },
       "get": {
         "operationId": "listResources",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -463,7 +519,10 @@
             "in": "query",
             "name": "endUserId",
             "schema": {
-              "type": ["string", "null"],
+              "type": [
+                "string",
+                "null"
+              ],
               "minLength": 1
             }
           },
@@ -471,7 +530,10 @@
             "in": "query",
             "name": "connectorConfigId",
             "schema": {
-              "type": ["string", "null"],
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Must start with 'ccfg_'"
             }
           },
@@ -479,7 +541,10 @@
             "in": "query",
             "name": "connectorName",
             "schema": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         ],
@@ -533,7 +598,9 @@
     "/core/resource/{id}": {
       "patch": {
         "operationId": "updateResource",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -553,11 +620,17 @@
                 "type": "object",
                 "properties": {
                   "settings": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "additionalProperties": {}
                   },
                   "displayName": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "metadata": {
                     "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
@@ -566,11 +639,17 @@
                     "type": "boolean"
                   },
                   "endUserId": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "minLength": 1
                   },
                   "integrationId": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Must start with 'int_'"
                   }
                 }
@@ -623,7 +702,9 @@
       },
       "delete": {
         "operationId": "deleteResource",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -685,7 +766,9 @@
       },
       "get": {
         "operationId": "getResource",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -744,7 +827,9 @@
     "/core/resource/{id}/_sync": {
       "post": {
         "operationId": "syncResource",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -764,23 +849,38 @@
                 "type": "object",
                 "properties": {
                   "async": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Run sync in the background, not compatible with other options for now..."
                   },
                   "metaOnly": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Only sync resource metadata and skip pipelines "
                   },
                   "fullResync": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Remove `state` of pipeline and trigger a full resync"
                   },
                   "todo_upstreamRefresh": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "\n    Triggers provider to refresh data from its source\n    https://plaid.com/docs/api/products/transactions/#transactionsrefresh\n    This may also load historical transactions. For example,\n    Finicity treats historical transaction as premium service.\n  "
                   },
                   "todo_removeUnsyncedData": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "\n    See coda's implmementation. Requires adding a new message to the sync protocol\n    to remove all data from a particular source_id"
                   }
                 }
@@ -823,7 +923,9 @@
     "/core/connector_config": {
       "get": {
         "operationId": "adminListConnectorConfigs",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -852,7 +954,9 @@
       },
       "post": {
         "operationId": "adminUpsertConnectorConfig",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -872,23 +976,38 @@
                     "description": "Must start with 'org_'"
                   },
                   "config": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "additionalProperties": {}
                   },
                   "displayName": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "defaultPipeOut": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "properties": {
                       "streams": {
-                        "type": ["object", "null"],
+                        "type": [
+                          "object",
+                          "null"
+                        ],
                         "additionalProperties": {
                           "type": "boolean"
                         }
                       },
                       "links": {
-                        "type": ["array", "null"],
+                        "type": [
+                          "array",
+                          "null"
+                        ],
                         "items": {
                           "$ref": "#/components/schemas/Link"
                         },
@@ -899,14 +1018,22 @@
                         "description": "Must start with 'reso_'"
                       }
                     },
-                    "required": ["destination_id"],
+                    "required": [
+                      "destination_id"
+                    ],
                     "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
                   },
                   "defaultPipeIn": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "properties": {
                       "links": {
-                        "type": ["array", "null"],
+                        "type": [
+                          "array",
+                          "null"
+                        ],
                         "items": {
                           "$ref": "#/components/schemas/Link"
                         },
@@ -917,11 +1044,15 @@
                         "description": "Must start with 'reso_'"
                       }
                     },
-                    "required": ["source_id"],
+                    "required": [
+                      "source_id"
+                    ],
                     "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
                   }
                 },
-                "required": ["orgId"]
+                "required": [
+                  "orgId"
+                ]
               }
             }
           }
@@ -963,7 +1094,9 @@
     "/core/connector_config/{id}": {
       "patch": {
         "operationId": "adminUpdateConnectorConfig",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -986,7 +1119,10 @@
                     "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
                   },
                   "displayName": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "disabled": {
                     "type": "boolean"
@@ -1041,7 +1177,9 @@
       },
       "delete": {
         "operationId": "adminDeleteConnectorConfig",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1096,7 +1234,9 @@
       },
       "get": {
         "operationId": "adminGetConnectorConfig",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1155,21 +1295,32 @@
     "/core/connector_config_info": {
       "get": {
         "operationId": "listConnectorConfigInfos",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "query",
             "name": "type",
             "schema": {
-              "type": ["string", "null"],
-              "enum": ["source", "destination"]
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "source",
+                "destination"
+              ]
             }
           },
           {
             "in": "query",
             "name": "id",
             "schema": {
-              "type": ["string", "null"],
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Must start with 'ccfg_'"
             }
           },
@@ -1177,7 +1328,10 @@
             "in": "query",
             "name": "connectorName",
             "schema": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         ],
@@ -1196,10 +1350,16 @@
                         "description": "Must start with 'ccfg_'"
                       },
                       "envName": {
-                        "type": ["string", "null"]
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "displayName": {
-                        "type": ["string", "null"]
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "connectorName": {
                         "type": "string"
@@ -1259,7 +1419,9 @@
       "get": {
         "operationId": "listConnectorMetas",
         "description": "Get catalog of all available connectors",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1314,7 +1476,9 @@
     "/connector/{name}": {
       "get": {
         "operationId": "getConnectorMeta",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1377,7 +1541,9 @@
     "/connector/{name}/oas": {
       "get": {
         "operationId": "getConnectorOpenApiSpec",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1440,7 +1606,9 @@
     "/connector/{name}/schemas": {
       "get": {
         "operationId": "getConnectorSchemas",
-        "tags": ["Connectors"],
+        "tags": [
+          "Connectors"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1503,7 +1671,9 @@
     "/core/pipeline": {
       "get": {
         "operationId": "listPipelines",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1581,7 +1751,9 @@
     "/core/pipeline/{id}": {
       "patch": {
         "operationId": "updatePipeline",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1656,7 +1828,9 @@
       },
       "delete": {
         "operationId": "deletePipeline",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1675,7 +1849,9 @@
               "application/json": {
                 "schema": {
                   "type": "boolean",
-                  "enum": [true]
+                  "enum": [
+                    true
+                  ]
                 }
               }
             }
@@ -1716,7 +1892,9 @@
     "/core/pipeline/{id}/_sync": {
       "post": {
         "operationId": "syncPipeline",
-        "tags": ["Core"],
+        "tags": [
+          "Core"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1736,23 +1914,38 @@
                 "type": "object",
                 "properties": {
                   "async": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Run sync in the background, not compatible with other options for now..."
                   },
                   "metaOnly": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Only sync resource metadata and skip pipelines "
                   },
                   "fullResync": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Remove `state` of pipeline and trigger a full resync"
                   },
                   "todo_upstreamRefresh": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "\n    Triggers provider to refresh data from its source\n    https://plaid.com/docs/api/products/transactions/#transactionsrefresh\n    This may also load historical transactions. For example,\n    Finicity treats historical transaction as premium service.\n  "
                   },
                   "todo_removeUnsyncedData": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "\n    See coda's implmementation. Requires adding a new message to the sync protocol\n    to remove all data from a particular source_id"
                   }
                 }
@@ -1795,7 +1988,9 @@
     "/verticals/accounting/account": {
       "get": {
         "operationId": "verticals-accounting-account_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1832,7 +2027,10 @@
                             "type": "string"
                           },
                           "number": {
-                            "type": ["string", "null"]
+                            "type": [
+                              "string",
+                              "null"
+                            ]
                           },
                           "name": {
                             "type": "string"
@@ -1842,11 +2040,18 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name", "type"]
+                        "required": [
+                          "id",
+                          "name",
+                          "type"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1887,7 +2092,9 @@
     "/verticals/accounting/expense": {
       "get": {
         "operationId": "verticals-accounting-expense_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1943,7 +2150,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -1984,7 +2194,9 @@
     "/verticals/accounting/vendor": {
       "get": {
         "operationId": "verticals-accounting-vendor_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2028,11 +2240,18 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name", "url"]
+                        "required": [
+                          "id",
+                          "name",
+                          "url"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2073,7 +2292,9 @@
     "/verticals/pta/account": {
       "get": {
         "operationId": "verticals-pta-account_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2111,7 +2332,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2152,7 +2376,9 @@
     "/verticals/pta/transaction": {
       "get": {
         "operationId": "verticals-pta-transaction_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2190,7 +2416,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2231,7 +2460,9 @@
     "/verticals/pta/commodity": {
       "get": {
         "operationId": "verticals-pta-commodity_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2269,7 +2500,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2310,7 +2544,9 @@
     "/verticals/investment/account": {
       "get": {
         "operationId": "verticals-investment-account_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2351,11 +2587,17 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id", "name"]
+                        "required": [
+                          "id",
+                          "name"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2396,7 +2638,9 @@
     "/verticals/investment/transaction": {
       "get": {
         "operationId": "verticals-investment-transaction_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2434,11 +2678,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2479,7 +2728,9 @@
     "/verticals/investment/holding": {
       "get": {
         "operationId": "verticals-investment-holding_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2517,11 +2768,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2562,7 +2818,9 @@
     "/verticals/investment/security": {
       "get": {
         "operationId": "verticals-investment-security_list",
-        "tags": ["Verticals"],
+        "tags": [
+          "Verticals"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2600,11 +2858,16 @@
                           },
                           "_original": {}
                         },
-                        "required": ["id"]
+                        "required": [
+                          "id"
+                        ]
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2679,7 +2942,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2762,7 +3028,10 @@
                       }
                     }
                   },
-                  "required": ["hasNextPage", "items"]
+                  "required": [
+                    "hasNextPage",
+                    "items"
+                  ]
                 }
               }
             }
@@ -2885,13 +3154,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2922,13 +3196,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -2955,10 +3234,16 @@
             "description": "Unique name of the connector"
           },
           "displayName": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "endUserId": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "minLength": 1
           },
           "connectorConfigId": {
@@ -2966,25 +3251,45 @@
             "description": "Must start with 'ccfg_'"
           },
           "integrationId": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Must start with 'int_'"
           },
           "settings": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "additionalProperties": {}
           },
           "standard": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
               "displayName": {
                 "type": "string"
               },
               "status": {
-                "type": ["string", "null"],
-                "enum": ["healthy", "disconnected", "error", "manual"]
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "healthy",
+                  "disconnected",
+                  "error",
+                  "manual"
+                ]
               },
               "statusMessage": {
-                "type": ["string", "null"]
+                "type": [
+                  "string",
+                  "null"
+                ]
               },
               "labels": {
                 "type": "array",
@@ -2993,7 +3298,9 @@
                 }
               }
             },
-            "required": ["displayName"]
+            "required": [
+              "displayName"
+            ]
           },
           "disabled": {
             "type": "boolean"
@@ -3032,13 +3339,18 @@
                   "type": "string"
                 }
               },
-              "required": ["message"]
+              "required": [
+                "message"
+              ]
             },
             "description": "An array of issues that were responsible for the error",
             "example": []
           }
         },
-        "required": ["message", "code"],
+        "required": [
+          "message",
+          "code"
+        ],
         "title": "Error",
         "description": "The error information",
         "example": {
@@ -3064,7 +3376,10 @@
             "type": "string"
           },
           "config": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "additionalProperties": {}
           },
           "orgId": {
@@ -3072,22 +3387,34 @@
             "description": "Must start with 'org_'"
           },
           "displayName": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "disabled": {
             "type": "boolean"
           },
           "defaultPipeOut": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
               "streams": {
-                "type": ["object", "null"],
+                "type": [
+                  "object",
+                  "null"
+                ],
                 "additionalProperties": {
                   "type": "boolean"
                 }
               },
               "links": {
-                "type": ["array", "null"],
+                "type": [
+                  "array",
+                  "null"
+                ],
                 "items": {
                   "$ref": "#/components/schemas/Link"
                 },
@@ -3098,14 +3425,22 @@
                 "description": "Must start with 'reso_'"
               }
             },
-            "required": ["destination_id"],
+            "required": [
+              "destination_id"
+            ],
             "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
           },
           "defaultPipeIn": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
               "links": {
-                "type": ["array", "null"],
+                "type": [
+                  "array",
+                  "null"
+                ],
                 "items": {
                   "$ref": "#/components/schemas/Link"
                 },
@@ -3116,21 +3451,34 @@
                 "description": "Must start with 'reso_'"
               }
             },
-            "required": ["source_id"],
+            "required": [
+              "source_id"
+            ],
             "description": "Automatically sync data from any resources associated with this config to the destination resource, which is typically a Postgres database. Think ETL"
           },
           "envName": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "metadata": {
             "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
           }
         },
-        "required": ["createdAt", "updatedAt", "id", "connectorName", "orgId"]
+        "required": [
+          "createdAt",
+          "updatedAt",
+          "id",
+          "connectorName",
+          "orgId"
+        ]
       },
       "Link": {
         "type": "string",
-        "enum": ["banking"]
+        "enum": [
+          "banking"
+        ]
       },
       "Pipeline": {
         "type": "object",
@@ -3162,14 +3510,23 @@
             "additionalProperties": {}
           },
           "linkOptions": {
-            "type": ["array", "null"],
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {}
           },
           "lastSyncStartedAt": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "lastSyncCompletedAt": {
-            "type": ["string", "null"]
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "disabled": {
             "type": "boolean"
@@ -3178,7 +3535,11 @@
             "description": "\n  JSON object can can be used to associate arbitrary metadata to\n  avoid needing a separate 1-1 table just for simple key values in your application.\n  During updates this object will be shallowly merged\n"
           }
         },
-        "required": ["createdAt", "updatedAt", "id"]
+        "required": [
+          "createdAt",
+          "updatedAt",
+          "id"
+        ]
       },
       "sales-engagement.contact": {
         "type": "object",
@@ -3193,7 +3554,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "first_name", "last_name"]
+        "required": [
+          "id",
+          "first_name",
+          "last_name"
+        ]
       },
       "banking.category": {
         "type": "object",
@@ -3205,7 +3570,10 @@
             "type": "string"
           }
         },
-        "required": ["id", "name"]
+        "required": [
+          "id",
+          "name"
+        ]
       },
       "Viewer": {
         "oneOf": [
@@ -3214,17 +3582,23 @@
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["anon"]
+                "enum": [
+                  "anon"
+                ]
               }
             },
-            "required": ["role"]
+            "required": [
+              "role"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["end_user"]
+                "enum": [
+                  "end_user"
+                ]
               },
               "endUserId": {
                 "type": "string",
@@ -3235,21 +3609,30 @@
                 "description": "Must start with 'org_'"
               }
             },
-            "required": ["role", "endUserId", "orgId"]
+            "required": [
+              "role",
+              "endUserId",
+              "orgId"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["user"]
+                "enum": [
+                  "user"
+                ]
               },
               "userId": {
                 "type": "string",
                 "description": "Must start with 'user_'"
               },
               "orgId": {
-                "type": ["string", "null"],
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "description": "Must start with 'org_'"
               },
               "extra": {
@@ -3258,14 +3641,19 @@
                 "description": "Currently clerk user"
               }
             },
-            "required": ["role", "userId"]
+            "required": [
+              "role",
+              "userId"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["org"]
+                "enum": [
+                  "org"
+                ]
               },
               "orgId": {
                 "type": "string",
@@ -3277,17 +3665,24 @@
                 "description": "Currently clerk organization"
               }
             },
-            "required": ["role", "orgId"]
+            "required": [
+              "role",
+              "orgId"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["system"]
+                "enum": [
+                  "system"
+                ]
               }
             },
-            "required": ["role"]
+            "required": [
+              "role"
+            ]
           }
         ]
       }

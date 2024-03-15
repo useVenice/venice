@@ -67,7 +67,7 @@ export const eventMap = {
 
 type BuiltInEvents = EventsFromOpts<{schemas: EventSchemas; id: never}>
 
-const eventMapForInngest = R.mapValues(eventMap, (v) => ({
+export const eventMapForInngest = R.mapValues(eventMap, (v) => ({
   data: z.object(v),
 })) as unknown as {
   [k in keyof typeof eventMap]: {

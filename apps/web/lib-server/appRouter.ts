@@ -1,16 +1,20 @@
 import {clerkClient} from '@clerk/nextjs'
+import {generateOpenApiDocument} from '@lilyrose2798/trpc-openapi'
+import type {
+  ZodOpenApiComponentsObject,
+  ZodOpenApiPathsObject,
+} from '@lilyrose2798/trpc-openapi/dist/generator'
 import {TRPCError} from '@trpc/server'
 import {getServerUrl} from '@usevenice/app-config/constants'
 import type {Viewer} from '@usevenice/cdk'
 import {zViewer} from '@usevenice/cdk'
-import {flatRouter} from '@usevenice/engine-backend'
+import {eventMapForInngest, flatRouter} from '@usevenice/engine-backend'
 import {
   adminProcedure,
   publicProcedure,
   trpc,
 } from '@usevenice/engine-backend/router/_base'
-import {generateOpenApiDocument} from '@usevenice/trpc-openapi'
-import {z} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 import {zAuth} from '@/lib-common/schemas'
 
 const customRouter = trpc.router({
@@ -55,7 +59,38 @@ const customRouter = trpc.router({
 
 export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
 
+export function oasWebhooksEventsMap(
+  eMap: Record<string, {data: z.AnyZodObject}>,
+) {
+  const webhooks = R.mapValues(
+    eMap,
+    (_, name): ZodOpenApiPathsObject[string] => ({
+      post: {
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {$ref: `#/components/schemas/webhooks.${name}`},
+            },
+          },
+        },
+        responses: {},
+      },
+    }),
+  )
+  type Schemas = NonNullable<ZodOpenApiComponentsObject['schemas']>
+  const components = {
+    schemas: R.mapKeys(
+      R.mapValues(eMap, (shape, name): Schemas[string] =>
+        z.object({...shape, name: z.literal(name), id: z.string().optional()}),
+      ),
+      (name) => `webhooks.${name}`,
+    ),
+  }
+  return {webhooks, components}
+}
+
 function generateOpenApi() {
+  // const {webhooks, components} = oasWebhooksEventsMap(eventMapForInngest)
   const oas = generateOpenApiDocument(appRouter, {
     openApiVersion: '3.1.0', // Want jsonschema
     title: 'Venice OpenAPI',
@@ -68,6 +103,8 @@ function generateOpenApi() {
       },
     },
     baseUrl: getServerUrl(null) + '/api/v0',
+    // webhooks,
+    // components,
   })
   // Unfortunately trpc-openapi is missing bunch of options...
   oas.security = [{apikey: []}]
