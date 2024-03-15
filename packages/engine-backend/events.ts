@@ -1,4 +1,6 @@
+import type {Combine, EventsFromOpts} from 'inngest'
 import {EventSchemas, Inngest} from 'inngest'
+import type {ZodToStandardSchema} from 'inngest/components/EventSchemas'
 import {zId} from '@usevenice/cdk'
 import type {NonEmptyArray} from '@usevenice/util'
 import {R, z} from '@usevenice/util'
@@ -14,8 +16,18 @@ export const zUserTraits = z
   })
   .partial()
 
+export type UserTraits = z.infer<typeof zUserTraits>
+
+export const zOrgProperties = z
+  .object({
+    webhook_url: z.string(),
+  })
+  .partial()
+
+export type OrgProperties = z.infer<typeof zOrgProperties>
+
 // TODO: Can we learn from trpc to make all the events here easy to refactor across the codebase?
-const eventMap = {
+export const eventMap = {
   // Backend events
   'debug/debug': {},
   'sync/scheduler-debug': {},
@@ -47,6 +59,33 @@ const eventMap = {
   'api/rest-request': {},
 } satisfies Record<string, z.ZodRawShape>
 
+type BuiltInEvents = EventsFromOpts<{schemas: EventSchemas; id: never}>
+
+const eventMapForInngest = R.mapValues(eventMap, (v) => ({
+  data: z.object(v),
+})) as unknown as {
+  [k in keyof typeof eventMap]: {
+    data: z.ZodObject<(typeof eventMap)[k]>
+  }
+}
+
+export type Events = Combine<
+  BuiltInEvents,
+  ZodToStandardSchema<typeof eventMapForInngest>
+>
+
+export const inngest = new Inngest({
+  id: 'Venice',
+  schemas: new EventSchemas().fromZod(eventMapForInngest),
+  // TODO: have a dedicated browser inngest key
+  eventKey: process.env['INNGEST_EVENT_KEY'] ?? 'local',
+  // This is needed in the browser otherwise we get failed to execute fetch on Window
+  // due to the way Inngest uses this.fetch when invoking fetch
+  fetch: globalThis.fetch.bind(globalThis),
+})
+
+// MARK: - Deprecated
+
 export const zEvent = z.discriminatedUnion(
   'name',
   Object.entries(eventMap).map(([name, props]) =>
@@ -62,21 +101,3 @@ export const zEvent = z.discriminatedUnion(
 )
 
 export type Event = z.infer<typeof zEvent>
-
-const eventMapForInngest = R.mapValues(eventMap, (v) => ({
-  data: z.object(v),
-})) as unknown as {
-  [k in keyof typeof eventMap]: {
-    data: z.ZodObject<(typeof eventMap)[k]>
-  }
-}
-
-export const inngest = new Inngest({
-  id: 'Venice',
-  schemas: new EventSchemas().fromZod(eventMapForInngest),
-  // TODO: have a dedicated browser inngest key
-  eventKey: process.env['INNGEST_EVENT_KEY'] ?? 'local',
-  // This is needed in the browser otherwise we get failed to execute fetch on Window
-  // due to the way Inngest uses this.fetch when invoking fetch
-  fetch: globalThis.fetch.bind(globalThis),
-})
