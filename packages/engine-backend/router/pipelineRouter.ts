@@ -134,7 +134,8 @@ export const pipelineRouter = trpc.router({
         await ctx.services.getPipelineOrFail(pipeId) // Authorization
       }
       if (opts?.async) {
-        await inngest.send('sync/pipeline-requested', {
+        await inngest.send({
+          name: 'sync/pipeline-requested',
           data: {pipelineId: pipeId},
         })
         return

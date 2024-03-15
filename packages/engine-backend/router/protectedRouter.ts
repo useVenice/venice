@@ -7,7 +7,7 @@ import {protectedProcedure, trpc} from './_base'
 export {type inferProcedureInput} from '@trpc/server'
 
 export const protectedRouter = trpc.router({
-  dispatch: protectedProcedure.input(zEvent).mutation(async ({input, ctx}) => {
+  dispatch: protectedProcedure.input(zEvent).mutation(async ({input}) => {
     if (
       input.name !== 'sync/resource-requested' &&
       input.name !== 'sync/pipeline-requested'
@@ -18,7 +18,7 @@ export const protectedRouter = trpc.router({
       })
     }
     // not sure what `viewer` is quite for here...
-    await inngest.send(input.name, {data: input.data, user: ctx.viewer})
+    await inngest.send(input)
   }),
 
   searchIntegrations: protectedProcedure

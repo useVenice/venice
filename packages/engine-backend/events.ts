@@ -1,9 +1,7 @@
-import type {EventPayload} from 'inngest'
-import {Inngest} from 'inngest'
-
+import {EventSchemas, Inngest} from 'inngest'
 import {zId} from '@usevenice/cdk'
 import type {NonEmptyArray} from '@usevenice/util'
-import {z} from '@usevenice/util'
+import {R, z} from '@usevenice/util'
 
 // TODO: Implement webhook as events too
 
@@ -65,15 +63,17 @@ export const zEvent = z.discriminatedUnion(
 
 export type Event = z.infer<typeof zEvent>
 
-type ToInngestEventMap<TEvent extends {name: string}> = {
-  [k in TEvent['name']]: Omit<EventPayload, 'data' | 'name'> &
-    Extract<TEvent, {name: k}>
+const eventMapForInngest = R.mapValues(eventMap, (v) => ({
+  data: z.object(v),
+})) as unknown as {
+  [k in keyof typeof eventMap]: {
+    data: z.ZodObject<(typeof eventMap)[k]>
+  }
 }
 
-type InngestEventMap = ToInngestEventMap<Event>
-
-export const inngest = new Inngest<InngestEventMap>({
-  name: 'Venice',
+export const inngest = new Inngest({
+  id: 'Venice',
+  schemas: new EventSchemas().fromZod(eventMapForInngest),
   // TODO: have a dedicated browser inngest key
   eventKey: process.env['INNGEST_EVENT_KEY'] ?? 'local',
   // This is needed in the browser otherwise we get failed to execute fetch on Window

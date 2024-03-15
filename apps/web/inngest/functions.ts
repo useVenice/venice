@@ -13,12 +13,12 @@ import {makeSentryClient} from '../lib-server/sentry-client'
 const sentry = makeSentryClient({dsn: env.NEXT_PUBLIC_SENTRY_DSN!})
 
 export const scheduleSyncs = inngest.createFunction(
-  {name: 'Schedule pipeline syncs'},
+  {id: 'Schedule pipeline syncs'},
   // Disable scheduling during development, can be explicitly triggered from /api/inngest UI
   process.env.NODE_ENV === 'development'
     ? {event: 'sync/scheduler-debug'}
     : {cron: '0 * * * *'}, // Once an hour, https://crontab.guru/#0_*_*_*_*
-  () =>
+  ({step}) =>
     sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
       await flatRouter
         .createCaller({
@@ -34,9 +34,12 @@ export const scheduleSyncs = inngest.createFunction(
       console.log(`Found ${pipelines.length} pipelines needing to sync`)
 
       if (pipelines.length > 0) {
-        await inngest.send(
+        await step.sendEvent(
           'sync/pipeline-requested',
-          pipelines.map((pipe) => ({data: {pipelineId: pipe.id}})),
+          pipelines.map((pipe) => ({
+            name: 'sync/pipeline-requested',
+            data: {pipelineId: pipe.id},
+          })),
         )
         // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
         // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
@@ -52,7 +55,7 @@ export const scheduleSyncs = inngest.createFunction(
 )
 
 export const syncPipeline = inngest.createFunction(
-  {name: 'Sync pipeline'},
+  {id: 'Sync pipeline'},
   {event: 'sync/pipeline-requested'},
   async ({event}) => {
     const {pipelineId} = event.data
@@ -72,7 +75,7 @@ export const syncPipeline = inngest.createFunction(
 )
 
 export const syncResource = inngest.createFunction(
-  {name: 'Sync resource'},
+  {id: 'Sync resource'},
   {event: 'sync/resource-requested'},
   async ({event}) => {
     try {
@@ -102,8 +105,8 @@ export const syncResource = inngest.createFunction(
 )
 
 export const handleWebhook = inngest.createFunction(
-  'Handle webhook',
-  'webhook/received',
+  {id: 'Handle webhook'},
+  {event: 'webhook/received'},
   async ({event: {data}}) => {
     if (data.path.startsWith('database')) {
       console.log('handle database event', data)

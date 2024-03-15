@@ -1,8 +1,6 @@
 import {serve} from 'inngest/next'
-
 import {inngest} from '@usevenice/engine-backend/events'
 import {withLog} from '@usevenice/util'
-
 import * as functions from '../../inngest/functions'
 
 export const config = {
@@ -10,14 +8,15 @@ export const config = {
 }
 
 export default serve(
-  inngest.name,
-  Object.values(functions),
   withLog('Starting inngest with', {
-    landingPage: process.env['VERCEL_ENV'] !== 'production',
+    client: inngest,
+    functions: Object.values(functions),
+
+    // landingPage: process.env['VERCEL_ENV'] !== 'production',
     logLevel: 'warn',
     // Enforce dev env never hit production inngest
     // https://discord.com/channels/842170679536517141/1080275520861782096/1080494988741324870
-    inngestRegisterUrl:
+    baseUrl:
       // For debugging...
       process.env['INNGEST_REGISTER_URL'] ??
       (process.env.NODE_ENV === 'development'

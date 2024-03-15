@@ -269,10 +269,16 @@ export const endUserRouter = trpc.router({
             !syncInBackground && resoUpdate.triggerDefaultSync !== false,
         })
 
-        await inngest.send('connect/resource-connected', {data: {resourceId}})
+        await inngest.send({
+          name: 'connect/resource-connected',
+          data: {resourceId},
+        })
 
         if (syncInBackground) {
-          await inngest.send('sync/resource-requested', {data: {resourceId}})
+          await inngest.send({
+            name: 'sync/resource-requested',
+            data: {resourceId},
+          })
         }
         console.log('didConnect finish', int.connector.name, input)
         return 'Resource successfully connected'

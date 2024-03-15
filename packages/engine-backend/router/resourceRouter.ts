@@ -270,7 +270,8 @@ export const resourceRouter = trpc.router({
         await ctx.services.getResourceOrFail(resoId)
       }
       if (opts?.async) {
-        await inngest.send('sync/resource-requested', {
+        await inngest.send({
+          name: 'sync/resource-requested',
           data: {resourceId: resoId},
         })
         return
