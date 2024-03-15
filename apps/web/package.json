@@ -11,7 +11,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@clerk/nextjs": "4.18.1",
+    "@clerk/nextjs": "4.29.3",
     "@graphiql/toolkit": "^0.8.0",
     "@opensdks/fetch-links": "0.0.16",
     "@sentry/nextjs": "7.53.0",

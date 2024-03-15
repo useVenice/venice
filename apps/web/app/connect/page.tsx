@@ -137,7 +137,7 @@ export default async function ConnectPageContainer({
           width={50}
           height={50}
           alt={org.slug ?? ''}
-          src={org.logoUrl ?? org.experimental_imageUrl}
+          src={org.imageUrl ?? org.logoUrl}
           className="mr-4 rounded-lg"
         />
         <h2 className="text-2xl font-semibold tracking-tight">
