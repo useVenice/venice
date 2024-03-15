@@ -67,6 +67,25 @@ export async function scheduleSyncs({step}: FunctionInput<never>) {
   )
 }
 
+// Consider automatic inngest function from every trpc function?
+export async function syncPipeline({
+  event,
+}: FunctionInput<'sync/pipeline-requested'>) {
+  const {pipelineId} = event.data
+  console.log('Will sync pipeline', pipelineId)
+  // TODO: Figure out what is the userId we ought to be using...
+  // Otherwise connections could be overwritten with the wrong id...
+  // This upsert stuff is dangerous...
+  await flatRouter
+    .createCaller({
+      ...contextFactory.fromViewer({role: 'system'}),
+      remoteResourceId: null,
+    })
+    .syncPipeline({id: pipelineId})
+  console.log('did sync pipeline', pipelineId)
+  return pipelineId
+}
+
 export async function sendWebhook({event}: FunctionInput<keyof Events>) {
   if (!event.user?.webhook_url) {
     return false

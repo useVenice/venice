@@ -20,21 +20,7 @@ export const scheduleSyncs = inngest.createFunction(
 export const syncPipeline = inngest.createFunction(
   {id: 'Sync pipeline'},
   {event: 'sync/pipeline-requested'},
-  async ({event}) => {
-    const {pipelineId} = event.data
-    console.log('Will sync pipeline', pipelineId)
-    // TODO: Figure out what is the userId we ought to be using...
-    // Otherwise connections could be overwritten with the wrong id...
-    // This upsert stuff is dangerous...
-    await flatRouter
-      .createCaller({
-        ...contextFactory.fromViewer({role: 'system'}),
-        remoteResourceId: null,
-      })
-      .syncPipeline({id: pipelineId})
-    console.log('did sync pipeline', pipelineId)
-    return pipelineId
-  },
+  routines.syncPipeline,
 )
 
 export const syncResource = inngest.createFunction(

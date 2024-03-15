@@ -31,6 +31,15 @@ switch (cmd) {
       step,
     })
     break
+  case 'syncPipeline':
+    void routines.syncPipeline({
+      event: {
+        name: 'sync/pipeline-requested',
+        data: {pipelineId: process.env['PIPELINE_ID'] as `pipe_${string}`},
+      },
+      step,
+    })
+    break
   default:
     console.error('Unknown command', cmd)
 }
