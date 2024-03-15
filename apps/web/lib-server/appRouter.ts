@@ -8,7 +8,7 @@ import {TRPCError} from '@trpc/server'
 import {getServerUrl} from '@usevenice/app-config/constants'
 import type {Viewer} from '@usevenice/cdk'
 import {zViewer} from '@usevenice/cdk'
-import {eventMapForInngest, flatRouter} from '@usevenice/engine-backend'
+import {flatRouter, outgoingWebhookEventMap} from '@usevenice/engine-backend'
 import {
   adminProcedure,
   publicProcedure,
@@ -59,6 +59,13 @@ const customRouter = trpc.router({
 
 export const appRouter = trpc.mergeRouters(flatRouter, customRouter)
 
+function assertNoSlash(name: string) {
+  if (name.includes('/')) {
+    throw new Error(`Event name ${name} containing '/' is not supported`)
+  }
+  return name
+}
+
 export function oasWebhooksEventsMap(
   eMap: Record<string, {data: z.AnyZodObject}>,
 ) {
@@ -69,7 +76,9 @@ export function oasWebhooksEventsMap(
         requestBody: {
           content: {
             'application/json': {
-              schema: {$ref: `#/components/schemas/webhooks.${name}`},
+              schema: {
+                $ref: `#/components/schemas/webhooks.${assertNoSlash(name)}`,
+              },
             },
           },
         },
@@ -90,7 +99,7 @@ export function oasWebhooksEventsMap(
 }
 
 function generateOpenApi() {
-  // const {webhooks, components} = oasWebhooksEventsMap(eventMapForInngest)
+  const {webhooks, components} = oasWebhooksEventsMap(outgoingWebhookEventMap)
   const oas = generateOpenApiDocument(appRouter, {
     openApiVersion: '3.1.0', // Want jsonschema
     title: 'Venice OpenAPI',
@@ -103,8 +112,8 @@ function generateOpenApi() {
       },
     },
     baseUrl: getServerUrl(null) + '/api/v0',
-    // webhooks,
-    // components,
+    webhooks,
+    components,
   })
   // Unfortunately trpc-openapi is missing bunch of options...
   oas.security = [{apikey: []}]

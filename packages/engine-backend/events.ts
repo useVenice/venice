@@ -28,17 +28,18 @@ export type OrgProperties = z.infer<typeof zOrgProperties>
 
 // TODO: Can we learn from trpc to make all the events here easy to refactor across the codebase?
 export const eventMap = {
+  // New format for event name. Having `/` is not supported in event names due to slash having
+  // very specific meanning in openapi spec.
+  'sync.completed': {
+    pipeline_id: zId('pipe'),
+    source_id: zId('reso'),
+    destination_id: zId('reso'),
+  },
   // Backend events
   'debug/debug': {},
   'sync/scheduler-debug': {},
   'sync/pipeline-requested': {pipelineId: zId('pipe')},
   'sync/resource-requested': {resourceId: zId('reso')},
-  'sync/pipeline-completed': {
-    pipeline_id: zId('pipe'),
-    source_id: zId('reso'),
-    destination_id: zId('reso'),
-  },
-  'sync/resource-completed': {resource_id: zId('reso')},
   'connect/resource-connected': {resourceId: zId('reso')},
   'webhook/received': {
     /** For debugging requests */
@@ -67,13 +68,18 @@ export const eventMap = {
 
 type BuiltInEvents = EventsFromOpts<{schemas: EventSchemas; id: never}>
 
-export const eventMapForInngest = R.mapValues(eventMap, (v) => ({
+const eventMapForInngest = R.mapValues(eventMap, (v) => ({
   data: z.object(v),
 })) as unknown as {
   [k in keyof typeof eventMap]: {
     data: z.ZodObject<(typeof eventMap)[k]>
   }
 }
+
+/** slash in name is not supported in openapi spec. Plus we don't want to send all events to orgs for now */
+export const outgoingWebhookEventMap = R.omitBy(eventMapForInngest, (_, name) =>
+  name.includes('/'),
+)
 
 export type Events = Combine<
   BuiltInEvents,

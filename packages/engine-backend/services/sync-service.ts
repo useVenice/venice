@@ -336,7 +336,7 @@ export function makeSyncService({
     )
 
     await inngest.send({
-      name: 'sync/pipeline-completed',
+      name: 'sync.completed',
       data: {
         pipeline_id: pipeline.id,
         source_id: src.id,
