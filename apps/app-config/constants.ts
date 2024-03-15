@@ -28,6 +28,7 @@ export const getRestEndpoint = (req: GetServerSidePropsContext['req'] | null) =>
 
 export const kApikeyUrlParam = 'apikey'
 export const kApikeyMetadata = 'apikey'
+export const kWebhookUrlMetadata = 'webhook_url'
 export const kApikeyHeader = 'x-apikey'
 
 export const kAcceptUrlParam = '_accept'

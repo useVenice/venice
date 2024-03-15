@@ -1,3 +1,4 @@
+import type {clerkClient} from '@clerk/nextjs'
 import {TRPCError} from '@trpc/server'
 import type {
   AnyConnectorImpl,
@@ -17,7 +18,6 @@ import type {_ConnectorConfig} from './services/dbService'
 import type {MetaService} from './services/metaService'
 
 type Services = ReturnType<typeof _makeServices>
-
 export interface RouterContext {
   // Viewer-dependent
   viewer: Viewer
@@ -26,6 +26,8 @@ export interface RouterContext {
   /** Impersonate a different permission level explicitly */
   as<R extends ViewerRole>(role: R, data: Omit<Viewer<R>, 'role'>): Services
 
+  /** Need to refactor this */
+  clerk: typeof clerkClient
   // Non-viewer dependent
   connectorMap: Record<string, AnyConnectorImpl>
   jwt: JWTClient
@@ -50,7 +52,7 @@ export interface RouterContext {
 export interface ContextFactoryOptions<
   TConnectors extends readonly AnyConnectorImpl[],
   TLinks extends Record<string, LinkFactory>,
-> extends Pick<RouterContext, 'apiUrl' | 'getRedirectUrl'> {
+> extends Pick<RouterContext, 'apiUrl' | 'getRedirectUrl' | 'clerk'> {
   connectors: TConnectors
   // Backend only
   linkMap?: TLinks
@@ -94,6 +96,7 @@ export function getContextFactory<
       nango: makeNangoClient({secretKey: config.nangoSecretKey}),
       apiUrl,
       getRedirectUrl,
+      clerk: config.clerk,
     }
   }
 

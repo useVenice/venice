@@ -1,5 +1,8 @@
 import type {clerkClient} from '@clerk/nextjs'
-import {kApikeyMetadata} from '@usevenice/app-config/constants'
+import {
+  kApikeyMetadata,
+  kWebhookUrlMetadata,
+} from '@usevenice/app-config/constants'
 import {zId} from '@usevenice/cdk'
 import type {RouterOutput} from '@usevenice/engine-backend'
 import {z, zRecord} from '@usevenice/util'
@@ -23,6 +26,7 @@ export const zAuth = {
     publicMetadata: zOrgMetadata(),
     privateMetadata: z.object({
       [kApikeyMetadata]: z.string().optional(),
+      [kWebhookUrlMetadata]: z.string().optional(),
     }),
   }),
 

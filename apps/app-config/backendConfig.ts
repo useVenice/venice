@@ -1,11 +1,10 @@
+import {clerkClient} from '@clerk/nextjs'
 import type {LinkFactory} from '@usevenice/cdk'
-import {logLink} from '@usevenice/cdk'
-import {renameAccountLink} from '@usevenice/cdk'
+import {logLink, renameAccountLink} from '@usevenice/cdk'
 import type {PipelineInput} from '@usevenice/engine-backend'
 import {getContextFactory} from '@usevenice/engine-backend'
 import {makePostgresMetaService} from '@usevenice/meta-service-postgres'
 import {joinPath} from '@usevenice/util'
-
 import {mergedConnectors} from './connectors/connectors.merged'
 import {getServerUrl} from './constants'
 import {env} from './env'
@@ -58,4 +57,5 @@ export const contextFactory = getContextFactory({
     renameAccount: renameAccountLink as LinkFactory,
     log: logLink,
   },
+  clerk: clerkClient,
 })

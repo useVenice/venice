@@ -142,6 +142,15 @@ export const pipelineRouter = trpc.router({
       }
       const pipeline = await ctx.asOrgIfNeeded.getPipelineExpandedOrFail(pipeId)
       console.log('[syncPipeline]', pipeline)
-      return ctx.services._syncPipeline(pipeline, opts)
+      const clerkOrg = await ctx.clerk.organizations.getOrganization({
+        organizationId: pipeline.source.connectorConfig.orgId,
+      })
+
+      const org = z
+        .object({webhook_url: z.string().optional()})
+        .optional()
+        .parse(clerkOrg.privateMetadata)
+
+      return ctx.services._syncPipeline(pipeline, {...opts, org})
     }),
 })

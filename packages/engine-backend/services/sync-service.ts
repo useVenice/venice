@@ -11,6 +11,7 @@ import type {
 import {bankingLink, logLink, makeId, sync} from '@usevenice/cdk'
 import type {z} from '@usevenice/util'
 import {makeUlid, rxjs} from '@usevenice/util'
+import {inngest} from '../events'
 import type {zSyncOptions} from '../types'
 import type {
   _ConnectorConfig,
@@ -262,6 +263,7 @@ export function makeSyncService({
   const _syncPipeline = async (
     pipeline: _PipelineExpanded,
     opts: z.infer<typeof zSyncOptions> & {
+      org?: {webhook_url?: string | null}
       source$?: Source<AnyEntityPayload>
       /**
        * Trigger the default sourceSync after source$ exhausts
@@ -332,6 +334,16 @@ export function makeSyncService({
         .handlers({pipeline})
         .stateUpdate({type: 'stateUpdate', subtype: 'complete'}),
     )
+
+    await inngest.send({
+      name: 'sync/pipeline-completed',
+      data: {
+        pipeline_id: pipeline.id,
+        source_id: src.id,
+        destination_id: dest.id,
+      },
+      user: opts.org,
+    })
   }
 
   const _syncResourceUpdate = async (
