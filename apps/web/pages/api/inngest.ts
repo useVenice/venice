@@ -5,8 +5,8 @@ import {
   outgoingWebhookEventMap,
 } from '@usevenice/engine-backend/events'
 import {withLog} from '@usevenice/util'
-import {sendWebhook} from '../../inngest/function-factory'
 import * as functions from '../../inngest/functions'
+import {sendWebhook} from '../../inngest/routines'
 
 export const config = {
   maxDuration: 5 * 60, // 5 mins

@@ -1,16 +1,12 @@
 import '@usevenice/app-config/register.node'
-import {backendEnv, contextFactory} from '@usevenice/app-config/backendConfig'
-import {env} from '@usevenice/app-config/env'
+import {contextFactory} from '@usevenice/app-config/backendConfig'
 import type {EndUserId} from '@usevenice/cdk'
 import {zEndUserId, zId, zUserId} from '@usevenice/cdk'
 import {flatRouter} from '@usevenice/engine-backend'
 import {inngest} from '@usevenice/engine-backend/events'
 import {getPool, sql} from '../lib-server'
 import {serverAnalytics} from '../lib-server/analytics-server'
-import {makeSentryClient} from '../lib-server/sentry-client'
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const sentry = makeSentryClient({dsn: env.NEXT_PUBLIC_SENTRY_DSN!})
+import * as routines from './routines'
 
 export const scheduleSyncs = inngest.createFunction(
   {id: 'Schedule pipeline syncs'},
@@ -18,40 +14,7 @@ export const scheduleSyncs = inngest.createFunction(
   process.env.NODE_ENV === 'development'
     ? {event: 'sync/scheduler-debug'}
     : {cron: '0 * * * *'}, // Once an hour, https://crontab.guru/#0_*_*_*_*
-  ({step}) =>
-    sentry.withCheckin(backendEnv.SENTRY_CRON_MONITOR_ID, async (checkinId) => {
-      await flatRouter
-        .createCaller({
-          ...contextFactory.fromViewer({role: 'system'}),
-          remoteResourceId: null,
-        })
-        .ensureDefaultPipelines()
-
-      const pipelines = await contextFactory.config
-        .getMetaService({role: 'system'})
-        // Every hour
-        .findPipelines({secondsSinceLastSync: 1 * 60 * 60})
-      console.log(`Found ${pipelines.length} pipelines needing to sync`)
-
-      if (pipelines.length > 0) {
-        await step.sendEvent(
-          'sync/pipeline-requested',
-          pipelines.map((pipe) => ({
-            name: 'sync/pipeline-requested',
-            data: {pipelineId: pipe.id},
-          })),
-        )
-        // https://discord.com/channels/842170679536517141/845000011040555018/1068696979284164638
-        // We can use the built in de-dupe to ensure that we never schedule two pipeline syncs automatically within an hour...
-        console.log(`Scheduled ${pipelines.length} pipeline syncs`)
-      }
-      return {
-        scheduledCount: pipelines.length,
-        // For debugging
-        sentryCheckinId: checkinId,
-        sentryMonitorId: backendEnv.SENTRY_CRON_MONITOR_ID,
-      }
-    }),
+  routines.scheduleSyncs,
 )
 
 export const syncPipeline = inngest.createFunction(
