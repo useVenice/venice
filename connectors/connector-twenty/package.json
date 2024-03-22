@@ -1,0 +1,13 @@
+{
+  "name": "@usevenice/connector-twenty",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": [],
+  "module": "./index.ts",
+  "dependencies": {
+    "@opensdks/sdk-twenty": "^0.0.3",
+    "@usevenice/cdk": "workspace:*",
+    "@usevenice/util": "workspace:*"
+  },
+  "devDependencies": {}
+}

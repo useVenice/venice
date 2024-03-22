@@ -27,6 +27,7 @@ import {default as connectorSpreadsheet} from '@usevenice/connector-spreadsheet/
 import {default as connectorStripe} from '@usevenice/connector-stripe/def'
 import {default as connectorTeller} from '@usevenice/connector-teller/def'
 import {default as connectorToggl} from '@usevenice/connector-toggl/def'
+import {default as connectorTwenty} from '@usevenice/connector-twenty/def'
 import {default as connectorVenmo} from '@usevenice/connector-venmo/def'
 import {default as connectorWebhook} from '@usevenice/connector-webhook/def'
 import {default as connectorWise} from '@usevenice/connector-wise/def'
@@ -61,6 +62,7 @@ export const defConnectors = {
   stripe: connectorStripe,
   teller: connectorTeller,
   toggl: connectorToggl,
+  twenty: connectorTwenty,
   venmo: connectorVenmo,
   webhook: connectorWebhook,
   wise: connectorWise,

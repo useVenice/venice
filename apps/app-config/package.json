@@ -44,6 +44,7 @@
     "@usevenice/connector-stripe": "workspace:*",
     "@usevenice/connector-teller": "workspace:*",
     "@usevenice/connector-toggl": "workspace:*",
+    "@usevenice/connector-twenty": "workspace:*",
     "@usevenice/connector-venmo": "workspace:*",
     "@usevenice/connector-webhook": "workspace:*",
     "@usevenice/connector-wise": "workspace:*",

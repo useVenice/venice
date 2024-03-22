@@ -54,6 +54,8 @@ import {default as connectorTeller_def} from '@usevenice/connector-teller/def'
 import {default as connectorTeller_server} from '@usevenice/connector-teller/server'
 import {default as connectorToggl_def} from '@usevenice/connector-toggl/def'
 import {default as connectorToggl_server} from '@usevenice/connector-toggl/server'
+import {default as connectorTwenty_def} from '@usevenice/connector-twenty/def'
+import {default as connectorTwenty_server} from '@usevenice/connector-twenty/server'
 import {default as connectorVenmo_def} from '@usevenice/connector-venmo/def'
 import {default as connectorWebhook_def} from '@usevenice/connector-webhook/def'
 import {default as connectorWebhook_server} from '@usevenice/connector-webhook/server'
@@ -201,6 +203,11 @@ const connectorToggl = {
   ...connectorToggl_server,
 }
 
+const connectorTwenty = {
+  ...connectorTwenty_def,
+  ...connectorTwenty_server,
+}
+
 const connectorVenmo = {
   ...connectorVenmo_def,
 }
@@ -249,6 +256,7 @@ export const mergedConnectors = {
   stripe: connectorStripe,
   teller: connectorTeller,
   toggl: connectorToggl,
+  twenty: connectorTwenty,
   venmo: connectorVenmo,
   webhook: connectorWebhook,
   wise: connectorWise,

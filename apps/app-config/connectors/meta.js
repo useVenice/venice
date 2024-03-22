@@ -263,6 +263,15 @@ module.exports = [
     },
   },
   {
+    name: 'twenty',
+    dirName: 'connector-twenty',
+    varName: 'connectorTwenty',
+    imports: {
+      def: '@usevenice/connector-twenty/def',
+      server: '@usevenice/connector-twenty/server',
+    },
+  },
+  {
     name: 'venmo',
     dirName: 'connector-venmo',
     varName: 'connectorVenmo',

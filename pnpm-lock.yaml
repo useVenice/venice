@@ -267,6 +267,9 @@ importers:
       '@usevenice/connector-toggl':
         specifier: workspace:*
         version: link:../../connectors/connector-toggl
+      '@usevenice/connector-twenty':
+        specifier: workspace:*
+        version: link:../../connectors/connector-twenty
       '@usevenice/connector-venmo':
         specifier: workspace:*
         version: link:../../connectors/connector-venmo
@@ -1118,6 +1121,18 @@ importers:
 
   connectors/connector-toggl:
     dependencies:
+      '@usevenice/cdk':
+        specifier: workspace:*
+        version: link:../../kits/cdk
+      '@usevenice/util':
+        specifier: workspace:*
+        version: link:../../packages/util
+
+  connectors/connector-twenty:
+    dependencies:
+      '@opensdks/sdk-twenty':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -4731,6 +4746,10 @@ packages:
   /@opensdks/sdk-slack@0.0.14:
     resolution: {integrity: sha512-//w9OelCjMc+wwCU12JD26cHxDp4RAwIcD246Lf+r0kRY9uMPiczgEnsdwN+5sy/4TP+JRRKyc14L3591Qr4fA==}
     dev: true
+
+  /@opensdks/sdk-twenty@0.0.3:
+    resolution: {integrity: sha512-4jRuFdrIma0KBqMJpZfhnDG9HXVV+la46ukumcmpxmr1VFLD76gB+jwJi7p7Pd+x9I+SxKh3mIVLw5o5r9SKsw==}
+    dev: false
 
   /@opensdks/sdk-venice@0.0.14(@opensdks/runtime@0.0.16):
     resolution: {integrity: sha512-mGbUqCrqsh5kGxI2gpjCCeqPCbYF0KMyB5Cc8xmcwursZIMFOxMZTYerlYYS0Ht5tRa/WltOuQJTgqUPYmimxg==}
