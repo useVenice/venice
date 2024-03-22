@@ -1,8 +1,6 @@
-import type {ConnectorServer} from '@usevenice/cdk'
+import type {ConnectorServer, Pta} from '@usevenice/cdk'
 import {handlersLink} from '@usevenice/cdk'
-import type {Pta} from '@usevenice/cdk'
 import {fromCompletion} from '@usevenice/util'
-
 import {makeAirtableClient} from './AirtableClient'
 import type {airtableSchemas} from './def'
 
@@ -43,7 +41,7 @@ export const airtableServer = {
             ...partialTxn,
           },
         }
-
+        // TODO: This is probably not right.
         fromCompletion(airtable.insertData({data: record, entityName}))
         return op
       },

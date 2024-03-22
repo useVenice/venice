@@ -1133,6 +1133,9 @@ importers:
       '@opensdks/sdk-twenty':
         specifier: ^0.0.3
         version: 0.0.3
+      '@opensdks/util-zod':
+        specifier: ^0.0.15
+        version: 0.0.15
       '@usevenice/cdk':
         specifier: workspace:*
         version: link:../../kits/cdk
@@ -4758,6 +4761,13 @@ packages:
     dependencies:
       '@opensdks/runtime': 0.0.16
     dev: true
+
+  /@opensdks/util-zod@0.0.15:
+    resolution: {integrity: sha512-CHyk/ay5yKNFBZKDfGcJQGZ4ZhScfNhGe6xon6XjqbhP+AYv4tYJl1GTbTqJdN2N15KnG3vuXjbi6SX0SGwbhw==}
+    dependencies:
+      zod: 3.22.4
+      zod-openapi: 2.14.0(zod@3.22.4)
+    dev: false
 
   /@panva/asn1.js@1.0.0:
     resolution: {integrity: sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==}
@@ -21607,6 +21617,15 @@ packages:
       zod: ^3.21.4
     dependencies:
       zod: 3.22.4
+
+  /zod-openapi@2.14.0(zod@3.22.4):
+    resolution: {integrity: sha512-TywDpZKfbNSMspWtT152DaO+/cK0xqK/bv7Kt4ZMHhzEZS1rCFYxxFwDZdQd4Nrq5g4kX/R1SKI+FkYg4QkBlw==}
+    engines: {node: '>=16.11'}
+    peerDependencies:
+      zod: ^3.21.4
+    dependencies:
+      zod: 3.22.4
+    dev: false
 
   /zod-to-json-schema@3.21.1(zod@3.22.4):
     resolution: {integrity: sha512-y5g0MPxDq+YG/T+cHGPYH4PcBpyCqwK6wxeJ76MR563y0gk/14HKfebq8xHiItY7lkc9GDFygCnkvNDTvAhYAg==}
