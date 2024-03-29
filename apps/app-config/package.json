@@ -48,6 +48,7 @@
     "@usevenice/connector-venmo": "workspace:*",
     "@usevenice/connector-webhook": "workspace:*",
     "@usevenice/connector-wise": "workspace:*",
+    "@usevenice/connector-xero": "workspace:*",
     "@usevenice/connector-yodlee": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",
