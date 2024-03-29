@@ -5,7 +5,6 @@
   "sideEffects": [],
   "module": "./index.ts",
   "dependencies": {
-    "@opensdks/sdk-xero": "^0.0.1",
     "@opensdks/util-zod": "^0.0.15",
     "@usevenice/cdk": "workspace:*",
     "@usevenice/util": "workspace:*"
