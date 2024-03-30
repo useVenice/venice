@@ -31,6 +31,7 @@ import {default as connectorTwenty} from '@usevenice/connector-twenty/def'
 import {default as connectorVenmo} from '@usevenice/connector-venmo/def'
 import {default as connectorWebhook} from '@usevenice/connector-webhook/def'
 import {default as connectorWise} from '@usevenice/connector-wise/def'
+import {default as connectorXero} from '@usevenice/connector-xero/def'
 import {default as connectorYodlee} from '@usevenice/connector-yodlee/def'
 
 export const defConnectors = {
@@ -66,5 +67,6 @@ export const defConnectors = {
   venmo: connectorVenmo,
   webhook: connectorWebhook,
   wise: connectorWise,
+  xero: connectorXero,
   yodlee: connectorYodlee,
 }

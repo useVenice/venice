@@ -297,6 +297,15 @@ module.exports = [
     },
   },
   {
+    name: 'xero',
+    dirName: 'connector-xero',
+    varName: 'connectorXero',
+    imports: {
+      def: '@usevenice/connector-xero/def',
+      server: '@usevenice/connector-xero/server',
+    },
+  },
+  {
     name: 'yodlee',
     dirName: 'connector-yodlee',
     varName: 'connectorYodlee',

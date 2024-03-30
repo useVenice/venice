@@ -61,6 +61,8 @@ import {default as connectorWebhook_def} from '@usevenice/connector-webhook/def'
 import {default as connectorWebhook_server} from '@usevenice/connector-webhook/server'
 import {default as connectorWise_def} from '@usevenice/connector-wise/def'
 import {default as connectorWise_server} from '@usevenice/connector-wise/server'
+import {default as connectorXero_def} from '@usevenice/connector-xero/def'
+import {default as connectorXero_server} from '@usevenice/connector-xero/server'
 import {default as connectorYodlee_def} from '@usevenice/connector-yodlee/def'
 import {default as connectorYodlee_server} from '@usevenice/connector-yodlee/server'
 
@@ -222,6 +224,11 @@ const connectorWise = {
   ...connectorWise_server,
 }
 
+const connectorXero = {
+  ...connectorXero_def,
+  ...connectorXero_server,
+}
+
 const connectorYodlee = {
   ...connectorYodlee_def,
   ...connectorYodlee_server,
@@ -260,5 +267,6 @@ export const mergedConnectors = {
   venmo: connectorVenmo,
   webhook: connectorWebhook,
   wise: connectorWise,
+  xero: connectorXero,
   yodlee: connectorYodlee,
 }

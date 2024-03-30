@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "generate:docs": "pnpm tsx watch ./_generateDocs.bin.ts",
-    "generate:lists": "node --loader tsx ./_generateConnectorLists.ts"
+    "generate:lists": "npx tsx ./_generateConnectorLists.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "4.29.3",
