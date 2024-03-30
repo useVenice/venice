@@ -21,7 +21,7 @@ export const xeroDef = {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-xero.svg',
     displayName: 'Xero Software',
-    stage: 'beta',
+    stage: 'alpha',
     nangoProvider: 'xero',
   },
   name: 'xero',
