@@ -20,7 +20,7 @@ export const xeroDef = {
   metadata: {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-xero.svg',
-    displayName: 'Xero Software',
+    displayName: 'Xero',
     stage: 'alpha',
     nangoProvider: 'xero',
   },
