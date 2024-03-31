@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "generate:docs": "pnpm tsx watch ./_generateDocs.bin.ts",
-    "generate:lists": "node --loader tsx ./_generateConnectorLists.ts"
+    "generate:lists": "npx tsx ./_generateConnectorLists.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "4.29.3",
@@ -48,6 +48,7 @@
     "@usevenice/connector-venmo": "workspace:*",
     "@usevenice/connector-webhook": "workspace:*",
     "@usevenice/connector-wise": "workspace:*",
+    "@usevenice/connector-xero": "workspace:*",
     "@usevenice/connector-yodlee": "workspace:*",
     "@usevenice/engine-backend": "workspace:*",
     "@usevenice/engine-frontend": "workspace:*",

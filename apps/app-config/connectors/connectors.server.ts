@@ -29,6 +29,7 @@ import {default as connectorToggl} from '@usevenice/connector-toggl/server'
 import {default as connectorTwenty} from '@usevenice/connector-twenty/server'
 import {default as connectorWebhook} from '@usevenice/connector-webhook/server'
 import {default as connectorWise} from '@usevenice/connector-wise/server'
+import {default as connectorXero} from '@usevenice/connector-xero/server'
 import {default as connectorYodlee} from '@usevenice/connector-yodlee/server'
 
 export const serverConnectors = {
@@ -62,5 +63,6 @@ export const serverConnectors = {
   twenty: connectorTwenty,
   webhook: connectorWebhook,
   wise: connectorWise,
+  xero: connectorXero,
   yodlee: connectorYodlee,
 }
