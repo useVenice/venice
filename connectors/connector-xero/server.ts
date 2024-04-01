@@ -28,10 +28,9 @@ export const xeroServer = {
   },
   sourceSync: ({instance: xero}) => {
     // TODO(@jatin): Add logic here to handle sync.
-    // TODO: ensure instance has typesafety for some reason the types are not present here :/.
-    console.log('[xero] Starting sync', xero)
+    console.log('[xero] Starting sync')
     const getAll = async () => {
-      const result = await xero.client.GET('/Accounts', {
+      const result = await xero.GET('/Accounts', {
         params: {
           header: {
             'xero-tenant-id': '35325d8f-5087-4c6d-b413-c3f740c26f2e', // TODO: Remove hardcoding
@@ -39,15 +38,15 @@ export const xeroServer = {
         },
       })
       console.log('result', result)
-      return result.data?.Accounts
+      return result
     }
 
     getAll()
       .then((res) => console.log('[data test]', res))
       .catch((err) => console.log('error', err))
 
-    return rxjs.empty()
+    return rxjs.empty() // TODO: replace with data above.
   },
-} satisfies ConnectorServer<typeof xeroSchemas>
+} satisfies ConnectorServer<typeof xeroSchemas, ReturnType<typeof initXeroSDK>>
 
 export default xeroServer

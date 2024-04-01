@@ -1169,11 +1169,11 @@ importers:
   connectors/connector-xero:
     dependencies:
       '@opensdks/runtime':
-        specifier: ^0.0.16
-        version: 0.0.16
+        specifier: ^0.0.19
+        version: 0.0.19
       '@opensdks/sdk-xero':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
       '@opensdks/util-zod':
         specifier: ^0.0.15
         version: 0.0.15
@@ -4783,8 +4783,8 @@ packages:
       '@opensdks/runtime': 0.0.16
     dev: true
 
-  /@opensdks/sdk-xero@0.0.5:
-    resolution: {integrity: sha512-dYlYTa6awnXQ8TmdCQu36Dt+pwzD9+sQ3CAuzfknOxWnERc0mb1ark5rxDoMoqNQsddSeNKkBQE2b8DEj9oa4Q==}
+  /@opensdks/sdk-xero@0.0.6:
+    resolution: {integrity: sha512-cqoIfjFyUbkJ148u3zT/3WNKv+NRwqKVoCOTgOyX71SYgibvvBmsQXI4DOOEdEUlZFK8L49sJ8Q1emZMkc3T2g==}
     dependencies:
       '@opensdks/runtime': 0.0.19
     dev: false
