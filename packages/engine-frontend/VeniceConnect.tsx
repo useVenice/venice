@@ -156,7 +156,7 @@ export function _VeniceConnect({
 }) {
   const nangoPublicKey =
     _trpcReact.getPublicEnv.useQuery().data?.NEXT_PUBLIC_NANGO_PUBLIC_KEY
-
+  console.log('DEBUG', connectorConfigInfos, clientConnectors)
   const nangoFrontend = React.useMemo(
     () =>
       nangoPublicKey &&

@@ -44,20 +44,19 @@ export const trpc = initTRPC
   })
 
 export const publicProcedure = trpc.procedure
-// Enable me for logs
-// .use(
-//   ({next, ctx, input, rawInput, meta, path}) => {
-//     console.log('[trpc]', {
-//       input,
-//       rawInput,
-//       meta,
-//       path,
-//     })
-//     return next({ctx})
-//   },
-// )
+  // Enable me for logs
+  .use(({next, ctx, input, rawInput, meta, path}) => {
+    console.log('[trpc]', {
+      input,
+      rawInput,
+      meta,
+      path,
+    })
+    return next({ctx})
+  })
 
 export const protectedProcedure = publicProcedure.use(({next, ctx}) => {
+  console.log('DEBUG', ctx.viewer)
   if (!hasRole(ctx.viewer, ['end_user', 'user', 'org', 'system'])) {
     throw new TRPCError({
       code: ctx.viewer.role === 'anon' ? 'UNAUTHORIZED' : 'FORBIDDEN',

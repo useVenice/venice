@@ -409,6 +409,9 @@ importers:
       '@usevenice/connector-wise':
         specifier: workspace:*
         version: link:../../connectors/connector-wise
+      '@usevenice/connector-xero':
+        specifier: workspace:*
+        version: link:../../connectors/connector-xero
       '@usevenice/connector-yodlee':
         specifier: workspace:*
         version: link:../../connectors/connector-yodlee
@@ -1165,9 +1168,12 @@ importers:
 
   connectors/connector-xero:
     dependencies:
+      '@opensdks/runtime':
+        specifier: ^0.0.16
+        version: 0.0.16
       '@opensdks/sdk-xero':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.5
+        version: 0.0.5
       '@opensdks/util-zod':
         specifier: ^0.0.15
         version: 0.0.15
@@ -4709,6 +4715,10 @@ packages:
   /@opensdks/fetch-links@0.0.17:
     resolution: {integrity: sha512-BUomrnpFtlu085W1wOY0k52Kf6qkJwBDifQxFoSHkfjyjS81AkpOTPsBTYS5HffAXS8rgoBBJF+7fu2NSYipFw==}
 
+  /@opensdks/fetch-links@0.0.18:
+    resolution: {integrity: sha512-EhBj92wLXoj3pF4ERxzoEhAlwlefIzQ31At0zaksSbA9zqMlod9DyfypQRX/6J8w4iZzraV33BtFEk7l98nsLA==}
+    dev: false
+
   /@opensdks/runtime@0.0.16:
     resolution: {integrity: sha512-aCRhxlWr2e+hB38quP2tLkaPGZNPMV9rBE+IoTwDoHS4mql2dyn7HvxRYisoU3XmdaMCLvbf8+H/7Nrj02tMpg==}
     dependencies:
@@ -4716,6 +4726,15 @@ packages:
       openapi-fetch: 0.8.1
       openapi-typescript-helpers: 0.0.4
       openapi3-ts: 4.1.2
+
+  /@opensdks/runtime@0.0.19:
+    resolution: {integrity: sha512-9rPrPDHS+PRVKOWXbdYEtys/4uHeVzitQgR0QVSWtMFOn6FOY8VxMGvem0TGJwHf4EPecejoWF8NuNwUATmbeA==}
+    dependencies:
+      '@opensdks/fetch-links': 0.0.18
+      openapi-fetch: 0.8.1
+      openapi-typescript-helpers: 0.0.4
+      openapi3-ts: 4.1.2
+    dev: false
 
   /@opensdks/sdk-apollo@0.0.18:
     resolution: {integrity: sha512-i2rps56eTt22cM1pwbVyTVlZtpjP65T3jMJhX2rKO2CiHd7+QoI3+hT+ko6dCIsi6STPnoM+IIJhmyQZjJIktA==}
@@ -4764,8 +4783,10 @@ packages:
       '@opensdks/runtime': 0.0.16
     dev: true
 
-  /@opensdks/sdk-xero@0.0.2:
-    resolution: {integrity: sha512-ni6s4q658K9dWsmXwD4mnJrL9QguZwGxgtDt24Is4cjUNmiLqfxpC7PqE4ecxKn/TNv+oZiQJKm7Di29UHt3rQ==}
+  /@opensdks/sdk-xero@0.0.5:
+    resolution: {integrity: sha512-dYlYTa6awnXQ8TmdCQu36Dt+pwzD9+sQ3CAuzfknOxWnERc0mb1ark5rxDoMoqNQsddSeNKkBQE2b8DEj9oa4Q==}
+    dependencies:
+      '@opensdks/runtime': 0.0.19
     dev: false
 
   /@opensdks/util-zod@0.0.15:
