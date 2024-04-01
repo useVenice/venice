@@ -3,7 +3,7 @@ import type {
   ConnectorSchemas,
   EntityPayloadWithRaw,
 } from '@usevenice/cdk'
-import {connHelpers} from '@usevenice/cdk'
+import {connHelpers, oauthBaseSchema} from '@usevenice/cdk'
 import {z, zCast} from '@usevenice/util'
 
 export const xeroSchemas = {
@@ -12,6 +12,7 @@ export const xeroSchemas = {
     access_token: z.string(),
   }),
   destinationInputEntity: zCast<EntityPayloadWithRaw>(),
+  connectorConfig: oauthBaseSchema.connectorConfig,
 } satisfies ConnectorSchemas
 
 export const helpers = connHelpers(xeroSchemas)
