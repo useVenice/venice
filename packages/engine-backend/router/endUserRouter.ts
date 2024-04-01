@@ -205,6 +205,8 @@ export const endUserRouter = trpc.router({
         const int = await ctx.asOrgIfNeeded.getConnectorConfigOrFail(ccfgId)
         console.log('didConnect start', int.connector.name, input, connCtxInput)
 
+        // TODO: we should make it possible for oauth connectors to
+        // ALSO handle custom postConnect... This would be very handy for xero for instance
         const resoUpdate = await (async () => {
           if (
             !int.connector.postConnect &&

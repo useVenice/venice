@@ -495,6 +495,22 @@ importers:
         specifier: 2.5.0
         version: 2.5.0
 
+  apps/tests:
+    dependencies:
+      '@usevenice/app-config':
+        specifier: workspace:*
+        version: link:../app-config
+      remeda:
+        specifier: 1.6.1
+        version: 1.6.1
+    devDependencies:
+      openapi-typescript:
+        specifier: 6.7.1
+        version: 6.7.1
+      tsx:
+        specifier: 3.12.2
+        version: 3.12.2
+
   apps/web:
     dependencies:
       '@clerk/nextjs':
@@ -1172,8 +1188,8 @@ importers:
         specifier: ^0.0.19
         version: 0.0.19
       '@opensdks/sdk-xero':
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.7
+        version: 0.0.7
       '@opensdks/util-zod':
         specifier: ^0.0.15
         version: 0.0.15
@@ -4783,8 +4799,8 @@ packages:
       '@opensdks/runtime': 0.0.16
     dev: true
 
-  /@opensdks/sdk-xero@0.0.6:
-    resolution: {integrity: sha512-cqoIfjFyUbkJ148u3zT/3WNKv+NRwqKVoCOTgOyX71SYgibvvBmsQXI4DOOEdEUlZFK8L49sJ8Q1emZMkc3T2g==}
+  /@opensdks/sdk-xero@0.0.7:
+    resolution: {integrity: sha512-NZLi+HH0Jrss+sCnLyDhnih24wjcz/u77zOvFtpBwbbwCUqPSYQ/s50qO0ek+6g9eJG3YxoeplOM51YbyszPwA==}
     dependencies:
       '@opensdks/runtime': 0.0.19
     dev: false

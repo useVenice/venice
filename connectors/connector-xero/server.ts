@@ -5,6 +5,7 @@ import {rxjs} from '@usevenice/util'
 import {type xeroSchemas} from './def'
 
 export const xeroServer = {
+  // Would be good if this was async...
   newInstance: ({settings, fetchLinks}) => {
     const xero = initXeroSDK({
       headers: {
@@ -12,11 +13,16 @@ export const xeroServer = {
       },
       links: (defaultLinks) => [
         (req, next) => {
-          if (xero.clientOptions.baseUrl) {
-            req.headers.set(
-              nangoProxyLink.kBaseUrlOverride,
-              xero.clientOptions.baseUrl,
-            )
+          req.headers.set(
+            nangoProxyLink.kBaseUrlOverride,
+            'https://api.xero.com',
+          )
+          // nango's proxy endpoint is pretty annoying... Will only proxy
+          // if it is prefixed with nango-proxy. Might as well not proxy like this...
+          const tenantId = req.headers.get('xero-tenant-id')
+          if (tenantId) {
+            req.headers.delete('xero-tenant-id')
+            req.headers.set('nango-proxy-xero-tenant-id', tenantId)
           }
           return next(req)
         },
@@ -27,15 +33,19 @@ export const xeroServer = {
     return xero
   },
   sourceSync: ({instance: xero}) => {
-    // TODO(@jatin): Add logic here to handle sync.
     console.log('[xero] Starting sync')
     const getAll = async () => {
-      const result = await xero.GET('/Accounts', {
-        params: {
-          header: {
-            'xero-tenant-id': '35325d8f-5087-4c6d-b413-c3f740c26f2e', // TODO: Remove hardcoding
-          },
-        },
+      // TODO: Should handle more than one tenant Id
+      const tenantId = await xero.identity
+        .GET('/Connections')
+        .then((r) => r.data?.[0]?.tenantId)
+      if (!tenantId) {
+        throw new Error(
+          'Missing access to any tenants. Check xero token permission',
+        )
+      }
+      const result = await xero.accounting.GET('/Accounts', {
+        params: {header: {'xero-tenant-id': tenantId}},
       })
       console.log('result', result)
       return result
