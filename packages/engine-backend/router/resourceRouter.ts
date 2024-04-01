@@ -277,11 +277,7 @@ export const resourceRouter = trpc.router({
         return
       }
       const reso = await ctx.asOrgIfNeeded.getResourceExpandedOrFail(resoId)
-      console.log(
-        '[syncResource]',
-        opts?.metaOnly,
-        reso.connectorConfig.connector.sourceSync,
-      )
+      console.log('[syncResource]', reso, opts)
       // No need to checkResource here as sourceSync should take care of it
 
       if (opts?.metaOnly) {
