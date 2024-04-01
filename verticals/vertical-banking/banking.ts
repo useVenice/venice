@@ -4,6 +4,7 @@ import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
 import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
+import type {Oas_accounting} from '@usevenice/connector-xero'
 import type {StrictObj} from '@usevenice/types'
 import type {RouterMap, RouterMeta, VerticalRouterOpts} from '@usevenice/vdk'
 import {
@@ -16,6 +17,7 @@ import {
 } from '@usevenice/vdk'
 
 type Plaid = PlaidSDKTypes['oas']['components']
+type Xero = Oas_accounting['components']['schemas']
 
 export const zBanking = {
   transaction: z
@@ -82,6 +84,39 @@ export function bankingLink(ctx: {
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
+    }
+
+    if (ctx.source.connectorConfig.connectorName === 'xero') {
+      if (op.data.entityName === 'Accounts') {
+        const entity = op.data.entity as Xero['Account']
+        if (entity.Class === 'REVENUE' || entity.Class === 'EXPENSE') {
+          const mapped = applyMapper(
+            mappers.xero.category,
+            op.data.entity as Xero['Account'],
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_category',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        } else {
+          const mapped = applyMapper(
+            mappers.xero.accounts,
+            op.data.entity as Xero['Account'],
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_account',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        }
+      }
     }
     if (ctx.source.connectorConfig.connectorName === 'qbo') {
       if (op.data.entityName === 'purchase') {
@@ -203,6 +238,16 @@ export function bankingLink(ctx: {
 }
 
 const mappers = {
+  xero: {
+    accounts: mapper(zCast<StrictObj<Xero['Account']>>(), zBanking.account, {
+      id: 'AccountID',
+      name: 'Name',
+    }),
+    category: mapper(zCast<StrictObj<Xero['Account']>>(), zBanking.account, {
+      id: 'AccountID',
+      name: 'Name',
+    }),
+  },
   // Should be able to have input and output entity types in here also.
   qbo: {
     purchase: mapper(

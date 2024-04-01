@@ -1,8 +1,8 @@
 import {initXeroSDK} from '@opensdks/sdk-xero'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {nangoProxyLink} from '@usevenice/cdk'
-import {rxjs} from '@usevenice/util'
-import {type xeroSchemas} from './def'
+import {Rx, rxjs} from '@usevenice/util'
+import {xeroHelpers, type xeroSchemas} from './def'
 
 export const xeroServer = {
   // Would be good if this was async...
@@ -34,7 +34,7 @@ export const xeroServer = {
   },
   sourceSync: ({instance: xero}) => {
     console.log('[xero] Starting sync')
-    const getAll = async () => {
+    async function* iterateEntities() {
       // TODO: Should handle more than one tenant Id
       const tenantId = await xero.identity
         .GET('/Connections')
@@ -44,18 +44,23 @@ export const xeroServer = {
           'Missing access to any tenants. Check xero token permission',
         )
       }
+
       const result = await xero.accounting.GET('/Accounts', {
         params: {header: {'xero-tenant-id': tenantId}},
       })
-      console.log('result', result)
-      return result
+
+      if (result.data.Accounts) {
+        yield result.data.Accounts?.map((a) =>
+          xeroHelpers._opData('Accounts', a.AccountID!, a),
+        )
+      }
     }
 
-    getAll()
-      .then((res) => console.log('[data test]', res))
-      .catch((err) => console.log('error', err))
-
-    return rxjs.empty() // TODO: replace with data above.
+    return rxjs
+      .from(iterateEntities())
+      .pipe(
+        Rx.mergeMap((ops) => rxjs.from([...ops, xeroHelpers._op('commit')])),
+      )
   },
 } satisfies ConnectorServer<typeof xeroSchemas, ReturnType<typeof initXeroSDK>>
 

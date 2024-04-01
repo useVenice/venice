@@ -26,7 +26,7 @@ export const xeroSchemas = {
   sourceOutputEntities: R.mapValues(XERO_ENTITY_NAME, () => z.unknown()),
 } satisfies ConnectorSchemas
 
-export const helpers = connHelpers(xeroSchemas)
+export const xeroHelpers = connHelpers(xeroSchemas)
 
 export const xeroDef = {
   metadata: {
