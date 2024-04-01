@@ -22,7 +22,7 @@ export const xeroDef = {
     categories: ['accounting'],
     logoUrl: '/_assets/logo-xero.svg',
     displayName: 'Xero',
-    stage: 'alpha',
+    stage: 'beta',
     nangoProvider: 'xero',
   },
   name: 'xero',
