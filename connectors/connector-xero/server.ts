@@ -2,7 +2,7 @@ import {initXeroSDK} from '@opensdks/sdk-xero'
 import type {ConnectorServer} from '@usevenice/cdk'
 import {nangoProxyLink} from '@usevenice/cdk'
 import {Rx, rxjs} from '@usevenice/util'
-import {xeroHelpers, type xeroSchemas} from './def'
+import {XERO_ENTITY_NAME, xeroHelpers, type xeroSchemas} from './def'
 
 export const xeroServer = {
   // Would be good if this was async...
@@ -32,7 +32,7 @@ export const xeroServer = {
     })
     return xero
   },
-  sourceSync: ({instance: xero}) => {
+  sourceSync: ({instance: xero, streams}) => {
     console.log('[xero] Starting sync')
     async function* iterateEntities() {
       // TODO: Should handle more than one tenant Id
@@ -44,15 +44,31 @@ export const xeroServer = {
           'Missing access to any tenants. Check xero token permission',
         )
       }
+      for (const type of Object.values(XERO_ENTITY_NAME)) {
+        if (!streams[type]) {
+          continue
+        }
 
-      const result = await xero.accounting.GET('/Accounts', {
-        params: {header: {'xero-tenant-id': tenantId}},
-      })
-
-      if (result.data.Accounts) {
-        yield result.data.Accounts?.map((a) =>
-          xeroHelpers._opData('Accounts', a.AccountID!, a),
-        )
+        const singular = type as 'BankTransaction'
+        const plural = `${singular}s` as const
+        const kId = `${singular}ID` as const
+        let page = 1
+        while (true) {
+          const result = await xero.accounting.GET(`/${plural}`, {
+            params: {header: {'xero-tenant-id': tenantId}, query: {page}},
+          })
+          if (result.data[plural]?.length) {
+            yield result.data[plural]?.map((a) =>
+              xeroHelpers._opData(singular, a[kId]!, a),
+            )
+            // Account does not support pagination, all or nothing...
+            if (type !== 'Account') {
+              page++
+              continue
+            }
+          }
+          break
+        }
       }
     }
 

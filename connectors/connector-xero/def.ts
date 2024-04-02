@@ -13,9 +13,9 @@ export const zSettings = oReso.extend({
 export type XERO = components['schemas']
 
 export const XERO_ENTITY_NAME = {
-  Accounts: 'Accounts',
-  PurchaseOrders: 'PurchaseOrders',
-}
+  Account: 'Account',
+  BankTransaction: 'BankTransaction',
+} as const
 
 export const xeroSchemas = {
   name: z.literal('xero'),
