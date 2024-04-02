@@ -9,6 +9,7 @@
     "@usevenice/connector-plaid": "workspace:*",
     "@usevenice/connector-postgres": "workspace:*",
     "@usevenice/connector-qbo": "workspace:*",
+    "@usevenice/connector-xero": "workspace:*",
     "@usevenice/types": "workspace:*"
   }
 }

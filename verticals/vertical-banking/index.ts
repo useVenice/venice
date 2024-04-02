@@ -2,3 +2,4 @@
 export * from './banking'
 // codegen:end
 export * from './adapters/qbo-adapter'
+export * from './adapters/xero-adapter'

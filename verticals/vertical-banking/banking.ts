@@ -4,6 +4,7 @@ import type {AnyEntityPayload, Id, Link} from '@usevenice/cdk'
 import type {PlaidSDKTypes} from '@usevenice/connector-plaid'
 import type {postgresHelpers} from '@usevenice/connector-postgres'
 import type {QBO} from '@usevenice/connector-qbo'
+import type {Oas_accounting} from '@usevenice/connector-xero'
 import type {StrictObj} from '@usevenice/types'
 import type {RouterMap, RouterMeta, VerticalRouterOpts} from '@usevenice/vdk'
 import {
@@ -16,6 +17,7 @@ import {
 } from '@usevenice/vdk'
 
 type Plaid = PlaidSDKTypes['oas']['components']
+type Xero = Oas_accounting['components']['schemas']
 
 export const zBanking = {
   transaction: z
@@ -82,6 +84,75 @@ export function bankingLink(ctx: {
   return Rx.mergeMap((op) => {
     if (op.type !== 'data') {
       return rxjs.of(op)
+    }
+
+    if (ctx.source.connectorConfig.connectorName === 'xero') {
+      if (op.data.entityName === 'Account') {
+        const entity = op.data.entity as Xero['Account']
+        if (entity.Class === 'REVENUE' || entity.Class === 'EXPENSE') {
+          const mapped = applyMapper(
+            mappers.xero.category,
+            op.data.entity as Xero['Account'],
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_category',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        } else {
+          const mapped = applyMapper(
+            mappers.xero.account,
+            op.data.entity as Xero['Account'],
+          )
+          return rxjs.of({
+            ...op,
+            data: {
+              id: mapped.id,
+              entityName: 'banking_account',
+              entity: {raw: op.data.entity, unified: mapped},
+            } satisfies PostgresInputPayload,
+          })
+        }
+      }
+      if (op.data.entityName === 'BankTransaction') {
+        // TODO: Dedupe from  qbo.purchase later
+        const mapped = applyMapper(
+          mappers.xero.bank_transaction,
+          op.data.entity as Xero['BankTransaction'],
+        )
+        // TODO: Make this better, should at the minimum apply to both Plaid & QBO, options are
+        // 1) Banking link needs to take input parameters to determine if by default
+        // transactions should go through if metadata is missing or not
+        // 2) Banking vertical should include abstraction for account / category selection UI etc.
+        // 3) Extract this into a more generic filtering link that works for ANY entity.
+        // In addition, will need to handle incremental sync state reset when we change stream filtering
+        // parameter like this, as well as deleting the no longer relevant entities in destination
+        if (
+          // Support both name and ID
+          !categories[mapped.category_name ?? ''] &&
+          !categories[mapped.category_id ?? '']
+        ) {
+          console.log(
+            `[banking] skip txn ${mapped.id} in ${mapped.category_id}: ${mapped.category_name}`,
+          )
+          return rxjs.EMPTY
+        } else {
+          console.log(
+            `[banking] allow txn ${mapped.id} in ${mapped.category_id}: ${mapped.category_name}`,
+          )
+        }
+        return rxjs.of({
+          ...op,
+          data: {
+            id: mapped.id,
+            entityName: 'banking_transaction',
+            entity: {raw: op.data.entity, unified: mapped},
+          } satisfies PostgresInputPayload,
+        })
+      }
     }
     if (ctx.source.connectorConfig.connectorName === 'qbo') {
       if (op.data.entityName === 'purchase') {
@@ -203,6 +274,34 @@ export function bankingLink(ctx: {
 }
 
 const mappers = {
+  xero: {
+    account: mapper(zCast<StrictObj<Xero['Account']>>(), zBanking.account, {
+      id: 'AccountID',
+      name: 'Name',
+    }),
+    category: mapper(zCast<StrictObj<Xero['Account']>>(), zBanking.account, {
+      id: 'AccountID',
+      name: 'Name',
+    }),
+    bank_transaction: mapper(
+      zCast<StrictObj<Xero['BankTransaction']>>(),
+      zBanking.transaction,
+      {
+        id: 'BankTransactionID',
+        amount: 'Total',
+        currency: 'CurrencyCode',
+        date: 'DateString' as 'Date', // empirically works https://share.cleanshot.com/0c6dlNsF
+        account_id: 'BankAccount.AccountID',
+        account_name: 'BankAccount.Name',
+        merchant_id: 'Contact.ContactID',
+        merchant_name: 'Contact.Name',
+        category_id: (t) => t.LineItems[0]?.AccountID ?? '',
+        description: (t) => t.LineItems[0]?.Description ?? '',
+        // Don't have data readily available for these...
+        // category_name is not readily available, only ID is provided
+      },
+    ),
+  },
   // Should be able to have input and output entity types in here also.
   qbo: {
     purchase: mapper(
